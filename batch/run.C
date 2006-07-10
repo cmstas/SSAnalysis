@@ -76,27 +76,27 @@ void run(sample_t which, int file, IsolationMethods ptrel){
       break;
     case WJets2:
       name = "WJetsToLNu_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-      shortname = "wjets1";
+      shortname = "wjets2";
       path = "/hadoop/cms/store/group/snt/phys14/"; 
       break;
     case WJets3:
       name = "WJetsToLNu_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-      shortname = "wjets1";
+      shortname = "wjets3";
       path = "/hadoop/cms/store/group/snt/phys14/"; 
       break;
     case WJets4:
       name = "WJetsToLNu_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-      shortname = "wjets1";
+      shortname = "wjets4";
       path = "/hadoop/cms/store/group/snt/phys14/"; 
       break;
     case DY:
       name="DYJetsToLL_M-50_13TeV-madgraph-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-      shortname = "dy_incl";
+      shortname = "dy";
       path = "/hadoop/cms/store/group/snt/phys14/"; 
       break;
     case WJets:
       name="WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-      shortname = "wjets_incl";
+      shortname = "wjets";
       path = "/hadoop/cms/store/group/snt/phys14/"; 
       break;
     case  T5qqqqWW_1200_1000_800:
