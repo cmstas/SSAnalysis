@@ -6,6 +6,8 @@ tag="V07-02-08"
 
 pathCondor="/hadoop/cms/store/user/$USER/condor/ss_13_babies"
 
+for i in "0" "1"
+do
 for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200" "T5qqqqWW_1200_1000_800" "T5qqqqWW_deg_1000_315_300" "DY1" "DY2" "DY3" "DY4" "WJets1" "WJets2" "WJets3" "WJets4"
 do
 
@@ -49,9 +51,10 @@ do
   #Write array with file names
   for (( counter=1; counter<=$numberOfFiles; counter++ ))
   do
-    file5[$(( $counter - 1 )) ]="$pathCondor/${sname_lower}_${counter}.root"
+    file5[$(( $counter - 1 )) ]="$pathCondor/${sname_lower}_${counter}_$i.root"
   done
 
-  hadd ${sname}.root ${file5[*]}
+  hadd ${sname}_$i.root ${file5[*]}
 
  done 
+done

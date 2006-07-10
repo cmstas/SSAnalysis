@@ -6,7 +6,7 @@
 
 enum sample_t { TTBAR, TTW, TTZ, WZ, T1TTTT_1500, T1TTTT_1200, T5qqqqWW_1200_1000_800, T5qqqqWW_deg_1000_315_300, DY1, DY2, DY3, DY4, WJets1, WJets2, WJets3, WJets4, DY, WJets };
 
-void run(sample_t which, int file, IsolationMethods ptrel){
+void run(sample_t which, int file, IsolationMethods ptrel, bool expt){
 
   babyMaker *mylooper = new babyMaker();
 
@@ -116,7 +116,7 @@ void run(sample_t which, int file, IsolationMethods ptrel){
   
   //Set up file and tree
   cout << "Using xrootd " << endl;
-  mylooper->MakeBabyNtuple(Form("%s%s", shortname.c_str(), suffix));
+  mylooper->MakeBabyNtuple(Form("%s%s", shortname.c_str(), suffix), expt);
   TFile *f = TFile::Open(Form("%s/%s/%s/%s", path.c_str(), name.c_str(), tag.c_str(), filename)); 
   cout << "File opened...." << endl;
   TTree *tree = (TTree*)f->Get("Events");
@@ -140,7 +140,7 @@ void run(sample_t which, int file, IsolationMethods ptrel){
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
 
-    mylooper->ProcessBaby(ptrel, f->GetTitle()); 
+    mylooper->ProcessBaby(ptrel, f->GetTitle(), expt); 
 
   }//event loop 
 

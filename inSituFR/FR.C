@@ -34,10 +34,10 @@ bool ufl = false;
 bool ssZveto = false;
 
 //Path
-string path = "v1.25/FO2pFO4";
+string path = "v1.26";
 
 //coneCorrection
-bool coneCorr = false;
+bool coneCorr = true;
 
 bool passesNumeratorMVA(int which){
   if (which == 1){
@@ -127,10 +127,10 @@ void FR1D(){
 
   //Declare chain
   TChain *chain = new TChain("t");
-  chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root", path.c_str()));
+  chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_0.root", path.c_str()));
   if (others){
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY.root", path.c_str()));
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root", path.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_0.root", path.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets_0.root", path.c_str()));
   }
 
   //Event Counting
@@ -314,10 +314,10 @@ void FR2D(){
 
   //Declare chain
   TChain *chain = new TChain("t");
-  chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root", path.c_str()));
+  chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_0.root", path.c_str()));
   if (others){
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY.root", path.c_str()));
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root", path.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_0.root", path.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets_0.root", path.c_str()));
   }
 
   //Event Counting
@@ -355,7 +355,7 @@ void FR2D(){
       if (ss::njets() < 2) continue;
       if (ss::ht() < 80) continue;
       if (ss::met() < 30 && ss::ht() < 500) continue;
-      if (ss::hyp_class() == 4) continue;
+      if (ss::hyp_class() == 4 || ss::hyp_class() == 6) continue;
 
       //SS Z veto
       if (ssZveto && fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15) continue;
@@ -519,7 +519,7 @@ void FR2D(){
 
   //Save output
   string name2 = "blah";
-  if (!others  && !testPC && !ssZveto && coneCorr) name2 = "_FO2pFO4"; 
+  if (!others  && !testPC && !ssZveto && coneCorr) name2 = ""; 
   if (!others  && !testPC && !ssZveto && !coneCorr) name2 = "_notCC"; 
   if ( others  &&  testPC && !ssZveto && coneCorr) name2 = "_PC"; 
   if ( others  && !testPC && !ssZveto && coneCorr) name2 = "_soup";

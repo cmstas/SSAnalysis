@@ -4,6 +4,7 @@ WHICH=$1
 FILE=$2
 PTREL=$3
 cgeorge=$4
+expt=$5
 
 #Show where you are
 hostname
@@ -31,7 +32,7 @@ if [ "$PTREL" == "4" ]
 then
   PT=""
 fi
-export OUTPUT=${WHICH_SMALL}_${FILE}${PT}
+export OUTPUT=${WHICH_SMALL}_${FILE}${PT}_$expt
 
 #This stuff to get output back
 export COPYDIR=/hadoop/cms/store/user/$cgeorge/condor/${DIRNAME}
@@ -39,7 +40,7 @@ export COPYDIR=/hadoop/cms/store/user/$cgeorge/condor/${DIRNAME}
 #Untar the zip dir
 tar xzvf CORE.tar.gz
 
-root -b -q do.C\($WHICH,$FILE,$PTREL\)
+root -b -q do.C\($WHICH,$FILE,$PTREL,$expt\)
 ls -l `pwd`/${OUTPUT}.root
 
 echo "copying.  LS is: "

@@ -3,10 +3,10 @@
 using namespace tas;
 
 //Main functions
-void babyMaker::MakeBabyNtuple(const char* output_name){
+void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
 
   //Create Baby
-  BabyFile = new TFile(Form("%s/%s.root", path.Data(), output_name), "RECREATE");
+  BabyFile = new TFile(Form("%s/%s_%i.root", path.Data(), output_name, expt ? 1 : 0), "RECREATE");
   BabyFile->cd();
   BabyTree = new TTree("t", "SS2015 Baby Ntuple");
 
@@ -303,10 +303,7 @@ void babyMaker::InitBabyNtuple(){
 } 
 
 //Main function
-int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
-
-  //Manually set expt (FO2 + FO4)
-  bool expt = true;
+int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool expt){
 
   //Initialize variables
   InitBabyNtuple();

@@ -687,6 +687,14 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           //Baseline selections
           if (!inSitu && ss::hyp_class() != 2) continue;
           if (inSitu && (ss::lep2_multiIso() || !isFakeLeg(2) || !isGoodLeg(1) || !lep2_denom_iso)) continue;
+
+          ////Electron MVA -- enforce tight selections
+          //if (abs(ss::lep1_id()) == 11 && fabs(ss::lep1_p4().eta()) < 0.8 && ss::lep1_MVA() < 0.73) continue;
+          //if (abs(ss::lep1_id()) == 11 && fabs(ss::lep1_p4().eta()) >= 0.8 && fabs(ss::lep1_p4().eta()) <= 1.479 && ss::lep1_MVA() < 0.57) continue;
+          //if (abs(ss::lep1_id()) == 11 && fabs(ss::lep1_p4().eta()) > 1.479 && ss::lep1_MVA() < 0.05) continue; 
+          //if (abs(ss::lep2_id()) == 11 && fabs(ss::lep2_p4().eta()) < 0.8 && ss::lep2_MVA() < 0.73) continue;
+          //if (abs(ss::lep2_id()) == 11 && fabs(ss::lep2_p4().eta()) >= 0.8 && fabs(ss::lep2_p4().eta()) <= 1.479 && ss::lep2_MVA() < 0.57) continue;
+          //if (abs(ss::lep2_id()) == 11 && fabs(ss::lep2_p4().eta()) > 1.479 && ss::lep2_MVA() < 0.05) continue; 
         
  
           if (usePtRatioCor){

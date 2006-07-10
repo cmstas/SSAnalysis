@@ -51,7 +51,7 @@
   else if (doJetCorr) option+="_jetCorr";  //option only for ScanChain
 
   TChain *ch = new TChain("t"); 
-  if (doLooseEMVA) ch->Add("../../babies/v1.16_looseEMVA/TTBAR.root");
+  if (doLooseEMVA) ch->Add("../../babies/v1.26/TTBAR_1.root");
   else ch->Add("../../babies/v1.21/TTBAR.root");
   ScanChain(ch, fakeratefile, option, ptRegion); 
 
