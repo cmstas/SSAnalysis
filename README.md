@@ -9,6 +9,8 @@ git clone git@github.com:cmstas/CORE.git
 
 git clone git@github.com:cmstas/Tools.git
 
+export SCRAM_ARCH=slc6_amd64_gcc481
+
 cmsrel CMSSW_7_1_6
 
 cd CMSSW_7_1_6/src
