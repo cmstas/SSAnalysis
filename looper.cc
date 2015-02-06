@@ -344,21 +344,18 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 
       /*
       //add back to fobs those fobs_noiso not passing iso but passing ptrel wrt lepjet
-      //if (makeSSskim || makeQCDskim) {//fixme
-      if (1) {//fixme
-	for (unsigned int fo=0;fo<fobs_noiso.size();++fo) {
-	  if (fobs_noiso[fo].relIso03()<=0.5) continue;
-	  // float ptrel = computePtRel(fobs_noiso[fo],lepjets,false);
-	  // if (ptrel<8.) continue;
-	  // float ptrel = computePtRel(fobs_noiso[fo],lepjets,true);
-	  // if (ptrel<16.) continue;
-	  // float miniIso = fobs_noiso[fo].miniRelIso();
-	  // if (miniIso>0.05) continue;
-	  fobs.push_back(fobs_noiso[fo]);
-	}
-      }	
+      for (unsigned int fo=0;fo<fobs_noiso.size();++fo) {
+	if (fobs_noiso[fo].relIso03()<=0.5) continue;
+	// float ptrel = computePtRel(fobs_noiso[fo],lepjets,false);
+	// if (ptrel<8.) continue;
+	// float ptrel = computePtRel(fobs_noiso[fo],lepjets,true);
+	// if (ptrel<16.) continue;
+	// float miniIso = fobs_noiso[fo].miniRelIso();
+	// if (miniIso>0.05) continue;
+	fobs.push_back(fobs_noiso[fo]);
+      }
       */
-
+      
       if (fobs_noiso.size()==0 && !makeDYtest) continue;
       makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,2,weight_);
       if (isGenSS) makeFillHisto1D<TH1F,int>("cut_flow_ss","cut_flow_ss",50,0,50,2,weight_);
