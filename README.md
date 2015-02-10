@@ -1,17 +1,17 @@
 SSAnalysis
 ==========
 
-#how to install
+##how to install
 . install.sh
 
-#how to run
+##how to run
 edit main.cc
 
 make
 
 ./main.exe
 
-#how to make cards and get limits (see createCard.py for more options)
+##how to make cards and get limits (see createCard.py for more options)
 
 python createCard.py dir signalSample plot dir/card.txt
 
