@@ -3,8 +3,8 @@ import sys
 import os
 import subprocess
 
-#example: python createCard.py results_PHYS14 T1ttttmG1500 _excl_sr
-#example: python createCard.py results_PHYS14 T1ttttmG1500 hyp_hihi_excl_sr cards/card.txt
+#example: python createCard.py results_PHYS14 T1ttttG1500 _excl_sr
+#example: python createCard.py results_PHYS14 T1ttttG1500 hyp_hihi_excl_sr card-hihi.txt
 #example: for dir in dir1 dir2; do for name in _excl_sr _excl_sr_mt100; do python createCard.py ${dir} T1ttttG1500 ${name}; done; done
 
 #then get expected limits with: combine -M Asymptotic results_PHYS14/card.txt --run expected --noFitAsimov
