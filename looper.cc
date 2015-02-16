@@ -228,9 +228,8 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       if (debug) cout << "vetoleps" << endl;
       vector<Lep> vetoleps;
       for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl) {
-	if (abs(vetoleps_noiso[vl].pdgId())==13 && isGoodVetoMuon(vetoleps_noiso[vl].idx())==0) continue;
-	if (abs(vetoleps_noiso[vl].pdgId())==11 && isGoodVetoElectron(vetoleps_noiso[vl].idx())==0) continue;
-      	if (debug) cout << "good lep id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt() 
+	if (isVetoLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx())==0) continue; 
+      	if (debug) cout << "veto lep id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt() 
 			<< " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
       	vetoleps.push_back(vetoleps_noiso[vl]);
       }
@@ -239,28 +238,25 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       if (debug) cout << "fobs noiso" << endl;
       vector<Lep> fobs_noiso;
       for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl) {
-	if (abs(vetoleps_noiso[vl].pdgId())==13 && isFakableMuonNoIso(vetoleps_noiso[vl].idx())==0) continue;
-        if (abs(vetoleps_noiso[vl].pdgId())==11 && isFakableElectronNoIso(vetoleps_noiso[vl].idx())==0) continue;
-        //if (debug) cout << "good lep id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt()
-        //                << " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
+	if (isDenominatorLeptonNoIso(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx())==0) continue; 
+        if (debug) cout << "fob noiso id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt()
+                        << " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
         fobs_noiso.push_back(vetoleps_noiso[vl]);
       }
       if (debug) cout << "fobs" << endl;
       vector<Lep> fobs;
-      for (unsigned int vl=0;vl<vetoleps.size();++vl) {
-	if (abs(vetoleps[vl].pdgId())==13 && isFakableMuon(vetoleps[vl].idx())==0) continue;
-	if (abs(vetoleps[vl].pdgId())==11 && isFakableElectron(vetoleps[vl].idx())==0) continue;
-      	if (debug) cout << "good lep id=" << vetoleps[vl].pdgId() << " pt=" << vetoleps[vl].pt() 
-			<< " eta=" << vetoleps[vl].eta() << " phi=" << vetoleps[vl].p4().phi() << " q=" << vetoleps[vl].charge()<< endl;
-      	fobs.push_back(vetoleps[vl]);
+      for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl) {
+	if (isDenominatorLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx())==0) continue; 
+      	if (debug) cout << "fob id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt() 
+			<< " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
+      	fobs.push_back(vetoleps_noiso[vl]);
       }
 
       //leptons
       if (debug) cout << "goodleps" << endl;
       vector<Lep> goodleps;
       for (unsigned int fo=0;fo<fobs.size();++fo) {
-	if (abs(fobs[fo].pdgId())==13 && isGoodMuon(fobs[fo].idx())==0) continue;
-	if (abs(fobs[fo].pdgId())==11 && isGoodElectron(fobs[fo].idx())==0) continue;
+	if (isGoodLepton(fobs[fo].pdgId(),fobs[fo].idx())==0) continue; 
       	if (debug) cout << "good lep id=" << fobs[fo].pdgId() << " idx=" << fobs[fo].idx() << " pt=" << fobs[fo].pt() 
 			<< " eta=" << fobs[fo].eta() << " phi=" << fobs[fo].p4().phi() << " q=" << fobs[fo].charge()<< endl;
       	goodleps.push_back(fobs[fo]);
@@ -271,7 +267,6 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       int njets = 0;
       vector<Jet> jets;
       vector<Jet> alljets;
-      vector<Jet> lepjets;
       int nbtag = 0;
       int nbtag_pt40 = 0;
       int nbtag_pt35 = 0;
@@ -283,15 +278,19 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       //fixme: should add corrections
       float drcut = 0.4;
       if (makeQCDtest) drcut = 1.0;
-      for (unsigned int pfjidx=0;pfjidx<pfjets_p4().size();++pfjidx) {
-        Jet jet(pfjidx);
-        if (debug) cout << "jet pt=" << jet.pt() << " eta=" << jet.eta() << " phi=" << jet.phi() << endl;
+      if (debug) {
+	for (unsigned int pfjidx=0;pfjidx<pfjets_p4().size();++pfjidx) {
+	  Jet jet(pfjidx);
+	  cout << "jet pt=" << jet.pt() << " eta=" << jet.eta() << " phi=" << jet.phi() << endl;
+	}
       }
       for (unsigned int pfjidx=0;pfjidx<pfjets_p4().size();++pfjidx) {
         Jet jet(pfjidx);
         if (debug) cout << "jet pt=" << jet.pt() << " eta=" << jet.eta() << endl;
         if (fabs(jet.eta())>2.4) continue;
         if (debug) cout << "jet pass eta" << endl;
+        if (isLoosePFJet(pfjidx)==false) continue;
+        if (debug) cout << "jet pass loose pf id" << endl;
         //add pu jet id pfjets_pileupJetId()>????
         bool isLep = false;
         //fixme: should be checked agains fo or good leptons?
@@ -313,18 +312,9 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
               break;
             }
           }
-          for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl) {//fixme
-	    Lep lep = vetoleps_noiso[vl];
-            if (deltaR(jet.p4(),lep.p4())<0.7) {
-	      lepjets.push_back(jet);
-	      if (debug) cout << "found lepjet inerfering with vl" << endl;
-            }
-          }
         }
         if (isLep) continue;
         if (debug) cout << "jet pass lepton clean" << endl;
-        if (isLoosePFJet(pfjidx)==false) continue;
-        if (debug) cout << "jet pass loose pf id" << endl;
         float jetpt = jet.pt();
         if (jetpt>40.) {
           if (debug) cout << "jet pass pT cut" << endl;
@@ -511,6 +501,19 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       TString lt = abs(hyp.traiLep().pdgId())==13 ? "mu" : "el";
       if (hyp.leadLep().pt()>ptCutHigh && hyp.traiLep().pt()>ptCutHigh) {
 	if (debug) cout << "test pt rel" << endl;
+	vector<Jet> lepjets;
+	for (unsigned int pfjidx=0;pfjidx<pfjets_p4().size();++pfjidx) {
+	  Jet jet(pfjidx);
+	  if (fabs(jet.eta())>2.4) continue;
+	  if (isLoosePFJet(pfjidx)==false) continue;
+	  for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl) {
+	    Lep lep = vetoleps_noiso[vl];
+	    if (deltaR(jet.p4(),lep.p4())<0.7) {
+	      lepjets.push_back(jet);
+	      if (debug) cout << "found lepjet inerfering with vl" << endl;
+	    }
+	  }
+	}
 	tests::testPtRel( this, weight_, hyp, lepjets, ll, lt );
       }
 
@@ -582,7 +585,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 	if (hyp.charge()!=0) {
 	  //same sign
 
-
+	  /*
 	  //check the sync with alex
 	  hyp_result_t best_hyp_info = chooseBestHyp();
 	  //int hyp_class = best_hyp_info.hyp_class;
@@ -602,6 +605,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 	  assert(lep1_idx==hyp.leadLep().idx());
 	  assert(lep2_id==hyp.traiLep().pdgId());
 	  assert(lep2_idx==hyp.traiLep().idx());
+	  */
 
 	  //if (hyp.leadLep().mc_id()*hyp.traiLep().mc_id()<0) continue;//FIXME
 	  makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,10,weight_);
