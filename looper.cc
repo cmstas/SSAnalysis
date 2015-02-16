@@ -236,15 +236,16 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       }
 
       //fakable objects
-      if (debug) cout << "fobs" << endl;
+      if (debug) cout << "fobs noiso" << endl;
       vector<Lep> fobs_noiso;
       for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl) {
 	if (abs(vetoleps_noiso[vl].pdgId())==13 && isFakableMuonNoIso(vetoleps_noiso[vl].idx())==0) continue;
         if (abs(vetoleps_noiso[vl].pdgId())==11 && isFakableElectronNoIso(vetoleps_noiso[vl].idx())==0) continue;
-        if (debug) cout << "good lep id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt()
-                        << " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
+        //if (debug) cout << "good lep id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt()
+        //                << " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
         fobs_noiso.push_back(vetoleps_noiso[vl]);
       }
+      if (debug) cout << "fobs" << endl;
       vector<Lep> fobs;
       for (unsigned int vl=0;vl<vetoleps.size();++vl) {
 	if (abs(vetoleps[vl].pdgId())==13 && isFakableMuon(vetoleps[vl].idx())==0) continue;
@@ -260,7 +261,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       for (unsigned int fo=0;fo<fobs.size();++fo) {
 	if (abs(fobs[fo].pdgId())==13 && isGoodMuon(fobs[fo].idx())==0) continue;
 	if (abs(fobs[fo].pdgId())==11 && isGoodElectron(fobs[fo].idx())==0) continue;
-      	if (debug) cout << "good lep id=" << fobs[fo].pdgId() << " pt=" << fobs[fo].pt() 
+      	if (debug) cout << "good lep id=" << fobs[fo].pdgId() << " idx=" << fobs[fo].idx() << " pt=" << fobs[fo].pt() 
 			<< " eta=" << fobs[fo].eta() << " phi=" << fobs[fo].p4().phi() << " q=" << fobs[fo].charge()<< endl;
       	goodleps.push_back(fobs[fo]);
       }
@@ -348,8 +349,8 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 	if (fobs_noiso[fo].relIso03()<=0.5) continue;
 	// float ptrel = computePtRel(fobs_noiso[fo],lepjets,false);
 	// if (ptrel<8.) continue;
-	// float ptrel = computePtRel(fobs_noiso[fo],lepjets,true);
-	// if (ptrel<16.) continue;
+	float ptrel = computePtRel(fobs_noiso[fo],lepjets,true);
+	if (ptrel<16.) continue;
 	// float miniIso = fobs_noiso[fo].miniRelIso();
 	// if (miniIso>0.05) continue;
 	fobs.push_back(fobs_noiso[fo]);
@@ -369,8 +370,8 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 	if (isGoodLeptonNoIso(fobs[fo].pdgId(),fobs[fo].idx())==0) continue;
 	// float ptrel = computePtRel(fobs[fo],lepjets,false);
 	// if (ptrel<8.) continue;
-	// float ptrel = computePtRel(fobs[fo],lepjets,true);
-	// if (ptrel<16.) continue;
+	float ptrel = computePtRel(fobs[fo],lepjets,true);
+	if (ptrel<16.) continue;
 	// float miniIso = fobs[fo].miniRelIso();
 	// if (miniIso>0.05) continue;
 	goodleps.push_back(fobs[fo]);
@@ -405,7 +406,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 
       if (makeDYtest) {
 	if (debug) cout << "dytest" << endl;
-	tests::runDYtest(this, weight_, fobs, goodleps, njets, met);
+	tests::runDYtest(this, weight_, vetoleps_noiso, fobs, goodleps, njets, met, ht);
 	continue;
       }
 
@@ -478,11 +479,11 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       bool leptonVeto = false;
       for (unsigned int gl=0;gl<hypleps.size();++gl) {
 	for (unsigned int vl=0;vl<vetoleps.size();++vl) {
-	  if ( fabs(ROOT::Math::VectorUtil::DeltaR(hypleps[gl].p4(),vetoleps[vl].p4()))<0.001 ) continue;
 	  if ( hypleps[gl].pdgId()!=-vetoleps[vl].pdgId() ) continue; 
 	  float mll = (hypleps[gl].p4()+vetoleps[vl].p4()).mass();
-	  if ( (fabs(mll-91.2)<15&&vetoleps[vl].pt()>10. ) || (mll<12&&vetoleps[vl].pt()>5. ) ) {
-	    if (debug) cout << "mll=" << mll << " l1id=" << hypleps[gl].pdgId() << " pt=" << hypleps[gl].pt() << " vlid=" << vetoleps[vl].pdgId() << " pt=" << vetoleps[vl].pt() << endl;
+	  if (debug) cout << "test mll=" << mll << " l1id=" << hypleps[gl].pdgId() << " pt=" << hypleps[gl].pt() << " vlid=" << vetoleps[vl].pdgId() << " pt=" << vetoleps[vl].pt() << endl;
+	  if ( (fabs(mll-91.)<15&&vetoleps[vl].pt()>10. ) || (mll<12.&&vetoleps[vl].pt()>5. ) ) {
+	    if (debug) cout << "fail mll=" << mll << " l1id=" << hypleps[gl].pdgId() << " pt=" << hypleps[gl].pt() << " vlid=" << vetoleps[vl].pdgId() << " pt=" << vetoleps[vl].pt() << endl;
 	    leptonVeto = true;
 	    break;
 	  }
@@ -580,6 +581,28 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 
 	if (hyp.charge()!=0) {
 	  //same sign
+
+
+	  //check the sync with alex
+	  hyp_result_t best_hyp_info = chooseBestHyp();
+	  //int hyp_class = best_hyp_info.hyp_class;
+	  int best_hyp = best_hyp_info.best_hyp;
+	  if (best_hyp<0)  chooseBestHyp(true);
+	  assert(best_hyp>=0);
+	  int lep1_id = (tas::hyp_ll_p4().at(best_hyp).pt() > tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_id().at(best_hyp) : tas::hyp_lt_id().at(best_hyp);
+	  int lep2_id = (tas::hyp_ll_p4().at(best_hyp).pt() <= tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_id().at(best_hyp) : tas::hyp_lt_id().at(best_hyp);
+	  int lep1_idx = (tas::hyp_ll_p4().at(best_hyp).pt() > tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_index().at(best_hyp) : tas::hyp_lt_index().at(best_hyp);
+	  int lep2_idx = (tas::hyp_ll_p4().at(best_hyp).pt() <= tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_index().at(best_hyp) : tas::hyp_lt_index().at(best_hyp);
+	  if (lep1_id!=hyp.leadLep().pdgId() || lep1_idx!=hyp.leadLep().idx() || lep2_id!=hyp.traiLep().pdgId() || lep2_idx!=hyp.traiLep().idx() ) {
+	    cout << "L1 pdg=" << lep1_id << " idx=" << lep1_idx << endl;
+	    cout << "L2 pdg=" << lep2_id << " idx=" << lep2_idx << endl;	  
+	    chooseBestHyp(true);
+	  }
+	  assert(lep1_id==hyp.leadLep().pdgId());
+	  assert(lep1_idx==hyp.leadLep().idx());
+	  assert(lep2_id==hyp.traiLep().pdgId());
+	  assert(lep2_idx==hyp.traiLep().idx());
+
 	  //if (hyp.leadLep().mc_id()*hyp.traiLep().mc_id()<0) continue;//FIXME
 	  makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,10,weight_);
 	  if (isGenSS) makeFillHisto1D<TH1F,int>("cut_flow_ss","cut_flow_ss",50,0,50,10,weight_);
