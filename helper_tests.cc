@@ -701,6 +701,12 @@ void tests::computeFakeRateAndClosure( looper* loop, float& weight_, std::vector
 void tests::testPtRel( looper* loop, float& weight_, DilepHyp& hyp, std::vector<Jet>& lepjets, TString& ll, TString& lt ) {
 
   bool debug = false;
+
+  vector<LorentzVector> lepjetp4s;
+  for (unsigned int ijet=0; ijet<lepjets.size(); ++ijet) {
+    lepjetp4s.push_back(lepjets[ijet].p4());
+  }
+
   //make sure all cuts pass except isolation
   if (isGoodLeptonNoIso(hyp.traiLep().pdgId(), hyp.traiLep().idx())) {
     if (isFromW(hyp.traiLep().pdgId(),hyp.traiLep().idx())) {
@@ -739,9 +745,9 @@ void tests::testPtRel( looper* loop, float& weight_, DilepHyp& hyp, std::vector<
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02","hyp_ss_foFromWlead_fail_"+ll+"_relIso02",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB","hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB",20,0.,1., elRelIsoCustomConeDB(hyp.leadLep().idx(),0.2),weight_);
 	}
-	float ptrel = computePtRel(hyp.leadLep(), lepjets, false);
+	float ptrel = ptRel(hyp.leadLep().p4(), lepjetp4s, false);
 	loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_"+ll+"_ptrel","hyp_ss_foFromWlead_"+ll+"_ptrel",10,0.,20.,ptrel,weight_);
-	float ptrelsub = computePtRel(hyp.leadLep(), lepjets, true);
+	float ptrelsub = ptRel(hyp.leadLep().p4(), lepjetp4s, true);
 	loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_"+ll+"_ptrelsub","hyp_ss_foFromWlead_"+ll+"_ptrelsub",10,0.,20.,ptrelsub,weight_);
 	//test min dR between leptons and jets
 	int lepjetidx = -1;
@@ -788,9 +794,9 @@ void tests::testPtRel( looper* loop, float& weight_, DilepHyp& hyp, std::vector<
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso02","hyp_ss_foFakelead_fail_"+ll+"_relIso02",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso02DB","hyp_ss_foFakelead_fail_"+ll+"_relIso02DB",20,0.,1., elRelIsoCustomConeDB(hyp.leadLep().idx(),0.2),weight_);
 	}
-	float ptrel = computePtRel(hyp.leadLep(), lepjets, false);
+	float ptrel = ptRel(hyp.leadLep().p4(), lepjetp4s, false);
 	loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_"+ll+"_ptrel","hyp_ss_foFakelead_"+ll+"_ptrel",10,0.,20.,ptrel,weight_);
-	float ptrelsub = computePtRel(hyp.leadLep(), lepjets, true);
+	float ptrelsub = ptRel(hyp.leadLep().p4(), lepjetp4s, true);
 	loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_"+ll+"_ptrelsub","hyp_ss_foFakelead_"+ll+"_ptrelsub",10,0.,20.,ptrelsub,weight_);
 	//test min dR between leptons and jets
 	int lepjetidx = -1;
