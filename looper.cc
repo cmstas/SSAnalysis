@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <unistd.h> //isatty
+#include <sys/types.h>
+#include <sys/stat.h>
 
 // ROOT
 #include "TChain.h"
@@ -84,6 +86,9 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       if (makeSSskim) {
 	skim_file_name.ReplaceAll(".root","_skimSS_"+prefix+".root");
 	skim_file_name.Remove(0,skim_file_name.Last('/'));
+	struct stat st;
+	stat(prefix+"_skimSS/",&st);
+	if (S_ISDIR(st.st_mode)==0) system("mkdir "+prefix+"_skimSS/");
 	skim_file_name.Prepend("./"+prefix+"_skimSS/");
       } else if (makeQCDskim) {
 	skim_file_name.ReplaceAll(".root","_skimQCD.root");
