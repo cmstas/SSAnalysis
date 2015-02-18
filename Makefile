@@ -43,6 +43,7 @@ CORESOURCES=$(DIR)/$(COREDIR)/CMS3.cc \
  $(DIR)/$(COREDIR)/MetSelections.cc \
  $(DIR)/$(COREDIR)/VertexSelections.cc \
  $(DIR)/$(COREDIR)/MCSelections.cc \
+ $(DIR)/$(COREDIR)/IsolationTools.cc \
  $(DIR)/Tools/MT2/MT2Utility.cc \
  $(DIR)/Tools/MT2/MT2.cc \
  $(DIR)/$(COREDIR)/SSSelections.cc
