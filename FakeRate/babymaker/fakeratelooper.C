@@ -6,13 +6,9 @@
 #include "Math/VectorUtil.h"
 #include <vector>
 
-#include "include/CMS2.h"
-#include "include/selections.h"
-#include "include/structAG.h"
-//#include "MT2AG.h"
+#include "../../CORE/CMS3.h"
+#include "../../CORE/SSSelections.h"
 #include "looper.h" 
-#include "include/fromCore.h"
-#include "include/structAG.h"
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef vector<pair<const LorentzVector *, double> > jets_with_corr_t;
@@ -322,10 +318,6 @@ void babyMaker::InitElectronBranches(){
 	el_threeChargeAgree = 0;
 }
 
-template <typename T> int sgn(T val){
-    return (T(0) < val) - (val < T(0));
-}
-
 double calculateMt(const LorentzVector p4, double met, double met_phi){  //<--MT, MET, MET_PHI ARE ALL FLOATS!!!
   float phi1 = p4.Phi();
   float phi2 = met_phi;
@@ -336,12 +328,12 @@ double calculateMt(const LorentzVector p4, double met, double met_phi){  //<--MT
 
 int lepMotherID(Lep lep){
   if (tas::evt_isRealData()) return 1;
-  else if (isFromZ(lep) || isFromW(lep)){
+  else if (isFromZ(lep.pdgId(),lep.idx()) || isFromW(lep.pdgId(),lep.idx())){
     if (sgn(lep.pdgId()) == sgn(lep.mc_id())) return 1;
     else return 2;
   }
-  else if (isFromB(lep)) return -1;
-  else if (isFromC(lep)) return -2;
+  else if (isFromB(lep.pdgId(),lep.idx())) return -1;
+  else if (isFromC(lep.pdgId(),lep.idx())) return -2;
   return 0;
 }
 
@@ -390,7 +382,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
     if(nEventsDone >= nEventsToDo) continue;
     TFile *file = new TFile( currentFile->GetTitle() );
     TTree *tree = (TTree*)file->Get("Events");
-    cms2.Init(tree);
+    cms3.Init(tree);
   
     // Loop over Events in current file
     unsigned int nEventsTree = tree->GetEntriesFast();
@@ -400,7 +392,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 
       // Get Event Content
       if(nEventsDone >= nEventsToDo) continue;   
-      cms2.GetEntry(evt);
+      cms3.GetEntry(evt);
       nEventsDone++;
 
       //Initialize variables
@@ -410,7 +402,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
       bool isData = tas::evt_isRealData();
         
       // Progress
-      CMS2::progress(nEventsDone, nEventsToDo);
+      CMS3::progress(nEventsDone, nEventsToDo);
 
       //Debug mode
       if (verbose && tas::evt_event() != evt_cut) continue;
@@ -420,8 +412,8 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) continue;  //idk what this is
 
       //Fill Easy Variables
-      met = cms2.evt_pfmet();
-      metPhi = cms2.evt_pfmetPhi();
+      met = cms3.evt_pfmet();
+      metPhi = cms3.evt_pfmetPhi();
       event = tas::evt_event();
       lumi = tas::evt_lumiBlock();
       run = tas::evt_run();
@@ -523,7 +515,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  d0 = leptonD0(id, i);
 		  d0_err = leptonD0err(id, i);
 		  dZ = leptonDZ(id, i);
-		  iso = muRelIso03(i);
+		  iso = muRelIso03(i,SS);
 		  mu_pid_PFMuon = tas::mus_pid_PFMuon().at(i);
 		  mu_gfit_chi2 = tas::mus_gfit_chi2().at(i);
 		  mu_gfit_validSTAHits = tas::mus_gfit_validSTAHits().at(i);
@@ -569,7 +561,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  d0 = leptonD0(id, i);
 		  d0_err = leptonD0err(id, i);
 		  dZ = leptonDZ(id, i);
-		  iso = eleRelIso03(i);
+		  iso = eleRelIso03(i,SS);
 		  el_sigmaIEtaIEta_full5x5 = tas::els_sigmaIEtaIEta_full5x5().at(i);//new below
 		  el_etaSC = tas::els_etaSC().at(i);
 		  el_dEtaIn = tas::els_dEtaIn().at(i);
