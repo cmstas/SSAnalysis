@@ -19,11 +19,10 @@ Create a directory, and fill it with these files:
   - ttbar_histos.root
   - t1tttt_1500_100_histos.root
 
-Each of these files should have 3 histograms inside, with the names:
+Each of these files should have 3 histograms inside, with the names (You are allowed to append a suffix to these names, in that case, this will be the suffix below):
   - hyp_hihi 
   - hyp_hilow
   - hyp_lowlow
-You are allowed to append a suffix to these names, in that case, this will be the suffix below.
 
 Finally, create the cards with:
 python createCard.py dir signalSample suffix
