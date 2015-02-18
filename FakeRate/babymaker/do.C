@@ -82,11 +82,14 @@ int run(int which, int file){
 
 int do(){
 
-  gROOT->ProcessLine(".L include/MT2AG.cc+");
-  gROOT->ProcessLine(".L include/CMS2.cc+");
-  gROOT->ProcessLine(".L include/cs_8TeV.cc+");
-  gROOT->ProcessLine(".L include/selections.cc+");
-  gROOT->ProcessLine(".L include/fromCore.cc++");
+  gROOT->ProcessLine(".L ../../CORE/CMS3.cc+");
+  gROOT->ProcessLine(".L ../../CORE/Base.cc+");
+  gROOT->ProcessLine(".L ../../CORE/ElectronSelections.cc+");
+  gROOT->ProcessLine(".L ../../CORE/MuonSelections.cc+");
+  gROOT->ProcessLine(".L ../../CORE/MCSelections.cc+");
+  gROOT->ProcessLine(".L ../../CORE/JetSelections.cc+");
+  gROOT->ProcessLine(".L ../../CORE/IsolationTools.cc+");
+  gROOT->ProcessLine(".L ../../CORE/SSSelections.cc+");
   gROOT->ProcessLine(".L fakeratelooper.C++");   //looper.C++
 
   int file = 0;
