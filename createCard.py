@@ -98,14 +98,14 @@ def writeOneCard(dir, signal, plot, output):
     writeOneCardFromProcesses(dir, plot, output, processes )
     return
 
-def writeAllCards(dir, signal, prefix="_excl_sr"):
-    writeOneCard(dir, signal, "hyp_hihi"+prefix, "card_"+signal+prefix+"-hihi.txt" )
-    writeOneCard(dir, signal, "hyp_hilow"+prefix, "card_"+signal+prefix+"-hilow.txt" )
-    writeOneCard(dir, signal, "hyp_lowlow"+prefix, "card_"+signal+prefix+"-lowlow.txt" )
+def writeAllCards(dir, signal, suffix=""):
+    writeOneCard(dir, signal, "hyp_hihi"+suffix, "card_"+signal+suffix+"-hihi.txt" )
+    writeOneCard(dir, signal, "hyp_hilow"+suffix, "card_"+signal+suffix+"-hilow.txt" )
+    writeOneCard(dir, signal, "hyp_lowlow"+suffix, "card_"+signal+suffix+"-lowlow.txt" )
     olddir = os.getcwd()
     os.chdir(dir)
-    f = open('card_'+signal+prefix+'-all.txt', 'wb')
-    subprocess.call(["combineCards.py","card_"+signal+prefix+"-hihi.txt","card_"+signal+prefix+"-hilow.txt","card_"+signal+prefix+"-lowlow.txt"],stdout=f)
+    f = open('card_'+signal+suffix+'-all.txt', 'wb')
+    subprocess.call(["combineCards.py","card_"+signal+suffix+"-hihi.txt","card_"+signal+suffix+"-hilow.txt","card_"+signal+suffix+"-lowlow.txt"],stdout=f)
     os.chdir(olddir)
 
 #main body
@@ -116,8 +116,8 @@ if len(sys.argv)==3:
 elif len(sys.argv)==4:
     dir = sys.argv[1]
     signal = sys.argv[2]
-    prefix = sys.argv[3]
-    writeAllCards( dir, signal, prefix )
+    suffix = sys.argv[3]
+    writeAllCards( dir, signal, suffix )
 elif len(sys.argv)==5:
     dir = sys.argv[1]
     signal = sys.argv[2]
