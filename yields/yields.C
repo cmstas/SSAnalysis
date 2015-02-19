@@ -1,14 +1,17 @@
 #pragma GCC diagnostic ignored "-Wwrite-strings"
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 
 #include "TCut.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1F.h"
 #include <iostream>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 using namespace std;
 
-enum sample_t { ALL, TTW, TTBAR, TTZ, TTBAR_8TEV, T1TTTT_1500_100, WZ, TEST };
+enum sample_t { ALL, TTW, TTBAR, TTZ, WZ, TTBAR_8TEV, T1TTTT_1500_100, T1TTTT_1200_800, TEST };
 enum selection_t { SS, OS };
 enum weight_t { WEIGHTED, UNWEIGHTED };
 enum lep_t { EL, MU, EM, ANY };
@@ -18,8 +21,9 @@ enum hyp_class_t { INC1, INC2, NORMAL };
 enum pt_t { HIHI, HILO, LOLO };
 
 //switches
-char* path = "v1.03";
-int nRegions = 28;
+char* path = "../babymaker/v1.03";
+char* output_dir = "mydir"; 
+int nRegions = 1;
 bool scan = 0; 
 int scanRegion = 0;
 bool doMC = 0;
@@ -32,15 +36,18 @@ lep_t leps = ANY;
 char* testfile = "ttbar.root";
 hyp_class_t hyp_class_wanted = NORMAL;
 bool makeHisto = true;
+int met_cut = 120; //120 for 8 TeV 
+int ht_cut = 400;  //400 for 8 TeV
+int njets_cut = 4; //4 for 8 TeV
 
 TFile *file;
 
 vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
 
   TH1F *hist; 
-  if (pt_ == HIHI) hist = new TH1F("hyp_hihi", "hyp_hihi", nRegions+1, 0, nRegions+1);
-  if (pt_ == HILO) hist = new TH1F("hyp_hilow", "hyp_hilow", nRegions+1, 0, nRegions+1);
-  if (pt_ == LOLO) hist = new TH1F("hyp_lowlow", "hyp_lowlow", nRegions+1, 0, nRegions+1);
+  if (pt_ == HIHI) hist = new TH1F("hyp_hihi", "hyp_hihi", nRegions, 1, nRegions+1);
+  if (pt_ == HILO) hist = new TH1F("hyp_hilow", "hyp_hilow", nRegions, 1, nRegions+1);
+  if (pt_ == LOLO) hist = new TH1F("hyp_lowlow", "hyp_lowlow", nRegions, 1, nRegions+1);
 
   vector <float> temp;
 
@@ -74,17 +81,17 @@ vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
   if (leps == EL) baseline += el;
   if (leps == MU) baseline += mu;
   if (leps == EM) baseline += emu;
-  TCut njets_low("njets == 2 || njets == 3");
-  TCut njets_high("njets >= 4");
-  TCut met_low("met > 50 && met < 120");
-  TCut met_high("met > 120");
-  TCut ht_low("ht > 200 && ht < 400");
-  TCut ht_high("ht > 400");
+  TCut njets_low(Form("njets >= 2 && njets < %i", njets_cut));
+  TCut njets_high(Form("njets >= %i", njets_cut));
+  TCut met_low(Form("met > 50 && met < %i", met_cut));
+  TCut met_high(Form("met > %i", met_cut));
+  TCut ht_low(Form("ht > 200 && ht < %i", ht_cut));
+  TCut ht_high(Form("ht > %i", ht_cut));
   TCut nbtagsi("nbtags >= 0");
-  TCut nbtags0("nbtags == 0");
-  TCut nbtags1("nbtags == 1");
-  TCut nbtags2("nbtags == 2");
-  TCut nbtags3p("nbtags >= 3");
+  TCut nbtags0("Sum$(jets.pt()>25 && jets_disc>0.814 ? 1 : 0) == 0");
+  TCut nbtags1("Sum$(jets.pt()>25 && jets_disc>0.814 ? 1 : 0) == 1");
+  TCut nbtags2("Sum$(jets.pt()>25 && jets_disc>0.814 ? 1 : 0) == 2");
+  TCut nbtags3p("Sum$(jets.pt()>25 && jets_disc>0.814 ? 1 : 0) >= 3");
   TCut htmet("ht > 500 ? 1 : met > 30");
   TCut mtmin100("mt > mt_l2 ? mt_l2 > 100 : mt > 100");
   TCut mtmin125("mt > mt_l2 ? mt_l2 > 125 : mt > 125");
@@ -96,13 +103,12 @@ vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
   if (hyp_class_wanted == INC2) baseline += selection2; 
 
   for (int i = 0; i < nRegions+1; i++){
-    if (i%10 == 9){
+    if (i%10 == 9 || i%10 == 0){
       temp.push_back(-1);
       continue;
     }
     TH1F* SR = new TH1F("SR", "SR", 1, 0, 1);
     TCut cut;
-    if (i%10 == 0) cut = htmet;
     if (i%10 == 1) cut = met_low*ht_low*njets_low; 
     if (i%10 == 2) cut = met_low*ht_high*njets_low; 
     if (i%10 == 3) cut = met_low*ht_low*njets_high; 
@@ -111,11 +117,12 @@ vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
     if (i%10 == 6) cut = met_high*ht_high*njets_low; 
     if (i%10 == 7) cut = met_high*ht_low*njets_high; 
     if (i%10 == 8) cut = met_high*ht_high*njets_high; 
-    if (i-30 >= 0) cut *= nbtags3p;
-    else if (i-20 >= 0) cut *= nbtags2;
-    else if (i-10 >= 0) cut *= nbtags1;
-    else if (i > 0) cut *= nbtags0;
-    else if (i == 0) cut *= nbtagsi;
+    if (nRegions > 10){
+      if (i-30 >= 0) cut *= nbtags3p;
+      else if (i-20 >= 0) cut *= nbtags2;
+      else if (i-10 >= 0) cut *= nbtags1;
+      else if (i > 0) cut *= nbtags0; 
+    }
     cut *= cuts;
     chain->Draw("0.5>>SR", weight*baseline*cut); 
     temp.push_back(SR->Integral());
@@ -137,15 +144,23 @@ vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
 
 int yields(){
 
-  char* name = "output.root";
-  if (sample == T1TTTT_1500_100) name = "t1tttt_1500_100_histos.root";  
-  if (sample == TTBAR) name = "ttbar_histos.root";
-  if (sample == TTW) name   = "TTWJets_histos.root";
-  if (sample == TTZ) name   = "TTZJets_histos.root";
-  if (sample == WZ) name    = "WZJets_histos.root";
-  file = new TFile(Form("%s", name), "RECREATE");
+  if (nRegions < 10) cout << "WARNING! Less than 10 SRs here!  Not doing any b-tag requirements" << endl;
+  cout << Form("SR regions based around HT cut of %i, MET cut of %i, njets cut of %i", ht_cut, met_cut, njets_cut) << endl;
 
-  cout << "Printing high-pT yields for SS Analysis!" << endl;
+  //Check if directory exists; create it if not; otherwise, ask permission to overwrite it
+  struct stat info;
+  if (stat(output_dir, &info) != 0){ 
+    string input;
+    bool keepAsking = true;
+    while (keepAsking == true){
+      cout << Form("Directory %s already exists.  Really overwrite those files? (yes/no) ", output_dir);
+      getline(cin, input); 
+      if (input == "no"){ cout << "aborting" << endl; keepAsking = false; return 0; }
+      if (input == "yes") keepAsking = false;
+    }
+  } 
+  else system(Form("mkdir ../%s", output_dir)); 
+
   const char* ssoros = selection == SS ? "SS" : "OS";
   cout << "Running in " << ssoros << " mode" << endl;
   if (leps == EL) cout << "Running on dielectrons!" << endl; 
@@ -160,8 +175,9 @@ int yields(){
   vector <float> ttbar_yields;
   vector <float> ttbar_8_yields;
   vector <float> test_yields;
-  vector <float> t1tttt_2_yields;
   vector <float> t1tttt_1_yields;
+  vector <float> t1tttt_2_yields;
+  vector <float> t1tttt_3_yields;
 
   if (sample == TEST){
     TFile *test_file = new TFile(Form("../%s", testfile));
@@ -169,10 +185,6 @@ int yields(){
     test_yields = doIt(test_tree, none, HIHI);
     test_yields = doIt(test_tree, none, HILO);
     test_yields = doIt(test_tree, none, LOLO);
-    cout << "SR0: " << test_yields[0] << endl;
-    cout << "SR10: " << test_yields[10] << endl;
-    cout << "SR20: " << test_yields[20] << endl;
-    cout << "SR30: " << test_yields[30] << endl;
   }
 
   for (unsigned int i = 0; i < test_yields.size(); i++){
@@ -180,6 +192,7 @@ int yields(){
   }
 
   if (sample == ALL || sample == TTW){
+    file = new TFile(Form("../%s/%s", output_dir, "TTWJets_histos.root"), "RECREATE");
     TFile *ttw_file = new TFile(Form("../%s/ttw.root", path));
     TTree *ttw_tree = (TTree*)ttw_file->Get("t");
     ttw_yields = doIt(ttw_tree, none, HIHI);
@@ -189,6 +202,7 @@ int yields(){
   }
 
   if (sample == ALL || sample == TTZ){
+    file = new TFile(Form("../%s/%s", output_dir, "TTZJets_histos.root"), "RECREATE");
     TFile *ttz_file = new TFile(Form("../%s/ttz.root", path));
     TTree *ttz_tree = (TTree*)ttz_file->Get("t");
     ttz_yields = doIt(ttz_tree, none, HIHI);
@@ -198,6 +212,7 @@ int yields(){
   }
   
   if (sample == ALL || sample == TTBAR){
+    file = new TFile(Form("../%s/%s", output_dir, "ttbar_histos.root"), "RECREATE");
     TFile *ttbar_file = new TFile(Form("../%s/ttbar.root", path));
     TTree *ttbar_tree = (TTree*)ttbar_file->Get("t");
     ttbar_yields = doIt(ttbar_tree, none, HIHI);
@@ -209,79 +224,33 @@ int yields(){
     TFile *ttbar_8_file = new TFile("../eightTeV/ttbar_8.root");
     TTree *ttbar_8_tree = (TTree*)ttbar_8_file->Get("t");
     ttbar_8_yields = doIt(ttbar_8_tree, none, HIHI);
-    if (sample == TTBAR_8TEV) cout << ttbar_8_yields[0] << endl;
-    if (sample == TTBAR_8TEV) cout << "ttbar SR0 yield: "  << ttbar_8_yields[0] << endl;
-    if (sample == TTBAR_8TEV) cout << "ttbar SR8 yield: "  << ttbar_8_yields[8] << endl;
-    if (sample == TTBAR_8TEV) cout << "ttbar SR18 yield: " << ttbar_8_yields[18] << endl;
-    if (sample == TTBAR_8TEV) cout << "ttbar SR28 yield: " << ttbar_8_yields[28] << endl;
   }
 
-  if (sample == T1TTTT_1500_100){
+  if (sample == T1TTTT_1500_100 || sample == ALL){
+    file = new TFile(Form("../%s/%s", output_dir, "T1TTTT_1500_100_histos.root"), "RECREATE");
     TFile *t1tttt_2_file = new TFile(Form("../%s/t1tttt_1500_100.root", path));
     TTree *t1tttt_2_tree = (TTree*)t1tttt_2_file->Get("t");
-    cout << t1tttt_2_tree->GetEntries() << endl;
     t1tttt_2_yields = doIt(t1tttt_2_tree, none, HIHI);
     t1tttt_2_yields = doIt(t1tttt_2_tree, none, HILO);
     t1tttt_2_yields = doIt(t1tttt_2_tree, none, LOLO);
-    if (sample == T1TTTT_1500_100) cout << t1tttt_2_yields[0] << endl;
-    if (sample == T1TTTT_1500_100) cout << "ttbar SR0 yield: "  << t1tttt_2_yields[0] << endl;
-    if (sample == T1TTTT_1500_100) cout << "ttbar SR8 yield: "  << t1tttt_2_yields[8] << endl;
-    if (sample == T1TTTT_1500_100) cout << "ttbar SR18 yield: " << t1tttt_2_yields[18] << endl;
-    if (sample == T1TTTT_1500_100) cout << "ttbar SR28 yield: " << t1tttt_2_yields[28] << endl;
+  }
+
+  if (sample == T1TTTT_1200_800 || sample == ALL){
+    file = new TFile(Form("../%s/%s", output_dir, "T1TTTT_1200_800_histos.root"), "RECREATE");
+    TFile *t1tttt_3_file = new TFile(Form("../%s/t1tttt_1200_800.root", path));
+    TTree *t1tttt_3_tree = (TTree*)t1tttt_3_file->Get("t");
+    t1tttt_3_yields = doIt(t1tttt_3_tree, none, HIHI);
+    t1tttt_3_yields = doIt(t1tttt_3_tree, none, HILO);
+    t1tttt_3_yields = doIt(t1tttt_3_tree, none, LOLO);
   }
 
   if (sample == WZ || sample == ALL){
+    file = new TFile(Form("../%s/%s", output_dir, "WZJets_histos.root"), "RECREATE");
     TFile *wz_file = new TFile(Form("../%s/wz.root", path));
     TTree *wz_tree = (TTree*)wz_file->Get("t");
     wz_yields = doIt(wz_tree, none, HIHI);
     wz_yields = doIt(wz_tree, none, HILO);
     wz_yields = doIt(wz_tree, none, LOLO);
-  }
-
-  if (sample == ALL){
-
-    TFile *t1tttt_1_file = new TFile(Form("../%s/t1tttt_1200_800.root", path));
-    TTree *t1tttt_1_tree = (TTree*)t1tttt_1_file->Get("t");
-    t1tttt_1_yields = doIt(t1tttt_1_tree, none, HIHI);
-    t1tttt_1_yields = doIt(t1tttt_1_tree, none, HILO);
-    t1tttt_1_yields = doIt(t1tttt_1_tree, none, LOLO);
-
-
-    cout << "ttz: " << ttz_yields[0] << endl;
-    cout << "ttw: " << ttw_yields[0] << endl;
-    cout << "tt: " << ttbar_yields[0] << endl;
-    cout << "wz: " << wz_yields[0] << endl;
-    cout << "t1tttt_1: " << t1tttt_1_yields[0] << endl;
-    cout << "t1tttt_2: " << t1tttt_2_yields[0] << endl;
-    cout << " " << endl;
-    cout << "ttz: " << ttz_yields[28] << endl;
-    cout << "ttw: " << ttw_yields[28] << endl;
-    cout << "tt: " << ttbar_yields[28] << endl;
-    cout << "wz: " << wz_yields[28] << endl;
-    cout << "t1tttt_1: " << t1tttt_1_yields[28] << endl;
-    cout << "t1tttt_2: " << t1tttt_2_yields[28] << endl;
-
-    //cout << "\\documentclass{article}" << endl;
-    //cout << "\\usepackage[landscape]{geometry}" << endl;
-    //cout << "\\usepackage{fullpage}" << endl;
-    //cout << "\\begin{document}" << endl;
-    //cout << "\\begin{table}" << endl;
-    //cout << "\\centering" << endl;
-    //cout << "\\begin{tabular}{|c|ccccc|c|ccc|c|c|}" << endl;
-    //cout << "\\hline" << endl;
-    //cout << " & ttbar &  ttW & ttZ & WZ & WH & bkgd & s1 & s2 & s3 & s1/bkgd \\\\ " << endl;
-    //cout << "\\hline" << endl;
-    //for (int i = 0; i < nRegions+1; i++){
-      //float backgrounds = ttbar_yields.at(2*i) + ttw_yields.at(2*i) + ttz_yields.at(2*i) + wh_yields.at(2*i) + wz_yields.at(2*i); 
-      //float backgrounds_error = ttbar_yields.at(2*i+1) + ttw_yields.at(2*i+1) + ttz_yields.at(2*i+1) + wh_yields.at(2*i+1) + wz_yields.at(2*i+1); 
-      //if (i%10 == 9) continue;
-      //cout << Form("%i & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f $\\pm$ %.2f", i, ttbar_yields.at(2*i), ttw_yields.at(2*i), ttz_yields.at(2*i), wz_yields.at(2*i), wh_yields.at(2*i), backgrounds, t1tttt_1_yields.at(2*i), t1tttt_2_yields.at(2*i), t5ww_1_yields.at(2*i), t1tttt_1_yields.at(2*i)/backgrounds, (t1tttt_1_yields.at(2*i)/backgrounds)*sqrt( pow((t1tttt_1_yields.at(2*i+1)/t1tttt_1_yields.at(2*i)), 2) + pow((backgrounds_error/backgrounds), 2)  )) << " \\\\" << endl;
-    //  cout << "\\hline" << endl;
-    //}
-    //cout << "\\end{tabular}" << endl;
-    //cout << "\\caption{s1 t1tttt is (1200, 800), s2 is t1tttt (1500, 100), s3 is t5ww (1200, 1000, 800)}" << endl;
-    //cout << "\\end{table}" << endl;
-    //cout << "\\end{document}" << endl;
   }
  
   file->Close();
