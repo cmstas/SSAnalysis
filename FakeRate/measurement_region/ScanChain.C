@@ -202,7 +202,8 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
 				{
 				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
-				  Nl_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*ss.iso(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
+				  if( ss.passes_id() ) Nl_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
+				  else Nl_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
 				}
 			}
 		  if( abs( ss.id() ) == 13 ) // it's a mu
@@ -216,7 +217,8 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
 				{
 				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
-				  Nl_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*ss.iso(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
+				  if( ss.passes_id() ) Nl_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
+				  else Nl_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
 				}
 			}
 		} 
