@@ -17,6 +17,9 @@
 #include "TCanvas.h"
 #include "TStyle.h"
 
+//#include "../../CORE/CMS3.h"
+#include "../../CORE/SSSelections.h"
+
 // lepfilter
 #include "lepfilter.cc"
 
@@ -48,9 +51,15 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
 
   //---Load rate histos-----//
   TFile *InputFile = new TFile("../measurement_region/rate_histos.root","read");
-  TH2D *rate_histo = (TH2D*) InputFile->Get("rate_histo")->Clone("rate_histo");
+  TH2D *rate_histo = (TH2D*) InputFile->Get("rate_histo")->Clone("rate_histo"); //not useful
+
+  //fake rate as function of pT, eta
   TH2D *rate_histo_e = (TH2D*) InputFile->Get("rate_histo_e")->Clone("rate_histo_e");
   TH2D *rate_histo_mu = (TH2D*) InputFile->Get("rate_histo_mu")->Clone("rate_histo_mu");
+
+  // //fake rate as function of pT+pT*RelIso, eta
+  // TH2D *rate_histo_e = (TH2D*) InputFile->Get("rate_cone_histo_e")->Clone("rate_cone_histo_e");
+  // TH2D *rate_histo_mu = (TH2D*) InputFile->Get("rate_cone_histo_mu")->Clone("rate_cone_histo_mu");
 
   //----------------------
   float prompt2_gen = 0.;     //2 prompt leptons in ss pairs
@@ -122,7 +131,21 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
 	  //don't vetos those above 100. Just use last bin for fake rate.
 	  if(ss.lep1_p4().pt() < 20. || ss.lep2_p4().pt() < 20. || fabs(ss.lep1_p4().eta()) > 2.4 || fabs(ss.lep2_p4().eta()) > 2.4)
 	  	{continue;}
+
+	  //------------------------------------------------------------------------
+      // Lep Lep1 = Lep(ss.lep1_id(), ss.lep1_idx());
+	  // Lep Lep2 = Lep(ss.lep2_id(), ss.lep2_idx());
 	  
+	  // unsigned int ac_base = analysisCategory(Lep1, Lep2);
+      // passesBaselineCuts(ss.njets(), ss.nbtags(), ss.met(), ss.ht(), ac_base);
+
+      // int br = baselineRegion(ss.nbtags());
+      // unsigned int ac_sig = ac_base;
+      // passesSignalRegionCuts(ss.ht(), ss.met(), ac_sig);
+      // //if (debug) cout << "ac_base=" << ac_base << " ac_sig=" << ac_sig << endl;
+      // int sr = ac_sig!=0 ? signalRegion(ss.njets(), ss.nbtags(), ss.met(), ss.ht()) : -1;
+	  //------------------------------------------------------------------------
+
 	  if (ss.hyp_class() == 3)
 		{
 		  //-----------------------------------------------------------------------

@@ -56,6 +56,14 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
   Nl_histo_mu->SetDirectory(rootdir);
   Nl_histo_mu->Sumw2();
 
+  TH2D *Nl_cone_histo_e = new TH2D("Nl_cone_histo_e", "Nl vs Cone Energy, Eta (electrons)", 8,20,100,3,0,3);
+  Nl_cone_histo_e->SetDirectory(rootdir);
+  Nl_cone_histo_e->Sumw2();
+
+  TH2D *Nl_cone_histo_mu = new TH2D("Nl_cone_histo_mu", "Nl vs Cone Energy, Eta (muons)", 8,20,100,3,0,3);
+  Nl_cone_histo_mu->SetDirectory(rootdir);
+  Nl_cone_histo_mu->Sumw2();
+
   //----------------------
 
   //e determination
@@ -194,6 +202,7 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
 				{
 				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
+				  Nl_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*ss.iso(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				}
 			}
 		  if( abs( ss.id() ) == 13 ) // it's a mu
@@ -207,6 +216,7 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
 				{
 				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
+				  Nl_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*ss.iso(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				}
 			}
 		} 
@@ -236,10 +246,14 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
   TH2D *rate_histo = (TH2D*) Nt_histo->Clone("rate_histo");
   TH2D *rate_histo_e = (TH2D*) Nt_histo_e->Clone("rate_histo_e");
   TH2D *rate_histo_mu = (TH2D*) Nt_histo_mu->Clone("rate_histo_mu");
+  TH2D *rate_cone_histo_e = (TH2D*) Nt_histo_e->Clone("rate_cone_histo_e");
+  TH2D *rate_cone_histo_mu = (TH2D*) Nt_histo_mu->Clone("rate_cone_histo_mu");
   
   rate_histo->Divide(rate_histo,Nl_histo,1,1,"B");
   rate_histo_e->Divide(rate_histo_e,Nl_histo_e,1,1,"B");
   rate_histo_mu->Divide(rate_histo_mu,Nl_histo_mu,1,1,"B");
+  rate_cone_histo_e->Divide(rate_cone_histo_e,Nl_cone_histo_e,1,1,"B");
+  rate_cone_histo_mu->Divide(rate_cone_histo_mu,Nl_cone_histo_mu,1,1,"B");
 
   rate_histo->GetXaxis()->SetTitle("pT (GeV)"); 
   rate_histo->GetYaxis()->SetTitle("eta");
@@ -253,6 +267,14 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
   rate_histo_mu->GetYaxis()->SetTitle("eta");
   rate_histo_mu->GetZaxis()->SetRangeUser(0,1.);
   rate_histo_mu->SetTitle("Fake Rate vs Pt, Eta (muons)");
+  rate_cone_histo_e->GetXaxis()->SetTitle("pT (GeV)"); 
+  rate_cone_histo_e->GetYaxis()->SetTitle("eta");
+  rate_cone_histo_e->GetZaxis()->SetRangeUser(0,1.);
+  rate_cone_histo_e->SetTitle("Fake Rate vs Pt + Cone Energy, Eta (electrons)");
+  rate_cone_histo_mu->GetXaxis()->SetTitle("pT (GeV)"); 
+  rate_cone_histo_mu->GetYaxis()->SetTitle("eta");
+  rate_cone_histo_mu->GetZaxis()->SetRangeUser(0,1.);
+  rate_cone_histo_mu->SetTitle("Fake Rate vs Pt + Cone Energy, Eta (muons)");
 
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("1.3f");
@@ -263,6 +285,10 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
   rate_histo_e->Draw("colz,texte");
   TCanvas *c2=new TCanvas("c2","Fake Rate vs Pt, eta (muon)",800,800);
   rate_histo_mu->Draw("colz,texte");
+  TCanvas *c3=new TCanvas("c3","Fake Rate vs Pt + Cone Energy, eta (electron)",800,800);
+  rate_cone_histo_e->Draw("colz,texte");
+  TCanvas *c4=new TCanvas("c4","Fake Rate vs Pt + Cone Energy, eta (muon)",800,800);
+  rate_cone_histo_mu->Draw("colz,texte");
 
   //---save histos-------//
   TFile *OutputFile = new TFile("./rate_histos.root","recreate");
@@ -270,6 +296,8 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
   rate_histo->Write();
   rate_histo_e->Write();
   rate_histo_mu->Write();
+  rate_cone_histo_e->Write();
+  rate_cone_histo_mu->Write();
 
   OutputFile->Close();
 
