@@ -528,7 +528,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  //cout<<"\nBegin Muon looping"<<endl;	  
 	  for(unsigned int i=0; i<tas::mus_p4().size(); i++)  //What RECO and GEN variables are needed?
 		{	
-		  if (!isVetoLepton(13,i)) continue;  //"fix me" in selection.cc
+		  if (!isVetoLeptonNoIso(13,i)) continue;  //"fix me" in selection.cc
 
 		  p4 = tas::mus_p4().at(i); 
 		  mc_p4 = tas::mus_mc_p4().at(i);
@@ -579,7 +579,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  for(unsigned int i=0; i<tas::els_p4().size(); i++)
 	  	{
 		  
-		  if (!isVetoLepton(11,i)) continue; //"fix me" in selection.cc. Use at()?
+		  if (!isVetoLeptonNoIso(11,i)) continue; //"fix me" in selection.cc. Use at()?
 
 		  p4 = tas::els_p4().at(i);    
 		  mc_p4 = tas::els_mc_p4().at(i);  
