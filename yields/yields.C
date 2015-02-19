@@ -24,7 +24,7 @@ enum pt_t { HIHI, HILO, LOLO };
 //Switches
 char* path = "../babymaker/v1.03";     //where the data is
 char* output_dir = "mydir";            //dir where plots should go (in parent directory, will create if doesn't exist)
-int nRegions = 1;                      //which regions to include (can be single region, < 10 will turn off b-tagging)
+int nRegions = 1;                      //which regions to include (can be single region, > 10 will turn on b-tagging)
 int firstSR = 0;                       //first SR you want to consider (usually 0 or 1)
 bool scan = 0;                         //make printout of events
 int scanRegion = 0;                    //only needed if scan == TRUE
