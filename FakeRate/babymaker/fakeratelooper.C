@@ -75,11 +75,15 @@ class babyMaker {
   int mc_id;
   float iso; //RelIso03 (EA?)
   bool passes_id;
+  bool passes_id_ptrel;
   bool FO;
+  bool FO_ptrel;
   float ip3d;
   float ip3derr;
   int type;
   float mt;
+  float ptrelv0;
+  float ptrelv1;
       //---els---//
   float el_sigmaIEtaIEta_full5x5;
   float el_etaSC;
@@ -154,11 +158,15 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("mc_id", &mc_id);
   BabyTree->Branch("iso", &iso);
   BabyTree->Branch("passes_id", &passes_id);
+  BabyTree->Branch("passes_id_ptrel", &passes_id_ptrel);
   BabyTree->Branch("FO", &FO);
+  BabyTree->Branch("FO_ptrel", &FO_ptrel);
   BabyTree->Branch("ip3d", &ip3d);
   BabyTree->Branch("ip3derr", &ip3derr);
   BabyTree->Branch("type", &type);
   BabyTree->Branch("mt", &mt);
+  BabyTree->Branch("ptrelv0", &ptrelv0);
+  BabyTree->Branch("ptrelv1", &ptrelv1);
           //---els---//
   BabyTree->Branch("el_sigmaIEtaIEta_full5x5", &el_sigmaIEtaIEta_full5x5);
   BabyTree->Branch("el_etaSC", &el_etaSC);
@@ -220,14 +228,18 @@ void babyMaker::InitBabyNtuple(){
 	dZ = -1;
 	d0_err = -1;
 	motherID = -1;
-    mc_id = -1;
+	mc_id = -1;
 	iso = -1;
 	passes_id = 0;
+	passes_id_ptrel = 0;
 	FO = 0;
+	FO_ptrel = 0;
 	ip3d = -1;
 	ip3derr = -1;
 	type = -1;
-    mt = -1;
+	mt = -1;
+	ptrelv0 = -1;
+	ptrelv1 = -1;
          //---els---//
 	el_sigmaIEtaIEta_full5x5 = -1;//below
 	el_etaSC = -1;
@@ -267,11 +279,15 @@ void babyMaker::InitMuonBranches(){
 	mc_id = -1;
 	iso = -1;
 	passes_id = 0;
+	passes_id_ptrel = 0;
 	FO = 0;
+	FO_ptrel = 0;
 	type = -1;
 	ip3d = -1;
 	ip3derr = -1;
-    mt = -1;
+	mt = -1;
+	ptrelv0 = -1;
+	ptrelv1 = -1;
 	//---mus---//
 	mu_pid_PFMuon = -1;
 	mu_gfit_chi2 = -1;
@@ -296,11 +312,15 @@ void babyMaker::InitElectronBranches(){
     mc_id = -1;
 	iso = -1;
 	passes_id = 0;
+	passes_id_ptrel = 0;
 	FO = 0;
+	FO_ptrel = 0;
 	ip3d = -1;
 	ip3derr = -1;
 	type = -1;
-    mt = -1;
+	mt = -1;
+	ptrelv0 = -1;
+	ptrelv1 = -1;
 	//---els---//
 	el_sigmaIEtaIEta_full5x5 = -1;
 	el_etaSC = -1;
@@ -436,9 +456,15 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  //-------------------------------------------------------------------------------------------------------------
 	  //Determine and save jet variables
       ht = 0;
+      vector<LorentzVector> jetp4s;
       for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++)
 	  	{
 	  	  LorentzVector jet = tas::pfjets_p4().at(i);
+
+	  	  //Require loose jet ID
+	  	  if (!isLoosePFJet(i)) continue;
+
+		  if (fabs(jet.eta()) < 2.4) jetp4s.push_back(jet);
 
 	  	  //Kinematic jet cuts
 	  	  if (jet.pt() < 25) continue;   //<------WHAT CUTS DO WE WANT???
@@ -446,16 +472,13 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 
 	  	  //Verbose
 	  	  if (verbose) cout << "Possible jet with pT: " << jet.pt() << endl;
-      
-	  	  //Require loose jet ID
-	  	  if (!isLoosePFJet(i)) continue;
-      
+            
 	  	  //Jet cleaning -- electrons
 	  	  bool jetIsLep = false;
 	  	  for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
 	  		LorentzVector electron = tas::els_p4().at(eidx);
 	  		if (electron.pt() < 7) continue;
-	  		if (!isGoodVetoElectron(eidx)) continue;
+	  		if (!isVetoLepton(11,eidx)) continue;
 	  		if (ROOT::Math::VectorUtil::DeltaR(jet, electron) > 0.4) continue;
 	  		jetIsLep = true;
 	  	  }
@@ -465,7 +488,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  	  for (unsigned int muidx = 0; muidx < tas::mus_p4().size(); muidx++){
 	  		LorentzVector muon = tas::mus_p4().at(muidx);
 	  		if (muon.pt() < 5) continue;
-	  		if (!isGoodVetoMuon(muidx)) continue;
+	  		if (!isVetoLepton(13,muidx)) continue;
 	  		if (ROOT::Math::VectorUtil::DeltaR(jet, muon) > 0.4) continue;
 	  		jetIsLep = true;
 	  	  }
@@ -491,12 +514,12 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 
 	  for(int j = 0; j < tas::mus_p4().size(); j++)
 	  	{
-	  	  if(isFakableMuon(j))
+	  	  if(isDenominatorLepton(13,j))
 	  		{count++;}
 	  	}
 	  for(int j = 0; j < tas::els_p4().size(); j++)
 	  	{
-	  	  if(isFakableElectron(j))
+	  	  if(isDenominatorLepton(11,j))
 	  		{count++;}
 	  	}
 	  nFOs = count;
@@ -505,7 +528,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  //cout<<"\nBegin Muon looping"<<endl;	  
 	  for(unsigned int i=0; i<tas::mus_p4().size(); i++)  //What RECO and GEN variables are needed?
 		{	
-		  if (!isGoodVetoMuon(i)) continue;  //"fix me" in selection.cc
+		  if (!isVetoLepton(13,i)) continue;  //"fix me" in selection.cc
 
 		  p4 = tas::mus_p4().at(i); 
 		  mc_p4 = tas::mus_mc_p4().at(i);
@@ -527,8 +550,13 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  type = tas::mus_type().at(i);
 		  mt = calculateMt(p4, met, metPhi); 
 
-		  passes_id = isGoodMuon(i);   //"fix me" in selection.cc.
-		  FO = isFakableMuon(i);    //"fix me" in selection.cc
+		  passes_id = isGoodLepton(id,i);   //"fix me" in selection.cc.
+		  passes_id_ptrel = isGoodLeptonIsoOrPtRel(id,i);   //"fix me" in selection.cc.
+		  FO = isDenominatorLepton(id,i);    //"fix me" in selection.cc
+		  FO_ptrel = isDenominatorLeptonIsoOrPtRel(id,i);    //"fix me" in selection.cc
+
+		  ptrelv0 = ptRel(p4, jetp4s, false);
+		  ptrelv1 = ptRel(p4, jetp4s, true);
 
 		  Lep mu_temp = Lep(id, i);
 		  motherID = lepMotherID(mu_temp);
@@ -551,7 +579,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  for(unsigned int i=0; i<tas::els_p4().size(); i++)
 	  	{
 		  
-		  if (!isGoodVetoElectron(i)) continue; //"fix me" in selection.cc. Use at()?
+		  if (!isVetoLepton(11,i)) continue; //"fix me" in selection.cc. Use at()?
 
 		  p4 = tas::els_p4().at(i);    
 		  mc_p4 = tas::els_mc_p4().at(i);  
@@ -581,8 +609,13 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  type = tas::els_type().at(i);
 		  mt = calculateMt(p4, met, metPhi); 
 
-		  passes_id = isGoodElectron(i);  //"fix me" in selection.cc
-		  FO = isFakableElectron(i);  //"fix me" in selection.cc
+		  passes_id = isGoodLepton(id,i);   //"fix me" in selection.cc.
+		  passes_id_ptrel = isGoodLeptonIsoOrPtRel(id,i);   //"fix me" in selection.cc.
+		  FO = isDenominatorLepton(id,i);    //"fix me" in selection.cc
+		  FO_ptrel = isDenominatorLeptonIsoOrPtRel(id,i);    //"fix me" in selection.cc
+
+		  ptrelv0 = ptRel(p4, jetp4s, false);
+		  ptrelv1 = ptRel(p4, jetp4s, true);
  
 		  Lep el_temp = Lep(id, i);
 		  motherID = lepMotherID(el_temp);
