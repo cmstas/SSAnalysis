@@ -438,7 +438,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       if (isGenSSee) makeFillHisto1D<TH1F,int>("cut_flow_ssee","cut_flow_ssee",50,0,50,5,weight_);
       if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,5,weight_);
 
-      unsigned int ac_base = analysisCategory(hyp.leadLep(),hyp.traiLep());
+      unsigned int ac_base = analysisCategory(hyp.leadLep().pt(),hyp.traiLep().pt());
       passesBaselineCuts(njets, nbtag, met, ht, ac_base);
       if (ac_base==0) {
 	if (debug) {
