@@ -17,7 +17,6 @@
 #include "TCanvas.h"
 #include "TStyle.h"
 
-//#include "../../CORE/CMS3.h"
 #include "../../CORE/SSSelections.h"
 
 // lepfilter
@@ -133,17 +132,14 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
 	  	{continue;}
 
 	  //------------------------------------------------------------------------
-      // Lep Lep1 = Lep(ss.lep1_id(), ss.lep1_idx());
-	  // Lep Lep2 = Lep(ss.lep2_id(), ss.lep2_idx());
+	  unsigned int ac_base = analysisCategory(ss.lep1_p4().pt(), ss.lep2_p4().pt());
+	  passesBaselineCuts(ss.njets(), ss.nbtags(), ss.met(), ss.ht(), ac_base);
 	  
-	  // unsigned int ac_base = analysisCategory(Lep1, Lep2);
-      // passesBaselineCuts(ss.njets(), ss.nbtags(), ss.met(), ss.ht(), ac_base);
-
-      // int br = baselineRegion(ss.nbtags());
-      // unsigned int ac_sig = ac_base;
-      // passesSignalRegionCuts(ss.ht(), ss.met(), ac_sig);
-      // //if (debug) cout << "ac_base=" << ac_base << " ac_sig=" << ac_sig << endl;
-      // int sr = ac_sig!=0 ? signalRegion(ss.njets(), ss.nbtags(), ss.met(), ss.ht()) : -1;
+	  int br = baselineRegion(ss.nbtags());
+	  unsigned int ac_sig = ac_base;
+	  passesSignalRegionCuts(ss.ht(), ss.met(), ac_sig);
+	  //if (debug) cout << "ac_base=" << ac_base << " ac_sig=" << ac_sig << endl;
+	  int sr = ac_sig!=0 ? signalRegion(ss.njets(), ss.nbtags(), ss.met(), ss.ht()) : -1;
 	  //------------------------------------------------------------------------
 
 	  if (ss.hyp_class() == 3)
