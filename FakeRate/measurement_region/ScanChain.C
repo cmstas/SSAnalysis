@@ -32,35 +32,35 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
   // Example Histograms
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
 
-  TH2D *Nt_histo = new TH2D("Nt_histo", "Nt vs Pt, Eta", 8,20,100,3,0,3);
+  TH2D *Nt_histo = new TH2D("Nt_histo", "Nt vs Pt, Eta", 9,10,100,3,0,3);
   Nt_histo->SetDirectory(rootdir);
   Nt_histo->Sumw2();
 
-  TH2D *Nl_histo = new TH2D("Nl_histo", "Nl vs Pt, Eta", 8,20,100,3,0,3);
+  TH2D *Nl_histo = new TH2D("Nl_histo", "Nl vs Pt, Eta", 9,10,100,3,0,3);
   Nl_histo->SetDirectory(rootdir);
   Nl_histo->Sumw2();
 
-  TH2D *Nt_histo_e = new TH2D("Nt_histo_e", "Nt vs Pt, Eta (electrons)", 8,20,100,3,0,3);
+  TH2D *Nt_histo_e = new TH2D("Nt_histo_e", "Nt vs Pt, Eta (electrons)", 9,10,100,3,0,3);
   Nt_histo_e->SetDirectory(rootdir);
   Nt_histo_e->Sumw2();
 
-  TH2D *Nl_histo_e = new TH2D("Nl_histo_e", "Nl vs Pt, Eta (electrons)", 8,20,100,3,0,3);
+  TH2D *Nl_histo_e = new TH2D("Nl_histo_e", "Nl vs Pt, Eta (electrons)", 9,10,100,3,0,3);
   Nl_histo_e->SetDirectory(rootdir);
   Nl_histo_e->Sumw2();
 
-  TH2D *Nt_histo_mu = new TH2D("Nt_histo_mu", "Nt vs Pt, Eta (muons)", 8,20,100,3,0,3);
+  TH2D *Nt_histo_mu = new TH2D("Nt_histo_mu", "Nt vs Pt, Eta (muons)", 9,10,100,3,0,3);
   Nt_histo_mu->SetDirectory(rootdir);
   Nt_histo_mu->Sumw2();
 
-  TH2D *Nl_histo_mu = new TH2D("Nl_histo_mu", "Nl vs Pt, Eta (muons)", 8,20,100,3,0,3);
+  TH2D *Nl_histo_mu = new TH2D("Nl_histo_mu", "Nl vs Pt, Eta (muons)", 9,10,100,3,0,3);
   Nl_histo_mu->SetDirectory(rootdir);
   Nl_histo_mu->Sumw2();
 
-  TH2D *Nl_cone_histo_e = new TH2D("Nl_cone_histo_e", "Nl vs Cone Energy, Eta (electrons)", 8,20,100,3,0,3);
+  TH2D *Nl_cone_histo_e = new TH2D("Nl_cone_histo_e", "Nl vs Cone Energy, Eta (electrons)", 9,10,100,3,0,3);
   Nl_cone_histo_e->SetDirectory(rootdir);
   Nl_cone_histo_e->Sumw2();
 
-  TH2D *Nl_cone_histo_mu = new TH2D("Nl_cone_histo_mu", "Nl vs Cone Energy, Eta (muons)", 8,20,100,3,0,3);
+  TH2D *Nl_cone_histo_mu = new TH2D("Nl_cone_histo_mu", "Nl vs Cone Energy, Eta (muons)", 9,10,100,3,0,3);
   Nl_cone_histo_mu->SetDirectory(rootdir);
   Nl_cone_histo_mu->Sumw2();
 
@@ -129,9 +129,12 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
 	  if(ss.nFOs() != 1) //if more than 1 FO in event
 		{continue;}
 
-	  //need pt upper bound matching histo bounds, otherwise overflow may cause some issues with e = 1.
-	  //only pt > 25, |eta| < 2.4 used in application. Stricter than histo bounds. 
-	  if(ss.p4().pt() > 100. || ss.p4().pt() < 25.  || fabs(ss.p4().eta()) > 2.4)
+	  //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
+	  //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
+	  // |eta|>2.4 will mess up the rate in the highest eta bins (2<|eta|<3)
+	  //Don't think eta cut is anywhere else
+	  if(ss.p4().pt() > 100. || ss.p4().pt() < 10. || fabs(ss.p4().eta()) > 2.4) //What do we want here? 
+	  //if(ss.p4().pt() > 100. || ss.p4().pt() < 25. || fabs(ss.p4().eta()) > 2.4) //What do we want here? 
 	  	{continue;}
 
 	  //------------------------------------------------------------------------------------------

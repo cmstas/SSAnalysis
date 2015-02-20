@@ -112,10 +112,25 @@ int do(){
   //QCD
   TChain *qcd = new TChain("Events");
   qcd->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-20toInf_MuEnrichedPt15_PionKaonDecay_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v3/V07-02-03/merged_ntuple_1.root");//test w/ just 1 file
-  // qcd->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-20toInf_MuEnrichedPt15_PionKaonDecay_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v3/V07-02-03/merged_ntuple_*.root");
-  // qcd->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/V07-02-03/merged_ntuple_*.root");
-  // qcd->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-50to80_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/V07-02-03/merged_ntuple_*.root");
-  // qcd->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-80to120_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8_Phys14DR-AVE20BX25_tsg_PHYS14_25_V3-v1/V07-02-03/merged_ntuple_*.root");
+  
+  //QCD_MuEnriched
+  TChain *qcd_MuEnriched = new TChain("Events");
+  qcd_MuEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-20toInf_MuEnrichedPt15_PionKaonDecay_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v3/V07-02-03/merged_ntuple_*.root");
+  qcd_MuEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/V07-02-03/merged_ntuple_*.root");
+  qcd_MuEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-50to80_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/V07-02-03/merged_ntuple_*.root");
+  qcd_MuEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-80to120_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8_Phys14DR-AVE20BX25_tsg_PHYS14_25_V3-v1/V07-02-03/merged_ntuple_*.root");
+
+  //QCD_EM_Enriched
+  TChain *qcd_EMEnriched = new TChain("Events");
+  qcd_EMEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt_20to30_bcToE_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v2/V07-02-03/merged_ntuple_*.root");
+  qcd_EMEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt_30to80_bcToE_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_EMEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt_80to170_bcToE_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v2/V07-02-03/merged_ntuple_*.root");
+  qcd_EMEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt_170toInf_bcToE_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_EMEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-5to10_EMEnriched_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_castor_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_EMEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-10to20_EMEnriched_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_castor_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_EMEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-20to30_EMEnriched_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_castor_PHYS14_25_V1-v2/V07-02-03/merged_ntuple_*.root");
+  qcd_EMEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-30to80_EMEnriched_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_castor_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_EMEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-80to170_EMEnriched_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_castor_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
 
   //ttbar
   TChain *ttbar = new TChain("Events");
@@ -123,8 +138,10 @@ int do(){
   ttbar->Add("/hadoop/cms/store/group/snt/phys14/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-05/merged_ntuple_*.root");
   //ttbar->Add("/hadoop/cms/store/group/snt/phys14/TT_Tune4C_13TeV-pythia8-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");//same as previous but different gen, so don't use.
   
-  mylooper->looper(qcd,"qcd1", -1);
-  //mylooper->looper(ttbar,"ttbar1", -1);
+  // mylooper->looper(qcd,"qcd1", -1);
+  //mylooper->looper(qcd_MuEnriched,"qcd_MuEnriched", -1);
+  mylooper->looper(ttbar,"ttbar1", -1);
+  mylooper->looper(qcd_EMEnriched,"qcd_EMEnriched", -1);
 
 
 }
