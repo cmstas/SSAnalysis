@@ -11,9 +11,17 @@
 
   gROOT->ProcessLine(".L ScanChain.C+");
 
+  TString option = "";
+  option+="coneCorr";
+  //option+="noSIP";
+  //option+="closeBonly";
+
+  TString fakeratefile = "../measurement_region/rate_histos_qcd.root";
+
   TChain *ch = new TChain("t"); 
-  ch->Add("/nfs-7/userdata/ss2015/ssBabies/v1.03/ttbar.root");
+  // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v1.03/ttbar.root");
+  ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/yields/v1.03/ttbar_baby.root");
   // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v1.03/ttz.root");
   // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v1.03/ttw.root");
-  ScanChain(ch); 
+  ScanChain(ch, fakeratefile, option); 
 }
