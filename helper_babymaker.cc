@@ -268,8 +268,8 @@ int babyMaker::ProcessBaby(){
   lep3_idx = thirdLepton.first.idx;
   lep3_p4 = thirdLepton.first.p4;
   lep3_quality = thirdLepton.second;
-  lep1_iso = isIsolatedLepton(lep1_id, lep1_idx);
-  lep2_iso = isIsolatedLepton(lep2_id, lep2_idx);
+  lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
+  lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
   dilep_p4 = lep1_p4 + lep2_p4; 
   lep1_passes_id = isGoodLepton(lep1_id, lep1_idx);
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx);
