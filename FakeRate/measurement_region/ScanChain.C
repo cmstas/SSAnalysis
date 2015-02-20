@@ -207,7 +207,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				}
 			  if( ss.FO() )  //if el is FO
 				{
-				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())<4. ) continue;
+				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
 				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  if( ss.passes_id() ) Nl_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
@@ -223,7 +223,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				}
 			  if( ss.FO() )  //if el is FO
 				{
-				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())<4. ) continue;
+				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
 				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  if( ss.passes_id() ) Nl_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
