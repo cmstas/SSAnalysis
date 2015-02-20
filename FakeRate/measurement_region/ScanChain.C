@@ -23,11 +23,15 @@
 using namespace std;
 using namespace samesign;
 
-int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFilePrefix = "test") {
+int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = true, int nEvents = -1, string skimFilePrefix = "test") {
 
   // Benchmark
   TBenchmark *bmark = new TBenchmark();
   bmark->Start("benchmark");
+
+
+  bool noSIP = false;
+  if (option.Contains("noSIP")) noSIP = true;
 
   // Example Histograms
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
@@ -203,6 +207,7 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
 				}
 			  if( ss.FO() )  //if el is FO
 				{
+				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())<4. ) continue;
 				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  if( ss.passes_id() ) Nl_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
@@ -218,6 +223,7 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
 				}
 			  if( ss.FO() )  //if el is FO
 				{
+				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())<4. ) continue;
 				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  if( ss.passes_id() ) Nl_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
@@ -296,7 +302,7 @@ int ScanChain( TChain* chain, bool fast = true, int nEvents = -1, string skimFil
   rate_cone_histo_mu->Draw("colz,texte");
 
   //---save histos-------//
-  TFile *OutputFile = new TFile("./rate_histos.root","recreate");
+  TFile *OutputFile = new TFile(outfile,"recreate");
   OutputFile->cd();
   rate_histo->Write();
   rate_histo_e->Write();
