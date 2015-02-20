@@ -257,7 +257,7 @@ int yields(){
   }
 
   if (sample == TTBAR_8TEV){
-    TFile *ttbar_8_file = new TFile("../eightTeV/ttbar_8.root");
+    TFile *ttbar_8_file = new TFile("../eightTeV/ttbar_8_baby.root");
     TTree *ttbar_8_tree = (TTree*)ttbar_8_file->Get("t");
     ttbar_8_yields = doIt(ttbar_8_tree, none, HIHI);
   }
