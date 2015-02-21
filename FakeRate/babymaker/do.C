@@ -134,14 +134,11 @@ int do(){
 
   //ttbar
   TChain *ttbar = new TChain("Events");
-  //ttbar->Add("/hadoop/cms/store/group/snt/csa14/MC_CMS3_V07-00-03/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/merged/merged_ntuple_1.root");
   ttbar->Add("/hadoop/cms/store/group/snt/phys14/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-05/merged_ntuple_*.root");
-  //ttbar->Add("/hadoop/cms/store/group/snt/phys14/TT_Tune4C_13TeV-pythia8-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");//same as previous but different gen, so don't use.
   
-  // mylooper->looper(qcd,"qcd1", -1);
-  //mylooper->looper(qcd_MuEnriched,"qcd_MuEnriched", -1);
-  mylooper->looper(ttbar,"ttbar1", -1);
-  mylooper->looper(qcd_EMEnriched,"qcd_EMEnriched", -1);
-
+  mylooper->looper(qcd,"qcd1", -1);
+  // mylooper->looper(qcd_MuEnriched,"qcd_MuEnriched", -1);
+  //mylooper->looper(qcd_EMEnriched,"qcd_EMEnriched", -1);
+  // mylooper->looper(ttbar,"ttbar", -1);
 
 }

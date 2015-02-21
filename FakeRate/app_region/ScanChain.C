@@ -324,7 +324,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 				{prompt0_gen = prompt0_gen + weight;}
 			}
 		  //----------------------------------------------------------------------------------
-		} //end hyp = 3 loop
+		} //end hyp = 3 if statement
 
 	  //--------------------------------------------------------------------------------------
 	  //-------------------------Estimate Npn from QCD fake rate------------------------------
@@ -398,7 +398,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 				  Npn_histo_pred->Fill(br, (e1/(1-e1))*weight);
 				}
 			}
-		}
+		} //end hyp = 2 if statement
 	  //nonprompt-nonprompt background
 	  else if( ss.hyp_class() == 1 )
 		{
@@ -423,7 +423,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 				  Nnn = Nnn + (e1/(1-e1))*(e2/(1-e2))*weight;					
 			   }
 			}
-		}
+		} //end hyp = 1 if statement
 	  
 	  //---------------------------------------------------------------------------------------------------------------------------
 	  

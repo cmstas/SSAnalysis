@@ -12,11 +12,12 @@
   gROOT->ProcessLine(".L ScanChain.C+");
 
   TString option = "";
-  option+="coneCorr";
+  //option+="coneCorr";
   //option+="noSIP";
   //option+="closeBonly";
 
   TString fakeratefile = "../measurement_region/rate_histos_qcd.root";
+  //TString fakeratefile = "../measurement_region/rate_histos_ttbar.root";
 
   TChain *ch = new TChain("t"); 
   // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v1.03/ttbar.root");

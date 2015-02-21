@@ -122,9 +122,15 @@ protected:
 	bool	passes_id_;
 	TBranch *passes_id_branch;
 	bool passes_id_isLoaded;
+	bool	passes_id_ptrel_;
+	TBranch *passes_id_ptrel_branch;
+	bool passes_id_ptrel_isLoaded;
 	bool	FO_;
 	TBranch *FO_branch;
 	bool FO_isLoaded;
+	bool	FO_ptrel_;
+	TBranch *FO_ptrel_branch;
+	bool FO_ptrel_isLoaded;
 	float	ip3d_;
 	TBranch *ip3d_branch;
 	bool ip3d_isLoaded;
@@ -137,6 +143,12 @@ protected:
 	float	mt_;
 	TBranch *mt_branch;
 	bool mt_isLoaded;
+	float	ptrelv0_;
+	TBranch *ptrelv0_branch;
+	bool ptrelv0_isLoaded;
+	float	ptrelv1_;
+	TBranch *ptrelv1_branch;
+	bool ptrelv1_isLoaded;
 	float	el_sigmaIEtaIEta_full5x5_;
 	TBranch *el_sigmaIEtaIEta_full5x5_branch;
 	bool el_sigmaIEtaIEta_full5x5_isLoaded;
@@ -372,10 +384,20 @@ void Init(TTree *tree) {
 		passes_id_branch = tree->GetBranch("passes_id");
 		if (passes_id_branch) {passes_id_branch->SetAddress(&passes_id_);}
 	}
+	passes_id_ptrel_branch = 0;
+	if (tree->GetBranch("passes_id_ptrel") != 0) {
+		passes_id_ptrel_branch = tree->GetBranch("passes_id_ptrel");
+		if (passes_id_ptrel_branch) {passes_id_ptrel_branch->SetAddress(&passes_id_ptrel_);}
+	}
 	FO_branch = 0;
 	if (tree->GetBranch("FO") != 0) {
 		FO_branch = tree->GetBranch("FO");
 		if (FO_branch) {FO_branch->SetAddress(&FO_);}
+	}
+	FO_ptrel_branch = 0;
+	if (tree->GetBranch("FO_ptrel") != 0) {
+		FO_ptrel_branch = tree->GetBranch("FO_ptrel");
+		if (FO_ptrel_branch) {FO_ptrel_branch->SetAddress(&FO_ptrel_);}
 	}
 	ip3d_branch = 0;
 	if (tree->GetBranch("ip3d") != 0) {
@@ -396,6 +418,16 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("mt") != 0) {
 		mt_branch = tree->GetBranch("mt");
 		if (mt_branch) {mt_branch->SetAddress(&mt_);}
+	}
+	ptrelv0_branch = 0;
+	if (tree->GetBranch("ptrelv0") != 0) {
+		ptrelv0_branch = tree->GetBranch("ptrelv0");
+		if (ptrelv0_branch) {ptrelv0_branch->SetAddress(&ptrelv0_);}
+	}
+	ptrelv1_branch = 0;
+	if (tree->GetBranch("ptrelv1") != 0) {
+		ptrelv1_branch = tree->GetBranch("ptrelv1");
+		if (ptrelv1_branch) {ptrelv1_branch->SetAddress(&ptrelv1_);}
 	}
 	el_sigmaIEtaIEta_full5x5_branch = 0;
 	if (tree->GetBranch("el_sigmaIEtaIEta_full5x5") != 0) {
@@ -533,11 +565,15 @@ void GetEntry(unsigned int idx)
 		mc_id_isLoaded = false;
 		iso_isLoaded = false;
 		passes_id_isLoaded = false;
+		passes_id_ptrel_isLoaded = false;
 		FO_isLoaded = false;
+		FO_ptrel_isLoaded = false;
 		ip3d_isLoaded = false;
 		ip3derr_isLoaded = false;
 		type_isLoaded = false;
 		mt_isLoaded = false;
+		ptrelv0_isLoaded = false;
+		ptrelv1_isLoaded = false;
 		el_sigmaIEtaIEta_full5x5_isLoaded = false;
 		el_etaSC_isLoaded = false;
 		el_dEtaIn_isLoaded = false;
@@ -597,11 +633,15 @@ void LoadAllBranches()
 	if (mc_id_branch != 0) mc_id();
 	if (iso_branch != 0) iso();
 	if (passes_id_branch != 0) passes_id();
+	if (passes_id_ptrel_branch != 0) passes_id_ptrel();
 	if (FO_branch != 0) FO();
+	if (FO_ptrel_branch != 0) FO_ptrel();
 	if (ip3d_branch != 0) ip3d();
 	if (ip3derr_branch != 0) ip3derr();
 	if (type_branch != 0) type();
 	if (mt_branch != 0) mt();
+	if (ptrelv0_branch != 0) ptrelv0();
+	if (ptrelv1_branch != 0) ptrelv1();
 	if (el_sigmaIEtaIEta_full5x5_branch != 0) el_sigmaIEtaIEta_full5x5();
 	if (el_etaSC_branch != 0) el_etaSC();
 	if (el_dEtaIn_branch != 0) el_dEtaIn();
@@ -1078,6 +1118,19 @@ void LoadAllBranches()
 		}
 		return passes_id_;
 	}
+	bool &	passes_id_ptrel()
+	{
+		if (not passes_id_ptrel_isLoaded) {
+			if (passes_id_ptrel_branch != 0) {
+				passes_id_ptrel_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_id_ptrel_branch does not exist!\n");
+				exit(1);
+			}
+			passes_id_ptrel_isLoaded = true;
+		}
+		return passes_id_ptrel_;
+	}
 	bool &	FO()
 	{
 		if (not FO_isLoaded) {
@@ -1090,6 +1143,19 @@ void LoadAllBranches()
 			FO_isLoaded = true;
 		}
 		return FO_;
+	}
+	bool &	FO_ptrel()
+	{
+		if (not FO_ptrel_isLoaded) {
+			if (FO_ptrel_branch != 0) {
+				FO_ptrel_branch->GetEntry(index);
+			} else { 
+				printf("branch FO_ptrel_branch does not exist!\n");
+				exit(1);
+			}
+			FO_ptrel_isLoaded = true;
+		}
+		return FO_ptrel_;
 	}
 	float &ip3d()
 	{
@@ -1142,6 +1208,32 @@ void LoadAllBranches()
 			mt_isLoaded = true;
 		}
 		return mt_;
+	}
+	float &ptrelv0()
+	{
+		if (not ptrelv0_isLoaded) {
+			if (ptrelv0_branch != 0) {
+				ptrelv0_branch->GetEntry(index);
+			} else { 
+				printf("branch ptrelv0_branch does not exist!\n");
+				exit(1);
+			}
+			ptrelv0_isLoaded = true;
+		}
+		return ptrelv0_;
+	}
+	float &ptrelv1()
+	{
+		if (not ptrelv1_isLoaded) {
+			if (ptrelv1_branch != 0) {
+				ptrelv1_branch->GetEntry(index);
+			} else { 
+				printf("branch ptrelv1_branch does not exist!\n");
+				exit(1);
+			}
+			ptrelv1_isLoaded = true;
+		}
+		return ptrelv1_;
 	}
 	float &el_sigmaIEtaIEta_full5x5()
 	{
@@ -1453,11 +1545,15 @@ namespace samesign {
 	int &mc_id();
 	float &iso();
 	bool &passes_id();
+	bool &passes_id_ptrel();
 	bool &FO();
+	bool &FO_ptrel();
 	float &ip3d();
 	float &ip3derr();
 	int &type();
 	float &mt();
+	float &ptrelv0();
+	float &ptrelv1();
 	float &el_sigmaIEtaIEta_full5x5();
 	float &el_etaSC();
 	float &el_dEtaIn();

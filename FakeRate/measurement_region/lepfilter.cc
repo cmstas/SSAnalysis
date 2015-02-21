@@ -36,11 +36,15 @@ namespace samesign {
 	int &mc_id() { return ss.mc_id(); }
 	float &iso() { return ss.iso(); }
 	bool &passes_id() { return ss.passes_id(); }
+	bool &passes_id_ptrel() { return ss.passes_id_ptrel(); }
 	bool &FO() { return ss.FO(); }
+	bool &FO_ptrel() { return ss.FO_ptrel(); }
 	float &ip3d() { return ss.ip3d(); }
 	float &ip3derr() { return ss.ip3derr(); }
 	int &type() { return ss.type(); }
 	float &mt() { return ss.mt(); }
+	float &ptrelv0() { return ss.ptrelv0(); }
+	float &ptrelv1() { return ss.ptrelv1(); }
 	float &el_sigmaIEtaIEta_full5x5() { return ss.el_sigmaIEtaIEta_full5x5(); }
 	float &el_etaSC() { return ss.el_etaSC(); }
 	float &el_dEtaIn() { return ss.el_dEtaIn(); }
