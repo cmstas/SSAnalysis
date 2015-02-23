@@ -29,9 +29,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TBenchmark *bmark = new TBenchmark();
   bmark->Start("benchmark");
 
-
   bool noSIP = false;
   if (option.Contains("noSIP")) noSIP = true;
+
+  bool usePtRel = false;
+  if (option.Contains("ptRel")) usePtRel = true;
 
   // Example Histograms
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
@@ -155,14 +157,17 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if( ss.motherID() != 1 )  //if lep is nonprompt
 		{
 
+		  bool passId = ( usePtRel ? ss.passes_id_ptrel() : ss.passes_id() );
+		  bool passFO = ( usePtRel ? ss.FO_ptrel() : ss.FO() );
+
 		  if( abs( ss.id() ) == 11 ) //it's an el
 			{
-			  if( ss.passes_id() )  //if el is tight
+			  if( passId )  //if el is tight
 				{ 
 				  Nt = Nt + weight;
 				  Nt_e = Nt_e + weight;
 				}
-			  if( ss.FO() )
+			  if( passFO )
 				{
 				  Nl = Nl + weight;     //l now means loose, as opposed to loose-not-tight
 				  Nl_e = Nl_e + weight;
@@ -171,12 +176,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 		  if( abs( ss.id() ) == 13 ) //it's a mu
 			{
-			  if( ss.passes_id() )  //if mu is tight
+			  if( passId )  //if mu is tight
 				{ 
 				  Nt = Nt + weight;
 				  Nt_mu = Nt_mu + weight;
 				}
-			  if( ss.FO() )
+			  if( passFO )
 				{
 				  Nl = Nl + weight;     //l now means loose, as opposed to loose-not-tight
 				  Nl_mu = Nl_mu + weight;
@@ -198,14 +203,18 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 	  if( ss.motherID() != 1 )  //if el is nonprompt (GEN info)
 		{
+
+		  bool passId = ( usePtRel ? ss.passes_id_ptrel() : ss.passes_id() );
+		  bool passFO = ( usePtRel ? ss.FO_ptrel() : ss.FO() );
+
 		  if( abs( ss.id() ) == 11 ) // it's an el
 			{
-			  if( ss.passes_id() )  //if el is tight
+			  if( passId )  //if el is tight
 				{ 
 				  Nt_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta
 				  Nt_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //
 				}
-			  if( ss.FO() )  //if el is FO
+			  if( passFO )  //if el is FO
 				{
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
 				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
@@ -216,12 +225,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 			}
 		  if( abs( ss.id() ) == 13 ) // it's a mu
 			{
-			  if( ss.passes_id() )  //if mu is tight
+			  if( passId )  //if mu is tight
 				{ 
 				  Nt_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta
 				  Nt_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //
 				}
-			  if( ss.FO() )  //if el is FO
+			  if( passFO )  //if el is FO
 				{
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
 				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
