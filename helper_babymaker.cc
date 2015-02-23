@@ -263,8 +263,8 @@ int babyMaker::ProcessBaby(bool usePtRel){
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
   dilep_p4 = lep1_p4 + lep2_p4; 
-  lep1_passes_id = isGoodLepton(lep1_id, lep1_idx);
-  lep2_passes_id = isGoodLepton(lep2_id, lep2_idx);
+  lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, usePtRel);
+  lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, usePtRel);
   
   //Fill generated lepton variables, ignoring reco (matching to reco done above)
   vector <particle_t> genPair = getGenPair(verbose);
@@ -290,7 +290,7 @@ int babyMaker::ProcessBaby(bool usePtRel){
     LorentzVector jet = tas::pfjets_p4().at(i);
     
     //Kinematic jet cuts
-    if (jet.pt() < 40) continue;
+    if (jet.pt() < 25.) continue;
     if (fabs(jet.eta()) > 2.4) continue;
     
     //Verbose
@@ -320,12 +320,14 @@ int babyMaker::ProcessBaby(bool usePtRel){
     }
     if (jetIsLep == true) continue;
     
-    //Save jets that make it this far
-    jets.push_back(jet);
-    ht += jet.pt();
     float disc = tas::pfjets_combinedInclusiveSecondaryVertexV2BJetTag().at(i);
-    jets_disc.push_back(disc);
-    
+    //Save jets that make it this far
+    if (jet.pt() >= 40.) {
+      jets.push_back(jet);
+      ht += jet.pt();
+      jets_disc.push_back(disc);
+    }
+
     //Btag discriminator
     if (disc < 0.814) continue;
     

@@ -233,7 +233,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       if (debug) cout << "vetoleps" << endl;
       vector<Lep> vetoleps;
       for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl) {
-	if (isVetoLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx())==0) continue; 
+	if (isVetoLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx(),false)==0) continue;//fixme: no ptrel in veto leptons for now
       	if (debug) cout << "veto lep id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt() 
 			<< " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
       	vetoleps.push_back(vetoleps_noiso[vl]);
@@ -251,7 +251,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       if (debug) cout << "fobs" << endl;
       vector<Lep> fobs;
       for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl) {
-	if (isDenominatorLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx())==0) continue; 
+	if (isDenominatorLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx(),usePtRel)==0) continue; 
       	if (debug) cout << "fob id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt() 
 			<< " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
       	fobs.push_back(vetoleps_noiso[vl]);
@@ -261,7 +261,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       if (debug) cout << "goodleps" << endl;
       vector<Lep> goodleps;
       for (unsigned int fo=0;fo<fobs.size();++fo) {
-	if (isGoodLepton(fobs[fo].pdgId(),fobs[fo].idx())==0) continue; 
+	if (isGoodLepton(fobs[fo].pdgId(),fobs[fo].idx(),usePtRel)==0) continue; 
       	if (debug) cout << "good lep id=" << fobs[fo].pdgId() << " idx=" << fobs[fo].idx() << " pt=" << fobs[fo].pt() 
 			<< " eta=" << fobs[fo].eta() << " phi=" << fobs[fo].p4().phi() << " q=" << fobs[fo].charge()<< endl;
       	goodleps.push_back(fobs[fo]);
@@ -336,41 +336,12 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       std::sort(jets.begin(),jets.end(),jetptsort);
       std::sort(btags.begin(),btags.end(),jetptsort);
       nbtag = nbtag_pt25;
-
-      /*
-      //add back to fobs those fobs_noiso not passing iso but passing ptrel wrt lepjet
-      for (unsigned int fo=0;fo<fobs_noiso.size();++fo) {
-	if (fobs_noiso[fo].relIso03()<=0.5) continue;
-	// float ptrel = computePtRel(fobs_noiso[fo],lepjets,false);
-	// if (ptrel<8.) continue;
-	float ptrel = computePtRel(fobs_noiso[fo],lepjets,true);
-	if (ptrel<16.) continue;
-	// float miniIso = fobs_noiso[fo].miniRelIso();
-	// if (miniIso>0.05) continue;
-	fobs.push_back(fobs_noiso[fo]);
-      }
-      */
       
       if (fobs_noiso.size()==0 && !makeDYtest) continue;
       makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,2,weight_);
       if (isGenSS) makeFillHisto1D<TH1F,int>("cut_flow_ss","cut_flow_ss",50,0,50,2,weight_);
       if (isGenSSee) makeFillHisto1D<TH1F,int>("cut_flow_ssee","cut_flow_ssee",50,0,50,2,weight_);
       if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,2,weight_);
-
-      /*
-      //add back to goodleps those fobs not passing iso but passing ptrel wrt lepjet
-      for (unsigned int fo=0;fo<fobs.size();++fo) {
-	if (fobs[fo].relIso03()<=0.1) continue;
-	if (isGoodLeptonNoIso(fobs[fo].pdgId(),fobs[fo].idx())==0) continue;
-	// float ptrel = computePtRel(fobs[fo],lepjets,false);
-	// if (ptrel<8.) continue;
-	float ptrel = computePtRel(fobs[fo],lepjets,true);
-	if (ptrel<16.) continue;
-	// float miniIso = fobs[fo].miniRelIso();
-	// if (miniIso>0.05) continue;
-	goodleps.push_back(fobs[fo]);
-      }
-      */
 
       //write skim here (only qcd)
       if (makeQCDskim) {
@@ -400,7 +371,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 
       if (makeDYtest) {
 	if (debug) cout << "dytest" << endl;
-	tests::runDYtest(this, weight_, vetoleps_noiso, fobs, goodleps, njets, met, ht);
+	tests::runDYtest(this, weight_, vetoleps_noiso, fobs, goodleps, njets, met, ht, usePtRel);
 	continue;
       }
 
@@ -611,7 +582,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 	  assert(lep2_idx==hyp.traiLep().idx());
 	  */
 
-	  //if (hyp.leadLep().mc_id()*hyp.traiLep().mc_id()<0) continue;//FIXME
+	  //if ( (lepMotherID(hyp.leadLep())==2 && lepMotherID(hyp.traiLep())==1) || (lepMotherID(hyp.leadLep())==1 && lepMotherID(hyp.traiLep())==2) ) continue;//FIXME //don't count events that are prompt-prompt charge flips (estimated from data)
 	  makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,10,weight_);
 	  if (isGenSS) makeFillHisto1D<TH1F,int>("cut_flow_ss","cut_flow_ss",50,0,50,10,weight_);
 	  if (isGenSSee) makeFillHisto1D<TH1F,int>("cut_flow_ssee","cut_flow_ssee",50,0,50,10,weight_);
@@ -632,6 +603,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 		 << " genps_id_mother()[hyp.traiLep().mc3_motheridx()]=" << genps_id_mother()[hyp.traiLep().mc3_motheridx()]
 		 << endl;
 	    cout << "njets=" << njets << " nbtag=" << nbtag << " ht=" << ht << " met=" << met << endl;
+	    cout << "weight=" << weight_ << endl;
 	    cout << "BR" << br << " SR" << sr << endl;
 	  }
 
