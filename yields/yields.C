@@ -19,29 +19,32 @@ enum lep_t { EL, MU, EM, ANY };
 enum region_t { NEW, OLD };
 enum mtmin_t { NONE, MT100, MT125, MT150 };
 enum hyp_class_t { INC1, INC2, NORMAL };
-enum pt_t { HIHI, HILO, LOLO };
+enum pt_t { HIHI, HILO, LOLO, ALL3 };
 
 //Switches
-char* path = "../babymaker/v1.03";     //where the data is
+char* path = "v1.04";                  //where the ntuples are
 char* output_dir = "mydir";            //dir where plots should go (in parent directory, will create if doesn't exist)
-int nRegions = 1;                      //which regions to include (can be single region, > 10 will turn on b-tagging)
+int nRegions = 1;                      //which regions to include (can be 1 for single region, > 10 will turn on b-tagging)
 int firstSR = 0;                       //first SR you want to consider (usually 0 or 1)
 bool scan = 0;                         //make printout of events
 int scanRegion = 0;                    //only needed if scan == TRUE
 mtmin_t mt_min = NONE;                 //add mt_min cut
-sample_t sample = WZ;                  //Sample as defined above
+sample_t sample = ALL;                  //Sample as defined above
 selection_t selection = SS;            //select SS or OS
 weight_t weighted = WEIGHTED;          //weight by cross-section or not
 lep_t leps = ANY;                      //segregate by flavor composition (MU, EL, EM, ANY)
 char* testfile = "ttbar.root";         //only needed if sample is TEST
 hyp_class_t hyp_class_wanted = NORMAL; //INC1 is inclusive SS, INC2 is h-h or h-l SS, NORMAL is h-h SS only
 region_t regions = NEW;                //new pT regions (25/10) or old (20/10)
+pt_t which_pt = ALL3;                  //which pT regions should be handled?
 int met_cut = 120;                     //120 for 8 TeV 
 int ht_cut = 400;                      //400 for 8 TeV
 int njets_cut = 4;                     //4 for 8 TeV
-int btag_pt = 40;                      //40 for 8 TeV
-bool doBtagging = true;                //should SRs have b-tagging applied (automatically true for nRegions > 10)
+int btag_pt = 25;                      //40 for 8 TeV; 25 is default for 13 TeV
+bool doBtagging = true;                //should SRs have b-tagging applied? (automatically true for nRegions > 10)
 bool doTruthMatching = true;           //require truth-level leptons to be matched to correctly-signed (SS or OS) pair
+bool makePlots = false;                //should plots for limit making be produced?
+bool outputYields = true;              //should yields be printed to the screen?
 
 //Declare output file
 TFile *file;
@@ -50,9 +53,11 @@ vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
 
   //Declare and create output histogram
   TH1F *hist; 
-  if (pt_ == HIHI) hist = new TH1F("hyp_hihi", "hyp_hihi", nRegions, 1, nRegions+1);
-  if (pt_ == HILO) hist = new TH1F("hyp_hilow", "hyp_hilow", nRegions, 1, nRegions+1);
-  if (pt_ == LOLO) hist = new TH1F("hyp_lowlow", "hyp_lowlow", nRegions, 1, nRegions+1);
+  if (makePlots){
+    if (pt_ == HIHI) hist = new TH1F("hyp_hihi", "hyp_hihi", nRegions, 1, nRegions+1);
+    if (pt_ == HILO) hist = new TH1F("hyp_hilow", "hyp_hilow", nRegions, 1, nRegions+1);
+    if (pt_ == LOLO) hist = new TH1F("hyp_lowlow", "hyp_lowlow", nRegions, 1, nRegions+1);
+  }
 
   //Create vector with yields to return
   vector <float> temp;
@@ -84,14 +89,14 @@ vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
   TCut high_new("lep1_p4.pt() > 25 && lep2_p4.pt() > 25"); 
   TCut high_old("lep1_p4.pt() > 20 && lep2_p4.pt() > 20"); 
   TCut high = regions == NEW ? high_new : high_old;
+  if (pt_ == HIHI) baseline += high;
+  if (pt_ == HILO) baseline += highLow;
+  if (pt_ == LOLO) baseline += lowLow;
  
   //Truth matching
   TCut mc_ss("lep1_mc_id*lep2_mc_id > 0");
   TCut mc_os("lep1_mc_id*lep2_mc_id < 0");
-  baseline += (selection == OS) ? mc_os : mc_ss;
-  if (pt_ == HIHI) baseline += high;
-  if (pt_ == HILO) baseline += highLow;
-  if (pt_ == LOLO) baseline += lowLow;
+  if (doTruthMatching) baseline += (selection == OS) ? mc_os : mc_ss;
  
   //nJets
   TCut njets2("njets >= 2");
@@ -119,14 +124,14 @@ vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
   TCut nbtags1_slow(Form("Sum$(jets.pt()>%i && jets_disc>0.814 ? 1 : 0) == 1", btag_pt));
   TCut nbtags2_slow(Form("Sum$(jets.pt()>%i && jets_disc>0.814 ? 1 : 0) == 2", btag_pt));
   TCut nbtags3p_slow(Form("Sum$(jets.pt()>%i && jets_disc>0.814 ? 1 : 0) >= 3", btag_pt));
-  TCut nbtags0_quick("njets == 0");
-  TCut nbtags1_quick("njets == 1");
-  TCut nbtags2_quick("njets == 2");
-  TCut nbtags3p_quick("njets >= 3");
-  TCut nbtags0 =  btag_pt == 40 ? nbtags0_quick  : nbtags0_slow;
-  TCut nbtags1 =  btag_pt == 40 ? nbtags1_quick  : nbtags1_slow;
-  TCut nbtags2 =  btag_pt == 40 ? nbtags2_quick  : nbtags2_slow;
-  TCut nbtags3p = btag_pt == 40 ? nbtags3p_quick : nbtags3p_slow;
+  TCut nbtags0_quick("nbtags == 0");
+  TCut nbtags1_quick("nbtags == 1");
+  TCut nbtags2_quick("nbtags == 2");
+  TCut nbtags3p_quick("nbtags >= 3");
+  TCut nbtags0 =  btag_pt == 25 ? nbtags0_quick  : nbtags0_slow;
+  TCut nbtags1 =  btag_pt == 25 ? nbtags1_quick  : nbtags1_slow;
+  TCut nbtags2 =  btag_pt == 25 ? nbtags2_quick  : nbtags2_slow;
+  TCut nbtags3p = btag_pt == 25 ? nbtags3p_quick : nbtags3p_slow;
 
   //MT MIN
   TCut mtmin100("mt > mt_l2 ? mt_l2 > 100 : mt > 100");
@@ -137,7 +142,7 @@ vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
   if (mt_min == MT150) baseline += mtmin150;
 
   //Define each SR, make yield, plot
-  for (int i = firstSR; i < nRegions+1; i++){
+  for (int i = firstSR; i < firstSR+nRegions; i++){
     if (i%10 == 9){
       temp.push_back(-1);
       continue;
@@ -162,7 +167,7 @@ vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
     cut *= cuts;
     chain->Draw("0.5>>SR", weight*baseline*cut); 
     temp.push_back(SR->Integral());
-    hist->Fill(i, SR->Integral()); 
+    if (makePlots) hist->Fill(i, SR->Integral()); 
     if (scan){
       if (i == scanRegion) cout << weight*baseline*cut << endl;
       if (i == scanRegion) chain->SetScanField(0);
@@ -171,8 +176,8 @@ vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
     delete SR;
   }
 
-  file->cd();
-  hist->Write();
+  if (makePlots) file->cd();
+  if (makePlots) hist->Write();
 
   return temp;
 
@@ -183,19 +188,21 @@ int yields(){
   if (nRegions < 10 && !doBtagging) cout << "WARNING! Not doing any b-tag requirements!" << endl;
   cout << Form("SR regions based around HT cut of %i, MET cut of %i, njets cut of %i", ht_cut, met_cut, njets_cut) << endl;
 
-  //Check if directory exists; create it if not; otherwise, ask permission to overwrite it
-  struct stat info;
-  if (stat(output_dir, &info) != 0){ 
-    string input;
-    bool keepAsking = true;
-    while (keepAsking == true){
-      cout << Form("Directory %s already exists.  Really overwrite those files? (yes/no) ", output_dir);
-      getline(cin, input); 
-      if (input == "no"){ cout << "aborting" << endl; keepAsking = false; return 0; }
-      if (input == "yes") keepAsking = false;
-    }
-  } 
-  else system(Form("mkdir ../%s", output_dir)); 
+  //If making plots, check if directory exists; create it if not; otherwise, ask permission to overwrite it
+  if (makePlots){
+    struct stat info;
+    if (stat(output_dir, &info) != 0){ 
+      string input;
+      bool keepAsking = true;
+      while (keepAsking == true){
+        cout << Form("Directory %s already exists.  Really overwrite those files? (yes/no) ", output_dir);
+        getline(cin, input); 
+        if (input == "no"){ cout << "aborting" << endl; keepAsking = false; return 0; }
+        if (input == "yes") keepAsking = false;
+      }
+    } 
+    else system(Form("mkdir ../%s", output_dir)); 
+  }
 
   //Warning if not running on all lepton flavors
   const char* ssoros = selection == SS ? "SS" : "OS";
@@ -222,38 +229,88 @@ int yields(){
   if (sample == TEST){
     TFile *test_file = new TFile(Form("../%s", testfile));
     TTree *test_tree = (TTree*)test_file->Get("t");
-    test_yields = doIt(test_tree, none, HIHI);
-    test_yields = doIt(test_tree, none, HILO);
-    test_yields = doIt(test_tree, none, LOLO);
+    cout << endl << "TEST yields: " << endl;
+    if (which_pt == HIHI || which_pt == ALL3){
+      cout << "  High High" << endl;
+      test_yields = doIt(test_tree, none, HIHI);
+      for (unsigned int i = 0; i < test_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << test_yields[i] << endl;
+    }
+    if (which_pt == HILO || which_pt == ALL3){
+      cout << endl << "  High Low" << endl;
+      test_yields = doIt(test_tree, none, HILO);
+      for (unsigned int i = 0; i < test_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << test_yields[i] << endl;
+    }
+    if (which_pt == LOLO || which_pt == ALL3){
+      cout << endl << "  Low Low" << endl;
+      test_yields = doIt(test_tree, none, LOLO);
+      for (unsigned int i = 0; i < test_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << test_yields[i] << endl;
+    }
   }
 
   if (sample == ALL || sample == TTW){
-    file = new TFile(Form("../%s/%s", output_dir, "TTWJets_histos.root"), "RECREATE");
-    TFile *ttw_file = new TFile(Form("../%s/ttw.root", path));
+    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "TTWJets_histos.root"), "RECREATE");
+    TFile *ttw_file = new TFile(Form("../%s/ttw_baby.root", path));
     TTree *ttw_tree = (TTree*)ttw_file->Get("t");
-    ttw_yields = doIt(ttw_tree, none, HIHI);
-    if (sample == TTW) cout << ttw_yields[0] << endl;
-    ttw_yields = doIt(ttw_tree, none, HILO);
-    ttw_yields = doIt(ttw_tree, none, LOLO);
+    cout << endl << "TTW yields: " << endl;
+    if (which_pt == HIHI || which_pt == ALL3){
+      cout << "  High High" << endl;
+      ttw_yields = doIt(ttw_tree, none, HIHI);
+      for (unsigned int i = 0; i < ttw_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttw_yields[i] << endl;
+    }
+    if (which_pt == HILO || which_pt == ALL3){
+      cout << endl << "  High Low" << endl;
+      ttw_yields = doIt(ttw_tree, none, HILO);
+      for (unsigned int i = 0; i < ttw_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttw_yields[i] << endl;
+    }
+    if (which_pt == LOLO || which_pt == ALL3){
+      cout << endl << "  Low Low" << endl;
+      ttw_yields = doIt(ttw_tree, none, LOLO);
+      for (unsigned int i = 0; i < ttw_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttw_yields[i] << endl;
+    }
   }
 
   if (sample == ALL || sample == TTZ){
-    file = new TFile(Form("../%s/%s", output_dir, "TTZJets_histos.root"), "RECREATE");
-    TFile *ttz_file = new TFile(Form("../%s/ttz.root", path));
+    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "TTZJets_histos.root"), "RECREATE");
+    TFile *ttz_file = new TFile(Form("../%s/ttz_baby.root", path));
     TTree *ttz_tree = (TTree*)ttz_file->Get("t");
-    ttz_yields = doIt(ttz_tree, none, HIHI);
-    if (sample == TTZ) cout << ttz_yields[0] << endl;
-    ttz_yields = doIt(ttz_tree, none, HILO);
-    ttz_yields = doIt(ttz_tree, none, LOLO);
+    cout << endl <<  "TTZ yields: " << endl;
+    if (which_pt == HIHI || which_pt == ALL3){
+      cout << "  High High" << endl;
+      ttz_yields = doIt(ttz_tree, none, HIHI);
+      for (unsigned int i = 0; i < ttz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttz_yields[i] << endl;
+    }
+    if (which_pt == HILO || which_pt == ALL3){
+      cout << endl << "  High Low" << endl;
+      ttz_yields = doIt(ttz_tree, none, HILO);
+      for (unsigned int i = 0; i < ttz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttz_yields[i] << endl;
+    }
+    if (which_pt == LOLO || which_pt == ALL3){
+      cout << endl << "  Low Low" << endl;
+      ttz_yields = doIt(ttz_tree, none, LOLO);
+      for (unsigned int i = 0; i < ttz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttz_yields[i] << endl;
+    }
   }
   
   if (sample == ALL || sample == TTBAR){
-    file = new TFile(Form("../%s/%s", output_dir, "ttbar_histos.root"), "RECREATE");
-    TFile *ttbar_file = new TFile(Form("../%s/ttbar.root", path));
+    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "ttbar_histos.root"), "RECREATE");
+    TFile *ttbar_file = new TFile(Form("../%s/ttbar_baby.root", path));
     TTree *ttbar_tree = (TTree*)ttbar_file->Get("t");
-    ttbar_yields = doIt(ttbar_tree, none, HIHI);
-    ttbar_yields = doIt(ttbar_tree, none, HILO);
-    ttbar_yields = doIt(ttbar_tree, none, LOLO);
+    cout << endl << "TTBAR yields: " << endl;
+    if (which_pt == HIHI || which_pt == ALL3){
+      cout << "  High High" << endl;
+      ttbar_yields = doIt(ttbar_tree, none, HIHI);
+      for (unsigned int i = 0; i < ttbar_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttbar_yields[i] << endl;
+    }
+    if (which_pt == HILO || which_pt == ALL3){
+      cout << endl << "  High Low" << endl;
+      ttbar_yields = doIt(ttbar_tree, none, HILO);
+      for (unsigned int i = 0; i < ttbar_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttbar_yields[i] << endl;
+    }
+    if (which_pt == LOLO || which_pt == ALL3){
+      cout << endl << "  Low Low" << endl;
+      ttbar_yields = doIt(ttbar_tree, none, LOLO);
+      for (unsigned int i = 0; i < ttbar_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttbar_yields[i] << endl;
+    }
   }
 
   if (sample == TTBAR_8TEV){
@@ -263,33 +320,72 @@ int yields(){
   }
 
   if (sample == T1TTTT_1500_100 || sample == ALL){
-    file = new TFile(Form("../%s/%s", output_dir, "T1TTTT_1500_100_histos.root"), "RECREATE");
-    TFile *t1tttt_2_file = new TFile(Form("../%s/t1tttt_1500_100.root", path));
+    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "T1TTTT_1500_100_histos.root"), "RECREATE");
+    TFile *t1tttt_2_file = new TFile(Form("../%s/t1tttt_1500_100_baby.root", path));
     TTree *t1tttt_2_tree = (TTree*)t1tttt_2_file->Get("t");
-    t1tttt_2_yields = doIt(t1tttt_2_tree, none, HIHI);
-    t1tttt_2_yields = doIt(t1tttt_2_tree, none, HILO);
-    t1tttt_2_yields = doIt(t1tttt_2_tree, none, LOLO);
+    cout << endl << "T1TTTT_1500_100 yields: " << endl;
+    if (which_pt == HIHI || which_pt == ALL3){
+      cout << "  High High" << endl;
+      t1tttt_2_yields = doIt(t1tttt_2_tree, none, HIHI);
+      for (unsigned int i = 0; i < t1tttt_2_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_2_yields[i] << endl;
+    }
+    if (which_pt == HILO || which_pt == ALL3){
+      cout << endl << "  High Low" << endl;
+      t1tttt_2_yields = doIt(t1tttt_2_tree, none, HILO);
+      for (unsigned int i = 0; i < t1tttt_2_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_2_yields[i] << endl;
+    }
+    if (which_pt == LOLO || which_pt == ALL3){
+      cout << endl << "  Low Low" << endl;
+      t1tttt_2_yields = doIt(t1tttt_2_tree, none, LOLO);
+      for (unsigned int i = 0; i < t1tttt_2_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_2_yields[i] << endl;
+    }
   }
 
   if (sample == T1TTTT_1200_800 || sample == ALL){
-    file = new TFile(Form("../%s/%s", output_dir, "T1TTTT_1200_800_histos.root"), "RECREATE");
-    TFile *t1tttt_3_file = new TFile(Form("../%s/t1tttt_1200_800.root", path));
+    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "T1TTTT_1200_800_histos.root"), "RECREATE");
+    TFile *t1tttt_3_file = new TFile(Form("../%s/t1tttt_1200_800_baby.root", path));
     TTree *t1tttt_3_tree = (TTree*)t1tttt_3_file->Get("t");
-    t1tttt_3_yields = doIt(t1tttt_3_tree, none, HIHI);
-    t1tttt_3_yields = doIt(t1tttt_3_tree, none, HILO);
-    t1tttt_3_yields = doIt(t1tttt_3_tree, none, LOLO);
+    cout << endl << "T1TTTT_1200_800 yields: " << endl;
+    if (which_pt == HIHI || which_pt == ALL3){
+      cout << "  High High" << endl;
+      t1tttt_3_yields = doIt(t1tttt_3_tree, none, HIHI);
+      for (unsigned int i = 0; i < t1tttt_3_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_3_yields[i] << endl;
+    }
+    if (which_pt == HILO || which_pt == ALL3){
+      cout << endl << "  High Low" << endl;
+      t1tttt_3_yields = doIt(t1tttt_3_tree, none, HILO);
+      for (unsigned int i = 0; i < t1tttt_3_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_3_yields[i] << endl;
+    }
+    if (which_pt == LOLO || which_pt == ALL3){
+      cout << endl << "  Low Low" << endl;
+      t1tttt_3_yields = doIt(t1tttt_3_tree, none, LOLO);
+      for (unsigned int i = 0; i < t1tttt_3_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_3_yields[i] << endl;
+    }
   }
 
   if (sample == WZ || sample == ALL){
-    file = new TFile(Form("../%s/%s", output_dir, "WZJets_histos.root"), "RECREATE");
-    TFile *wz_file = new TFile(Form("../%s/wz.root", path));
+    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "WZJets_histos.root"), "RECREATE");
+    TFile *wz_file = new TFile(Form("../%s/wz_baby.root", path));
     TTree *wz_tree = (TTree*)wz_file->Get("t");
-    wz_yields = doIt(wz_tree, none, HIHI);
-    wz_yields = doIt(wz_tree, none, HILO);
-    wz_yields = doIt(wz_tree, none, LOLO);
+    cout << endl << "WZ yields: " << endl;
+    if (which_pt == HIHI || which_pt == ALL3){
+      cout << "  High High" << endl;
+       wz_yields = doIt(wz_tree, none, HIHI);
+       for (unsigned int i = 0; i < wz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << wz_yields[i] << endl;
+    }
+    if (which_pt == HILO || which_pt == ALL3){
+      wz_yields = doIt(wz_tree, none, HILO);
+      cout << endl << "  High Low" << endl;
+      for (unsigned int i = 0; i < wz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << wz_yields[i] << endl;
+    }
+    if (which_pt == LOLO || which_pt == ALL3){
+      wz_yields = doIt(wz_tree, none, LOLO);
+      cout << endl << "  Low Low" << endl;
+      for (unsigned int i = 0; i < wz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << wz_yields[i] << endl;
+    }
   }
  
-  file->Close();
+  if (makePlots) file->Close();
 
   return 0;
 
