@@ -29,7 +29,7 @@
 using namespace std;
 using namespace samesign;
 
-void DrawPlots(TH1F *pred, TH1F *obs, TCanvas *c, TPad *pad_h, TPad *pad_r, TLegend *leg)
+void DrawPlots(TH1F *pred, TH1F *obs, TH1F *pred_err2, TH1F *obs_err2, TCanvas *c, TPad *pad_h, TPad *pad_r, TLegend *leg)
 {
   pred->GetXaxis()->SetTitle("Signal Region"); 
   pred->GetYaxis()->SetTitle("Events");
@@ -74,7 +74,9 @@ void DrawPlots(TH1F *pred, TH1F *obs, TCanvas *c, TPad *pad_h, TPad *pad_r, TLeg
     if (bin%10 != 1) continue;
     float p = pred->GetBinContent(bin);
     float o = obs->GetBinContent(bin);
-    cout << Form("SR=%2i - pred=%5.2f - obs=%5.2f - pred/obs=%5.2f - (p-o)/p=%5.2f ", bin-1, p, o, (o>0?p/o:99.99), (p>0?(p-o)/p:99.99) ) << endl;
+    float pe = sqrt(pred_err2->GetBinContent(bin));
+    float oe = sqrt(obs_err2->GetBinContent(bin));
+    cout << Form("SR=%2i - pred=%5.2f +/- %5.2f - obs=%5.2f +/- %5.2f - pred/obs=%5.2f - (p-o)/p=%5.2f ", bin-1, p, pe, o, oe, (o>0?p/o:99.99), (p>0?(p-o)/p:99.99) ) << endl;
   }
 
 
@@ -135,6 +137,31 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   TH1F *Npn_histo_pred_el = new TH1F("Npn_histo_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 40, 0, 40);
   Npn_histo_pred_el->SetDirectory(rootdir);
   Npn_histo_pred_el->Sumw2();
+
+  //errors
+  TH1F *Npn_histo_err2_obs = new TH1F("Npn_histo_err2_obs", "Error on Observed Prompt-NonPrompt Background", 40, 0, 40);
+  Npn_histo_err2_obs->SetDirectory(rootdir);
+  Npn_histo_err2_obs->Sumw2();
+
+  TH1F *Npn_histo_err2_pred = new TH1F("Npn_histo_err2_pred", "Error on Predicted Prompt-NonPrompt Background", 40, 0, 40);
+  Npn_histo_err2_pred->SetDirectory(rootdir);
+  Npn_histo_err2_pred->Sumw2();
+
+  TH1F *Npn_histo_err2_obs_mu = new TH1F("Npn_histo_err2_obs_mu", "Error onObserved Prompt-NonPrompt Background (Single mu)", 40, 0, 40);
+  Npn_histo_err2_obs_mu->SetDirectory(rootdir);
+  Npn_histo_err2_obs_mu->Sumw2();
+
+  TH1F *Npn_histo_err2_pred_mu = new TH1F("Npn_histo_err2_pred_mu", "Error on Predicted Prompt-NonPrompt Background (Single mu)", 40, 0, 40);
+  Npn_histo_err2_pred_mu->SetDirectory(rootdir);
+  Npn_histo_err2_pred_mu->Sumw2();
+
+  TH1F *Npn_histo_err2_obs_el = new TH1F("Npn_histo_err2_obs_el", "Error on Observed Prompt-NonPrompt Background (Single el)", 40, 0, 40);
+  Npn_histo_err2_obs_el->SetDirectory(rootdir);
+  Npn_histo_err2_obs_el->Sumw2();
+
+  TH1F *Npn_histo_err2_pred_el = new TH1F("Npn_histo_err2_pred_el", "Error on Predicted Prompt-NonPrompt Background (Single el)", 40, 0, 40);
+  Npn_histo_err2_pred_el->SetDirectory(rootdir);
+  Npn_histo_err2_pred_el->Sumw2();
 
   //---Load rate histos-----//
   TFile *InputFile = new TFile(fakeratefile,"read");
@@ -267,11 +294,20 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 				  prompt1_reco = prompt1_reco + weight;  
 				  NpromptL1_reco = NpromptL1_reco + weight;
 				  Npn_histo_obs->Fill(sr, weight);
-				  if(abs(ss.lep2_id()) == 11) Npn_histo_obs_el->Fill(sr, weight);
-				  else if(abs(ss.lep2_id()) == 13) Npn_histo_obs_mu->Fill(sr, weight);
 				  Npn_histo_obs->Fill(br, weight);
-				  if(abs(ss.lep2_id()) == 11) Npn_histo_obs_el->Fill(br, weight);
-				  else if(abs(ss.lep2_id()) == 13) Npn_histo_obs_mu->Fill(br, weight);
+				  Npn_histo_err2_obs->Fill(sr, weight*weight);
+				  Npn_histo_err2_obs->Fill(br, weight*weight);
+				  if(abs(ss.lep2_id()) == 11) {
+				    Npn_histo_obs_el->Fill(sr, weight);
+				    Npn_histo_obs_el->Fill(br, weight);
+				    Npn_histo_err2_obs_el->Fill(sr, weight*weight);
+				    Npn_histo_err2_obs_el->Fill(br, weight*weight);
+				  } else if(abs(ss.lep2_id()) == 13) {
+				    Npn_histo_obs_mu->Fill(sr, weight);
+				    Npn_histo_obs_mu->Fill(br, weight);
+				    Npn_histo_err2_obs_mu->Fill(sr, weight*weight);
+				    Npn_histo_err2_obs_mu->Fill(br, weight*weight);
+				  }
 				}
 			  else if( ss.lep1_motherID()!=1 && ss.lep2_motherID()==1 ) //lep1 is nonprompt
 			  //else if( ss.lep1_motherID()==-1 && ss.lep2_motherID()==0 ) //lep1 is light
@@ -279,11 +315,20 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 				  prompt1_reco = prompt1_reco + weight; 
 				  NpromptL2_reco = NpromptL2_reco + weight;				
 				  Npn_histo_obs->Fill(sr, weight);
-				  if(abs(ss.lep1_id()) == 11) Npn_histo_obs_el->Fill(sr, weight);
-				  else if(abs(ss.lep1_id()) == 13) Npn_histo_obs_mu->Fill(sr, weight);
 				  Npn_histo_obs->Fill(br, weight);
-				  if(abs(ss.lep1_id()) == 11) Npn_histo_obs_el->Fill(br, weight);
-				  else if(abs(ss.lep1_id()) == 13) Npn_histo_obs_mu->Fill(br, weight);
+				  Npn_histo_err2_obs->Fill(sr, weight*weight);
+				  Npn_histo_err2_obs->Fill(br, weight*weight);
+				  if(abs(ss.lep1_id()) == 11) {
+				    Npn_histo_obs_el->Fill(sr, weight);
+				    Npn_histo_obs_el->Fill(br, weight);
+				    Npn_histo_err2_obs_el->Fill(sr, weight*weight);
+				    Npn_histo_err2_obs_el->Fill(br, weight*weight);
+				  } else if(abs(ss.lep1_id()) == 13) {
+				    Npn_histo_obs_mu->Fill(sr, weight);
+				    Npn_histo_obs_mu->Fill(br, weight);
+				    Npn_histo_err2_obs_mu->Fill(sr, weight*weight);
+				    Npn_histo_err2_obs_mu->Fill(br, weight*weight);
+				  }
 				}
 			  else if( (ss.lep1_motherID()!=1 && ss.lep2_motherID()!=1) ) //don't need to explicitly write it.  can just use else
 				{
@@ -363,17 +408,23 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 					  e2 = getFakeRate( rate_histo_e, pt, fabs(ss.lep2_p4().eta()) );					  
 					  Npn_histo_pred_el->Fill(sr, (e2/(1-e2))*weight);
 					  Npn_histo_pred_el->Fill(br, (e2/(1-e2))*weight);
+					  Npn_histo_err2_pred_el->Fill(sr, (e2/(1-e2))*(e2/(1-e2))*weight*weight);
+					  Npn_histo_err2_pred_el->Fill(br, (e2/(1-e2))*(e2/(1-e2))*weight*weight);
 					}
 				  else if( abs(ss.lep2_id()) == 13 )  //if mu, use mu rate.  FILL WITH NONPROMPT
 					{
 					  e2 = getFakeRate( rate_histo_mu, pt, fabs(ss.lep2_p4().eta()) ) ;
 					  Npn_histo_pred_mu->Fill(sr, (e2/(1-e2))*weight);
 					  Npn_histo_pred_mu->Fill(br, (e2/(1-e2))*weight);
+					  Npn_histo_err2_pred_mu->Fill(sr, (e2/(1-e2))*(e2/(1-e2))*weight*weight);
+					  Npn_histo_err2_pred_mu->Fill(br, (e2/(1-e2))*(e2/(1-e2))*weight*weight);
 					}
 				  Npn = Npn + (e2/(1-e2))*weight;
 				  if (ss.lep2_motherID()==1) Npn_s = Npn_s + (e2/(1-e2))*weight;
 				  Npn_histo_pred->Fill(sr, (e2/(1-e2))*weight);
 				  Npn_histo_pred->Fill(br, (e2/(1-e2))*weight);
+				  Npn_histo_err2_pred->Fill(sr, (e2/(1-e2))*(e2/(1-e2))*weight*weight);
+				  Npn_histo_err2_pred->Fill(br, (e2/(1-e2))*(e2/(1-e2))*weight*weight);
 				}
 			  else if( !ss.lep1_passes_id() && ss.lep2_passes_id() )   //lep1 is loose-not-tight, lep2 is tight
 				{
@@ -385,17 +436,23 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 					  e1 = getFakeRate(rate_histo_e, pt, fabs(ss.lep1_p4().eta()) );
 					  Npn_histo_pred_el->Fill(sr, (e1/(1-e1))*weight);
 					  Npn_histo_pred_el->Fill(br, (e1/(1-e1))*weight);
+					  Npn_histo_err2_pred_el->Fill(sr, (e1/(1-e1))*(e1/(1-e1))*weight*weight);
+					  Npn_histo_err2_pred_el->Fill(br, (e1/(1-e1))*(e1/(1-e1))*weight*weight);
 					}
 				  else if( abs(ss.lep1_id()) == 13 ) //if mu, use mu rate.  FILL WITH NONPROMPT				  
 					{
 					  e1 = getFakeRate(rate_histo_mu, pt, fabs(ss.lep1_p4().eta()) );
 					  Npn_histo_pred_mu->Fill(sr, (e1/(1-e1))*weight);
 					  Npn_histo_pred_mu->Fill(br, (e1/(1-e1))*weight);
+					  Npn_histo_err2_pred_el->Fill(sr, (e1/(1-e1))*(e1/(1-e1))*weight*weight);
+					  Npn_histo_err2_pred_el->Fill(br, (e1/(1-e1))*(e1/(1-e1))*weight*weight);
 					}
 				  Npn = Npn + (e1/(1-e1))*weight;
 				  if (ss.lep1_motherID()==1) Npn_s = Npn_s + (e1/(1-e1))*weight;
 				  Npn_histo_pred->Fill(sr, (e1/(1-e1))*weight);
 				  Npn_histo_pred->Fill(br, (e1/(1-e1))*weight);
+				  Npn_histo_err2_pred->Fill(sr, (e1/(1-e1))*(e1/(1-e1))*weight*weight);
+				  Npn_histo_err2_pred->Fill(br, (e1/(1-e1))*(e1/(1-e1))*weight*weight);
 				}
 			}
 		} //end hyp = 2 if statement
@@ -476,7 +533,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   pad_r3->Draw();
   TLegend *leg3 = new TLegend(0.78, 0.70, 0.87, 0.80); //(0.78, 0.63, 0.87, 0.89)
   cout << "dump SR all" << endl;
-  DrawPlots(Npn_histo_pred, Npn_histo_obs, c3, pad_h3, pad_r3, leg3);
+  DrawPlots(Npn_histo_pred, Npn_histo_obs, Npn_histo_err2_pred, Npn_histo_err2_obs, c3, pad_h3, pad_r3, leg3);
 
   TCanvas *c4=new TCanvas("c4","Predicted and Observed Prompt-NonPrompt Background (Single mu)", 800,800);
   TPad *pad_h4 = new TPad("pad_h4","Histo Pad4",0., 0, 1., 0.8);
@@ -485,7 +542,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   pad_r4->Draw();
   TLegend *leg4 = new TLegend(0.78, 0.70, 0.87, 0.80); //(0.78, 0.63, 0.87, 0.89)
   cout << "dump SR mu" << endl;
-  DrawPlots(Npn_histo_pred_mu, Npn_histo_obs_mu, c4, pad_h4, pad_r4, leg4);
+  DrawPlots(Npn_histo_pred_mu, Npn_histo_obs_mu, Npn_histo_err2_pred_mu, Npn_histo_err2_obs_mu, c4, pad_h4, pad_r4, leg4);
 
   TCanvas *c5=new TCanvas("c5","Predicted and Observed Prompt-NonPrompt Background (Single el)", 800,800);
   TPad *pad_h5 = new TPad("pad_h5","Histo Pad5",0., 0, 1., 0.8);
@@ -494,7 +551,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   pad_r5->Draw();
   TLegend *leg5 = new TLegend(0.78, 0.70, 0.87, 0.80); //(0.78, 0.63, 0.87, 0.89)
   cout << "dump SR ele" << endl;
-  DrawPlots(Npn_histo_pred_el, Npn_histo_obs_el, c5, pad_h5, pad_r5, leg5);
+  DrawPlots(Npn_histo_pred_el, Npn_histo_obs_el, Npn_histo_err2_pred_el, Npn_histo_err2_obs_el, c5, pad_h5, pad_r5, leg5);
   //---------------------------------------------------------------------------------
   
   //benchmark stuff
