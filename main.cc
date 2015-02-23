@@ -63,6 +63,7 @@ int main() {
   } 
   else {
     TString dir  = "/hadoop/cms/store/group/snt/phys14/";
+    TString dir2 = "/nfs-7/userdata/ss2015/ttbar_copy/";
     TString tag  = "V07-02-05";
     TString tag2 = "V07-02-03";
     TString tag3 = "V07-02-06";
@@ -70,7 +71,7 @@ int main() {
     chain_T1ttttG1500->Add(dir+"SMS-T1tttt_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_T5qqqqWW1200->Add("/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/T5qqqqWW_mGo1200_mCh1000_mChi800/merged/merged_ntuple_*.root");
     chain_T5qqqqWW1500->Add("/hadoop/cms/store/user/cgeorge/condor/privateSignals/13TeV_T5qqqqWW_Gl1500_Chi800_LSP100/merged/merged_ntuple_*.root");
-    chain_TTJets->Add(     dir+"TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag3+"/merged_ntuple_*.root");
+    chain_TTJets->Add(    dir2+"merged_ntuple_*.root");
     chain_TTWJets->Add(    dir+"TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_TTZJets->Add(    dir+"TTZJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_WHZH->Add(       dir+"WH_ZH_HToWW_M-125_13TeV_pythia6/"+tag+"/merged_ntuple_*.root");
