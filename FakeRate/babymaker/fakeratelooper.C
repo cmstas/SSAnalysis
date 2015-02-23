@@ -550,10 +550,10 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  type = tas::mus_type().at(i);
 		  mt = calculateMt(p4, met, metPhi); 
 
-		  passes_id = isGoodLepton(id,i);   //"fix me" in selection.cc.
-		  passes_id_ptrel = isGoodLeptonIsoOrPtRel(id,i);   //"fix me" in selection.cc.
-		  FO = isDenominatorLepton(id,i);    //"fix me" in selection.cc
-		  FO_ptrel = isDenominatorLeptonIsoOrPtRel(id,i);    //"fix me" in selection.cc
+		  passes_id = isGoodLepton(id,i,false);   //"fix me" in selection.cc.
+		  passes_id_ptrel = isGoodLepton(id,i,true);   //"fix me" in selection.cc.
+		  FO = isDenominatorLepton(id,i,false);    //"fix me" in selection.cc
+		  FO_ptrel = isDenominatorLepton(id,i,true);    //"fix me" in selection.cc
 
 		  ptrelv0 = ptRel(p4, jetp4s, false);
 		  ptrelv1 = ptRel(p4, jetp4s, true);
