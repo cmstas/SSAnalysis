@@ -3,12 +3,10 @@
 using namespace tas;
 
 //Main functions
-void babyMaker::MakeBabyNtuple(const char* output_name){
+void babyMaker::MakeBabyNtuple(const char* output_name, bool usePtRel){
 
   //Create Baby
-  //TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
-  //rootdir->cd();
-  BabyFile = new TFile(Form("%s/%s", path.Data(), output_name), "RECREATE");
+  BabyFile = new TFile(Form("%s/%s%s.root", path.Data(), output_name, usePtRel ? "_ptRel" : ""), "RECREATE");
   BabyFile->cd();
   BabyTree = new TTree("t", "SS2015 Baby Ntuple");
 
@@ -95,6 +93,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("nGoodMuons10", &nGoodMuons10);
   BabyTree->Branch("nGoodMuons25", &nGoodMuons25);
   BabyTree->Branch("filename", &filename);
+  BabyTree->Branch("lep1_ptrel_v0", &lep1_ptrel_v0);
+  BabyTree->Branch("lep1_ptrel_v1", &lep1_ptrel_v1);
+  BabyTree->Branch("lep2_ptrel_v0", &lep2_ptrel_v0);
+  BabyTree->Branch("lep2_ptrel_v1", &lep2_ptrel_v1);
 
   //Print warning!
   cout << "Careful!! Path is " << path << endl;
@@ -180,10 +182,14 @@ void babyMaker::InitBabyNtuple(){
     nGoodMuons10 = 0;
     nGoodMuons25 = 0;
     filename = "";
+    lep1_ptrel_v0 = -1;
+    lep1_ptrel_v1 = -1;
+    lep2_ptrel_v0 = -1;
+    lep2_ptrel_v1 = -1;
 } 
 
 //Main function
-int babyMaker::ProcessBaby(){
+int babyMaker::ProcessBaby(bool usePtRel){
 
   //Initialize variables
   InitBabyNtuple();
@@ -193,7 +199,6 @@ int babyMaker::ProcessBaby(){
   
   //Debug mode
   if (verbose && tas::evt_event() != evt_cut) return -1;
-  //if (verbose) cout << "file name is " << file->GetName() << endl;
 
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return -1;
@@ -221,21 +226,8 @@ int babyMaker::ProcessBaby(){
   filt_eebadsc = is_real_data ? tas::filt_eeBadSc() : 1;
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
   
-  //Fill signal variables
-  /*
-    mGluino = signal == T1TTTT ? tas::sparm_values().at(0): -1;
-    mLSP = signal == T1TTTT ? tas::sparm_values().at(1) : -1;
-    mSbottom = signal == T4TW ? tas::sparm_values().at(0) : -1;
-    mChargino = signal == T4TW ? tas::sparm_values().at(1) : -1;
-    if (signal == T1TTTT && (mGluino != 1500 || mLSP != 100)) continue;
-    if (signal == T4TW && (mSbottom != 500 || mChargino != 200)) continue;
-    if (signal == T1TTTT) scale1fb = 1000*gluino_cs(mGluino).value/20000;
-    if (signal == T4TW) scale1fb = 1000*stop_sbottom_cs(mSbottom).value/47500;
-    if (signal != NONE && verbose) cout << scale1fb << endl;
-  */
-  
   //Fill lepton variables
-  hyp_result_t best_hyp_info = chooseBestHyp();
+  hyp_result_t best_hyp_info = chooseBestHyp(usePtRel);
   hyp_class = best_hyp_info.hyp_class;
   int best_hyp = best_hyp_info.best_hyp;
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
@@ -350,6 +342,12 @@ int babyMaker::ProcessBaby(){
     cout << "nbtags: " <<  nbtags << endl;
     for (unsigned int i = 0; i < jets.size(); i++) cout << i << " " << jets[i].pt() << " " << jets[i].eta() << endl;
   } 
+
+  //PtRel for both leptons
+  lep1_ptrel_v0 = ptRel(lep1_p4, jets, false);
+  lep2_ptrel_v0 = ptRel(lep2_p4, jets, false);
+  lep1_ptrel_v1 = ptRel(lep1_p4, jets, true);
+  lep2_ptrel_v1 = ptRel(lep2_p4, jets, true);
   
   //nGood Leptons
   for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
@@ -372,15 +370,6 @@ int babyMaker::ProcessBaby(){
     if (tas::mus_p4().at(muidx).pt() < 25) continue;
     nGoodMuons25++;
   }
-  
-  //Scale Factors
-  /*
-  sf_dilepTrig_hpt = DileptonTriggerScaleFactor(hyp_type, HighHigh, lep2_p4);
-  sf_dilepTrig_lpt = DileptonTriggerScaleFactor(hyp_type, HighLow, lep2_p4); 
-  sf_dilepTrig_vlpt = DileptonTriggerScaleFactor(hyp_type, LowLow, lep2_p4);
-  sf_dilep_eff = DileptonTagAndProbeScaleFactor(best_hyp);
-  if (verbose) cout << "sf_dilep_eff: " << sf_dilep_eff << endl;
-  */
   
   //MT variables
   mt = calculateMt(lep1_p4.pt(),met,deltaPhi(lep1_p4.phi(),metPhi));

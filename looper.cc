@@ -23,7 +23,7 @@
 using namespace tas;
 using namespace std;
 
-int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isData, TString whatTest, int nEvents, vector<int> evtToDebug) {
+int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isData, TString whatTest, int nEvents, bool usePtRel, vector<int> evtToDebug) {
 
   makebaby       = 0;
   makehist       = 1;
@@ -55,12 +55,12 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
   babyMaker* bm=0;
   if (makebaby) {
     bm = new babyMaker(debug);
-    bm->MakeBabyNtuple( Form( "%s%s.root", prefix.Data(), postfix.Data() ) );
+    bm->MakeBabyNtuple( Form( "%s%s", prefix.Data(), postfix.Data() ), usePtRel );
   }
   if (makehist) CreateOutputFile( Form( "%s_histos%s.root", prefix.Data(), postfix.Data() ) );
 
   TFile* fr_file=0;
-  if (!makeDYtest&&!makeQCDtest&&!makeSSskim&&!makeQCDskim) 
+  if (!makeDYtest&&!makeQCDtest&&!makeSSskim&&!makeQCDskim&&!makebaby) 
     fr_file=TFile::Open("fakeRates_qcd_pt-50to170.root");
 
   // File Loop
@@ -141,7 +141,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 
       //fill baby
       if (makebaby) {	
-	bm->ProcessBaby();
+	bm->ProcessBaby(usePtRel);
 	continue;
       }
 
@@ -307,7 +307,6 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
             }
           }
         } else {
-          //for (unsigned int gl=0;gl<goodleps.size();++gl) {
           for (unsigned int gl=0;gl<vetoleps.size();++gl) {//fixme not sure this is the best choice
 	    Lep lep = vetoleps[gl];
 	    if (lep.pt()<10) continue;

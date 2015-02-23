@@ -8,22 +8,14 @@
 #include "tools.h"
 #include "Tools/MT2/MT2.h"
 #include "CORE/SSSelections.h"
-//#include "structAG.h"
-//#include "looper.h" 
-//#include "fromCore.h"
-//#include "structAG.h"
+#include "CORE/IsolationTools.h"
+#include "TROOT.h"
+#include <vector>
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef vector<pair<const LorentzVector *, double> > jets_with_corr_t;
 
 using namespace std;
-
-//Comparisons
-//bool compare_btagInfo(const btagInfo_t a, const btagInfo_t b){ return a.jetcor.pt() > b.jetcor.pt(); }
-
-//Declare functions in other files
-//val_err_t gluino_cs(float mGluino);
-//val_err_t stop_sbottom_cs(float mGluino);
 
 //Classes
 class babyMaker {
@@ -34,10 +26,10 @@ class babyMaker {
       verbose = debug;
       evt_cut = 13398;
     }
-    void MakeBabyNtuple(const char* output_name);
+    void MakeBabyNtuple(const char* output_name, bool usePtRel);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd();BabyTree->Write();BabyFile->Close();}
-    int ProcessBaby();
+    int ProcessBaby(bool usePtRel);
 
   protected:
     TFile* BabyFile;
@@ -180,4 +172,10 @@ class babyMaker {
     int nGoodMuons5;
     int nGoodMuons10;
     int nGoodMuons25;
+
+    //PtRel, v0 and v1 (v1 is lepton-subtracted)
+    float lep1_ptrel_v0;
+    float lep1_ptrel_v1;
+    float lep2_ptrel_v0;
+    float lep2_ptrel_v1;
 };
