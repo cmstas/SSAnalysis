@@ -150,6 +150,7 @@ vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
  
     TH1F* SR = new TH1F("SR", "SR", 1, 0, 1);
     TCut cut;
+    if (i%10 == 0) cut = htmet;
     if (i%10 == 1) cut = met_low*ht_low*njets_low; 
     if (i%10 == 2) cut = met_low*ht_high*njets_low; 
     if (i%10 == 3) cut = met_low*ht_low*njets_high; 
