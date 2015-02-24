@@ -38,41 +38,42 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool doBonly = false;
   if (option.Contains("doBonly")) doBonly = true;
 
-  float ptbins[5] = {10., 20., 30., 50., 70.};
+  //float ptbins[5] = {10., 20., 30., 50., 70.};
+  float ptbins[6] = {10., 15., 25., 35., 50., 70.};
   float etabins[4] = {0., 1., 2., 2.4};
 
   // Example Histograms
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
 
-  TH2D *Nt_histo = new TH2D("Nt_histo", "Nt vs Pt, Eta", 4,ptbins,3,etabins);
+  TH2D *Nt_histo = new TH2D("Nt_histo", "Nt vs Pt, Eta", 5,ptbins,3,etabins);
   Nt_histo->SetDirectory(rootdir);
   Nt_histo->Sumw2();
 
-  TH2D *Nl_histo = new TH2D("Nl_histo", "Nl vs Pt, Eta", 4,ptbins,3,etabins);
+  TH2D *Nl_histo = new TH2D("Nl_histo", "Nl vs Pt, Eta", 5,ptbins,3,etabins);
   Nl_histo->SetDirectory(rootdir);
   Nl_histo->Sumw2();
 
-  TH2D *Nt_histo_e = new TH2D("Nt_histo_e", "Nt vs Pt, Eta (electrons)", 4,ptbins,3,etabins);
+  TH2D *Nt_histo_e = new TH2D("Nt_histo_e", "Nt vs Pt, Eta (electrons)", 5,ptbins,3,etabins);
   Nt_histo_e->SetDirectory(rootdir);
   Nt_histo_e->Sumw2();
 
-  TH2D *Nl_histo_e = new TH2D("Nl_histo_e", "Nl vs Pt, Eta (electrons)", 4,ptbins,3,etabins);
+  TH2D *Nl_histo_e = new TH2D("Nl_histo_e", "Nl vs Pt, Eta (electrons)", 5,ptbins,3,etabins);
   Nl_histo_e->SetDirectory(rootdir);
   Nl_histo_e->Sumw2();
 
-  TH2D *Nt_histo_mu = new TH2D("Nt_histo_mu", "Nt vs Pt, Eta (muons)", 4,ptbins,3,etabins);
+  TH2D *Nt_histo_mu = new TH2D("Nt_histo_mu", "Nt vs Pt, Eta (muons)", 5,ptbins,3,etabins);
   Nt_histo_mu->SetDirectory(rootdir);
   Nt_histo_mu->Sumw2();
 
-  TH2D *Nl_histo_mu = new TH2D("Nl_histo_mu", "Nl vs Pt, Eta (muons)", 4,ptbins,3,etabins);
+  TH2D *Nl_histo_mu = new TH2D("Nl_histo_mu", "Nl vs Pt, Eta (muons)", 5,ptbins,3,etabins);
   Nl_histo_mu->SetDirectory(rootdir);
   Nl_histo_mu->Sumw2();
 
-  TH2D *Nl_cone_histo_e = new TH2D("Nl_cone_histo_e", "Nl vs Cone Energy, Eta (electrons)", 4,ptbins,3,etabins);
+  TH2D *Nl_cone_histo_e = new TH2D("Nl_cone_histo_e", "Nl vs Cone Energy, Eta (electrons)", 5,ptbins,3,etabins);
   Nl_cone_histo_e->SetDirectory(rootdir);
   Nl_cone_histo_e->Sumw2();
 
-  TH2D *Nl_cone_histo_mu = new TH2D("Nl_cone_histo_mu", "Nl vs Cone Energy, Eta (muons)", 4,ptbins,3,etabins);
+  TH2D *Nl_cone_histo_mu = new TH2D("Nl_cone_histo_mu", "Nl vs Cone Energy, Eta (muons)", 5,ptbins,3,etabins);
   Nl_cone_histo_mu->SetDirectory(rootdir);
   Nl_cone_histo_mu->Sumw2();
 
@@ -124,7 +125,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  
       // Analysis Code
 	  float weight = ss.scale1fb()*10.0;
-
+	  if(ss.scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched
+	  
 	  bool jetptcut = false;
 	  int jetidx = 0;
 
@@ -283,23 +285,23 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
   rate_histo->GetXaxis()->SetTitle("pT (GeV)"); 
   rate_histo->GetYaxis()->SetTitle("eta");
-  rate_histo->GetZaxis()->SetRangeUser(0,1.);
+  rate_histo->GetZaxis()->SetRangeUser(0,.5);
   rate_histo->SetTitle("Fake Rate vs Pt, Eta");
   rate_histo_e->GetXaxis()->SetTitle("pT (GeV)"); 
   rate_histo_e->GetYaxis()->SetTitle("eta");
-  rate_histo_e->GetZaxis()->SetRangeUser(0,1.);
+  rate_histo_e->GetZaxis()->SetRangeUser(0,.5);
   rate_histo_e->SetTitle("Fake Rate vs Pt, Eta (electrons)");
   rate_histo_mu->GetXaxis()->SetTitle("pT (GeV)"); 
   rate_histo_mu->GetYaxis()->SetTitle("eta");
-  rate_histo_mu->GetZaxis()->SetRangeUser(0,1.);
+  rate_histo_mu->GetZaxis()->SetRangeUser(0,.5);
   rate_histo_mu->SetTitle("Fake Rate vs Pt, Eta (muons)");
   rate_cone_histo_e->GetXaxis()->SetTitle("pT (GeV)"); 
   rate_cone_histo_e->GetYaxis()->SetTitle("eta");
-  rate_cone_histo_e->GetZaxis()->SetRangeUser(0,1.);
+  rate_cone_histo_e->GetZaxis()->SetRangeUser(0,.5);
   rate_cone_histo_e->SetTitle("Fake Rate vs Pt + Cone Energy, Eta (electrons)");
   rate_cone_histo_mu->GetXaxis()->SetTitle("pT (GeV)"); 
   rate_cone_histo_mu->GetYaxis()->SetTitle("eta");
-  rate_cone_histo_mu->GetZaxis()->SetRangeUser(0,1.);
+  rate_cone_histo_mu->GetZaxis()->SetRangeUser(0,.5);
   rate_cone_histo_mu->SetTitle("Fake Rate vs Pt + Cone Energy, Eta (muons)");
 
   gStyle->SetOptStat(0);

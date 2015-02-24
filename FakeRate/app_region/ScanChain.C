@@ -68,6 +68,9 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   ratio->GetYaxis()->SetTitle("pred/obs");
   pad_r->SetGridy();
   ratio->Draw();
+  
+  int w = 18;
+  cout << setw(5) << "SR" <<  setw(w) << "Pred" << setw(w) << "Obs" << setw(w) << "Pred/Obs" << setw(w) << "(p-o)/p" << endl;
 
   for (int bin=1;bin<=pred->GetNbinsX();++bin) {
     if (bin%10 == 0) continue;
@@ -82,31 +85,33 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
     float pefr2 = 0;
     if (pred_err2_mu[sr]!=0) { 
       for (int frbinx=1;frbinx<=rate_histo_mu->GetNbinsX();++frbinx) {
-	for (int frbiny=1;frbiny<=rate_histo_mu->GetNbinsY();++frbiny) {
-	  float fr = rate_histo_mu->GetBinContent(frbinx,frbiny);
-	  float fre = rate_histo_mu->GetBinError(frbinx,frbiny);
-	  float tot = pred_err2_mu[sr]->GetBinContent(frbinx,frbiny);
-	  pefr2 += fre*fre*pow(1-fr,-4)*tot*tot;
-	}
+		for (int frbiny=1;frbiny<=rate_histo_mu->GetNbinsY();++frbiny) {
+		  float fr = rate_histo_mu->GetBinContent(frbinx,frbiny);
+		  float fre = rate_histo_mu->GetBinError(frbinx,frbiny);
+		  float tot = pred_err2_mu[sr]->GetBinContent(frbinx,frbiny);
+		  pefr2 += fre*fre*pow(1-fr,-4)*tot*tot;
+		}
       }
     }
     if (pred_err2_el[sr]!=0) { 
       for (int frbinx=1;frbinx<=rate_histo_e->GetNbinsX();++frbinx) {
-	for (int frbiny=1;frbiny<=rate_histo_e->GetNbinsY();++frbiny) {
-	  float fr = rate_histo_e->GetBinContent(frbinx,frbiny);
-	  float fre = rate_histo_e->GetBinError(frbinx,frbiny);
-	  float tot = pred_err2_el[sr]->GetBinContent(frbinx,frbiny);
-	  pefr2 += fre*fre*pow(1-fr,-4)*tot*tot;
-	}
+		for (int frbiny=1;frbiny<=rate_histo_e->GetNbinsY();++frbiny) {
+		  float fr = rate_histo_e->GetBinContent(frbinx,frbiny);
+		  float fre = rate_histo_e->GetBinError(frbinx,frbiny);
+		  float tot = pred_err2_el[sr]->GetBinContent(frbinx,frbiny);
+		  pefr2 += fre*fre*pow(1-fr,-4)*tot*tot;
+		}
       }
     }
     //now combine the two
     pe = sqrt(pe*pe + pefr2);
+	pred->SetBinError(bin, pe); //I think it works retroactively
 
     float ratioe = sqrt((p*p*oe*oe + o*o*pe*pe)/(o*o*o*o)); //error prop
     float laste = sqrt((p*p*oe*oe + o*o*pe*pe)/(p*p*p*p));  //error prop
 
-    cout << Form("SR=%2i - pred=%5.2f +/- %5.2f - obs=%5.2f +/- %5.2f - pred/obs=%5.2f +/- %5.2f - (p-o)/p=%5.2f +/- %5.2f", sr, p, pe, o, oe, (o>0?p/o:99.99),ratioe, (p>0?(p-o)/p:99.99), laste ) << endl;
+    //cout << Form("SR=%2i - pred=%5.2f +/- %5.2f - obs=%5.2f +/- %5.2f - pred/obs=%5.2f +/- %5.2f - (p-o)/p=%5.2f +/- %5.2f", sr, p, pe, o, oe, (o>0?p/o:99.99),ratioe, (p>0?(p-o)/p:99.99), laste ) << endl;	
+	cout << setw(5) << sr <<  setw(w) << Form("%5.2f +/-%5.2f", p, pe) << setw(w) << Form("%5.2f +/-%5.2f", o, oe) << setw(w) << Form("%5.2f +/-%5.2f", (o>0?p/o:99.99),ratioe) << setw(w) << Form("%5.2f +/-%5.2f", (p>0?(p-o)/p:99.99), laste) << endl;
   }
 
 
@@ -528,9 +533,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("1.3f");
 
-  // //Plot fake rate histos
-  // TCanvas *c0=new TCanvas("c0","Fake Rate vs Pt, eta",800,800);
-  // rate_histo->Draw("colz,texte");
+  //Plot fake rate histos
+  //  TCanvas *c0=new TCanvas("c0","Fake Rate vs Pt, eta",800,800);
+  //  rate_histo->Draw("colz,texte");
   // TCanvas *c1=new TCanvas("c1","Fake Rate vs Pt, eta (electron)",800,800);
   // rate_histo_e->Draw("colz,texte");
   // TCanvas *c2=new TCanvas("c2","Fake Rate vs Pt, eta (muon)",800,800);
@@ -544,7 +549,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   pad_h3->Draw();
   pad_r3->Draw();
   TLegend *leg3 = new TLegend(0.78, 0.70, 0.87, 0.80); //(0.78, 0.63, 0.87, 0.89)
-  cout << "dump SR all" << endl;
+  cout << "\ndump SR all" << endl;
   DrawPlots(Npn_histo_pred, Npn_histo_obs, Npn_histo_err2_pred_mu, Npn_histo_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
 
   TH2D *nullarr[40] = {0};
@@ -555,7 +560,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   pad_h4->Draw();
   pad_r4->Draw();
   TLegend *leg4 = new TLegend(0.78, 0.70, 0.87, 0.80); //(0.78, 0.63, 0.87, 0.89)
-  cout << "dump SR mu" << endl;
+  cout << "\ndump SR mu" << endl;
   DrawPlots(Npn_histo_pred_mu, Npn_histo_obs_mu, Npn_histo_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
 
   TCanvas *c5=new TCanvas("c5","Predicted and Observed Prompt-NonPrompt Background (Single el)", 800,800);
@@ -564,7 +569,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   pad_h5->Draw();
   pad_r5->Draw();
   TLegend *leg5 = new TLegend(0.78, 0.70, 0.87, 0.80); //(0.78, 0.63, 0.87, 0.89)
-  cout << "dump SR ele" << endl;
+  cout << "\ndump SR ele" << endl;
   DrawPlots(Npn_histo_pred_el, Npn_histo_obs_el, nullarr, Npn_histo_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
   //---------------------------------------------------------------------------------
 

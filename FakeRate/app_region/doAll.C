@@ -11,9 +11,9 @@
 
   gROOT->ProcessLine(".L ScanChain.C+");
 
-  bool doConeCorr = 1;
-  bool doNoSIP    = 1;
-  bool doBonly    = 0;
+  bool doConeCorr = 0;
+  bool doNoSIP    = 0;
+  bool doBonly    = 1;
   bool doPtRel    = 0;
 
   TString option = "";
