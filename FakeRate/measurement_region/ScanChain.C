@@ -35,38 +35,41 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool usePtRel = false;
   if (option.Contains("ptRel")) usePtRel = true;
 
+  float ptbins[5] = {10., 20., 30., 50., 70.};
+  float etabins[4] = {0., 1., 2., 2.4};
+
   // Example Histograms
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
 
-  TH2D *Nt_histo = new TH2D("Nt_histo", "Nt vs Pt, Eta", 9,10,100,3,0,3);
+  TH2D *Nt_histo = new TH2D("Nt_histo", "Nt vs Pt, Eta", 4,ptbins,3,etabins);
   Nt_histo->SetDirectory(rootdir);
   Nt_histo->Sumw2();
 
-  TH2D *Nl_histo = new TH2D("Nl_histo", "Nl vs Pt, Eta", 9,10,100,3,0,3);
+  TH2D *Nl_histo = new TH2D("Nl_histo", "Nl vs Pt, Eta", 4,ptbins,3,etabins);
   Nl_histo->SetDirectory(rootdir);
   Nl_histo->Sumw2();
 
-  TH2D *Nt_histo_e = new TH2D("Nt_histo_e", "Nt vs Pt, Eta (electrons)", 9,10,100,3,0,3);
+  TH2D *Nt_histo_e = new TH2D("Nt_histo_e", "Nt vs Pt, Eta (electrons)", 4,ptbins,3,etabins);
   Nt_histo_e->SetDirectory(rootdir);
   Nt_histo_e->Sumw2();
 
-  TH2D *Nl_histo_e = new TH2D("Nl_histo_e", "Nl vs Pt, Eta (electrons)", 9,10,100,3,0,3);
+  TH2D *Nl_histo_e = new TH2D("Nl_histo_e", "Nl vs Pt, Eta (electrons)", 4,ptbins,3,etabins);
   Nl_histo_e->SetDirectory(rootdir);
   Nl_histo_e->Sumw2();
 
-  TH2D *Nt_histo_mu = new TH2D("Nt_histo_mu", "Nt vs Pt, Eta (muons)", 9,10,100,3,0,3);
+  TH2D *Nt_histo_mu = new TH2D("Nt_histo_mu", "Nt vs Pt, Eta (muons)", 4,ptbins,3,etabins);
   Nt_histo_mu->SetDirectory(rootdir);
   Nt_histo_mu->Sumw2();
 
-  TH2D *Nl_histo_mu = new TH2D("Nl_histo_mu", "Nl vs Pt, Eta (muons)", 9,10,100,3,0,3);
+  TH2D *Nl_histo_mu = new TH2D("Nl_histo_mu", "Nl vs Pt, Eta (muons)", 4,ptbins,3,etabins);
   Nl_histo_mu->SetDirectory(rootdir);
   Nl_histo_mu->Sumw2();
 
-  TH2D *Nl_cone_histo_e = new TH2D("Nl_cone_histo_e", "Nl vs Cone Energy, Eta (electrons)", 9,10,100,3,0,3);
+  TH2D *Nl_cone_histo_e = new TH2D("Nl_cone_histo_e", "Nl vs Cone Energy, Eta (electrons)", 4,ptbins,3,etabins);
   Nl_cone_histo_e->SetDirectory(rootdir);
   Nl_cone_histo_e->Sumw2();
 
-  TH2D *Nl_cone_histo_mu = new TH2D("Nl_cone_histo_mu", "Nl vs Cone Energy, Eta (muons)", 9,10,100,3,0,3);
+  TH2D *Nl_cone_histo_mu = new TH2D("Nl_cone_histo_mu", "Nl vs Cone Energy, Eta (muons)", 4,ptbins,3,etabins);
   Nl_cone_histo_mu->SetDirectory(rootdir);
   Nl_cone_histo_mu->Sumw2();
 
