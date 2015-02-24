@@ -42,8 +42,8 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH1F *pred_err2, TH1F *obs_err2, TCanvas *
  
   //Overlaid histos
   pad_h->cd();
-  pred->Draw("hist");
-  obs->Draw("samehist");
+  pred->Draw("histE");
+  obs->Draw("samehistE");
 
   //legend
   leg->SetLineColor(kWhite);
@@ -53,8 +53,8 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH1F *pred_err2, TH1F *obs_err2, TCanvas *
   leg->SetFillColor(kWhite); 
   TString predname = pred->GetName();
   TString obsname = obs->GetName();
-  leg->AddEntry(predname,"Predicted","l");//idk how to do the first arg
-  leg->AddEntry(obsname,"Observed","l");  //idk how to do the first arg
+  leg->AddEntry(predname,"Predicted","l");
+  leg->AddEntry(obsname,"Observed","l");  
   leg->Draw();
 
   //ratio histo
@@ -76,7 +76,13 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH1F *pred_err2, TH1F *obs_err2, TCanvas *
     float o = obs->GetBinContent(bin);
     float pe = sqrt(pred_err2->GetBinContent(bin));
     float oe = sqrt(obs_err2->GetBinContent(bin));
-    cout << Form("SR=%2i - pred=%5.2f +/- %5.2f - obs=%5.2f +/- %5.2f - pred/obs=%5.2f - (p-o)/p=%5.2f ", bin-1, p, pe, o, oe, (o>0?p/o:99.99), (p>0?(p-o)/p:99.99) ) << endl;
+    // float pe = pred->GetBinError(bin);
+    // float oe = obs->GetBinError(bin);
+	float ratioe = sqrt((p*p*oe*oe + o*o*pe*pe)/(o*o*o*o)); //error prop
+	float laste = sqrt((p*p*oe*oe + o*o*pe*pe)/(p*p*p*p));  //error prop
+    cout << Form("SR=%2i - pred=%5.2f +/- %5.2f - obs=%5.2f +/- %5.2f - pred/obs=%5.2f +/- %5.2f - (p-o)/p=%5.2f +/- %5.2f", bin-1, p, pe, o, oe, (o>0?p/o:99.99),ratioe, (p>0?(p-o)/p:99.99), laste ) << endl;
+	// cout << "pred error = " << pred->GetBinError(bin) << endl;
+	// cout << "obs  error = " << obs->GetBinError(bin) << endl;
   }
 
 
@@ -87,10 +93,9 @@ float getFakeRate(TH2D* histo, float pt, float eta) //change if bounds of histo 
   float e = 0;
 
   //if above or below bounds, reassign so pick rate from closest bin.
-  if(pt > 100.) pt = 99; 
+  if(pt > 70.) pt = 69; 
   else if(pt < 10.)  pt = 11;   //use this if lower FR histo bound is 10. 
-  //else if(pt < 20.)  pt = 21; //use this if lower FR histo bound is 20.
-  if(fabs(eta) > 3.) eta = 2.5;
+  if(fabs(eta) > 2.4) eta = 2.3;
  
   e = histo->GetBinContent( histo->FindBin(pt, fabs(eta) ));
 

@@ -12,12 +12,12 @@
   gROOT->ProcessLine(".L ScanChain.C+");
 
   TString option = "";
-  option+="coneCorr";
-  option+="noSIP";
+  //option+="coneCorr";
+  //option+="noSIP";
   //option+="closeBonly";
 
-  //TString fakeratefile = "../measurement_region/rate_histos_qcd.root";
-  TString fakeratefile = "../measurement_region/rate_histos_qcd_noSIP.root";
+  TString fakeratefile = "../measurement_region/rate_histos_qcd.root";
+  //TString fakeratefile = "../measurement_region/rate_histos_qcd_noSIP.root";
   //TString fakeratefile = "../measurement_region/rate_histos_qcd_ptRel.root";
   //TString fakeratefile = "../measurement_region/rate_histos_qcd_ptRel_noSIP.root";
   //TString fakeratefile = "../measurement_region/rate_histos_ttbar.root";
@@ -25,8 +25,8 @@
   TChain *ch = new TChain("t"); 
   // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v1.03/ttbar.root");
   //ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/yields/v1.03/ttbar_baby.root");
-  ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby.root");
-  //ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby_ptRel.root");
+  ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby.root"); //this one!
+  //ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby_ptRel.root"); //or this one!
   // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v1.03/ttz.root");
   // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v1.03/ttw.root");
   ScanChain(ch, fakeratefile, option); 
