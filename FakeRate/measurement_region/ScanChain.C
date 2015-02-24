@@ -35,6 +35,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool usePtRel = false;
   if (option.Contains("ptRel")) usePtRel = true;
 
+  bool doBonly = false;
+  if (option.Contains("doBonly")) doBonly = true;
+
   float ptbins[5] = {10., 20., 30., 50., 70.};
   float etabins[4] = {0., 1., 2., 2.4};
 
@@ -157,7 +160,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  //Using gen level info to see if prompt -> no prompt contamination in measurement region
 	  //everything else is RECO (p4, id, passes_id, FO, etc.)
 
-	  if( ss.motherID() != 1 )  //if lep is nonprompt
+	  if( ss.motherID() != 1 && (doBonly==0 || ss.motherID() == -1) )  //if lep is nonprompt
 		{
 
 		  bool passId = ( usePtRel ? ss.passes_id_ptrel() : ss.passes_id() );
@@ -204,7 +207,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  //everything else is RECO (p4, id, passes_id, FO, etc.)
 	  
 
-	  if( ss.motherID() != 1 )  //if el is nonprompt (GEN info)
+	  if( ss.motherID() != 1 && (doBonly==0 || ss.motherID() == -1) )  //if el is nonprompt (GEN info)
 		{
 
 		  bool passId = ( usePtRel ? ss.passes_id_ptrel() : ss.passes_id() );
@@ -323,6 +326,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   rate_cone_histo_mu->Write();
 
   OutputFile->Close();
+
+  delete Nt_histo;
+  delete Nl_histo;
+  delete Nt_histo_e;
+  delete Nl_histo_e;
+  delete Nt_histo_mu;
+  delete Nl_histo_mu;
+  delete Nl_cone_histo_e;
+  delete Nl_cone_histo_mu;
 
   // return
   bmark->Stop("benchmark");
