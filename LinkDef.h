@@ -7,6 +7,7 @@
 
 
 #pragma link C++ class ROOT::Math::PxPyPzE4D<float>+; 
+#pragma link C++ class std::vector<float>+; 
 #pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
 #pragma link C++ class std::vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > >+; 
 
