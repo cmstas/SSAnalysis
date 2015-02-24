@@ -27,8 +27,8 @@
   if (doConeCorr) option+="_coneCorr";//option only for ScanChain
 
   TChain *ch = new TChain("t"); 
-  ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby.root"); //this one!
   if (doPtRel) ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby_ptRel.root"); //or this one!
+  else ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby.root"); //this one!
 
   ScanChain(ch, fakeratefile, option); 
 }
