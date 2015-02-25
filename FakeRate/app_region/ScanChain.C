@@ -37,6 +37,9 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   obs->GetYaxis()->SetTitle("Events");
   obs->SetLineColor(kRed);
 
+  pred->SetLineWidth(2);
+  obs->SetLineWidth(2);
+
   pad_h->Draw();
   pad_r->Draw();
  
@@ -48,7 +51,7 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   //legend
   leg->SetLineColor(kWhite);
   leg->SetTextFont(42); 
-  leg->SetTextSize(0.026);
+  leg->SetTextSize(0.06);
   leg->SetShadowColor(kWhite); 
   leg->SetFillColor(kWhite); 
   TString predname = pred->GetName();
@@ -64,8 +67,13 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   ratio->GetXaxis()->SetRangeUser(0,40); 
   ratio->GetYaxis()->SetRangeUser(0,3);
   ratio->GetYaxis()->SetNdivisions(4);
-  ratio->GetYaxis()->SetLabelSize(.12);
+  ratio->GetYaxis()->SetLabelSize(0.12);
   ratio->GetYaxis()->SetTitle("pred/obs");
+  ratio->GetYaxis()->SetTitleSize(0.15);
+  ratio->GetYaxis()->SetTitleOffset(0.2);
+  ratio->GetXaxis()->SetLabelSize(0.);
+  ratio->GetXaxis()->SetTitle("");
+  ratio->SetTitle("");
   pad_r->SetGridy();
   ratio->Draw();
   
@@ -284,7 +292,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 	    if (ss.lep2_motherID()!=1 && ss.lep2_motherID()!=-1) continue;
 	    if (ss.lep1_motherID()!=1 && ss.lep1_motherID()!=-1) continue;
 	  }
-	  
+
+	  //if (std::min(ss.mt(),ss.mt_l2())<100) continue;	  
 
 	  //------------------------------------------------------------------------
 	  unsigned int ac_base = analysisCategory(ss.lep1_p4().pt(), ss.lep2_p4().pt());
@@ -544,31 +553,31 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   //Signal region plots
   //---------------------------------------------------------------------------------------
   TCanvas *c3=new TCanvas("c3","Predicted and Observed Prompt-NonPrompt Background", 800,800);
-  TPad *pad_h3 = new TPad("pad_h3","Histo Pad3",0., 0, 1., 0.8);
-  TPad *pad_r3 = new TPad("pad_r3","Ratio Pad3",0., 0.8, 1., 1.);
+  TPad *pad_h3 = new TPad("pad_h3","Histo Pad3",0., 0.2, 1., 1.0);
+  TPad *pad_r3 = new TPad("pad_r3","Ratio Pad3",0., 0.0, 1., 0.2);
   pad_h3->Draw();
   pad_r3->Draw();
-  TLegend *leg3 = new TLegend(0.78, 0.70, 0.87, 0.80); //(0.78, 0.63, 0.87, 0.89)
+  TLegend *leg3 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
   cout << "\ndump SR all" << endl;
   DrawPlots(Npn_histo_pred, Npn_histo_obs, Npn_histo_err2_pred_mu, Npn_histo_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
 
   TH2D *nullarr[40] = {0};
 
   TCanvas *c4=new TCanvas("c4","Predicted and Observed Prompt-NonPrompt Background (Single mu)", 800,800);
-  TPad *pad_h4 = new TPad("pad_h4","Histo Pad4",0., 0, 1., 0.8);
-  TPad *pad_r4 = new TPad("pad_r4","Ratio Pad4",0., 0.8, 1., 1.);
+  TPad *pad_h4 = new TPad("pad_h4","Histo Pad4",0., 0.2, 1., 1.0);
+  TPad *pad_r4 = new TPad("pad_r4","Ratio Pad4",0., 0.0, 1., 0.2);
   pad_h4->Draw();
   pad_r4->Draw();
-  TLegend *leg4 = new TLegend(0.78, 0.70, 0.87, 0.80); //(0.78, 0.63, 0.87, 0.89)
+  TLegend *leg4 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
   cout << "\ndump SR mu" << endl;
   DrawPlots(Npn_histo_pred_mu, Npn_histo_obs_mu, Npn_histo_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
 
   TCanvas *c5=new TCanvas("c5","Predicted and Observed Prompt-NonPrompt Background (Single el)", 800,800);
-  TPad *pad_h5 = new TPad("pad_h5","Histo Pad5",0., 0, 1., 0.8);
-  TPad *pad_r5 = new TPad("pad_r5","Ratio Pad5",0., 0.8, 1., 1.);
+  TPad *pad_h5 = new TPad("pad_h5","Histo Pad5",0., 0.2, 1., 1.0);
+  TPad *pad_r5 = new TPad("pad_r5","Ratio Pad5",0., 0.0, 1., 0.2);
   pad_h5->Draw();
   pad_r5->Draw();
-  TLegend *leg5 = new TLegend(0.78, 0.70, 0.87, 0.80); //(0.78, 0.63, 0.87, 0.89)
+  TLegend *leg5 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
   cout << "\ndump SR ele" << endl;
   DrawPlots(Npn_histo_pred_el, Npn_histo_obs_el, nullarr, Npn_histo_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
   //---------------------------------------------------------------------------------
