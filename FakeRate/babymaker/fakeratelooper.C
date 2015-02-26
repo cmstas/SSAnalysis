@@ -16,7 +16,7 @@ typedef vector<pair<const LorentzVector *, double> > jets_with_corr_t;
 using namespace std;
 
 //Switches
-char* path = "../fake_rate_output/V00-00-04";
+char* path = "../fake_rate_output/V00-00-05";
 bool verbose = 0;
 unsigned int evt_cut = 74994186;
 
@@ -78,6 +78,7 @@ class babyMaker {
   bool passes_id_ptrel;
   bool FO;
   bool FO_ptrel;
+  bool FO_NoIso;
   float ip3d;
   float ip3derr;
   int type;
@@ -102,6 +103,7 @@ class babyMaker {
       //---mus---//
   int mu_pid_PFMuon;
   float mu_gfit_chi2;
+  float mu_gfit_ndof;
   int mu_gfit_validSTAHits;
   int mu_numberOfMatchedStations;
   int mu_validPixelHits;
@@ -161,6 +163,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("passes_id_ptrel", &passes_id_ptrel);
   BabyTree->Branch("FO", &FO);
   BabyTree->Branch("FO_ptrel", &FO_ptrel);
+  BabyTree->Branch("FO_NoIso", &FO_NoIso);
   BabyTree->Branch("ip3d", &ip3d);
   BabyTree->Branch("ip3derr", &ip3derr);
   BabyTree->Branch("type", &type);
@@ -184,6 +187,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
          //---mus---//
   BabyTree->Branch("mu_pid_PFMuon", &mu_pid_PFMuon);
   BabyTree->Branch("mu_gfit_chi2", &mu_gfit_chi2);
+  BabyTree->Branch("mu_gfit_ndof", &mu_gfit_ndof);
   BabyTree->Branch("mu_gfit_validSTAHits", &mu_gfit_validSTAHits);
   BabyTree->Branch("mu_numberOfMatchedStations", &mu_numberOfMatchedStations);
   BabyTree->Branch("mu_validPixelHits", &mu_validPixelHits);
@@ -234,6 +238,7 @@ void babyMaker::InitBabyNtuple(){
 	passes_id_ptrel = 0;
 	FO = 0;
 	FO_ptrel = 0;
+	FO_NoIso = 0;
 	ip3d = -1;
 	ip3derr = -1;
 	type = -1;
@@ -258,6 +263,7 @@ void babyMaker::InitBabyNtuple(){
          //---mus---//
 	mu_pid_PFMuon = -1;
 	mu_gfit_chi2 = -1;
+	mu_gfit_ndof = -1;
 	mu_gfit_validSTAHits = -1;
 	mu_numberOfMatchedStations = -1;
 	mu_validPixelHits = -1;
@@ -282,6 +288,7 @@ void babyMaker::InitMuonBranches(){
 	passes_id_ptrel = 0;
 	FO = 0;
 	FO_ptrel = 0;
+	FO_NoIso = 0;
 	type = -1;
 	ip3d = -1;
 	ip3derr = -1;
@@ -291,6 +298,7 @@ void babyMaker::InitMuonBranches(){
 	//---mus---//
 	mu_pid_PFMuon = -1;
 	mu_gfit_chi2 = -1;
+	mu_gfit_ndof = -1;
 	mu_gfit_validSTAHits = -1;
 	mu_numberOfMatchedStations = -1;
 	mu_validPixelHits = -1;
@@ -315,6 +323,7 @@ void babyMaker::InitElectronBranches(){
 	passes_id_ptrel = 0;
 	FO = 0;
 	FO_ptrel = 0;
+	FO_NoIso = 0;
 	ip3d = -1;
 	ip3derr = -1;
 	type = -1;
@@ -478,7 +487,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  	  for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
 	  		LorentzVector electron = tas::els_p4().at(eidx);
 	  		if (electron.pt() < 7) continue;
-	  		if (!isVetoLepton(11,eidx)) continue;
+	  		if (!isVetoLepton(11,eidx,false)) continue;
 	  		if (ROOT::Math::VectorUtil::DeltaR(jet, electron) > 0.4) continue;
 	  		jetIsLep = true;
 	  	  }
@@ -488,7 +497,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  	  for (unsigned int muidx = 0; muidx < tas::mus_p4().size(); muidx++){
 	  		LorentzVector muon = tas::mus_p4().at(muidx);
 	  		if (muon.pt() < 5) continue;
-	  		if (!isVetoLepton(13,muidx)) continue;
+	  		if (!isVetoLepton(13,muidx, false)) continue;
 	  		if (ROOT::Math::VectorUtil::DeltaR(jet, muon) > 0.4) continue;
 	  		jetIsLep = true;
 	  	  }
@@ -514,12 +523,12 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 
 	  for(int j = 0; j < tas::mus_p4().size(); j++)
 	  	{
-	  	  if(isDenominatorLepton(13,j))
+	  	  if(isDenominatorLepton(13,j, false))
 	  		{count++;}
 	  	}
 	  for(int j = 0; j < tas::els_p4().size(); j++)
 	  	{
-	  	  if(isDenominatorLepton(11,j))
+	  	  if(isDenominatorLepton(11,j, false))
 	  		{count++;}
 	  	}
 	  nFOs = count;
@@ -528,7 +537,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  //cout<<"\nBegin Muon looping"<<endl;	  
 	  for(unsigned int i=0; i<tas::mus_p4().size(); i++)  //What RECO and GEN variables are needed?
 		{	
-		  if (!isVetoLeptonNoIso(13,i)) continue;  //"fix me" in selection.cc
+		  if (!isVetoLeptonNoIso(13,i)) continue;
 
 		  p4 = tas::mus_p4().at(i); 
 		  mc_p4 = tas::mus_mc_p4().at(i);
@@ -541,6 +550,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  iso = muRelIso03(i,SS);
 		  mu_pid_PFMuon = tas::mus_pid_PFMuon().at(i);
 		  mu_gfit_chi2 = tas::mus_gfit_chi2().at(i);
+		  mu_gfit_ndof = tas::mus_gfit_ndof().at(i);
 		  mu_gfit_validSTAHits = tas::mus_gfit_validSTAHits().at(i);
 		  mu_numberOfMatchedStations = tas::mus_numberOfMatchedStations().at(i);
 		  mu_validPixelHits = tas::mus_validPixelHits().at(i);
@@ -554,6 +564,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  passes_id_ptrel = isGoodLepton(id,i,true);   //"fix me" in selection.cc.
 		  FO = isDenominatorLepton(id,i,false);    //"fix me" in selection.cc
 		  FO_ptrel = isDenominatorLepton(id,i,true);    //"fix me" in selection.cc
+		  FO_NoIso = isDenominatorLeptonNoIso(id,i);
 
 		  ptrelv0 = ptRel(p4, jetp4s, false);
 		  ptrelv1 = ptRel(p4, jetp4s, true);
@@ -579,7 +590,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  for(unsigned int i=0; i<tas::els_p4().size(); i++)
 	  	{
 		  
-		  if (!isVetoLeptonNoIso(11,i)) continue; //"fix me" in selection.cc. Use at()?
+		  if (!isVetoLeptonNoIso(11,i)) continue;
 
 		  p4 = tas::els_p4().at(i);    
 		  mc_p4 = tas::els_mc_p4().at(i);  
@@ -609,10 +620,11 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  type = tas::els_type().at(i);
 		  mt = calculateMt(p4, met, metPhi); 
 
-		  passes_id = isGoodLepton(id,i);   //"fix me" in selection.cc.
-		  passes_id_ptrel = isGoodLeptonIsoOrPtRel(id,i);   //"fix me" in selection.cc.
-		  FO = isDenominatorLepton(id,i);    //"fix me" in selection.cc
-		  FO_ptrel = isDenominatorLeptonIsoOrPtRel(id,i);    //"fix me" in selection.cc
+		  passes_id = isGoodLepton(id,i,false);   //"fix me" in selection.cc.
+		  passes_id_ptrel = isGoodLepton(id,i,true);   //"fix me" in selection.cc.
+		  FO = isDenominatorLepton(id,i,false);    //"fix me" in selection.cc
+		  FO_ptrel = isDenominatorLepton(id,i,true);    //"fix me" in selection.cc
+		  FO_NoIso = isDenominatorLeptonNoIso(id,i);
 
 		  ptrelv0 = ptRel(p4, jetp4s, false);
 		  ptrelv1 = ptRel(p4, jetp4s, true);

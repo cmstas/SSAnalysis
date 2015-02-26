@@ -38,6 +38,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool doBonly = false;
   if (option.Contains("doBonly")) doBonly = true;
 
+  bool doConly = false;
+  if (option.Contains("doConly")) doConly = true;
+
+  bool doLightonly = false;
+  if (option.Contains("doLightonly")) doLightonly = true;
+
   //float ptbins[5] = {10., 20., 30., 50., 70.};
   float ptbins[6] = {10., 15., 25., 35., 50., 70.};
   float etabins[4] = {0., 1., 2., 2.4};
@@ -77,6 +83,45 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   Nl_cone_histo_mu->SetDirectory(rootdir);
   Nl_cone_histo_mu->Sumw2();
 
+  TH2D *pTrelvsIso_histo_el = new TH2D("pTrelvsIso_histo_el", "pTrel vs Iso (Electrons)", 10, 0., 1., 15, 0., 30.);
+  pTrelvsIso_histo_el->SetDirectory(rootdir);
+  pTrelvsIso_histo_el->Sumw2();
+
+  TH2D *pTrelvsIso_histo_mu = new TH2D("pTrelvsIso_histo_mu", "pTrel vs Iso (Muons)", 10, 0., 1., 15, 0., 30.);
+  pTrelvsIso_histo_mu->SetDirectory(rootdir);
+  pTrelvsIso_histo_mu->Sumw2();
+
+  TH2D *NBs_histo_e = new TH2D("NBs_histo_e", "Number of FO's from B's vs pT, Eta (els)", 5,ptbins,3,etabins);
+  NBs_histo_e->SetDirectory(rootdir);
+  NBs_histo_e->Sumw2();
+
+  TH2D *NBs_histo_mu = new TH2D("NBs_histo_mu", "Number of FO's from B's vs pT, Eta (muons)", 5,ptbins,3,etabins);
+  NBs_histo_mu->SetDirectory(rootdir);
+  NBs_histo_mu->Sumw2();
+
+  TH2D *NnotBs_histo_e = new TH2D("NnotBs_histo_e", "Number of FO's NOT from B's vs pT, Eta (els)", 5,ptbins,3,etabins);
+  NnotBs_histo_e->SetDirectory(rootdir);
+  NnotBs_histo_e->Sumw2();
+
+  TH2D *NnotBs_histo_mu = new TH2D("NnotBs_histo_mu", "Number of FO's NOT from B's vs pT, Eta (muons)", 5,ptbins,3,etabins);
+  NnotBs_histo_mu->SetDirectory(rootdir);
+  NnotBs_histo_mu->Sumw2();
+
+  TH2D *NBs_cone_histo_e = new TH2D("NBs_cone_histo_e", "Number of FO's from B's vs Cone Energy, Eta (els)", 5,ptbins,3,etabins);
+  NBs_cone_histo_e->SetDirectory(rootdir);
+  NBs_cone_histo_e->Sumw2();
+
+  TH2D *NBs_cone_histo_mu = new TH2D("NBs_cone_histo_mu", "Number of FO's from B's vs Cone Energy, Eta (muons)", 5,ptbins,3,etabins);
+  NBs_cone_histo_mu->SetDirectory(rootdir);
+  NBs_cone_histo_mu->Sumw2();
+
+  TH2D *NnotBs_cone_histo_e = new TH2D("NnotBs_cone_histo_e", "Number of FO's NOT from B's vs Cone Energy, Eta (els)", 5,ptbins,3,etabins);
+  NnotBs_cone_histo_e->SetDirectory(rootdir);
+  NnotBs_cone_histo_e->Sumw2();
+
+  TH2D *NnotBs_cone_histo_mu = new TH2D("NnotBs_cone_histo_mu", "Number of FO's NOT from B's vs Cone Energy, Eta (muons)", 5,ptbins,3,etabins);
+  NnotBs_cone_histo_mu->SetDirectory(rootdir);
+  NnotBs_cone_histo_mu->Sumw2();
   //----------------------
 
   //e determination
@@ -162,7 +207,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  //Using gen level info to see if prompt -> no prompt contamination in measurement region
 	  //everything else is RECO (p4, id, passes_id, FO, etc.)
 
-	  if( ss.motherID() != 1 && (doBonly==0 || ss.motherID() == -1) )  //if lep is nonprompt
+	  if( ss.motherID() != 1 && (doBonly==0 || ss.motherID() == -1) && (doConly==0 || ss.motherID() == -2) && (doLightonly==0 || ss.motherID() == 0) )  //if lep is nonprompt
 		{
 
 		  bool passId = ( usePtRel ? ss.passes_id_ptrel() : ss.passes_id() );
@@ -209,7 +254,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  //everything else is RECO (p4, id, passes_id, FO, etc.)
 	  
 
-	  if( ss.motherID() != 1 && (doBonly==0 || ss.motherID() == -1) )  //if el is nonprompt (GEN info)
+	  if( ss.motherID() != 1 && (doBonly==0 || ss.motherID() == -1) && (doConly==0 || ss.motherID() == -2) && (doLightonly==0 || ss.motherID() == 0) )  //if el is nonprompt (GEN info)
 		{
 
 		  bool passId = ( usePtRel ? ss.passes_id_ptrel() : ss.passes_id() );
@@ -229,7 +274,22 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nl_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  if( ss.passes_id() ) Nl_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  else Nl_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+
+				  if (doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
+					{
+					  if(ss.motherID()==-1){
+						NBs_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
+						if( ss.passes_id() ) NBs_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
+						else NBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+					  }
+					  else if(ss.motherID()==-2 || ss.motherID()==0){
+						NnotBs_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
+						if( ss.passes_id() ) NnotBs_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
+						else NnotBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+					  }
+					}
 				}
+			  if(ss.FO_NoIso())  pTrelvsIso_histo_el->Fill( ss.iso(), ss.ptrelv1() );
 			}
 		  if( abs( ss.id() ) == 13 ) // it's a mu
 			{
@@ -245,7 +305,22 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nl_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  if( ss.passes_id() ) Nl_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  else Nl_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+
+				  if (doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
+					{
+					  if(ss.motherID()==-1){
+						NBs_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
+						if( ss.passes_id() ) NBs_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
+						else NBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+					  }
+					  else if(ss.motherID()==-2 || ss.motherID()==0){
+						NnotBs_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
+						if( ss.passes_id() ) NnotBs_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
+						else NnotBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+					  }
+					}
 				}
+			  if(ss.FO_NoIso())  pTrelvsIso_histo_mu->Fill( ss.iso(), ss.ptrelv1() );
 			}
 		} 
 
@@ -276,12 +351,24 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TH2D *rate_histo_mu = (TH2D*) Nt_histo_mu->Clone("rate_histo_mu");
   TH2D *rate_cone_histo_e = (TH2D*) Nt_histo_e->Clone("rate_cone_histo_e");
   TH2D *rate_cone_histo_mu = (TH2D*) Nt_histo_mu->Clone("rate_cone_histo_mu");
-  
+  TH2D *total_histo_e = (TH2D*) NBs_histo_e->Clone("total_histo_e");
+  TH2D *total_histo_mu = (TH2D*) NBs_histo_mu->Clone("total_histo_mu");
+  TH2D *total_cone_histo_e = (TH2D*) NBs_cone_histo_e->Clone("total_cone_histo_e");
+  TH2D *total_cone_histo_mu = (TH2D*) NBs_cone_histo_mu->Clone("total_cone_histo_mu");
+
   rate_histo->Divide(rate_histo,Nl_histo,1,1,"B");
   rate_histo_e->Divide(rate_histo_e,Nl_histo_e,1,1,"B");
   rate_histo_mu->Divide(rate_histo_mu,Nl_histo_mu,1,1,"B");
   rate_cone_histo_e->Divide(rate_cone_histo_e,Nl_cone_histo_e,1,1,"B");
   rate_cone_histo_mu->Divide(rate_cone_histo_mu,Nl_cone_histo_mu,1,1,"B");
+  total_histo_e->Add(NnotBs_histo_e);
+  total_histo_mu->Add(NnotBs_histo_mu);
+  total_cone_histo_e->Add(NnotBs_cone_histo_e);
+  total_cone_histo_mu->Add(NnotBs_cone_histo_mu);
+  NBs_histo_e->Divide(NBs_histo_e, total_histo_e,1,1,"B");
+  NBs_histo_mu->Divide(NBs_histo_mu, total_histo_mu,1,1,"B");
+  NBs_cone_histo_e->Divide(NBs_cone_histo_e, total_cone_histo_e,1,1,"B");
+  NBs_cone_histo_mu->Divide(NBs_cone_histo_mu, total_cone_histo_mu,1,1,"B");
 
   rate_histo->GetXaxis()->SetTitle("pT (GeV)"); 
   rate_histo->GetYaxis()->SetTitle("eta");
@@ -303,6 +390,22 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   rate_cone_histo_mu->GetYaxis()->SetTitle("eta");
   rate_cone_histo_mu->GetZaxis()->SetRangeUser(0,.5);
   rate_cone_histo_mu->SetTitle("Fake Rate vs Pt + Cone Energy, Eta (muons)");
+  NBs_histo_e->GetXaxis()->SetTitle("pT (GeV)"); 
+  NBs_histo_e->GetYaxis()->SetTitle("|eta|");
+  NBs_histo_e->SetTitle("B Abundance vs Pt, eta (electrons)");
+  NBs_histo_mu->GetXaxis()->SetTitle("pT (GeV)"); 
+  NBs_histo_mu->GetYaxis()->SetTitle("|eta|");
+  NBs_histo_mu->SetTitle("B Abundance vs Pt, eta (muons)");
+  NBs_cone_histo_e->GetXaxis()->SetTitle("Cone Energy (GeV)"); 
+  NBs_cone_histo_e->GetYaxis()->SetTitle("|eta|");
+  NBs_cone_histo_e->SetTitle("B Abundance vs Cone Energy, eta (electrons)");
+  NBs_cone_histo_mu->GetXaxis()->SetTitle("Cone Energy (GeV)"); 
+  NBs_cone_histo_mu->GetYaxis()->SetTitle("|eta|");
+  NBs_cone_histo_mu->SetTitle("B Abundance vs Cone Energy, eta (muons)");
+  pTrelvsIso_histo_el->GetXaxis()->SetTitle("Iso");
+  pTrelvsIso_histo_el->GetYaxis()->SetTitle("pTrel");
+  pTrelvsIso_histo_mu->GetXaxis()->SetTitle("Iso");
+  pTrelvsIso_histo_mu->GetYaxis()->SetTitle("pTrel");
 
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("1.3f");
@@ -317,6 +420,18 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   rate_cone_histo_e->Draw("colz,texte");
   TCanvas *c4=new TCanvas("c4","Fake Rate vs Pt + Cone Energy, eta (muon)",800,800);
   rate_cone_histo_mu->Draw("colz,texte");
+  TCanvas *c5=new TCanvas("c5","B Abundance vs Pt, eta (el)",800,800);
+  NBs_histo_e->Draw("colz,texte");
+  TCanvas *c6=new TCanvas("c6","B Abundance vs Pt, eta (mu)",800,800);
+  NBs_histo_mu->Draw("colz,texte");
+  TCanvas *c7=new TCanvas("c7","B Abundance vs Cone Energy, eta (el)",800,800);
+  NBs_cone_histo_e->Draw("colz,texte");
+  TCanvas *c8=new TCanvas("c8","B Abundance vs Cone Energy, eta (mu)",800,800);
+  NBs_cone_histo_mu->Draw("colz,texte");
+  TCanvas *c9=new TCanvas("c9","B pTrel vs Iso (el)",800,800);
+  pTrelvsIso_histo_el->Draw("colz,texte");
+  TCanvas *c10=new TCanvas("c10","B pTrel vs Iso (mu)",800,800);
+  pTrelvsIso_histo_mu->Draw("colz,texte");
 
   //---save histos-------//
   TFile *OutputFile = new TFile(outfile,"recreate");
@@ -326,6 +441,13 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   rate_histo_mu->Write();
   rate_cone_histo_e->Write();
   rate_cone_histo_mu->Write();
+  NBs_histo_e->Write();
+  NBs_histo_mu->Write();
+  NBs_cone_histo_e->Write();
+  NBs_cone_histo_mu->Write();
+  pTrelvsIso_histo_el->Write();
+  pTrelvsIso_histo_mu->Write();
+  
 
   OutputFile->Close();
 
@@ -337,6 +459,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   delete Nl_histo_mu;
   delete Nl_cone_histo_e;
   delete Nl_cone_histo_mu;
+
 
   // return
   bmark->Stop("benchmark");

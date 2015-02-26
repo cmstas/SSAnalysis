@@ -39,6 +39,7 @@ namespace samesign {
 	bool &passes_id_ptrel() { return ss.passes_id_ptrel(); }
 	bool &FO() { return ss.FO(); }
 	bool &FO_ptrel() { return ss.FO_ptrel(); }
+	bool &FO_NoIso() { return ss.FO_NoIso(); }
 	float &ip3d() { return ss.ip3d(); }
 	float &ip3derr() { return ss.ip3derr(); }
 	int &type() { return ss.type(); }
@@ -60,6 +61,7 @@ namespace samesign {
 	bool &el_threeChargeAgree() { return ss.el_threeChargeAgree(); }
 	int &mu_pid_PFMuon() { return ss.mu_pid_PFMuon(); }
 	float &mu_gfit_chi2() { return ss.mu_gfit_chi2(); }
+	float &mu_gfit_ndof() { return ss.mu_gfit_ndof(); }
 	int &mu_gfit_validSTAHits() { return ss.mu_gfit_validSTAHits(); }
 	int &mu_numberOfMatchedStations() { return ss.mu_numberOfMatchedStations(); }
 	int &mu_validPixelHits() { return ss.mu_validPixelHits(); }

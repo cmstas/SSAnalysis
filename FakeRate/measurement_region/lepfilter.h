@@ -131,6 +131,9 @@ protected:
 	bool	FO_ptrel_;
 	TBranch *FO_ptrel_branch;
 	bool FO_ptrel_isLoaded;
+	bool	FO_NoIso_;
+	TBranch *FO_NoIso_branch;
+	bool FO_NoIso_isLoaded;
 	float	ip3d_;
 	TBranch *ip3d_branch;
 	bool ip3d_isLoaded;
@@ -194,6 +197,9 @@ protected:
 	float	mu_gfit_chi2_;
 	TBranch *mu_gfit_chi2_branch;
 	bool mu_gfit_chi2_isLoaded;
+	float	mu_gfit_ndof_;
+	TBranch *mu_gfit_ndof_branch;
+	bool mu_gfit_ndof_isLoaded;
 	int	mu_gfit_validSTAHits_;
 	TBranch *mu_gfit_validSTAHits_branch;
 	bool mu_gfit_validSTAHits_isLoaded;
@@ -399,6 +405,11 @@ void Init(TTree *tree) {
 		FO_ptrel_branch = tree->GetBranch("FO_ptrel");
 		if (FO_ptrel_branch) {FO_ptrel_branch->SetAddress(&FO_ptrel_);}
 	}
+	FO_NoIso_branch = 0;
+	if (tree->GetBranch("FO_NoIso") != 0) {
+		FO_NoIso_branch = tree->GetBranch("FO_NoIso");
+		if (FO_NoIso_branch) {FO_NoIso_branch->SetAddress(&FO_NoIso_);}
+	}
 	ip3d_branch = 0;
 	if (tree->GetBranch("ip3d") != 0) {
 		ip3d_branch = tree->GetBranch("ip3d");
@@ -504,6 +515,11 @@ void Init(TTree *tree) {
 		mu_gfit_chi2_branch = tree->GetBranch("mu_gfit_chi2");
 		if (mu_gfit_chi2_branch) {mu_gfit_chi2_branch->SetAddress(&mu_gfit_chi2_);}
 	}
+	mu_gfit_ndof_branch = 0;
+	if (tree->GetBranch("mu_gfit_ndof") != 0) {
+		mu_gfit_ndof_branch = tree->GetBranch("mu_gfit_ndof");
+		if (mu_gfit_ndof_branch) {mu_gfit_ndof_branch->SetAddress(&mu_gfit_ndof_);}
+	}
 	mu_gfit_validSTAHits_branch = 0;
 	if (tree->GetBranch("mu_gfit_validSTAHits") != 0) {
 		mu_gfit_validSTAHits_branch = tree->GetBranch("mu_gfit_validSTAHits");
@@ -568,6 +584,7 @@ void GetEntry(unsigned int idx)
 		passes_id_ptrel_isLoaded = false;
 		FO_isLoaded = false;
 		FO_ptrel_isLoaded = false;
+		FO_NoIso_isLoaded = false;
 		ip3d_isLoaded = false;
 		ip3derr_isLoaded = false;
 		type_isLoaded = false;
@@ -589,6 +606,7 @@ void GetEntry(unsigned int idx)
 		el_threeChargeAgree_isLoaded = false;
 		mu_pid_PFMuon_isLoaded = false;
 		mu_gfit_chi2_isLoaded = false;
+		mu_gfit_ndof_isLoaded = false;
 		mu_gfit_validSTAHits_isLoaded = false;
 		mu_numberOfMatchedStations_isLoaded = false;
 		mu_validPixelHits_isLoaded = false;
@@ -636,6 +654,7 @@ void LoadAllBranches()
 	if (passes_id_ptrel_branch != 0) passes_id_ptrel();
 	if (FO_branch != 0) FO();
 	if (FO_ptrel_branch != 0) FO_ptrel();
+	if (FO_NoIso_branch != 0) FO_NoIso();
 	if (ip3d_branch != 0) ip3d();
 	if (ip3derr_branch != 0) ip3derr();
 	if (type_branch != 0) type();
@@ -657,6 +676,7 @@ void LoadAllBranches()
 	if (el_threeChargeAgree_branch != 0) el_threeChargeAgree();
 	if (mu_pid_PFMuon_branch != 0) mu_pid_PFMuon();
 	if (mu_gfit_chi2_branch != 0) mu_gfit_chi2();
+	if (mu_gfit_ndof_branch != 0) mu_gfit_ndof();
 	if (mu_gfit_validSTAHits_branch != 0) mu_gfit_validSTAHits();
 	if (mu_numberOfMatchedStations_branch != 0) mu_numberOfMatchedStations();
 	if (mu_validPixelHits_branch != 0) mu_validPixelHits();
@@ -1157,6 +1177,19 @@ void LoadAllBranches()
 		}
 		return FO_ptrel_;
 	}
+	bool &	FO_NoIso()
+	{
+		if (not FO_NoIso_isLoaded) {
+			if (FO_NoIso_branch != 0) {
+				FO_NoIso_branch->GetEntry(index);
+			} else { 
+				printf("branch FO_NoIso_branch does not exist!\n");
+				exit(1);
+			}
+			FO_NoIso_isLoaded = true;
+		}
+		return FO_NoIso_;
+	}
 	float &ip3d()
 	{
 		if (not ip3d_isLoaded) {
@@ -1430,6 +1463,19 @@ void LoadAllBranches()
 		}
 		return mu_gfit_chi2_;
 	}
+	float &mu_gfit_ndof()
+	{
+		if (not mu_gfit_ndof_isLoaded) {
+			if (mu_gfit_ndof_branch != 0) {
+				mu_gfit_ndof_branch->GetEntry(index);
+			} else { 
+				printf("branch mu_gfit_ndof_branch does not exist!\n");
+				exit(1);
+			}
+			mu_gfit_ndof_isLoaded = true;
+		}
+		return mu_gfit_ndof_;
+	}
 	int &mu_gfit_validSTAHits()
 	{
 		if (not mu_gfit_validSTAHits_isLoaded) {
@@ -1548,6 +1594,7 @@ namespace samesign {
 	bool &passes_id_ptrel();
 	bool &FO();
 	bool &FO_ptrel();
+	bool &FO_NoIso();
 	float &ip3d();
 	float &ip3derr();
 	int &type();
@@ -1569,6 +1616,7 @@ namespace samesign {
 	bool &el_threeChargeAgree();
 	int &mu_pid_PFMuon();
 	float &mu_gfit_chi2();
+	float &mu_gfit_ndof();
 	int &mu_gfit_validSTAHits();
 	int &mu_numberOfMatchedStations();
 	int &mu_validPixelHits();

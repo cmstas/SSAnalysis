@@ -162,6 +162,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   if (option.Contains("noSIP")) noSIP = true;
   bool doBonly = false;
   if (option.Contains("doBonly")) doBonly = true;
+  bool doConly = false;
+  if (option.Contains("doConly")) doConly = true;
+  bool doLightonly = false;
+  if (option.Contains("doLightonly")) doLightonly = true;
 
   //histograms
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
@@ -291,6 +295,16 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 	    //consider only prompt or bs
 	    if (ss.lep2_motherID()!=1 && ss.lep2_motherID()!=-1) continue;
 	    if (ss.lep1_motherID()!=1 && ss.lep1_motherID()!=-1) continue;
+	  }
+	  else if (doConly) {
+	    //consider only prompt or cs
+	    if (ss.lep2_motherID()!=1 && ss.lep2_motherID()!=-2) continue;
+	    if (ss.lep1_motherID()!=1 && ss.lep1_motherID()!=-2) continue;
+	  }
+	  else if (doLightonly) {
+	    //consider only prompt or lights
+	    if (ss.lep2_motherID()!=1 && ss.lep2_motherID()!=0) continue;
+	    if (ss.lep1_motherID()!=1 && ss.lep1_motherID()!=0) continue;
 	  }
 
 	  //if (std::min(ss.mt(),ss.mt_l2())<100) continue;	  
@@ -545,10 +559,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   //Plot fake rate histos
   //  TCanvas *c0=new TCanvas("c0","Fake Rate vs Pt, eta",800,800);
   //  rate_histo->Draw("colz,texte");
-  // TCanvas *c1=new TCanvas("c1","Fake Rate vs Pt, eta (electron)",800,800);
-  // rate_histo_e->Draw("colz,texte");
-  // TCanvas *c2=new TCanvas("c2","Fake Rate vs Pt, eta (muon)",800,800);
-  // rate_histo_mu->Draw("colz,texte");
+  TCanvas *c1=new TCanvas("c1","Fake Rate vs Pt, eta (electron)",800,800);
+  rate_histo_e->Draw("colz,texte");
+  TCanvas *c2=new TCanvas("c2","Fake Rate vs Pt, eta (muon)",800,800);
+  rate_histo_mu->Draw("colz,texte");
 
   //Signal region plots
   //---------------------------------------------------------------------------------------

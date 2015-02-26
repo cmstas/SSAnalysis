@@ -134,11 +134,12 @@ int do(){
 
   //ttbar
   TChain *ttbar = new TChain("Events");
-  ttbar->Add("/hadoop/cms/store/group/snt/phys14/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-05/merged_ntuple_*.root");
+  // ttbar->Add("/hadoop/cms/store/group/snt/phys14/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-05/merged_ntuple_*.root");
+  ttbar->Add("/hadoop/cms/store/group/snt/phys14/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-06/merged_ntuple_*.root");
   
   mylooper->looper(qcd,"qcd1", -1);
   // mylooper->looper(qcd_MuEnriched,"qcd_MuEnriched", -1);
-  //mylooper->looper(qcd_EMEnriched,"qcd_EMEnriched", -1);
+  // mylooper->looper(qcd_EMEnriched,"qcd_EMEnriched", -1);
   // mylooper->looper(ttbar,"ttbar", -1);
 
 }

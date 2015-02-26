@@ -13,13 +13,17 @@
 
   bool doConeCorr = 0;
   bool doNoSIP    = 0;
-  bool doBonly    = 1;
+  bool doBonly    = 0;
+  bool doConly    = 0;
+  bool doLightonly= 0;
   bool doPtRel    = 0;
 
   TString option = "";
   if (doPtRel) option+="_ptRel";//option only for fakeratefile
   if (doNoSIP) option+="_noSIP";
   if (doBonly) option+="_doBonly";
+  if (doConly) option+="_doConly";
+  if (doLightonly) option+="_doLightonly";
 
   TString fakeratefile = "../measurement_region/rate_histos_qcd"+option+".root";
   // TString fakeratefile = "../measurement_region/rate_histos_ttbar.root";
