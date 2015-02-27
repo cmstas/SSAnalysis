@@ -122,6 +122,22 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TH2D *NnotBs_cone_histo_mu = new TH2D("NnotBs_cone_histo_mu", "Number of FO's NOT from B's vs Cone Energy, Eta (muons)", 5,ptbins,3,etabins);
   NnotBs_cone_histo_mu->SetDirectory(rootdir);
   NnotBs_cone_histo_mu->Sumw2();
+
+  TH1F *NBs_BR_histo_e = new TH1F("NBs_BR_histo_e", "Number of FO's from B's vs Nbtags (els)", 3,0,3);
+  NBs_BR_histo_e->SetDirectory(rootdir);
+  NBs_BR_histo_e->Sumw2();
+
+  TH1F *NBs_BR_histo_mu = new TH1F("NBs_BR_histo_mu", "Number of FO's from B's vs Nbtags (muons)", 3,0,3);
+  NBs_BR_histo_mu->SetDirectory(rootdir);
+  NBs_BR_histo_mu->Sumw2();
+
+  TH1F *NnotBs_BR_histo_e = new TH1F("NnotBs_BR_histo_e", "Number of FO's NOT from B's vs Nbtags (els)", 3,0,3);
+  NnotBs_BR_histo_e->SetDirectory(rootdir);
+  NnotBs_BR_histo_e->Sumw2();
+
+  TH1F *NnotBs_BR_histo_mu = new TH1F("NnotBs_BR_histo_mu", "Number of FO's NOT from B's vs Nbtags (muons)", 3,0,3);
+  NnotBs_BR_histo_mu->SetDirectory(rootdir);
+  NnotBs_BR_histo_mu->Sumw2();
   //----------------------
 
   //e determination
@@ -187,6 +203,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 	  if(ss.nFOs() != 1) //if more than 1 FO in event
 		{continue;}
+   
+	  int nbtags = 0;
+	  for(int i = 0; i < ss.jets().size(); i++){
+		  if(ss.jets_disc()[i] > 0.814) nbtags++;
+		}
+	  if (nbtags > 2.) nbtags = 2;
 
 	  //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
 	  //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
@@ -267,6 +289,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nt_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta
 				  Nt_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //
 				}
+
+			  if(ss.FO_NoIso())  pTrelvsIso_histo_el->Fill( ss.iso(), ss.ptrelv1() );
+
 			  if( passFO )  //if el is FO
 				{
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
@@ -281,15 +306,16 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 						NBs_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
 						if( ss.passes_id() ) NBs_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
 						else NBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+						if( ss.njets() >= 2 ) NBs_BR_histo_e ->Fill(nbtags, weight);
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
 						if( ss.passes_id() ) NnotBs_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
 						else NnotBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+						if( ss.njets() >= 2 ) NnotBs_BR_histo_e ->Fill(nbtags, weight);
 					  }
 					}
 				}
-			  if(ss.FO_NoIso())  pTrelvsIso_histo_el->Fill( ss.iso(), ss.ptrelv1() );
 			}
 		  if( abs( ss.id() ) == 13 ) // it's a mu
 			{
@@ -298,6 +324,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nt_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta
 				  Nt_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //
 				}
+
+			  if(ss.FO_NoIso())  pTrelvsIso_histo_mu->Fill( ss.iso(), ss.ptrelv1() );
+
 			  if( passFO )  //if el is FO
 				{
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
@@ -312,15 +341,16 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 						NBs_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
 						if( ss.passes_id() ) NBs_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
 						else NBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+						if( ss.njets() >= 2 ) NBs_BR_histo_mu ->Fill(nbtags, weight);
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
 						if( ss.passes_id() ) NnotBs_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
 						else NnotBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+						if( ss.njets() >= 2 ) NnotBs_BR_histo_mu ->Fill(nbtags, weight);
 					  }
 					}
 				}
-			  if(ss.FO_NoIso())  pTrelvsIso_histo_mu->Fill( ss.iso(), ss.ptrelv1() );
 			}
 		} 
 
@@ -355,6 +385,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TH2D *total_histo_mu = (TH2D*) NBs_histo_mu->Clone("total_histo_mu");
   TH2D *total_cone_histo_e = (TH2D*) NBs_cone_histo_e->Clone("total_cone_histo_e");
   TH2D *total_cone_histo_mu = (TH2D*) NBs_cone_histo_mu->Clone("total_cone_histo_mu");
+  TH1F *total_BR_histo_e = (TH1F*) NBs_BR_histo_e->Clone("total_BR_histo_e");
+  TH1F *total_BR_histo_mu = (TH1F*) NBs_BR_histo_mu->Clone("total_BR_histo_mu");
 
   rate_histo->Divide(rate_histo,Nl_histo,1,1,"B");
   rate_histo_e->Divide(rate_histo_e,Nl_histo_e,1,1,"B");
@@ -365,10 +397,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   total_histo_mu->Add(NnotBs_histo_mu);
   total_cone_histo_e->Add(NnotBs_cone_histo_e);
   total_cone_histo_mu->Add(NnotBs_cone_histo_mu);
+  total_BR_histo_e->Add(NnotBs_BR_histo_e);
+  total_BR_histo_mu->Add(NnotBs_BR_histo_mu);
   NBs_histo_e->Divide(NBs_histo_e, total_histo_e,1,1,"B");
   NBs_histo_mu->Divide(NBs_histo_mu, total_histo_mu,1,1,"B");
   NBs_cone_histo_e->Divide(NBs_cone_histo_e, total_cone_histo_e,1,1,"B");
   NBs_cone_histo_mu->Divide(NBs_cone_histo_mu, total_cone_histo_mu,1,1,"B");
+  NBs_BR_histo_e->Divide(NBs_BR_histo_e, total_BR_histo_e,1,1,"B");
+  NBs_BR_histo_mu->Divide(NBs_BR_histo_mu, total_BR_histo_mu,1,1,"B");
 
   rate_histo->GetXaxis()->SetTitle("pT (GeV)"); 
   rate_histo->GetYaxis()->SetTitle("eta");
@@ -402,6 +438,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   NBs_cone_histo_mu->GetXaxis()->SetTitle("Cone Energy (GeV)"); 
   NBs_cone_histo_mu->GetYaxis()->SetTitle("|eta|");
   NBs_cone_histo_mu->SetTitle("B Abundance vs Cone Energy, eta (muons)");
+  NBs_BR_histo_e->GetXaxis()->SetTitle("Nbjets"); 
+  NBs_BR_histo_e->GetYaxis()->SetTitle("Abundance");
+  NBs_BR_histo_e->SetTitle("B Abundance vs Nbjets (Njets >= 2) (electrons)");
+  NBs_BR_histo_mu->GetXaxis()->SetTitle("Nbjets"); 
+  NBs_BR_histo_mu->GetYaxis()->SetTitle("Abundance");
+  NBs_BR_histo_mu->SetTitle("B Abundance vs Nbjets (Njets >= 2) (muons)");
   pTrelvsIso_histo_el->GetXaxis()->SetTitle("Iso");
   pTrelvsIso_histo_el->GetYaxis()->SetTitle("pTrel");
   pTrelvsIso_histo_mu->GetXaxis()->SetTitle("Iso");
@@ -432,6 +474,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   pTrelvsIso_histo_el->Draw("colz,texte");
   TCanvas *c10=new TCanvas("c10","B pTrel vs Iso (mu)",800,800);
   pTrelvsIso_histo_mu->Draw("colz,texte");
+  TCanvas *c11=new TCanvas("c11","B Abundance vs Nbjets (electrons)",800,800);
+  NBs_BR_histo_e->Draw("histE");
+  TCanvas *c12=new TCanvas("c12","B Abundance vs Nbjets (muons)",800,800);
+  NBs_BR_histo_mu->Draw("histE");
 
   //---save histos-------//
   TFile *OutputFile = new TFile(outfile,"recreate");
@@ -447,7 +493,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   NBs_cone_histo_mu->Write();
   pTrelvsIso_histo_el->Write();
   pTrelvsIso_histo_mu->Write();
-  
+  NBs_BR_histo_e->Write();
+  NBs_BR_histo_mu->Write();  
 
   OutputFile->Close();
 

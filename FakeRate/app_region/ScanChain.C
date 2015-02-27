@@ -194,6 +194,21 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   Npn_histo_pred_el->SetDirectory(rootdir);
   Npn_histo_pred_el->Sumw2();
 
+  TH1F *NBs_BR_histo_e = new TH1F("NBs_BR_histo_e", "Number of FO's from B's vs Nbtags (els)", 3,0,3);
+  NBs_BR_histo_e->SetDirectory(rootdir);
+  NBs_BR_histo_e->Sumw2();
+
+  TH1F *NBs_BR_histo_mu = new TH1F("NBs_BR_histo_mu", "Number of FO's from B's vs Nbtags (muons)", 3,0,3);
+  NBs_BR_histo_mu->SetDirectory(rootdir);
+  NBs_BR_histo_mu->Sumw2();
+
+  TH1F *NnotBs_BR_histo_e = new TH1F("NnotBs_BR_histo_e", "Number of FO's NOT from B's vs Nbtags (els)", 3,0,3);
+  NnotBs_BR_histo_e->SetDirectory(rootdir);
+  NnotBs_BR_histo_e->Sumw2();
+
+  TH1F *NnotBs_BR_histo_mu = new TH1F("NnotBs_BR_histo_mu", "Number of FO's NOT from B's vs Nbtags (muons)", 3,0,3);
+  NnotBs_BR_histo_mu->SetDirectory(rootdir);
+  NnotBs_BR_histo_mu->Sumw2();
   //---Load rate histos-----//
   TFile *InputFile = new TFile(fakeratefile,"read");
 
@@ -426,6 +441,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 	  //prompt-nonprompt background
 	  if( ss.hyp_class() == 2 )  //if tight-loose!tight
 		{
+		  int nbjets = ss.nbtags();
+		  if(nbjets>2) nbjets=2;
 
 		  //apply pTcuts for highhigh region for now, with cone correction if needed
 		  if (ss.lep1_passes_id() || coneCorr==false) {
@@ -454,6 +471,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 					  Npn_histo_pred_el->Fill(br, (e2/(1-e2))*weight);
 					  if (sr>=0) Npn_histo_err2_pred_el[sr]->Fill(pt, fabs(ss.lep2_p4().eta()), weight);
 					  Npn_histo_err2_pred_el[br]->Fill(pt, fabs(ss.lep2_p4().eta()), weight);
+					  // //fill el abundance histos here w/ nbtags
+					  if(ss.lep2_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
+					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight);
 					}
 				  else if( abs(ss.lep2_id()) == 13 )  //if mu, use mu rate.  FILL WITH NONPROMPT
 					{
@@ -462,6 +482,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 					  Npn_histo_pred_mu->Fill(br, (e2/(1-e2))*weight);
 					  if (sr>=0) Npn_histo_err2_pred_mu[sr]->Fill(pt, fabs(ss.lep2_p4().eta()), weight);
 					  Npn_histo_err2_pred_mu[br]->Fill(pt, fabs(ss.lep2_p4().eta()), weight);
+					  // //fill mu abundance histos here w/ nbtags
+					  if(ss.lep2_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
+					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight);
 					}
 				  Npn = Npn + (e2/(1-e2))*weight;
 				  if (ss.lep2_motherID()==1) Npn_s = Npn_s + (e2/(1-e2))*weight;
@@ -480,6 +503,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 					  Npn_histo_pred_el->Fill(br, (e1/(1-e1))*weight);
 					  if (sr>=0) Npn_histo_err2_pred_el[sr]->Fill(pt, fabs(ss.lep1_p4().eta()), weight);
 					  Npn_histo_err2_pred_el[br]->Fill(pt, fabs(ss.lep1_p4().eta()), weight);
+					  // //fill el abundance histos here w/ nbtags
+					  if(ss.lep1_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
+					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight);
 					}
 				  else if( abs(ss.lep1_id()) == 13 ) //if mu, use mu rate.  FILL WITH NONPROMPT				  
 					{
@@ -488,6 +514,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 					  Npn_histo_pred_mu->Fill(br, (e1/(1-e1))*weight);
 					  if (sr>=0) Npn_histo_err2_pred_mu[sr]->Fill(pt, fabs(ss.lep1_p4().eta()), weight);
 					  Npn_histo_err2_pred_mu[br]->Fill(pt, fabs(ss.lep1_p4().eta()), weight);
+					  // //fill el abundance histos here w/ nbtags
+					  if(ss.lep1_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
+					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight);
 					}
 				  Npn = Npn + (e1/(1-e1))*weight;
 				  if (ss.lep1_motherID()==1) Npn_s = Npn_s + (e1/(1-e1))*weight;
@@ -595,6 +624,24 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   cout << "\ndump SR ele" << endl;
   DrawPlots(Npn_histo_pred_el, Npn_histo_obs_el, nullarr, Npn_histo_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
   //---------------------------------------------------------------------------------
+
+  TH1F *total_BR_histo_e = (TH1F*) NBs_BR_histo_e->Clone("total_BR_histo_e");
+  TH1F *total_BR_histo_mu = (TH1F*) NBs_BR_histo_mu->Clone("total_BR_histo_mu");
+  total_BR_histo_e->Add(NnotBs_BR_histo_e);
+  total_BR_histo_mu->Add(NnotBs_BR_histo_mu);
+  NBs_BR_histo_e->Divide(NBs_BR_histo_e, total_BR_histo_e,1,1,"B");
+  NBs_BR_histo_mu->Divide(NBs_BR_histo_mu, total_BR_histo_mu,1,1,"B");
+  NBs_BR_histo_e->GetXaxis()->SetTitle("Nbjets"); 
+  NBs_BR_histo_e->GetYaxis()->SetTitle("Abundance");
+  NBs_BR_histo_e->SetTitle("B Abundance vs Nbjets (Njets >= 2) (electrons)");
+  NBs_BR_histo_mu->GetXaxis()->SetTitle("Nbjets"); 
+  NBs_BR_histo_mu->GetYaxis()->SetTitle("Abundance");
+  NBs_BR_histo_mu->SetTitle("B Abundance vs Nbjets (Njets >= 2) (muons)");
+
+  TCanvas *c6=new TCanvas("c6","B Abundance vs Nbjets (Njets >= 2) (electrons)", 800,800);
+  NBs_BR_histo_e->Draw("histE");
+  TCanvas *c7=new TCanvas("c7","B Abundance vs Nbjets (Njets >= 2) (muons)", 800,800);
+  NBs_BR_histo_mu->Draw("histE");
 
   c3->SaveAs("sr_all"+option+".png");
   c4->SaveAs("sr_mu"+option+".png");
