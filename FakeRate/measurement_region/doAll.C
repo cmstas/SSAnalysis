@@ -8,7 +8,7 @@
   qcd->Add( Form("../fake_rate_output/%s/qcd_EMEnriched.root",tag.c_str()) );
 
   ScanChain(qcd,"./rate_histos_qcd.root",""); 
-  // ScanChain(qcd,"./rate_histos_qcd_noSIP.root","noSIP"); 
+  ScanChain(qcd,"./rate_histos_qcd_noSIP.root","noSIP"); 
   // ScanChain(qcd,"./rate_histos_qcd_ptRel.root","ptRel"); 
   // ScanChain(qcd,"./rate_histos_qcd_ptRel_noSIP.root","ptRel_noSIP");
 
@@ -29,7 +29,8 @@
 
   TChain *ttbar = new TChain("t"); 
   ttbar->Add( Form("../fake_rate_output/%s/ttbar.root",tag.c_str()) ); 
-  // ScanChain(ttbar, "./rate_histos_ttbar.root",""); 
+  ScanChain(ttbar, "./rate_histos_ttbar.root","noSIP"); 
+  ScanChain(ttbar, "./rate_histos_ttbar_noSIP.root",""); 
   // ScanChain(ttbar,"./rate_histos_ttbar_doBonly.root","doBonly"); 
   // ScanChain(ttbar,"./rate_histos_ttbar_doConly.root","doConly"); 
   // ScanChain(ttbar,"./rate_histos_ttbar_doLightonly.root","doLightonly"); 
