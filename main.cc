@@ -5,15 +5,13 @@ int main() {
 
   looper *l = new looper();
 
-  bool useSkim   = true;
+  bool useSkim   = false;
   bool skimAll   = false;
-  bool runAll    = true;
+  bool runAll    = false;
   bool runLepEff = false;
   bool runSync   = false;
-  bool runBaby   = false;
+  bool runBaby   = true;
   bool usePtRel  = false;
-
-  //looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isData, TString whatTest, int nEvents)
 
   if (runSync) { 
     TChain *chain_synctest = new TChain("Events");
@@ -26,26 +24,24 @@ int main() {
     return 0;
   }
 
-  // TChain *chain_TTZJets = new TChain("Events");
-  // chain_TTZJets->Add("./TTZJets_skimSS/merged_ntuple_*.root");
-  // l->ScanChain(chain_TTZJets,"TTZJets_test","",0,"",-1);
-
-  TChain *chain_T1ttttG1200 = new TChain("Events");
-  TChain *chain_T1ttttG1500 = new TChain("Events");
-  TChain *chain_T5qqqqWW1200 = new TChain("Events");
-  TChain *chain_T5qqqqWW1500 = new TChain("Events");
-  TChain *chain_TTJets = new TChain("Events");
-  TChain *chain_TTWJets = new TChain("Events");
-  TChain *chain_TTZJets = new TChain("Events");
-  TChain *chain_WHZH = new TChain("Events");
-  TChain *chain_WW = new TChain("Events");
-  TChain *chain_WZJets = new TChain("Events");
-  TChain *chain_DY = new TChain("Events");
-
-  TChain *chain_TTbarH = new TChain("Events");
-  TChain *chain_TW = new TChain("Events");
-  TChain *chain_WJets = new TChain("Events");
-  TChain *chain_ZZTo4L = new TChain("Events");
+  TChain *chain_T1ttttG1200   = new TChain("Events");
+  TChain *chain_T1ttttG1500   = new TChain("Events");
+  TChain *chain_T5qqqqWW1200  = new TChain("Events");
+  TChain *chain_T5qqqqWW1500  = new TChain("Events");
+  TChain *chain_T6ttWW600_150 = new TChain("Events");
+  TChain *chain_T6ttWW600_425 = new TChain("Events");
+  TChain *chain_TTJets        = new TChain("Events");
+  TChain *chain_TTWJets       = new TChain("Events");
+  TChain *chain_TTZJets       = new TChain("Events");
+  TChain *chain_WHZH          = new TChain("Events");
+  TChain *chain_WW            = new TChain("Events");
+  TChain *chain_WZJets        = new TChain("Events");
+  TChain *chain_DY            = new TChain("Events");
+  TChain *chain_TTbarH        = new TChain("Events");
+  TChain *chain_TW            = new TChain("Events");
+  TChain *chain_WJets         = new TChain("Events");
+  TChain *chain_ZZTo4L        = new TChain("Events");
+  TChain *chain_Wjets         = new TChain("Events");
 
   if (useSkim) {
     TString dir = "PHYS14";
@@ -67,10 +63,13 @@ int main() {
     TString tag  = "V07-02-05";
     TString tag2 = "V07-02-03";
     TString tag3 = "V07-02-06";
+    chain_Wjets->Add(dir+"WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag3+"/merged_ntuple_*.root");
     chain_T1ttttG1200->Add(dir+"SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_T1ttttG1500->Add(dir+"SMS-T1tttt_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_T5qqqqWW1200->Add("/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/T5qqqqWW_mGo1200_mCh1000_mChi800/merged/merged_ntuple_*.root");
-    chain_T5qqqqWW1500->Add("/hadoop/cms/store/user/cgeorge/condor/privateSignals/13TeV_T5qqqqWW_Gl1500_Chi800_LSP100/merged/merged_ntuple_*.root");
+    chain_T5qqqqWW1500->Add("/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/13TeV_T5qqqqWW_Gl1500_Chi800_LSP100/merged/merged_ntuple_*.root");
+    chain_T6ttWW600_150->Add("/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/T6ttWW_mSbottom600_mCh150_mChi50_v2/merged/merged_ntuple_*.root");
+    chain_T6ttWW600_425->Add("/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/T6ttWW_mSbottom600_mCh425_mChi50_v2/merged/merged_ntuple_*.root");
     chain_TTJets->Add(    dir2+"merged_ntuple_*.root");
     chain_TTWJets->Add(    dir+"TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_TTZJets->Add(    dir+"TTZJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
@@ -137,12 +136,18 @@ int main() {
   }
 
   if (runBaby) {
-    l->ScanChain(chain_TTZJets,"ttz","baby",0,"MakeBaby",-1,usePtRel);
-    l->ScanChain(chain_WZJets,"wz","baby",0,"MakeBaby",-1,usePtRel);
-    l->ScanChain(chain_T1ttttG1200,"t1tttt_1200_800","baby",0,"MakeBaby",-1, usePtRel);
-    l->ScanChain(chain_T1ttttG1500,"t1tttt_1500_100","baby",0,"MakeBaby",-1, usePtRel);
-    l->ScanChain(chain_TTJets,"ttbar","baby",0,"MakeBaby",-1, usePtRel);
-    l->ScanChain(chain_TTWJets,"ttw","baby",0,"MakeBaby",-1, usePtRel);
+    //l->ScanChain(chain_TTZJets,       "ttz"             , "baby", 0, "MakeBaby", -1, usePtRel);
+    //l->ScanChain(chain_WZJets,        "wz"              , "baby", 0, "MakeBaby", -1, usePtRel);
+    //l->ScanChain(chain_T1ttttG1200,   "t1tttt_1200_800" , "baby", 0, "MakeBaby", -1, usePtRel);
+    //l->ScanChain(chain_T1ttttG1500,   "t1tttt_1500_100" , "baby", 0, "MakeBaby", -1, usePtRel);
+    //l->ScanChain(chain_TTJets,        "ttbar"           , "baby", 0, "MakeBaby", -1, usePtRel);
+    //l->ScanChain(chain_TTWJets,       "ttw"             , "baby", 0, "MakeBaby", -1, usePtRel);
+    //l->ScanChain(chain_T5qqqqWW1200,  "t5qqqqWW1200"    , "baby", 0, "MakeBaby", -1, usePtRel);
+    //l->ScanChain(chain_T5qqqqWW1500,  "t5qqqqWW1500"    , "baby", 0, "MakeBaby", -1, usePtRel);
+    //l->ScanChain(chain_T6ttWW600_150, "t6ttWW600_150"   , "baby", 0, "MakeBaby", -1, usePtRel);
+    //l->ScanChain(chain_T6ttWW600_425, "t6ttWW600_425"   , "baby", 0, "MakeBaby", -1, usePtRel);
+      l->ScanChain(chain_Wjets,         "t6ttWW600_425"   , "baby", 0, "MakeBaby", -1, usePtRel);
+
   }
 
 }

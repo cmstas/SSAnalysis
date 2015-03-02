@@ -210,6 +210,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  //if(ss.p4().pt() > 100. || ss.p4().pt() < 25. || fabs(ss.p4().eta()) > 2.4) //What do we want here? 
 	  	{continue;}
 
+	  if (doLightonly && abs(ss.id())==11 && ss.p4().pt() < 20.) continue;//because EMEnriched does not go below 20 GeV
+
 	  //------------------------------------------------------------------------------------------
 	  //---------------------------------Find e = f(const)---------------------------------------
 	  //------------------------------------------------------------------------------------------

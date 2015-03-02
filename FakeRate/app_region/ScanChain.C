@@ -320,6 +320,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 	    //consider only prompt or lights
 	    if (ss.lep2_motherID()!=1 && ss.lep2_motherID()!=0) continue;
 	    if (ss.lep1_motherID()!=1 && ss.lep1_motherID()!=0) continue;
+	    //EMEnriched starts at 20 GeV
+	    if ( (abs(ss.lep1_id())==11 && ss.lep1_motherID()==0 && ss.lep1_p4().pt() < 20) || 
+		 (abs(ss.lep2_id())==11 && ss.lep2_motherID()==0 && ss.lep2_p4().pt() < 20) ) continue;
+
 	  }
 
 	  //if (std::min(ss.mt(),ss.mt_l2())<100) continue;	  
@@ -341,7 +345,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 		  //reco->ss on reco level
 		  //-----------------------------------------------------------------------
 		  //consider only highhigh pT for the moment
-		  if ( !(ss.lep1_p4().pt() > 25 && ss.lep2_p4().pt() > 25) ) continue;
+		  if ( !(ss.lep1_p4().pt() > 25. && ss.lep2_p4().pt() > 25.) ) continue;
 
 		  //check for charge misID on reco level.
 		  if( ss.lep1_id()*ss.lep2_id() < 0 )
@@ -359,8 +363,11 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 				  NpromptL1_reco = NpromptL1_reco + weight;
 				  NpromptL2_reco = NpromptL2_reco + weight;
 				}
-			  else if( ss.lep1_motherID()==1 && ss.lep2_motherID()!=1 ) //lep2 is nonprompt
-			  //else if( ss.lep1_motherID()==1 && ss.lep2_motherID()==0 ) //lep2 is light
+			  else if ( ss.lep1_motherID()==2 || ss.lep2_motherID()==2 ) 
+			    {
+			      //this is a charge flip, do something
+			    } 
+			  else if( ss.lep1_motherID()==1 && ss.lep2_motherID()<=0 ) //lep2 is nonprompt
 				{
 				  prompt1_reco = prompt1_reco + weight;  
 				  NpromptL1_reco = NpromptL1_reco + weight;
@@ -374,8 +381,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 				    Npn_histo_obs_mu->Fill(br, weight);
 				  }
 				}
-			  else if( ss.lep1_motherID()!=1 && ss.lep2_motherID()==1 ) //lep1 is nonprompt
-			  //else if( ss.lep1_motherID()==-1 && ss.lep2_motherID()==0 ) //lep1 is light
+			  else if( ss.lep1_motherID()<=0 && ss.lep2_motherID()==1 ) //lep1 is nonprompt
 				{
 				  prompt1_reco = prompt1_reco + weight; 
 				  NpromptL2_reco = NpromptL2_reco + weight;				
@@ -389,7 +395,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 				    Npn_histo_obs_mu->Fill(br, weight);
 				  }
 				}
-			  else if( (ss.lep1_motherID()!=1 && ss.lep2_motherID()!=1) ) //don't need to explicitly write it.  can just use else
+			  else if( (ss.lep1_motherID()<=0 && ss.lep2_motherID()<=0) ) //don't need to explicitly write it.  can just use else
 				{
 				  prompt0_reco = prompt0_reco + weight;
 				}
