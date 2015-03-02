@@ -83,14 +83,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   Nl_cone_histo_mu->SetDirectory(rootdir);
   Nl_cone_histo_mu->Sumw2();
 
-  TH2D *pTrelvsIso_histo_el = new TH2D("pTrelvsIso_histo_el", "pTrel vs Iso (Electrons)", 10, 0., 1., 15, 0., 30.);
-  pTrelvsIso_histo_el->SetDirectory(rootdir);
-  pTrelvsIso_histo_el->Sumw2();
-
-  TH2D *pTrelvsIso_histo_mu = new TH2D("pTrelvsIso_histo_mu", "pTrel vs Iso (Muons)", 10, 0., 1., 15, 0., 30.);
-  pTrelvsIso_histo_mu->SetDirectory(rootdir);
-  pTrelvsIso_histo_mu->Sumw2();
-
   TH2D *NBs_histo_e = new TH2D("NBs_histo_e", "Number of FO's from B's vs pT, Eta (els)", 5,ptbins,3,etabins);
   NBs_histo_e->SetDirectory(rootdir);
   NBs_histo_e->Sumw2();
@@ -292,8 +284,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nt_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //
 				}
 
-			  if(ss.FO_NoIso())  pTrelvsIso_histo_el->Fill( ss.iso(), ss.ptrelv1() );
-
 			  if( passFO )  //if el is FO
 				{
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
@@ -326,8 +316,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nt_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta
 				  Nt_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //
 				}
-
-			  if(ss.FO_NoIso())  pTrelvsIso_histo_mu->Fill( ss.iso(), ss.ptrelv1() );
 
 			  if( passFO )  //if el is FO
 				{
@@ -442,14 +430,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   NBs_cone_histo_mu->SetTitle("B Abundance vs Cone Energy, eta (muons)");
   NBs_BR_histo_e->GetXaxis()->SetTitle("Nbjets"); 
   NBs_BR_histo_e->GetYaxis()->SetTitle("Abundance");
+  NBs_BR_histo_e->GetYaxis()->SetRangeUser(0., 1.);
   NBs_BR_histo_e->SetTitle("B Abundance vs Nbjets (Njets >= 2) (electrons)");
   NBs_BR_histo_mu->GetXaxis()->SetTitle("Nbjets"); 
   NBs_BR_histo_mu->GetYaxis()->SetTitle("Abundance");
+  NBs_BR_histo_mu->GetYaxis()->SetRangeUser(0., 1.);
   NBs_BR_histo_mu->SetTitle("B Abundance vs Nbjets (Njets >= 2) (muons)");
-  pTrelvsIso_histo_el->GetXaxis()->SetTitle("Iso");
-  pTrelvsIso_histo_el->GetYaxis()->SetTitle("pTrel");
-  pTrelvsIso_histo_mu->GetXaxis()->SetTitle("Iso");
-  pTrelvsIso_histo_mu->GetYaxis()->SetTitle("pTrel");
 
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("1.3f");
@@ -472,10 +458,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   NBs_cone_histo_e->Draw("colz,texte");
   TCanvas *c8=new TCanvas("c8","B Abundance vs Cone Energy, eta (mu)",800,800);
   NBs_cone_histo_mu->Draw("colz,texte");
-  TCanvas *c9=new TCanvas("c9","B pTrel vs Iso (el)",800,800);
-  pTrelvsIso_histo_el->Draw("colz,texte");
-  TCanvas *c10=new TCanvas("c10","B pTrel vs Iso (mu)",800,800);
-  pTrelvsIso_histo_mu->Draw("colz,texte");
   TCanvas *c11=new TCanvas("c11","B Abundance vs Nbjets (electrons)",800,800);
   NBs_BR_histo_e->Draw("histE");
   TCanvas *c12=new TCanvas("c12","B Abundance vs Nbjets (muons)",800,800);
@@ -493,8 +475,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   NBs_histo_mu->Write();
   NBs_cone_histo_e->Write();
   NBs_cone_histo_mu->Write();
-  pTrelvsIso_histo_el->Write();
-  pTrelvsIso_histo_mu->Write();
   NBs_BR_histo_e->Write();
   NBs_BR_histo_mu->Write();  
 

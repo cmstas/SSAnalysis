@@ -132,14 +132,35 @@ int do(){
   qcd_EMEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-30to80_EMEnriched_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_castor_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
   qcd_EMEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-80to170_EMEnriched_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_castor_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
 
+  //QCD non-Enriched
+  TChain *qcd_nonEnriched = new TChain("Events");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-15to30_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-30to50_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-50to80_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v2/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-80to120_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v2/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-120to170_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v2/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-170to300_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v2/V07-02-06/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-300to470_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v2/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-470to600_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v2/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-600to800_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-800to1000_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v2/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-1000to1400_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-1400to1800_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-1800_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_castor_PHYS14_25_V1-v2/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-1800to2400_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v2/V07-02-06/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-2400to3200_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-3200_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-15to3000_Tune4C_Flat_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+
   //ttbar
   TChain *ttbar = new TChain("Events");
   // ttbar->Add("/hadoop/cms/store/group/snt/phys14/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-05/merged_ntuple_*.root");
   ttbar->Add("/hadoop/cms/store/group/snt/phys14/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-06/merged_ntuple_*.root");
   
-  mylooper->looper(qcd,"qcd1", -1);
+  // mylooper->looper(qcd,"qcd1", -1);
   // mylooper->looper(qcd_MuEnriched,"qcd_MuEnriched", -1);
   // mylooper->looper(qcd_EMEnriched,"qcd_EMEnriched", -1);
+   mylooper->looper(qcd_nonEnriched,"qcd_nonEnriched", -1);
   // mylooper->looper(ttbar,"ttbar", -1);
 
 }

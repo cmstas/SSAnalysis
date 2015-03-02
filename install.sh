@@ -4,6 +4,7 @@ git clone git@github.com:cmstas/SSAnalysis.git
 export SCRAM_ARCH=slc6_amd64_gcc481
 cd SSAnalysis/
 if [ $USER == "cgeorge" ]
+then
   ln -s /home/users/cgeorge/CORE/
   ln -s /home/users/cgeorge/CORE/Tools/
 else
