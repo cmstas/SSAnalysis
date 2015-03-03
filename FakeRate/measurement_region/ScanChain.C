@@ -178,7 +178,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  
       // Analysis Code
 	  float weight = ss.scale1fb()*10.0;
-	  if(ss.scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched
+	  if(ss.scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
 	  
 	  bool jetptcut = false;
 	  int jetidx = 0;
@@ -200,7 +200,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  for(int i = 0; i < ss.jets().size(); i++){
 		  if(ss.jets_disc()[i] > 0.814) nbtags++;
 		}
-	  if (nbtags > 2.) nbtags = 2;
+	  // if (nbtags > 2) nbtags = 2;
+	  // if (nbtags > 2) cout << nbtags << endl;
+	  //if(nbtags < 1) continue; 
 
 	  //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
 	  //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
