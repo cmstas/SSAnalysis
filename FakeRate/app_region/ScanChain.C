@@ -639,9 +639,11 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   NBs_BR_histo_mu->Divide(NBs_BR_histo_mu, total_BR_histo_mu,1,1,"B");
   NBs_BR_histo_e->GetXaxis()->SetTitle("Nbjets"); 
   NBs_BR_histo_e->GetYaxis()->SetTitle("Abundance");
+  NBs_BR_histo_e->GetYaxis()->SetRangeUser(0.,1.);
   NBs_BR_histo_e->SetTitle("B Abundance vs Nbjets (Njets >= 2) (electrons)");
   NBs_BR_histo_mu->GetXaxis()->SetTitle("Nbjets"); 
   NBs_BR_histo_mu->GetYaxis()->SetTitle("Abundance");
+  NBs_BR_histo_mu->GetYaxis()->SetRangeUser(0.,1.);
   NBs_BR_histo_mu->SetTitle("B Abundance vs Nbjets (Njets >= 2) (muons)");
 
   TCanvas *c6=new TCanvas("c6","B Abundance vs Nbjets (Njets >= 2) (electrons)", 800,800);

@@ -12,7 +12,7 @@
   gROOT->ProcessLine(".L ScanChain.C+");
 
   bool doConeCorr = 0;
-  bool doNoSIP    = 0;
+  bool doNoSIP    = 1;
   bool doBonly    = 0;
   bool doConly    = 0;
   bool doLightonly= 0;
@@ -26,6 +26,7 @@
   if (doLightonly) option+="_doLightonly";
 
   TString fakeratefile = "../measurement_region/rate_histos_qcd"+option+".root";
+  // TString fakeratefile = "../measurement_region/rate_histos_qcdnonEnriched"+option+".root";
   // TString fakeratefile = "../measurement_region/rate_histos_ttbar.root";
 
   if (doConeCorr) option+="_coneCorr";//option only for ScanChain
