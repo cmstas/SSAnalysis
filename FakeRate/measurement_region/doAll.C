@@ -7,8 +7,8 @@
   qcd->Add( Form("../fake_rate_output/%s/qcd_MuEnriched.root",tag.c_str()) );
   qcd->Add( Form("../fake_rate_output/%s/qcd_EMEnriched.root",tag.c_str()) );
 
-  // ScanChain(qcd,"./rate_histos_qcd.root",""); 
-  ScanChain(qcd,"./rate_histos_qcd_noSIP.root","noSIP"); 
+  ScanChain(qcd,"./rate_histos_qcd.root",""); 
+  // ScanChain(qcd,"./rate_histos_qcd_noSIP.root","noSIP"); 
   // ScanChain(qcd,"./rate_histos_qcd_ptRel.root","ptRel"); 
   // ScanChain(qcd,"./rate_histos_qcd_ptRel_noSIP.root","ptRel_noSIP");
 
@@ -28,7 +28,8 @@
   // ScanChain(qcd,"./rate_histos_qcd_ptRel_noSIP_doLightonly.root","ptRel_noSIP_doBonly"); 
 
   TChain *qcd_nonEnriched = new TChain("t"); 
-  // qcd_nonEnriched->Add( Form("../fake_rate_output/%s/qcd_nonEnriched.root",tag.c_str()) );
+  qcd_nonEnriched->Add( Form("../fake_rate_output/%s/qcd_nonEnriched.root",tag.c_str()) );
+  
   // ScanChain(qcd_nonEnriched,"./rate_histos_qcdnonEnriched.root",""); 
   // ScanChain(qcd_nonEnriched,"./rate_histos_qcdnonEnriched_noSIP.root","noSIP"); 
   // ScanChain(qcd_nonEnriched,"./rate_histos_qcd_doBonly.root","doBonly"); 
