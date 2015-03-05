@@ -115,19 +115,19 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   NnotBs_cone_histo_mu->SetDirectory(rootdir);
   NnotBs_cone_histo_mu->Sumw2();
 
-  TH1F *NBs_BR_histo_e = new TH1F("NBs_BR_histo_e", "Number of FO's from B's vs Nbtags (els)", 3,0,3);
+  TH1F *NBs_BR_histo_e = new TH1F("NBs_BR_histo_e", "Number of FO's from B's vs Nbtags (els)", 5,0,5);
   NBs_BR_histo_e->SetDirectory(rootdir);
   NBs_BR_histo_e->Sumw2();
 
-  TH1F *NBs_BR_histo_mu = new TH1F("NBs_BR_histo_mu", "Number of FO's from B's vs Nbtags (muons)", 3,0,3);
+  TH1F *NBs_BR_histo_mu = new TH1F("NBs_BR_histo_mu", "Number of FO's from B's vs Nbtags (muons)", 5,0,5);
   NBs_BR_histo_mu->SetDirectory(rootdir);
   NBs_BR_histo_mu->Sumw2();
 
-  TH1F *NnotBs_BR_histo_e = new TH1F("NnotBs_BR_histo_e", "Number of FO's NOT from B's vs Nbtags (els)", 3,0,3);
+  TH1F *NnotBs_BR_histo_e = new TH1F("NnotBs_BR_histo_e", "Number of FO's NOT from B's vs Nbtags (els)", 5,0,5);
   NnotBs_BR_histo_e->SetDirectory(rootdir);
   NnotBs_BR_histo_e->Sumw2();
 
-  TH1F *NnotBs_BR_histo_mu = new TH1F("NnotBs_BR_histo_mu", "Number of FO's NOT from B's vs Nbtags (muons)", 3,0,3);
+  TH1F *NnotBs_BR_histo_mu = new TH1F("NnotBs_BR_histo_mu", "Number of FO's NOT from B's vs Nbtags (muons)", 5,0,5);
   NnotBs_BR_histo_mu->SetDirectory(rootdir);
   NnotBs_BR_histo_mu->Sumw2();
 
@@ -200,6 +200,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  
 	  if( !(jetptcut && ss.met() < 20. && ss.mt() < 20) )
 	  	{continue;}
+	  
+	  if(ss.ht() < 200.) continue;
 
 	  if(ss.nFOs() > 1) //if more than 1 FO in event
 		{continue;}
@@ -208,9 +210,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  for(int i = 0; i < ss.jets().size(); i++){
 		  if(ss.jets_disc()[i] > 0.814) nbtags++;
 		}
-	  // if (nbtags > 2) nbtags = 2;
-	  // if (nbtags > 2) cout << nbtags << endl;
-	  //if(nbtags < 1) continue; 
+	  // if (nbtags > 3) nbtags = 3; //overflow for abundance plots
+	  // if (nbtags > 3) cout << nbtags << endl;
+	  // if(nbtags < 1) continue; 
 
 	  //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
 	  //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
