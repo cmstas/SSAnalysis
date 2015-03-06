@@ -138,6 +138,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TH2D *pTrelvsIso_histo_mu = new TH2D("pTrelvsIso_histo_mu", "pTrel vs Iso (Muons)", 10, 0., 1., 15, 0., 30.);
   pTrelvsIso_histo_mu->SetDirectory(rootdir);
   pTrelvsIso_histo_mu->Sumw2();
+
+  TH1F *njets40_histo = new TH1F("njets40_histo", "Njets with pT > 40 GeV", 5,0,5);
+  njets40_histo->SetDirectory(rootdir);
+  njets40_histo->Sumw2();
   //----------------------
 
   //e determination
@@ -201,7 +205,16 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if( !(jetptcut && ss.met() < 20. && ss.mt() < 20) )
 	  	{continue;}
 	  
-	  if(ss.ht() < 200.) continue;
+	  float ht = 0;
+	  int njets40 = 0;
+	  for(int i=0; i<ss.jets().size(); i++)  {
+		if(ss.jets()[i].pt() > 40.) {
+		  ht += ss.jets()[i].pt();
+		  njets40++;
+		}
+	  }
+	  if(ht < 200.) continue;
+	  //if(ss.ht() < 200.) continue;  //have to recalc ht
 
 	  if(ss.nFOs() > 1) //if more than 1 FO in event
 		{continue;}
@@ -305,6 +318,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nl_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  if( ss.passes_id() ) Nl_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  else Nl_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+				  njets40_histo->Fill(njets40, weight);
 
 				  if (doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
 					{
@@ -312,7 +326,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 						NBs_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
 						if( ss.passes_id() ) NBs_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
 						else NBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
-						if( ss.njets() >= 2 ) NBs_BR_histo_e ->Fill(nbtags, weight);
+						//if( ss.njets() >= 2 ) NBs_BR_histo_e ->Fill(nbtags, weight);
+						NBs_BR_histo_e ->Fill(nbtags, weight);
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
@@ -340,6 +355,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nl_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  if( ss.passes_id() ) Nl_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
 				  else Nl_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+				  njets40_histo->Fill(njets40, weight);
 
 				  if (doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
 					{
@@ -347,7 +363,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 						NBs_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
 						if( ss.passes_id() ) NBs_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
 						else NBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
-						if( ss.njets() >= 2 ) NBs_BR_histo_mu ->Fill(nbtags, weight);
+						//if( ss.njets() >= 2 ) NBs_BR_histo_mu ->Fill(nbtags, weight);
+						NBs_BR_histo_mu ->Fill(nbtags, weight);
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
@@ -447,15 +464,18 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   NBs_BR_histo_e->GetXaxis()->SetTitle("Nbjets"); 
   NBs_BR_histo_e->GetYaxis()->SetTitle("Abundance");
   NBs_BR_histo_e->GetYaxis()->SetRangeUser(0., 1.);
-  NBs_BR_histo_e->SetTitle("B Abundance vs Nbjets (Njets >= 2) (electrons)");
+  NBs_BR_histo_e->SetTitle("B Abundance vs Nbtags (electrons)");
   NBs_BR_histo_mu->GetXaxis()->SetTitle("Nbjets"); 
   NBs_BR_histo_mu->GetYaxis()->SetTitle("Abundance");
   NBs_BR_histo_mu->GetYaxis()->SetRangeUser(0., 1.);
-  NBs_BR_histo_mu->SetTitle("B Abundance vs Nbjets (Njets >= 2) (muons)");
+  NBs_BR_histo_mu->SetTitle("B Abundance vs Nbtags (muons)");
   pTrelvsIso_histo_el->GetXaxis()->SetTitle("Iso");
   pTrelvsIso_histo_el->GetYaxis()->SetTitle("pTrel");
   pTrelvsIso_histo_mu->GetXaxis()->SetTitle("Iso");
   pTrelvsIso_histo_mu->GetYaxis()->SetTitle("pTrel");
+  njets40_histo->GetXaxis()->SetTitle("Njets");
+  njets40_histo->GetYaxis()->SetTitle("Events");
+  njets40_histo->SetTitle("Njets with pT > 40 GeV");
 
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("1.3f");
@@ -486,6 +506,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   NBs_BR_histo_e->Draw("histE");
   TCanvas *c12=new TCanvas("c12","B Abundance vs Nbjets (muons)",800,800);
   NBs_BR_histo_mu->Draw("histE");
+  TCanvas *c13=new TCanvas("c13","Njets with pT > 40 GeV",800,800);
+  njets40_histo->Draw("histE");
 
   //---save histos-------//
   TFile *OutputFile = new TFile(outfile,"recreate");
@@ -503,7 +525,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   NBs_BR_histo_mu->Write();  
   pTrelvsIso_histo_el->Write();
   pTrelvsIso_histo_mu->Write();
-
+  njets40_histo->Write();
   OutputFile->Close();
 
   delete Nt_histo;
