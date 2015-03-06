@@ -12,6 +12,8 @@
   // ScanChain(qcd,"./rate_histos_qcd_ptRel.root","ptRel"); 
   // ScanChain(qcd,"./rate_histos_qcd_ptRel_noSIP.root","ptRel_noSIP");
 
+  ScanChain(qcd,"./rate_histos_qcd_extrPtRel.root","extrPtRel"); 
+
   ScanChain(qcd,"./rate_histos_qcd_doBonly.root","doBonly"); 
   ScanChain(qcd,"./rate_histos_qcd_noSIP_doBonly.root","noSIP_doBonly"); 
   // ScanChain(qcd,"./rate_histos_qcd_ptRel_doBonly.root","ptRel_doBonly"); 
@@ -42,5 +44,6 @@
   // ScanChain(ttbar,"./rate_histos_ttbar_doBonly.root","doBonly"); 
   // ScanChain(ttbar,"./rate_histos_ttbar_doConly.root","doConly"); 
   // ScanChain(ttbar,"./rate_histos_ttbar_doLightonly.root","doLightonly"); 
+  ScanChain(ttbar,"./rate_histos_ttbar_extrPtRel.root","extrPtRel"); 
   
 }

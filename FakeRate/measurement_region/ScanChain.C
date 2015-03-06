@@ -23,6 +23,22 @@
 using namespace std;
 using namespace samesign;
 
+float getPt(float pt, bool extrPtRel) {
+  if(!extrPtRel && pt >= 70.) return 69.;
+  if(extrPtRel && pt >= 150.) return 149.;
+  if(pt < 10.)  return 11.;   //use this if lower FR histo bound is 10.
+  return pt;
+}
+
+float getEta(float eta, float ht, bool extrPtRel) {
+  if (extrPtRel) {
+    if(ht >= 800) return 799;
+    return ht;
+  }
+  if(fabs(eta) >= 2.4) return 2.3;
+  return fabs(eta);
+}
+
 int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = true, int nEvents = -1, string skimFilePrefix = "test") {
 
   // Benchmark
@@ -31,6 +47,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
   bool noSIP = false;
   if (option.Contains("noSIP")) noSIP = true;
+
+  bool unIso = false;
+  if (option.Contains("unIso")) unIso = true;
 
   bool usePtRel = false;
   if (option.Contains("ptRel")) usePtRel = true;
@@ -44,74 +63,97 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool doLightonly = false;
   if (option.Contains("doLightonly")) doLightonly = true;
 
-  //float ptbins[5] = {10., 20., 30., 50., 70.};
+  bool extrPtRel = false;
+  if (option.Contains("extrPtRel")) {
+    extrPtRel = true;
+    usePtRel = true;
+    unIso = true;
+    noSIP = true;
+  }
+
+  int nptbins = 5;
+  int netabins = 3;
   float ptbins[6] = {10., 15., 25., 35., 50., 70.};
   float etabins[4] = {0., 1., 2., 2.4};
+
+  if (extrPtRel) {
+    //this should be ok as long as there are less bins in the extrPtRel case
+    ptbins[0] = 10.;
+    ptbins[1] = 50.;
+    ptbins[2] = 100.;
+    ptbins[3] = 150.;
+    nptbins = 3;
+    etabins[0] = 0.;
+    etabins[1] = 400.;
+    etabins[2] = 800.;
+    netabins = 2;
+  } 
+
 
   // Example Histograms
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
 
-  TH2D *Nt_histo = new TH2D("Nt_histo", "Nt vs Pt, Eta", 5,ptbins,3,etabins);
+  TH2D *Nt_histo = new TH2D("Nt_histo", "Nt vs Pt, Eta", nptbins,ptbins,netabins,etabins);
   Nt_histo->SetDirectory(rootdir);
   Nt_histo->Sumw2();
 
-  TH2D *Nl_histo = new TH2D("Nl_histo", "Nl vs Pt, Eta", 5,ptbins,3,etabins);
+  TH2D *Nl_histo = new TH2D("Nl_histo", "Nl vs Pt, Eta", nptbins,ptbins,netabins,etabins);
   Nl_histo->SetDirectory(rootdir);
   Nl_histo->Sumw2();
 
-  TH2D *Nt_histo_e = new TH2D("Nt_histo_e", "Nt vs Pt, Eta (electrons)", 5,ptbins,3,etabins);
+  TH2D *Nt_histo_e = new TH2D("Nt_histo_e", "Nt vs Pt, Eta (electrons)", nptbins,ptbins,netabins,etabins);
   Nt_histo_e->SetDirectory(rootdir);
   Nt_histo_e->Sumw2();
 
-  TH2D *Nl_histo_e = new TH2D("Nl_histo_e", "Nl vs Pt, Eta (electrons)", 5,ptbins,3,etabins);
+  TH2D *Nl_histo_e = new TH2D("Nl_histo_e", "Nl vs Pt, Eta (electrons)", nptbins,ptbins,netabins,etabins);
   Nl_histo_e->SetDirectory(rootdir);
   Nl_histo_e->Sumw2();
 
-  TH2D *Nt_histo_mu = new TH2D("Nt_histo_mu", "Nt vs Pt, Eta (muons)", 5,ptbins,3,etabins);
+  TH2D *Nt_histo_mu = new TH2D("Nt_histo_mu", "Nt vs Pt, Eta (muons)", nptbins,ptbins,netabins,etabins);
   Nt_histo_mu->SetDirectory(rootdir);
   Nt_histo_mu->Sumw2();
 
-  TH2D *Nl_histo_mu = new TH2D("Nl_histo_mu", "Nl vs Pt, Eta (muons)", 5,ptbins,3,etabins);
+  TH2D *Nl_histo_mu = new TH2D("Nl_histo_mu", "Nl vs Pt, Eta (muons)", nptbins,ptbins,netabins,etabins);
   Nl_histo_mu->SetDirectory(rootdir);
   Nl_histo_mu->Sumw2();
 
-  TH2D *Nl_cone_histo_e = new TH2D("Nl_cone_histo_e", "Nl vs Cone Energy, Eta (electrons)", 5,ptbins,3,etabins);
+  TH2D *Nl_cone_histo_e = new TH2D("Nl_cone_histo_e", "Nl vs Cone Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
   Nl_cone_histo_e->SetDirectory(rootdir);
   Nl_cone_histo_e->Sumw2();
 
-  TH2D *Nl_cone_histo_mu = new TH2D("Nl_cone_histo_mu", "Nl vs Cone Energy, Eta (muons)", 5,ptbins,3,etabins);
+  TH2D *Nl_cone_histo_mu = new TH2D("Nl_cone_histo_mu", "Nl vs Cone Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
   Nl_cone_histo_mu->SetDirectory(rootdir);
   Nl_cone_histo_mu->Sumw2();
 
-  TH2D *NBs_histo_e = new TH2D("NBs_histo_e", "Number of FO's from B's vs pT, Eta (els)", 5,ptbins,3,etabins);
+  TH2D *NBs_histo_e = new TH2D("NBs_histo_e", "Number of FO's from B's vs pT, Eta (els)", nptbins,ptbins,netabins,etabins);
   NBs_histo_e->SetDirectory(rootdir);
   NBs_histo_e->Sumw2();
 
-  TH2D *NBs_histo_mu = new TH2D("NBs_histo_mu", "Number of FO's from B's vs pT, Eta (muons)", 5,ptbins,3,etabins);
+  TH2D *NBs_histo_mu = new TH2D("NBs_histo_mu", "Number of FO's from B's vs pT, Eta (muons)", nptbins,ptbins,netabins,etabins);
   NBs_histo_mu->SetDirectory(rootdir);
   NBs_histo_mu->Sumw2();
 
-  TH2D *NnotBs_histo_e = new TH2D("NnotBs_histo_e", "Number of FO's NOT from B's vs pT, Eta (els)", 5,ptbins,3,etabins);
+  TH2D *NnotBs_histo_e = new TH2D("NnotBs_histo_e", "Number of FO's NOT from B's vs pT, Eta (els)", nptbins,ptbins,netabins,etabins);
   NnotBs_histo_e->SetDirectory(rootdir);
   NnotBs_histo_e->Sumw2();
 
-  TH2D *NnotBs_histo_mu = new TH2D("NnotBs_histo_mu", "Number of FO's NOT from B's vs pT, Eta (muons)", 5,ptbins,3,etabins);
+  TH2D *NnotBs_histo_mu = new TH2D("NnotBs_histo_mu", "Number of FO's NOT from B's vs pT, Eta (muons)", nptbins,ptbins,netabins,etabins);
   NnotBs_histo_mu->SetDirectory(rootdir);
   NnotBs_histo_mu->Sumw2();
 
-  TH2D *NBs_cone_histo_e = new TH2D("NBs_cone_histo_e", "Number of FO's from B's vs Cone Energy, Eta (els)", 5,ptbins,3,etabins);
+  TH2D *NBs_cone_histo_e = new TH2D("NBs_cone_histo_e", "Number of FO's from B's vs Cone Energy, Eta (els)", nptbins,ptbins,netabins,etabins);
   NBs_cone_histo_e->SetDirectory(rootdir);
   NBs_cone_histo_e->Sumw2();
 
-  TH2D *NBs_cone_histo_mu = new TH2D("NBs_cone_histo_mu", "Number of FO's from B's vs Cone Energy, Eta (muons)", 5,ptbins,3,etabins);
+  TH2D *NBs_cone_histo_mu = new TH2D("NBs_cone_histo_mu", "Number of FO's from B's vs Cone Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
   NBs_cone_histo_mu->SetDirectory(rootdir);
   NBs_cone_histo_mu->Sumw2();
 
-  TH2D *NnotBs_cone_histo_e = new TH2D("NnotBs_cone_histo_e", "Number of FO's NOT from B's vs Cone Energy, Eta (els)", 5,ptbins,3,etabins);
+  TH2D *NnotBs_cone_histo_e = new TH2D("NnotBs_cone_histo_e", "Number of FO's NOT from B's vs Cone Energy, Eta (els)", nptbins,ptbins,netabins,etabins);
   NnotBs_cone_histo_e->SetDirectory(rootdir);
   NnotBs_cone_histo_e->Sumw2();
 
-  TH2D *NnotBs_cone_histo_mu = new TH2D("NnotBs_cone_histo_mu", "Number of FO's NOT from B's vs Cone Energy, Eta (muons)", 5,ptbins,3,etabins);
+  TH2D *NnotBs_cone_histo_mu = new TH2D("NnotBs_cone_histo_mu", "Number of FO's NOT from B's vs Cone Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
   NnotBs_cone_histo_mu->SetDirectory(rootdir);
   NnotBs_cone_histo_mu->Sumw2();
 
@@ -130,6 +172,35 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TH1F *NnotBs_BR_histo_mu = new TH1F("NnotBs_BR_histo_mu", "Number of FO's NOT from B's vs Nbtags (muons)", 3,0,3);
   NnotBs_BR_histo_mu->SetDirectory(rootdir);
   NnotBs_BR_histo_mu->Sumw2();
+
+  TH2D *pTrelvsIso_histo_el = new TH2D("pTrelvsIso_histo_el", "pTrel vs Iso (Electrons)", 10, 0., 1., 15, 0., 30.);
+  pTrelvsIso_histo_el->SetDirectory(rootdir);
+  pTrelvsIso_histo_el->Sumw2();
+
+  TH2D *pTrelvsIso_histo_mu = new TH2D("pTrelvsIso_histo_mu", "pTrel vs Iso (Muons)", 10, 0., 1., 15, 0., 30.);
+  pTrelvsIso_histo_mu->SetDirectory(rootdir);
+  pTrelvsIso_histo_mu->Sumw2();
+
+  TH1D *pTrel_histo_el = new TH1D("pTrel_histo_el", "pTrel (Electrons)", 15, 0., 30.);
+  pTrel_histo_el->SetDirectory(rootdir);
+  pTrel_histo_el->Sumw2();
+
+  TH1D *pTrel_histo_mu = new TH1D("pTrel_histo_mu", "pTrel (Muons)", 15, 0., 30.);
+  pTrel_histo_mu->SetDirectory(rootdir);
+  pTrel_histo_mu->Sumw2();
+
+  TH1F *histo_ht = new TH1F("histo_ht", "HT", 20,0,1000);
+  histo_ht->SetDirectory(rootdir);
+  histo_ht->Sumw2();
+
+  TH1F *histo_met = new TH1F("histo_met", "MET", 20,0,1000);
+  histo_met->SetDirectory(rootdir);
+  histo_met->Sumw2();
+
+  TH1F *histo_mt = new TH1F("histo_mt", "MT", 20,0,1000);
+  histo_mt->SetDirectory(rootdir);
+  histo_mt->Sumw2();
+
   //----------------------
 
   //e determination
@@ -190,14 +261,16 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  	  jetidx++;
 	  	}
 	  
-	  if( !(jetptcut && ss.met() < 20. && ss.mt() < 20) )
+	  if( !(jetptcut && (extrPtRel || (ss.met() < 20. && ss.mt() < 20)) ) )//cheat to increase stats in ptrel case
 	  	{continue;}
-
-	  if(ss.nFOs() != 1) //if more than 1 FO in event
-		{continue;}
+	  
+	  if(ss.nFOs() > 1) //if more than 1 FO in event
+	  	{continue;}
    
 	  int nbtags = 0;
+	  float ht = 0.;
 	  for(int i = 0; i < ss.jets().size(); i++){
+	          if(ss.jets()[i].pt() > 40.) ht+=ss.jets()[i].pt();;
 		  if(ss.jets_disc()[i] > 0.814) nbtags++;
 		}
 	  // if (nbtags > 2) nbtags = 2;
@@ -208,11 +281,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
 	  // |eta|>2.4 will mess up the rate in the highest eta bins (2<|eta|<3)
 	  //Don't think eta cut is anywhere else
-	  if(ss.p4().pt() > 100. || ss.p4().pt() < 10. || fabs(ss.p4().eta()) > 2.4) //What do we want here? 
-	  //if(ss.p4().pt() > 100. || ss.p4().pt() < 25. || fabs(ss.p4().eta()) > 2.4) //What do we want here? 
+	  //if(ss.p4().pt() > 100. || ss.p4().pt() < 10. || fabs(ss.p4().eta()) > 2.4) //What do we want here? 
+	  //if(ss.p4().pt() < 100. || ss.p4().pt() < 25. || fabs(ss.p4().eta()) > 2.4) //What do we want here? 
+	  if(ss.p4().pt() < 10. || fabs(ss.p4().eta()) > 2.4) //What do we want here? 
 	  	{continue;}
 
 	  if (doLightonly && abs(ss.id())==11 && ss.p4().pt() < 20.) continue;//because EMEnriched does not go below 20 GeV
+
+	  if (unIso && ss.iso()<=0.1 ) continue;
 
 	  //------------------------------------------------------------------------------------------
 	  //---------------------------------Find e = f(const)---------------------------------------
@@ -225,7 +301,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  //Using gen level info to see if prompt -> no prompt contamination in measurement region
 	  //everything else is RECO (p4, id, passes_id, FO, etc.)
 
-	  if( ss.motherID() != 1 && (doBonly==0 || ss.motherID() == -1) && (doConly==0 || ss.motherID() == -2) && (doLightonly==0 || ss.motherID() == 0) )  //if lep is nonprompt
+	  if( ss.motherID() <= 0 && (doBonly==0 || ss.motherID() == -1) && (doConly==0 || ss.motherID() == -2) && (doLightonly==0 || ss.motherID() == 0) )  //if lep is nonprompt
 		{
 
 		  bool passId = ( usePtRel ? ss.passes_id_ptrel() : ss.passes_id() );
@@ -272,40 +348,56 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  //everything else is RECO (p4, id, passes_id, FO, etc.)
 	  
 
-	  if( ss.motherID() != 1 && (doBonly==0 || ss.motherID() == -1) && (doConly==0 || ss.motherID() == -2) && (doLightonly==0 || ss.motherID() == 0) )  //if el is nonprompt (GEN info)
+	  if( ss.motherID() <= 0 && (doBonly==0 || ss.motherID() == -1) && (doConly==0 || ss.motherID() == -2) && (doLightonly==0 || ss.motherID() == 0) )  //if el is nonprompt (GEN info)
 		{
 
 		  bool passId = ( usePtRel ? ss.passes_id_ptrel() : ss.passes_id() );
 		  bool passFO = ( usePtRel ? ss.FO_ptrel() : ss.FO() );
 
+		  if (extrPtRel) {
+		    passId = (ss.FO_NoIso() && ss.ptrelv1()>14. && fabs(ss.ip3d()/ss.ip3derr())<4. && ss.iso()>0.1);
+		    passFO = (ss.FO_NoIso() && ss.ptrelv1()>6.0 && fabs(ss.ip3d()/ss.ip3derr())<4. && ss.iso()>0.1);
+		  }
+
+		  if (passFO) {
+		    histo_ht->Fill( std::min(ht,float(1000.)) );
+		    histo_met->Fill( std::min(ss.met(),float(1000.)) );
+		    histo_mt->Fill( std::min(ss.mt(),float(1000.)) );
+
+		    if( abs( ss.id() ) == 11 ) pTrelvsIso_histo_el->Fill( std::min(ss.iso(),float(0.99)), std::min(ss.ptrelv1(),float(29.9)) );
+		    if( abs( ss.id() ) == 13 ) pTrelvsIso_histo_mu->Fill( std::min(ss.iso(),float(0.99)), std::min(ss.ptrelv1(),float(29.9)) );
+		    if( abs( ss.id() ) == 11 ) pTrel_histo_el->Fill( std::min(ss.ptrelv1(),float(29.9)) );
+		    if( abs( ss.id() ) == 13 ) pTrel_histo_mu->Fill( std::min(ss.ptrelv1(),float(29.9)) );
+		  }
+
 		  if( abs( ss.id() ) == 11 ) // it's an el
 			{
 			  if( passId )  //if el is tight
 				{ 
-				  Nt_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta
-				  Nt_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //
+				  Nt_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta
+				  Nt_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //
 				}
 
 			  if( passFO )  //if el is FO
 				{
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
-				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
-				  Nl_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
-				  if( ss.passes_id() ) Nl_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
-				  else Nl_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+				  Nl_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta 
+				  Nl_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
+				  if( ss.passes_id() ) Nl_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
+				  else Nl_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 
 				  if (doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
 					{
 					  if(ss.motherID()==-1){
-						NBs_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
-						if( ss.passes_id() ) NBs_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
-						else NBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+						NBs_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
+						if( ss.passes_id() ) NBs_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						if( ss.njets() >= 2 ) NBs_BR_histo_e ->Fill(nbtags, weight);
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
-						NnotBs_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
-						if( ss.passes_id() ) NnotBs_cone_histo_e->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
-						else NnotBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+						NnotBs_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
+						if( ss.passes_id() ) NnotBs_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NnotBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						if( ss.njets() >= 2 ) NnotBs_BR_histo_e ->Fill(nbtags, weight);
 					  }
 					}
@@ -315,30 +407,30 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 			{
 			  if( passId )  //if mu is tight
 				{ 
-				  Nt_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta
-				  Nt_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //
+				  Nt_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta
+				  Nt_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //
 				}
 
-			  if( passFO )  //if el is FO
+			  if( passFO )  //if mu is FO
 				{
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
-				  Nl_histo->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);     //fill histo with fake pt, eta 
-				  Nl_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
-				  if( ss.passes_id() ) Nl_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);   //  <-- loose (as opposed to l!t)			
-				  else Nl_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+				  Nl_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta 
+				  Nl_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
+				  if( ss.passes_id() ) Nl_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
+				  else Nl_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 
 				  if (doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
 					{
 					  if(ss.motherID()==-1){
-						NBs_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
-						if( ss.passes_id() ) NBs_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
-						else NBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+						NBs_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
+						if( ss.passes_id() ) NBs_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						if( ss.njets() >= 2 ) NBs_BR_histo_mu ->Fill(nbtags, weight);
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
-						NnotBs_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()),weight);
-						if( ss.passes_id() ) NnotBs_cone_histo_mu->Fill(ss.p4().pt(), fabs(ss.p4().eta()), weight);
-						else NnotBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), fabs(ss.p4().eta()), weight);
+						NnotBs_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
+						if( ss.passes_id() ) NnotBs_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NnotBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						if( ss.njets() >= 2 ) NnotBs_BR_histo_mu ->Fill(nbtags, weight);
 					  }
 					}
@@ -468,6 +560,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   //---save histos-------//
   TFile *OutputFile = new TFile(outfile,"recreate");
   OutputFile->cd();
+  Nl_histo->Write();
+  Nl_histo_e->Write();
+  Nl_histo_mu->Write();
+  Nt_histo->Write();
+  Nt_histo_e->Write();
+  Nt_histo_mu->Write();
   rate_histo->Write();
   rate_histo_e->Write();
   rate_histo_mu->Write();
@@ -479,6 +577,13 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   NBs_cone_histo_mu->Write();
   NBs_BR_histo_e->Write();
   NBs_BR_histo_mu->Write();  
+  pTrelvsIso_histo_el->Write();
+  pTrelvsIso_histo_mu->Write();
+  pTrel_histo_el->Write();
+  pTrel_histo_mu->Write();
+  histo_ht->Write();
+  histo_met->Write();
+  histo_mt->Write();
 
   OutputFile->Close();
 
