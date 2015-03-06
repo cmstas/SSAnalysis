@@ -269,6 +269,12 @@ protected:
 	TString *filename_;
 	TBranch *filename_branch;
 	bool filename_isLoaded;
+	float	lep1_ptrel_v1_;
+	TBranch *lep1_ptrel_v1_branch;
+	bool lep1_ptrel_v1_isLoaded;
+	float	lep2_ptrel_v1_;
+	TBranch *lep2_ptrel_v1_branch;
+	bool lep2_ptrel_v1_isLoaded;
 public: 
 void Init(TTree *tree) {
 	lep1_p4_branch = 0;
@@ -692,6 +698,16 @@ void Init(TTree *tree) {
 		filename_branch = tree->GetBranch("filename");
 		if (filename_branch) {filename_branch->SetAddress(&filename_);}
 	}
+	lep1_ptrel_v1_branch = 0;
+	if (tree->GetBranch("lep1_ptrel_v1") != 0) {
+		lep1_ptrel_v1_branch = tree->GetBranch("lep1_ptrel_v1");
+		if (lep1_ptrel_v1_branch) {lep1_ptrel_v1_branch->SetAddress(&lep1_ptrel_v1_);}
+	}
+	lep2_ptrel_v1_branch = 0;
+	if (tree->GetBranch("lep2_ptrel_v1") != 0) {
+		lep2_ptrel_v1_branch = tree->GetBranch("lep2_ptrel_v1");
+		if (lep2_ptrel_v1_branch) {lep2_ptrel_v1_branch->SetAddress(&lep2_ptrel_v1_);}
+	}
   tree->SetMakeClass(0);
 }
 void GetEntry(unsigned int idx) 
@@ -782,6 +798,8 @@ void GetEntry(unsigned int idx)
 		nGoodMuons10_isLoaded = false;
 		nGoodMuons25_isLoaded = false;
 		filename_isLoaded = false;
+		lep1_ptrel_v1_isLoaded = false;
+		lep2_ptrel_v1_isLoaded = false;
 	}
 
 void LoadAllBranches() 
@@ -871,6 +889,8 @@ void LoadAllBranches()
 	if (nGoodMuons10_branch != 0) nGoodMuons10();
 	if (nGoodMuons25_branch != 0) nGoodMuons25();
 	if (filename_branch != 0) filename();
+	if (lep1_ptrel_v1_branch != 0) lep1_ptrel_v1();
+	if (lep2_ptrel_v1_branch != 0) lep2_ptrel_v1();
 }
 
 	float &met()
@@ -1965,6 +1985,32 @@ void LoadAllBranches()
 		}
 		return *filename_;
 	}
+	float &lep1_ptrel_v1()
+	{
+		if (not lep1_ptrel_v1_isLoaded) {
+			if (lep1_ptrel_v1_branch != 0) {
+				lep1_ptrel_v1_branch->GetEntry(index);
+			} else { 
+				printf("branch lep1_ptrel_v1_branch does not exist!\n");
+				exit(1);
+			}
+			lep1_ptrel_v1_isLoaded = true;
+		}
+		return lep1_ptrel_v1_;
+	}
+	float &lep2_ptrel_v1()
+	{
+		if (not lep2_ptrel_v1_isLoaded) {
+			if (lep2_ptrel_v1_branch != 0) {
+				lep2_ptrel_v1_branch->GetEntry(index);
+			} else { 
+				printf("branch lep2_ptrel_v1_branch does not exist!\n");
+				exit(1);
+			}
+			lep2_ptrel_v1_isLoaded = true;
+		}
+		return lep2_ptrel_v1_;
+	}
 
   static void progress( int nEventsTotal, int nEventsChain ){
     int period = 1000;
@@ -2077,5 +2123,7 @@ namespace samesign {
 	int &nGoodMuons10();
 	int &nGoodMuons25();
 	TString &filename();
+	float &lep1_ptrel_v1();
+	float &lep2_ptrel_v1();
 }
 #endif

@@ -85,4 +85,6 @@ namespace samesign {
 	int &nGoodMuons10() { return ss.nGoodMuons10(); }
 	int &nGoodMuons25() { return ss.nGoodMuons25(); }
 	TString &filename() { return ss.filename(); }
+	float &lep1_ptrel_v1() { return ss.lep1_ptrel_v1(); }
+	float &lep2_ptrel_v1() { return ss.lep2_ptrel_v1(); }
 }
