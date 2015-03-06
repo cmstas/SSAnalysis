@@ -465,15 +465,12 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  //-------------------------------------------------------------------------------------------------------------
 	  //Determine and save jet variables
       ht = 0;
-      vector<LorentzVector> jetp4s;
       for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++)
 	  	{
 	  	  LorentzVector jet = tas::pfjets_p4().at(i);
 
 	  	  //Require loose jet ID
 	  	  if (!isLoosePFJet(i)) continue;
-
-		  if (fabs(jet.eta()) < 2.4) jetp4s.push_back(jet);
 
 	  	  //Kinematic jet cuts
 	  	  if (jet.pt() < 25) continue;   //<------WHAT CUTS DO WE WANT???
@@ -566,8 +563,8 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  FO_ptrel = isDenominatorLepton(id,i,true);    //"fix me" in selection.cc
 		  FO_NoIso = isDenominatorLeptonNoIso(id,i);
 
-		  ptrelv0 = ptRel(p4, jetp4s, false);
-		  ptrelv1 = ptRel(p4, jetp4s, true);
+		  ptrelv0 = getPtRel(id, idx, false);
+		  ptrelv1 = getPtRel(id, idx, true);
 
 		  Lep mu_temp = Lep(id, i);
 		  motherID = lepMotherID(mu_temp);
@@ -626,8 +623,8 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  FO_ptrel = isDenominatorLepton(id,i,true);    //"fix me" in selection.cc
 		  FO_NoIso = isDenominatorLeptonNoIso(id,i);
 
-		  ptrelv0 = ptRel(p4, jetp4s, false);
-		  ptrelv1 = ptRel(p4, jetp4s, true);
+		  ptrelv0 = getPtRel(id, idx, false);
+		  ptrelv1 = getPtRel(id, idx, true);
  
 		  Lep el_temp = Lep(id, i);
 		  motherID = lepMotherID(el_temp);
