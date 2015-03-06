@@ -37,7 +37,7 @@
   // plot1 = "hyp_ss_foFromWlead_mu_ptrelsub";
   // plot2 = "hyp_ss_foFromWlead_mu_ptrelsub";
   // plot3 = "hyp_ss_foFakelead_mu_ptrelsub";
-  // xaxis = "pTrel [GeV]";
+  // xaxis = "pTrel v1 [GeV]";
 
   // plot1 = "hyp_ss_foFromWlead_mu_mindr";
   // plot2 = "hyp_ss_foFromWlead_mu_mindr";
