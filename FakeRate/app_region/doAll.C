@@ -17,6 +17,7 @@
   bool doConly    = 0;
   bool doLightonly= 0;
   bool doPtRel    = 0;
+  bool doExtrPtRel= 0;
 
   TString option = "";
   if (doPtRel) option+="_ptRel";//option only for fakeratefile
@@ -24,16 +25,21 @@
   if (doBonly) option+="_doBonly";
   if (doConly) option+="_doConly";
   if (doLightonly) option+="_doLightonly";
+  if (doExtrPtRel) option+="_extrPtRel";
 
   TString fakeratefile = "../measurement_region/rate_histos_qcd"+option+".root";
   // TString fakeratefile = "../measurement_region/rate_histos_qcdnonEnriched"+option+".root";
   // TString fakeratefile = "../measurement_region/rate_histos_ttbar.root";
 
   if (doConeCorr) option+="_coneCorr";//option only for ScanChain
+  if (doExtrPtRel) doPtRel=1;
 
   TChain *ch = new TChain("t"); 
-  if (doPtRel) ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby_ptRel.root"); //or this one!
-  else ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby.root"); //this one!
-
+  if (doExtrPtRel) {
+    ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.0X-ptrelfo6/ttbar_baby_ptRel.root"); //or this one!
+  } else {
+    if (doPtRel) ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby_ptRel.root"); //or this one!
+    else ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby.root"); //this one!
+  }
   ScanChain(ch, fakeratefile, option); 
 }
