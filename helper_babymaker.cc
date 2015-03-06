@@ -346,10 +346,10 @@ int babyMaker::ProcessBaby(bool usePtRel){
   } 
 
   //PtRel for both leptons
-  lep1_ptrel_v0 = ptRel(lep1_p4, jets, false);
-  lep2_ptrel_v0 = ptRel(lep2_p4, jets, false);
-  lep1_ptrel_v1 = ptRel(lep1_p4, jets, true);
-  lep2_ptrel_v1 = ptRel(lep2_p4, jets, true);
+  lep1_ptrel_v0 = getPtRel(lep1_id, lep1_idx, false);
+  lep2_ptrel_v0 = getPtRel(lep2_id, lep2_idx, false);
+  lep1_ptrel_v1 = getPtRel(lep1_id, lep1_idx, true);
+  lep2_ptrel_v1 = getPtRel(lep2_id, lep2_idx, true);
   
   //nGood Leptons
   for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
