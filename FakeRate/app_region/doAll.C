@@ -10,13 +10,13 @@
   gROOT->ProcessLine(".L ../../CORE/SSSelections.cc+");
 
   gROOT->ProcessLine(".L ScanChain.C+");
-
   bool doConeCorr = 0;
   bool doNoSIP    = 1;
   bool doBonly    = 0;
   bool doConly    = 0;
   bool doLightonly= 0;
   bool doPtRel    = 0;
+  bool doLowPtRel = 0;
   bool doExtrPtRel= 0;
 
   bool highhigh   = 1;
@@ -29,6 +29,7 @@
   if (doBonly) option+="_doBonly";
   if (doConly) option+="_doConly";
   if (doLightonly) option+="_doLightonly";
+  if (doLowPtRel) option+="_lowPtRel";
   if (doExtrPtRel) option+="_extrPtRel";
 
   TString ptRegion = "";

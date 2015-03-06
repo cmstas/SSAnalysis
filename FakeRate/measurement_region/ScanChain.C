@@ -63,6 +63,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool doLightonly = false;
   if (option.Contains("doLightonly")) doLightonly = true;
 
+  bool lowPtRel = false;
+  if (option.Contains("lowPtRel")) lowPtRel = true;
+
   bool extrPtRel = false;
   if (option.Contains("extrPtRel")) {
     extrPtRel = true;
@@ -295,6 +298,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  	{continue;}
 
 	  if (doLightonly && abs(ss.id())==11 && ss.p4().pt() < 20.) continue;//because EMEnriched does not go below 20 GeV
+
+          if (lowPtRel && ss.ptrelv1()>14.) continue;
 
 	  if (unIso && ss.iso()<=0.1 ) continue;
 

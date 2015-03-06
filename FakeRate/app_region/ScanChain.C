@@ -174,6 +174,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   if (option.Contains("doConly")) doConly = true;
   bool doLightonly = false;
   if (option.Contains("doLightonly")) doLightonly = true;
+  bool lowPtRel = false;
+  if (option.Contains("lowPtRel")) lowPtRel = true;
   bool extrPtRel = false;
   if (option.Contains("extrPtRel")) {
     extrPtRel = true;
@@ -442,6 +444,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 			  else if( ss.lep1_motherID()==1 && ss.lep2_motherID()<=0 ) //lep2 is nonprompt
 				{
 				  if (unIso && ss.lep2_iso()<=0.1) continue;
+				  if (lowPtRel && ss.lep2_ptrel_v1()>14.) continue;
 				  prompt1_reco = prompt1_reco + weight;  
 				  NpromptL1_reco = NpromptL1_reco + weight;
 				  Npn_histo_obs->Fill(sr, weight);
@@ -457,6 +460,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 			  else if( ss.lep1_motherID()<=0 && ss.lep2_motherID()==1 ) //lep1 is nonprompt
 				{
 				  if (unIso && ss.lep1_iso()<=0.1) continue;
+				  if (lowPtRel && ss.lep1_ptrel_v1()>14.) continue;
 				  prompt1_reco = prompt1_reco + weight; 
 				  NpromptL2_reco = NpromptL2_reco + weight;				
 				  Npn_histo_obs->Fill(sr, weight);
@@ -473,6 +477,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				{
 				  if (unIso && ss.lep1_iso()<=0.1) continue;
 				  if (unIso && ss.lep2_iso()<=0.1) continue;
+				  if (lowPtRel && ss.lep1_ptrel_v1()>14.) continue;
+				  if (lowPtRel && ss.lep2_ptrel_v1()>14.) continue;
 				  prompt0_reco = prompt0_reco + weight;
 				}
 			}
@@ -571,6 +577,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				{	
 				  if (noSIP && fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())>4.) continue;
 				  if (unIso && ss.lep2_iso()<0.1) continue;
+				  if (lowPtRel && ss.lep2_ptrel_v1()>14.) continue;
 				  if (extrPtRel && ss.lep2_ptrel_v1()<6.0 ) continue;
 				  float pt = ss.lep2_p4().pt();
 				  if (coneCorr) pt = pt+pt*std::max(0.,ss.lep2_iso()-0.1);
@@ -605,6 +612,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				{
 				  if (noSIP && fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())>4.) continue;
 				  if (unIso && ss.lep1_iso()<0.1) continue;
+				  if (lowPtRel && ss.lep1_ptrel_v1()>14.) continue;
 				  if (extrPtRel && ss.lep1_ptrel_v1()<6.0 ) continue;
 				  float pt = ss.lep1_p4().pt();
 				  if (coneCorr) pt = pt+pt*std::max(0.,ss.lep1_iso()-0.1);
