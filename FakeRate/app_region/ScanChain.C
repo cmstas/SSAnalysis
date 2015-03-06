@@ -156,7 +156,7 @@ float getFakeRate(TH2D* histo, float pt, float eta, float ht, bool extrPtRel) //
 }
 
 
-int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fast = true, int nEvents = -1, string skimFilePrefix = "test") {
+int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", bool fast = true, int nEvents = -1, string skimFilePrefix = "test") {
 
   // Benchmark
   TBenchmark *bmark = new TBenchmark();
@@ -180,6 +180,12 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
     unIso = true;
     noSIP = true;
   }
+  bool highhigh = false;
+  if (ptRegion.Contains("HH")) highhigh = true;
+  bool highlow = false;
+  if (ptRegion.Contains("HL")) highlow = true;
+  bool lowlow = false;
+  if (ptRegion.Contains("LL")) lowlow = true;
 
   //histograms
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
@@ -208,19 +214,19 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
   Npn_histo_pred_el->SetDirectory(rootdir);
   Npn_histo_pred_el->Sumw2();
 
-  TH1F *NBs_BR_histo_e = new TH1F("NBs_BR_histo_e", "Number of FO's from B's vs Nbtags (els)", 3,0,3);
+  TH1F *NBs_BR_histo_e = new TH1F("NBs_BR_histo_e", "Number of FO's from B's vs Nbtags (els)", 5,0,5);
   NBs_BR_histo_e->SetDirectory(rootdir);
   NBs_BR_histo_e->Sumw2();
 
-  TH1F *NBs_BR_histo_mu = new TH1F("NBs_BR_histo_mu", "Number of FO's from B's vs Nbtags (muons)", 3,0,3);
+  TH1F *NBs_BR_histo_mu = new TH1F("NBs_BR_histo_mu", "Number of FO's from B's vs Nbtags (muons)", 5,0,5);
   NBs_BR_histo_mu->SetDirectory(rootdir);
   NBs_BR_histo_mu->Sumw2();
 
-  TH1F *NnotBs_BR_histo_e = new TH1F("NnotBs_BR_histo_e", "Number of FO's NOT from B's vs Nbtags (els)", 3,0,3);
+  TH1F *NnotBs_BR_histo_e = new TH1F("NnotBs_BR_histo_e", "Number of FO's NOT from B's vs Nbtags (els)", 5,0,5);
   NnotBs_BR_histo_e->SetDirectory(rootdir);
   NnotBs_BR_histo_e->Sumw2();
 
-  TH1F *NnotBs_BR_histo_mu = new TH1F("NnotBs_BR_histo_mu", "Number of FO's NOT from B's vs Nbtags (muons)", 3,0,3);
+  TH1F *NnotBs_BR_histo_mu = new TH1F("NnotBs_BR_histo_mu", "Number of FO's NOT from B's vs Nbtags (muons)", 5,0,5);
   NnotBs_BR_histo_mu->SetDirectory(rootdir);
   NnotBs_BR_histo_mu->Sumw2();
 
@@ -338,6 +344,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 	  //lower pt to 10 for low-high and low-low regions?
 	  //use 15 for now to match FR sample
 	  if( !( ss.lep1_p4().pt() > 15 && ss.lep2_p4().pt() > 15  &&ss.njets() >= 2 && (ss.ht() > 500 ? 1 : ss.met() > 30) ) )
+	  // if( !( ss.lep1_p4().pt() > 10 && ss.lep2_p4().pt() > 10  &&ss.njets() >= 2 /*&& (ss.ht() > 300 ? 1 : ss.met() > 15)*/ ) ) //loosen for W+jets
 	  	{
 	  	  {continue;}
 	  	} 
@@ -361,12 +368,13 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 		 (abs(ss.lep2_id())==11 && ss.lep2_motherID()==0 && ss.lep2_p4().pt() < 20) ) continue;
 
 	  }
-
+	  
 	  //if (std::min(ss.mt(),ss.mt_l2())<100) continue;	  
 
 	  //------------------------------------------------------------------------
 	  unsigned int ac_base = analysisCategory(ss.lep1_p4().pt(), ss.lep2_p4().pt());
 	  passesBaselineCuts(ss.njets(), ss.nbtags(), ss.met(), ss.ht(), ac_base);
+	  //cout << " ac=" << ac_base;
 	  if (ac_base==0) continue;
 	  int br = baselineRegion(ss.nbtags());
 	  unsigned int ac_sig = ac_base;
@@ -404,8 +412,13 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 		  //reco->ss on reco level
 		  //-----------------------------------------------------------------------
 		  //consider only highhigh pT for the moment
-		  if ( !(ss.lep1_p4().pt() > 25. && ss.lep2_p4().pt() > 25.) ) continue;
-
+		  if(highhigh)
+			{if ( !(ss.lep1_p4().pt() > 25. && ss.lep2_p4().pt() > 25.) ) continue;}
+		  else if(lowlow)
+			{if ( !((ss.lep1_p4().pt() > 10. && ss.lep1_p4().pt() < 25.) && (ss.lep2_p4().pt() > 10. && ss.lep2_p4().pt() < 25.)) )  continue;}
+		  else if(highlow)
+			{if ( !((ss.lep1_p4().pt() > 10. && ss.lep1_p4().pt() < 25. && ss.lep2_p4().pt() > 25.) || (ss.lep2_p4().pt() > 10. && ss.lep2_p4().pt() < 25. && ss.lep1_p4().pt() > 25.)) ) continue;}
+		  
 		  //check for charge misID on reco level.
 		  if( ss.lep1_id()*ss.lep2_id() < 0 )
 			{
@@ -511,18 +524,44 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "",bool fas
 	  if( ss.hyp_class() == 2 )  //if tight-loose!tight
 		{
 		  int nbjets = ss.nbtags();
-		  if(nbjets>2) nbjets=2;
+		  //if(nbjets>3) nbjets=3; //overflow for abundance plot
+		  
+		  float lep1_conepT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_iso()-0.1));
+		  float lep2_conepT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_iso()-0.1));
 
 		  //apply pTcuts for highhigh region for now, with cone correction if needed
-		  if (ss.lep1_passes_id() || coneCorr==false) {
-		    if (ss.lep1_p4().pt()<25.) continue;
-		  } else {
-		    if (ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_iso()-0.1))<25.) continue;
+		  if(highhigh){
+			if (ss.lep1_passes_id() || coneCorr==false) {
+			  if (ss.lep1_p4().pt()<25.) continue;
+			} else {
+			  if (ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_iso()-0.1))<25.) continue;
+			}
+			if (ss.lep2_passes_id() || coneCorr==false) {
+			  if (ss.lep2_p4().pt()<25.) continue;
+			} else {
+			  if (ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_iso()-0.1))<25.) continue;
+			}
 		  }
-		  if (ss.lep2_passes_id() || coneCorr==false) {
-		    if (ss.lep2_p4().pt()<25.) continue;
-		  } else {
-		    if (ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_iso()-0.1))<25.) continue;
+		  else if(lowlow){
+			if (ss.lep1_passes_id() || coneCorr==false) {
+			  if (ss.lep1_p4().pt()>25. || ss.lep1_p4().pt()<10.) continue;
+			} else {
+			  if (ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_iso()-0.1))>25. || ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_iso()-0.1))<10.) continue;
+			}
+			if (ss.lep2_passes_id() || coneCorr==false) {
+			  if (ss.lep2_p4().pt()>25. || ss.lep2_p4().pt()<10.) continue;
+			} else {
+			  if (ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_iso()-0.1))>25. || ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_iso()-0.1))<10.) continue;
+			}
+		  }
+		  else if(highlow){
+			if ((ss.lep1_passes_id() && ss.lep2_passes_id()) || coneCorr==false) {      //both are tight, don't need to use cone corr.  OR cone corr is off
+			  if ((ss.lep1_p4().pt()>25. && ss.lep2_p4().pt()>25.) || (ss.lep1_p4().pt()<25. && ss.lep2_p4().pt()<25.) || ss.lep1_p4().pt()<10. || ss.lep2_p4().pt()<10.) continue;
+			} else if(ss.lep1_passes_id() && !ss.lep2_passes_id() && coneCorr==true) {  //lep2 fails tight, so use cone corr for it
+			  if ((ss.lep1_p4().pt()>25. && lep2_conepT>25.) || (ss.lep1_p4().pt()<25. && lep2_conepT<25.) || ss.lep1_p4().pt()<10. || lep2_conepT<10.) continue;
+			} else if(!ss.lep1_passes_id() && ss.lep2_passes_id() && coneCorr==true) {  //lep1 fails tight, so use cone corr for it
+				if ((lep1_conepT>25. && ss.lep2_p4().pt()>25.) || (lep1_conepT<25. && ss.lep2_p4().pt()<25.) || lep1_conepT<10. || ss.lep2_p4().pt()<10.) continue;
+			  }
 		  }
 
 		  //make sure ss on reco level. 

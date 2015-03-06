@@ -19,6 +19,10 @@
   bool doPtRel    = 0;
   bool doExtrPtRel= 0;
 
+  bool highhigh   = 1;
+  bool highlow    = 0;
+  bool lowlow     = 0;
+  
   TString option = "";
   if (doPtRel) option+="_ptRel";//option only for fakeratefile
   if (doNoSIP) option+="_noSIP";
@@ -27,9 +31,14 @@
   if (doLightonly) option+="_doLightonly";
   if (doExtrPtRel) option+="_extrPtRel";
 
+  TString ptRegion = "";
+  if (highhigh) ptRegion = "HH";
+  else if (highlow)  ptRegion = "HL";
+  else if (lowlow)   ptRegion = "LL";
+
   TString fakeratefile = "../measurement_region/rate_histos_qcd"+option+".root";
   // TString fakeratefile = "../measurement_region/rate_histos_qcdnonEnriched"+option+".root";
-  // TString fakeratefile = "../measurement_region/rate_histos_ttbar.root";
+  // TString fakeratefile = "../measurement_region/rate_histos_ttbar.root"; //from applying FR to ttbar FR baby
 
   if (doConeCorr) option+="_coneCorr";//option only for ScanChain
   if (doExtrPtRel) doPtRel=1;
@@ -41,5 +50,11 @@
     if (doPtRel) ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby_ptRel.root"); //or this one!
     else ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby.root"); //this one!
   }
-  ScanChain(ch, fakeratefile, option); 
+
+  TChain *ch_wjets = new TChain("t"); 
+  if (doPtRel) ch_wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v1.04/Wjets_baby_ptRel.root"); //or this one!
+  else ch_wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v1.04/Wjets_baby.root"); //this one!
+
+  ScanChain(ch, fakeratefile, option, ptRegion); 
+  //ScanChain(ch_wjets, fakeratefile, option, ptRegion); 
 }

@@ -502,7 +502,8 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 
 	  	  //Save jets that make it this far
 	  	  jets.push_back(jet);
-	  	  ht += jet.pt();
+	  	  //ht += jet.pt();  //want to only use jets w/ pt>40, not 25
+	  	  if(jet.pt() > 40.) ht += jet.pt();  //not implemented for V00-00-05
 		  float disc = tas::pfjets_combinedInclusiveSecondaryVertexV2BJetTag().at(i);  //BRANCH DOESNT EXIST in old samples.
 		  jets_disc.push_back(disc);
 	
