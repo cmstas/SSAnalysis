@@ -17,6 +17,8 @@
   plot = "hyp_hihi_ld";xaxis="LD";yaxis="event fraction";
   plot = "hyp_highpt_mtmin";xaxis="mTmin [GeV]";yaxis="events/bin/10 fb^{-1}";
   plot = "hyp_hihi_excl_sr";xaxis="SR";yaxis="events/bin";//_mt100
+  plot = "hyp_hihi_ptRellead";xaxis="pTrel [GeV]";yaxis="events/bin";//_mt100
+  plot = "hyp_hihi_mt100_sr";xaxis="SR";yaxis="events/bin";
   bool norm = false;
   bool save = false;
   bool logy = false;
