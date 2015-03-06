@@ -583,12 +583,13 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 	  */
 
 	  //if ( (lepMotherID(hyp.leadLep())==2 && lepMotherID(hyp.traiLep())==1) || (lepMotherID(hyp.leadLep())==1 && lepMotherID(hyp.traiLep())==2) ) continue;//FIXME //don't count events that are prompt-prompt charge flips (estimated from data)
+	  //if ( !((lepMotherID(hyp.leadLep())!=1 && lepMotherID(hyp.traiLep())==1) || (lepMotherID(hyp.leadLep())==1 && lepMotherID(hyp.traiLep())!=1)) ) continue;//FIXME test single fakes
 	  makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,10,weight_);
 	  if (isGenSS) makeFillHisto1D<TH1F,int>("cut_flow_ss","cut_flow_ss",50,0,50,10,weight_);
 	  if (isGenSSee) makeFillHisto1D<TH1F,int>("cut_flow_ssee","cut_flow_ssee",50,0,50,10,weight_);
 	  if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,10,weight_);
 
-	  if (debug) {
+	  if (debug /*|| (br==30 && hyp.leadLep().pt()>25. && hyp.traiLep().pt()>25)*/) {
 	    cout << endl << "NEW SS EVENT" << endl << endl;	  
 	    cout << "lead lep id=" << hyp.leadLep().pdgId() << " pt=" << hyp.leadLep().pt() << " eta=" << hyp.leadLep().eta() << " p4=" << hyp.leadLep().p4() 
 		 << " mcid=" << hyp.leadLep().mc_id() << " mcp4=" << hyp.leadLep().mc_p4() << " mother_id=" << hyp.leadLep().mc_motherid()
@@ -654,8 +655,10 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 	  if (ac_base & 1<<HighHigh) {
 	    if (prefix=="TTWJets" && debug) cout << left << setw(10) << ls_  << " "  << setw(10) << evt_ << " "  << setw(10) << njets << " "  << setw(10) << nbtag << " "  << setw(10) << std::setprecision(8) << ht << " "  << setw(10) << std::setprecision(8) << met << " " << sr << endl;
 
-	    if (makeSyncTest) cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f", run_, ls_, evt_, int(vetoleps.size()), hyp.leadLep().pdgId(), hyp.leadLep().pt(), 
-					   hyp.traiLep().pdgId(), hyp.traiLep().pt(),  njets, nbtag, met, ht) << endl;
+	    if (makeSyncTest /*|| (br==30 && hyp.leadLep().pt()>25. && hyp.traiLep().pt()>25)*/) {
+	      cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f", run_, ls_, evt_, int(vetoleps.size()), hyp.leadLep().pdgId(), hyp.leadLep().pt(), 
+			   hyp.traiLep().pdgId(), hyp.traiLep().pt(),  njets, nbtag, met, ht) << endl;
+	    }
 
 	    tests::makeSRplots( this, weight_, TString("hihi"), br, sr, hyp, ht, met, mtmin, type, goodleps, fobs, vetoleps, jets, alljets, btags, ll, lt );
 	    makeFillHisto1D<TH1F,int>("hyp_hihi_nbtag_pt20","hyp_hihi_nbtag_pt20",8,0,8,nbtag_pt20,weight_);
