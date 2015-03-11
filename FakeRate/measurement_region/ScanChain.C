@@ -16,6 +16,7 @@
 #include "TH2D.h"
 #include "TCanvas.h"
 #include "TStyle.h"
+#include "Math/VectorUtil.h"
 
 // lepfilter
 #include "lepfilter.cc"
@@ -277,7 +278,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  int njets40 = 0;
 	  int nbtags = 0;
 	  for(int i=0; i<ss.jets().size(); i++)  {
-	        if(ss.jets_disc()[i] > 0.814) nbtags++;
+		if(ROOT::Math::VectorUtil::DeltaR(ss.jets()[i], ss.p4()) > 1.) continue; //0.4 in babymaker
+		if(ss.jets_disc()[i] > 0.814) nbtags++;
 		if(ss.jets()[i].pt() > 40.) {
 		  ht += ss.jets()[i].pt();
 		  njets40++;
@@ -413,7 +415,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 						NnotBs_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NnotBs_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						else NnotBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						if( ss.njets() >= 2 ) NnotBs_BR_histo_e ->Fill(nbtags, weight);
+						//if( ss.njets() >= 2 ) NnotBs_BR_histo_e ->Fill(nbtags, weight);
+						NnotBs_BR_histo_e ->Fill(nbtags, weight);
 					  }
 					}
 				}
@@ -448,7 +451,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 						NnotBs_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NnotBs_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						else NnotBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						if( ss.njets() >= 2 ) NnotBs_BR_histo_mu ->Fill(nbtags, weight);
+						//if( ss.njets() >= 2 ) NnotBs_BR_histo_mu ->Fill(nbtags, weight);
+						NnotBs_BR_histo_mu ->Fill(nbtags, weight);
 					  }
 					}
 				}

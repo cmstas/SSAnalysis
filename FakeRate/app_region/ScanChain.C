@@ -216,19 +216,19 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   Npn_histo_pred_el->SetDirectory(rootdir);
   Npn_histo_pred_el->Sumw2();
 
-  TH1F *NBs_BR_histo_e = new TH1F("NBs_BR_histo_e", "Number of FO's from B's vs Nbtags (els)", 5,0,5);
+  TH1F *NBs_BR_histo_e = new TH1F("NBs_BR_histo_e", "Number of FO's from B's vs Nbtags (els)", 4,0,4);
   NBs_BR_histo_e->SetDirectory(rootdir);
   NBs_BR_histo_e->Sumw2();
 
-  TH1F *NBs_BR_histo_mu = new TH1F("NBs_BR_histo_mu", "Number of FO's from B's vs Nbtags (muons)", 5,0,5);
+  TH1F *NBs_BR_histo_mu = new TH1F("NBs_BR_histo_mu", "Number of FO's from B's vs Nbtags (muons)", 4,0,4);
   NBs_BR_histo_mu->SetDirectory(rootdir);
   NBs_BR_histo_mu->Sumw2();
 
-  TH1F *NnotBs_BR_histo_e = new TH1F("NnotBs_BR_histo_e", "Number of FO's NOT from B's vs Nbtags (els)", 5,0,5);
+  TH1F *NnotBs_BR_histo_e = new TH1F("NnotBs_BR_histo_e", "Number of FO's NOT from B's vs Nbtags (els)", 4,0,4);
   NnotBs_BR_histo_e->SetDirectory(rootdir);
   NnotBs_BR_histo_e->Sumw2();
 
-  TH1F *NnotBs_BR_histo_mu = new TH1F("NnotBs_BR_histo_mu", "Number of FO's NOT from B's vs Nbtags (muons)", 5,0,5);
+  TH1F *NnotBs_BR_histo_mu = new TH1F("NnotBs_BR_histo_mu", "Number of FO's NOT from B's vs Nbtags (muons)", 4,0,4);
   NnotBs_BR_histo_mu->SetDirectory(rootdir);
   NnotBs_BR_histo_mu->Sumw2();
 
@@ -307,6 +307,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   float e1 = 0.;  //rate = Nt/Nl
   float e2 = 0.;  //rate = Nt/Nl
   //----------------
+  int counter = 0;  
 
   // Loop over events to Analyze
   unsigned int nEventsTotal = 0;
@@ -346,7 +347,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 	  //lower pt to 10 for low-high and low-low regions?
 	  //use 15 for now to match FR sample
 	  if( !( ss.lep1_p4().pt() > 15 && ss.lep2_p4().pt() > 15  &&ss.njets() >= 2 && (ss.ht() > 500 ? 1 : ss.met() > 30) ) )
-	  // if( !( ss.lep1_p4().pt() > 10 && ss.lep2_p4().pt() > 10  &&ss.njets() >= 2 /*&& (ss.ht() > 300 ? 1 : ss.met() > 15)*/ ) ) //loosen for W+jets
+	  // if( !( ss.lep1_p4().pt() > 15 && ss.lep2_p4().pt() > 15  &&ss.njets() >= 2 && (ss.ht() > 500 ? 1 : ss.met() > 30) ) ) //loosen for W+jets
 	  	{
 	  	  {continue;}
 	  	} 
@@ -420,6 +421,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 			{if ( !((ss.lep1_p4().pt() > 10. && ss.lep1_p4().pt() < 25.) && (ss.lep2_p4().pt() > 10. && ss.lep2_p4().pt() < 25.)) )  continue;}
 		  else if(highlow)
 			{if ( !((ss.lep1_p4().pt() > 10. && ss.lep1_p4().pt() < 25. && ss.lep2_p4().pt() > 25.) || (ss.lep2_p4().pt() > 10. && ss.lep2_p4().pt() < 25. && ss.lep1_p4().pt() > 25.)) ) continue;}
+		  
+		  counter++;
 		  
 		  //check for charge misID on reco level.
 		  if( ss.lep1_id()*ss.lep2_id() < 0 )
@@ -530,7 +533,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 	  if( ss.hyp_class() == 2 )  //if tight-loose!tight
 		{
 		  int nbjets = ss.nbtags();
-		  //if(nbjets>3) nbjets=3; //overflow for abundance plot
+		  if(nbjets>3) nbjets=3; //overflow for abundance plot
 		  
 		  float lep1_conepT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_iso()-0.1));
 		  float lep2_conepT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_iso()-0.1));
@@ -702,6 +705,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   cout<<setw(25)<<"Npn-Npn_s:"<<setw(10)<<Npn-Npn_s<<setw(10)<<prompt1_reco<<setw(10)<<(Npn-Npn_s)/prompt1_reco<<endl;
   cout<<setw(25)<<"Nnn:"<<setw(10)<<Nnn<<setw(10)<<prompt0_reco<<setw(10)<<Nnn/prompt0_reco<<endl;
 
+  cout<<"\nCounter = "<<counter<<endl;
+
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("1.3f");
 
@@ -751,18 +756,18 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   total_BR_histo_mu->Add(NnotBs_BR_histo_mu);
   NBs_BR_histo_e->Divide(NBs_BR_histo_e, total_BR_histo_e,1,1,"B");
   NBs_BR_histo_mu->Divide(NBs_BR_histo_mu, total_BR_histo_mu,1,1,"B");
-  NBs_BR_histo_e->GetXaxis()->SetTitle("Nbjets"); 
+  NBs_BR_histo_e->GetXaxis()->SetTitle("Nbtags"); 
   NBs_BR_histo_e->GetYaxis()->SetTitle("Abundance");
   NBs_BR_histo_e->GetYaxis()->SetRangeUser(0.,1.);
-  NBs_BR_histo_e->SetTitle("B Abundance vs Nbjets (Njets >= 2) (electrons)");
-  NBs_BR_histo_mu->GetXaxis()->SetTitle("Nbjets"); 
+  NBs_BR_histo_e->SetTitle("B Abundance vs Nbtags (Njets >= 2) (electrons)");
+  NBs_BR_histo_mu->GetXaxis()->SetTitle("Nbtags"); 
   NBs_BR_histo_mu->GetYaxis()->SetTitle("Abundance");
   NBs_BR_histo_mu->GetYaxis()->SetRangeUser(0.,1.);
-  NBs_BR_histo_mu->SetTitle("B Abundance vs Nbjets (Njets >= 2) (muons)");
+  NBs_BR_histo_mu->SetTitle("B Abundance vs Nbtags (Njets >= 2) (muons)");
 
-  TCanvas *c6=new TCanvas("c6","B Abundance vs Nbjets (Njets >= 2) (electrons)", 800,800);
+  TCanvas *c6=new TCanvas("c6","B Abundance vs Nbtags (Njets >= 2) (electrons)", 800,800);
   NBs_BR_histo_e->Draw("histE");
-  TCanvas *c7=new TCanvas("c7","B Abundance vs Nbjets (Njets >= 2) (muons)", 800,800);
+  TCanvas *c7=new TCanvas("c7","B Abundance vs Nbtags (Njets >= 2) (muons)", 800,800);
   NBs_BR_histo_mu->Draw("histE");
 
   c3->SaveAs("sr_all"+option+".png");

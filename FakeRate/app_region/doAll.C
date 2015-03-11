@@ -54,8 +54,11 @@
 
   TChain *ch_wjets = new TChain("t"); 
   if (doPtRel) ch_wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v1.04/Wjets_baby_ptRel.root"); //or this one!
-  else ch_wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v1.04/Wjets_baby.root"); //this one!
-
+  else {
+	ch_wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v1.04/Wjets_baby.root"); //this one!
+	ch_wjets->Add("/nfs-7/userdata/iandyckes/fake_rate_output/V00-00-05/wjetsHT_SSbaby.root");
+	//ch_wjets->Add("./wjetsHT_baby.root");
+  }
   ScanChain(ch, fakeratefile, option, ptRegion); 
   //ScanChain(ch_wjets, fakeratefile, option, ptRegion); 
 }
