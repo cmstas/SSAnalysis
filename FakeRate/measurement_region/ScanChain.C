@@ -278,7 +278,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  int njets40 = 0;
 	  int nbtags = 0;
 	  for(int i=0; i<ss.jets().size(); i++)  {
-		if(ROOT::Math::VectorUtil::DeltaR(ss.jets()[i], ss.p4()) > 1.) continue; //0.4 in babymaker
+		if(ROOT::Math::VectorUtil::DeltaR(ss.jets()[i], ss.p4()) < 1.) continue; //0.4 in babymaker
 		if(ss.jets_disc()[i] > 0.814) nbtags++;
 		if(ss.jets()[i].pt() > 40.) {
 		  ht += ss.jets()[i].pt();
@@ -290,7 +290,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
    
 	  // if (nbtags > 3) nbtags = 3; //overflow for abundance plots
 	  // if (nbtags > 3) cout << nbtags << endl;
-	  // if(nbtags < 1) continue; 
+	  //if(nbtags != 2) continue; 
 
 	  //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
 	  //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
