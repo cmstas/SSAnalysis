@@ -25,8 +25,8 @@ using namespace std;
 
 int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isData, TString whatTest, int nEvents, bool usePtRel, vector<int> evtToDebug) {
 
-  makebaby       = 0;
-  makehist       = 1;
+  makebaby       = 1;
+  makehist       = 0;
   maketext       = 0;
 
   bool makeQCDtest    = 0;
