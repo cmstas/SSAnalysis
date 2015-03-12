@@ -259,21 +259,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if(ss.scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
 	  
 	  bool jetptcut = false;
-	  int jetidx = 0;
-
-	  while( (jetidx < ss.jets().size()) && !jetptcut) //check to see if at least one jet w/ pt > 40
-	  	{
-	  	  if( ss.jets()[jetidx].pt() > 40. )
-	  		{jetptcut = true;}
-	  	  jetidx++;
-	  	}
-	  
-	  if( !(jetptcut && (extrPtRel || (ss.met() < 20. && ss.mt() < 20)) ) )//cheat to increase stats in ptrel case
-	  	{continue;}
-
-	  if(ss.nFOs() > 1) //if more than 1 FO in event
-		{continue;}
-	  
 	  float ht = 0.;
 	  int njets40 = 0;
 	  int nbtags = 0;
@@ -285,6 +270,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		  njets40++;
 		}
 	  }
+	  if(njets40 > 0) jetptcut = true;
+	  
+	  if( !(jetptcut && (extrPtRel || (ss.met() < 20. && ss.mt() < 20)) ) )//cheat to increase stats in ptrel case
+	  	{continue;}
+
+	  if(ss.nFOs() > 1) //if more than 1 FO in event
+		{continue;}
+
 	  //if(ht < 200.) continue;
 	  //if(ss.ht() < 200.) continue;  //have to recalc ht
    
@@ -562,28 +555,28 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("1.3f");
 
-  TCanvas *c0=new TCanvas("c0","Fake Rate vs Pt, eta",800,800);
-  rate_histo->Draw("colz,texte");
-  TCanvas *c1=new TCanvas("c1","Fake Rate vs Pt, eta (electron)",800,800);
-  rate_histo_e->Draw("colz,texte");
-  TCanvas *c2=new TCanvas("c2","Fake Rate vs Pt, eta (muon)",800,800);
-  rate_histo_mu->Draw("colz,texte");
-  TCanvas *c3=new TCanvas("c3","Fake Rate vs Pt + Cone Energy, eta (electron)",800,800);
-  rate_cone_histo_e->Draw("colz,texte");
-  TCanvas *c4=new TCanvas("c4","Fake Rate vs Pt + Cone Energy, eta (muon)",800,800);
-  rate_cone_histo_mu->Draw("colz,texte");
-  TCanvas *c5=new TCanvas("c5","B Abundance vs Pt, eta (el)",800,800);
-  NBs_histo_e->Draw("colz,texte");
-  TCanvas *c6=new TCanvas("c6","B Abundance vs Pt, eta (mu)",800,800);
-  NBs_histo_mu->Draw("colz,texte");
-  TCanvas *c7=new TCanvas("c7","B Abundance vs Cone Energy, eta (el)",800,800);
-  NBs_cone_histo_e->Draw("colz,texte");
-  TCanvas *c8=new TCanvas("c8","B Abundance vs Cone Energy, eta (mu)",800,800);
-  NBs_cone_histo_mu->Draw("colz,texte");
-  TCanvas *c9=new TCanvas("c9","pTrel vs Iso (el)",800,800);
-  pTrelvsIso_histo_el->Draw("colz,texte");
-  TCanvas *c10=new TCanvas("c10","pTrel vs Iso (mu)",800,800);
-  pTrelvsIso_histo_mu->Draw("colz,texte");
+  // TCanvas *c0=new TCanvas("c0","Fake Rate vs Pt, eta",800,800);
+  // rate_histo->Draw("colz,texte");
+  // TCanvas *c1=new TCanvas("c1","Fake Rate vs Pt, eta (electron)",800,800);
+  // rate_histo_e->Draw("colz,texte");
+  // TCanvas *c2=new TCanvas("c2","Fake Rate vs Pt, eta (muon)",800,800);
+  // rate_histo_mu->Draw("colz,texte");
+  // TCanvas *c3=new TCanvas("c3","Fake Rate vs Pt + Cone Energy, eta (electron)",800,800);
+  // rate_cone_histo_e->Draw("colz,texte");
+  // TCanvas *c4=new TCanvas("c4","Fake Rate vs Pt + Cone Energy, eta (muon)",800,800);
+  // rate_cone_histo_mu->Draw("colz,texte");
+  // TCanvas *c5=new TCanvas("c5","B Abundance vs Pt, eta (el)",800,800);
+  // NBs_histo_e->Draw("colz,texte");
+  // TCanvas *c6=new TCanvas("c6","B Abundance vs Pt, eta (mu)",800,800);
+  // NBs_histo_mu->Draw("colz,texte");
+  // TCanvas *c7=new TCanvas("c7","B Abundance vs Cone Energy, eta (el)",800,800);
+  // NBs_cone_histo_e->Draw("colz,texte");
+  // TCanvas *c8=new TCanvas("c8","B Abundance vs Cone Energy, eta (mu)",800,800);
+  // NBs_cone_histo_mu->Draw("colz,texte");
+  // TCanvas *c9=new TCanvas("c9","pTrel vs Iso (el)",800,800);
+  // pTrelvsIso_histo_el->Draw("colz,texte");
+  // TCanvas *c10=new TCanvas("c10","pTrel vs Iso (mu)",800,800);
+  // pTrelvsIso_histo_mu->Draw("colz,texte");
   TCanvas *c11=new TCanvas("c11","B Abundance vs Nbjets (electrons)",800,800);
   NBs_BR_histo_e->Draw("histE");
   TCanvas *c12=new TCanvas("c12","B Abundance vs Nbjets (muons)",800,800);
