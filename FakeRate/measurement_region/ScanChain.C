@@ -221,6 +221,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   float Nl_mu = 0.; 
   float e_mu = 0.;
   //----------------
+  float Bs_e;
+  float notBs_e;
+  float Bs_mu;
+  float notBs_mu;
 
   // Loop over events to Analyze
   unsigned int nEventsTotal = 0;
@@ -283,7 +287,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
    
 	  // if (nbtags > 3) nbtags = 3; //overflow for abundance plots
 	  // if (nbtags > 3) cout << nbtags << endl;
-	  //if(nbtags != 2) continue; 
+	  //if(nbtags != 1) continue; 
 
 	  //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
 	  //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
@@ -387,6 +391,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				}
 
 			  if( passFO )  //if el is FO
+			  //if( passId )  //ONLY USE FOR NUMERATOR ABUNDANCE PLOTS!
 				{
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
 				  Nl_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta 
@@ -401,15 +406,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 						NBs_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NBs_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						else NBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						//if( ss.njets() >= 2 ) NBs_BR_histo_e ->Fill(nbtags, weight);
 						NBs_BR_histo_e ->Fill(nbtags, weight);
+						Bs_e = Bs_e + weight;
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NnotBs_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						else NnotBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						//if( ss.njets() >= 2 ) NnotBs_BR_histo_e ->Fill(nbtags, weight);
 						NnotBs_BR_histo_e ->Fill(nbtags, weight);
+						notBs_e = notBs_e + weight;
 					  }
 					}
 				}
@@ -423,6 +428,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				}
 
 			  if( passFO )  //if mu is FO
+			  //if( passId )  //ONLY USE FOR NUMERATOR ABUNDANCE PLOTS!
 				{
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
 				  Nl_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta 
@@ -437,15 +443,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 						NBs_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NBs_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						else NBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						//if( ss.njets() >= 2 ) NBs_BR_histo_mu ->Fill(nbtags, weight);
 						NBs_BR_histo_mu ->Fill(nbtags, weight);
+						Bs_mu = Bs_mu + weight;
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NnotBs_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						else NnotBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						//if( ss.njets() >= 2 ) NnotBs_BR_histo_mu ->Fill(nbtags, weight);
 						NnotBs_BR_histo_mu ->Fill(nbtags, weight);
+						notBs_mu = notBs_mu + weight;
 					  }
 					}
 				}
@@ -472,6 +478,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   cout<<"\nReco: "<<"Nt = "<<Nt<<", Nl = "<<Nl<<", e ="<<e<<endl;
   cout<<"\nReco (el): "<<"Nt = "<<Nt_e<<", Nl = "<<Nl_e<<", e ="<<e_e<<endl;
   cout<<"\nReco (mu): "<<"Nt = "<<Nt_mu<<", Nl = "<<Nl_mu<<", e ="<<e_mu<<endl<<endl;
+  cout<<"\nAve B abundance (els)= "<<Bs_e/(Bs_e + notBs_e)<<endl;
+  cout<<"Ave B abundance (mus)= "<<Bs_mu/(Bs_mu + notBs_mu)<<endl;
 
   //Histograms
   TH2D *rate_histo = (TH2D*) Nt_histo->Clone("rate_histo");

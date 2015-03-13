@@ -308,6 +308,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   float e2 = 0.;  //rate = Nt/Nl
   //----------------
   int counter = 0;  
+  float Bs_e = 0;
+  float notBs_e = 0;
+  float Bs_mu = 0;
+  float notBs_mu = 0;
 
   // Loop over events to Analyze
   unsigned int nEventsTotal = 0;
@@ -344,10 +348,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       // Analysis Code
       float weight = ss.scale1fb()*10.0;
 	  
-	  //lower pt to 10 for low-high and low-low regions?
-	  //use 15 for now to match FR sample
-	  if( !( ss.lep1_p4().pt() > 15 && ss.lep2_p4().pt() > 15  &&ss.njets() >= 2 && (ss.ht() > 500 ? 1 : ss.met() > 30) ) )
-	  // if( !( ss.lep1_p4().pt() > 15 && ss.lep2_p4().pt() > 15  &&ss.njets() >= 2 && (ss.ht() > 500 ? 1 : ss.met() > 30) ) ) //loosen for W+jets
+	  //remove pt cut and rely on pT region cuts.
+	  //if( !( ss.lep1_p4().pt() > 15 && ss.lep2_p4().pt() > 15  &&ss.njets() >= 2 && (ss.ht() > 500 ? 1 : ss.met() > 30) ) )
+	  if( !(ss.njets() >= 2 && (ss.ht() > 500 ? 1 : ss.met() > 30) ) )
 	  	{
 	  	  {continue;}
 	  	} 
@@ -594,6 +597,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 					  // //fill el abundance histos here w/ nbtags
 					  if(ss.lep2_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight);
+					  // if(ss.lep1_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
+					  // if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
+					  if(ss.lep2_motherID() == -1) Bs_e = Bs_e + weight;
+					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) notBs_e = notBs_e + weight;
 					}
 				  else if( abs(ss.lep2_id()) == 13 )  //if mu, use mu rate.  FILL WITH NONPROMPT
 					{
@@ -605,6 +612,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 					  // //fill mu abundance histos here w/ nbtags
 					  if(ss.lep2_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight);
+					  // if(ss.lep1_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
+					  // if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
+					  if(ss.lep2_motherID() == -1) Bs_mu = Bs_mu + weight;
+					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) notBs_mu = notBs_mu + weight;
 					}
 				  Npn = Npn + (e2/(1-e2))*weight;
 				  if (ss.lep2_motherID()==1) Npn_s = Npn_s + (e2/(1-e2))*weight;
@@ -629,6 +640,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 					  // //fill el abundance histos here w/ nbtags
 					  if(ss.lep1_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight);
+					  // if(ss.lep2_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
+					  // if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
+					  if(ss.lep1_motherID() == -1) Bs_e = Bs_e + weight;
+					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) notBs_e = notBs_e + weight;
 					}
 				  else if( abs(ss.lep1_id()) == 13 ) //if mu, use mu rate.  FILL WITH NONPROMPT				  
 					{
@@ -640,6 +655,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 					  // //fill el abundance histos here w/ nbtags
 					  if(ss.lep1_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight);
+					  // if(ss.lep2_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
+					  // if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
+					  if(ss.lep1_motherID() == -1) Bs_mu = Bs_mu + weight;
+					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) notBs_mu = notBs_mu + weight;
 					}
 				  Npn = Npn + (e1/(1-e1))*weight;
 				  if (ss.lep1_motherID()==1) Npn_s = Npn_s + (e1/(1-e1))*weight;
@@ -706,6 +725,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   cout<<setw(25)<<"Nnn:"<<setw(10)<<Nnn<<setw(10)<<prompt0_reco<<setw(10)<<Nnn/prompt0_reco<<endl;
 
   cout<<"\nCounter = "<<counter<<endl;
+  cout<<"\nAve B abundance (els)= "<<Bs_e/(Bs_e + notBs_e)<<endl;
+  cout<<"\nAve B abundance (mus)= "<<Bs_mu/(Bs_mu + notBs_mu)<<endl;
 
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("1.3f");
