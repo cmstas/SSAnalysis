@@ -143,6 +143,8 @@ void tests::runDYtest(looper* loop, float& weight_, vector<Lep>& vetoleps_noiso,
 	if (fabs(genps_p4()[gp].eta())<1.0) {
 	  loop->makeFillHisto2D<TH2F,float>((pdgid==13?"ef_ht_mu_num":"ef_ht_el_num"),(pdgid==13?"ef_ht_mu_num":"ef_ht_el_num"),5,0.,200.,genps_p4()[gp].pt(),6,0.,1200,ht,weight_);
 	}
+	loop->makeFillHisto2D<TH2F,float>((pdgid==13?"ptrel_vs_iso_mu":"ptrel_vs_iso_el"),(pdgid==13?"ptrel_vs_iso_mu":"ptrel_vs_iso_el"),10,0.,1.,goodleps[gl].relIso03(),
+					  15,0.,30,getPtRel(goodleps[gl].pdgId(), goodleps[gl].idx(), true),weight_);
 	//charge flip
 	loop->makeFillHisto2D<TH2F,float>((pdgid==13?"flip_mu_den":"flip_el_den"),(pdgid==13?"flip_mu_den":"flip_el_den"),5,0.,100.,genps_p4()[gp].pt(),3,0.,3.0,fabs(genps_p4()[gp].eta()),weight_);
 	if (goodleps[gl].pdgId()==-genps_id()[gp]) loop->makeFillHisto2D<TH2F,float>((pdgid==13?"flip_mu_num":"flip_el_num"),(pdgid==13?"flip_mu_num":"flip_el_num"),5,0.,100.,genps_p4()[gp].pt(),3,0.,3.0,fabs(genps_p4()[gp].eta()),weight_);
@@ -995,17 +997,14 @@ void tests::makeSRplots( looper* loop, float& weight_, TString label, int& br, i
     loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_excl_srld5bins","hyp_"+label+"_excl_srld5bins",5*4,0,1.6*4.,std::min(ld,float(1.6))+1.6*btags.size(),weight_);
     loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_excl_srld10bins","hyp_"+label+"_excl_srld10bins",10*4,0,1.6*4.,std::min(ld,float(1.6))+1.6*btags.size(),weight_);
     //ptrel
-    vector<LorentzVector> jetp4s;
-    for (unsigned int pfjidx=0;pfjidx<pfjets_p4().size();++pfjidx) {
-      Jet jet(pfjidx);
-      if (fabs(jet.eta())>2.4) continue;
-      if (isLoosePFJet(pfjidx)==false) continue;
-      jetp4s.push_back(jet.p4());
-    }
-    float ptRelLead = ptRel(hyp.leadLep().p4(), jetp4s, true);
-    float ptRelTrai = ptRel(hyp.traiLep().p4(), jetp4s, true);
+    float ptRelLead = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), true);
+    float ptRelTrai = getPtRel(hyp.traiLep().pdgId(), hyp.traiLep().idx(), true);
     loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_ptRellead","hyp_"+label+"_ptRellead",10,0,20,ptRelLead,weight_);
     loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_ptReltrai","hyp_"+label+"_ptReltrai",10,0,20,ptRelTrai,weight_);
+
+    loop->makeFillHisto2D<TH2F,float>("hyp_"+label+"_ptRellead_vs_iso_"+ll,"hyp_"+label+"_ptRellead_vs_iso_"+ll,10,0.,1.,hyp.leadLep().relIso03(), 15,0.,30,ptRelLead,weight_);
+    loop->makeFillHisto2D<TH2F,float>("hyp_"+label+"_ptReltrai_vs_iso_"+lt,"hyp_"+label+"_ptReltrai_vs_iso_"+lt,10,0.,1.,hyp.traiLep().relIso03(), 15,0.,30,ptRelTrai,weight_);
+
 
   }
 
