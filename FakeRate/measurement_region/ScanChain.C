@@ -282,12 +282,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if(ss.nFOs() > 1) //if more than 1 FO in event
 		{continue;}
 
-	  //if(ht < 200.) continue;
-	  //if(ss.ht() < 200.) continue;  //have to recalc ht
+	  // if(ht < 200.) continue;
+	  // //if(ss.ht() < 200.) continue;  //have to recalc ht
    
-	  // if (nbtags > 3) nbtags = 3; //overflow for abundance plots
-	  // if (nbtags > 3) cout << nbtags << endl;
-	  //if(nbtags != 1) continue; 
+	  // if(nbtags != 1) continue; 
 
 	  //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
 	  //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/

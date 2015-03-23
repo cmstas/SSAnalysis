@@ -303,7 +303,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   float Npn = 0.; //# of prompt-nonprompt tight-tight pairs
   float Npn_s = 0.; //signal contamination for # of prompt-nonprompt tight-tight pairs
   float Nnn = 0.; //# of nonprompt-nonprompt tight-tight pairs
-   float e = 0.;  //rate = Nt/Nl
+  float e = 0.;  //rate = Nt/Nl
   float e1 = 0.;  //rate = Nt/Nl
   float e2 = 0.;  //rate = Nt/Nl
   //----------------

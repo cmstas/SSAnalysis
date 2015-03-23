@@ -6,6 +6,7 @@
   TChain *qcd = new TChain("t"); 
   qcd->Add( Form("../fake_rate_output/%s/qcd_MuEnriched.root",tag.c_str()) );
   qcd->Add( Form("../fake_rate_output/%s/qcd_EMEnriched.root",tag.c_str()) );
+  //qcd->Add( Form("../fake_rate_output/%s/qcd_EMEnriched-noBCtoE.root",tag.c_str()) ); //OVERLAP W/ EMENRICHED BABY
 
   // ScanChain(qcd,"./rate_histos_qcd.root",""); 
   ScanChain(qcd,"./rate_histos_qcd_noSIP.root","noSIP"); 
