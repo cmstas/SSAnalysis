@@ -41,6 +41,11 @@
   // ScanChain(qcd_nonEnriched,"./rate_histos_qcd_doConly.root","doConly"); 
   // ScanChain(qcd_nonEnriched,"./rate_histos_qcd_doLightonly.root","doLightonly"); 
 
+  TChain *qcd_HT = new TChain("t"); 
+  qcd_HT->Add( Form("../fake_rate_output/%s/qcd_HT.root",tag.c_str()) );
+
+  ScanChain(qcd_HT,"./rate_histos_qcd_HT_extrPtRel.root","extrPtRel"); 
+
   TChain *ttbar = new TChain("t"); 
   ttbar->Add( Form("../fake_rate_output/%s/ttbar.root",tag.c_str()) ); 
   // ScanChain(ttbar, "./rate_histos_ttbar.root",""); 
