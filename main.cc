@@ -5,13 +5,13 @@ int main() {
 
   looper *l = new looper();
 
-  bool useSkim   = false;
+  bool useSkim   = true;
   bool skimAll   = false;
-  bool runAll    = false;
+  bool runAll    = true;
   bool runLepEff = false;
   bool runSync   = false;
-  bool runBaby   = true;
-  bool usePtRel  = false;
+  bool runBaby   = false;
+  bool usePtRel  = true;
 
   if (runSync) { 
     TChain *chain_synctest = new TChain("Events");
@@ -140,13 +140,13 @@ int main() {
     //l->ScanChain(chain_WZJets,        "wz"              , "baby", 0, "MakeBaby", -1, usePtRel);
     //l->ScanChain(chain_T1ttttG1200,   "t1tttt_1200_800" , "baby", 0, "MakeBaby", -1, usePtRel);
     //l->ScanChain(chain_T1ttttG1500,   "t1tttt_1500_100" , "baby", 0, "MakeBaby", -1, usePtRel);
-    //l->ScanChain(chain_TTJets,        "ttbar"           , "baby", 0, "MakeBaby", -1, usePtRel);
+    l->ScanChain(chain_TTJets,        "ttbar"           , "baby", 0, "MakeBaby", -1, usePtRel);
     //l->ScanChain(chain_TTWJets,       "ttw"             , "baby", 0, "MakeBaby", -1, usePtRel);
     //l->ScanChain(chain_T5qqqqWW1200,  "t5qqqqWW1200"    , "baby", 0, "MakeBaby", -1, usePtRel);
     //l->ScanChain(chain_T5qqqqWW1500,  "t5qqqqWW1500"    , "baby", 0, "MakeBaby", -1, usePtRel);
     //l->ScanChain(chain_T6ttWW600_150, "t6ttWW600_150"   , "baby", 0, "MakeBaby", -1, usePtRel);
     //l->ScanChain(chain_T6ttWW600_425, "t6ttWW600_425"   , "baby", 0, "MakeBaby", -1, usePtRel);
-      l->ScanChain(chain_Wjets,         "t6ttWW600_425"   , "baby", 0, "MakeBaby", -1, usePtRel);
+    // l->ScanChain(chain_Wjets,        "wjets"           , "baby", 0, "MakeBaby", -1, usePtRel);
 
   }
 
