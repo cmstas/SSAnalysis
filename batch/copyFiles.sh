@@ -36,3 +36,6 @@ sed -i "s/output_name,\ bool\ usePtRel)/output_name)/" helper_babymaker.h
 sed -i "s/output_name,\ bool\ usePtRel)/output_name)/" helper_babymaker.cc
 sed -i "s/%s\/%s%s/%s\/%s/g" helper_babymaker.cc
 sed -i "s/output_name,\ usePtRel\ ?\ \"_ptRel\"\ :\ \"\"/output_name/" helper_babymaker.cc
+
+#Zip the dir
+tar czf CORE.tar.gz CORE
