@@ -10,6 +10,7 @@ void run(sample_t which, int file, bool ptrel){
   babyMaker *mylooper = new babyMaker();
 
   //Path, filename, suffix
+  //string path = "root://cmsxrootd.fnal.gov///store/group/snt/phys14/";
   string path = "root://xrootd.t2.ucsd.edu///store/group/snt/phys14/";
   const char* filename = Form("merged_ntuple_%i.root", file);
   const char* ptrel_name = ptrel == 1 ? "_ptRel" : "";  

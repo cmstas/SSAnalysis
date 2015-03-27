@@ -5,8 +5,8 @@ Requirements = Memory >= 199 &&OpSys == "LINUX"&& (Arch != "DUMMY" )&& Disk > 10
 Should_Transfer_Files = YES
 WhenToTransferOutput = ON_EXIT
 Transfer_Input_Files = do.C,helper_babymaker.cc,helper_babymaker.h,CORE.tar.gz,run.C
-Output = outputLog.stdout
-Error = errorLog.stderr
+Output = logs/outputLog_TTBAR_205_0.stdout
+Error = logs/errorLog_TTBAR_205_0.stderr
 Log = condorLog.log
 +Owner = undefined
 notify_user = george@physics.ucsb.edu
@@ -14,5 +14,5 @@ x509userproxy = /tmp/x509up_u31093
 
 Executable = condorExecutable.sh
 Transfer_executable = True
-arguments = TTBAR 1 0
+arguments = TTBAR 205 0 
 Queue 1
