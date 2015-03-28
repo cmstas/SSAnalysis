@@ -5,6 +5,7 @@ Requirements = Memory >= 199 &&OpSys == "LINUX"&& (Arch != "DUMMY" )&& Disk > 10
 Should_Transfer_Files = YES
 WhenToTransferOutput = ON_EXIT
 Transfer_Input_Files = do.C,helper_babymaker.cc,helper_babymaker.h,CORE.tar.gz,run.C
+Transfer_Output_Files = /dev/null
 Output = logs/outputLog_TTBAR_205_0.stdout
 Error = logs/errorLog_TTBAR_205_0.stderr
 Log = condorLog.log

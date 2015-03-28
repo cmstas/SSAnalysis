@@ -24,7 +24,7 @@ source /cvmfs/cms.cern.ch/cmsset_default.sh
 source /cvmfs/cms.cern.ch/slc6_amd64_gcc481/lcg/root/5.34.18/bin/thisroot.sh
 export LD_LIBRARY_PATH=/cvmfs/cms.cern.ch/slc6_amd64_gcc481/lcg/root/5.34.18/lib:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/lib:/home/users/cgeorge:/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc481/external/gcc/4.8.1/lib64:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw-patch/CMSSW_7_2_0_patch1/external/slc6_amd64_gcc481/lib
 export PATH=$ROOTSYS/bin:$PATH:${_CONDOR_SCRATCH_DIR}
-export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH
+export PYTHONPATH=$ROOTSYS/lib:$PYTHONPATH:$ROOTSYS/bin
 
 #Set CMSSW environment
 pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0/src/
