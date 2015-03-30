@@ -16,6 +16,7 @@
 #include "TH2D.h"
 #include "TCanvas.h"
 #include "TStyle.h"
+#include "Math/VectorUtil.h"
 
 // lepfilter
 #include "lepfilter.cc"
@@ -220,6 +221,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   float Nl_mu = 0.; 
   float e_mu = 0.;
   //----------------
+  float Bs_e;
+  float notBs_e;
+  float Bs_mu;
+  float notBs_mu;
 
   // Loop over events to Analyze
   unsigned int nEventsTotal = 0;
@@ -258,37 +263,29 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if(ss.scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
 	  
 	  bool jetptcut = false;
-	  int jetidx = 0;
-
-	  while( (jetidx < ss.jets().size()) && !jetptcut) //check to see if at least one jet w/ pt > 40
-	  	{
-	  	  if( ss.jets()[jetidx].pt() > 40. )
-	  		{jetptcut = true;}
-	  	  jetidx++;
-	  	}
+	  float ht = 0.;
+	  int njets40 = 0;
+	  int nbtags = 0;
+	  for(int i=0; i<ss.jets().size(); i++)  {
+		if(ROOT::Math::VectorUtil::DeltaR(ss.jets()[i], ss.p4()) < 1.) continue; //0.4 in babymaker
+		if(ss.jets_disc()[i] > 0.814) nbtags++;
+		if(ss.jets()[i].pt() > 40.) {
+		  ht += ss.jets()[i].pt();
+		  njets40++;
+		}
+	  }
+	  if(njets40 > 0) jetptcut = true;
 	  
 	  if( !(jetptcut && (extrPtRel || (ss.met() < 20. && ss.mt() < 20)) ) )//cheat to increase stats in ptrel case
 	  	{continue;}
 
 	  if(ss.nFOs() > 1) //if more than 1 FO in event
 		{continue;}
-	  
-	  float ht = 0.;
-	  int njets40 = 0;
-	  int nbtags = 0;
-	  for(int i=0; i<ss.jets().size(); i++)  {
-	        if(ss.jets_disc()[i] > 0.814) nbtags++;
-		if(ss.jets()[i].pt() > 40.) {
-		  ht += ss.jets()[i].pt();
-		  njets40++;
-		}
-	  }
-	  //if(ht < 200.) continue;
-	  //if(ss.ht() < 200.) continue;  //have to recalc ht
+
+	  // if(ht < 200.) continue;
+	  // //if(ss.ht() < 200.) continue;  //have to recalc ht
    
-	  // if (nbtags > 3) nbtags = 3; //overflow for abundance plots
-	  // if (nbtags > 3) cout << nbtags << endl;
-	  // if(nbtags < 1) continue; 
+	  // if(nbtags != 1) continue; 
 
 	  //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
 	  //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
@@ -392,6 +389,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				}
 
 			  if( passFO )  //if el is FO
+			  //if( passId )  //ONLY USE FOR NUMERATOR ABUNDANCE PLOTS!
 				{
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
 				  Nl_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta 
@@ -406,14 +404,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 						NBs_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NBs_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						else NBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						//if( ss.njets() >= 2 ) NBs_BR_histo_e ->Fill(nbtags, weight);
 						NBs_BR_histo_e ->Fill(nbtags, weight);
+						Bs_e = Bs_e + weight;
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NnotBs_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						else NnotBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						if( ss.njets() >= 2 ) NnotBs_BR_histo_e ->Fill(nbtags, weight);
+						NnotBs_BR_histo_e ->Fill(nbtags, weight);
+						notBs_e = notBs_e + weight;
 					  }
 					}
 				}
@@ -427,6 +426,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				}
 
 			  if( passFO )  //if mu is FO
+			  //if( passId )  //ONLY USE FOR NUMERATOR ABUNDANCE PLOTS!
 				{
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
 				  Nl_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta 
@@ -441,14 +441,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 						NBs_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NBs_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						else NBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						//if( ss.njets() >= 2 ) NBs_BR_histo_mu ->Fill(nbtags, weight);
 						NBs_BR_histo_mu ->Fill(nbtags, weight);
+						Bs_mu = Bs_mu + weight;
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NnotBs_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						else NnotBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						if( ss.njets() >= 2 ) NnotBs_BR_histo_mu ->Fill(nbtags, weight);
+						NnotBs_BR_histo_mu ->Fill(nbtags, weight);
+						notBs_mu = notBs_mu + weight;
 					  }
 					}
 				}
@@ -475,6 +476,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   cout<<"\nReco: "<<"Nt = "<<Nt<<", Nl = "<<Nl<<", e ="<<e<<endl;
   cout<<"\nReco (el): "<<"Nt = "<<Nt_e<<", Nl = "<<Nl_e<<", e ="<<e_e<<endl;
   cout<<"\nReco (mu): "<<"Nt = "<<Nt_mu<<", Nl = "<<Nl_mu<<", e ="<<e_mu<<endl<<endl;
+  cout<<"\nAve B abundance (els)= "<<Bs_e/(Bs_e + notBs_e)<<endl;
+  cout<<"Ave B abundance (mus)= "<<Bs_mu/(Bs_mu + notBs_mu)<<endl;
 
   //Histograms
   TH2D *rate_histo = (TH2D*) Nt_histo->Clone("rate_histo");
@@ -558,28 +561,28 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("1.3f");
 
-  TCanvas *c0=new TCanvas("c0","Fake Rate vs Pt, eta",800,800);
-  rate_histo->Draw("colz,texte");
-  TCanvas *c1=new TCanvas("c1","Fake Rate vs Pt, eta (electron)",800,800);
-  rate_histo_e->Draw("colz,texte");
-  TCanvas *c2=new TCanvas("c2","Fake Rate vs Pt, eta (muon)",800,800);
-  rate_histo_mu->Draw("colz,texte");
-  TCanvas *c3=new TCanvas("c3","Fake Rate vs Pt + Cone Energy, eta (electron)",800,800);
-  rate_cone_histo_e->Draw("colz,texte");
-  TCanvas *c4=new TCanvas("c4","Fake Rate vs Pt + Cone Energy, eta (muon)",800,800);
-  rate_cone_histo_mu->Draw("colz,texte");
-  TCanvas *c5=new TCanvas("c5","B Abundance vs Pt, eta (el)",800,800);
-  NBs_histo_e->Draw("colz,texte");
-  TCanvas *c6=new TCanvas("c6","B Abundance vs Pt, eta (mu)",800,800);
-  NBs_histo_mu->Draw("colz,texte");
-  TCanvas *c7=new TCanvas("c7","B Abundance vs Cone Energy, eta (el)",800,800);
-  NBs_cone_histo_e->Draw("colz,texte");
-  TCanvas *c8=new TCanvas("c8","B Abundance vs Cone Energy, eta (mu)",800,800);
-  NBs_cone_histo_mu->Draw("colz,texte");
-  TCanvas *c9=new TCanvas("c9","pTrel vs Iso (el)",800,800);
-  pTrelvsIso_histo_el->Draw("colz,texte");
-  TCanvas *c10=new TCanvas("c10","pTrel vs Iso (mu)",800,800);
-  pTrelvsIso_histo_mu->Draw("colz,texte");
+  // TCanvas *c0=new TCanvas("c0","Fake Rate vs Pt, eta",800,800);
+  // rate_histo->Draw("colz,texte");
+  // TCanvas *c1=new TCanvas("c1","Fake Rate vs Pt, eta (electron)",800,800);
+  // rate_histo_e->Draw("colz,texte");
+  // TCanvas *c2=new TCanvas("c2","Fake Rate vs Pt, eta (muon)",800,800);
+  // rate_histo_mu->Draw("colz,texte");
+  // TCanvas *c3=new TCanvas("c3","Fake Rate vs Pt + Cone Energy, eta (electron)",800,800);
+  // rate_cone_histo_e->Draw("colz,texte");
+  // TCanvas *c4=new TCanvas("c4","Fake Rate vs Pt + Cone Energy, eta (muon)",800,800);
+  // rate_cone_histo_mu->Draw("colz,texte");
+  // TCanvas *c5=new TCanvas("c5","B Abundance vs Pt, eta (el)",800,800);
+  // NBs_histo_e->Draw("colz,texte");
+  // TCanvas *c6=new TCanvas("c6","B Abundance vs Pt, eta (mu)",800,800);
+  // NBs_histo_mu->Draw("colz,texte");
+  // TCanvas *c7=new TCanvas("c7","B Abundance vs Cone Energy, eta (el)",800,800);
+  // NBs_cone_histo_e->Draw("colz,texte");
+  // TCanvas *c8=new TCanvas("c8","B Abundance vs Cone Energy, eta (mu)",800,800);
+  // NBs_cone_histo_mu->Draw("colz,texte");
+  // TCanvas *c9=new TCanvas("c9","pTrel vs Iso (el)",800,800);
+  // pTrelvsIso_histo_el->Draw("colz,texte");
+  // TCanvas *c10=new TCanvas("c10","pTrel vs Iso (mu)",800,800);
+  // pTrelvsIso_histo_mu->Draw("colz,texte");
   TCanvas *c11=new TCanvas("c11","B Abundance vs Nbjets (electrons)",800,800);
   NBs_BR_histo_e->Draw("histE");
   TCanvas *c12=new TCanvas("c12","B Abundance vs Nbjets (muons)",800,800);

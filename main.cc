@@ -40,6 +40,7 @@ int main() {
   TChain *chain_TTbarH        = new TChain("Events");
   TChain *chain_TW            = new TChain("Events");
   TChain *chain_WJets         = new TChain("Events");
+  TChain *chain_Wjets_ht      = new TChain("Events");
   TChain *chain_ZZTo4L        = new TChain("Events");
   TChain *chain_Wjets         = new TChain("Events");
 
@@ -80,6 +81,10 @@ int main() {
 
     chain_TTbarH->Add(dir+"TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v2/"+tag2+"/merged_ntuple_*.root");
     chain_WJets->Add(dir+"WJetsToLNu_13TeV-madgraph-pythia8-tauola/"+tag+"/merged_ntuple_*.root");
+    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-100to200_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag2 + "/merged_ntuple_*.root");
+    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag2 + "/merged_ntuple_*.root");
+    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag2 + "/merged_ntuple_*.root");
+    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag2 + "/merged_ntuple_*.root");
     chain_ZZTo4L->Add(dir+"ZZTo4L_Tune4C_13TeV-powheg-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag2+"/merged_ntuple_*.root");
     chain_TW->Add(dir+"T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag2+"/merged_ntuple_*.root");
     chain_TW->Add(dir+"Tbar_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag2+"/merged_ntuple_*.root");
@@ -135,7 +140,7 @@ int main() {
     l->ScanChain(chain_TTWJets,"TTWJets","effic",0,"DYtest",-1,usePtRel);
   }
 
-  if (runBaby) {
+  if (runBaby){
     //l->ScanChain(chain_TTZJets,       "ttz"             , "baby", 0, "MakeBaby", -1, usePtRel);
     //l->ScanChain(chain_WZJets,        "wz"              , "baby", 0, "MakeBaby", -1, usePtRel);
     //l->ScanChain(chain_T1ttttG1200,   "t1tttt_1200_800" , "baby", 0, "MakeBaby", -1, usePtRel);
@@ -146,8 +151,8 @@ int main() {
     //l->ScanChain(chain_T5qqqqWW1500,  "t5qqqqWW1500"    , "baby", 0, "MakeBaby", -1, usePtRel);
     //l->ScanChain(chain_T6ttWW600_150, "t6ttWW600_150"   , "baby", 0, "MakeBaby", -1, usePtRel);
     //l->ScanChain(chain_T6ttWW600_425, "t6ttWW600_425"   , "baby", 0, "MakeBaby", -1, usePtRel);
-    // l->ScanChain(chain_Wjets,        "wjets"           , "baby", 0, "MakeBaby", -1, usePtRel);
-
+    //l->ScanChain(chain_Wjets,         "Wjets"           , "baby", 0, "MakeBaby", -1, usePtRel);
+      l->ScanChain(chain_Wjets_ht,      "Wjets_ht"        , "baby", 0, "MakeBaby", -1, usePtRel);
   }
 
 }

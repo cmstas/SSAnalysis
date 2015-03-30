@@ -374,9 +374,9 @@ int babyMaker::ProcessBaby(bool usePtRel){
   }
   
   //MT variables
-  mt = calculateMt(lep1_p4.pt(),met,deltaPhi(lep1_p4.phi(),metPhi));
+  mt = MT(lep1_p4.pt(),met,lep1_p4.phi(), metPhi);
   mt2 = MT2(met, metPhi, lep1_p4, lep2_p4);
-  mt_l2 = calculateMt(lep2_p4.pt(), met, deltaPhi(lep2_p4.phi(),metPhi));
+  mt_l2 = MT(lep2_p4.pt(), met, lep2_p4.phi(), metPhi);
   
   //Ht and MET
   if (verbose) cout << "ht: " << ht << endl;

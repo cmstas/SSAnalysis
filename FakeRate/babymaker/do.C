@@ -152,6 +152,16 @@ int do(){
   qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-3200_Tune4C_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
   qcd_nonEnriched->Add("/hadoop/cms/store/group/snt/phys14/QCD_Pt-15to3000_Tune4C_Flat_13TeV_pythia8_Phys14DR-PU20bx25_trkalmb_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
 
+  //QCD HT
+  TChain *qcd_HT = new TChain("Events");
+  qcd_HT->Add("/hadoop/cms/store/group/snt/phys14/QCD_HT-100To250_13TeV-madgraph_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  //qcd_HT->Add("/hadoop/cms/store/group/snt/phys14/QCD_HT-500To1000_13TeV-madgraph_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_HT->Add("/hadoop/cms/store/group/snt/phys14/QCD_HT-500To1000_13TeV-madgraph_Phys14DR-PU20bx25_PHYS14_25_V1_ext1-v1/V07-02-03/merged_ntuple_*.root");
+  //qcd_HT->Add("/hadoop/cms/store/group/snt/phys14/QCD_HT_1000ToInf_13TeV-madgraph_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_HT->Add("/hadoop/cms/store/group/snt/phys14/QCD_HT_1000ToInf_13TeV-madgraph_Phys14DR-PU20bx25_PHYS14_25_V1_ext1-v1/V07-02-03/merged_ntuple_*.root");
+  //qcd_HT->Add("/hadoop/cms/store/group/snt/phys14/QCD_HT_250To500_13TeV-madgraph_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-03/merged_ntuple_*.root");
+  qcd_HT->Add("/hadoop/cms/store/group/snt/phys14/QCD_HT_250To500_13TeV-madgraph_Phys14DR-PU20bx25_PHYS14_25_V1_ext1-v2/V07-02-03/merged_ntuple_*.root");
+
   //ttbar
   TChain *ttbar = new TChain("Events");
   // ttbar->Add("/hadoop/cms/store/group/snt/phys14/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-05/merged_ntuple_*.root");
@@ -160,7 +170,9 @@ int do(){
   // mylooper->looper(qcd,"qcd1", -1);
   // mylooper->looper(qcd_MuEnriched,"qcd_MuEnriched", -1);
   // mylooper->looper(qcd_EMEnriched,"qcd_EMEnriched", -1);
-   mylooper->looper(qcd_nonEnriched,"qcd_nonEnriched", -1);
+  // mylooper->looper(qcd_EMEnriched,"qcd_EMEnriched-noBCtoE", -1);
+  // mylooper->looper(qcd_nonEnriched,"qcd_nonEnriched", -1);
+  // mylooper->looper(qcd_HT,"qcd_HT", -1);
   // mylooper->looper(ttbar,"ttbar", -1);
 
 }
