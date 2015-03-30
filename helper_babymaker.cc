@@ -3,10 +3,13 @@
 using namespace tas;
 
 //Main functions
-void babyMaker::MakeBabyNtuple(const char* output_name, bool usePtRel){
+void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase){
 
   //Create Baby
-  BabyFile = new TFile(Form("%s/%s%s.root", path.Data(), output_name, usePtRel ? "_ptRel" : ""), "RECREATE");
+  string suffix = "";
+  if (isoCase == PtRel) suffix = "_ptRel";
+  else if (isoCase == MiniIso) suffix = "_miniIso";
+  BabyFile = new TFile(Form("%s/%s%s.root", path.Data(), output_name, suffix.c_str()), "RECREATE");
   BabyFile->cd();
   BabyTree = new TTree("t", "SS2015 Baby Ntuple");
 
@@ -189,7 +192,7 @@ void babyMaker::InitBabyNtuple(){
 } 
 
 //Main function
-int babyMaker::ProcessBaby(bool usePtRel){
+int babyMaker::ProcessBaby(IsolationMethods isoCase){
 
   //Initialize variables
   InitBabyNtuple();
@@ -227,7 +230,7 @@ int babyMaker::ProcessBaby(bool usePtRel){
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
   
   //Fill lepton variables
-  hyp_result_t best_hyp_info = chooseBestHyp(usePtRel);
+  hyp_result_t best_hyp_info = chooseBestHyp(isoCase);
   hyp_class = best_hyp_info.hyp_class;
   int best_hyp = best_hyp_info.best_hyp;
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
@@ -263,8 +266,8 @@ int babyMaker::ProcessBaby(bool usePtRel){
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
   dilep_p4 = lep1_p4 + lep2_p4; 
-  lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, usePtRel);
-  lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, usePtRel);
+  lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, isoCase);
+  lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, isoCase);
   
   //Fill generated lepton variables, ignoring reco (matching to reco done above)
   vector <particle_t> genPair = getGenPair(verbose);

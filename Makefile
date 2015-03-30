@@ -47,6 +47,7 @@ CORESOURCES=$(DIR)/$(COREDIR)/CMS3.cc \
  $(DIR)/$(COREDIR)/IsolationTools.cc \
  $(DIR)/Tools/MT2/MT2Utility.cc \
  $(DIR)/Tools/MT2/MT2.cc \
+ $(DIR)/Tools/utils.cc \
  $(DIR)/$(COREDIR)/SSSelections.cc
 COREOBJECTS=$(CORESOURCES:.cc=.o)
 CORELIB=libCORE.so

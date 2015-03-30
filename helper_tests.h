@@ -1,4 +1,5 @@
 #include <vector>
+#include "CORE/SSSelections.h"
 
 class TFile;
 class TString;
@@ -10,7 +11,7 @@ struct DilepHyp;
 namespace tests{
 
   void runQCDtest( looper* loop, float& weight_, std::vector<Lep>& fobs, std::vector<Lep>& goodleps, int& njets, float& met);
-  void runDYtest( looper* loop, float& weight_, std::vector<Lep>& vetoleps_noiso, std::vector<Lep>& fobs, std::vector<Lep>& goodleps, int& njets, float& met, float& ht, bool usePtRel);
+  void runDYtest( looper* loop, float& weight_, std::vector<Lep>& vetoleps_noiso, std::vector<Lep>& fobs, std::vector<Lep>& goodleps, int& njets, float& met, float& ht, IsolationMethods isoCase);
   void runWZtest( looper* loop, float& weight_, std::vector<Lep>& vetoleps, std::vector<Lep>& fobs, std::vector<Lep>& goodleps, int& njets, float& met);
   void fakeStudy( looper* loop, float& weight_, DilepHyp& hyp, TString& ll, TString& lt );
 

@@ -23,11 +23,13 @@
 using namespace tas;
 using namespace std;
 
-int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isData, TString whatTest, int nEvents, bool usePtRel, vector<int> evtToDebug) {
+int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isData, TString whatTest, int nEvents, IsolationMethods isoCase, vector<int> evtToDebug) {
 
-  makebaby       = 1;
-  makehist       = 0;
+  //don't change these parameters by hand, please set them from main.cc
+  makebaby       = 0;
+  makehist       = 1;
   maketext       = 0;
+  //
 
   bool makeQCDtest    = 0;
   bool makeDYtest     = 0;
@@ -55,13 +57,15 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
   babyMaker* bm=0;
   if (makebaby) {
     bm = new babyMaker(debug);
-    bm->MakeBabyNtuple( Form( "%s%s", prefix.Data(), postfix.Data() ), usePtRel );
+    bm->MakeBabyNtuple( Form( "%s%s", prefix.Data(), postfix.Data() ), isoCase );
   }
   if (makehist) CreateOutputFile( Form( "%s_histos%s.root", prefix.Data(), postfix.Data() ) );
 
   TFile* fr_file=0;
   if (!makeDYtest&&!makeQCDtest&&!makeSSskim&&!makeQCDskim&&!makebaby) 
     fr_file=TFile::Open("fakeRates_qcd_pt-50to170.root");
+
+  createAndInitMVA("./CORE");
 
   // File Loop
   if( nEvents == -1 ) nEvents = chain->GetEntries();
@@ -141,7 +145,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 
       //fill baby
       if (makebaby) {	
-	bm->ProcessBaby(usePtRel);
+	bm->ProcessBaby(isoCase);
 	continue;
       }
 
@@ -233,7 +237,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       if (debug) cout << "vetoleps" << endl;
       vector<Lep> vetoleps;
       for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl) {
-	if (isVetoLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx(),false)==0) continue;//fixme: no ptrel in veto leptons for now
+	if (isVetoLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx(),Standard)==0) continue;//fixme: no ptrel in veto leptons for now
       	if (debug) cout << "veto lep id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt() 
 			<< " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
       	vetoleps.push_back(vetoleps_noiso[vl]);
@@ -251,7 +255,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       if (debug) cout << "fobs" << endl;
       vector<Lep> fobs;
       for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl) {
-	if (isDenominatorLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx(),usePtRel)==0) continue; 
+	if (isDenominatorLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx(),isoCase)==0) continue; 
       	if (debug) cout << "fob id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt() 
 			<< " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
       	fobs.push_back(vetoleps_noiso[vl]);
@@ -261,7 +265,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
       if (debug) cout << "goodleps" << endl;
       vector<Lep> goodleps;
       for (unsigned int fo=0;fo<fobs.size();++fo) {
-	if (isGoodLepton(fobs[fo].pdgId(),fobs[fo].idx(),usePtRel)==0) continue; 
+	if (isGoodLepton(fobs[fo].pdgId(),fobs[fo].idx(),isoCase)==0) continue; 
       	if (debug) cout << "good lep id=" << fobs[fo].pdgId() << " idx=" << fobs[fo].idx() << " pt=" << fobs[fo].pt() 
 			<< " eta=" << fobs[fo].eta() << " phi=" << fobs[fo].p4().phi() << " q=" << fobs[fo].charge()<< endl;
       	goodleps.push_back(fobs[fo]);
@@ -371,7 +375,7 @@ int looper::ScanChain( TChain* chain, TString prefix, TString postfix, bool isDa
 
       if (makeDYtest) {
 	if (debug) cout << "dytest" << endl;
-	tests::runDYtest(this, weight_, vetoleps_noiso, fobs, goodleps, njets, met, ht, usePtRel);
+	tests::runDYtest(this, weight_, vetoleps_noiso, fobs, goodleps, njets, met, ht, isoCase);
 	continue;
       }
 

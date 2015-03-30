@@ -11,7 +11,12 @@ int main() {
   bool runLepEff = false;
   bool runSync   = false;
   bool runBaby   = false;
-  bool usePtRel  = true;
+  bool usePtRel  = false;
+  bool useMiniIso= false;
+
+  IsolationMethods isoCase = Standard;
+  if (usePtRel) isoCase = PtRel;
+  else if (useMiniIso) isoCase = MiniIso;
 
   if (runSync) { 
     TChain *chain_synctest = new TChain("Events");
@@ -20,7 +25,7 @@ int main() {
     chain_synctest->Add("./phys14_sync_CMS3.root");
     std::vector<int> eventsToDebug;
     //eventsToDebug.push_back(4878);
-    l->ScanChain(chain_synctest,"synctest","",0,"SyncTest",-1,usePtRel, eventsToDebug);
+    l->ScanChain(chain_synctest,"synctest","",0,"SyncTest",-1,isoCase, eventsToDebug);
     return 0;
   }
 
@@ -96,63 +101,63 @@ int main() {
 
   if (skimAll) {
 
-    l->ScanChain(chain_T1ttttG1200,"T1ttttG1200","",0,"SSskim",-1,usePtRel);
-    l->ScanChain(chain_T1ttttG1500,"T1ttttG1500","",0,"SSskim",-1,usePtRel);
-    l->ScanChain(chain_T5qqqqWW1200,"T5qqqqWW1200","",0,"SSskim",-1,usePtRel);
-    l->ScanChain(chain_T5qqqqWW1500,"T5qqqqWW1500","",0,"SSskim",-1,usePtRel);
+    l->ScanChain(chain_T1ttttG1200,"T1ttttG1200","",0,"SSskim",-1,isoCase);
+    l->ScanChain(chain_T1ttttG1500,"T1ttttG1500","",0,"SSskim",-1,isoCase);
+    l->ScanChain(chain_T5qqqqWW1200,"T5qqqqWW1200","",0,"SSskim",-1,isoCase);
+    l->ScanChain(chain_T5qqqqWW1500,"T5qqqqWW1500","",0,"SSskim",-1,isoCase);
 
-    l->ScanChain(chain_TTWJets,"TTWJets","",0,"SSskim",-1,usePtRel);
-    l->ScanChain(chain_TTZJets,"TTZJets","",0,"SSskim",-1,usePtRel);
-    l->ScanChain(chain_WHZH,"WHZH","",0,"SSskim",-1,usePtRel);
-    l->ScanChain(chain_WW,"WW","",0,"SSskim",-1,usePtRel);
-    l->ScanChain(chain_WZJets,"WZJets","",0,"SSskim",-1,usePtRel);
+    l->ScanChain(chain_TTWJets,"TTWJets","",0,"SSskim",-1,isoCase);
+    l->ScanChain(chain_TTZJets,"TTZJets","",0,"SSskim",-1,isoCase);
+    l->ScanChain(chain_WHZH,"WHZH","",0,"SSskim",-1,isoCase);
+    l->ScanChain(chain_WW,"WW","",0,"SSskim",-1,isoCase);
+    l->ScanChain(chain_WZJets,"WZJets","",0,"SSskim",-1,isoCase);
 
-    l->ScanChain(chain_TTbarH,"TTbarH","",0,"SSskim",-1,usePtRel);
-    l->ScanChain(chain_WJets,"WJets","",0,"SSskim",-1,usePtRel);
-    l->ScanChain(chain_ZZTo4L,"ZZTo4L","",0,"SSskim",-1,usePtRel);
+    l->ScanChain(chain_TTbarH,"TTbarH","",0,"SSskim",-1,isoCase);
+    l->ScanChain(chain_WJets,"WJets","",0,"SSskim",-1,isoCase);
+    l->ScanChain(chain_ZZTo4L,"ZZTo4L","",0,"SSskim",-1,isoCase);
 
-    l->ScanChain(chain_TTJets,"TTJets","",0,"SSskim",-1,usePtRel);
-    l->ScanChain(chain_TW,"TW","",0,"SSskim",-1,usePtRel);
+    l->ScanChain(chain_TTJets,"TTJets","",0,"SSskim",-1,isoCase);
+    l->ScanChain(chain_TW,"TW","",0,"SSskim",-1,isoCase);
 
   }
 
-  //l->ScanChain(chain_T1ttttG1500,"T1ttttG1500","",0,"",-1,usePtRel);
-  //l->ScanChain(chain_TTJets,"ttbar","",0,"",-1,usePtRel);
+  //l->ScanChain(chain_T1ttttG1500,"T1ttttG1500","",0,"",-1,isoCase);
+  //l->ScanChain(chain_TTJets,"ttbar","",0,"",-1,isoCase);
   if (runAll) {
-    l->ScanChain(chain_TTJets,"ttbar","",0,"",-1,usePtRel);
-    l->ScanChain(chain_TTWJets,"TTWJets","",0,"",-1,usePtRel);
-    l->ScanChain(chain_TTZJets,"TTZJets","",0,"",-1,usePtRel);
-    // l->ScanChain(chain_WHZH,"WHZH","",0,"",-1,usePtRel);
-    // l->ScanChain(chain_WW,"WW","",0,"",-1,usePtRel);
-    l->ScanChain(chain_WZJets,"WZJets","",0,"",-1,usePtRel);
-    l->ScanChain(chain_T1ttttG1200,"T1ttttG1200","",0,"",-1,usePtRel);
-    l->ScanChain(chain_T1ttttG1500,"T1ttttG1500","",0,"",-1,usePtRel);
-    //l->ScanChain(chain_T5qqqqWW1200,"T5qqqqWW1200","",0,"",-1,usePtRel);
-    //l->ScanChain(chain_T5qqqqWW1500,"T5qqqqWW1500","",0,"",-1,usePtRel);
+    l->ScanChain(chain_TTJets,"ttbar","",0,"",-1,isoCase);
+    l->ScanChain(chain_TTWJets,"TTWJets","",0,"",-1,isoCase);
+    l->ScanChain(chain_TTZJets,"TTZJets","",0,"",-1,isoCase);
+    // l->ScanChain(chain_WHZH,"WHZH","",0,"",-1,isoCase);
+    // l->ScanChain(chain_WW,"WW","",0,"",-1,isoCase);
+    l->ScanChain(chain_WZJets,"WZJets","",0,"",-1,isoCase);
+    l->ScanChain(chain_T1ttttG1200,"T1ttttG1200","",0,"",-1,isoCase);
+    l->ScanChain(chain_T1ttttG1500,"T1ttttG1500","",0,"",-1,isoCase);
+    //l->ScanChain(chain_T5qqqqWW1200,"T5qqqqWW1200","",0,"",-1,isoCase);
+    //l->ScanChain(chain_T5qqqqWW1500,"T5qqqqWW1500","",0,"",-1,isoCase);
   }
   
   if (runLepEff) {
-    l->ScanChain(chain_DY,"dy","effic",0,"DYtest",-1,usePtRel);
-    l->ScanChain(chain_T1ttttG1200,"T1ttttG1200","effic",0,"DYtest",-1,usePtRel);
-    l->ScanChain(chain_T1ttttG1500,"T1ttttG1500","effic",0,"DYtest",-1,usePtRel);
-    //l->ScanChain(chain_T5qqqqWW1200,"T5qqqqWW1200","effic",0,"DYtest",-1,usePtRel);
-    //l->ScanChain(chain_T5qqqqWW1500,"T5qqqqWW1500","effic",0,"DYtest",-1,usePtRel);
-    l->ScanChain(chain_TTWJets,"TTWJets","effic",0,"DYtest",-1,usePtRel);
+    l->ScanChain(chain_DY,"dy","effic",0,"DYtest",-1,isoCase);
+    l->ScanChain(chain_T1ttttG1200,"T1ttttG1200","effic",0,"DYtest",-1,isoCase);
+    l->ScanChain(chain_T1ttttG1500,"T1ttttG1500","effic",0,"DYtest",-1,isoCase);
+    //l->ScanChain(chain_T5qqqqWW1200,"T5qqqqWW1200","effic",0,"DYtest",-1,isoCase);
+    //l->ScanChain(chain_T5qqqqWW1500,"T5qqqqWW1500","effic",0,"DYtest",-1,isoCase);
+    l->ScanChain(chain_TTWJets,"TTWJets","effic",0,"DYtest",-1,isoCase);
   }
 
   if (runBaby){
-    //l->ScanChain(chain_TTZJets,       "ttz"             , "baby", 0, "MakeBaby", -1, usePtRel);
-    //l->ScanChain(chain_WZJets,        "wz"              , "baby", 0, "MakeBaby", -1, usePtRel);
-    //l->ScanChain(chain_T1ttttG1200,   "t1tttt_1200_800" , "baby", 0, "MakeBaby", -1, usePtRel);
-    //l->ScanChain(chain_T1ttttG1500,   "t1tttt_1500_100" , "baby", 0, "MakeBaby", -1, usePtRel);
-    l->ScanChain(chain_TTJets,        "ttbar"           , "baby", 0, "MakeBaby", -1, usePtRel);
-    //l->ScanChain(chain_TTWJets,       "ttw"             , "baby", 0, "MakeBaby", -1, usePtRel);
-    //l->ScanChain(chain_T5qqqqWW1200,  "t5qqqqWW1200"    , "baby", 0, "MakeBaby", -1, usePtRel);
-    //l->ScanChain(chain_T5qqqqWW1500,  "t5qqqqWW1500"    , "baby", 0, "MakeBaby", -1, usePtRel);
-    //l->ScanChain(chain_T6ttWW600_150, "t6ttWW600_150"   , "baby", 0, "MakeBaby", -1, usePtRel);
-    //l->ScanChain(chain_T6ttWW600_425, "t6ttWW600_425"   , "baby", 0, "MakeBaby", -1, usePtRel);
-    //l->ScanChain(chain_Wjets,         "Wjets"           , "baby", 0, "MakeBaby", -1, usePtRel);
-      l->ScanChain(chain_Wjets_ht,      "Wjets_ht"        , "baby", 0, "MakeBaby", -1, usePtRel);
+    //l->ScanChain(chain_TTZJets,       "ttz"             , "baby", 0, "MakeBaby", -1, isoCase);
+    //l->ScanChain(chain_WZJets,        "wz"              , "baby", 0, "MakeBaby", -1, isoCase);
+    //l->ScanChain(chain_T1ttttG1200,   "t1tttt_1200_800" , "baby", 0, "MakeBaby", -1, isoCase);
+    //l->ScanChain(chain_T1ttttG1500,   "t1tttt_1500_100" , "baby", 0, "MakeBaby", -1, isoCase);
+    l->ScanChain(chain_TTJets,        "ttbar"           , "baby", 0, "MakeBaby", -1, isoCase);
+    //l->ScanChain(chain_TTWJets,       "ttw"             , "baby", 0, "MakeBaby", -1, isoCase);
+    //l->ScanChain(chain_T5qqqqWW1200,  "t5qqqqWW1200"    , "baby", 0, "MakeBaby", -1, isoCase);
+    //l->ScanChain(chain_T5qqqqWW1500,  "t5qqqqWW1500"    , "baby", 0, "MakeBaby", -1, isoCase);
+    //l->ScanChain(chain_T6ttWW600_150, "t6ttWW600_150"   , "baby", 0, "MakeBaby", -1, isoCase);
+    //l->ScanChain(chain_T6ttWW600_425, "t6ttWW600_425"   , "baby", 0, "MakeBaby", -1, isoCase);
+    //l->ScanChain(chain_Wjets,         "Wjets"           , "baby", 0, "MakeBaby", -1, isoCase);
+    l->ScanChain(chain_Wjets_ht,      "Wjets_ht"        , "baby", 0, "MakeBaby", -1, isoCase);
   }
 
 }

@@ -26,10 +26,10 @@ class babyMaker {
       verbose = debug;
       evt_cut = 13398;
     }
-    void MakeBabyNtuple(const char* output_name, bool usePtRel);
+    void MakeBabyNtuple(const char* output_name, IsolationMethods isoCase);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd();BabyTree->Write();BabyFile->Close();}
-    int ProcessBaby(bool usePtRel);
+    int ProcessBaby(IsolationMethods isoCase);
 
   protected:
     TFile* BabyFile;

@@ -119,7 +119,7 @@ void tests::runQCDtest(looper* loop, float& weight_, vector<Lep>& fobs, vector<L
 }
 
 
-void tests::runDYtest(looper* loop, float& weight_, vector<Lep>& vetoleps_noiso, vector<Lep>& fobs, vector<Lep>& goodleps, int& njets, float& met, float& ht, bool usePtRel) {
+void tests::runDYtest(looper* loop, float& weight_, vector<Lep>& vetoleps_noiso, vector<Lep>& fobs, vector<Lep>& goodleps, int& njets, float& met, float& ht, IsolationMethods isoCase) {
 
   //check lepton selection efficiency
   for (unsigned int gp=0;gp<genps_id().size();++gp) {
@@ -181,7 +181,7 @@ void tests::runDYtest(looper* loop, float& weight_, vector<Lep>& vetoleps_noiso,
 	if (fabs(genps_p4()[gp].eta())<1.0) {
 	  loop->makeFillHisto2D<TH2F,float>((pdgid==13?"ef_ht_mu_num_vlnoiso":"ef_ht_el_num_vlnoiso"),(pdgid==13?"ef_ht_mu_num_vlnoiso":"ef_ht_el_num_vlnoiso"),5,0.,200.,genps_p4()[gp].pt(),6,0.,1200,ht,weight_);
 	}
-	if (isGoodLepton(vetoleps_noiso[vlnoiso].pdgId(),vetoleps_noiso[vlnoiso].idx(), usePtRel)==0) {
+	if (isGoodLepton(vetoleps_noiso[vlnoiso].pdgId(),vetoleps_noiso[vlnoiso].idx(), isoCase)==0) {
 	  plotLeptonIdVariables( loop, weight_, "vetoFailTight", vetoleps_noiso[vlnoiso].pdgId(), vetoleps_noiso[vlnoiso].idx());
 	  if (isLooseIsolatedLepton(vetoleps_noiso[vlnoiso].pdgId(),vetoleps_noiso[vlnoiso].idx())) plotLeptonIdVariables( loop, weight_, "lisovetoFailTight", vetoleps_noiso[vlnoiso].pdgId(), vetoleps_noiso[vlnoiso].idx());
 	  if (isIsolatedLepton(vetoleps_noiso[vlnoiso].pdgId(),vetoleps_noiso[vlnoiso].idx())) plotLeptonIdVariables( loop, weight_, "isovetoFailTight", vetoleps_noiso[vlnoiso].pdgId(), vetoleps_noiso[vlnoiso].idx());
@@ -730,7 +730,7 @@ void tests::testPtRel( looper* loop, float& weight_, DilepHyp& hyp, std::vector<
       loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_"+lt+"_dxyPV","hyp_ss_foFromWlead_"+lt+"_dxyPV",100,0,0.1,fabs(hyp.leadLep().dxyPV()),weight_);
       loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_"+lt+"_dzPV","hyp_ss_foFromWlead_"+lt+"_dzPV",100,0,0.5,fabs(hyp.leadLep().dzPV()),weight_);
 	    
-      if (isGoodLepton(hyp.leadLep().pdgId(), hyp.leadLep().idx(), false)==0) {
+      if (isGoodLepton(hyp.leadLep().pdgId(), hyp.leadLep().idx(), Standard)==0) {
 	if (ll=="mu") {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso03","hyp_ss_foFromWlead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIso(hyp.leadLep().idx()),weight_);
@@ -781,7 +781,7 @@ void tests::testPtRel( looper* loop, float& weight_, DilepHyp& hyp, std::vector<
       loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_"+lt+"_dxyPV","hyp_ss_foFakelead_"+lt+"_dxyPV",100,0,0.1,fabs(hyp.leadLep().dxyPV()),weight_);
       loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_"+lt+"_dzPV","hyp_ss_foFakelead_"+lt+"_dzPV",100,0,0.5,fabs(hyp.leadLep().dzPV()),weight_);
 	    
-      if (isGoodLepton(hyp.leadLep().pdgId(), hyp.leadLep().idx(), false)==0) {
+      if (isGoodLepton(hyp.leadLep().pdgId(), hyp.leadLep().idx(), Standard)==0) {
 	if (ll=="mu") {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso03","hyp_ss_foFakelead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_miniRelIso","hyp_ss_foFakelead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIso(hyp.leadLep().idx()),weight_);
