@@ -37,8 +37,12 @@ namespace samesign {
 	float &iso() { return ss.iso(); }
 	bool &passes_id() { return ss.passes_id(); }
 	bool &passes_id_ptrel() { return ss.passes_id_ptrel(); }
+	bool &passes_id_miniiso() { return ss.passes_id_miniiso(); }
+	bool &passes_id_newminiiso() { return ss.passes_id_newminiiso(); }
 	bool &FO() { return ss.FO(); }
 	bool &FO_ptrel() { return ss.FO_ptrel(); }
+	bool &FO_miniiso() { return ss.FO_miniiso(); }
+	bool &FO_newminiiso() { return ss.FO_newminiiso(); }
 	bool &FO_NoIso() { return ss.FO_NoIso(); }
 	float &ip3d() { return ss.ip3d(); }
 	float &ip3derr() { return ss.ip3derr(); }
@@ -46,6 +50,8 @@ namespace samesign {
 	float &mt() { return ss.mt(); }
 	float &ptrelv0() { return ss.ptrelv0(); }
 	float &ptrelv1() { return ss.ptrelv1(); }
+	float &miniiso() { return ss.miniiso(); }
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep() { return ss.jet_close_lep(); }
 	float &el_sigmaIEtaIEta_full5x5() { return ss.el_sigmaIEtaIEta_full5x5(); }
 	float &el_etaSC() { return ss.el_etaSC(); }
 	float &el_dEtaIn() { return ss.el_dEtaIn(); }

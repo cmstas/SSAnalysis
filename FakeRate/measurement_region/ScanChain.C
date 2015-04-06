@@ -64,8 +64,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool doLightonly = false;
   if (option.Contains("doLightonly")) doLightonly = true;
 
-  bool lowPtRel = false;
-  if (option.Contains("lowPtRel")) lowPtRel = true;
+  bool lowPtRel14 = false;
+  if (option.Contains("lowPtRel14")) lowPtRel14 = true;
+
+  bool lowPtRel6 = false;
+  if (option.Contains("lowPtRel6")) lowPtRel6 = true;
+
+  bool useMiniIso = false;
+  if (option.Contains("useMiniIso")) useMiniIso = true;
 
   bool extrPtRel = false;
   if (option.Contains("extrPtRel")) {
@@ -261,7 +267,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       // Analysis Code
 	  float weight = ss.scale1fb()*10.0;
 	  if(ss.scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
-	  
+
 	  bool jetptcut = false;
 	  float ht = 0.;
 	  int njets40 = 0;
@@ -296,7 +302,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 	  if (doLightonly && abs(ss.id())==11 && ss.p4().pt() < 20.) continue;//because EMEnriched does not go below 20 GeV
 
-          if (lowPtRel && ss.ptrelv1()>14.) continue;
+          if (lowPtRel14 && ss.ptrelv1()>14.) continue;
+          if (lowPtRel6  && ss.ptrelv1()>6. ) continue;
+
+          if (useMiniIso  && ss.ptrelv1()<=6. ) continue;
 
 	  if (unIso && ss.iso()<=0.1 ) continue;
 
@@ -314,8 +323,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if( ss.motherID() <= 0 && (doBonly==0 || ss.motherID() == -1) && (doConly==0 || ss.motherID() == -2) && (doLightonly==0 || ss.motherID() == 0) )  //if lep is nonprompt
 		{
 
-		  bool passId = ( usePtRel ? ss.passes_id_ptrel() : ss.passes_id() );
-		  bool passFO = ( usePtRel ? ss.FO_ptrel() : ss.FO() );
+		  bool passId = ss.passes_id();
+		  bool passFO = ss.FO();
+		  if (usePtRel) {
+		    passId = ss.passes_id_ptrel();
+		    passFO = ss.FO_ptrel();
+		  } else if (useMiniIso) {
+		    passId = ss.passes_id_miniiso();
+		    passFO = ss.FO_miniiso();
+		  }
 
 		  if( abs( ss.id() ) == 11 ) //it's an el
 			{
@@ -361,8 +377,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if( ss.motherID() <= 0 && (doBonly==0 || ss.motherID() == -1) && (doConly==0 || ss.motherID() == -2) && (doLightonly==0 || ss.motherID() == 0) )  //if el is nonprompt (GEN info)
 		{
 
-		  bool passId = ( usePtRel ? ss.passes_id_ptrel() : ss.passes_id() );
-		  bool passFO = ( usePtRel ? ss.FO_ptrel() : ss.FO() );
+		  bool passId = ss.passes_id();
+		  bool passFO = ss.FO();
+		  if (usePtRel) {
+		    passId = ss.passes_id_ptrel();
+		    passFO = ss.FO_ptrel();
+		  } else if (useMiniIso) {
+		    passId = ss.passes_id_miniiso();
+		    passFO = ss.FO_miniiso();
+		  }
 
 		  if (extrPtRel) {
 		    passId = (ss.FO_NoIso() && ss.ptrelv1()>14. && fabs(ss.ip3d()/ss.ip3derr())<4. && ss.iso()>0.1);
@@ -380,6 +403,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		    if( abs( ss.id() ) == 13 ) pTrel_histo_mu->Fill( std::min(ss.ptrelv1(),float(29.9)) );
 		  }
 
+		  float coneptcorr = std::max(0.,ss.iso()-0.1);
+		  if (useMiniIso) coneptcorr = std::max(0.,ss.miniiso()-0.05);
+
 		  if( abs( ss.id() ) == 11 ) // it's an el
 			{
 			  if( passId )  //if el is tight
@@ -395,7 +421,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nl_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
 				  if( ss.passes_id() ) Nl_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
-				  else Nl_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+				  else Nl_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 				  njets40_histo->Fill(njets40, weight);
 
 				  if (doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
@@ -403,14 +429,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 					  if(ss.motherID()==-1){
 						NBs_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NBs_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						else NBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						NBs_BR_histo_e ->Fill(nbtags, weight);
 						Bs_e = Bs_e + weight;
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NnotBs_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						else NnotBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NnotBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						NnotBs_BR_histo_e ->Fill(nbtags, weight);
 						notBs_e = notBs_e + weight;
 					  }
@@ -432,7 +458,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nl_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
 				  if( ss.passes_id() ) Nl_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
-				  else Nl_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+				  else Nl_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 				  njets40_histo->Fill(njets40, weight);
 
 				  if (doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
@@ -440,14 +466,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 					  if(ss.motherID()==-1){
 						NBs_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NBs_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						else NBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						NBs_BR_histo_mu ->Fill(nbtags, weight);
 						Bs_mu = Bs_mu + weight;
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
 						if( ss.passes_id() ) NnotBs_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						else NnotBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*std::max(0.,ss.iso()-0.1), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NnotBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						NnotBs_BR_histo_mu ->Fill(nbtags, weight);
 						notBs_mu = notBs_mu + weight;
 					  }

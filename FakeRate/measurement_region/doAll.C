@@ -1,5 +1,5 @@
 {
-  string tag = "V00-00-05";
+  string tag = "V00-00-06";
 
   gROOT->ProcessLine(".L ScanChain.C+");
 
@@ -8,13 +8,19 @@
   qcd->Add( Form("../fake_rate_output/%s/qcd_EMEnriched.root",tag.c_str()) );
   //qcd->Add( Form("../fake_rate_output/%s/qcd_EMEnriched-noBCtoE.root",tag.c_str()) ); //OVERLAP W/ EMENRICHED BABY
 
-  // ScanChain(qcd,"./rate_histos_qcd.root",""); 
+  ScanChain(qcd,"./rate_histos_qcd.root",""); 
   ScanChain(qcd,"./rate_histos_qcd_noSIP.root","noSIP"); 
   // ScanChain(qcd,"./rate_histos_qcd_ptRel.root","ptRel"); 
   // ScanChain(qcd,"./rate_histos_qcd_ptRel_noSIP.root","ptRel_noSIP");
 
-  // ScanChain(qcd,"./rate_histos_qcd_lowPtRel.root","lowPtRel"); 
-  // ScanChain(qcd,"./rate_histos_qcd_noSIP_lowPtRel.root","noSIP_lowPtRel"); 
+  ScanChain(qcd,"./rate_histos_qcd_lowPtRel6.root","lowPtRel6"); 
+  ScanChain(qcd,"./rate_histos_qcd_noSIP_lowPtRel6.root","noSIP_lowPtRel6"); 
+
+  ScanChain(qcd,"./rate_histos_qcd_useMiniIso.root","useMiniIso"); 
+  ScanChain(qcd,"./rate_histos_qcd_noSIP_useMiniIso.root","noSIP_useMiniIso"); 
+
+  // ScanChain(qcd,"./rate_histos_qcd_lowPtRel14.root","lowPtRel14"); 
+  // ScanChain(qcd,"./rate_histos_qcd_noSIP_lowPtRel14.root","noSIP_lowPtRel14"); 
 
   // ScanChain(qcd,"./rate_histos_qcd_extrPtRel.root","extrPtRel"); 
 
@@ -45,7 +51,7 @@
   TChain *qcd_HT = new TChain("t"); 
   qcd_HT->Add( Form("../fake_rate_output/%s/qcd_HT.root",tag.c_str()) );
 
-  ScanChain(qcd_HT,"./rate_histos_qcd_HT_extrPtRel.root","extrPtRel"); 
+  // ScanChain(qcd_HT,"./rate_histos_qcd_HT_extrPtRel.root","extrPtRel"); 
 
   TChain *ttbar = new TChain("t"); 
   ttbar->Add( Form("../fake_rate_output/%s/ttbar.root",tag.c_str()) ); 

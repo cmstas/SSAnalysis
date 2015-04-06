@@ -125,12 +125,24 @@ protected:
 	bool	passes_id_ptrel_;
 	TBranch *passes_id_ptrel_branch;
 	bool passes_id_ptrel_isLoaded;
+	bool	passes_id_miniiso_;
+	TBranch *passes_id_miniiso_branch;
+	bool passes_id_miniiso_isLoaded;
+	bool	passes_id_newminiiso_;
+	TBranch *passes_id_newminiiso_branch;
+	bool passes_id_newminiiso_isLoaded;
 	bool	FO_;
 	TBranch *FO_branch;
 	bool FO_isLoaded;
 	bool	FO_ptrel_;
 	TBranch *FO_ptrel_branch;
 	bool FO_ptrel_isLoaded;
+	bool	FO_miniiso_;
+	TBranch *FO_miniiso_branch;
+	bool FO_miniiso_isLoaded;
+	bool	FO_newminiiso_;
+	TBranch *FO_newminiiso_branch;
+	bool FO_newminiiso_isLoaded;
 	bool	FO_NoIso_;
 	TBranch *FO_NoIso_branch;
 	bool FO_NoIso_isLoaded;
@@ -152,6 +164,12 @@ protected:
 	float	ptrelv1_;
 	TBranch *ptrelv1_branch;
 	bool ptrelv1_isLoaded;
+	float	miniiso_;
+	TBranch *miniiso_branch;
+	bool miniiso_isLoaded;
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *jet_close_lep_;
+	TBranch *jet_close_lep_branch;
+	bool jet_close_lep_isLoaded;
 	float	el_sigmaIEtaIEta_full5x5_;
 	TBranch *el_sigmaIEtaIEta_full5x5_branch;
 	bool el_sigmaIEtaIEta_full5x5_isLoaded;
@@ -395,6 +413,16 @@ void Init(TTree *tree) {
 		passes_id_ptrel_branch = tree->GetBranch("passes_id_ptrel");
 		if (passes_id_ptrel_branch) {passes_id_ptrel_branch->SetAddress(&passes_id_ptrel_);}
 	}
+	passes_id_miniiso_branch = 0;
+	if (tree->GetBranch("passes_id_miniiso") != 0) {
+		passes_id_miniiso_branch = tree->GetBranch("passes_id_miniiso");
+		if (passes_id_miniiso_branch) {passes_id_miniiso_branch->SetAddress(&passes_id_miniiso_);}
+	}
+	passes_id_newminiiso_branch = 0;
+	if (tree->GetBranch("passes_id_newminiiso") != 0) {
+		passes_id_newminiiso_branch = tree->GetBranch("passes_id_newminiiso");
+		if (passes_id_newminiiso_branch) {passes_id_newminiiso_branch->SetAddress(&passes_id_newminiiso_);}
+	}
 	FO_branch = 0;
 	if (tree->GetBranch("FO") != 0) {
 		FO_branch = tree->GetBranch("FO");
@@ -404,6 +432,16 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("FO_ptrel") != 0) {
 		FO_ptrel_branch = tree->GetBranch("FO_ptrel");
 		if (FO_ptrel_branch) {FO_ptrel_branch->SetAddress(&FO_ptrel_);}
+	}
+	FO_miniiso_branch = 0;
+	if (tree->GetBranch("FO_miniiso") != 0) {
+		FO_miniiso_branch = tree->GetBranch("FO_miniiso");
+		if (FO_miniiso_branch) {FO_miniiso_branch->SetAddress(&FO_miniiso_);}
+	}
+	FO_newminiiso_branch = 0;
+	if (tree->GetBranch("FO_newminiiso") != 0) {
+		FO_newminiiso_branch = tree->GetBranch("FO_newminiiso");
+		if (FO_newminiiso_branch) {FO_newminiiso_branch->SetAddress(&FO_newminiiso_);}
 	}
 	FO_NoIso_branch = 0;
 	if (tree->GetBranch("FO_NoIso") != 0) {
@@ -439,6 +477,16 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("ptrelv1") != 0) {
 		ptrelv1_branch = tree->GetBranch("ptrelv1");
 		if (ptrelv1_branch) {ptrelv1_branch->SetAddress(&ptrelv1_);}
+	}
+	miniiso_branch = 0;
+	if (tree->GetBranch("miniiso") != 0) {
+		miniiso_branch = tree->GetBranch("miniiso");
+		if (miniiso_branch) {miniiso_branch->SetAddress(&miniiso_);}
+	}
+	jet_close_lep_branch = 0;
+	if (tree->GetBranch("jet_close_lep") != 0) {
+		jet_close_lep_branch = tree->GetBranch("jet_close_lep");
+		if (jet_close_lep_branch) {jet_close_lep_branch->SetAddress(&jet_close_lep_);}
 	}
 	el_sigmaIEtaIEta_full5x5_branch = 0;
 	if (tree->GetBranch("el_sigmaIEtaIEta_full5x5") != 0) {
@@ -582,8 +630,12 @@ void GetEntry(unsigned int idx)
 		iso_isLoaded = false;
 		passes_id_isLoaded = false;
 		passes_id_ptrel_isLoaded = false;
+		passes_id_miniiso_isLoaded = false;
+		passes_id_newminiiso_isLoaded = false;
 		FO_isLoaded = false;
 		FO_ptrel_isLoaded = false;
+		FO_miniiso_isLoaded = false;
+		FO_newminiiso_isLoaded = false;
 		FO_NoIso_isLoaded = false;
 		ip3d_isLoaded = false;
 		ip3derr_isLoaded = false;
@@ -591,6 +643,8 @@ void GetEntry(unsigned int idx)
 		mt_isLoaded = false;
 		ptrelv0_isLoaded = false;
 		ptrelv1_isLoaded = false;
+		miniiso_isLoaded = false;
+		jet_close_lep_isLoaded = false;
 		el_sigmaIEtaIEta_full5x5_isLoaded = false;
 		el_etaSC_isLoaded = false;
 		el_dEtaIn_isLoaded = false;
@@ -652,8 +706,12 @@ void LoadAllBranches()
 	if (iso_branch != 0) iso();
 	if (passes_id_branch != 0) passes_id();
 	if (passes_id_ptrel_branch != 0) passes_id_ptrel();
+	if (passes_id_miniiso_branch != 0) passes_id_miniiso();
+	if (passes_id_newminiiso_branch != 0) passes_id_newminiiso();
 	if (FO_branch != 0) FO();
 	if (FO_ptrel_branch != 0) FO_ptrel();
+	if (FO_miniiso_branch != 0) FO_miniiso();
+	if (FO_newminiiso_branch != 0) FO_newminiiso();
 	if (FO_NoIso_branch != 0) FO_NoIso();
 	if (ip3d_branch != 0) ip3d();
 	if (ip3derr_branch != 0) ip3derr();
@@ -661,6 +719,8 @@ void LoadAllBranches()
 	if (mt_branch != 0) mt();
 	if (ptrelv0_branch != 0) ptrelv0();
 	if (ptrelv1_branch != 0) ptrelv1();
+	if (miniiso_branch != 0) miniiso();
+	if (jet_close_lep_branch != 0) jet_close_lep();
 	if (el_sigmaIEtaIEta_full5x5_branch != 0) el_sigmaIEtaIEta_full5x5();
 	if (el_etaSC_branch != 0) el_etaSC();
 	if (el_dEtaIn_branch != 0) el_dEtaIn();
@@ -1151,6 +1211,32 @@ void LoadAllBranches()
 		}
 		return passes_id_ptrel_;
 	}
+	bool &	passes_id_miniiso()
+	{
+		if (not passes_id_miniiso_isLoaded) {
+			if (passes_id_miniiso_branch != 0) {
+				passes_id_miniiso_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_id_miniiso_branch does not exist!\n");
+				exit(1);
+			}
+			passes_id_miniiso_isLoaded = true;
+		}
+		return passes_id_miniiso_;
+	}
+	bool &	passes_id_newminiiso()
+	{
+		if (not passes_id_newminiiso_isLoaded) {
+			if (passes_id_newminiiso_branch != 0) {
+				passes_id_newminiiso_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_id_newminiiso_branch does not exist!\n");
+				exit(1);
+			}
+			passes_id_newminiiso_isLoaded = true;
+		}
+		return passes_id_newminiiso_;
+	}
 	bool &	FO()
 	{
 		if (not FO_isLoaded) {
@@ -1176,6 +1262,32 @@ void LoadAllBranches()
 			FO_ptrel_isLoaded = true;
 		}
 		return FO_ptrel_;
+	}
+	bool &	FO_miniiso()
+	{
+		if (not FO_miniiso_isLoaded) {
+			if (FO_miniiso_branch != 0) {
+				FO_miniiso_branch->GetEntry(index);
+			} else { 
+				printf("branch FO_miniiso_branch does not exist!\n");
+				exit(1);
+			}
+			FO_miniiso_isLoaded = true;
+		}
+		return FO_miniiso_;
+	}
+	bool &	FO_newminiiso()
+	{
+		if (not FO_newminiiso_isLoaded) {
+			if (FO_newminiiso_branch != 0) {
+				FO_newminiiso_branch->GetEntry(index);
+			} else { 
+				printf("branch FO_newminiiso_branch does not exist!\n");
+				exit(1);
+			}
+			FO_newminiiso_isLoaded = true;
+		}
+		return FO_newminiiso_;
 	}
 	bool &	FO_NoIso()
 	{
@@ -1267,6 +1379,32 @@ void LoadAllBranches()
 			ptrelv1_isLoaded = true;
 		}
 		return ptrelv1_;
+	}
+	float &miniiso()
+	{
+		if (not miniiso_isLoaded) {
+			if (miniiso_branch != 0) {
+				miniiso_branch->GetEntry(index);
+			} else { 
+				printf("branch miniiso_branch does not exist!\n");
+				exit(1);
+			}
+			miniiso_isLoaded = true;
+		}
+		return miniiso_;
+	}
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep()
+	{
+		if (not jet_close_lep_isLoaded) {
+			if (jet_close_lep_branch != 0) {
+				jet_close_lep_branch->GetEntry(index);
+			} else { 
+				printf("branch jet_close_lep_branch does not exist!\n");
+				exit(1);
+			}
+			jet_close_lep_isLoaded = true;
+		}
+		return *jet_close_lep_;
 	}
 	float &el_sigmaIEtaIEta_full5x5()
 	{
@@ -1592,8 +1730,12 @@ namespace samesign {
 	float &iso();
 	bool &passes_id();
 	bool &passes_id_ptrel();
+	bool &passes_id_miniiso();
+	bool &passes_id_newminiiso();
 	bool &FO();
 	bool &FO_ptrel();
+	bool &FO_miniiso();
+	bool &FO_newminiiso();
 	bool &FO_NoIso();
 	float &ip3d();
 	float &ip3derr();
@@ -1601,6 +1743,8 @@ namespace samesign {
 	float &mt();
 	float &ptrelv0();
 	float &ptrelv1();
+	float &miniiso();
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep();
 	float &el_sigmaIEtaIEta_full5x5();
 	float &el_etaSC();
 	float &el_dEtaIn();
