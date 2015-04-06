@@ -9,6 +9,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   string suffix = "";
   if (isoCase == PtRel) suffix = "_ptRel";
   else if (isoCase == MiniIso) suffix = "_miniIso";
+  else if (isoCase == NewMiniIso) suffix = "_newMiniIso";
   BabyFile = new TFile(Form("%s/%s%s.root", path.Data(), output_name, suffix.c_str()), "RECREATE");
   BabyFile->cd();
   BabyTree = new TTree("t", "SS2015 Baby Ntuple");
@@ -100,6 +101,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   BabyTree->Branch("lep1_ptrel_v1", &lep1_ptrel_v1);
   BabyTree->Branch("lep2_ptrel_v0", &lep2_ptrel_v0);
   BabyTree->Branch("lep2_ptrel_v1", &lep2_ptrel_v1);
+  BabyTree->Branch("lep1_miniIso", &lep1_miniIso);
+  BabyTree->Branch("lep2_miniIso", &lep2_miniIso);
+  BabyTree->Branch("jet_close_lep1", &jet_close_lep1);
+  BabyTree->Branch("jet_close_lep2", &jet_close_lep2);
 
   //Print warning!
   cout << "Careful!! Path is " << path << endl;
@@ -189,6 +194,16 @@ void babyMaker::InitBabyNtuple(){
     lep1_ptrel_v1 = -1;
     lep2_ptrel_v0 = -1;
     lep2_ptrel_v1 = -1;
+    lep1_miniIso = -1;
+    lep2_miniIso = -1;
+    jet_close_lep1 = LorentzVector(0,0,0,0);
+    jet_close_lep2 = LorentzVector(0,0,0,0);
+    lep1_p4 = LorentzVector(0,0,0,0);
+    lep2_p4 = LorentzVector(0,0,0,0);
+    lep3_p4 = LorentzVector(0,0,0,0);
+    lep1_p4_gen = LorentzVector(0,0,0,0);
+    lep2_p4_gen = LorentzVector(0,0,0,0);
+    dilep_p4 = LorentzVector(0,0,0,0);
 } 
 
 //Main function
@@ -353,7 +368,17 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase){
   lep2_ptrel_v0 = getPtRel(lep2_id, lep2_idx, false);
   lep1_ptrel_v1 = getPtRel(lep1_id, lep1_idx, true);
   lep2_ptrel_v1 = getPtRel(lep2_id, lep2_idx, true);
-  
+
+  //MiniIso
+  if (abs(lep1_id)==11) lep1_miniIso = elMiniRelIso(lep1_idx, 0.1, true);
+  else                  lep1_miniIso = muMiniRelIso(lep1_idx, 0.1, true);
+  if (abs(lep2_id)==11) lep2_miniIso = elMiniRelIso(lep2_idx, 0.1, true);
+  else                  lep2_miniIso = muMiniRelIso(lep2_idx, 0.1, true);
+
+  //Closest Jet
+  jet_close_lep1 = closestJet(lep1_p4);
+  jet_close_lep2 = closestJet(lep2_p4);
+
   //nGood Leptons
   for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
     if (!isGoodVetoElectron(eidx)) continue;

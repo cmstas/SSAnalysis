@@ -12,11 +12,13 @@ int main() {
   bool runSync   = false;
   bool runBaby   = false;
   bool usePtRel  = false;
-  bool useMiniIso= false;
+  bool useMiniIso= true;
+  bool useNewMI  = false;
 
   IsolationMethods isoCase = Standard;
   if (usePtRel) isoCase = PtRel;
   else if (useMiniIso) isoCase = MiniIso;
+  else if (useNewMI)   isoCase = NewMiniIso;
 
   if (runSync) { 
     TChain *chain_synctest = new TChain("Events");
@@ -50,7 +52,7 @@ int main() {
   TChain *chain_Wjets         = new TChain("Events");
 
   if (useSkim) {
-    TString dir = "PHYS14";
+    TString dir = "PHYS14_v2";
     chain_TTJets->Add(dir+"/TTJets_skimSS/merged_ntuple_*.root");
     chain_TTWJets->Add(dir+"/TTWJets_skimSS/merged_ntuple_*.root");
     chain_TTZJets->Add(dir+"/TTZJets_skimSS/merged_ntuple_*.root");
@@ -65,7 +67,6 @@ int main() {
   } 
   else {
     TString dir  = "/hadoop/cms/store/group/snt/phys14/";
-    TString dir2 = "/nfs-7/userdata/ss2015/ttbar_copy/";
     TString tag  = "V07-02-05";
     TString tag2 = "V07-02-03";
     TString tag3 = "V07-02-06";
@@ -76,7 +77,8 @@ int main() {
     chain_T5qqqqWW1500->Add("/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/13TeV_T5qqqqWW_Gl1500_Chi800_LSP100/merged/merged_ntuple_*.root");
     chain_T6ttWW600_150->Add("/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/T6ttWW_mSbottom600_mCh150_mChi50_v2/merged/merged_ntuple_*.root");
     chain_T6ttWW600_425->Add("/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/T6ttWW_mSbottom600_mCh425_mChi50_v2/merged/merged_ntuple_*.root");
-    chain_TTJets->Add(    dir2+"merged_ntuple_*.root");
+
+    chain_TTJets->Add(    dir+"TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag3+"/merged_ntuple_*.root");
     chain_TTWJets->Add(    dir+"TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_TTZJets->Add(    dir+"TTZJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_WHZH->Add(       dir+"WH_ZH_HToWW_M-125_13TeV_pythia6/"+tag+"/merged_ntuple_*.root");
@@ -157,7 +159,7 @@ int main() {
     //l->ScanChain(chain_T6ttWW600_150, "t6ttWW600_150"   , "baby", 0, "MakeBaby", -1, isoCase);
     //l->ScanChain(chain_T6ttWW600_425, "t6ttWW600_425"   , "baby", 0, "MakeBaby", -1, isoCase);
     //l->ScanChain(chain_Wjets,         "Wjets"           , "baby", 0, "MakeBaby", -1, isoCase);
-    l->ScanChain(chain_Wjets_ht,      "Wjets_ht"        , "baby", 0, "MakeBaby", -1, isoCase);
+    // l->ScanChain(chain_Wjets_ht,      "Wjets_ht"        , "baby", 0, "MakeBaby", -1, isoCase);
   }
 
 }

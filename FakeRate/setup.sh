@@ -1,6 +1,6 @@
 #! /bin/bash
 
-tag="V00-00-05"
+tag="V00-00-06"
 direxample="fake_rate_output"
 
 if [ ! -d $direxample ]; then

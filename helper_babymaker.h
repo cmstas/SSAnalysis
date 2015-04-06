@@ -147,9 +147,9 @@ class babyMaker {
     vector <int> genps_id;
     vector <int> genps_id_mother;
     vector <int> genps_status;
-	vector <int> genps_id_grandma;
+    vector <int> genps_id_grandma;
 
-   //Leptons pass numerator ID
+    //Leptons pass numerator ID
     bool lep1_passes_id;
     bool lep2_passes_id;
 
@@ -178,4 +178,14 @@ class babyMaker {
     float lep1_ptrel_v1;
     float lep2_ptrel_v0;
     float lep2_ptrel_v1;
+
+    //MiniIso
+    float lep1_miniIso;
+    float lep2_miniIso;
+
+    //Closest Jet
+    LorentzVector jet_close_lep1;
+    LorentzVector jet_close_lep2;
+
+
 };

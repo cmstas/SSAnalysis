@@ -16,7 +16,7 @@ typedef vector<pair<const LorentzVector *, double> > jets_with_corr_t;
 using namespace std;
 
 //Switches
-char* path = "../fake_rate_output/V00-00-05";
+char* path = "../fake_rate_output/V00-00-06";
 bool verbose = 0;
 unsigned int evt_cut = 74994186;
 
@@ -76,8 +76,12 @@ class babyMaker {
   float iso; //RelIso03 (EA?)
   bool passes_id;
   bool passes_id_ptrel;
+  bool passes_id_miniiso;
+  bool passes_id_newminiiso;
   bool FO;
   bool FO_ptrel;
+  bool FO_miniiso;
+  bool FO_newminiiso;
   bool FO_NoIso;
   float ip3d;
   float ip3derr;
@@ -85,7 +89,9 @@ class babyMaker {
   float mt;
   float ptrelv0;
   float ptrelv1;
-      //---els---//
+  float miniiso;
+  LorentzVector jet_close_lep;
+  //---els---//
   float el_sigmaIEtaIEta_full5x5;
   float el_etaSC;
   float el_dEtaIn;
@@ -100,7 +106,7 @@ class babyMaker {
   int el_ckf_charge;
   int el_trk_charge;
   bool el_threeChargeAgree;
-      //---mus---//
+  //---mus---//
   int mu_pid_PFMuon;
   float mu_gfit_chi2;
   float mu_gfit_ndof;
@@ -147,7 +153,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("sample", &sample);
   BabyTree->Branch("nFOs", &nFOs);
   //--------------------MINE----------------------------
-         //---both--//
+  //---both--//
   BabyTree->Branch("p4", &p4);
   BabyTree->Branch("mc_p4", &mc_p4);
   BabyTree->Branch("mc_motherp4", &mc_motherp4);
@@ -161,8 +167,12 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("iso", &iso);
   BabyTree->Branch("passes_id", &passes_id);
   BabyTree->Branch("passes_id_ptrel", &passes_id_ptrel);
+  BabyTree->Branch("passes_id_miniiso", &passes_id_miniiso);
+  BabyTree->Branch("passes_id_newminiiso", &passes_id_newminiiso);
   BabyTree->Branch("FO", &FO);
   BabyTree->Branch("FO_ptrel", &FO_ptrel);
+  BabyTree->Branch("FO_miniiso", &FO_miniiso);
+  BabyTree->Branch("FO_newminiiso", &FO_newminiiso);
   BabyTree->Branch("FO_NoIso", &FO_NoIso);
   BabyTree->Branch("ip3d", &ip3d);
   BabyTree->Branch("ip3derr", &ip3derr);
@@ -170,7 +180,9 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("mt", &mt);
   BabyTree->Branch("ptrelv0", &ptrelv0);
   BabyTree->Branch("ptrelv1", &ptrelv1);
-          //---els---//
+  BabyTree->Branch("miniiso", &miniiso);
+  BabyTree->Branch("jet_close_lep", &jet_close_lep);
+  //---els---//
   BabyTree->Branch("el_sigmaIEtaIEta_full5x5", &el_sigmaIEtaIEta_full5x5);
   BabyTree->Branch("el_etaSC", &el_etaSC);
   BabyTree->Branch("el_dEtaIn", &el_dEtaIn);
@@ -236,8 +248,12 @@ void babyMaker::InitBabyNtuple(){
 	iso = -1;
 	passes_id = 0;
 	passes_id_ptrel = 0;
+	passes_id_miniiso = 0;
+	passes_id_newminiiso = 0;
 	FO = 0;
 	FO_ptrel = 0;
+	FO_miniiso = 0;
+	FO_newminiiso = 0;
 	FO_NoIso = 0;
 	ip3d = -1;
 	ip3derr = -1;
@@ -245,6 +261,8 @@ void babyMaker::InitBabyNtuple(){
 	mt = -1;
 	ptrelv0 = -1;
 	ptrelv1 = -1;
+	miniiso = -1;
+	jet_close_lep = LorentzVector(0,0,0,0);
          //---els---//
 	el_sigmaIEtaIEta_full5x5 = -1;//below
 	el_etaSC = -1;
@@ -286,8 +304,12 @@ void babyMaker::InitMuonBranches(){
 	iso = -1;
 	passes_id = 0;
 	passes_id_ptrel = 0;
+	passes_id_miniiso = 0;
+	passes_id_newminiiso = 0;
 	FO = 0;
 	FO_ptrel = 0;
+	FO_miniiso = 0;
+	FO_newminiiso = 0;
 	FO_NoIso = 0;
 	type = -1;
 	ip3d = -1;
@@ -295,6 +317,8 @@ void babyMaker::InitMuonBranches(){
 	mt = -1;
 	ptrelv0 = -1;
 	ptrelv1 = -1;
+	miniiso = -1;
+	jet_close_lep = LorentzVector(0,0,0,0);
 	//---mus---//
 	mu_pid_PFMuon = -1;
 	mu_gfit_chi2 = -1;
@@ -321,15 +345,21 @@ void babyMaker::InitElectronBranches(){
 	iso = -1;
 	passes_id = 0;
 	passes_id_ptrel = 0;
+	passes_id_miniiso = 0;
+	passes_id_newminiiso = 0;
 	FO = 0;
 	FO_ptrel = 0;
+	FO_miniiso = 0;
+	FO_newminiiso = 0;
 	FO_NoIso = 0;
+	type = -1;
 	ip3d = -1;
 	ip3derr = -1;
-	type = -1;
 	mt = -1;
 	ptrelv0 = -1;
 	ptrelv1 = -1;
+	miniiso = -1;
+	jet_close_lep = LorentzVector(0,0,0,0);
 	//---els---//
 	el_sigmaIEtaIEta_full5x5 = -1;
 	el_etaSC = -1;
@@ -389,6 +419,8 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 
   //Print warning!
   cout << "Careful!! Path is " << path << endl;
+
+  createAndInitMVA("../../CORE");
 
  //Make Baby Ntuple  
   MakeBabyNtuple( Form("%s.root", output_name) );
@@ -484,7 +516,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  	  for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
 	  		LorentzVector electron = tas::els_p4().at(eidx);
 	  		if (electron.pt() < 7) continue;
-	  		if (!isVetoLepton(11,eidx,false)) continue;
+	  		if (!isVetoLepton(11,eidx,Standard)) continue;
 	  		if (ROOT::Math::VectorUtil::DeltaR(jet, electron) > 0.4) continue;
 	  		jetIsLep = true;
 	  	  }
@@ -494,7 +526,7 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 	  	  for (unsigned int muidx = 0; muidx < tas::mus_p4().size(); muidx++){
 	  		LorentzVector muon = tas::mus_p4().at(muidx);
 	  		if (muon.pt() < 5) continue;
-	  		if (!isVetoLepton(13,muidx, false)) continue;
+	  		if (!isVetoLepton(13,muidx,Standard)) continue;
 	  		if (ROOT::Math::VectorUtil::DeltaR(jet, muon) > 0.4) continue;
 	  		jetIsLep = true;
 	  	  }
@@ -521,12 +553,12 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 
 	  for(int j = 0; j < tas::mus_p4().size(); j++)
 	  	{
-	  	  if(isDenominatorLepton(13,j, false))
+	  	  if(isDenominatorLepton(13,j,Standard))
 	  		{count++;}
 	  	}
 	  for(int j = 0; j < tas::els_p4().size(); j++)
 	  	{
-	  	  if(isDenominatorLepton(11,j, false))
+	  	  if(isDenominatorLepton(11,j,Standard))
 	  		{count++;}
 	  	}
 	  nFOs = count;
@@ -558,15 +590,22 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  type = tas::mus_type().at(i);
 		  mt = calculateMt(p4, met, metPhi); 
 
-		  passes_id = isGoodLepton(id,i,false);   //"fix me" in selection.cc.
-		  passes_id_ptrel = isGoodLepton(id,i,true);   //"fix me" in selection.cc.
-		  FO = isDenominatorLepton(id,i,false);    //"fix me" in selection.cc
-		  FO_ptrel = isDenominatorLepton(id,i,true);    //"fix me" in selection.cc
+		  passes_id = isGoodLepton(id,i,Standard);   //"fix me" in selection.cc.
+		  passes_id_ptrel = isGoodLepton(id,i,PtRel);   //"fix me" in selection.cc.
+		  passes_id_miniiso = isGoodLepton(id,i,MiniIso);   //"fix me" in selection.cc.
+		  passes_id_newminiiso = isGoodLepton(id,i,NewMiniIso);   //"fix me" in selection.cc.
+		  FO = isDenominatorLepton(id,i,Standard);    //"fix me" in selection.cc
+		  FO_ptrel = isDenominatorLepton(id,i,PtRel);    //"fix me" in selection.cc
+		  FO_miniiso = isDenominatorLepton(id,i,MiniIso);    //"fix me" in selection.cc
+		  FO_newminiiso = isDenominatorLepton(id,i,NewMiniIso);    //"fix me" in selection.cc
 		  FO_NoIso = isDenominatorLeptonNoIso(id,i);
 
 		  ptrelv0 = getPtRel(id, idx, false);
 		  ptrelv1 = getPtRel(id, idx, true);
 
+		  miniiso = muMiniRelIso(idx, 0.1, true);
+		  jet_close_lep = closestJet(p4);
+		  
 		  Lep mu_temp = Lep(id, i);
 		  motherID = lepMotherID(mu_temp);
 		  mc_motherp4 = tas::mus_mc_motherp4().at(i);
@@ -618,15 +657,22 @@ int babyMaker::looper(TChain* chain, char* output_name, int nEvents, string sign
 		  type = tas::els_type().at(i);
 		  mt = calculateMt(p4, met, metPhi); 
 
-		  passes_id = isGoodLepton(id,i,false);   //"fix me" in selection.cc.
-		  passes_id_ptrel = isGoodLepton(id,i,true);   //"fix me" in selection.cc.
-		  FO = isDenominatorLepton(id,i,false);    //"fix me" in selection.cc
-		  FO_ptrel = isDenominatorLepton(id,i,true);    //"fix me" in selection.cc
+		  passes_id = isGoodLepton(id,i,Standard);   //"fix me" in selection.cc.
+		  passes_id_ptrel = isGoodLepton(id,i,PtRel);   //"fix me" in selection.cc.
+		  passes_id_miniiso = isGoodLepton(id,i,MiniIso);   //"fix me" in selection.cc.
+		  passes_id_newminiiso = isGoodLepton(id,i,NewMiniIso);   //"fix me" in selection.cc.
+		  FO = isDenominatorLepton(id,i,Standard);    //"fix me" in selection.cc
+		  FO_ptrel = isDenominatorLepton(id,i,PtRel);    //"fix me" in selection.cc
+		  FO_miniiso = isDenominatorLepton(id,i,MiniIso);    //"fix me" in selection.cc
+		  FO_newminiiso = isDenominatorLepton(id,i,NewMiniIso);    //"fix me" in selection.cc
 		  FO_NoIso = isDenominatorLeptonNoIso(id,i);
 
 		  ptrelv0 = getPtRel(id, idx, false);
 		  ptrelv1 = getPtRel(id, idx, true);
  
+		  miniiso = elMiniRelIso(idx, 0.1, true);
+		  jet_close_lep = closestJet(p4);
+
 		  Lep el_temp = Lep(id, i);
 		  motherID = lepMotherID(el_temp);
 		  mc_motherp4 = tas::els_mc_motherp4().at(i); 

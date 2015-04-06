@@ -51,47 +51,49 @@
   //<< " BR0E=" << hyp_hihi_br->GetBinContent(1) << " BR10=" << hyp_hihi_br->GetBinContent(11) << " BR20=" << hyp_hihi_br->GetBinContent(21) << " BR30=" << hyp_hihi_br->GetBinContent(31) << endl;
 
 
-  // TString dataset = "T1ttttG1500";
-  // TFile *_file = TFile::Open(dir+"/"+dataset+"_histos.root");
-  // TH1F* hsr = (TH1F*) _file->Get("hyp_hihimt_sr");
-  // TH1F* hbr = (TH1F*) _file->Get("hyp_hihimt_br");
-  // cout << "Dataset = " << dataset << endl
-  //      << Form("BR0I=%.2f",hbr->GetBinContent(1)+hbr->GetBinContent(11)+hbr->GetBinContent(21))  << endl
-  //      << Form("SR01=%.2f",hsr->GetBinContent(2)) << endl
-  //      << Form("SR02=%.2f",hsr->GetBinContent(3)) << endl
-  //      << Form("SR03=%.2f",hsr->GetBinContent(4)) << endl
-  //      << Form("SR04=%.2f",hsr->GetBinContent(5)) << endl
-  //      << Form("SR05=%.2f",hsr->GetBinContent(6)) << endl
-  //      << Form("SR06=%.2f",hsr->GetBinContent(7)) << endl
-  //      << Form("SR07=%.2f",hsr->GetBinContent(8)) << endl
-  //      << Form("SR08=%.2f",hsr->GetBinContent(9)) << endl
-  //      << Form("BR10=%.2f",hbr->GetBinContent(11))  << endl
-  //      << Form("SR11=%.2f",hsr->GetBinContent(12)) << endl
-  //      << Form("SR12=%.2f",hsr->GetBinContent(13)) << endl
-  //      << Form("SR13=%.2f",hsr->GetBinContent(14)) << endl
-  //      << Form("SR14=%.2f",hsr->GetBinContent(15)) << endl
-  //      << Form("SR15=%.2f",hsr->GetBinContent(16)) << endl
-  //      << Form("SR16=%.2f",hsr->GetBinContent(17)) << endl
-  //      << Form("SR17=%.2f",hsr->GetBinContent(18)) << endl
-  //      << Form("SR18=%.2f",hsr->GetBinContent(19)) << endl
-  //      << Form("BR20=%.2f",hbr->GetBinContent(21))  << endl
-  //      << Form("SR21=%.2f",hsr->GetBinContent(22)) << endl
-  //      << Form("SR22=%.2f",hsr->GetBinContent(23)) << endl
-  //      << Form("SR23=%.2f",hsr->GetBinContent(24)) << endl
-  //      << Form("SR24=%.2f",hsr->GetBinContent(25)) << endl
-  //      << Form("SR25=%.2f",hsr->GetBinContent(26)) << endl
-  //      << Form("SR26=%.2f",hsr->GetBinContent(27)) << endl
-  //      << Form("SR27=%.2f",hsr->GetBinContent(28)) << endl
-  //      << Form("SR28=%.2f",hsr->GetBinContent(29)) << endl;
-  // cout << Form("BR30=%.2f",hbr->GetBinContent(31))  << endl
-  //      << Form("SR31=%.2f",hsr->GetBinContent(32)) << endl
-  //      << Form("SR32=%.2f",hsr->GetBinContent(33)) << endl
-  //      << Form("SR33=%.2f",hsr->GetBinContent(34)) << endl
-  //      << Form("SR34=%.2f",hsr->GetBinContent(35)) << endl
-  //      << Form("SR35=%.2f",hsr->GetBinContent(36)) << endl
-  //      << Form("SR36=%.2f",hsr->GetBinContent(37)) << endl
-  //      << Form("SR37=%.2f",hsr->GetBinContent(38)) << endl
-  //      << Form("SR38=%.2f",hsr->GetBinContent(39)) << endl;
-
+  /*
+  TString dataset = "TTWJets";
+  TFile *_file = TFile::Open(dir+"/"+dataset+"_histos.root");
+  TH1F* hsr = (TH1F*) _file->Get("hyp_hihi_excl_sr");
+  TH1F* hbr = (TH1F*) _file->Get("hyp_hihi_br");
+  cout << "Dataset = " << dataset << endl
+       << Form("BR0I=%.2f",hbr->GetBinContent(1)+hbr->GetBinContent(11)+hbr->GetBinContent(21)+hbr->GetBinContent(31))  << endl
+       << Form("BR0E=%.2f",hbr->GetBinContent(1))  << endl
+       << Form("SR01=%.2f",hsr->GetBinContent(2)) << endl
+       << Form("SR02=%.2f",hsr->GetBinContent(3)) << endl
+       << Form("SR03=%.2f",hsr->GetBinContent(4)) << endl
+       << Form("SR04=%.2f",hsr->GetBinContent(5)) << endl
+       << Form("SR05=%.2f",hsr->GetBinContent(6)) << endl
+       << Form("SR06=%.2f",hsr->GetBinContent(7)) << endl
+       << Form("SR07=%.2f",hsr->GetBinContent(8)) << endl
+       << Form("SR08=%.2f",hsr->GetBinContent(9)) << endl
+       << Form("BR10=%.2f",hbr->GetBinContent(11))  << endl
+       << Form("SR11=%.2f",hsr->GetBinContent(12)) << endl
+       << Form("SR12=%.2f",hsr->GetBinContent(13)) << endl
+       << Form("SR13=%.2f",hsr->GetBinContent(14)) << endl
+       << Form("SR14=%.2f",hsr->GetBinContent(15)) << endl
+       << Form("SR15=%.2f",hsr->GetBinContent(16)) << endl
+       << Form("SR16=%.2f",hsr->GetBinContent(17)) << endl
+       << Form("SR17=%.2f",hsr->GetBinContent(18)) << endl
+       << Form("SR18=%.2f",hsr->GetBinContent(19)) << endl
+       << Form("BR20=%.2f",hbr->GetBinContent(21))  << endl
+       << Form("SR21=%.2f",hsr->GetBinContent(22)) << endl
+       << Form("SR22=%.2f",hsr->GetBinContent(23)) << endl
+       << Form("SR23=%.2f",hsr->GetBinContent(24)) << endl
+       << Form("SR24=%.2f",hsr->GetBinContent(25)) << endl
+       << Form("SR25=%.2f",hsr->GetBinContent(26)) << endl
+       << Form("SR26=%.2f",hsr->GetBinContent(27)) << endl
+       << Form("SR27=%.2f",hsr->GetBinContent(28)) << endl
+       << Form("SR28=%.2f",hsr->GetBinContent(29)) << endl;
+  cout << Form("BR30=%.2f",hbr->GetBinContent(31))  << endl
+       << Form("SR31=%.2f",hsr->GetBinContent(32)) << endl
+       << Form("SR32=%.2f",hsr->GetBinContent(33)) << endl
+       << Form("SR33=%.2f",hsr->GetBinContent(34)) << endl
+       << Form("SR34=%.2f",hsr->GetBinContent(35)) << endl
+       << Form("SR35=%.2f",hsr->GetBinContent(36)) << endl
+       << Form("SR36=%.2f",hsr->GetBinContent(37)) << endl
+       << Form("SR37=%.2f",hsr->GetBinContent(38)) << endl
+       << Form("SR38=%.2f",hsr->GetBinContent(39)) << endl;
+  */
 
 }
