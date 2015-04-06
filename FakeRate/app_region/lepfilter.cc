@@ -87,4 +87,8 @@ namespace samesign {
 	TString &filename() { return ss.filename(); }
 	float &lep1_ptrel_v1() { return ss.lep1_ptrel_v1(); }
 	float &lep2_ptrel_v1() { return ss.lep2_ptrel_v1(); }
+	float &lep1_miniIso() { return ss.lep1_miniIso(); }
+	float &lep2_miniIso() { return ss.lep2_miniIso(); }
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep1() { return ss.jet_close_lep1(); }
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep2() { return ss.jet_close_lep2(); }
 }

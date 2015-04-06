@@ -275,6 +275,18 @@ protected:
 	float	lep2_ptrel_v1_;
 	TBranch *lep2_ptrel_v1_branch;
 	bool lep2_ptrel_v1_isLoaded;
+	float	lep1_miniIso_;
+	TBranch *lep1_miniIso_branch;
+	bool lep1_miniIso_isLoaded;
+	float	lep2_miniIso_;
+	TBranch *lep2_miniIso_branch;
+	bool lep2_miniIso_isLoaded;
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *jet_close_lep1_;
+	TBranch *jet_close_lep1_branch;
+	bool jet_close_lep1_isLoaded;
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *jet_close_lep2_;
+	TBranch *jet_close_lep2_branch;
+	bool jet_close_lep2_isLoaded;
 public: 
 void Init(TTree *tree) {
 	lep1_p4_branch = 0;
@@ -708,6 +720,26 @@ void Init(TTree *tree) {
 		lep2_ptrel_v1_branch = tree->GetBranch("lep2_ptrel_v1");
 		if (lep2_ptrel_v1_branch) {lep2_ptrel_v1_branch->SetAddress(&lep2_ptrel_v1_);}
 	}
+	lep1_miniIso_branch = 0;
+	if (tree->GetBranch("lep1_miniIso") != 0) {
+		lep1_miniIso_branch = tree->GetBranch("lep1_miniIso");
+		if (lep1_miniIso_branch) {lep1_miniIso_branch->SetAddress(&lep1_miniIso_);}
+	}
+	lep2_miniIso_branch = 0;
+	if (tree->GetBranch("lep2_miniIso") != 0) {
+		lep2_miniIso_branch = tree->GetBranch("lep2_miniIso");
+		if (lep2_miniIso_branch) {lep2_miniIso_branch->SetAddress(&lep2_miniIso_);}
+	}
+	jet_close_lep1_branch = 0;
+	if (tree->GetBranch("jet_close_lep1") != 0) {
+		jet_close_lep1_branch = tree->GetBranch("jet_close_lep1");
+		if (jet_close_lep1_branch) {jet_close_lep1_branch->SetAddress(&jet_close_lep1_);}
+	}
+	jet_close_lep2_branch = 0;
+	if (tree->GetBranch("jet_close_lep2") != 0) {
+		jet_close_lep2_branch = tree->GetBranch("jet_close_lep2");
+		if (jet_close_lep2_branch) {jet_close_lep2_branch->SetAddress(&jet_close_lep2_);}
+	}
   tree->SetMakeClass(0);
 }
 void GetEntry(unsigned int idx) 
@@ -800,6 +832,10 @@ void GetEntry(unsigned int idx)
 		filename_isLoaded = false;
 		lep1_ptrel_v1_isLoaded = false;
 		lep2_ptrel_v1_isLoaded = false;
+		lep1_miniIso_isLoaded = false;
+		lep2_miniIso_isLoaded = false;
+		jet_close_lep1_isLoaded = false;
+		jet_close_lep2_isLoaded = false;
 	}
 
 void LoadAllBranches() 
@@ -891,6 +927,10 @@ void LoadAllBranches()
 	if (filename_branch != 0) filename();
 	if (lep1_ptrel_v1_branch != 0) lep1_ptrel_v1();
 	if (lep2_ptrel_v1_branch != 0) lep2_ptrel_v1();
+	if (lep1_miniIso_branch != 0) lep1_miniIso();
+	if (lep2_miniIso_branch != 0) lep2_miniIso();
+	if (jet_close_lep1_branch != 0) jet_close_lep1();
+	if (jet_close_lep2_branch != 0) jet_close_lep2();
 }
 
 	float &met()
@@ -2011,6 +2051,58 @@ void LoadAllBranches()
 		}
 		return lep2_ptrel_v1_;
 	}
+	float &lep1_miniIso()
+	{
+		if (not lep1_miniIso_isLoaded) {
+			if (lep1_miniIso_branch != 0) {
+				lep1_miniIso_branch->GetEntry(index);
+			} else { 
+				printf("branch lep1_miniIso_branch does not exist!\n");
+				exit(1);
+			}
+			lep1_miniIso_isLoaded = true;
+		}
+		return lep1_miniIso_;
+	}
+	float &lep2_miniIso()
+	{
+		if (not lep2_miniIso_isLoaded) {
+			if (lep2_miniIso_branch != 0) {
+				lep2_miniIso_branch->GetEntry(index);
+			} else { 
+				printf("branch lep2_miniIso_branch does not exist!\n");
+				exit(1);
+			}
+			lep2_miniIso_isLoaded = true;
+		}
+		return lep2_miniIso_;
+	}
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep1()
+	{
+		if (not jet_close_lep1_isLoaded) {
+			if (jet_close_lep1_branch != 0) {
+				jet_close_lep1_branch->GetEntry(index);
+			} else { 
+				printf("branch jet_close_lep1_branch does not exist!\n");
+				exit(1);
+			}
+			jet_close_lep1_isLoaded = true;
+		}
+		return *jet_close_lep1_;
+	}
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep2()
+	{
+		if (not jet_close_lep2_isLoaded) {
+			if (jet_close_lep2_branch != 0) {
+				jet_close_lep2_branch->GetEntry(index);
+			} else { 
+				printf("branch jet_close_lep2_branch does not exist!\n");
+				exit(1);
+			}
+			jet_close_lep2_isLoaded = true;
+		}
+		return *jet_close_lep2_;
+	}
 
   static void progress( int nEventsTotal, int nEventsChain ){
     int period = 1000;
@@ -2125,5 +2217,9 @@ namespace samesign {
 	TString &filename();
 	float &lep1_ptrel_v1();
 	float &lep2_ptrel_v1();
+	float &lep1_miniIso();
+	float &lep2_miniIso();
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep1();
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep2();
 }
 #endif

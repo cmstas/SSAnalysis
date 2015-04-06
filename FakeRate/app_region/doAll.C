@@ -10,14 +10,16 @@
   gROOT->ProcessLine(".L ../../CORE/SSSelections.cc+");
 
   gROOT->ProcessLine(".L ScanChain.C+");
-  bool doConeCorr = 0;
-  bool doNoSIP    = 1;
-  bool doBonly    = 0;
-  bool doConly    = 0;
-  bool doLightonly= 0;
-  bool doPtRel    = 0;
-  bool doLowPtRel = 0;
-  bool doExtrPtRel= 0;
+  bool doConeCorr   = 0;
+  bool doNoSIP      = 1;
+  bool doBonly      = 0;
+  bool doConly      = 0;
+  bool doLightonly  = 0;
+  bool doPtRel      = 0;
+  bool doLowPtRel14 = 0;
+  bool doLowPtRel6  = 0;
+  bool doMiniIso    = 0;
+  bool doExtrPtRel  = 0;
 
   bool highhigh   = 1;
   bool highlow    = 0;
@@ -29,7 +31,9 @@
   if (doBonly) option+="_doBonly";
   if (doConly) option+="_doConly";
   if (doLightonly) option+="_doLightonly";
-  if (doLowPtRel) option+="_lowPtRel";
+  if (doLowPtRel14) option+="_lowPtRel14";
+  if (doLowPtRel6) option+="_lowPtRel6";
+  if (doMiniIso) option+="_useMiniIso";
   if (doExtrPtRel) option+="_extrPtRel";
 
   TString ptRegion = "";
@@ -49,8 +53,9 @@
     ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.0X-ptrelfo6/ttbar_baby_ptRel.root"); //or this one!
   } else {
     if (doPtRel) ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby_ptRel.root"); //or this one!
-    else ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby.root"); //this one!
+    else ch->Add("../../babies/V00-00-06/ttbar_baby.root"); //this one!
   }
+  ScanChain(ch, fakeratefile, option, ptRegion); 
 
   TChain *ch_wjets = new TChain("t"); 
   if (doPtRel) ch_wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v1.04/Wjets_baby_ptRel.root"); //or this one!
@@ -59,6 +64,5 @@
 	ch_wjets->Add("/nfs-7/userdata/iandyckes/fake_rate_output/V00-00-05/wjetsHT_SSbaby.root");
 	//ch_wjets->Add("./wjetsHT_baby.root");
   }
-  ScanChain(ch, fakeratefile, option, ptRegion); 
   //ScanChain(ch_wjets, fakeratefile, option, ptRegion); 
 }
