@@ -17,12 +17,18 @@
 #include "TCanvas.h"
 #include "TStyle.h"
 #include "Math/VectorUtil.h"
+#include <unistd.h> //isatty
 
 // lepfilter
 #include "lepfilter.cc"
 
 using namespace std;
 using namespace samesign;
+
+// #ifdef __MAKECINT__ 
+// #pragma link C++ class ROOT::Math::PxPyPzE4D<float>+; 
+// #pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
+// #endif 
 
 float getPt(float pt, bool extrPtRel) {
   if(!extrPtRel && pt >= 70.) return 69.;
@@ -72,6 +78,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
   bool useMiniIso = false;
   if (option.Contains("useMiniIso")) useMiniIso = true;
+
+  bool useNewMiniIso = false;
+  if (option.Contains("useNewMiniIso")) useNewMiniIso = true;
 
   bool extrPtRel = false;
   if (option.Contains("extrPtRel")) {
@@ -263,7 +272,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
     
       // Progress
       lepfilter::progress( nEventsTotal, nEventsChain );
-	  
+
+      //cout << "pt=" << ss.p4().pt() << " iso=" << ss.iso() << endl;
+
       // Analysis Code
 	  float weight = ss.scale1fb()*10.0;
 	  if(ss.scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
@@ -303,9 +314,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (doLightonly && abs(ss.id())==11 && ss.p4().pt() < 20.) continue;//because EMEnriched does not go below 20 GeV
 
           if (lowPtRel14 && ss.ptrelv1()>14.) continue;
-          if (lowPtRel6  && ss.ptrelv1()>6. ) continue;
 
-          if (useMiniIso  && ss.ptrelv1()<=6. ) continue;
+          if (lowPtRel6  && ss.ptrelv1()>6. ) continue;
+          if (useMiniIso && ss.ptrelv1()<=6.) continue;
 
 	  if (unIso && ss.iso()<=0.1 ) continue;
 
@@ -328,9 +339,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		  if (usePtRel) {
 		    passId = ss.passes_id_ptrel();
 		    passFO = ss.FO_ptrel();
-		  } else if (useMiniIso) {
+		  } else if (useMiniIso||lowPtRel6) {
 		    passId = ss.passes_id_miniiso();
 		    passFO = ss.FO_miniiso();
+		  } else if (useNewMiniIso) {
+		    passId = ss.passes_id_newminiiso();
+		    passFO = ss.FO_newminiiso();
 		  }
 
 		  if( abs( ss.id() ) == 11 ) //it's an el
@@ -382,9 +396,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		  if (usePtRel) {
 		    passId = ss.passes_id_ptrel();
 		    passFO = ss.FO_ptrel();
-		  } else if (useMiniIso) {
+		  } else if (useMiniIso||lowPtRel6) {
 		    passId = ss.passes_id_miniiso();
 		    passFO = ss.FO_miniiso();
+		  } else if (useNewMiniIso) {
+		    passId = ss.passes_id_newminiiso();
+		    passFO = ss.FO_newminiiso();
 		  }
 
 		  if (extrPtRel) {
@@ -405,6 +422,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 		  float coneptcorr = std::max(0.,ss.iso()-0.1);
 		  if (useMiniIso) coneptcorr = std::max(0.,ss.miniiso()-0.05);
+		  else if (useNewMiniIso) {
+		    if (ss.p4().pt()>25. && ss.ptrelv1()>7.) coneptcorr = (abs(ss.id())==11 ? std::max(0.,ss.miniiso()-0.075) : std::max(0.,ss.miniiso()-0.1));
+		    else coneptcorr = (abs(ss.id())==11 ? ss.jet_close_lep().pt()*0.725/ss.p4().pt() : ss.jet_close_lep().pt()*0.70/ss.p4().pt());
+		  }
 
 		  if( abs( ss.id() ) == 11 ) // it's an el
 			{

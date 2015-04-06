@@ -19,6 +19,9 @@
   ScanChain(qcd,"./rate_histos_qcd_useMiniIso.root","useMiniIso"); 
   ScanChain(qcd,"./rate_histos_qcd_noSIP_useMiniIso.root","noSIP_useMiniIso"); 
 
+  ScanChain(qcd,"./rate_histos_qcd_useNewMiniIso.root","useNewMiniIso"); 
+  ScanChain(qcd,"./rate_histos_qcd_noSIP_useNewMiniIso.root","noSIP_useNewMiniIso"); 
+
   // ScanChain(qcd,"./rate_histos_qcd_lowPtRel14.root","lowPtRel14"); 
   // ScanChain(qcd,"./rate_histos_qcd_noSIP_lowPtRel14.root","noSIP_lowPtRel14"); 
 

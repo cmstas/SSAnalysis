@@ -29,6 +29,11 @@
 using namespace std;
 using namespace samesign;
 
+// #ifdef __MAKECINT__ 
+// #pragma link C++ class ROOT::Math::PxPyPzE4D<float>+; 
+// #pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
+// #endif 
+
 void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, TH2D *rate_histo_mu,  TH2D *rate_histo_e, TCanvas *c, TPad *pad_h, TPad *pad_r, TLegend *leg)
 {
   pred->GetXaxis()->SetTitle("Signal Region"); 
@@ -180,6 +185,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   if (option.Contains("lowPtRel6")) lowPtRel6 = true;
   bool useMiniIso = false;
   if (option.Contains("useMiniIso")) useMiniIso = true;
+  bool useNewMiniIso = false;
+  if (option.Contains("useNewMiniIso")) useNewMiniIso = true;
   bool extrPtRel = false;
   if (option.Contains("extrPtRel")) {
     extrPtRel = true;
@@ -378,7 +385,14 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 		 (abs(ss.lep2_id())==11 && ss.lep2_motherID()==0 && ss.lep2_p4().pt() < 20) ) continue;
 
 	  }
-	  
+
+	  if (lowPtRel6) {
+	    if (ss.lep1_ptrel_v1()>6. || ss.lep2_ptrel_v1()>6.) continue;
+	  }	  
+	  if (useMiniIso) {
+	    if (ss.lep1_ptrel_v1()<=6. && ss.lep2_ptrel_v1()<=6.) continue;
+	  }	  
+
 	  //if (std::min(ss.mt(),ss.mt_l2())<100) continue;	  
 
 	  //------------------------------------------------------------------------
@@ -555,6 +569,16 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 		  if (useMiniIso) {
 		    lep1_conepT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.05));
 		    lep2_conepT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.05));
+		  } else if (useNewMiniIso) {
+		    //cout << "pt=" << ss.lep1_p4().pt() << " ptrel=" << ss.lep1_ptrel_v1() << " miniIso=" << ss.lep1_miniIso() << " jetpt=" << ss.jet_close_lep1().pt() << endl;
+		    if (ss.lep1_p4().pt()>25. && ss.lep1_ptrel_v1()>7.) 
+		      lep1_conepT = ss.lep1_p4().pt()*(abs(ss.lep1_id())==11 ? std::max(0.,ss.lep1_miniIso()-0.075) : std::max(0.,ss.lep1_miniIso()-0.1));
+		    else
+		      lep1_conepT = (abs(ss.lep1_id())==11 ? ss.jet_close_lep1().pt()*0.725 : ss.jet_close_lep1().pt()*0.70);
+		    if (ss.lep2_p4().pt()>25. && ss.lep2_ptrel_v1()>7.) 
+		      lep2_conepT = ss.lep2_p4().pt()*(abs(ss.lep2_id())==11 ? std::max(0.,ss.lep2_miniIso()-0.075) : std::max(0.,ss.lep2_miniIso()-0.1));
+		    else
+		      lep2_conepT = (abs(ss.lep2_id())==11 ? ss.jet_close_lep2().pt()*0.725 : ss.jet_close_lep2().pt()*0.70);
 		  }
 
 		  //apply pTcuts for highhigh region for now, with cone correction if needed
@@ -604,8 +628,16 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				  if (useMiniIso && ss.lep2_ptrel_v1()<=6.) continue;
 				  if (extrPtRel && ss.lep2_ptrel_v1()<6.0 ) continue;
 				  float pt = ss.lep2_p4().pt();
-				  if (coneCorr) pt = pt+pt*std::max(0.,ss.lep2_iso()-0.1);
-				  if (coneCorr&&useMiniIso) pt = pt+pt*std::max(0.,ss.lep2_miniIso()-0.05);
+				  if (coneCorr) {
+				    pt = pt+pt*std::max(0.,ss.lep2_iso()-0.1);
+				    if (useMiniIso) pt = pt+pt*std::max(0.,ss.lep2_miniIso()-0.05);
+				    if (useNewMiniIso) {
+				      if (ss.lep2_p4().pt()>25. && ss.lep2_ptrel_v1()>7.) 
+					pt = pt+pt*(abs(ss.lep2_id())==11 ? std::max(0.,ss.lep2_miniIso()-0.075) : std::max(0.,ss.lep2_miniIso()-0.1));
+				      else
+					pt = (abs(ss.lep2_id())==11 ? ss.jet_close_lep2().pt()*0.725 : ss.jet_close_lep2().pt()*0.70);
+				    }
+				  }
 				  if( abs(ss.lep2_id()) == 11 )  //if el, use el rate.  FILL WITH NONPROMPT
 					{
 					  e2 = getFakeRate( rate_histo_e, pt, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel );					  
@@ -650,8 +682,16 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				  if (useMiniIso && ss.lep1_ptrel_v1()<=6.) continue;
 				  if (extrPtRel && ss.lep1_ptrel_v1()<6.0 ) continue;
 				  float pt = ss.lep1_p4().pt();
-				  if (coneCorr) pt = pt+pt*std::max(0.,ss.lep1_iso()-0.1);
-				  if (coneCorr&&miniIso) pt = pt+pt*std::max(0.,ss.lep1_miniIso()-0.05);
+				  if (coneCorr) {
+				    pt = pt+pt*std::max(0.,ss.lep1_iso()-0.1);
+				    if (useMiniIso) pt = pt+pt*std::max(0.,ss.lep1_miniIso()-0.05);
+				    if (useNewMiniIso) {
+				      if (ss.lep1_p4().pt()>25. && ss.lep1_ptrel_v1()>7.) 
+					pt = pt+pt*(abs(ss.lep1_id())==11 ? std::max(0.,ss.lep1_miniIso()-0.075) : std::max(0.,ss.lep1_miniIso()-0.1));
+				      else
+					pt = (abs(ss.lep1_id())==11 ? ss.jet_close_lep1().pt()*0.725 : ss.jet_close_lep1().pt()*0.70);
+				    }
+				  }
 				  if( abs(ss.lep1_id()) == 11 )	//if el, use el rate.  FILL WITH NONPROMPT			  
 					{
 					  e1 = getFakeRate(rate_histo_e, pt, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );
@@ -699,11 +739,27 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				  if (noSIP && fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())>4.) continue;
 				  if (noSIP && fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())>4.) continue;
 				  float pt1 = ss.lep1_p4().pt();
-				  if (coneCorr) pt1 = pt1+pt1*std::max(0.,ss.lep1_iso()-0.1);
-				  if (coneCorr&&useMiniIso) pt1 = pt1+pt1*std::max(0.,ss.lep1_miniIso()-0.05);
+				  if (coneCorr) {
+				    pt1 = pt1+pt1*std::max(0.,ss.lep2_iso()-0.1);
+				    if (useMiniIso) pt1 = pt1+pt1*std::max(0.,ss.lep2_miniIso()-0.05);
+				    if (useNewMiniIso) {
+				      if (ss.lep2_p4().pt()>25. && ss.lep2_ptrel_v1()>7.) 
+					pt1 = pt1+pt1*(abs(ss.lep2_id())==11 ? std::max(0.,ss.lep2_miniIso()-0.075) : std::max(0.,ss.lep2_miniIso()-0.1));
+				      else
+					pt1 = (abs(ss.lep2_id())==11 ? ss.jet_close_lep2().pt()*0.725 : ss.jet_close_lep2().pt()*0.70);
+				    }
+				  }
 				  float pt2 = ss.lep2_p4().pt();
-				  if (coneCorr) pt2 = pt2+pt2*std::max(0.,ss.lep2_iso()-0.1);
-				  if (coneCorr&&useMiniIso) pt2 = pt2+pt2*std::max(0.,ss.lep2_miniIso()-0.05);
+				  if (coneCorr) {
+				    pt2 = pt2+pt2*std::max(0.,ss.lep2_iso()-0.1);
+				    if (useMiniIso) pt2 = pt2+pt2*std::max(0.,ss.lep2_miniIso()-0.05);
+				    if (useNewMiniIso) {
+				      if (ss.lep2_p4().pt()>25. && ss.lep2_ptrel_v1()>7.) 
+					pt2 = pt2+pt2*(abs(ss.lep2_id())==11 ? std::max(0.,ss.lep2_miniIso()-0.075) : std::max(0.,ss.lep2_miniIso()-0.1));
+				      else
+					pt2 = (abs(ss.lep2_id())==11 ? ss.jet_close_lep2().pt()*0.725 : ss.jet_close_lep2().pt()*0.70);
+				    }
+				  }
 				  if( abs(ss.lep2_id()) == 11 )
 					{e2 = getFakeRate( rate_histo_e, pt2, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel );}
 				  else if( abs(ss.lep2_id()) == 13 )

@@ -19,6 +19,7 @@
   bool doLowPtRel14 = 0;
   bool doLowPtRel6  = 0;
   bool doMiniIso    = 0;
+  bool doNewMiniIso = 0;
   bool doExtrPtRel  = 0;
 
   bool highhigh   = 1;
@@ -34,6 +35,7 @@
   if (doLowPtRel14) option+="_lowPtRel14";
   if (doLowPtRel6) option+="_lowPtRel6";
   if (doMiniIso) option+="_useMiniIso";
+  if (doNewMiniIso) option+="_useNewMiniIso";
   if (doExtrPtRel) option+="_extrPtRel";
 
   TString ptRegion = "";
@@ -53,6 +55,8 @@
     ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.0X-ptrelfo6/ttbar_baby_ptRel.root"); //or this one!
   } else {
     if (doPtRel) ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby_ptRel.root"); //or this one!
+    else if (doMiniIso||doLowPtRel6)    ch->Add("../../babies/V00-00-06/ttbar_baby_miniIso.root"); //this one!
+    else if (doNewMiniIso) ch->Add("../../babies/V00-00-06/ttbar_baby_newMiniIso.root"); //this one!
     else ch->Add("../../babies/V00-00-06/ttbar_baby.root"); //this one!
   }
   ScanChain(ch, fakeratefile, option, ptRegion); 
