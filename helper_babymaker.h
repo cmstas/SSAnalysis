@@ -165,13 +165,13 @@ class babyMaker {
     float lep2_ip3d;
     float lep2_ip3d_err;
 
-    //nGoodElectrons passing certain pT cuts
-    int nGoodElectrons7;
-    int nGoodElectrons10;
-    int nGoodElectrons25;
-    int nGoodMuons5;
-    int nGoodMuons10;
-    int nGoodMuons25;
+    //nVetoElectrons passing certain pT cuts
+    int nVetoElectrons7;
+    int nVetoElectrons10;
+    int nVetoElectrons25;
+    int nVetoMuons5;
+    int nVetoMuons10;
+    int nVetoMuons25;
 
     //PtRel, v0 and v1 (v1 is lepton-subtracted)
     float lep1_ptrel_v0;

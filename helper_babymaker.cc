@@ -90,12 +90,12 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   BabyTree->Branch("lep2_ip3d", &lep2_ip3d);
   BabyTree->Branch("lep1_ip3d_err", &lep1_ip3d_err);
   BabyTree->Branch("lep2_ip3d_err", &lep2_ip3d_err);
-  BabyTree->Branch("nGoodElectrons7", &nGoodElectrons7);
-  BabyTree->Branch("nGoodElectrons10", &nGoodElectrons10);
-  BabyTree->Branch("nGoodElectrons25", &nGoodElectrons25);
-  BabyTree->Branch("nGoodMuons5", &nGoodMuons5);
-  BabyTree->Branch("nGoodMuons10", &nGoodMuons10);
-  BabyTree->Branch("nGoodMuons25", &nGoodMuons25);
+  BabyTree->Branch("nVetoElectrons7", &nVetoElectrons7);
+  BabyTree->Branch("nVetoElectrons10", &nVetoElectrons10);
+  BabyTree->Branch("nVetoElectrons25", &nVetoElectrons25);
+  BabyTree->Branch("nVetoMuons5", &nVetoMuons5);
+  BabyTree->Branch("nVetoMuons10", &nVetoMuons10);
+  BabyTree->Branch("nVetoMuons25", &nVetoMuons25);
   BabyTree->Branch("filename", &filename);
   BabyTree->Branch("lep1_ptrel_v0", &lep1_ptrel_v0);
   BabyTree->Branch("lep1_ptrel_v1", &lep1_ptrel_v1);
@@ -183,12 +183,12 @@ void babyMaker::InitBabyNtuple(){
     lep2_ip3d = -999998;
     lep1_ip3d_err = -999998;
     lep2_ip3d_err = -999998;
-    nGoodElectrons7 = 0;
-    nGoodElectrons10 = 0;
-    nGoodElectrons25 = 0;
-    nGoodMuons5 = 0;
-    nGoodMuons10 = 0;
-    nGoodMuons25 = 0;
+    nVetoElectrons7 = 0;
+    nVetoElectrons10 = 0;
+    nVetoElectrons25 = 0;
+    nVetoMuons5 = 0;
+    nVetoMuons10 = 0;
+    nVetoMuons25 = 0;
     filename = "";
     lep1_ptrel_v0 = -1;
     lep1_ptrel_v1 = -1;
@@ -303,58 +303,15 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase){
   }
   
   //Determine and save jet and b-tag variables
-  ht = 0;
-  for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++){
-    LorentzVector jet = tas::pfjets_p4().at(i);
-    
-    //Kinematic jet cuts
-    if (jet.pt() < 25.) continue;
-    if (fabs(jet.eta()) > 2.4) continue;
-    
-    //Verbose
-    if (verbose) cout << "Possible jet with pT: " << jet.pt() << endl;
-    
-    //Require loose jet ID
-    if (!isLoosePFJet(i)) continue;
-    
-    //Jet cleaning -- electrons
-    bool jetIsLep = false;
-    for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
-      LorentzVector electron = tas::els_p4().at(eidx);
-      if (electron.pt() < 7) continue;
-      if (!isGoodVetoElectron(eidx)) continue;
-      if (ROOT::Math::VectorUtil::DeltaR(jet, electron) > 0.4) continue;
-      jetIsLep = true;
-    }
-    if (jetIsLep == true) continue;
-    
-    //Jet cleaning -- muons
-    for (unsigned int muidx = 0; muidx < tas::mus_p4().size(); muidx++){
-      LorentzVector muon = tas::mus_p4().at(muidx);
-      if (muon.pt() < 5) continue;
-      if (!isGoodVetoMuon(muidx)) continue;
-      if (ROOT::Math::VectorUtil::DeltaR(jet, muon) > 0.4) continue;
-      jetIsLep = true;
-    }
-    if (jetIsLep == true) continue;
-    
-    float disc = tas::pfjets_combinedInclusiveSecondaryVertexV2BJetTag().at(i);
-    //Save jets that make it this far
-    if (jet.pt() >= 40.) {
-      jets.push_back(jet);
-      ht += jet.pt();
-      jets_disc.push_back(disc);
-    }
-
-    //Btag discriminator
-    if (disc < 0.814) continue;
-    
-    //Save btags that make it this far
-    btags_disc.push_back(disc);
-    btags.push_back(tas::pfjets_p4().at(i));
-  }
+  jet_result_t jet_results = SSJetsCalculator();
+  jets = jet_results.jets;
+  btags = jet_results.btags;
+  jets_disc = jet_results.jets_disc;
+  btags_disc = jet_results.btags_disc;
   njets = jets.size();
   nbtags = btags.size();
+  ht = 0;
+  for (unsigned int i = 0; i < jets.size(); i++) ht += jets.at(i).pt(); 
   
   //Verbose for jets
   if (verbose){
@@ -379,26 +336,26 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase){
   jet_close_lep1 = closestJet(lep1_p4);
   jet_close_lep2 = closestJet(lep2_p4);
 
-  //nGood Leptons
+  //nVeto Leptons
   for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
     if (!isGoodVetoElectron(eidx)) continue;
     if (tas::els_p4().at(eidx).pt() < 7) continue;
-    nGoodElectrons7++;
+    nVetoElectrons7++;
     if (verbose) cout << "good elec: " << tas::els_p4().at(eidx).pt() << endl;
     if (tas::els_p4().at(eidx).pt() < 10) continue;
-    nGoodElectrons10++;
+    nVetoElectrons10++;
     if (tas::els_p4().at(eidx).pt() < 25) continue;
-    nGoodElectrons25++;
+    nVetoElectrons25++;
   }
   for (unsigned int muidx = 0; muidx < tas::mus_p4().size(); muidx++){
     if (!isGoodVetoMuon(muidx)) continue;
     if (tas::mus_p4().at(muidx).pt() < 5) continue;
-    nGoodMuons5++;
+    nVetoMuons5++;
     if (verbose) cout << "good muon: " << tas::mus_p4().at(muidx).pt() << endl;
     if (tas::mus_p4().at(muidx).pt() < 10) continue;
-    nGoodMuons10++;
+    nVetoMuons10++;
     if (tas::mus_p4().at(muidx).pt() < 25) continue;
-    nGoodMuons25++;
+    nVetoMuons25++;
   }
   
   //MT variables
