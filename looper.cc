@@ -285,75 +285,52 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       	goodleps.push_back(fobs[fo]);
       }
 
-      //jets, ht, btags
-      if (debug) cout << "jets" << endl;
-      int njets = 0;
-      vector<Jet> jets;
-      vector<Jet> alljets;
-      int nbtag = 0;
+      //Declare jet variables
       int nbtag_pt40 = 0;
       int nbtag_pt35 = 0;
       int nbtag_pt30 = 0;
       int nbtag_pt25 = 0;
       int nbtag_pt20 = 0;
-      vector<Jet> btags;
-      float ht=0;
+      int njets = 0;
+      int nbtag = 0;
+
+      //Debug for jets
+      if (debug) cout << "jets" << endl;
+      if (debug){
+	    for (unsigned int pfjidx=0; pfjidx < pfjets_p4().size(); pfjidx++){
+	      Jet jet(pfjidx);
+	      cout << "jet pt=" << jet.pt() << " eta=" << jet.eta() << " phi=" << jet.phi() << endl;
+	    }
+      }
+
+      //All jets
+      vector<Jet> alljets;
+      for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++) alljets.push_back(Jet(i)); 
+
+      //Selected jets and b-tags
+      std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(); 
+      vector<Jet> jets = jet_results.first;
+      vector<Jet> btags = jet_results.second;
+
+      //HT
+      float ht = 0;
+      for (unsigned int i = 0; i < jets.size(); i++) ht += jets.at(i).pt(); 
+
       //fixme: should add corrections
-      float drcut = 0.4;
-      if (makeQCDtest) drcut = 1.0;
-      if (debug) {
-	for (unsigned int pfjidx=0;pfjidx<pfjets_p4().size();++pfjidx) {
-	  Jet jet(pfjidx);
-	  cout << "jet pt=" << jet.pt() << " eta=" << jet.eta() << " phi=" << jet.phi() << endl;
-	}
+      //fixme: should set drcut to 1 for makeQCDtest
+  
+      //nJets and nBtags
+      for (unsigned int i = 0; i < btags.size(); i++){
+        if (btags.at(i).pt() > 25) nbtag_pt25++;
+        if (btags.at(i).pt() > 30) nbtag_pt30++;
+        if (btags.at(i).pt() > 35) nbtag_pt35++;
+        if (btags.at(i).pt() > 40) nbtag_pt40++;
       }
-      for (unsigned int pfjidx=0;pfjidx<pfjets_p4().size();++pfjidx) {
-        Jet jet(pfjidx);
-        if (debug) cout << "jet pt=" << jet.pt() << " eta=" << jet.eta() << endl;
-        if (fabs(jet.eta())>2.4) continue;
-        if (debug) cout << "jet pass eta" << endl;
-        if (isLoosePFJet(pfjidx)==false) continue;
-        if (debug) cout << "jet pass loose pf id" << endl;
-        //add pu jet id pfjets_pileupJetId()>????
-        bool isLep = false;
-        //fixme: should be checked agains fo or good leptons?
-        if (makeQCDtest) {
-          for (unsigned int fo=0;fo<fobs.size();++fo) {
-            if (deltaR(jet.p4(),fobs[fo].p4())<drcut) {
-              isLep =true;
-              break;
-            }
-          }
-        } else {
-          for (unsigned int gl=0;gl<vetoleps.size();++gl) {//fixme not sure this is the best choice
-	    Lep lep = vetoleps[gl];
-	    if (lep.pt()<10) continue;
-            if (deltaR(jet.p4(),lep.p4())<drcut) {
-              isLep =true;
-	      if (debug) cout << "jet overlapping with lepton" << endl;
-              break;
-            }
-          }
-        }
-        if (isLep) continue;
-        if (debug) cout << "jet pass lepton clean" << endl;
-        float jetpt = jet.pt();
-        if (jetpt>40.) {
-          if (debug) cout << "jet pass pT cut" << endl;
-          njets++;
-          jets.push_back(jet);
-          ht+=jetpt;
-        }
-	alljets.push_back(jet);
-	if (jetpt>20. && jet.isBtag()) nbtag_pt20++;
-	if (jetpt>25. && jet.isBtag()){nbtag_pt25++; btags.push_back(jet);}
-	if (jetpt>30. && jet.isBtag()) nbtag_pt30++;
-	if (jetpt>35. && jet.isBtag()) nbtag_pt35++;
-	if (jetpt>40. && jet.isBtag()) nbtag_pt40++;
-      }
-      std::sort(jets.begin(),jets.end(),jetptsort);
-      std::sort(btags.begin(),btags.end(),jetptsort);
       nbtag = nbtag_pt25;
+
+      //Sort jets and b-tags
+      std::sort(jets.begin(), jets.end(), jetptsort);
+      std::sort(btags.begin(), btags.end(), jetptsort);
       
       if (fobs_noiso.size()==0 && !makeDYtest) continue;
       makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,2,weight_);
