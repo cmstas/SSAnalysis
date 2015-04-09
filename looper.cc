@@ -341,9 +341,9 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,2,weight_);
 
       //write skim here (only qcd)
-      if (makeQCDskim) {
+      if (makeQCDskim){
 	    if (debug) cout << "qcd skim" << endl;
-	    if (fobs.size()!=0) {
+	    if (fobs.size()!=0){
 	      cms3.LoadAllBranches();
 	      skim_file->cd(); 
 	      skim_tree->Fill();
@@ -729,26 +729,6 @@ void looper::printEvent(  ostream& ostr ){
   ostr << evt_run() << " " << evt_lumiBlock() << " " << evt_event() << endl; 
 }
 
-// // Book the baby ntuple
-// void looper::MakeBabyNtuple(const char *babyFilename) {
-//   babyFile_ = new TFile(Form("%s", babyFilename), "RECREATE");
-//   babyTree_ = new TTree("tree", "A Baby Ntuple");  
-//   babyTree_->Branch("run", &run_, "run/I");
-//   babyTree_->Branch("ls", &ls_, "ls/I");
-//   babyTree_->Branch("evt", &evt_, "evt/I");
-//   babyTree_->Branch("weight", &weight_, "weight/F");
-//   babyTree_->Branch("p4", "ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >", &p4_);
-// }
-// // Init the baby
-// void looper::InitBabyNtuple() { 
-//   run_ = -9999;
-//   ls_ = -9999;
-//   evt_ = -9999;
-//   weight_ = -9999.;
-//   babyTree_->SetBranchAddress("p4",          &p4_);
-//   *p4_ = LorentzVector();
-// }
-
 void looper::fillUnderOverFlow(TH1F *h1, float value, float weight){
 
   float min = h1->GetXaxis()->GetXmin();
@@ -759,4 +739,3 @@ void looper::fillUnderOverFlow(TH1F *h1, float value, float weight){
 
   h1->Fill(value, weight);
 }
-

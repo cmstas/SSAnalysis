@@ -105,6 +105,28 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   BabyTree->Branch("lep2_miniIso", &lep2_miniIso);
   BabyTree->Branch("jet_close_lep1", &jet_close_lep1);
   BabyTree->Branch("jet_close_lep2", &jet_close_lep2);
+  BabyTree->Branch("eleID_kfhits", &eleID_kfhits          );
+  BabyTree->Branch("eleID_oldsigmaietaieta", &eleID_oldsigmaietaieta);
+  BabyTree->Branch("eleID_oldsigmaiphiiphi", &eleID_oldsigmaiphiiphi);
+  BabyTree->Branch("eleID_oldcircularity", &eleID_oldcircularity  );
+  BabyTree->Branch("eleID_oldr9", &eleID_oldr9           );
+  BabyTree->Branch("eleID_scletawidth", &eleID_scletawidth     );
+  BabyTree->Branch("eleID_sclphiwidth", &eleID_sclphiwidth     );
+  BabyTree->Branch("eleID_he", &eleID_he              );
+  BabyTree->Branch("eleID_psEoverEraw", &eleID_psEoverEraw     );
+  BabyTree->Branch("eleID_kfchi2   ", &eleID_kfchi2          );
+  BabyTree->Branch("eleID_chi2_hits", &eleID_chi2_hits       );
+  BabyTree->Branch("eleID_fbrem", &eleID_fbrem           );
+  BabyTree->Branch("eleID_ep", &eleID_ep              );
+  BabyTree->Branch("eleID_eelepout", &eleID_eelepout        );
+  BabyTree->Branch("eleID_IoEmIop", &eleID_IoEmIop         );
+  BabyTree->Branch("eleID_deltaetain", &eleID_deltaetain      );
+  BabyTree->Branch("eleID_deltaphiin", &eleID_deltaphiin      );
+  BabyTree->Branch("eleID_deltaetaseed", &eleID_deltaetaseed    );
+  BabyTree->Branch("eleID_pT", &eleID_pT              );
+  BabyTree->Branch("eleID_isbarrel", &eleID_isbarrel        );
+  BabyTree->Branch("eleID_isendcap", &eleID_isendcap        );
+  BabyTree->Branch("eleID_scl_eta ", &eleID_scl_eta         );
 
   //Print warning!
   cout << "Careful!! Path is " << path << endl;
@@ -113,7 +135,6 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
 
 void babyMaker::InitBabyNtuple(){
 
-    //Gen variables
     met = -1;
     metPhi = -1;
     event = -1;
@@ -204,6 +225,29 @@ void babyMaker::InitBabyNtuple(){
     lep1_p4_gen = LorentzVector(0,0,0,0);
     lep2_p4_gen = LorentzVector(0,0,0,0);
     dilep_p4 = LorentzVector(0,0,0,0);
+    eleID_kfhits.clear();
+    eleID_oldsigmaietaieta.clear();
+    eleID_oldsigmaiphiiphi.clear();
+    eleID_oldcircularity.clear();
+    eleID_oldr9.clear();
+    eleID_scletawidth.clear();
+    eleID_sclphiwidth.clear();
+    eleID_he.clear();
+    eleID_psEoverEraw.clear();
+    eleID_kfchi2.clear();
+    eleID_chi2_hits.clear();
+    eleID_fbrem.clear();
+    eleID_ep.clear();
+    eleID_eelepout.clear();
+    eleID_IoEmIop.clear();
+    eleID_deltaetain.clear();
+    eleID_deltaphiin.clear();
+    eleID_deltaetaseed.clear();
+    eleID_pT.clear();
+    eleID_isbarrel.clear();
+    eleID_isendcap.clear();
+    eleID_scl_eta.clear();
+
 } 
 
 //Main function
@@ -366,6 +410,32 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase){
   //Ht and MET
   if (verbose) cout << "ht: " << ht << endl;
   if (verbose) cout << "met: " << met << endl;
+
+  //Electron ID variables
+  for (unsigned int index = 0; index < els_fbrem().size(); index++){
+    eleID_kfhits           .push_back(tas::els_ckf_laywithmeas().at(index));
+    eleID_oldsigmaietaieta .push_back(tas::els_sigmaIEtaIEta_full5x5().at(index)); 
+    eleID_oldsigmaiphiiphi .push_back(tas::els_sigmaIPhiIPhi_full5x5().at(index));
+    eleID_oldcircularity   .push_back(1.0 - tas::els_e1x5_full5x5().at(index)/tas::els_e5x5_full5x5().at(index)); 
+    eleID_oldr9            .push_back(tas::els_r9_full5x5().at(index)); 
+    eleID_scletawidth      .push_back(tas::els_etaSCwidth().at(index));
+    eleID_sclphiwidth      .push_back(tas::els_phiSCwidth().at(index));
+    eleID_he               .push_back(tas::els_hOverE().at(index));
+    eleID_psEoverEraw      .push_back(tas::els_eSCPresh().at(index)/tas::els_eSCRaw().at(index));
+    eleID_kfchi2           .push_back(tas::els_ckf_chi2().at(index)/tas::els_ckf_ndof().at(index));
+    eleID_chi2_hits        .push_back(tas::els_chi2().at(index)/tas::els_ndof().at(index));
+    eleID_fbrem            .push_back(tas::els_fbrem().at(index));
+    eleID_ep               .push_back(tas::els_eOverPIn().at(index));
+    eleID_eelepout         .push_back(tas::els_eOverPOut().at(index));
+    eleID_IoEmIop          .push_back(tas::els_ecalEnergy().at(index) != 0 ? 1.0/tas::els_ecalEnergy().at(index) - tas::els_eOverPIn().at(index)/tas::els_ecalEnergy().at(index) : 999999);
+    eleID_deltaetain       .push_back(tas::els_dEtaIn().at(index));
+    eleID_deltaphiin       .push_back(tas::els_dPhiIn().at(index));
+    eleID_deltaetaseed     .push_back(tas::els_dEtaOut().at(index));
+    eleID_pT               .push_back(tas::els_p4().at(index).pt()); 
+    eleID_isbarrel         .push_back(fabs(tas::els_etaSC().at(index)) < 1.479 ? 1 : 0); 
+    eleID_isendcap         .push_back(fabs(tas::els_etaSC().at(index)) > 1.479 ? 1 : 0); 
+    eleID_scl_eta          .push_back(tas::els_etaSC().at(index)); 
+  }
   
   //Fill Baby
   BabyTree->Fill();
