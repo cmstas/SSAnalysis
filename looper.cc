@@ -142,10 +142,10 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       //-------- DO THE ANALYSIS HERE --------//
 
       //If debugging, skip all other events
-      if (evtToDebug.size()>0){
+      if (evtToDebug.size() > 0){
 	    bool pass = false;
 	    for (unsigned int evt=0;evt<evtToDebug.size();evt++){
-	      if (evt_event()==abs(evtToDebug[evt])) {
+	      if (evt_event() == abs(evtToDebug[evt])){
 	        pass = true;
 	        break;
 	      }
@@ -153,7 +153,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 	    if (!pass) continue;
 	    std::cout << "event = " << evt_event() << std::endl;
 	    cout << "file=" << currentFile->GetTitle() << " run=" << run_ << " evt=" << evt_ << endl;      
-	    debug=1;
+	    debug = 1;
       }
 
       //Print info
@@ -355,9 +355,9 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (debug) cout << "met" << endl;
       float met = evt_pfmet();
       if (met<30. && ht<500. && !makeQCDskim && !makeQCDtest && !makeDYtest) continue;
-      makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,3,weight_);
       
       //cut-flow
+      makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,3,weight_);
       if (isGenSS) makeFillHisto1D<TH1F,int>("cut_flow_ss","cut_flow_ss",50,0,50,3,weight_);
       if (isGenSSee) makeFillHisto1D<TH1F,int>("cut_flow_ssee","cut_flow_ssee",50,0,50,3,weight_);
       if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,3,weight_);
@@ -607,14 +607,13 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
 	      //test min dR between leptons and jets
 	      float mindr = 99999.;
-	      for (unsigned int j=0;j<jets.size();++j) {
+	      for (unsigned int j = 0; j < jets.size(); j++) {
 	        for (unsigned int gl=0;gl<goodleps.size();++gl) {
 	          float dr = deltaR(jets[j].p4(),goodleps[gl].p4());
-	          if (dr<mindr) {
-	    	mindr = dr;
-	          }
+	          if (dr<mindr) mindr = dr;
 	        }
 	      } 
+
 	      //test min dR between leptons and btagged jets
 	      makeFillHisto1D<TH1F,float>("hyp_ss_mindRlj","hyp_ss_mindRlj",50,0,5,mindr,weight_);
 	      float mindrb = 99999.;
@@ -626,6 +625,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 	          }
 	        }
 	      } 
+
 	      makeFillHisto1D<TH1F,float>("hyp_ss_mindRlb","hyp_ss_mindRlb",50,0,5,mindrb,weight_);
 	      //test min dR between jets
 	      float mindrj = 99999.;
@@ -712,14 +712,13 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
   if (fr_file) fr_file->Close();
 
-  if ( nEventsChain != nEventsTotal ) {
-    std::cout << "ERROR: number of events from files is not equal to total number of events" << std::endl;
-  }
+  if ( nEventsChain != nEventsTotal ) std::cout << "ERROR: number of events from files is not equal to total number of events" << std::endl;
 
   if (makebaby) {
     bm->CloseBabyNtuple();
     delete bm;
   }
+
   if (makehist) SaveHistos();
 
   return 0;
