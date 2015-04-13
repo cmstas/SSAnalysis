@@ -12,6 +12,13 @@ fi
 cp /home/users/cgeorge/CORE/*.h CORE/
 cp /home/users/cgeorge/CORE/CMS3_CORE.so CORE/
 
+#And data directory inside CORE
+if [ ! -d CORE/data ] 
+then
+  mkdir CORE/data
+fi
+cp /home/users/cgeorge/CORE/data/*.xml CORE/data/
+
 #And tools directory inside CORE
 if [ ! -d CORE/Tools ] 
 then
@@ -34,7 +41,7 @@ cp /home/users/cgeorge/CORE/Tools/MT2/MT2Utility.cc CORE/Tools/MT2
 sed -i "s,\"Tools\/,\"CORE/Tools\/,g" helper_babymaker.h 
 sed -i "s/output_name,\ bool\ usePtRel)/output_name)/" helper_babymaker.h
 sed -i "s/output_name,\ bool\ usePtRel)/output_name)/" helper_babymaker.cc
-sed -i "s/%s\/%s%s/%s\/%s/g" helper_babymaker.cc
+#sed -i "s/%s\/%s%s/%s\/%s/g" helper_babymaker.cc
 sed -i "s/output_name,\ usePtRel\ ?\ \"_ptRel\"\ :\ \"\"/output_name/" helper_babymaker.cc
 sed -i "/<vector>/a #include\ \"Math/Vector4D.h\" \n#include\ \"Math/LorentzVector.h\" \n\n\#ifdef\ __MAKECINT__\n\#pragma\ link\ C++\ class\ ROOT::Math::PxPyPzE4D<float>+;\n\#pragma\ link\ C++\ class\ ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float>\ >+;\n\#pragma\ link\ C++\ typedef ROOT::Math::XYZTVectorF;\n\#endif" helper_babymaker.h
 

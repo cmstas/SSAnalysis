@@ -7,7 +7,10 @@ tag="V07-02-08"
 for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200"
 do
 
-  for (( counter=0; counter<=500; counter++ )); do file[$counter]=""; done
+  for (( counter=0; counter<=500; counter++ )); do file1[$counter]=""; done
+  for (( counter=0; counter<=500; counter++ )); do file2[$counter]=""; done
+  for (( counter=0; counter<=500; counter++ )); do file3[$counter]=""; done
+  for (( counter=0; counter<=500; counter++ )); do file4[$counter]=""; done
 
   #Get Name
   if [ $sname == "TTW"         ]; then name="TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1"; fi
@@ -26,11 +29,15 @@ do
   #Write array with file names
   for (( counter=1; counter<=$numberOfFiles; counter++ ))
   do
-    file[$(( $counter - 1 )) ]="$path2/${sname_lower}_${counter}.root"
-    file[$(( $counter - 1 )) ]="$path2/${sname_lower}_ptRel_${counter}.root"
+    file1[$(( $counter - 1 )) ]="$path2/${sname_lower}_${counter}.root"
+    file2[$(( $counter - 1 )) ]="$path2/${sname_lower}_${counter}_ptRel.root"
+    file3[$(( $counter - 1 )) ]="$path2/${sname_lower}_${counter}_miniIso.root"
+    file4[$(( $counter - 1 )) ]="$path2/${sname_lower}_${counter}_newMiniIso.root"
   done
 
-  #hadd $sname.root ${file[*]}
-  hadd ${sname}_ptRel.root ${file[*]}
+  hadd $sname.root ${file1[*]}
+  hadd ${sname}_ptRel.root ${file2[*]}
+  hadd ${sname}_miniIso.root ${file3[*]}
+  hadd ${sname}_newMiniIso.root ${file4[*]}
 
  done 
