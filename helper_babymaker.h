@@ -8,6 +8,7 @@
 #include "Tools/utils.h"
 #include "Tools/MT2/MT2.h"
 #include "CORE/SSSelections.h"
+#include "CORE/ElectronSelections.h"
 #include "CORE/IsolationTools.h"
 #include "TROOT.h"
 #include <vector>
@@ -189,26 +190,34 @@ class babyMaker {
 
     //Electron ID variables
     vector <int>   eleID_kfhits;
-    vector <float>  eleID_oldsigmaietaieta;
-    vector <float>  eleID_oldsigmaiphiiphi;
-    vector <float>  eleID_oldcircularity;
-    vector <float>  eleID_oldr9;
-    vector <float>  eleID_scletawidth;
-    vector <float>  eleID_sclphiwidth;
-    vector <float>  eleID_he;
-    vector <float>  eleID_psEoverEraw;
-    vector <float>  eleID_kfchi2;
-    vector <float>  eleID_chi2_hits;
-    vector <float>  eleID_fbrem;
-    vector <float>  eleID_ep;
-    vector <float>  eleID_eelepout;
-    vector <float>  eleID_IoEmIop;
-    vector <float>  eleID_deltaetain;
-    vector <float>  eleID_deltaphiin;
-    vector <float>  eleID_deltaetaseed;
-    vector <float>  eleID_pT;
-    vector <bool> eleID_isbarrel;
-    vector <bool> eleID_isendcap;
+    vector <float> eleID_oldsigmaietaieta;
+    vector <float> eleID_oldsigmaiphiiphi;
+    vector <float> eleID_oldcircularity;
+    vector <float> eleID_oldr9;
+    vector <float> eleID_scletawidth;
+    vector <float> eleID_sclphiwidth;
+    vector <float> eleID_he;
+    vector <float> eleID_psEoverEraw;
+    vector <float> eleID_kfchi2;
+    vector <float> eleID_chi2_hits;
+    vector <float> eleID_fbrem;
+    vector <float> eleID_ep;
+    vector <float> eleID_eelepout;
+    vector <float> eleID_IoEmIop;
+    vector <float> eleID_deltaetain;
+    vector <float> eleID_deltaphiin;
+    vector <float> eleID_deltaetaseed;
+    vector <float> eleID_pT;
+    vector <bool>  eleID_isbarrel;
+    vector <bool>  eleID_isendcap;
     vector <float> eleID_scl_eta;
+
+    //Muon ID variables
+    vector <float> muID_dzPV;      
+    vector <float> muID_ptSig;     
+    vector <float> muID_ip3dSig;   
+    vector <float> muID_medMuonPOG;
+    vector <float> muID_pt;        
+    vector <float> muID_eta;       
 
 };
