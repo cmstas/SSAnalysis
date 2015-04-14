@@ -55,9 +55,9 @@
     ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.0X-ptrelfo6/ttbar_baby_ptRel.root"); //or this one!
   } else {
     if (doPtRel) ch->Add("/home/users/cerati/SSAnalysis/SSAnalysis/babies/v1.04/ttbar_baby_ptRel.root"); //or this one!
-    else if (doMiniIso||doLowPtRel6)    ch->Add("../../babies/V00-00-06/ttbar_baby_miniIso.root"); //this one!
-    else if (doNewMiniIso) ch->Add("../../babies/V00-00-06/ttbar_baby_newMiniIso.root"); //this one!
-    else ch->Add("../../babies/V00-00-06/ttbar_baby.root"); //this one!
+    else if (doMiniIso||doLowPtRel6)    ch->Add("../../babies/V00-00-07/ttbar_baby_miniIso.root"); //this one!
+    else if (doNewMiniIso) ch->Add("../../babies/V00-00-07/ttbar_baby_newMiniIso.root"); //this one!
+    else ch->Add("../../babies/V00-00-07/ttbar_baby.root"); //this one!
   }
   ScanChain(ch, fakeratefile, option, ptRegion); 
 
