@@ -67,10 +67,8 @@ int main() {
   } 
   else {
     TString dir  = "/hadoop/cms/store/group/snt/phys14/";
-    TString tag  = "V07-02-05";
-    TString tag2 = "V07-02-03";
-    TString tag3 = "V07-02-06";
-    chain_Wjets->Add(dir+"WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag3+"/merged_ntuple_*.root");
+    TString tag  = "V07-02-08";
+    chain_Wjets->Add(dir+"WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_T1ttttG1200->Add(dir+"SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_T1ttttG1500->Add(dir+"SMS-T1tttt_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_T5qqqqWW1200->Add("/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/T5qqqqWW_mGo1200_mCh1000_mChi800/merged/merged_ntuple_*.root");
@@ -78,27 +76,27 @@ int main() {
     chain_T6ttWW600_150->Add("/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/T6ttWW_mSbottom600_mCh150_mChi50_v2/merged/merged_ntuple_*.root");
     chain_T6ttWW600_425->Add("/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/T6ttWW_mSbottom600_mCh425_mChi50_v2/merged/merged_ntuple_*.root");
 
-    chain_TTJets->Add(    dir+"TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag3+"/merged_ntuple_*.root");
+    chain_TTJets->Add(    dir+"TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_TTWJets->Add(    dir+"TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_TTZJets->Add(    dir+"TTZJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
     chain_WHZH->Add(       dir+"WH_ZH_HToWW_M-125_13TeV_pythia6/"+tag+"/merged_ntuple_*.root");
     chain_WW->Add(         dir+"WWTo2L2Nu_CT10_13TeV-powheg-pythia8-tauola/"+tag+"/merged_ntuple_*.root");
     chain_WZJets->Add(     dir+"WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
-    chain_DY->Add(         dir+"DYJetsToLL_M-50_13TeV-madgraph-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag2+"/merged_ntuple_*.root");//fixme
+    chain_DY->Add(         dir+"DYJetsToLL_M-50_13TeV-madgraph-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");//fixme
 
-    chain_TTbarH->Add(dir+"TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v2/"+tag2+"/merged_ntuple_*.root");
+    chain_TTbarH->Add(dir+"TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v2/"+tag+"/merged_ntuple_*.root");
     chain_WJets->Add(dir+"WJetsToLNu_13TeV-madgraph-pythia8-tauola/"+tag+"/merged_ntuple_*.root");
-    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-100to200_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag2 + "/merged_ntuple_*.root");
-    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag2 + "/merged_ntuple_*.root");
-    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag2 + "/merged_ntuple_*.root");
-    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag2 + "/merged_ntuple_*.root");
-    chain_ZZTo4L->Add(dir+"ZZTo4L_Tune4C_13TeV-powheg-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag2+"/merged_ntuple_*.root");
-    chain_TW->Add(dir+"T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag2+"/merged_ntuple_*.root");
-    chain_TW->Add(dir+"Tbar_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag2+"/merged_ntuple_*.root");
-    chain_TW->Add(dir+"TToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag2+"/merged_ntuple_*.root");
-    chain_TW->Add(dir+"TBarToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag2+"/merged_ntuple_*.root");
-    chain_TW->Add(dir+"TToLeptons_t-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag2+"/merged_ntuple_*.root");
-    chain_TW->Add(dir+"TBarToLeptons_t-channel_Tune4C_CSA14_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag2+"/merged_ntuple_*.root");
+    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-100to200_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag + "/merged_ntuple_*.root");
+    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag + "/merged_ntuple_*.root");
+    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag + "/merged_ntuple_*.root");
+    chain_Wjets_ht->Add(dir+"WJetsToLNu_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag + "/merged_ntuple_*.root");
+    chain_ZZTo4L->Add(dir+"ZZTo4L_Tune4C_13TeV-powheg-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
+    chain_TW->Add(dir+"T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
+    chain_TW->Add(dir+"Tbar_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
+    chain_TW->Add(dir+"TToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
+    chain_TW->Add(dir+"TBarToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
+    chain_TW->Add(dir+"TToLeptons_t-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
+    chain_TW->Add(dir+"TBarToLeptons_t-channel_Tune4C_CSA14_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"+tag+"/merged_ntuple_*.root");
   }
 
   if (skimAll) {
