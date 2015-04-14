@@ -24,7 +24,7 @@ class babyMaker {
     babyMaker(bool debug = 0) {
       path = ".";
       verbose = debug;
-      evt_cut = 13398;
+      evt_cut = 0;
     }
     void MakeBabyNtuple(const char* output_name, IsolationMethods isoCase);
     void InitBabyNtuple();

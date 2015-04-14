@@ -216,7 +216,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase){
   bool isData = tas::evt_isRealData();
   
   //Debug mode
-  if (verbose && tas::evt_event() != evt_cut) return -1;
+  if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return -1;
 
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return -1;
