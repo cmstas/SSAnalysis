@@ -252,6 +252,11 @@ void Init(TTree *tree) {
 		mc_motherp4_branch = tree->GetBranch("mc_motherp4");
 		if (mc_motherp4_branch) {mc_motherp4_branch->SetAddress(&mc_motherp4_);}
 	}
+	jet_close_lep_branch = 0;
+	if (tree->GetBranch("jet_close_lep") != 0) {
+		jet_close_lep_branch = tree->GetBranch("jet_close_lep");
+		if (jet_close_lep_branch) {jet_close_lep_branch->SetAddress(&jet_close_lep_);}
+	}
   tree->SetMakeClass(1);
 	met_branch = 0;
 	if (tree->GetBranch("met") != 0) {
@@ -482,11 +487,6 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("miniiso") != 0) {
 		miniiso_branch = tree->GetBranch("miniiso");
 		if (miniiso_branch) {miniiso_branch->SetAddress(&miniiso_);}
-	}
-	jet_close_lep_branch = 0;
-	if (tree->GetBranch("jet_close_lep") != 0) {
-		jet_close_lep_branch = tree->GetBranch("jet_close_lep");
-		if (jet_close_lep_branch) {jet_close_lep_branch->SetAddress(&jet_close_lep_);}
 	}
 	el_sigmaIEtaIEta_full5x5_branch = 0;
 	if (tree->GetBranch("el_sigmaIEtaIEta_full5x5") != 0) {

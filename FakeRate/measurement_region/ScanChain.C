@@ -275,6 +275,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       //cout << "pt=" << ss.p4().pt() << " iso=" << ss.iso() << endl;
 
+      //cout << "lepp4=" << ss.p4() << " jetp4=" << ss.jet_close_lep() << endl;
+
       // Analysis Code
 	  float weight = ss.scale1fb()*10.0;
 	  if(ss.scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched

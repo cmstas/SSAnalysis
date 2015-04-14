@@ -570,7 +570,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 		    lep1_conepT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.05));
 		    lep2_conepT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.05));
 		  } else if (useNewMiniIso) {
-		    //cout << "pt=" << ss.lep1_p4().pt() << " ptrel=" << ss.lep1_ptrel_v1() << " miniIso=" << ss.lep1_miniIso() << " jetpt=" << ss.jet_close_lep1().pt() << endl;
+		    //cout << "pt=" << ss.lep1_p4().pt() << " ptrel=" << ss.lep1_ptrel_v1() << " miniIso=" << ss.lep1_miniIso() << " jetpt=" << ss.jet_close_lep1().pt() <<  " jetpt2=" << ss.jet_close_lep2().pt() << endl;
 		    if (ss.lep1_p4().pt()>25. && ss.lep1_ptrel_v1()>7.) 
 		      lep1_conepT = ss.lep1_p4().pt()*(abs(ss.lep1_id())==11 ? std::max(0.,ss.lep1_miniIso()-0.075) : std::max(0.,ss.lep1_miniIso()-0.1));
 		    else
