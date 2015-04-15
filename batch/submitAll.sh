@@ -5,7 +5,7 @@ tag="V07-02-08"
 
 nSubmitted=0
 
-for ptrel in "0" "1"
+for ptrel in "0" "1" "2" "3"
 do
   for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200"
   do
@@ -18,7 +18,19 @@ do
     if [ $sname == "T1TTTT_1200" ]; then name="SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1"; fi
 
     #Get pTRel suffix
-    if [ "$ptrel" == 0 ]; then ptrelsuf=""; else ptrelsuf="_ptRel"; fi
+    if [ "$ptrel" == "0" ] 
+    then
+      ptrelsuf=""
+    elif [ "$ptrel" == "1" ] 
+    then
+      ptrelsuf="_ptRel"
+    elif [ "$ptrel" == "2" ] 
+    then
+      ptrelsuf="_miniIso"
+    elif [ "$ptrel" == "3" ] 
+    then
+      ptrelsuf="_newMiniIso"
+    fi
   
     #Get number of files
     numberOfFiles=$((`ls -l $path/$name/$tag | wc -l` - 1))
@@ -30,7 +42,7 @@ do
       number=$(( $i + 1 ))
   
       #Except they've finished
-      if [ -e /hadoop/cms/store/user/cgeorge/condor/ss_13_babies/${sname_lower}${ptrelsuf}_${number}.root ] 
+      if [ -e /hadoop/cms/store/user/cgeorge/condor/ss_13_babies/${sname_lower}_${number}$ptrelsuf.root ] 
       then 
         continue
       fi

@@ -334,6 +334,16 @@ void Init(TTree *tree) {
 		genps_p4_branch = tree->GetBranch("genps_p4");
 		if (genps_p4_branch) {genps_p4_branch->SetAddress(&genps_p4_);}
 	}
+	jet_close_lep1_branch = 0;
+	if (tree->GetBranch("jet_close_lep1") != 0) {
+		jet_close_lep1_branch = tree->GetBranch("jet_close_lep1");
+		if (jet_close_lep1_branch) {jet_close_lep1_branch->SetAddress(&jet_close_lep1_);}
+	}
+	jet_close_lep2_branch = 0;
+	if (tree->GetBranch("jet_close_lep2") != 0) {
+		jet_close_lep2_branch = tree->GetBranch("jet_close_lep2");
+		if (jet_close_lep2_branch) {jet_close_lep2_branch->SetAddress(&jet_close_lep2_);}
+	}
   tree->SetMakeClass(1);
 	met_branch = 0;
 	if (tree->GetBranch("met") != 0) {
@@ -729,16 +739,6 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("lep2_miniIso") != 0) {
 		lep2_miniIso_branch = tree->GetBranch("lep2_miniIso");
 		if (lep2_miniIso_branch) {lep2_miniIso_branch->SetAddress(&lep2_miniIso_);}
-	}
-	jet_close_lep1_branch = 0;
-	if (tree->GetBranch("jet_close_lep1") != 0) {
-		jet_close_lep1_branch = tree->GetBranch("jet_close_lep1");
-		if (jet_close_lep1_branch) {jet_close_lep1_branch->SetAddress(&jet_close_lep1_);}
-	}
-	jet_close_lep2_branch = 0;
-	if (tree->GetBranch("jet_close_lep2") != 0) {
-		jet_close_lep2_branch = tree->GetBranch("jet_close_lep2");
-		if (jet_close_lep2_branch) {jet_close_lep2_branch->SetAddress(&jet_close_lep2_);}
 	}
   tree->SetMakeClass(0);
 }

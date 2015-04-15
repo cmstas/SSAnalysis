@@ -25,10 +25,19 @@
 using namespace std;
 using namespace samesign;
 
-// #ifdef __MAKECINT__ 
-// #pragma link C++ class ROOT::Math::PxPyPzE4D<float>+; 
-// #pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
-// #endif 
+#ifdef __MAKECINT__ 
+#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+; 
+#pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
+#endif 
+
+float computePtRel(LorentzVector lepp4, LorentzVector jetp4, bool subtractLep) {
+  if (jetp4.pt()==0) return 0.;
+  if (subtractLep) jetp4-=lepp4;
+  float dot = lepp4.Vect().Dot( jetp4.Vect() );
+  float ptrel = lepp4.P2() - dot*dot/jetp4.P2();
+  ptrel = ptrel>0 ? sqrt(ptrel) : 0.0;
+  return ptrel;
+}
 
 float getPt(float pt, bool extrPtRel) {
   if(!extrPtRel && pt >= 70.) return 69.;
@@ -46,7 +55,7 @@ float getEta(float eta, float ht, bool extrPtRel) {
   return fabs(eta);
 }
 
-int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = true, int nEvents = -1, string skimFilePrefix = "test") {
+int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = true, int nEvents = -1) {//, string skimFilePrefix = "test") {
 
   // Benchmark
   TBenchmark *bmark = new TBenchmark();
@@ -236,10 +245,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   float Nl_mu = 0.; 
   float e_mu = 0.;
   //----------------
-  float Bs_e;
-  float notBs_e;
-  float Bs_mu;
-  float notBs_mu;
+  float Bs_e = 0.;
+  float notBs_e = 0.;
+  float Bs_mu = 0.;
+  float notBs_mu = 0.;
 
   // Loop over events to Analyze
   unsigned int nEventsTotal = 0;
@@ -280,12 +289,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       // Analysis Code
 	  float weight = ss.scale1fb()*10.0;
 	  if(ss.scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
+	  if(abs(ss.id())==13 && ss.p4().pt()<15. && ss.scale1fb() > 79. && ss.scale1fb() < 80.) continue;  //take only Mu15 above pT=15
+	  if(abs(ss.id())==13 && ss.p4().pt()>15. && (ss.scale1fb() < 79. || ss.scale1fb() > 80.)) continue;  //take only Mu5 below pT=15
 
 	  bool jetptcut = false;
 	  float ht = 0.;
 	  int njets40 = 0;
 	  int nbtags = 0;
-	  for(int i=0; i<ss.jets().size(); i++)  {
+	  for(unsigned int i=0; i<ss.jets().size(); i++)  {
 		if(ROOT::Math::VectorUtil::DeltaR(ss.jets()[i], ss.p4()) < 1.) continue; //0.4 in babymaker
 		if(ss.jets_disc()[i] > 0.814) nbtags++;
 		if(ss.jets()[i].pt() > 40.) {
@@ -294,8 +305,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		}
 	  }
 	  if(njets40 > 0) jetptcut = true;
-	  
-	  if( !(jetptcut && (extrPtRel || (ss.met() < 20. && ss.mt() < 20)) ) )//cheat to increase stats in ptrel case
+
+	  float ptrel = ss.ptrelv1();
+	  //cout << ptrel << " " << computePtRel(ss.p4(),ss.jet_close_lep(),true) << " " << ss.p4() << " " << ss.jet_close_lep() << endl;
+	  assert(fabs(ptrel - computePtRel(ss.p4(),ss.jet_close_lep(),true))<0.0001);
+	  float ptratio = ss.jet_close_lep().pt()>0. ? ss.p4().pt()/ss.jet_close_lep().pt() : 1.;
+
+	  //if( !(jetptcut && ss.met() < 20. && ss.mt() < 20) )
+	  if( !(jetptcut && ( extrPtRel /*|| useNewMiniIso*/ || ((useMiniIso) && ss.met() < 40. && ss.mt() < 40) || (ss.met() < 20. && ss.mt() < 20) ) ) )//cheat to increase stats in ptrel case
 	  	{continue;}
 
 	  if(ss.nFOs() > 1) //if more than 1 FO in event
@@ -315,12 +332,45 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 	  if (doLightonly && abs(ss.id())==11 && ss.p4().pt() < 20.) continue;//because EMEnriched does not go below 20 GeV
 
-          if (lowPtRel14 && ss.ptrelv1()>14.) continue;
+          if (lowPtRel14 && ptrel>14.) continue;
 
-          if (lowPtRel6  && ss.ptrelv1()>6. ) continue;
-          if (useMiniIso && ss.ptrelv1()<=6.) continue;
+          if (lowPtRel6  && ptrel>6. ) continue;
+          if (useMiniIso && (ptrel<=6. || ss.ht()<0.)) continue;
+
+          //if (useNewMiniIso && ss.ht()<150) continue;// && ptrel>7. 
 
 	  if (unIso && ss.iso()<=0.1 ) continue;
+
+	  bool passId = ss.passes_id();
+	  bool passFO = ss.FO();
+	  if (usePtRel) {
+	    passId = ss.passes_id_ptrel();
+	    passFO = ss.FO_ptrel();
+	  } else if (useMiniIso||lowPtRel6) {
+	    passId = ss.passes_id_miniiso();
+	    passFO = ss.FO_miniiso();
+	  } else if (useNewMiniIso) {
+	    passId = ss.passes_id_newminiiso();
+	    passFO = ss.FO_newminiiso();
+	    bool passIdTest = passFO && fabs(ss.ip3d()/ss.ip3derr())<4. && 
+	      ( abs( ss.id() ) == 11 ? ( ss.miniiso() < 0.075 && (ptratio>0.725 || ptrel>7.) ) : 
+		                       ( ss.miniiso() < 0.100 && (ptratio>0.700 || ptrel>7.) ));
+	    assert(passId==passIdTest);
+	  } else if (extrPtRel) {
+	    passId = (ss.FO_NoIso() && ptrel>14. && fabs(ss.ip3d()/ss.ip3derr())<4. && ss.iso()>0.1);
+	    passFO = (ss.FO_NoIso() && ptrel>6.0 && fabs(ss.ip3d()/ss.ip3derr())<4. && ss.iso()>0.1);
+	  }
+
+	  float coneptcorr = std::max(0.,ss.iso()-0.1);
+	  if (useMiniIso) coneptcorr = std::max(0.,ss.miniiso()-0.05);
+	  else if (useNewMiniIso) {
+	    //coneptcorr = (abs(ss.id())==11 ? std::max(0.,ss.miniiso()-0.075) : std::max(0.,ss.miniiso()-0.1));
+	    if (ptrel>7.) {
+	      coneptcorr = (abs(ss.id())==11 ? std::max(0.,ss.miniiso()-0.075) : std::max(0.,ss.miniiso()-0.1));
+	    } else {
+	      coneptcorr = (abs(ss.id())==11 ? max(double(0.),(ss.jet_close_lep().pt()*0.725/ss.p4().pt()-1.)) : max(double(0.),(ss.jet_close_lep().pt()*0.70/ss.p4().pt()-1.)));
+	    }
+	  }
 
 	  //------------------------------------------------------------------------------------------
 	  //---------------------------------Find e = f(const)---------------------------------------
@@ -335,19 +385,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 	  if( ss.motherID() <= 0 && (doBonly==0 || ss.motherID() == -1) && (doConly==0 || ss.motherID() == -2) && (doLightonly==0 || ss.motherID() == 0) )  //if lep is nonprompt
 		{
-
-		  bool passId = ss.passes_id();
-		  bool passFO = ss.FO();
-		  if (usePtRel) {
-		    passId = ss.passes_id_ptrel();
-		    passFO = ss.FO_ptrel();
-		  } else if (useMiniIso||lowPtRel6) {
-		    passId = ss.passes_id_miniiso();
-		    passFO = ss.FO_miniiso();
-		  } else if (useNewMiniIso) {
-		    passId = ss.passes_id_newminiiso();
-		    passFO = ss.FO_newminiiso();
-		  }
 
 		  if( abs( ss.id() ) == 11 ) //it's an el
 			{
@@ -393,40 +430,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if( ss.motherID() <= 0 && (doBonly==0 || ss.motherID() == -1) && (doConly==0 || ss.motherID() == -2) && (doLightonly==0 || ss.motherID() == 0) )  //if el is nonprompt (GEN info)
 		{
 
-		  bool passId = ss.passes_id();
-		  bool passFO = ss.FO();
-		  if (usePtRel) {
-		    passId = ss.passes_id_ptrel();
-		    passFO = ss.FO_ptrel();
-		  } else if (useMiniIso||lowPtRel6) {
-		    passId = ss.passes_id_miniiso();
-		    passFO = ss.FO_miniiso();
-		  } else if (useNewMiniIso) {
-		    passId = ss.passes_id_newminiiso();
-		    passFO = ss.FO_newminiiso();
-		  }
-
-		  if (extrPtRel) {
-		    passId = (ss.FO_NoIso() && ss.ptrelv1()>14. && fabs(ss.ip3d()/ss.ip3derr())<4. && ss.iso()>0.1);
-		    passFO = (ss.FO_NoIso() && ss.ptrelv1()>6.0 && fabs(ss.ip3d()/ss.ip3derr())<4. && ss.iso()>0.1);
-		  }
-
 		  if (passFO) {
 		    histo_ht->Fill( std::min(ht,float(1000.)) );
 		    histo_met->Fill( std::min(ss.met(),float(1000.)) );
 		    histo_mt->Fill( std::min(ss.mt(),float(1000.)) );
 
-		    if( abs( ss.id() ) == 11 ) pTrelvsIso_histo_el->Fill( std::min(ss.iso(),float(0.99)), std::min(ss.ptrelv1(),float(29.9)) );
-		    if( abs( ss.id() ) == 13 ) pTrelvsIso_histo_mu->Fill( std::min(ss.iso(),float(0.99)), std::min(ss.ptrelv1(),float(29.9)) );
-		    if( abs( ss.id() ) == 11 ) pTrel_histo_el->Fill( std::min(ss.ptrelv1(),float(29.9)) );
-		    if( abs( ss.id() ) == 13 ) pTrel_histo_mu->Fill( std::min(ss.ptrelv1(),float(29.9)) );
-		  }
-
-		  float coneptcorr = std::max(0.,ss.iso()-0.1);
-		  if (useMiniIso) coneptcorr = std::max(0.,ss.miniiso()-0.05);
-		  else if (useNewMiniIso) {
-		    if (ss.p4().pt()>25. && ss.ptrelv1()>7.) coneptcorr = (abs(ss.id())==11 ? std::max(0.,ss.miniiso()-0.075) : std::max(0.,ss.miniiso()-0.1));
-		    else coneptcorr = (abs(ss.id())==11 ? ss.jet_close_lep().pt()*0.725/ss.p4().pt() : ss.jet_close_lep().pt()*0.70/ss.p4().pt());
+		    if( abs( ss.id() ) == 11 ) pTrelvsIso_histo_el->Fill( std::min(ss.iso(),float(0.99)), std::min(ptrel,float(29.9)) );
+		    if( abs( ss.id() ) == 13 ) pTrelvsIso_histo_mu->Fill( std::min(ss.iso(),float(0.99)), std::min(ptrel,float(29.9)) );
+		    if( abs( ss.id() ) == 11 ) pTrel_histo_el->Fill( std::min(ptrel,float(29.9)) );
+		    if( abs( ss.id() ) == 13 ) pTrel_histo_mu->Fill( std::min(ptrel,float(29.9)) );
 		  }
 
 		  if( abs( ss.id() ) == 11 ) // it's an el
@@ -443,23 +455,23 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
 				  Nl_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
-				  if( ss.passes_id() ) Nl_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
-				  else Nl_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+				  if( passId ) Nl_cone_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
+				  else Nl_cone_histo_e->Fill(getPt(ss.p4().pt()*(1+coneptcorr),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 				  njets40_histo->Fill(njets40, weight);
 
 				  if (doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
 					{
 					  if(ss.motherID()==-1){
 						NBs_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
-						if( ss.passes_id() ) NBs_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						else NBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						if( passId ) NBs_cone_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NBs_cone_histo_e->Fill(getPt(ss.p4().pt()*(1+coneptcorr),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						NBs_BR_histo_e ->Fill(nbtags, weight);
 						Bs_e = Bs_e + weight;
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
-						if( ss.passes_id() ) NnotBs_cone_histo_e->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						else NnotBs_cone_histo_e->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						if( passId ) NnotBs_cone_histo_e->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NnotBs_cone_histo_e->Fill(getPt(ss.p4().pt()*(1+coneptcorr),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						NnotBs_BR_histo_e ->Fill(nbtags, weight);
 						notBs_e = notBs_e + weight;
 					  }
@@ -480,23 +492,23 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  if (noSIP && fabs(ss.ip3d()/ss.ip3derr())>4. ) continue;
 				  Nl_histo->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);     //fill histo with fake pt, eta 
 				  Nl_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
-				  if( ss.passes_id() ) Nl_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
-				  else Nl_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+				  if( passId ) Nl_cone_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);   //  <-- loose (as opposed to l!t)			
+				  else Nl_cone_histo_mu->Fill(getPt(ss.p4().pt()*(1+coneptcorr),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 				  njets40_histo->Fill(njets40, weight);
 
 				  if (doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
 					{
 					  if(ss.motherID()==-1){
 						NBs_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
-						if( ss.passes_id() ) NBs_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						else NBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						if( passId ) NBs_cone_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NBs_cone_histo_mu->Fill(getPt(ss.p4().pt()*(1+coneptcorr),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						NBs_BR_histo_mu ->Fill(nbtags, weight);
 						Bs_mu = Bs_mu + weight;
 					  }
 					  else if(ss.motherID()==-2 || ss.motherID()==0){
 						NnotBs_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel),weight);
-						if( ss.passes_id() ) NnotBs_cone_histo_mu->Fill(ss.p4().pt(), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
-						else NnotBs_cone_histo_mu->Fill(ss.p4().pt()+ss.p4().pt()*coneptcorr, getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						if( passId ) NnotBs_cone_histo_mu->Fill(getPt(ss.p4().pt(),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
+						else NnotBs_cone_histo_mu->Fill(getPt(ss.p4().pt()*(1+coneptcorr),extrPtRel), getEta(fabs(ss.p4().eta()),ht,extrPtRel), weight);
 						NnotBs_BR_histo_mu ->Fill(nbtags, weight);
 						notBs_mu = notBs_mu + weight;
 					  }
@@ -633,10 +645,13 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   // TCanvas *c10=new TCanvas("c10","pTrel vs Iso (mu)",800,800);
   // pTrelvsIso_histo_mu->Draw("colz,texte");
   TCanvas *c11=new TCanvas("c11","B Abundance vs Nbjets (electrons)",800,800);
+  c11->cd();
   NBs_BR_histo_e->Draw("histE");
   TCanvas *c12=new TCanvas("c12","B Abundance vs Nbjets (muons)",800,800);
+  c12->cd();
   NBs_BR_histo_mu->Draw("histE");
   TCanvas *c13=new TCanvas("c13","Njets with pT > 40 GeV",800,800);
+  c13->cd();
   njets40_histo->Draw("histE");
 
   //---save histos-------//

@@ -29,13 +29,23 @@
 using namespace std;
 using namespace samesign;
 
-// #ifdef __MAKECINT__ 
-// #pragma link C++ class ROOT::Math::PxPyPzE4D<float>+; 
-// #pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
-// #endif 
+#ifdef __MAKECINT__ 
+#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+; 
+#pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
+#endif 
+
+float computePtRel(LorentzVector lepp4, LorentzVector jetp4, bool subtractLep) {
+  if (jetp4.pt()==0) return 0.;
+  if (subtractLep) jetp4-=lepp4;
+  float dot = lepp4.Vect().Dot( jetp4.Vect() );
+  float ptrel = lepp4.P2() - dot*dot/jetp4.P2();
+  ptrel = ptrel>0 ? sqrt(ptrel) : 0.0;
+  return ptrel;
+}
 
 void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, TH2D *rate_histo_mu,  TH2D *rate_histo_e, TCanvas *c, TPad *pad_h, TPad *pad_r, TLegend *leg)
 {
+  c->cd();
   pred->GetXaxis()->SetTitle("Signal Region"); 
   pred->GetYaxis()->SetTitle("Events");
   obs->GetXaxis()->SetTitle("Signal Region"); 
@@ -161,7 +171,7 @@ float getFakeRate(TH2D* histo, float pt, float eta, float ht, bool extrPtRel) //
 }
 
 
-int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", bool fast = true, int nEvents = -1, string skimFilePrefix = "test") {
+int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", bool fast = true, int nEvents = -1) {//, string skimFilePrefix = "test") {
 
   // Benchmark
   TBenchmark *bmark = new TBenchmark();
@@ -251,6 +261,14 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pTrelvsIso_histo_el->SetDirectory(rootdir);
   pTrelvsIso_histo_el->Sumw2();
 
+  TH2D *pTrelvsMiniIso_histo_mu = new TH2D("pTrelvsMiniIso_histo_mu", "pTrel vs MiniIso (Muons)", 10, 0., 1., 15, 0., 30.);
+  pTrelvsMiniIso_histo_mu->SetDirectory(rootdir);
+  pTrelvsMiniIso_histo_mu->Sumw2();
+
+  TH2D *pTrelvsMiniIso_histo_el = new TH2D("pTrelvsMiniIso_histo_el", "pTrel vs MiniIso (Electrons)", 10, 0., 1., 15, 0., 30.);
+  pTrelvsMiniIso_histo_el->SetDirectory(rootdir);
+  pTrelvsMiniIso_histo_el->Sumw2();
+
   TH1D *pTrel_histo_el = new TH1D("pTrel_histo_el", "pTrel (Electrons)", 15, 0., 30.);
   pTrel_histo_el->SetDirectory(rootdir);
   pTrel_histo_el->Sumw2();
@@ -261,6 +279,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
   //---Load rate histos-----//
   TFile *InputFile = new TFile(fakeratefile,"read");
+
+  cout << "using FR file=" << fakeratefile << endl;
 
   TH2D *rate_histo_e = 0, *rate_histo_mu = 0;
   // if (extrPtRel) {
@@ -314,7 +334,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   float Npn = 0.; //# of prompt-nonprompt tight-tight pairs
   float Npn_s = 0.; //signal contamination for # of prompt-nonprompt tight-tight pairs
   float Nnn = 0.; //# of nonprompt-nonprompt tight-tight pairs
-  float e = 0.;  //rate = Nt/Nl
+  //float e = 0.;  //rate = Nt/Nl
   float e1 = 0.;  //rate = Nt/Nl
   float e2 = 0.;  //rate = Nt/Nl
   //----------------
@@ -386,17 +406,78 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
 	  }
 
+	  float lep1_ptrel_v1 = ss.lep1_ptrel_v1();
+	  float lep2_ptrel_v1 = ss.lep2_ptrel_v1();
+	  assert(fabs(lep1_ptrel_v1 - computePtRel(ss.lep1_p4(),ss.jet_close_lep1(), true))<0.0001);
+	  assert(fabs(lep2_ptrel_v1 - computePtRel(ss.lep2_p4(),ss.jet_close_lep2(), true))<0.0001);
+	  float lep1_ptratio = ss.jet_close_lep1().pt()>0. ? ss.lep1_p4().pt()/ss.jet_close_lep1().pt() : 1.;
+	  float lep2_ptratio = ss.jet_close_lep2().pt()>0. ? ss.lep2_p4().pt()/ss.jet_close_lep2().pt() : 1.;
+
 	  if (lowPtRel6) {
-	    if (ss.lep1_ptrel_v1()>6. || ss.lep2_ptrel_v1()>6.) continue;
+	    if (ss.lep1_motherID()!=1 && lep1_ptrel_v1>6.) continue;
+	    if (ss.lep2_motherID()!=1 && lep2_ptrel_v1>6.) continue;
+	    if (ss.lep1_motherID()==1 && ss.lep2_motherID()==1 && lep1_ptrel_v1>6.) continue;
 	  }	  
 	  if (useMiniIso) {
-	    if (ss.lep1_ptrel_v1()<=6. && ss.lep2_ptrel_v1()<=6.) continue;
+	    if (ss.lep1_motherID()!=1 && lep1_ptrel_v1<=6.) continue;
+	    if (ss.lep2_motherID()!=1 && lep2_ptrel_v1<=6.) continue;
+	    if (ss.lep1_motherID()==1 && ss.lep2_motherID()==1 && lep1_ptrel_v1<=6.) continue;
 	  }	  
 
 	  //if (std::min(ss.mt(),ss.mt_l2())<100) continue;	  
 
+	  bool lep1_passes_id = ss.lep1_passes_id();
+	  bool lep2_passes_id = ss.lep2_passes_id();
+	  if (useNewMiniIso) {
+	    assert( lep1_passes_id == (fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())<4. && 
+				       ( abs( ss.lep1_id() ) == 11 ? ( ss.lep1_miniIso() < 0.075 && (lep1_ptratio>0.725 || lep1_ptrel_v1>7.) ) : 
+					                             ( ss.lep1_miniIso() < 0.100 && (lep1_ptratio>0.700 || lep1_ptrel_v1>7.) )) ) );
+	    assert( lep2_passes_id == (fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())<4. && 
+				       ( abs( ss.lep2_id() ) == 11 ? ( ss.lep2_miniIso() < 0.075 && (lep2_ptratio>0.725 || lep2_ptrel_v1>7.) ) : 
+					                             ( ss.lep2_miniIso() < 0.100 && (lep2_ptratio>0.700 || lep2_ptrel_v1>7.) )) ) );
+	  }
+
+	  float lep1_pT = ss.lep1_p4().pt();
+	  float lep2_pT = ss.lep2_p4().pt();
+	  if (coneCorr) {		  
+	    if (useMiniIso) {
+	      lep1_pT *= (1+std::max(0.,ss.lep1_miniIso()-0.05));
+	      lep2_pT *= (1+std::max(0.,ss.lep2_miniIso()-0.05));
+	    } else if (useNewMiniIso) {
+	      // lep1_pT = ss.lep1_p4().pt()*(abs(ss.lep1_id())==11 ? (1+std::max(0.,ss.lep1_miniIso()-0.075)) : (1+std::max(0.,ss.lep1_miniIso()-0.1)));
+	      // lep2_pT = ss.lep2_p4().pt()*(abs(ss.lep2_id())==11 ? (1+std::max(0.,ss.lep2_miniIso()-0.075)) : (1+std::max(0.,ss.lep2_miniIso()-0.1)));
+	      //if (lep1_passes_id==false) {
+	      if (lep1_ptrel_v1>7.) {
+		if (abs(ss.lep1_id())==11) lep1_pT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.075));
+		else lep1_pT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.1));
+	      } else {
+		lep1_pT = std::max(double(lep1_pT),(abs(ss.lep1_id())==11 ? ss.jet_close_lep1().pt()*0.725 : ss.jet_close_lep1().pt()*0.70));
+	      }
+	      //}
+	      //if (lep2_passes_id==false) {
+	      if (lep2_ptrel_v1>7.) { 
+		if (abs(ss.lep2_id())==11) lep2_pT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.075));
+		else lep2_pT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.1));
+	      } else {
+		lep2_pT = std::max(double(lep2_pT),(abs(ss.lep2_id())==11 ? ss.jet_close_lep2().pt()*0.725 : ss.jet_close_lep2().pt()*0.70));
+	      }
+	      //}
+	      if (lep1_passes_id && fabs(lep1_pT-ss.lep1_p4().pt())>0.00001) {
+		cout << ss.lep1_p4().pt() << " " << lep1_pT << endl;
+		assert(0);
+	      }
+	      if (lep2_passes_id && fabs(lep2_pT-ss.lep2_p4().pt())>0.00001) {
+		cout << ss.lep2_p4().pt() << " " << lep2_pT << endl;
+		assert(0);
+	      }
+	    } else {
+	      lep1_pT *= (1+std::max(0.,ss.lep1_iso()-0.1));
+	      lep2_pT *= (1+std::max(0.,ss.lep2_iso()-0.1));
+	    }
+	  }
+
 	  //------------------------------------------------------------------------
-	  unsigned int ac_base = analysisCategory(ss.lep1_p4().pt(), ss.lep2_p4().pt());
+	  unsigned int ac_base = analysisCategory(lep1_pT, lep2_pT);
 	  passesBaselineCuts(ss.njets(), ss.nbtags(), ss.met(), ss.ht(), ac_base);
 	  //cout << " ac=" << ac_base;
 	  if (ac_base==0) continue;
@@ -408,48 +489,52 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 	  //if (sr<=0) continue;
 	  //------------------------------------------------------------------------
 
-	  if ( (ss.lep1_p4().pt() > 25. && ss.lep2_p4().pt() > 25.) ) {
+	  if ( (lep1_pT > 25. && lep2_pT > 25.) ) {
 	    if( ss.lep1_id()*ss.lep2_id() > 0 ) {
-	      if (ss.lep1_motherID()<=0 && ss.lep1_iso()>0.1 && fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())<4. && ss.lep2_motherID()==1) {
+	      if (ss.lep1_motherID()<=0 && /*ss.lep1_iso()>0.1 &&*/ fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())<4. && ss.lep2_motherID()==1) {
 		if (abs(ss.lep1_id())==11) {
-		  pTrelvsIso_histo_el->Fill( std::min(ss.lep1_iso(),float(0.99)), std::min(ss.lep1_ptrel_v1(),float(29.9)) );
-		  pTrel_histo_el->Fill(std::min(ss.lep1_ptrel_v1(),float(29.9)) );
+		  pTrelvsIso_histo_el->Fill( std::min(ss.lep1_iso(),float(0.99)), std::min(lep1_ptrel_v1,float(29.9)) );
+		  pTrelvsMiniIso_histo_el->Fill( std::min(ss.lep1_miniIso(),float(0.99)), std::min(lep1_ptrel_v1,float(29.9)) );
+		  pTrel_histo_el->Fill(std::min(lep1_ptrel_v1,float(29.9)) );
 		} else {
-		  pTrelvsIso_histo_mu->Fill( std::min(ss.lep1_iso(),float(0.99)), std::min(ss.lep1_ptrel_v1(),float(29.9)) );
-		  pTrel_histo_mu->Fill(std::min(ss.lep1_ptrel_v1(),float(29.9)) );
+		  pTrelvsIso_histo_mu->Fill( std::min(ss.lep1_iso(),float(0.99)), std::min(lep1_ptrel_v1,float(29.9)) );
+		  pTrelvsMiniIso_histo_mu->Fill( std::min(ss.lep1_miniIso(),float(0.99)), std::min(lep1_ptrel_v1,float(29.9)) );
+		  pTrel_histo_mu->Fill(std::min(lep1_ptrel_v1,float(29.9)) );
 		}
 	      }
-	      if (ss.lep2_motherID()<=0 && ss.lep2_iso()>0.1 && fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())<4. && ss.lep1_motherID()==1) {
+	      if (ss.lep2_motherID()<=0 && /*ss.lep2_iso()>0.1 &&*/ fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())<4. && ss.lep1_motherID()==1) {
 		if (abs(ss.lep2_id())==11) {
-		  pTrelvsIso_histo_el->Fill( std::min(ss.lep2_iso(),float(0.99)), std::min(ss.lep2_ptrel_v1(),float(29.9)) );
-		  pTrel_histo_el->Fill(std::min(ss.lep2_ptrel_v1(),float(29.9)) );
+		  pTrelvsIso_histo_el->Fill( std::min(ss.lep2_iso(),float(0.99)), std::min(lep2_ptrel_v1,float(29.9)) );
+		  pTrelvsMiniIso_histo_el->Fill( std::min(ss.lep2_miniIso(),float(0.99)), std::min(lep2_ptrel_v1,float(29.9)) );
+		  pTrel_histo_el->Fill(std::min(lep2_ptrel_v1,float(29.9)) );
 		} else {
-		  pTrelvsIso_histo_mu->Fill( std::min(ss.lep2_iso(),float(0.99)), std::min(ss.lep2_ptrel_v1(),float(29.9)) );
-		  pTrel_histo_mu->Fill(std::min(ss.lep2_ptrel_v1(),float(29.9)) );
+		  pTrelvsIso_histo_mu->Fill( std::min(ss.lep2_iso(),float(0.99)), std::min(lep2_ptrel_v1,float(29.9)) );
+		  pTrelvsMiniIso_histo_mu->Fill( std::min(ss.lep2_miniIso(),float(0.99)), std::min(lep2_ptrel_v1,float(29.9)) );
+		  pTrel_histo_mu->Fill(std::min(lep2_ptrel_v1,float(29.9)) );
 		}
 	      }
 	    }
 	  }
+
+	  if(highhigh)
+	    {if ( !(lep1_pT > 25. && lep2_pT > 25.) ) continue;}
+	  else if(lowlow)
+	    {if ( !((lep1_pT > 10. && lep1_pT < 25.) && (lep2_pT > 10. && lep2_pT < 25.)) )  continue;}
+	  else if(highlow)
+	    {if ( !((lep1_pT > 10. && lep1_pT < 25. && lep2_pT > 25.) || (lep2_pT > 10. && lep2_pT < 25. && lep1_pT > 25.)) ) continue;}
 
 	  if (ss.hyp_class() == 3)
 		{
 		  //reco->ss on reco level
 		  //-----------------------------------------------------------------------
 		  //consider only highhigh pT for the moment
-		  if(highhigh)
-			{if ( !(ss.lep1_p4().pt() > 25. && ss.lep2_p4().pt() > 25.) ) continue;}
-		  else if(lowlow)
-			{if ( !((ss.lep1_p4().pt() > 10. && ss.lep1_p4().pt() < 25.) && (ss.lep2_p4().pt() > 10. && ss.lep2_p4().pt() < 25.)) )  continue;}
-		  else if(highlow)
-			{if ( !((ss.lep1_p4().pt() > 10. && ss.lep1_p4().pt() < 25. && ss.lep2_p4().pt() > 25.) || (ss.lep2_p4().pt() > 10. && ss.lep2_p4().pt() < 25. && ss.lep1_p4().pt() > 25.)) ) continue;}
 		  
 		  counter++;
 		  
 		  //check for charge misID on reco level.
 		  if( ss.lep1_id()*ss.lep2_id() < 0 )
 			{
-			  //it's an opp sign pair
-			  sign_misid_reco = sign_misid_reco + weight;
+			  //it's an opp sign pair, do nothing
 			}
 		  else
 			{
@@ -463,14 +548,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				}
 			  else if ( ss.lep1_motherID()==2 || ss.lep2_motherID()==2 ) 
 			    {
-			      //this is a charge flip, do something
+			      //this is a charge flip
+			      sign_misid_reco = sign_misid_reco + weight;
 			    } 
 			  else if( ss.lep1_motherID()==1 && ss.lep2_motherID()<=0 ) //lep2 is nonprompt
 				{
 				  if (unIso && ss.lep2_iso()<=0.1) continue;
-				  if (lowPtRel14 && ss.lep2_ptrel_v1()>14.) continue;
-				  if (lowPtRel6  && ss.lep2_ptrel_v1()>6. ) continue;
-				  if (useMiniIso && ss.lep2_ptrel_v1()<=6.) continue;
+				  if (lowPtRel14 && lep2_ptrel_v1>14.) continue;
+				  if (lowPtRel6  && lep2_ptrel_v1>6. ) continue;
+				  if (useMiniIso && lep2_ptrel_v1<=6.) continue;
 				  prompt1_reco = prompt1_reco + weight;  
 				  NpromptL1_reco = NpromptL1_reco + weight;
 				  Npn_histo_obs->Fill(sr, weight);
@@ -486,9 +572,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 			  else if( ss.lep1_motherID()<=0 && ss.lep2_motherID()==1 ) //lep1 is nonprompt
 				{
 				  if (unIso && ss.lep1_iso()<=0.1) continue;
-				  if (lowPtRel14 && ss.lep1_ptrel_v1()>14.) continue;
-				  if (lowPtRel6  && ss.lep1_ptrel_v1()>6. ) continue;
-				  if (useMiniIso && ss.lep1_ptrel_v1()<=6.) continue;
+				  if (lowPtRel14 && lep1_ptrel_v1>14.) continue;
+				  if (lowPtRel6  && lep1_ptrel_v1>6. ) continue;
+				  if (useMiniIso && lep1_ptrel_v1<=6.) continue;
 				  prompt1_reco = prompt1_reco + weight; 
 				  NpromptL2_reco = NpromptL2_reco + weight;				
 				  Npn_histo_obs->Fill(sr, weight);
@@ -505,12 +591,12 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				{
 				  if (unIso && ss.lep1_iso()<=0.1) continue;
 				  if (unIso && ss.lep2_iso()<=0.1) continue;
-				  if (lowPtRel14 && ss.lep1_ptrel_v1()>14.) continue;
-				  if (lowPtRel14 && ss.lep2_ptrel_v1()>14.) continue;
-				  if (lowPtRel6  && ss.lep1_ptrel_v1()>6. ) continue;
-				  if (lowPtRel6  && ss.lep2_ptrel_v1()>6. ) continue;
-				  if (useMiniIso && ss.lep1_ptrel_v1()<=6.) continue;
-				  if (useMiniIso && ss.lep2_ptrel_v1()<=6.) continue;
+				  if (lowPtRel14 && lep1_ptrel_v1>14.) continue;
+				  if (lowPtRel14 && lep2_ptrel_v1>14.) continue;
+				  if (lowPtRel6  && lep1_ptrel_v1>6. ) continue;
+				  if (lowPtRel6  && lep2_ptrel_v1>6. ) continue;
+				  if (useMiniIso && lep1_ptrel_v1<=6.) continue;
+				  if (useMiniIso && lep2_ptrel_v1<=6.) continue;
 				  prompt0_reco = prompt0_reco + weight;
 				}
 			}
@@ -518,7 +604,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 		  //gen->ss on gen level
 		  //----------------------------------------------------------------------------------
 		  //check for charge misID on gen level.
-		  if( abs(ss.lep1_id())==abs(ss.lep1_mc_id()) && abs(ss.lep2_id())==abs(ss.lep2_mc_id())  &&  ss.lep1_mc_id()*ss.lep2_mc_id() < 0 )
+		  //if( abs(ss.lep1_id())==abs(ss.lep1_mc_id()) && abs(ss.lep2_id())==abs(ss.lep2_mc_id())  &&  ss.lep1_mc_id()*ss.lep2_mc_id() < 0 )
+		  if( ss.lep1_motherID()==2 || ss.lep2_motherID()==2 )
 			{
 			  //it's an opp sign pair
 			  sign_misid_gen = sign_misid_gen + weight;
@@ -533,12 +620,12 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				  NpromptL1_gen = NpromptL1_gen + weight;
 				  NpromptL2_gen = NpromptL2_gen + weight;
 				}
-			  else if( ss.lep1_motherID()==1 && ss.lep2_motherID()!=1 )
+			  else if( ss.lep1_motherID()==1 && ss.lep2_motherID()<=0 )
 				{
 				  prompt1_gen = prompt1_gen + weight;
 				  NpromptL1_gen = NpromptL1_gen + weight;
 				}
-			  else if( ss.lep1_motherID()!=1 && ss.lep2_motherID()==1 )
+			  else if( ss.lep1_motherID()<=0 && ss.lep2_motherID()==1 )
 				{
 				  prompt1_gen = prompt1_gen + weight;
 				  NpromptL2_gen = NpromptL2_gen + weight;
@@ -563,88 +650,25 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 		{
 		  int nbjets = ss.nbtags();
 		  if(nbjets>3) nbjets=3; //overflow for abundance plot
-		  
-		  float lep1_conepT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_iso()-0.1));
-		  float lep2_conepT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_iso()-0.1));
-		  if (useMiniIso) {
-		    lep1_conepT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.05));
-		    lep2_conepT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.05));
-		  } else if (useNewMiniIso) {
-		    //cout << "pt=" << ss.lep1_p4().pt() << " ptrel=" << ss.lep1_ptrel_v1() << " miniIso=" << ss.lep1_miniIso() << " jetpt=" << ss.jet_close_lep1().pt() <<  " jetpt2=" << ss.jet_close_lep2().pt() << endl;
-		    if (ss.lep1_p4().pt()>25. && ss.lep1_ptrel_v1()>7.) 
-		      lep1_conepT = ss.lep1_p4().pt()*(abs(ss.lep1_id())==11 ? std::max(0.,ss.lep1_miniIso()-0.075) : std::max(0.,ss.lep1_miniIso()-0.1));
-		    else
-		      lep1_conepT = (abs(ss.lep1_id())==11 ? ss.jet_close_lep1().pt()*0.725 : ss.jet_close_lep1().pt()*0.70);
-		    if (ss.lep2_p4().pt()>25. && ss.lep2_ptrel_v1()>7.) 
-		      lep2_conepT = ss.lep2_p4().pt()*(abs(ss.lep2_id())==11 ? std::max(0.,ss.lep2_miniIso()-0.075) : std::max(0.,ss.lep2_miniIso()-0.1));
-		    else
-		      lep2_conepT = (abs(ss.lep2_id())==11 ? ss.jet_close_lep2().pt()*0.725 : ss.jet_close_lep2().pt()*0.70);
-		  }
-
-		  //apply pTcuts for highhigh region for now, with cone correction if needed
-		  if(highhigh){
-			if (ss.lep1_passes_id() || coneCorr==false) {
-			  if (ss.lep1_p4().pt()<25.) continue;
-			} else {
-			  if (lep1_conepT<25.) continue;
-			}
-			if (ss.lep2_passes_id() || coneCorr==false) {
-			  if (ss.lep2_p4().pt()<25.) continue;
-			} else {
-			  if (lep2_conepT<25.) continue;
-			}
-		  }
-		  else if(lowlow){
-			if (ss.lep1_passes_id() || coneCorr==false) {
-			  if (ss.lep1_p4().pt()>25. || ss.lep1_p4().pt()<10.) continue;
-			} else {
-			  if (lep1_conepT>25. || lep1_conepT<10.) continue;
-			}
-			if (ss.lep2_passes_id() || coneCorr==false) {
-			  if (ss.lep2_p4().pt()>25. || ss.lep2_p4().pt()<10.) continue;
-			} else {
-			  if (lep2_conepT>25. || lep2_conepT<10.) continue;
-			}
-		  }
-		  else if(highlow){
-			if ((ss.lep1_passes_id() && ss.lep2_passes_id()) || coneCorr==false) {      //both are tight, don't need to use cone corr.  OR cone corr is off
-			  if ((ss.lep1_p4().pt()>25. && ss.lep2_p4().pt()>25.) || (ss.lep1_p4().pt()<25. && ss.lep2_p4().pt()<25.) || ss.lep1_p4().pt()<10. || ss.lep2_p4().pt()<10.) continue;
-			} else if(ss.lep1_passes_id() && !ss.lep2_passes_id() && coneCorr==true) {  //lep2 fails tight, so use cone corr for it
-			  if ((ss.lep1_p4().pt()>25. && lep2_conepT>25.) || (ss.lep1_p4().pt()<25. && lep2_conepT<25.) || ss.lep1_p4().pt()<10. || lep2_conepT<10.) continue;
-			} else if(!ss.lep1_passes_id() && ss.lep2_passes_id() && coneCorr==true) {  //lep1 fails tight, so use cone corr for it
-				if ((lep1_conepT>25. && ss.lep2_p4().pt()>25.) || (lep1_conepT<25. && ss.lep2_p4().pt()<25.) || lep1_conepT<10. || ss.lep2_p4().pt()<10.) continue;
-			  }
-		  }
 
 		  //make sure ss on reco level. 
 		  if( ss.lep1_id()*ss.lep2_id() > 0 )
 			{			  
-			  if( ss.lep1_passes_id() && !ss.lep2_passes_id() )  //lep1 is tight, lep2 is loose-not-tight
+			  if( lep1_passes_id && lep2_passes_id==0 )  //lep1 is tight, lep2 is loose-not-tight
 				{	
 				  if (noSIP && fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())>4.) continue;
 				  if (unIso && ss.lep2_iso()<0.1) continue;
-				  if (lowPtRel14 && ss.lep2_ptrel_v1()>14.) continue;
-				  if (lowPtRel6  && ss.lep2_ptrel_v1()>6. ) continue;
-				  if (useMiniIso && ss.lep2_ptrel_v1()<=6.) continue;
-				  if (extrPtRel && ss.lep2_ptrel_v1()<6.0 ) continue;
-				  float pt = ss.lep2_p4().pt();
-				  if (coneCorr) {
-				    pt = pt+pt*std::max(0.,ss.lep2_iso()-0.1);
-				    if (useMiniIso) pt = pt+pt*std::max(0.,ss.lep2_miniIso()-0.05);
-				    if (useNewMiniIso) {
-				      if (ss.lep2_p4().pt()>25. && ss.lep2_ptrel_v1()>7.) 
-					pt = pt+pt*(abs(ss.lep2_id())==11 ? std::max(0.,ss.lep2_miniIso()-0.075) : std::max(0.,ss.lep2_miniIso()-0.1));
-				      else
-					pt = (abs(ss.lep2_id())==11 ? ss.jet_close_lep2().pt()*0.725 : ss.jet_close_lep2().pt()*0.70);
-				    }
-				  }
+				  if (lowPtRel14 && lep2_ptrel_v1>14.) continue;
+				  if (lowPtRel6  && lep2_ptrel_v1>6. ) continue;
+				  if (useMiniIso && lep2_ptrel_v1<=6.) continue;
+				  if (extrPtRel && lep2_ptrel_v1<6.0 ) continue;
 				  if( abs(ss.lep2_id()) == 11 )  //if el, use el rate.  FILL WITH NONPROMPT
 					{
-					  e2 = getFakeRate( rate_histo_e, pt, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel );					  
+					  e2 = getFakeRate( rate_histo_e, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel );
 					  Npn_histo_pred_el->Fill(sr, (e2/(1-e2))*weight);
 					  Npn_histo_pred_el->Fill(br, (e2/(1-e2))*weight);
-					  if (sr>=0) Npn_histo_err2_pred_el[sr]->Fill(pt, fabs(ss.lep2_p4().eta()), weight);
-					  Npn_histo_err2_pred_el[br]->Fill(pt, fabs(ss.lep2_p4().eta()), weight);
+					  if (sr>=0) Npn_histo_err2_pred_el[sr]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_err2_pred_el[br]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  // //fill el abundance histos here w/ nbtags
 					  if(ss.lep2_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight);
@@ -655,11 +679,11 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 					}
 				  else if( abs(ss.lep2_id()) == 13 )  //if mu, use mu rate.  FILL WITH NONPROMPT
 					{
-					  e2 = getFakeRate( rate_histo_mu, pt, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel ) ;
+					  e2 = getFakeRate( rate_histo_mu, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel ) ;
 					  Npn_histo_pred_mu->Fill(sr, (e2/(1-e2))*weight);
 					  Npn_histo_pred_mu->Fill(br, (e2/(1-e2))*weight);
-					  if (sr>=0) Npn_histo_err2_pred_mu[sr]->Fill(pt, fabs(ss.lep2_p4().eta()), weight);
-					  Npn_histo_err2_pred_mu[br]->Fill(pt, fabs(ss.lep2_p4().eta()), weight);
+					  if (sr>=0) Npn_histo_err2_pred_mu[sr]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_err2_pred_mu[br]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  // //fill mu abundance histos here w/ nbtags
 					  if(ss.lep2_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight);
@@ -673,32 +697,21 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				  Npn_histo_pred->Fill(sr, (e2/(1-e2))*weight);
 				  Npn_histo_pred->Fill(br, (e2/(1-e2))*weight);
 				}
-			  else if( !ss.lep1_passes_id() && ss.lep2_passes_id() )   //lep1 is loose-not-tight, lep2 is tight
+			  else if( lep1_passes_id==0 && lep2_passes_id )   //lep1 is loose-not-tight, lep2 is tight
 				{
 				  if (noSIP && fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())>4.) continue;
 				  if (unIso && ss.lep1_iso()<0.1) continue;
-				  if (lowPtRel14 && ss.lep1_ptrel_v1()>14.) continue;
-				  if (lowPtRel6  && ss.lep1_ptrel_v1()>6. ) continue;
-				  if (useMiniIso && ss.lep1_ptrel_v1()<=6.) continue;
-				  if (extrPtRel && ss.lep1_ptrel_v1()<6.0 ) continue;
-				  float pt = ss.lep1_p4().pt();
-				  if (coneCorr) {
-				    pt = pt+pt*std::max(0.,ss.lep1_iso()-0.1);
-				    if (useMiniIso) pt = pt+pt*std::max(0.,ss.lep1_miniIso()-0.05);
-				    if (useNewMiniIso) {
-				      if (ss.lep1_p4().pt()>25. && ss.lep1_ptrel_v1()>7.) 
-					pt = pt+pt*(abs(ss.lep1_id())==11 ? std::max(0.,ss.lep1_miniIso()-0.075) : std::max(0.,ss.lep1_miniIso()-0.1));
-				      else
-					pt = (abs(ss.lep1_id())==11 ? ss.jet_close_lep1().pt()*0.725 : ss.jet_close_lep1().pt()*0.70);
-				    }
-				  }
+				  if (lowPtRel14 && lep1_ptrel_v1>14.) continue;
+				  if (lowPtRel6  && lep1_ptrel_v1>6. ) continue;
+				  if (useMiniIso && lep1_ptrel_v1<=6.) continue;
+				  if (extrPtRel && lep1_ptrel_v1<6.0 ) continue;
 				  if( abs(ss.lep1_id()) == 11 )	//if el, use el rate.  FILL WITH NONPROMPT			  
 					{
-					  e1 = getFakeRate(rate_histo_e, pt, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );
+					  e1 = getFakeRate(rate_histo_e, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );
 					  Npn_histo_pred_el->Fill(sr, (e1/(1-e1))*weight);
 					  Npn_histo_pred_el->Fill(br, (e1/(1-e1))*weight);
-					  if (sr>=0) Npn_histo_err2_pred_el[sr]->Fill(pt, fabs(ss.lep1_p4().eta()), weight);
-					  Npn_histo_err2_pred_el[br]->Fill(pt, fabs(ss.lep1_p4().eta()), weight);
+					  if (sr>=0) Npn_histo_err2_pred_el[sr]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_err2_pred_el[br]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  // //fill el abundance histos here w/ nbtags
 					  if(ss.lep1_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight);
@@ -709,11 +722,11 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 					}
 				  else if( abs(ss.lep1_id()) == 13 ) //if mu, use mu rate.  FILL WITH NONPROMPT				  
 					{
-					  e1 = getFakeRate(rate_histo_mu, pt, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );
+					  e1 = getFakeRate(rate_histo_mu, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );
 					  Npn_histo_pred_mu->Fill(sr, (e1/(1-e1))*weight);
 					  Npn_histo_pred_mu->Fill(br, (e1/(1-e1))*weight);
-					  if (sr>=0) Npn_histo_err2_pred_mu[sr]->Fill(pt, fabs(ss.lep1_p4().eta()), weight);
-					  Npn_histo_err2_pred_mu[br]->Fill(pt, fabs(ss.lep1_p4().eta()), weight);
+					  if (sr>=0) Npn_histo_err2_pred_mu[sr]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_err2_pred_mu[br]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  // //fill el abundance histos here w/ nbtags
 					  if(ss.lep1_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight);
@@ -734,40 +747,18 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 		{
 		  if( ss.lep1_id()*ss.lep2_id() > 0 )
 			{
-			  if( !ss.lep1_passes_id() && !ss.lep2_passes_id() )   //just making sure
+			  if( lep1_passes_id==0 && lep2_passes_id==0 )   //just making sure
 			    {
 				  if (noSIP && fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())>4.) continue;
 				  if (noSIP && fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())>4.) continue;
-				  float pt1 = ss.lep1_p4().pt();
-				  if (coneCorr) {
-				    pt1 = pt1+pt1*std::max(0.,ss.lep2_iso()-0.1);
-				    if (useMiniIso) pt1 = pt1+pt1*std::max(0.,ss.lep2_miniIso()-0.05);
-				    if (useNewMiniIso) {
-				      if (ss.lep2_p4().pt()>25. && ss.lep2_ptrel_v1()>7.) 
-					pt1 = pt1+pt1*(abs(ss.lep2_id())==11 ? std::max(0.,ss.lep2_miniIso()-0.075) : std::max(0.,ss.lep2_miniIso()-0.1));
-				      else
-					pt1 = (abs(ss.lep2_id())==11 ? ss.jet_close_lep2().pt()*0.725 : ss.jet_close_lep2().pt()*0.70);
-				    }
-				  }
-				  float pt2 = ss.lep2_p4().pt();
-				  if (coneCorr) {
-				    pt2 = pt2+pt2*std::max(0.,ss.lep2_iso()-0.1);
-				    if (useMiniIso) pt2 = pt2+pt2*std::max(0.,ss.lep2_miniIso()-0.05);
-				    if (useNewMiniIso) {
-				      if (ss.lep2_p4().pt()>25. && ss.lep2_ptrel_v1()>7.) 
-					pt2 = pt2+pt2*(abs(ss.lep2_id())==11 ? std::max(0.,ss.lep2_miniIso()-0.075) : std::max(0.,ss.lep2_miniIso()-0.1));
-				      else
-					pt2 = (abs(ss.lep2_id())==11 ? ss.jet_close_lep2().pt()*0.725 : ss.jet_close_lep2().pt()*0.70);
-				    }
-				  }
 				  if( abs(ss.lep2_id()) == 11 )
-					{e2 = getFakeRate( rate_histo_e, pt2, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel );}
+					{e2 = getFakeRate( rate_histo_e, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel );}
 				  else if( abs(ss.lep2_id()) == 13 )
-					{e2 = getFakeRate( rate_histo_mu, pt2, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel );}				
+					{e2 = getFakeRate( rate_histo_mu, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel );}				
 				  if( abs(ss.lep1_id()) == 11 )				  
-					{e1 = getFakeRate( rate_histo_e, pt1, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );}
+					{e1 = getFakeRate( rate_histo_e, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );}
 				  else if( abs(ss.lep1_id()) == 13 )				  
-					{e1 = getFakeRate( rate_histo_mu, pt1, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );}
+					{e1 = getFakeRate( rate_histo_mu, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );}
 				  Nnn = Nnn + (e1/(1-e1))*(e2/(1-e2))*weight;					
 			   }
 			}
@@ -815,8 +806,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   //  TCanvas *c0=new TCanvas("c0","Fake Rate vs Pt, eta",800,800);
   //  rate_histo->Draw("colz,texte");
   TCanvas *c1=new TCanvas("c1","Fake Rate vs Pt, eta (electron)",800,800);
+  c1->cd();
   rate_histo_e->Draw("colz,texte");
   TCanvas *c2=new TCanvas("c2","Fake Rate vs Pt, eta (muon)",800,800);
+  c2->cd();
   rate_histo_mu->Draw("colz,texte");
 
   //Signal region plots
@@ -867,8 +860,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   NBs_BR_histo_mu->SetTitle("B Abundance vs Nbtags (Njets >= 2) (muons)");
 
   TCanvas *c6=new TCanvas("c6","B Abundance vs Nbtags (Njets >= 2) (electrons)", 800,800);
+  c6->cd();
   NBs_BR_histo_e->Draw("histE");
   TCanvas *c7=new TCanvas("c7","B Abundance vs Nbtags (Njets >= 2) (muons)", 800,800);
+  c7->cd();
   NBs_BR_histo_mu->Draw("histE");
 
   c3->SaveAs("sr_all"+option+".png");
@@ -885,6 +880,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   c8.SaveAs("pTrelvsIso_mu"+option+".png");
   pTrelvsIso_histo_el->Draw("colz");
   c8.SaveAs("pTrelvsIso_el"+option+".png");
+  pTrelvsMiniIso_histo_mu->Draw("colz");
+  c8.SaveAs("pTrelvsMiniIso_mu"+option+".png");
+  pTrelvsMiniIso_histo_el->Draw("colz");
+  c8.SaveAs("pTrelvsMiniIso_el"+option+".png");
 
   //benchmark stuff
   bmark->Stop("benchmark");
