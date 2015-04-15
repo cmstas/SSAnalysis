@@ -590,10 +590,10 @@ void Init(TTree *tree) {
 	}
   tree->SetMakeClass(0);
 }
-void GetEntry(unsigned int idx) 
+void GetEntry(unsigned int Idx) 
 	// this only marks branches as not loaded, saving a lot of time
 	{
-		index = idx;
+		index = Idx;
 		met_isLoaded = false;
 		metPhi_isLoaded = false;
 		event_isLoaded = false;
