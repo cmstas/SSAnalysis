@@ -1,9 +1,9 @@
 #include "TROOT.h"
-#include "CORE/CMS3.h"
 
+enum IsolationMethods { Standard = 0, PtRel = 1, MiniIso = 2 , NewMiniIso = 3 };
 enum sample_t { TTBAR, TTW, TTZ, WZ, T1TTTT_1500, T1TTTT_1200 };
 
-int do(sample_t which, int file, bool ptrel = 0){
+int do(sample_t which, int file, IsolationMethods ptrel = 0){
 
   if (gSystem->Getenv("CMSSW_BASE")) {
       std::cout<<"loading libFWCoreFWLite.so"<<endl;
