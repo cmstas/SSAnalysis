@@ -15,97 +15,124 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   BabyTree = new TTree("t", "SS2015 Baby Ntuple");
 
   //Define Branches
-  BabyTree->Branch("met", &met);
-  BabyTree->Branch("metPhi", &metPhi);
-  BabyTree->Branch("event", &event);
-  BabyTree->Branch("lumi", &lumi);
-  BabyTree->Branch("run", &run);
-  BabyTree->Branch("filt_csc", &filt_csc);
-  BabyTree->Branch("filt_hbhe", &filt_hbhe);
-  BabyTree->Branch("filt_hcallaser", &filt_hcallaser);
-  BabyTree->Branch("filt_ecaltp", &filt_ecaltp);
-  BabyTree->Branch("filt_trkfail", &filt_trkfail);
-  BabyTree->Branch("filt_eebadsc", &filt_eebadsc);
-  BabyTree->Branch("is_real_data", &is_real_data);
-  BabyTree->Branch("scale1fb", &scale1fb);
-  BabyTree->Branch("xsec", &xsec);
-  BabyTree->Branch("kfactor", &kfactor);
-  BabyTree->Branch("gen_met", &gen_met);
-  BabyTree->Branch("gen_met_phi", &gen_met_phi);
-  BabyTree->Branch("njets", &njets);
-  BabyTree->Branch("hyp_class", &hyp_class);
-  BabyTree->Branch("lep1_p4", &lep1_p4);
-  BabyTree->Branch("lep2_p4", &lep2_p4);
-  BabyTree->Branch("ht", &ht);
-  BabyTree->Branch("lep1_motherID", &lep1_motherID);
-  BabyTree->Branch("lep2_motherID", &lep2_motherID);
-  BabyTree->Branch("lep1_mc_id", &lep1_mc_id);
-  BabyTree->Branch("lep2_mc_id", &lep2_mc_id);
-  BabyTree->Branch("lep1_id", &lep1_id);
-  BabyTree->Branch("lep2_id", &lep2_id);
-  BabyTree->Branch("lep1_idx", &lep1_idx);
-  BabyTree->Branch("lep2_idx", &lep2_idx);
-  BabyTree->Branch("jets", &jets);
-  BabyTree->Branch("btags_disc", &btags_disc);
-  BabyTree->Branch("jets_disc", &jets_disc);
-  BabyTree->Branch("btags", &btags);
-  BabyTree->Branch("nbtags", &nbtags);
-  BabyTree->Branch("sf_dilepTrig_hpt", &sf_dilepTrig_hpt);
-  BabyTree->Branch("sf_dilepTrig_lpt", &sf_dilepTrig_lpt);
-  BabyTree->Branch("sf_dilepTrig_vlpt", &sf_dilepTrig_vlpt);
-  BabyTree->Branch("hyp_type", &hyp_type);
-  BabyTree->Branch("sf_dilep_eff", &sf_dilep_eff);
-  BabyTree->Branch("mt", &mt);
-  BabyTree->Branch("mt_l2", &mt_l2);
-  BabyTree->Branch("mt2", &mt2);
-  BabyTree->Branch("mGluino", &mGluino);
-  BabyTree->Branch("mLSP", &mLSP);
-  BabyTree->Branch("mSbottom", &mSbottom);
-  BabyTree->Branch("mChargino", &mChargino);
-  BabyTree->Branch("lep1_id_gen", &lep1_id_gen);
-  BabyTree->Branch("lep2_id_gen", &lep2_id_gen);
-  BabyTree->Branch("lep1_p4_gen", &lep1_p4_gen);
-  BabyTree->Branch("lep2_p4_gen", &lep2_p4_gen);
-  BabyTree->Branch("lep3_id", &lep3_id);
-  BabyTree->Branch("lep3_idx", &lep3_idx);
-  BabyTree->Branch("lep3_p4", &lep3_p4);
-  BabyTree->Branch("lep3_quality", &lep3_quality);
-  BabyTree->Branch("lep1_iso", &lep1_iso);
-  BabyTree->Branch("lep2_iso", &lep2_iso);
-  BabyTree->Branch("dilep_p4", &dilep_p4);
-  BabyTree->Branch("genps_p4", &genps_p4);
-  BabyTree->Branch("genps_id", &genps_id);
-  BabyTree->Branch("genps_id_mother", &genps_id_mother);
-  BabyTree->Branch("genps_status", &genps_status);
-  BabyTree->Branch("genps_id_grandma", &genps_id_grandma);
-  BabyTree->Branch("lep1_passes_id", &lep1_passes_id);
-  BabyTree->Branch("lep2_passes_id", &lep2_passes_id);
-  BabyTree->Branch("lep1_dxyPV", &lep1_dxyPV);
-  BabyTree->Branch("lep2_dxyPV", &lep2_dxyPV);
-  BabyTree->Branch("lep1_dZ", &lep1_dZ);
-  BabyTree->Branch("lep2_dZ", &lep2_dZ);
-  BabyTree->Branch("lep1_d0_err", &lep1_d0_err);
-  BabyTree->Branch("lep2_d0_err", &lep2_d0_err);
-  BabyTree->Branch("lep1_ip3d", &lep1_ip3d);
-  BabyTree->Branch("lep2_ip3d", &lep2_ip3d);
-  BabyTree->Branch("lep1_ip3d_err", &lep1_ip3d_err);
-  BabyTree->Branch("lep2_ip3d_err", &lep2_ip3d_err);
-  BabyTree->Branch("nGoodElectrons7", &nGoodElectrons7);
-  BabyTree->Branch("nGoodElectrons10", &nGoodElectrons10);
-  BabyTree->Branch("nGoodElectrons25", &nGoodElectrons25);
-  BabyTree->Branch("nGoodMuons5", &nGoodMuons5);
-  BabyTree->Branch("nGoodMuons10", &nGoodMuons10);
-  BabyTree->Branch("nGoodMuons25", &nGoodMuons25);
-  BabyTree->Branch("filename", &filename);
-  BabyTree->Branch("lep1_ptrel_v0", &lep1_ptrel_v0);
-  BabyTree->Branch("lep1_ptrel_v1", &lep1_ptrel_v1);
-  BabyTree->Branch("lep2_ptrel_v0", &lep2_ptrel_v0);
-  BabyTree->Branch("lep2_ptrel_v1", &lep2_ptrel_v1);
-  BabyTree->Branch("lep1_miniIso", &lep1_miniIso);
-  BabyTree->Branch("lep2_miniIso", &lep2_miniIso);
-  BabyTree->Branch("jet_close_lep1", &jet_close_lep1);
-  BabyTree->Branch("jet_close_lep2", &jet_close_lep2);
-
+  BabyTree->Branch("met"                   , &met                   );
+  BabyTree->Branch("metPhi"                , &metPhi                );
+  BabyTree->Branch("event"                 , &event                 );
+  BabyTree->Branch("lumi"                  , &lumi                  );
+  BabyTree->Branch("run"                   , &run                   );
+  BabyTree->Branch("filt_csc"              , &filt_csc              );
+  BabyTree->Branch("filt_hbhe"             , &filt_hbhe             );
+  BabyTree->Branch("filt_hcallaser"        , &filt_hcallaser        );
+  BabyTree->Branch("filt_ecaltp"           , &filt_ecaltp           );
+  BabyTree->Branch("filt_trkfail"          , &filt_trkfail          );
+  BabyTree->Branch("filt_eebadsc"          , &filt_eebadsc          );
+  BabyTree->Branch("is_real_data"          , &is_real_data          );
+  BabyTree->Branch("scale1fb"              , &scale1fb              );
+  BabyTree->Branch("xsec"                  , &xsec                  );
+  BabyTree->Branch("kfactor"               , &kfactor               );
+  BabyTree->Branch("gen_met"               , &gen_met               );
+  BabyTree->Branch("gen_met_phi"           , &gen_met_phi           );
+  BabyTree->Branch("njets"                 , &njets                 );
+  BabyTree->Branch("hyp_class"             , &hyp_class             );
+  BabyTree->Branch("lep1_p4"               , &lep1_p4               );
+  BabyTree->Branch("lep2_p4"               , &lep2_p4               );
+  BabyTree->Branch("ht"                    , &ht                    );
+  BabyTree->Branch("lep1_motherID"         , &lep1_motherID         );
+  BabyTree->Branch("lep2_motherID"         , &lep2_motherID         );
+  BabyTree->Branch("lep1_mc_id"            , &lep1_mc_id            );
+  BabyTree->Branch("lep2_mc_id"            , &lep2_mc_id            );
+  BabyTree->Branch("lep1_id"               , &lep1_id               );
+  BabyTree->Branch("lep2_id"               , &lep2_id               );
+  BabyTree->Branch("lep1_idx"              , &lep1_idx              );
+  BabyTree->Branch("lep2_idx"              , &lep2_idx              );
+  BabyTree->Branch("jets"                  , &jets                  );
+  BabyTree->Branch("btags_disc"            , &btags_disc            );
+  BabyTree->Branch("jets_disc"             , &jets_disc             );
+  BabyTree->Branch("btags"                 , &btags                 );
+  BabyTree->Branch("nbtags"                , &nbtags                );
+  BabyTree->Branch("sf_dilepTrig_hpt"      , &sf_dilepTrig_hpt      );
+  BabyTree->Branch("sf_dilepTrig_lpt"      , &sf_dilepTrig_lpt      );
+  BabyTree->Branch("sf_dilepTrig_vlpt"     , &sf_dilepTrig_vlpt     );
+  BabyTree->Branch("hyp_type"              , &hyp_type              );
+  BabyTree->Branch("sf_dilep_eff"          , &sf_dilep_eff          );
+  BabyTree->Branch("mt"                    , &mt                    );
+  BabyTree->Branch("mt_l2"                 , &mt_l2                 );
+  BabyTree->Branch("mt2"                   , &mt2                   );
+  BabyTree->Branch("mGluino"               , &mGluino               );
+  BabyTree->Branch("mLSP"                  , &mLSP                  );
+  BabyTree->Branch("mSbottom"              , &mSbottom              );
+  BabyTree->Branch("mChargino"             , &mChargino             );
+  BabyTree->Branch("lep1_id_gen"           , &lep1_id_gen           );
+  BabyTree->Branch("lep2_id_gen"           , &lep2_id_gen           );
+  BabyTree->Branch("lep1_p4_gen"           , &lep1_p4_gen           );
+  BabyTree->Branch("lep2_p4_gen"           , &lep2_p4_gen           );
+  BabyTree->Branch("lep3_id"               , &lep3_id               );
+  BabyTree->Branch("lep3_idx"              , &lep3_idx              );
+  BabyTree->Branch("lep3_p4"               , &lep3_p4               );
+  BabyTree->Branch("lep3_quality"          , &lep3_quality          );
+  BabyTree->Branch("lep1_iso"              , &lep1_iso              );
+  BabyTree->Branch("lep2_iso"              , &lep2_iso              );
+  BabyTree->Branch("dilep_p4"              , &dilep_p4              );
+  BabyTree->Branch("genps_p4"              , &genps_p4              );
+  BabyTree->Branch("genps_id"              , &genps_id              );
+  BabyTree->Branch("genps_id_mother"       , &genps_id_mother       );
+  BabyTree->Branch("genps_status"          , &genps_status          );
+  BabyTree->Branch("genps_id_grandma"      , &genps_id_grandma      );
+  BabyTree->Branch("lep1_passes_id"        , &lep1_passes_id        );
+  BabyTree->Branch("lep2_passes_id"        , &lep2_passes_id        );
+  BabyTree->Branch("lep1_dxyPV"            , &lep1_dxyPV            );
+  BabyTree->Branch("lep2_dxyPV"            , &lep2_dxyPV            );
+  BabyTree->Branch("lep1_dZ"               , &lep1_dZ               );
+  BabyTree->Branch("lep2_dZ"               , &lep2_dZ               );
+  BabyTree->Branch("lep1_d0_err"           , &lep1_d0_err           );
+  BabyTree->Branch("lep2_d0_err"           , &lep2_d0_err           );
+  BabyTree->Branch("lep1_ip3d"             , &lep1_ip3d             );
+  BabyTree->Branch("lep2_ip3d"             , &lep2_ip3d             );
+  BabyTree->Branch("lep1_ip3d_err"         , &lep1_ip3d_err         );
+  BabyTree->Branch("lep2_ip3d_err"         , &lep2_ip3d_err         );
+  BabyTree->Branch("nVetoElectrons7"       , &nVetoElectrons7       );
+  BabyTree->Branch("nVetoElectrons10"      , &nVetoElectrons10      );
+  BabyTree->Branch("nVetoElectrons25"      , &nVetoElectrons25      );
+  BabyTree->Branch("nVetoMuons5"           , &nVetoMuons5           );
+  BabyTree->Branch("nVetoMuons10"          , &nVetoMuons10          );
+  BabyTree->Branch("nVetoMuons25"          , &nVetoMuons25          );
+  BabyTree->Branch("filename"              , &filename              );
+  BabyTree->Branch("lep1_ptrel_v0"         , &lep1_ptrel_v0         );
+  BabyTree->Branch("lep1_ptrel_v1"         , &lep1_ptrel_v1         );
+  BabyTree->Branch("lep2_ptrel_v0"         , &lep2_ptrel_v0         );
+  BabyTree->Branch("lep2_ptrel_v1"         , &lep2_ptrel_v1         );
+  BabyTree->Branch("lep1_miniIso"          , &lep1_miniIso          );
+  BabyTree->Branch("lep2_miniIso"          , &lep2_miniIso          );
+  BabyTree->Branch("jet_close_lep1"        , &jet_close_lep1        );
+  BabyTree->Branch("jet_close_lep2"        , &jet_close_lep2        );
+  BabyTree->Branch("eleID_kfhits"          , &eleID_kfhits          );
+  BabyTree->Branch("eleID_oldsigmaietaieta", &eleID_oldsigmaietaieta);
+  BabyTree->Branch("eleID_oldsigmaiphiiphi", &eleID_oldsigmaiphiiphi);
+  BabyTree->Branch("eleID_oldcircularity"  , &eleID_oldcircularity  );
+  BabyTree->Branch("eleID_oldr9"           , &eleID_oldr9           );
+  BabyTree->Branch("eleID_scletawidth"     , &eleID_scletawidth     );
+  BabyTree->Branch("eleID_sclphiwidth"     , &eleID_sclphiwidth     );
+  BabyTree->Branch("eleID_he"              , &eleID_he              );
+  BabyTree->Branch("eleID_psEoverEraw"     , &eleID_psEoverEraw     );
+  BabyTree->Branch("eleID_kfchi2   "       , &eleID_kfchi2          );
+  BabyTree->Branch("eleID_chi2_hits"       , &eleID_chi2_hits       );
+  BabyTree->Branch("eleID_fbrem"           , &eleID_fbrem           );
+  BabyTree->Branch("eleID_ep"              , &eleID_ep              );
+  BabyTree->Branch("eleID_eelepout"        , &eleID_eelepout        );
+  BabyTree->Branch("eleID_IoEmIop"         , &eleID_IoEmIop         );
+  BabyTree->Branch("eleID_deltaetain"      , &eleID_deltaetain      );
+  BabyTree->Branch("eleID_deltaphiin"      , &eleID_deltaphiin      );
+  BabyTree->Branch("eleID_deltaetaseed"    , &eleID_deltaetaseed    );
+  BabyTree->Branch("eleID_pT"              , &eleID_pT              );
+  BabyTree->Branch("eleID_isbarrel"        , &eleID_isbarrel        );
+  BabyTree->Branch("eleID_isendcap"        , &eleID_isendcap        );
+  BabyTree->Branch("eleID_scl_eta"         , &eleID_scl_eta         );
+  BabyTree->Branch("muID_dzPV"             , &muID_dzPV             );
+  BabyTree->Branch("muID_ptSig"            , &muID_ptSig            );
+  BabyTree->Branch("muID_ip3dSig"          , &muID_ip3dSig          );
+  BabyTree->Branch("muID_medMuonPOG"       , &muID_medMuonPOG       );
+  BabyTree->Branch("muID_pt"               , &muID_pt               );
+  BabyTree->Branch("muID_eta"              , &muID_eta              );
   //Print warning!
   cout << "Careful!! Path is " << path << endl;
 
@@ -113,7 +140,6 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
 
 void babyMaker::InitBabyNtuple(){
 
-    //Gen variables
     met = -1;
     metPhi = -1;
     event = -1;
@@ -183,12 +209,12 @@ void babyMaker::InitBabyNtuple(){
     lep2_ip3d = -999998;
     lep1_ip3d_err = -999998;
     lep2_ip3d_err = -999998;
-    nGoodElectrons7 = 0;
-    nGoodElectrons10 = 0;
-    nGoodElectrons25 = 0;
-    nGoodMuons5 = 0;
-    nGoodMuons10 = 0;
-    nGoodMuons25 = 0;
+    nVetoElectrons7 = 0;
+    nVetoElectrons10 = 0;
+    nVetoElectrons25 = 0;
+    nVetoMuons5 = 0;
+    nVetoMuons10 = 0;
+    nVetoMuons25 = 0;
     filename = "";
     lep1_ptrel_v0 = -1;
     lep1_ptrel_v1 = -1;
@@ -204,6 +230,35 @@ void babyMaker::InitBabyNtuple(){
     lep1_p4_gen = LorentzVector(0,0,0,0);
     lep2_p4_gen = LorentzVector(0,0,0,0);
     dilep_p4 = LorentzVector(0,0,0,0);
+    eleID_kfhits.clear();
+    eleID_oldsigmaietaieta.clear();
+    eleID_oldsigmaiphiiphi.clear();
+    eleID_oldcircularity.clear();
+    eleID_oldr9.clear();
+    eleID_scletawidth.clear();
+    eleID_sclphiwidth.clear();
+    eleID_he.clear();
+    eleID_psEoverEraw.clear();
+    eleID_kfchi2.clear();
+    eleID_chi2_hits.clear();
+    eleID_fbrem.clear();
+    eleID_ep.clear();
+    eleID_eelepout.clear();
+    eleID_IoEmIop.clear();
+    eleID_deltaetain.clear();
+    eleID_deltaphiin.clear();
+    eleID_deltaetaseed.clear();
+    eleID_pT.clear();
+    eleID_isbarrel.clear();
+    eleID_isendcap.clear();
+    eleID_scl_eta.clear();
+    muID_dzPV.clear();      
+    muID_ptSig.clear();     
+    muID_ip3dSig.clear();
+    muID_medMuonPOG.clear();
+    muID_pt.clear();        
+    muID_eta.clear();
+
 } 
 
 //Main function
@@ -303,58 +358,15 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase){
   }
   
   //Determine and save jet and b-tag variables
-  ht = 0;
-  for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++){
-    LorentzVector jet = tas::pfjets_p4().at(i);
-    
-    //Kinematic jet cuts
-    if (jet.pt() < 25.) continue;
-    if (fabs(jet.eta()) > 2.4) continue;
-    
-    //Verbose
-    if (verbose) cout << "Possible jet with pT: " << jet.pt() << endl;
-    
-    //Require loose jet ID
-    if (!isLoosePFJet(i)) continue;
-    
-    //Jet cleaning -- electrons
-    bool jetIsLep = false;
-    for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
-      LorentzVector electron = tas::els_p4().at(eidx);
-      if (electron.pt() < 7) continue;
-      if (!isGoodVetoElectron(eidx)) continue;
-      if (ROOT::Math::VectorUtil::DeltaR(jet, electron) > 0.4) continue;
-      jetIsLep = true;
-    }
-    if (jetIsLep == true) continue;
-    
-    //Jet cleaning -- muons
-    for (unsigned int muidx = 0; muidx < tas::mus_p4().size(); muidx++){
-      LorentzVector muon = tas::mus_p4().at(muidx);
-      if (muon.pt() < 5) continue;
-      if (!isGoodVetoMuon(muidx)) continue;
-      if (ROOT::Math::VectorUtil::DeltaR(jet, muon) > 0.4) continue;
-      jetIsLep = true;
-    }
-    if (jetIsLep == true) continue;
-    
-    float disc = tas::pfjets_combinedInclusiveSecondaryVertexV2BJetTag().at(i);
-    //Save jets that make it this far
-    if (jet.pt() >= 40.) {
-      jets.push_back(jet);
-      ht += jet.pt();
-      jets_disc.push_back(disc);
-    }
-
-    //Btag discriminator
-    if (disc < 0.814) continue;
-    
-    //Save btags that make it this far
-    btags_disc.push_back(disc);
-    btags.push_back(tas::pfjets_p4().at(i));
-  }
+  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator();
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets.push_back(jet_results.first.at(i).p4());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags.push_back(jet_results.second.at(i).p4());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_disc.push_back(jet_results.first.at(i).csv());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc.push_back(jet_results.second.at(i).csv());
   njets = jets.size();
   nbtags = btags.size();
+  ht = 0;
+  for (unsigned int i = 0; i < jets.size(); i++) ht += jets.at(i).pt(); 
   
   //Verbose for jets
   if (verbose){
@@ -379,26 +391,26 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase){
   jet_close_lep1 = closestJet(lep1_p4);
   jet_close_lep2 = closestJet(lep2_p4);
 
-  //nGood Leptons
+  //nVeto Leptons
   for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
     if (!isGoodVetoElectron(eidx)) continue;
     if (tas::els_p4().at(eidx).pt() < 7) continue;
-    nGoodElectrons7++;
+    nVetoElectrons7++;
     if (verbose) cout << "good elec: " << tas::els_p4().at(eidx).pt() << endl;
     if (tas::els_p4().at(eidx).pt() < 10) continue;
-    nGoodElectrons10++;
+    nVetoElectrons10++;
     if (tas::els_p4().at(eidx).pt() < 25) continue;
-    nGoodElectrons25++;
+    nVetoElectrons25++;
   }
   for (unsigned int muidx = 0; muidx < tas::mus_p4().size(); muidx++){
     if (!isGoodVetoMuon(muidx)) continue;
     if (tas::mus_p4().at(muidx).pt() < 5) continue;
-    nGoodMuons5++;
+    nVetoMuons5++;
     if (verbose) cout << "good muon: " << tas::mus_p4().at(muidx).pt() << endl;
     if (tas::mus_p4().at(muidx).pt() < 10) continue;
-    nGoodMuons10++;
+    nVetoMuons10++;
     if (tas::mus_p4().at(muidx).pt() < 25) continue;
-    nGoodMuons25++;
+    nVetoMuons25++;
   }
   
   //MT variables
@@ -409,6 +421,47 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase){
   //Ht and MET
   if (verbose) cout << "ht: " << ht << endl;
   if (verbose) cout << "met: " << met << endl;
+
+  //Electron ID variables
+  for (unsigned int index = 0; index < els_fbrem().size(); index++){
+    if (!isGoodVetoElectron(index)) continue;
+    if (tas::els_p4().at(index).pt() < 7) continue;
+    if ((tas::els_p4().at(index).eta()) > 2.4) continue;
+    eleID_kfhits          .push_back(tas::els_ckf_laywithmeas().at(index));
+    eleID_oldsigmaietaieta.push_back(tas::els_sigmaIEtaIEta_full5x5().at(index)); 
+    eleID_oldsigmaiphiiphi.push_back(tas::els_sigmaIPhiIPhi_full5x5().at(index));
+    eleID_oldcircularity  .push_back(1.0 - tas::els_e1x5_full5x5().at(index)/tas::els_e5x5_full5x5().at(index)); 
+    eleID_oldr9           .push_back(tas::els_r9_full5x5().at(index)); 
+    eleID_scletawidth     .push_back(tas::els_etaSCwidth().at(index));
+    eleID_sclphiwidth     .push_back(tas::els_phiSCwidth().at(index));
+    eleID_he              .push_back(tas::els_hOverE().at(index));
+    eleID_psEoverEraw     .push_back(tas::els_eSCPresh().at(index)/tas::els_eSCRaw().at(index));
+    eleID_kfchi2          .push_back(tas::els_ckf_chi2().at(index)/tas::els_ckf_ndof().at(index));
+    eleID_chi2_hits       .push_back(tas::els_chi2().at(index)/tas::els_ndof().at(index));
+    eleID_fbrem           .push_back(tas::els_fbrem().at(index));
+    eleID_ep              .push_back(tas::els_eOverPIn().at(index));
+    eleID_eelepout        .push_back(tas::els_eOverPOut().at(index));
+    eleID_IoEmIop         .push_back(tas::els_ecalEnergy().at(index) != 0 ? 1.0/tas::els_ecalEnergy().at(index) - tas::els_eOverPIn().at(index)/tas::els_ecalEnergy().at(index) : 999999);
+    eleID_deltaetain      .push_back(tas::els_dEtaIn().at(index));
+    eleID_deltaphiin      .push_back(tas::els_dPhiIn().at(index));
+    eleID_deltaetaseed    .push_back(tas::els_dEtaOut().at(index));
+    eleID_pT              .push_back(tas::els_p4().at(index).pt()); 
+    eleID_isbarrel        .push_back(fabs(tas::els_etaSC().at(index)) < 1.479 ? 1 : 0); 
+    eleID_isendcap        .push_back(fabs(tas::els_etaSC().at(index)) > 1.479 ? 1 : 0); 
+    eleID_scl_eta         .push_back(tas::els_etaSC().at(index)); 
+  }
+
+  //Muon ID variables
+  for (unsigned int index = 0; index < mus_ip3d().size(); index++){
+    if (!isGoodVetoMuon(index)) continue;
+    if (tas::mus_p4().at(index).pt() < 5) continue;
+    muID_dzPV      .push_back(fabs(mus_dzPV().at(index)));
+    muID_ptSig     .push_back(mus_ptErr().at(index)/mus_trk_p4().at(index).pt());
+    muID_ip3dSig   .push_back(fabs(mus_ip3d().at(index))/mus_ip3derr().at(index));
+    muID_medMuonPOG.push_back(isMediumMuonPOG(index));
+    muID_pt        .push_back(mus_p4().at(index).pt());
+    muID_eta       .push_back(fabs(mus_p4().at(index).eta()));
+  }
   
   //Fill Baby
   BabyTree->Fill();
