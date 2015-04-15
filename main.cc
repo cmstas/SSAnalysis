@@ -12,8 +12,8 @@ int main() {
   bool runSync   = false;
   bool runBaby   = false;
   bool usePtRel  = false;
-  bool useMiniIso= true;
-  bool useNewMI  = false;
+  bool useMiniIso= false;
+  bool useNewMI  = true;
 
   IsolationMethods isoCase = Standard;
   if (usePtRel) isoCase = PtRel;
@@ -52,7 +52,7 @@ int main() {
   TChain *chain_Wjets         = new TChain("Events");
 
   if (useSkim) {
-    TString dir = "PHYS14_v2";
+    TString dir = "PHYS14_v2_new";
     chain_TTJets->Add(dir+"/TTJets_skimSS/merged_ntuple_*.root");
     chain_TTWJets->Add(dir+"/TTWJets_skimSS/merged_ntuple_*.root");
     chain_TTZJets->Add(dir+"/TTZJets_skimSS/merged_ntuple_*.root");
