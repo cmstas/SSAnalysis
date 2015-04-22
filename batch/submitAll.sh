@@ -52,13 +52,13 @@ do
       then
         while read line
         do
-        if [ `echo $line | awk '{ print $1 }'` == "Cluster" ] 
-        then
-          cluster=`echo $line | awk '{ print $3 }'`
-        elif [ `echo $line | awk '{ print $1 }'` == "Proc" ] 
-        then
-          process=`echo $line | awk '{ print $3 }'`
-        fi
+          if [ `echo $line | awk '{ print $1 }'` == "Cluster" ] 
+          then
+            cluster=`echo $line | awk '{ print $3 }'`
+          elif [ `echo $line | awk '{ print $1 }'` == "Proc" ] 
+          then
+            process=`echo $line | awk '{ print $3 }'`
+          fi
         done < logs/condorLog_${sname}_${number}_${ptrel}.log
         jobid="$cluster.$process"
         condor_q $jobid > temp.txt
