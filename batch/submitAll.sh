@@ -40,10 +40,14 @@ do
     do
       sname_lower=`echo ${sname,,}`
       number=$(( $i + 1 ))
+
+      echo "-------------"
+      echo "Working on $sname $number $ptrel"
   
       #Except they've finished
       if [ -e /hadoop/cms/store/user/cgeorge/condor/ss_13_babies/${sname_lower}_${number}$ptrelsuf.root ] 
       then 
+        echo "${sname_lower}_${number}$ptrelsuf.root already exists on hadoop, will not submit...."
         continue
       fi
   
@@ -63,8 +67,6 @@ do
         jobid="$cluster.$process"
         condor_q $jobid > temp.txt
         result=`more temp.txt | awk 'END{print $1}'`
-        echo "-------------"
-        echo "Working on $sname $number $ptrel"
         if [ "$result" == "$jobid" ] 
         then
           echo "already submitted!"
