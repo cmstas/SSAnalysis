@@ -8,3 +8,12 @@ LinkDef_out*
 CORE
 Tools
 CMSSW_*
+batch/CORE.tar.gz
+batch/condorFile
+batch/dont_need/
+batch/helper_babymaker.cc
+batch/helper_babymaker.h
+batch/logs/
+batch/null
+batch/temp.txt
+v1.*

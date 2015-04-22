@@ -5,6 +5,18 @@ tag="V07-02-08"
 
 nSubmitted=0
 
+#Start by checking proxy, get path to proxy file
+voms-proxy-info --all &> voms_status.txt
+if grep "Couldn't find a valid proxy." voms_status.txt &>/dev/null
+then 
+  echo "Error: couldn't find a valid proxy!  Aborting.  Create a proxy with voms-proxy-init."
+  rm voms_status.txt
+  return 1
+fi
+lineWithPath=`sed -n /path/= voms_status.txt`
+pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
+
+#Then submit jobs
 for ptrel in "0" "1" "2" "3"
 do
   for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200"
@@ -45,7 +57,7 @@ do
       echo "Working on $sname $number $ptrel"
   
       #Except they've finished
-      if [ -e /hadoop/cms/store/user/cgeorge/condor/ss_13_babies/${sname_lower}_${number}$ptrelsuf.root ] 
+      if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}$ptrelsuf.root ] 
       then 
         echo "${sname_lower}_${number}$ptrelsuf.root already exists on hadoop, will not submit...."
         continue
@@ -82,6 +94,7 @@ do
       sed -i s/ARG1/$sname/g condorFile
       sed -i s/ARG2/$number/g condorFile
       sed -i s/ARG3/$ptrel/g condorFile
+      sed -i "s,USER_PROXY,$pathToProxy,g" condorFile
       condor_submit condorFile
     done
   done

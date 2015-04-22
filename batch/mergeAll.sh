@@ -1,7 +1,7 @@
 #!/bin/bash
 
 path="/hadoop/cms/store/group/snt/phys14"
-path2="/hadoop/cms/store/user/cgeorge/condor/ss_13_babies"
+path2="/hadoop/cms/store/user/$USER/condor/ss_13_babies"
 tag="V07-02-08"
 
 for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200"
