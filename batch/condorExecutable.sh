@@ -17,7 +17,7 @@ pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0/src/
 eval `scramv1 runtime -sh`
 popd
 
-#Specify name of output file and name of dierctory in /hadoop/.../cgeorge/condor
+#Specify name of output file and name of dierctory in /hadoop/...
 export DIRNAME=ss_13_babies
 export WHICH_SMALL=`echo ${WHICH,,}`
 if [ "$PTREL" == "0" ] 
@@ -36,7 +36,7 @@ fi
 export OUTPUT=${WHICH_SMALL}_${FILE}${PT}
 
 #This stuff to get output back
-export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}
+export COPYDIR=/hadoop/cms/store/user/$USER/condor/${DIRNAME}
 
 #Untar the zip dir
 tar xzvf CORE.tar.gz
