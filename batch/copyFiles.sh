@@ -37,6 +37,12 @@ cp /home/users/cgeorge/CORE/Tools/MT2/MT2.cc CORE/Tools/MT2
 cp /home/users/cgeorge/CORE/Tools/MT2/MT2Utility.h CORE/Tools/MT2
 cp /home/users/cgeorge/CORE/Tools/MT2/MT2Utility.cc CORE/Tools/MT2
 
+#Make log dir
+if [ ! -d logs ] 
+then
+  mkdir logs
+fi
+
 #Sed commands to get babymaker to work
 sed -i "s,\"Tools\/,\"CORE/Tools\/,g" helper_babymaker.h 
 sed -i "s/output_name,\ bool\ usePtRel)/output_name)/" helper_babymaker.h
