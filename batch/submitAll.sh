@@ -17,7 +17,7 @@ lineWithPath=`sed -n /path/= voms_status.txt`
 pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 
 #Then submit jobs
-for ptrel in "0" "1" "2" "3"
+for ptrel in "0" "1" "2" "3" "4" "5"
 do
   for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200"
   do
@@ -42,6 +42,12 @@ do
     elif [ "$ptrel" == "3" ] 
     then
       ptrelsuf="_newMiniIso"
+    elif [ "$ptrel" == "4" ] 
+    then
+      ptrelsuf="_newMiniIsoL"
+    elif [ "$ptrel" == "5" ] 
+    then
+      ptrelsuf="_newMiniIsoT"
     fi
   
     #Get number of files
@@ -53,15 +59,15 @@ do
       sname_lower=`echo ${sname,,}`
       number=$(( $i + 1 ))
 
-      echo "-------------"
-      echo "Working on $sname $number $ptrel"
-  
       #Except they've finished
       if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}$ptrelsuf.root ] 
       then 
-        echo "${sname_lower}_${number}$ptrelsuf.root already exists on hadoop, will not submit...."
+        #echo "${sname_lower}_${number}$ptrelsuf.root already exists on hadoop, will not submit...."
         continue
       fi
+
+      echo "-------------"
+      echo "Working on $sname $number $ptrel"
   
       #Or if they're still running
       if [ -e logs/condorLog_${sname}_${number}_${ptrel}.log ] 

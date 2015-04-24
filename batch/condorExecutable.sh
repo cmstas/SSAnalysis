@@ -32,11 +32,17 @@ then
 elif [ "$PTREL" == "3" ] 
 then
   PT="_newMiniIso"
+elif [ "$PTREL" == "4" ] 
+then
+  PT="_newMiniIsoL"
+elif [ "$PTREL" == "5" ] 
+then
+  PT="_newMiniIsoT"
 fi
 export OUTPUT=${WHICH_SMALL}_${FILE}${PT}
 
 #This stuff to get output back
-export COPYDIR=/hadoop/cms/store/user/$USER/condor/${DIRNAME}
+export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}
 
 #Untar the zip dir
 tar xzvf CORE.tar.gz
