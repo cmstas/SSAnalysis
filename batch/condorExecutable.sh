@@ -34,10 +34,7 @@ then
   PT="_newMiniIso"
 elif [ "$PTREL" == "4" ] 
 then
-  PT="_newMiniIsoL"
-elif [ "$PTREL" == "5" ] 
-then
-  PT="_newMiniIsoT"
+  PT="_multiIso"
 fi
 export OUTPUT=${WHICH_SMALL}_${FILE}${PT}
 

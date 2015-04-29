@@ -17,7 +17,8 @@ lineWithPath=`sed -n /path/= voms_status.txt`
 pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 
 #Then submit jobs
-for ptrel in "0" "1" "2" "3" "4" "5"
+#for ptrel in "0" "1" "2" "3" "4" "5" "6"
+for ptrel in "4"
 do
   for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200"
   do
@@ -44,10 +45,7 @@ do
       ptrelsuf="_newMiniIso"
     elif [ "$ptrel" == "4" ] 
     then
-      ptrelsuf="_newMiniIsoL"
-    elif [ "$ptrel" == "5" ] 
-    then
-      ptrelsuf="_newMiniIsoT"
+      ptrelsuf="_multiIso"
     fi
   
     #Get number of files

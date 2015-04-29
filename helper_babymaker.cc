@@ -10,9 +10,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   if (isoCase == PtRel) suffix = "_ptRel";
   else if (isoCase == MiniIso) suffix = "_miniIso";
   else if (isoCase == NewMiniIso) suffix = "_newMiniIso";
-  else if (isoCase == NewMiniIsoL) suffix = "_newMiniIsoL";
-  else if (isoCase == NewMiniIsoM) suffix = "_newMiniIsoM";
-  else if (isoCase == NewMiniIsoT) suffix = "_newMiniIsoT";
+  else if (isoCase == MultiIso) suffix = "_multiIso";
   BabyFile = new TFile(Form("%s/%s%s.root", path.Data(), output_name, suffix.c_str()), "RECREATE");
   BabyFile->cd();
   BabyTree = new TTree("t", "SS2015 Baby Ntuple");
