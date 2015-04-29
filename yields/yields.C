@@ -4,389 +4,511 @@
 #include "TCut.h"
 #include "TFile.h"
 #include "TTree.h"
+#include "TChain.h"
 #include "TH1F.h"
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "/home/users/cgeorge/software/dataMCplotMaker/dataMCplotMaker.h"
 
 using namespace std;
 
-//Enums
-enum sample_t { ALL, TTW, TTBAR, TTZ, WZ, TTBAR_8TEV, T1TTTT_1500_100, T1TTTT_1200_800, TEST };
-enum selection_t { SS, OS };
-enum weight_t { WEIGHTED, UNWEIGHTED };
-enum lep_t { EL, MU, EM, ANY };
-enum region_t { NEW, OLD };
-enum mtmin_t { NONE, MT100, MT125, MT150 };
-enum hyp_class_t { INC1, INC2, NORMAL };
-enum pt_t { HIHI, HILO, LOLO, ALL3 };
+enum pt_region_t { HH, HL, LL }; 
 
 //Switches
-char* path = "v1.04";                  //where the ntuples are
-char* output_dir = "mydir";            //dir where plots should go (in parent directory, will create if doesn't exist)
-int nRegions = 1;                      //which regions to include (can be 1 for single region, > 10 will turn on b-tagging)
-int firstSR = 0;                       //first SR you want to consider (usually 0 or 1)
-bool scan = 0;                         //make printout of events
-int scanRegion = 0;                    //only needed if scan == TRUE
-mtmin_t mt_min = NONE;                 //add mt_min cut
-sample_t sample = ALL;                  //Sample as defined above
-selection_t selection = SS;            //select SS or OS
-weight_t weighted = WEIGHTED;          //weight by cross-section or not
-lep_t leps = ANY;                      //segregate by flavor composition (MU, EL, EM, ANY)
-char* testfile = "ttbar.root";         //only needed if sample is TEST
-hyp_class_t hyp_class_wanted = NORMAL; //INC1 is inclusive SS, INC2 is h-h or h-l SS, NORMAL is h-h SS only
-region_t regions = NEW;                //new pT regions (25/10) or old (20/10)
-pt_t which_pt = ALL3;                  //which pT regions should be handled?
-int met_cut = 120;                     //120 for 8 TeV 
-int ht_cut = 400;                      //400 for 8 TeV
-int njets_cut = 4;                     //4 for 8 TeV
-int btag_pt = 25;                      //40 for 8 TeV; 25 is default for 13 TeV
-bool doBtagging = true;                //should SRs have b-tagging applied? (automatically true for nRegions > 10)
-bool doTruthMatching = true;           //require truth-level leptons to be matched to correctly-signed (SS or OS) pair
-bool makePlots = false;                //should plots for limit making be produced?
-bool outputYields = true;              //should yields be printed to the screen?
+int njets_cut = 5;   //njets high will be >= than this
+int met_cut = 200;   //met high will be >= than this
+int ht_cut_1 = 300;  //ht med will be >= than this
+int ht_cut_2 = 500;  //ht high will be >= than this
+int mtmin_cut = 120; //mtmin high will be >= than this
+int ht_ultra_value = 1600; 
+int met_ultra_value = 500; 
 
-//Declare output file
-TFile *file;
+//Cuts
+TCut weight("scale1fb*10.0");
+TCut ht_low(Form("ht > 200 && ht < %i", ht_cut_1));
+TCut ht_med(Form("ht > %i && ht < %i", ht_cut_1, ht_cut_2));
+TCut nbtags0("nbtags == 0");
+TCut nbtags1("nbtags == 1");
+TCut nbtags2("nbtags == 2");
+TCut nbtags3p("nbtags >= 3");
+TCut mtmin_low(Form("mt > mt_l2 ? mt_l2 < %i : mt < %i", mtmin_cut, mtmin_cut));
+TCut mtmin_high(Form("mt > mt_l2 ? mt_l2 > %i : mt > %i", mtmin_cut, mtmin_cut));
+TCut njets_low(Form("njets >= 2 && njets < %i", njets_cut));
+TCut njets_high(Form("njets >= %i", njets_cut));
+TCut selectionSS("hyp_class == 3");
+TCut highHigh("lep1_p4.pt() > 25 && lep2_p4.pt() > 25"); 
+TCut highLow("((lep1_p4.pt() > 10 && lep1_p4.pt() < 25 && lep2_p4.pt() > 25) || (lep1_p4.pt() > 25 && lep2_p4.pt() > 10 && lep2_p4.pt() < 25))"); 
+TCut lowLow("((lep1_p4.pt() > 10 && lep2_p4.pt() > 10) && (lep1_p4.pt() < 25 && lep2_p4.pt() < 25))"); 
+TCut njets2("njets >= 2");
+TCut met50("met > 50");
+TCut none("1.0");
 
-vector<float> doIt(TTree *chain, TCut cuts, pt_t pt_){
+//Vectors
+vector <float> ttbar_high;
+vector <float> ttw_high;
+vector <float> ttz_high;
+vector <float> wz_high;
+vector <float> t1tttt_1200_high;
+vector <float> t1tttt_1500_high;
+vector <float> t5qqww_1200_high;
+vector <float> t5qqww_deg_high;
+vector <float> ttbar_hl;
+vector <float> ttw_hl;
+vector <float> ttz_hl;
+vector <float> wz_hl;
+vector <float> t1tttt_1200_hl;
+vector <float> t1tttt_1500_hl;
+vector <float> t5qqww_1200_hl;
+vector <float> t5qqww_deg_hl;
+vector <float> ttbar_low;
+vector <float> ttw_low;
+vector <float> ttz_low;
+vector <float> wz_low;
+vector <float> t1tttt_1200_low;
+vector <float> t1tttt_1500_low;
+vector <float> t5qqww_1200_low;
+vector <float> t5qqww_deg_low;
 
-  //Declare and create output histogram
-  TH1F *hist; 
-  if (makePlots){
-    if (pt_ == HIHI) hist = new TH1F("hyp_hihi", "hyp_hihi", nRegions, 1, nRegions+1);
-    if (pt_ == HILO) hist = new TH1F("hyp_hilow", "hyp_hilow", nRegions, 1, nRegions+1);
-    if (pt_ == LOLO) hist = new TH1F("hyp_lowlow", "hyp_lowlow", nRegions, 1, nRegions+1);
+//Names
+vector <char*> titles;
+vector <char*> signal_titles;
+vector <Color_t> Colors;
+vector <Color_t> Colors2;
+
+float sum( vector <float> it ){
+  float result = 0;
+  for (unsigned int i = 0; i < it.size(); i++) result += it[i];
+  return result;
+}
+
+void printResults(int nRegions, bool isHighLow){
+  if (isHighLow){
+    cout << "--------------- Printing high-high results ----------------- " << endl;
+    cout << "     ttbar       ttw       ttz      wz      t1tttt (1.2,0.8)   t1tttt(1.5,0.1)    t5qqww(1.2,1.0,0.8)" << endl;
+    for (int number = 1; number <= nRegions; number++){
+      cout << Form("%3i% 5.2f     % 4.2f     % 4.2f   % 4.2f         % 4.2f              % 4.2f           % 4.2f", number, ttbar_high[number-1], ttw_high[number-1], ttz_high[number-1], wz_high[number-1], t1tttt_1200_high[number-1], t1tttt_1500_high[number-1], t5qqww_1200_high[number-1]) << endl; 
+    }
+      cout << Form("  % 5.2f     % 4.2f     % 4.2f   % 4.2f         % 4.2f              % 4.2f           % 4.2f", sum(ttbar_high), sum(ttw_high), sum(ttz_high), sum(wz_high), sum(t1tttt_1200_high), sum(t1tttt_1500_high), sum(t5qqww_1200_high)) << endl; 
+  
+    cout << "--------------- Printing high-low results ----------------- " << endl;
+    cout << "     ttbar       ttw       ttz      wz      t1tttt (1.2,0.8)   t1tttt(1.5,0.1)    t5qqww(1.2,1.0,0.8)" << endl;
+    for (int number = 1; number <= nRegions; number++){
+      cout << Form("%3i% 5.2f     % 4.2f     % 4.2f   % 4.2f         % 4.2f              % 4.2f           % 4.2f", number, ttbar_hl[number-1], ttw_hl[number-1], ttz_hl[number-1], wz_hl[number-1], t1tttt_1200_hl[number-1], t1tttt_1500_hl[number-1], t5qqww_1200_hl[number-1]) << endl; 
+    }
+    cout << Form("  % 5.2f     % 4.2f     % 4.2f   % 4.2f         % 4.2f              % 4.2f           % 4.2f", sum(ttbar_hl), sum(ttw_hl), sum(ttz_hl), sum(wz_hl), sum(t1tttt_1200_hl), sum(t1tttt_1500_hl), sum(t5qqww_1200_hl)) << endl; 
+
   }
+  else { 
+    cout << "--------------- Printing low-low results ----------------- " << endl;
+    cout << "     ttbar       ttw       ttz      wz      t1tttt (1.2,0.8)   t1tttt(1.5,0.1)    t5qqww(1.2,1.0,0.8)" << endl;
+    for (int number = 1; number <= nRegions; number++){
+      cout << Form("%3i% 5.2f     % 4.2f     % 4.2f   % 4.2f         % 4.2f              % 4.2f           % 4.2f", number, ttbar_low[number-1], ttw_low[number-1], ttz_low[number-1], wz_low[number-1], t1tttt_1200_low[number-1], t1tttt_1500_low[number-1], t5qqww_1200_low[number-1]) << endl; 
+    }
+      cout << Form("  % 5.2f     % 4.2f     % 4.2f   % 4.2f         % 4.2f              % 4.2f           % 4.2f", sum(ttbar_low), sum(ttw_low), sum(ttz_low), sum(wz_low), sum(t1tttt_1200_low), sum(t1tttt_1500_low), sum(t5qqww_1200_low)) << endl; 
+  } 
+}
 
-  //Create vector with yields to return
-  vector <float> temp;
+vector<float> fillA(TTree *chain){
+
+  //Vector for results;
+  vector <float> result;
+
+  //Void, initialize baseline
+  TCut baseline = selectionSS + njets2 + met50 + highHigh;
+  
+  //ht_ultra and met_ultra
+  TCut ht_ultra(Form("ht > %i", ht_ultra_value)); 
+  TCut met_low(Form("met > 50 && met < %i", met_cut));
+  TCut met_high(Form("met >= %i && met < %i", met_cut, met_ultra_value));
+  TCut ht_high(Form("ht >= %i && ht < %i", ht_cut_2, ht_ultra_value));
+  TCut met_ultra(Form("met > %i", met_ultra_value));
+ 
+  //Define each SR, make yield, plot
+  TCut SR1  = nbtags0*ht_low *njets_low *met_low*mtmin_low;
+  TCut SR2  = nbtags0*(ht_med || ht_high) *njets_low *met_low*mtmin_low;
+  TCut SR3  = nbtags0*ht_low *((njets_high || (njets_low && met_high))*mtmin_low || njets_low*met_low*mtmin_high || (njets_high || (njets_low && met_high))*mtmin_high); 
+  TCut SR4  = nbtags0*(ht_med || ht_high)*njets_high*met_low*mtmin_low;
+  TCut SR5  = nbtags0*(ht_med || ht_high)*njets_low*met_high*mtmin_low;
+  TCut SR6  = nbtags0*(ht_med || ht_high)*njets_high*met_high*mtmin_low;
+  TCut SR7 = nbtags0*(ht_med || ht_high)*njets_low*met_low*mtmin_high;
+  TCut SR8 = nbtags0*(ht_med || ht_high)*(njets_high || (njets_low && met_high))*mtmin_high; 
+  TCut SR9 = nbtags1*ht_low *njets_low *met_low*mtmin_low;
+  TCut SR10 = nbtags1*(ht_med || ht_high)*njets_low *met_low*mtmin_low;
+  TCut SR11 = nbtags1*ht_low *((njets_high || (njets_low && met_high))*mtmin_low || njets_low*met_low*mtmin_high || (njets_high || (njets_low && met_high))*mtmin_high); 
+  TCut SR12 = nbtags1*(ht_med || ht_high) *njets_high*met_low*mtmin_low;
+  TCut SR13 = nbtags1*(ht_med || ht_high)*njets_low*met_high*mtmin_low;
+  TCut SR14 = nbtags1*(ht_med || ht_high)*njets_high*met_high*mtmin_low;
+  TCut SR15 = nbtags1*(ht_med || ht_high)*njets_low*met_low*mtmin_high;
+  TCut SR16 = nbtags1*(ht_med || ht_high)*(njets_high || (njets_low && met_high))*mtmin_high; 
+  TCut SR17 = nbtags2*ht_low *njets_low *met_low*mtmin_low;
+  TCut SR18 = nbtags2*(ht_med || ht_high) *njets_low *met_low*mtmin_low;
+  TCut SR19 = nbtags2*ht_low *((njets_high || (njets_low && met_high))*mtmin_low || njets_low*met_low*mtmin_high || (njets_high || (njets_low && met_high))*mtmin_high); 
+  TCut SR20 = nbtags2*(ht_med || ht_high)*njets_high*met_low*mtmin_low;
+  TCut SR21 = nbtags2*(ht_med || ht_high)*njets_low*met_high*mtmin_low;
+  TCut SR22 = nbtags2*(ht_med || ht_high)*njets_high*met_high*mtmin_low;
+  TCut SR23 = nbtags2*(ht_med || ht_high)*njets_low*met_low*mtmin_high;
+  TCut SR24 = nbtags2*(ht_med || ht_high)*(njets_high || (njets_low && met_high))*mtmin_high; 
+  TCut SR25 = nbtags3p*ht_low*met_low*mtmin_low;
+  TCut SR26 = nbtags3p*(ht_med || ht_high)*met_low*mtmin_low;
+  TCut SR27 = nbtags3p*ht_low*met_high*mtmin_low;
+  TCut SR28 = nbtags3p*(ht_med || ht_high)*met_high*mtmin_low;
+  TCut SR29 = nbtags3p*ht_low*(met_low || met_high)*mtmin_high; 
+  TCut SR30 = nbtags3p*(ht_med || ht_high)*njets2*(met_low || met_high)*mtmin_high; 
+  TCut SR31 = met_ultra; 
+  TCut SR32 = ht_ultra;
+
+  vector <TCut> cuts;
+  cuts.push_back(SR1); 
+  cuts.push_back(SR2); 
+  cuts.push_back(SR3); 
+  cuts.push_back(SR4); 
+  cuts.push_back(SR5); 
+  cuts.push_back(SR6); 
+  cuts.push_back(SR7); 
+  cuts.push_back(SR8); 
+  cuts.push_back(SR9); 
+  cuts.push_back(SR10); 
+  cuts.push_back(SR11); 
+  cuts.push_back(SR12); 
+  cuts.push_back(SR13); 
+  cuts.push_back(SR14); 
+  cuts.push_back(SR15); 
+  cuts.push_back(SR16); 
+  cuts.push_back(SR17); 
+  cuts.push_back(SR18); 
+  cuts.push_back(SR19); 
+  cuts.push_back(SR20); 
+  cuts.push_back(SR21); 
+  cuts.push_back(SR22); 
+  cuts.push_back(SR23); 
+  cuts.push_back(SR24); 
+  cuts.push_back(SR25); 
+  cuts.push_back(SR26); 
+  cuts.push_back(SR27); 
+  cuts.push_back(SR28); 
+  cuts.push_back(SR29); 
+  cuts.push_back(SR30); 
+  cuts.push_back(SR31); 
+  cuts.push_back(SR32); 
+
+  for (unsigned int i = 0; i < 32; i++){
+    TH1F *hist = new TH1F("hist", "hist", 1, 0, 1);
+    chain->Draw("0.5>>hist", baseline*weight*cuts[i]);
+    result.push_back(hist->Integral());  
+    delete hist;
+  }
+  return result;
+}
+
+vector<float> fillB(TTree *chain){
+
+  //Vector for results;
+  vector <float> result;
+
+  //Void, initialize baseline
+  TCut baseline = highLow + selectionSS + njets2 + met50;
+
+  //ht_ultra and met_ultra
+  TCut ht_ultra(Form("ht > %i", ht_ultra_value)); 
+  TCut met_low(Form("met > 50 && met < %i", met_cut));
+  TCut met_high(Form("met >= %i && met < %i", met_cut, met_ultra_value));
+  TCut ht_high(Form("ht >= %i && ht < %i", ht_cut_2, ht_ultra_value));
+  TCut met_ultra(Form("met > %i", met_ultra_value));
+ 
+  //Define each SR, make yield, plot
+  TCut SR1  = nbtags0*ht_low *njets_low *met_low*mtmin_low;
+  TCut SR2  = nbtags0*(ht_med || ht_high)*njets_low *met_low*mtmin_low;
+  TCut SR3  = nbtags0*ht_low *(njets_high || (njets_low && met_high))*mtmin_low; 
+  TCut SR4  = nbtags0*(ht_med || ht_high) *njets_high*met_low*mtmin_low;
+  TCut SR5  = nbtags0*(ht_med || ht_high)*njets_low*met_high*mtmin_low;
+  TCut SR6  = nbtags0*(ht_med || ht_high)*njets_high*met_high*mtmin_low;
+  TCut SR7 = nbtags1*ht_low *njets_low *met_low*mtmin_low;
+  TCut SR8 = nbtags1*(ht_med || ht_high)*njets_low *met_low*mtmin_low;
+  TCut SR9 = nbtags1*ht_low *(njets_high || (njets_low && met_high))*mtmin_low; 
+  TCut SR10 = nbtags1*(ht_med || ht_high)*njets_high*met_low*mtmin_low;
+  TCut SR11 = nbtags1*(ht_med || ht_high)*njets_low*met_high*mtmin_low;
+  TCut SR12 = nbtags1*(ht_med || ht_high)*njets_high*met_high*mtmin_low;
+  TCut SR13 = nbtags2*ht_low *njets_low *met_low*mtmin_low;
+  TCut SR14 = nbtags2*(ht_med || ht_high)*njets_low *met_low*mtmin_low;
+  TCut SR15 = nbtags2*ht_low *(njets_high || (njets_low && met_high))*mtmin_low; 
+  TCut SR16 = nbtags2*(ht_med || ht_high)*njets_high*met_low*mtmin_low;
+  TCut SR17 = nbtags2*(ht_med || ht_high)*njets_low*met_high*mtmin_low;
+  TCut SR18 = nbtags2*(ht_med || ht_high)*njets_high*met_high*mtmin_low;
+  TCut SR19 = nbtags3p*ht_low*met_low*mtmin_low;
+  TCut SR20 = nbtags3p*(ht_med || ht_high)*met_low*mtmin_low;
+  TCut SR21 = nbtags3p*ht_low*met_high*mtmin_low;
+  TCut SR22 = nbtags3p*(ht_med || ht_high)*met_high*mtmin_low;
+  TCut SR23 = ht_low*mtmin_high*(!met_ultra);
+  TCut SR24 = (ht_med || ht_high)*(!met_ultra)*mtmin_high;
+  TCut SR25 = met_ultra; 
+  TCut SR26 = ht_ultra;
+
+  vector <TCut> cuts;
+  cuts.push_back(SR1); 
+  cuts.push_back(SR2); 
+  cuts.push_back(SR3); 
+  cuts.push_back(SR4); 
+  cuts.push_back(SR5); 
+  cuts.push_back(SR6); 
+  cuts.push_back(SR7); 
+  cuts.push_back(SR8); 
+  cuts.push_back(SR9); 
+  cuts.push_back(SR10); 
+  cuts.push_back(SR11); 
+  cuts.push_back(SR12); 
+  cuts.push_back(SR13); 
+  cuts.push_back(SR14); 
+  cuts.push_back(SR15); 
+  cuts.push_back(SR16); 
+  cuts.push_back(SR17); 
+  cuts.push_back(SR18); 
+  cuts.push_back(SR19); 
+  cuts.push_back(SR20); 
+  cuts.push_back(SR21); 
+  cuts.push_back(SR22); 
+  cuts.push_back(SR23); 
+  cuts.push_back(SR24); 
+  cuts.push_back(SR25); 
+  cuts.push_back(SR26); 
+
+  for (unsigned int i = 0; i < 26; i++){
+    TH1F *hist = new TH1F("hist", "hist", 1, 0, 1);
+    chain->Draw("0.5>>hist", baseline*weight*cuts[i]);
+    result.push_back(hist->Integral());  
+    delete hist;
+  }
+  return result;
+}
+
+vector<float> fillC(TTree *chain){
+
+  //Vector for results;
+  vector <float> result;
 
   //-------CUTS-------
   //Void, initialize baseline
-  TCut none("1.0");
-  TCut baseline = none;
+  TCut baseline = selectionSS + njets2 + met50 + lowLow;
+  TCut met_low(Form("met < %i", met_cut));
+  TCut met_high(Form("met >= %i", met_cut));
+  TCut ht_cut(Form("ht > %i", ht_cut_1));
   
-  //Weight
-  TCut weight_13("scale1fb*10.0");
-  TCut notweighted("1.0");
-  TCut weight = (weighted == WEIGHTED) ? weight_13 : notweighted;
-  TCut weight8("1.95*sf_dilepTrig_hpt*sf_dilep_eff");
-  if (sample == TTBAR_8TEV) weight *= weight8;
-
-  //Hyp class (num-num, num-denom, etc.)
-  TCut selection1("hyp_class == 1 || hyp_class == 2 || hyp_class == 3");
-  TCut selection2("hyp_class == 2 || hyp_class == 3");
-  TCut selectionSS("hyp_class == 3");
-  TCut selectionOS("hyp_class == 4");
-  baseline += (hyp_class_wanted == NORMAL ? (selection == OS ? selectionOS : selectionSS) : none);
-  if (hyp_class_wanted == INC1) baseline += selection1; 
-  if (hyp_class_wanted == INC2) baseline += selection2; 
-
-  //Lep pT requirements
-  TCut highLow("((lep1_p4.pt() > 10 && lep2_p4.pt() > 25) || (lep1_p4.pt() > 25 && lep2_p4.pt() > 10))"); 
-  TCut lowLow("((lep1_p4.pt() > 10 && lep2_p4.pt() > 10) && (lep1_p4.pt() < 25 && lep2_p4.pt() < 25))"); 
-  TCut high_new("lep1_p4.pt() > 25 && lep2_p4.pt() > 25"); 
-  TCut high_old("lep1_p4.pt() > 20 && lep2_p4.pt() > 20"); 
-  TCut high = regions == NEW ? high_new : high_old;
-  if (pt_ == HIHI) baseline += high;
-  if (pt_ == HILO) baseline += highLow;
-  if (pt_ == LOLO) baseline += lowLow;
- 
-  //Truth matching
-  TCut mc_ss("lep1_mc_id*lep2_mc_id > 0");
-  TCut mc_os("lep1_mc_id*lep2_mc_id < 0");
-  if (doTruthMatching) baseline += (selection == OS) ? mc_os : mc_ss;
- 
-  //nJets
-  TCut njets2("njets >= 2");
-  baseline += njets2;
-  TCut njets_low(Form("njets >= 2 && njets < %i", njets_cut));
-  TCut njets_high(Form("njets >= %i", njets_cut));
-
-  //Lepton flavor
-  TCut el("abs(lep1_id) == 11 && abs(lep2_id) == 11");
-  TCut mu("abs(lep1_id) == 13 && abs(lep2_id) == 13");
-  TCut emu("(abs(lep1_id) == 11 && abs(lep2_id) == 13) || (abs(lep1_id) == 13 && abs(lep2_id) == 11)");
-  if (leps == EL) baseline += el;
-  if (leps == MU) baseline += mu;
-  if (leps == EM) baseline += emu;
-
-  //MET, HT
-  TCut met_low(Form("met > 50 && met < %i", met_cut));
-  TCut met_high(Form("met > %i", met_cut));
-  TCut ht_low(Form("ht > 200 && ht < %i", ht_cut));
-  TCut ht_high(Form("ht > %i", ht_cut));
-  TCut htmet("ht > 500 ? 1 : met > 30");
-
-  //nBtags
-  TCut nbtags0_slow(Form("Sum$(jets.pt()>%i && jets_disc>0.814 ? 1 : 0) == 0", btag_pt));
-  TCut nbtags1_slow(Form("Sum$(jets.pt()>%i && jets_disc>0.814 ? 1 : 0) == 1", btag_pt));
-  TCut nbtags2_slow(Form("Sum$(jets.pt()>%i && jets_disc>0.814 ? 1 : 0) == 2", btag_pt));
-  TCut nbtags3p_slow(Form("Sum$(jets.pt()>%i && jets_disc>0.814 ? 1 : 0) >= 3", btag_pt));
-  TCut nbtags0_quick("nbtags == 0");
-  TCut nbtags1_quick("nbtags == 1");
-  TCut nbtags2_quick("nbtags == 2");
-  TCut nbtags3p_quick("nbtags >= 3");
-  TCut nbtags0 =  btag_pt == 25 ? nbtags0_quick  : nbtags0_slow;
-  TCut nbtags1 =  btag_pt == 25 ? nbtags1_quick  : nbtags1_slow;
-  TCut nbtags2 =  btag_pt == 25 ? nbtags2_quick  : nbtags2_slow;
-  TCut nbtags3p = btag_pt == 25 ? nbtags3p_quick : nbtags3p_slow;
-
-  //MT MIN
-  TCut mtmin100("mt > mt_l2 ? mt_l2 > 100 : mt > 100");
-  TCut mtmin125("mt > mt_l2 ? mt_l2 > 125 : mt > 125");
-  TCut mtmin150("mt > mt_l2 ? mt_l2 > 150 : mt > 150");
-  if (mt_min == MT100) baseline += mtmin100;
-  if (mt_min == MT125) baseline += mtmin125;
-  if (mt_min == MT150) baseline += mtmin150;
+  //HT everywhere
+  baseline += ht_cut;
 
   //Define each SR, make yield, plot
-  for (int i = firstSR; i < firstSR+nRegions; i++){
-    if (i%10 == 9){
-      temp.push_back(-1);
-      continue;
-    }
- 
-    TH1F* SR = new TH1F("SR", "SR", 1, 0, 1);
-    TCut cut;
-    if (i%10 == 0) cut = htmet;
-    if (i%10 == 1) cut = met_low*ht_low*njets_low; 
-    if (i%10 == 2) cut = met_low*ht_high*njets_low; 
-    if (i%10 == 3) cut = met_low*ht_low*njets_high; 
-    if (i%10 == 4) cut = met_low*ht_high*njets_high; 
-    if (i%10 == 5) cut = met_high*ht_low*njets_low; 
-    if (i%10 == 6) cut = met_high*ht_high*njets_low; 
-    if (i%10 == 7) cut = met_high*ht_low*njets_high; 
-    if (i%10 == 8) cut = met_high*ht_high*njets_high; 
-    if (doBtagging || nRegions > 10){
-      if (i-30 >= 0) cut *= nbtags3p;
-      else if (i-20 >= 0) cut *= nbtags2;
-      else if (i-10 >= 0) cut *= nbtags1;
-      else if (i > 0) cut *= nbtags0; 
-    }
-    cut *= cuts;
-    chain->Draw("0.5>>SR", weight*baseline*cut); 
-    temp.push_back(SR->Integral());
-    if (makePlots) hist->Fill(i, SR->Integral()); 
-    if (scan){
-      if (i == scanRegion) cout << weight*baseline*cut << endl;
-      if (i == scanRegion) chain->SetScanField(0);
-      if (i == scanRegion) chain->Scan("lumi:event:njets:nbtags:ht:met",baseline*cut);
-    }
-    delete SR;
+  TCut SR1 = nbtags0*met_low*mtmin_low; 
+  TCut SR2 = nbtags0*met_high*mtmin_low; 
+  TCut SR3 = nbtags1*met_low*mtmin_low; 
+  TCut SR4 = nbtags1*met_high*mtmin_low; 
+  TCut SR5 = nbtags2*met_low*mtmin_low; 
+  TCut SR6 = nbtags2*met_high*mtmin_low; 
+  TCut SR7 = nbtags3p*mtmin_low;
+  TCut SR8 = mtmin_high;
+  vector <TCut> cuts;
+  cuts.push_back(SR1); 
+  cuts.push_back(SR2); 
+  cuts.push_back(SR3); 
+  cuts.push_back(SR4); 
+  cuts.push_back(SR5); 
+  cuts.push_back(SR6); 
+  cuts.push_back(SR7); 
+  cuts.push_back(SR8); 
+  for (unsigned int i = 0; i < 8; i++){
+    TH1F *hist = new TH1F("hist", "hist", 1, 0, 1);
+    chain->Draw("0.5>>hist", baseline*weight*cuts[i]);
+    result.push_back(hist->Integral());  
+    delete hist;
   }
-
-  if (makePlots) file->cd();
-  if (makePlots) hist->Write();
-
-  return temp;
-
+  return result;
 }
 
 int yields(){
 
-  if (nRegions < 10 && !doBtagging) cout << "WARNING! Not doing any b-tag requirements!" << endl;
-  cout << Form("SR regions based around HT cut of %i, MET cut of %i, njets cut of %i", ht_cut, met_cut, njets_cut) << endl;
-
-  //If making plots, check if directory exists; create it if not; otherwise, ask permission to overwrite it
-  if (makePlots){
-    struct stat info;
-    if (stat(output_dir, &info) != 0){ 
-      string input;
-      bool keepAsking = true;
-      while (keepAsking == true){
-        cout << Form("Directory %s already exists.  Really overwrite those files? (yes/no) ", output_dir);
-        getline(cin, input); 
-        if (input == "no"){ cout << "aborting" << endl; keepAsking = false; return 0; }
-        if (input == "yes") keepAsking = false;
-      }
-    } 
-    else system(Form("mkdir ../%s", output_dir)); 
-  }
-
-  //Warning if not running on all lepton flavors
-  const char* ssoros = selection == SS ? "SS" : "OS";
-  cout << "Running in " << ssoros << " mode" << endl;
-  if (leps == EL) cout << "Running on dielectrons!" << endl; 
-  if (leps == EM) cout << "Running on el-mus!" << endl; 
-  if (leps == MU) cout << "Running on dimuons!" << endl; 
-
-  //Declare null TCut
-  TCut none("1.0");
-
-  //Declare yield vectors
-  vector <float> ttw_yields;
-  vector <float> ttz_yields;
-  vector <float> wz_yields;
-  vector <float> ttbar_yields;
-  vector <float> ttbar_8_yields;
-  vector <float> test_yields;
-  vector <float> t1tttt_1_yields;
-  vector <float> t1tttt_2_yields;
-  vector <float> t1tttt_3_yields;
-
-  //---------------For each sample, make yields, plots-------------------
-  if (sample == TEST){
-    TFile *test_file = new TFile(Form("../%s", testfile));
-    TTree *test_tree = (TTree*)test_file->Get("t");
-    cout << endl << "TEST yields: " << endl;
-    if (which_pt == HIHI || which_pt == ALL3){
-      cout << "  High High" << endl;
-      test_yields = doIt(test_tree, none, HIHI);
-      for (unsigned int i = 0; i < test_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << test_yields[i] << endl;
-    }
-    if (which_pt == HILO || which_pt == ALL3){
-      cout << endl << "  High Low" << endl;
-      test_yields = doIt(test_tree, none, HILO);
-      for (unsigned int i = 0; i < test_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << test_yields[i] << endl;
-    }
-    if (which_pt == LOLO || which_pt == ALL3){
-      cout << endl << "  Low Low" << endl;
-      test_yields = doIt(test_tree, none, LOLO);
-      for (unsigned int i = 0; i < test_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << test_yields[i] << endl;
-    }
-  }
-
-  if (sample == ALL || sample == TTW){
-    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "TTWJets_histos.root"), "RECREATE");
-    TFile *ttw_file = new TFile(Form("../%s/ttw_baby.root", path));
-    TTree *ttw_tree = (TTree*)ttw_file->Get("t");
-    cout << endl << "TTW yields: " << endl;
-    if (which_pt == HIHI || which_pt == ALL3){
-      cout << "  High High" << endl;
-      ttw_yields = doIt(ttw_tree, none, HIHI);
-      for (unsigned int i = 0; i < ttw_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttw_yields[i] << endl;
-    }
-    if (which_pt == HILO || which_pt == ALL3){
-      cout << endl << "  High Low" << endl;
-      ttw_yields = doIt(ttw_tree, none, HILO);
-      for (unsigned int i = 0; i < ttw_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttw_yields[i] << endl;
-    }
-    if (which_pt == LOLO || which_pt == ALL3){
-      cout << endl << "  Low Low" << endl;
-      ttw_yields = doIt(ttw_tree, none, LOLO);
-      for (unsigned int i = 0; i < ttw_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttw_yields[i] << endl;
-    }
-  }
-
-  if (sample == ALL || sample == TTZ){
-    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "TTZJets_histos.root"), "RECREATE");
-    TFile *ttz_file = new TFile(Form("../%s/ttz_baby.root", path));
-    TTree *ttz_tree = (TTree*)ttz_file->Get("t");
-    cout << endl <<  "TTZ yields: " << endl;
-    if (which_pt == HIHI || which_pt == ALL3){
-      cout << "  High High" << endl;
-      ttz_yields = doIt(ttz_tree, none, HIHI);
-      for (unsigned int i = 0; i < ttz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttz_yields[i] << endl;
-    }
-    if (which_pt == HILO || which_pt == ALL3){
-      cout << endl << "  High Low" << endl;
-      ttz_yields = doIt(ttz_tree, none, HILO);
-      for (unsigned int i = 0; i < ttz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttz_yields[i] << endl;
-    }
-    if (which_pt == LOLO || which_pt == ALL3){
-      cout << endl << "  Low Low" << endl;
-      ttz_yields = doIt(ttz_tree, none, LOLO);
-      for (unsigned int i = 0; i < ttz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttz_yields[i] << endl;
-    }
-  }
-  
-  if (sample == ALL || sample == TTBAR){
-    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "ttbar_histos.root"), "RECREATE");
-    TFile *ttbar_file = new TFile(Form("../%s/ttbar_baby.root", path));
-    TTree *ttbar_tree = (TTree*)ttbar_file->Get("t");
-    cout << endl << "TTBAR yields: " << endl;
-    if (which_pt == HIHI || which_pt == ALL3){
-      cout << "  High High" << endl;
-      ttbar_yields = doIt(ttbar_tree, none, HIHI);
-      for (unsigned int i = 0; i < ttbar_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttbar_yields[i] << endl;
-    }
-    if (which_pt == HILO || which_pt == ALL3){
-      cout << endl << "  High Low" << endl;
-      ttbar_yields = doIt(ttbar_tree, none, HILO);
-      for (unsigned int i = 0; i < ttbar_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttbar_yields[i] << endl;
-    }
-    if (which_pt == LOLO || which_pt == ALL3){
-      cout << endl << "  Low Low" << endl;
-      ttbar_yields = doIt(ttbar_tree, none, LOLO);
-      for (unsigned int i = 0; i < ttbar_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << ttbar_yields[i] << endl;
-    }
-  }
-
-  if (sample == TTBAR_8TEV){
-    TFile *ttbar_8_file = new TFile("../eightTeV/ttbar_8_baby.root");
-    TTree *ttbar_8_tree = (TTree*)ttbar_8_file->Get("t");
-    ttbar_8_yields = doIt(ttbar_8_tree, none, HIHI);
-  }
-
-  if (sample == T1TTTT_1500_100 || sample == ALL){
-    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "T1TTTT_1500_100_histos.root"), "RECREATE");
-    TFile *t1tttt_2_file = new TFile(Form("../%s/t1tttt_1500_100_baby.root", path));
-    TTree *t1tttt_2_tree = (TTree*)t1tttt_2_file->Get("t");
-    cout << endl << "T1TTTT_1500_100 yields: " << endl;
-    if (which_pt == HIHI || which_pt == ALL3){
-      cout << "  High High" << endl;
-      t1tttt_2_yields = doIt(t1tttt_2_tree, none, HIHI);
-      for (unsigned int i = 0; i < t1tttt_2_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_2_yields[i] << endl;
-    }
-    if (which_pt == HILO || which_pt == ALL3){
-      cout << endl << "  High Low" << endl;
-      t1tttt_2_yields = doIt(t1tttt_2_tree, none, HILO);
-      for (unsigned int i = 0; i < t1tttt_2_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_2_yields[i] << endl;
-    }
-    if (which_pt == LOLO || which_pt == ALL3){
-      cout << endl << "  Low Low" << endl;
-      t1tttt_2_yields = doIt(t1tttt_2_tree, none, LOLO);
-      for (unsigned int i = 0; i < t1tttt_2_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_2_yields[i] << endl;
-    }
-  }
-
-  if (sample == T1TTTT_1200_800 || sample == ALL){
-    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "T1TTTT_1200_800_histos.root"), "RECREATE");
-    TFile *t1tttt_3_file = new TFile(Form("../%s/t1tttt_1200_800_baby.root", path));
-    TTree *t1tttt_3_tree = (TTree*)t1tttt_3_file->Get("t");
-    cout << endl << "T1TTTT_1200_800 yields: " << endl;
-    if (which_pt == HIHI || which_pt == ALL3){
-      cout << "  High High" << endl;
-      t1tttt_3_yields = doIt(t1tttt_3_tree, none, HIHI);
-      for (unsigned int i = 0; i < t1tttt_3_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_3_yields[i] << endl;
-    }
-    if (which_pt == HILO || which_pt == ALL3){
-      cout << endl << "  High Low" << endl;
-      t1tttt_3_yields = doIt(t1tttt_3_tree, none, HILO);
-      for (unsigned int i = 0; i < t1tttt_3_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_3_yields[i] << endl;
-    }
-    if (which_pt == LOLO || which_pt == ALL3){
-      cout << endl << "  Low Low" << endl;
-      t1tttt_3_yields = doIt(t1tttt_3_tree, none, LOLO);
-      for (unsigned int i = 0; i < t1tttt_3_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << t1tttt_3_yields[i] << endl;
-    }
-  }
-
-  if (sample == WZ || sample == ALL){
-    if (makePlots) file = new TFile(Form("../%s/%s", output_dir, "WZJets_histos.root"), "RECREATE");
-    TFile *wz_file = new TFile(Form("../%s/wz_baby.root", path));
-    TTree *wz_tree = (TTree*)wz_file->Get("t");
-    cout << endl << "WZ yields: " << endl;
-    if (which_pt == HIHI || which_pt == ALL3){
-      cout << "  High High" << endl;
-       wz_yields = doIt(wz_tree, none, HIHI);
-       for (unsigned int i = 0; i < wz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << wz_yields[i] << endl;
-    }
-    if (which_pt == HILO || which_pt == ALL3){
-      wz_yields = doIt(wz_tree, none, HILO);
-      cout << endl << "  High Low" << endl;
-      for (unsigned int i = 0; i < wz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << wz_yields[i] << endl;
-    }
-    if (which_pt == LOLO || which_pt == ALL3){
-      wz_yields = doIt(wz_tree, none, LOLO);
-      cout << endl << "  Low Low" << endl;
-      for (unsigned int i = 0; i < wz_yields.size(); i++) cout << "   SR " << firstSR+i << ": " << wz_yields[i] << endl;
-    }
-  }
+  //Make chains
+  TChain* ttbar       = new TChain("t");
+  TChain* ttw         = new TChain("t");
+  TChain* ttz         = new TChain("t");
+  TChain* wz          = new TChain("t");
+  TChain* t1tttt_1200 = new TChain("t");
+  TChain* t1tttt_1500 = new TChain("t");
+  TChain* t5qqww_1200 = new TChain("t");
+  TChain* t5qqww_deg  = new TChain("t");
  
-  if (makePlots) file->Close();
+  //Fill chains
+  ttbar      ->Add("../v1.08/TTBAR_multiIso.root"                                 );
+  ttw        ->Add("../v1.08/TTW_multiIso.root"                                   );
+  ttz        ->Add("../v1.08/TTZ_multiIso.root"                                   );
+  wz         ->Add("../v1.08/WZ_multiIso.root"                                    );
+  t1tttt_1200->Add("../v1.08/T1TTTT_1200_multiIso.root"                           );
+  t1tttt_1500->Add("../v1.08/T1TTTT_1500_multiIso.root"                           );
+  t5qqww_1200->Add("../v1.08/private/t5qqqqWW_1200_1000_800_baby_multiIso.root"   );
+  t5qqww_deg ->Add("../v1.08/private/t5qqqqWW_deg_1000_315_300_baby_multiIso.root");
+
+  //Get results
+  ttbar_high        = fillA(ttbar      ); 
+  ttw_high          = fillA(ttw        ); 
+  ttz_high          = fillA(ttz        ); 
+  wz_high           = fillA(wz         ); 
+  t1tttt_1200_high  = fillA(t1tttt_1200); 
+  t1tttt_1500_high  = fillA(t1tttt_1500); 
+  t5qqww_1200_high  = fillA(t5qqww_1200); 
+  t5qqww_deg_high   = fillA(t5qqww_deg ); 
+  ttbar_hl          = fillB(ttbar      ); 
+  ttw_hl            = fillB(ttw        ); 
+  ttz_hl            = fillB(ttz        ); 
+  wz_hl             = fillB(wz         ); 
+  t1tttt_1200_hl    = fillB(t1tttt_1200); 
+  t1tttt_1500_hl    = fillB(t1tttt_1500); 
+  t5qqww_1200_hl    = fillB(t5qqww_1200); 
+  t5qqww_deg_hl     = fillB(t5qqww_deg ); 
+
+  //Print results
+  //printResults(47, 0);
+  //printResults(32, 1);
+
+  //Now make histogram of results
+  TH1F *high_ttbar       = new TH1F("high_ttbar", "high_ttbar", 32, 1, 33);
+  TH1F *high_ttw         = new TH1F("high_ttw", "high_ttw", 32, 1, 33);
+  TH1F *high_ttz         = new TH1F("high_ttz", "high_ttz", 32, 1, 33);
+  TH1F *high_wz          = new TH1F("high_wz", "high_wz", 32, 1, 33);
+  TH1F *high_t1tttt_1200 = new TH1F("high_t1tttt_1200", "high_t1tttt_1200", 32, 1, 33);
+  TH1F *high_t1tttt_1500 = new TH1F("high_t1tttt_1500", "high_t1tttt_1500", 32, 1, 33);
+  TH1F *high_t5qqww_1200 = new TH1F("high_t5qqww_1200", "high_t5qqww_1200", 32, 1, 33);
+  TH1F *high_t5qqww_deg = new TH1F("high_t5qqww_deg", "high_t5qqww_deg", 32, 1, 33);
+  TH1F *hl_ttbar       = new TH1F("hl_ttbar", "hl_ttbar", 26, 1, 27);
+  TH1F *hl_ttw         = new TH1F("hl_ttw", "hl_ttw", 26, 1, 27);
+  TH1F *hl_ttz         = new TH1F("hl_ttz", "hl_ttz", 26, 1, 27);
+  TH1F *hl_wz          = new TH1F("hl_wz", "hl_wz", 26, 1, 27);
+  TH1F *hl_t1tttt_1200 = new TH1F("hl_t1tttt_1200", "hl_t1tttt_1200", 26, 1, 27);
+  TH1F *hl_t1tttt_1500 = new TH1F("hl_t1tttt_1500", "hl_t1tttt_1500", 26, 1, 27);
+  TH1F *hl_t5qqww_1200 = new TH1F("hl_t5qqww_1200", "hl_t5qqww_1200", 26, 1, 27);
+  TH1F *hl_t5qqww_deg = new TH1F("hl_t5qqww_deg", "hl_t5qqww_deg", 26, 1, 27);
+
+  //Fill the histograms
+  for (unsigned int i = 0; i < 32; i++){
+    high_ttbar->SetBinContent(i+1, ttbar_high[i]); 
+    high_ttw->SetBinContent(i+1, ttw_high[i]); 
+    high_ttz->SetBinContent(i+1, ttz_high[i]); 
+    high_wz->SetBinContent(i+1, wz_high[i]); 
+    high_t1tttt_1200->SetBinContent(i+1, t1tttt_1200_high[i]); 
+    high_t1tttt_1500->SetBinContent(i+1, t1tttt_1500_high[i]); 
+    high_t5qqww_1200->SetBinContent(i+1, t5qqww_1200_high[i]); 
+    high_t5qqww_deg->SetBinContent(i+1, t5qqww_deg_high[i]); 
+  }
+
+  for (unsigned int i = 0; i < 26; i++){
+    hl_ttbar->SetBinContent(i+1, ttbar_hl[i]); 
+    hl_ttw->SetBinContent(i+1, ttw_hl[i]); 
+    hl_ttz->SetBinContent(i+1, ttz_hl[i]); 
+    hl_wz->SetBinContent(i+1, wz_hl[i]); 
+    hl_t1tttt_1200->SetBinContent(i+1, t1tttt_1200_hl[i]); 
+    hl_t1tttt_1500->SetBinContent(i+1, t1tttt_1500_hl[i]); 
+    hl_t5qqww_1200->SetBinContent(i+1, t5qqww_1200_hl[i]); 
+    hl_t5qqww_deg->SetBinContent(i+1, t5qqww_deg_hl[i]); 
+  }
+
+  vector <TH1F*> background_high;
+  background_high.push_back(high_ttbar);
+  background_high.push_back(high_ttw);
+  background_high.push_back(high_ttz);
+  background_high.push_back(high_wz);
+
+  vector <TH1F*> background_hl;
+  background_hl.push_back(hl_ttbar);
+  background_hl.push_back(hl_ttw);
+  background_hl.push_back(hl_ttz);
+  background_hl.push_back(hl_wz);
+
+  vector <TH1F*> signal_high;
+  signal_high.push_back(high_t1tttt_1200);
+  signal_high.push_back(high_t1tttt_1500);
+  signal_high.push_back(high_t5qqww_1200);
+  signal_high.push_back(high_t5qqww_deg);
+
+  vector <TH1F*> signal_hl;
+  signal_hl.push_back(hl_t1tttt_1200);
+  signal_hl.push_back(hl_t1tttt_1500);
+  signal_hl.push_back(hl_t5qqww_1200);
+  signal_hl.push_back(hl_t5qqww_deg);
+
+  titles.push_back("ttbar");
+  titles.push_back("ttw");
+  titles.push_back("ttz");
+  titles.push_back("wz");
+
+  signal_titles.push_back("t1tttt (1.2, 0.8)");
+  signal_titles.push_back("t1tttt (1.5, 0.1)");
+  signal_titles.push_back("t5qqww (1.2, 1.0, 0.8)");
+  signal_titles.push_back("t5qqww (1.0, 0.315, 0.3)");
+
+  TH1F* null = new TH1F("","",1,0,1);
+  vector <TH1F*> null_vector;
+  vector <char*> null_strings;
+
+  Colors.push_back(kGreen-3);
+  Colors.push_back(kCyan);
+  Colors.push_back(kOrange-4);
+  Colors.push_back(kMagenta-8);
+  Colors2.push_back(kRed);
+  Colors2.push_back(kBlue);
+  Colors2.push_back(kGreen+3);
+  Colors2.push_back(kMagenta+1);
+
+  dataMCplotMaker(null, background_high, titles, "H-H", "", "--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --setMaximum 45", null_vector, null_strings, Colors); 
+  dataMCplotMaker(null, background_hl  , titles, "H-L", "", "--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName   hl_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --setMaximum 80", null_vector, null_strings, Colors); 
+  dataMCplotMaker(null, signal_high, signal_titles, "H-H", "", "--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.0325 --noStack --isLinear --nDivisions 210 --setMaximum 8", null_vector, null_strings, Colors2); 
+  dataMCplotMaker(null, signal_hl  , signal_titles, "H-L", "", "--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName   hl_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.03 --noStack --isLinear --nDivisions 210 --setMaximum 4", null_vector, null_strings, Colors2); 
+
+  //Get results
+  ttbar_low         = fillC(ttbar      ); 
+  ttw_low           = fillC(ttw        ); 
+  ttz_low           = fillC(ttz        ); 
+  wz_low            = fillC(wz         ); 
+  t1tttt_1200_low   = fillC(t1tttt_1200); 
+  t1tttt_1500_low   = fillC(t1tttt_1500); 
+  t5qqww_1200_low   = fillC(t5qqww_1200); 
+  t5qqww_deg_low    = fillC(t5qqww_deg ); 
+
+  //Print results
+  //printResults(8, 0);
+
+  //Now make histogram of results
+  TH1F *low_ttbar       = new TH1F("low_ttbar", "low_ttbar", 8, 1, 9);
+  TH1F *low_ttw         = new TH1F("low_ttw", "low_ttw", 8, 1, 9);
+  TH1F *low_ttz         = new TH1F("low_ttz", "low_ttz", 8, 1, 9);
+  TH1F *low_wz          = new TH1F("low_wz", "low_wz", 8, 1, 9);
+  TH1F *low_t1tttt_1200 = new TH1F("low_t1tttt_1200", "low_t1tttt_1200", 8, 1, 9);
+  TH1F *low_t1tttt_1500 = new TH1F("low_t1tttt_1500", "low_t1tttt_1500", 8, 1, 9);
+  TH1F *low_t5qqww_1200 = new TH1F("low_t5qqww_1200", "low_t5qqww_1200", 8, 1, 9);
+  TH1F *low_t5qqww_deg = new TH1F("low_t5qqww_deg", "low_t5qqww_deg", 8, 1, 9);
+
+  //Fill the histograms
+  for (unsigned int i = 0; i < 8; i++){
+    low_ttbar->SetBinContent(i+1, ttbar_low[i]); 
+    low_ttw->SetBinContent(i+1, ttw_low[i]); 
+    low_ttz->SetBinContent(i+1, ttz_low[i]); 
+    low_wz->SetBinContent(i+1, wz_low[i]); 
+    low_t1tttt_1200->SetBinContent(i+1, t1tttt_1200_low[i]); 
+    low_t1tttt_1500->SetBinContent(i+1, t1tttt_1500_low[i]); 
+    low_t5qqww_1200->SetBinContent(i+1, t5qqww_1200_low[i]); 
+    low_t5qqww_deg->SetBinContent(i+1, t5qqww_deg_low[i]); 
+  }
+
+  vector <TH1F*> background_low;
+  background_low.push_back(low_ttbar);
+  background_low.push_back(low_ttw);
+  background_low.push_back(low_ttz);
+  background_low.push_back(low_wz);
+
+  vector <TH1F*> signal_low;
+  signal_low.push_back(low_t1tttt_1200);
+  signal_low.push_back(low_t1tttt_1500);
+  signal_low.push_back(low_t5qqww_1200);
+  signal_low.push_back(low_t5qqww_deg);
+
+  dataMCplotMaker(null, background_low, titles, "L-L", "", "--vLine 3 --vLine 5 --vLine 7 --vLine 8 --nDivisions 107  --outputName low_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --legendRight 0.12 --setMaximum 15", null_vector, null_strings, Colors); 
+  dataMCplotMaker(null, signal_low, signal_titles, "L-L", "", "--vLine 3 --vLine 5 --vLine 7 --vLine 8 --nDivisions 107 --outputName low_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --legendRight -0.12 --setMaximum 2 --noStack", null_vector, null_strings, Colors2);
 
   return 0;
 
