@@ -13,5 +13,5 @@ notify_user = george@physics.ucsb.edu
 x509userproxy = USER_PROXY
 Executable = condorExecutable.sh
 Transfer_executable = True
-arguments = ARG1 ARG2 ARG3 
+arguments = ARG1 ARG2 ARG3
 Queue 1
