@@ -10,7 +10,6 @@
 #include "TCanvas.h"
 #include "TH2F.h"
 #include "TH1.h"
-#include "contour.h"
 
 enum dim_t { D1, D2 };
 
@@ -51,17 +50,14 @@ void makePlots(dim_t dim, vector<string> var, string title, int nbins, int maxbi
   else if (dim == D1) baseline += met50 + ht200 + njets2 + hh; 
   TCut weight("scale1fb*10.0");
 
-  //Support ptrel and non-ptrel plots
-  string ptrel = doPtRel ? "_ptRel" : "";
-
   //Get files 
-  TFile *ttz_file             = new TFile(Form("../v1.06/TTZ%s.root"            , ptrel.c_str())); 
-  TFile *ttw_file             = new TFile(Form("../v1.06/TTW%s.root"            , ptrel.c_str())); 
-  TFile *ttbar_file           = new TFile(Form("../v1.06/TTBAR%s.root"          , ptrel.c_str())); 
-  TFile *wz_file              = new TFile(Form("../v1.06/WZ%s.root"             , ptrel.c_str())); 
-  TFile *t1tttt_1200_800_file = new TFile(Form("../v1.06/T1TTTT_1200%s.root", ptrel.c_str())); 
-  TFile *t1tttt_1500_100_file = new TFile(Form("../v1.06/T1TTTT_1500%s.root", ptrel.c_str())); 
-  TFile *t5qqqqWW1200_file    = new TFile(Form("../v1.06/t5qqqqww_1200%s_1_unoff.root"   , ptrel.c_str()));
+  TFile *ttz_file             = new TFile("../v1.08/TTZ_multiIso.root"           ); 
+  TFile *ttw_file             = new TFile("../v1.08/TTW_multiIso.root"           ); 
+  TFile *ttbar_file           = new TFile("../v1.08/TTBAR_multiIso.root"         ); 
+  TFile *wz_file              = new TFile("../v1.08/WZ_multiIso.root"            ); 
+  TFile *t1tttt_1200_800_file = new TFile("../v1.08/T1TTTT_1200_multiIso.root"   ); 
+  TFile *t1tttt_1500_100_file = new TFile("../v1.08/T1TTTT_1500_multiIso.root"   ); 
+  TFile *t5qqqqWW1200_file    = new TFile("../v1.08/private/t5qqqqWW_1200_1000_800_baby_multiIso.root");
   //TFile *t5qqqqWW1500_file    = new TFile(Form("../v1.05/t5qqqqww1500%s_unoff.root"   , ptrel.c_str()));
   //TFile *t6ttWW600_425_file   = new TFile(Form("../v1.05/T6TTWW600_425%s.root"  , ptrel.c_str()));
   //TFile *t6ttWW600_150_file   = new TFile(Form("../v1.05/T6TTWW600_150%s.root"  , ptrel.c_str()));
@@ -128,23 +124,22 @@ void makePlots(dim_t dim, vector<string> var, string title, int nbins, int maxbi
     vector <TH1F*> null_vector;
     null_vector.push_back(null);
     vector <TH1F*> backgrounds;
-    //backgrounds.push_back(hist_ttbar);
-    //backgrounds.push_back(hist_ttz);
+    backgrounds.push_back(hist_ttbar);
+    backgrounds.push_back(hist_ttz);
     backgrounds.push_back(hist_ttw);
-    //backgrounds.push_back(hist_wz);
+    backgrounds.push_back(hist_wz);
     vector <TH1F*> signals;
     signals.push_back(hist_t5qqqqWW1200); 
     signals.push_back(hist_t1tttt_1200_800); 
     vector <char*> titles;
-    //titles.push_back("ttbar");
-    //titles.push_back("wz");
+    titles.push_back("ttbar");
+    titles.push_back("wz");
     titles.push_back("ttw");
-    //titles.push_back("ttz");
+    titles.push_back("ttz");
     vector <char*> signalTitles;
-    signalTitles.push_back("");
-    //signalTitles.push_back("T5qqqqWW (1200, 1000, 800)");
-    //signalTitles.push_back("T1tttt (1200, 800)");
-    dataMCplotMaker(null, backgrounds, titles, "SS baseline H-H", doPtRel ? "with pTrel" : "iso only", Form("--outputName %s%s.pdf --xAxisLabel %s --nDivisions -108 --energy 13 --lumi 10 --legendTextSize 0.03 --legendRight -0.00 --noXaxisUnit %s --noOverflow --yAxisLabel Entries --setMaximum 30 --isLinear", title.c_str(), ptrel.c_str(), title.c_str(), options.c_str()), null_vector, signalTitles, Colors); 
+    signalTitles.push_back("T5qqqqWW (1200, 1000, 800)");
+    signalTitles.push_back("T1tttt (1200, 800)");
+    dataMCplotMaker(null, backgrounds, titles, "SS baseline H-H", "multiIso", Form("--outputName %s%s.pdf --xAxisLabel %s --nDivisions -108 --energy 13 --lumi 10 --legendTextSize 0.03 --legendRight -0.2 --noXaxisUnit %s --noOverflow --yAxisLabel Entries --isLinear", title.c_str(), "_multiIso", title.c_str(), options.c_str()), signals, signalTitles); 
     
     //Make total background + 6 signals
     vector <TH1F*> backgrounds2;
@@ -172,7 +167,7 @@ void makePlots(dim_t dim, vector<string> var, string title, int nbins, int maxbi
     colors.push_back(kCyan);
     colors.push_back(kMagenta);
     colors.push_back(kGray+2);
-    dataMCplotMaker(null, backgrounds2, titles2, "SS baseline H-H", doPtRel ? "with pTrel" : "iso only", Form("--outputName %s%s_sig.pdf --xAxisLabel %s cut --energy 13 --lumi 10 --legendTextSize 0.025 --legendRight -0.00 --legendUp 0.05  --noStack %s --noOverflow --setMinimum 1 --setMaximum 10000 --nDivisions -108 --yAxisLabel Entries Passing Cut %s", title.c_str(), ptrel.c_str(), title.c_str(), options.c_str(), title == "njets" ? "--noXaxisUnit" : " "), null_vector, blank, colors);
+    dataMCplotMaker(null, backgrounds2, titles2, "SS baseline H-H", doPtRel ? "with pTrel" : "iso only", Form("--outputName %s%s_sig.pdf --xAxisLabel %s cut --energy 13 --lumi 10 --legendTextSize 0.025 --legendRight -0.00 --legendUp 0.05  --noStack %s --noOverflow  --nDivisions -108 --yAxisLabel Entries Passing Cut %s", title.c_str(), "_multiIso", title.c_str(), options.c_str(), title == "njets" ? "--noXaxisUnit" : " "), null_vector, blank, colors);
 
     //Memory management
     delete hist_ttz;
@@ -215,8 +210,6 @@ void makePlots(dim_t dim, vector<string> var, string title, int nbins, int maxbi
       //t6ttWW600_150->Draw(Form("%s>>hist_t6ttWW600_150", var[i].c_str()), baseline*weight); 
     }
  
-    makeContour(hist_bkgd);
-
     vector <TH2F*> D2plots;
     D2plots.push_back(hist_bkgd           );
     D2plots.push_back(hist_t1tttt_1200_800);
@@ -230,7 +223,7 @@ void makePlots(dim_t dim, vector<string> var, string title, int nbins, int maxbi
       TCanvas *canvas = new TCanvas("canvas"); 
       gStyle->SetOptStat(0);
       D2plots[i]->Draw("BOX");
-      canvas->Print(Form("%s_%s_2d%s.pdf", title.c_str(), D2plots[i]->GetTitle(), ptrel.c_str()));
+      canvas->Print(Form("%s_%s_2d_multiIso.pdf", title.c_str(), D2plots[i]->GetTitle()));
       delete canvas;
     }
 
@@ -292,7 +285,7 @@ int plots(){
   //makePlots(D1, var, "met"      , 70, 700, 0, "--vLine 50 --vLine 120");
   //var.clear();
   var.push_back("njets");
-  makePlots(D1, var, "njets"    ,  8,   8, 0, "--vLine 2 --vLine 4 --noDivisionLabel --setMaximum 10000");
+  makePlots(D1, var, "njets"    ,  8,   8, 0, "--vLine 2 --vLine 4 --noDivisionLabel");
   var.clear();
   //var.push_back("nbtags");
   //makePlots(D1, var, "nbtags"   ,  6,   6, 0);

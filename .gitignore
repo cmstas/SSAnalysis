@@ -20,4 +20,5 @@ batch/temp.txt
 v1.*
 yields/yields.aux
 yields/yields.log
-yields/yields.pdf
+yields/*.pdf
+plotsFromBabies/*.pdf

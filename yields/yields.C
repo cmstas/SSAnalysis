@@ -440,25 +440,25 @@ int yields(){
   signal_titles.push_back("t1tttt (1.2, 0.8)");
   signal_titles.push_back("t1tttt (1.5, 0.1)");
   signal_titles.push_back("t5qqww (1.2, 1.0, 0.8)");
-  signal_titles.push_back("t5qqww (1.0, 0.315, 0.3)");
+  signal_titles.push_back("t5qqww (1.0, 0.315, 0.3) test test test test");
 
   TH1F* null = new TH1F("","",1,0,1);
   vector <TH1F*> null_vector;
   vector <char*> null_strings;
 
-  Colors.push_back(kGreen-3);
-  Colors.push_back(kCyan);
-  Colors.push_back(kOrange-4);
-  Colors.push_back(kMagenta-8);
-  Colors2.push_back(kRed);
-  Colors2.push_back(kBlue);
-  Colors2.push_back(kGreen+3);
-  Colors2.push_back(kMagenta+1);
+  //Colors.push_back(kGreen-3);
+  //Colors.push_back(kCyan);
+  //Colors.push_back(kOrange-4);
+  //Colors.push_back(kMagenta-8);
+  //Colors2.push_back(kRed);
+  //Colors2.push_back(kBlue);
+  //Colors2.push_back(kGreen+3);
+  //Colors2.push_back(kMagenta+1);
 
-  dataMCplotMaker(null, background_high, titles, "H-H", "", "--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --setMaximum 45", null_vector, null_strings, Colors); 
-  dataMCplotMaker(null, background_hl  , titles, "H-L", "", "--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName   hl_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --setMaximum 80", null_vector, null_strings, Colors); 
-  dataMCplotMaker(null, signal_high, signal_titles, "H-H", "", "--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.0325 --noStack --isLinear --nDivisions 210 --setMaximum 8", null_vector, null_strings, Colors2); 
-  dataMCplotMaker(null, signal_hl  , signal_titles, "H-L", "", "--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName   hl_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.03 --noStack --isLinear --nDivisions 210 --setMaximum 4", null_vector, null_strings, Colors2); 
+  dataMCplotMaker(null, background_high, titles, "H-H", "", "--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325"); 
+  dataMCplotMaker(null, background_hl  , titles, "H-L", "multiIso", "--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName   hl_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325"); 
+  dataMCplotMaker(null, signal_high, signal_titles, "H-H", "", "--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.0325 --noStack --nDivisions 210 "); 
+  dataMCplotMaker(null, signal_hl  , signal_titles, "H-L", "", "--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName   hl_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.03 --noStack  --nDivisions 210"); 
 
   //Get results
   ttbar_low         = fillC(ttbar      ); 
@@ -507,8 +507,8 @@ int yields(){
   signal_low.push_back(low_t5qqww_1200);
   signal_low.push_back(low_t5qqww_deg);
 
-  dataMCplotMaker(null, background_low, titles, "L-L", "", "--vLine 3 --vLine 5 --vLine 7 --vLine 8 --nDivisions 107  --outputName low_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --legendRight 0.12 --setMaximum 15", null_vector, null_strings, Colors); 
-  dataMCplotMaker(null, signal_low, signal_titles, "L-L", "", "--vLine 3 --vLine 5 --vLine 7 --vLine 8 --nDivisions 107 --outputName low_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --legendRight -0.12 --setMaximum 2 --noStack", null_vector, null_strings, Colors2);
+  dataMCplotMaker(null, background_low, titles, "L-L", "", "--vLine 3 --vLine 5 --vLine 7 --vLine 8 --nDivisions 107  --outputName low_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --legendRight 0.12"); 
+  dataMCplotMaker(null, signal_low, signal_titles, "L-L", "", "--vLine 3 --vLine 5 --vLine 7 --vLine 8 --nDivisions 107 --outputName low_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --legendRight -0.18 --noStack");
 
   return 0;
 

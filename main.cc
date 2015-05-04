@@ -13,12 +13,14 @@ int main() {
   bool runBaby   = true;
   bool usePtRel  = false;
   bool useMiniIso= false;
-  bool useNewMI  = true;
+  bool useNewMI  = false;
+  bool useMulIso = true;
 
   IsolationMethods isoCase = Standard;
   if (usePtRel) isoCase = PtRel;
   else if (useMiniIso) isoCase = MiniIso;
   else if (useNewMI)   isoCase = NewMiniIso;
+  else if (useMulIso)  isoCase = MultiIso;
 
   if (runSync) { 
     TChain *chain_synctest = new TChain("Events");
@@ -51,7 +53,8 @@ int main() {
   TChain *chain_ZZTo4L                    = new TChain("Events");
   TChain *chain_Wjets                     = new TChain("Events");
   TChain *chain_T5qqqqWW_deg_1000_315_300 = new TChain("Events");
-  TChain *chain_T5qqqqWW_1200_1000_800 = new TChain("Events");
+  TChain *chain_T5qqqqWW_1200_1000_800    = new TChain("Events");
+  TChain *chain_sync                      = new TChain("Events");
 
   if (useSkim) {
     TString dir = "PHYS14_v2_new";
@@ -104,6 +107,9 @@ int main() {
     TString private_dir = "/nfs-7/userdata/ss2015/privateSamples/";
     chain_T5qqqqWW_deg_1000_315_300->Add(private_dir + "T5qqqqWW_deg_1000_315_300/" + tag + "/merged_ntuple_*.root");
     chain_T5qqqqWW_1200_1000_800->Add(private_dir + "T5qqqqWW_1200_1000_800/" + tag + "/merged_ntuple_*.root");
+
+    //Sync sample
+    chain_sync->Add("/nfs-7/userdata/ss2015/sync_file/V07-02-08/sync_file.root");
 
   }
 
@@ -166,8 +172,9 @@ int main() {
     //l->ScanChain(chain_T6ttWW600_425, "t6ttWW600_425"   , "baby", 0, "MakeBaby", -1, isoCase);
     //l->ScanChain(chain_Wjets,         "Wjets"           , "baby", 0, "MakeBaby", -1, isoCase);
     // l->ScanChain(chain_Wjets_ht,      "Wjets_ht"        , "baby", 0, "MakeBaby", -1, isoCase);
-  //  l->ScanChain(chain_T5qqqqWW_deg_1000_315_300, "t5qqqqWW_deg_1000_315_300", "baby", 0, "MakeBaby", -1, isoCase); 
-    l->ScanChain(chain_T5qqqqWW_1200_1000_800, "t5qqqqWW_1200_1000_800", "baby", 0, "MakeBaby", -1, isoCase); 
+    l->ScanChain(chain_sync, "sync", "baby", 0, "MakeBaby", -1, isoCase);
+    //l->ScanChain(chain_T5qqqqWW_deg_1000_315_300, "t5qqqqWW_deg_1000_315_300", "baby", 0, "MakeBaby", -1, isoCase); 
+    //l->ScanChain(chain_T5qqqqWW_1200_1000_800, "t5qqqqWW_1200_1000_800", "baby", 0, "MakeBaby", -1, isoCase); 
 
   }
 
