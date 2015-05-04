@@ -20,6 +20,8 @@ class TChain;
 struct Lep;
 struct DilepHyp;
 
+int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSync, string runBaby);
+
 class looper
 {
  public:
@@ -33,6 +35,9 @@ class looper
   };
   
   int ScanChain ( TChain* chain, TString prefix, TString postfix, bool isData, TString whatTest = "", int nEvents = -1, IsolationMethods isoCase = Standard, std::vector<int> evtToDebug = std::vector<int>());
+
+
+
   
   //void MakeBabyNtuple (const char *);
   //void InitBabyNtuple ();
