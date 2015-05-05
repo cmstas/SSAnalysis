@@ -989,13 +989,13 @@ void tests::makeSRplots( looper* loop, float& weight_, TString label, int& br, i
     loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_lead_"+ll+"_relIso03","hyp_"+label+"_lead_"+ll+"_relIso03",100,0.,1.,hyp.leadLep().relIso03(),weight_);
     loop->makeFillHisto1D<TH1F,int>("hyp_"+label+"_leadjetpt","hyp_"+label+"_leadjetpt",50,0,1000,jets[0].pt(),weight_);
     if (btags.size()>0) loop->makeFillHisto1D<TH1F,int>("hyp_"+label+"_leadbtagpt","hyp_"+label+"_leadbtagpt",50,0,1000,btags[0].pt(),weight_);
-    float ld = computeLD(hyp, alljets, met, mtmin);
-    loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_ld","hyp_"+label+"_ld",30,0,3.0,ld,weight_);
-    loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_ld5bins","hyp_"+label+"_ld5bins",5,0,1.6,ld,weight_);
-    loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_ld10bins","hyp_"+label+"_ld10bins",10,0,1.6,ld,weight_);
-    loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_excl_srld","hyp_"+label+"_excl_srld",30*4,0,3.0*4,std::min(ld,float(3.0))+3.0*btags.size(),weight_);
-    loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_excl_srld5bins","hyp_"+label+"_excl_srld5bins",5*4,0,1.6*4.,std::min(ld,float(1.6))+1.6*btags.size(),weight_);
-    loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_excl_srld10bins","hyp_"+label+"_excl_srld10bins",10*4,0,1.6*4.,std::min(ld,float(1.6))+1.6*btags.size(),weight_);
+    //float ld = computeLD(hyp, alljets, met, mtmin);
+    //loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_ld","hyp_"+label+"_ld",30,0,3.0,ld,weight_);
+    //loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_ld5bins","hyp_"+label+"_ld5bins",5,0,1.6,ld,weight_);
+    //loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_ld10bins","hyp_"+label+"_ld10bins",10,0,1.6,ld,weight_);
+    //loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_excl_srld","hyp_"+label+"_excl_srld",30*4,0,3.0*4,std::min(ld,float(3.0))+3.0*btags.size(),weight_);
+    //loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_excl_srld5bins","hyp_"+label+"_excl_srld5bins",5*4,0,1.6*4.,std::min(ld,float(1.6))+1.6*btags.size(),weight_);
+    //loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_excl_srld10bins","hyp_"+label+"_excl_srld10bins",10*4,0,1.6*4.,std::min(ld,float(1.6))+1.6*btags.size(),weight_);
     //ptrel
     float ptRelLead = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), true);
     float ptRelTrai = getPtRel(hyp.traiLep().pdgId(), hyp.traiLep().idx(), true);

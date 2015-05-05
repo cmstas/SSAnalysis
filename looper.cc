@@ -399,9 +399,8 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,5,weight_);
 
       //Reject events that fail baseline analysis cuts
-      unsigned int ac_base = analysisCategory(hyp.leadLep().pt(), hyp.traiLep().pt());
-      passesBaselineCuts(njets, nbtag, met, ht, ac_base);
-      if (ac_base == 0){
+      int br = baselineRegion(njets, nbtag, met, ht, hypleps[0].pt(), hypleps[1].pt());
+      if (br < 0){
         if (debug){
           cout << "skip, not passing baseline cuts" << endl;
           cout << "njets=" << njets << " nbtag=" << nbtag << " ht=" << ht << " met=" << met << endl;
@@ -415,12 +414,16 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (isGenSSee) makeFillHisto1D<TH1F,int>("cut_flow_ssee","cut_flow_ssee",50,0,50,6,weight_);
       if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,6,weight_);
 
+      //Calculate mt_min
+	  float dPhi1 = deltaPhi(hyp.leadLep().p4().phi(), evt_pfmetPhi());
+	  float dPhi2 = deltaPhi(hyp.traiLep().p4().phi(), evt_pfmetPhi());
+	  float mt1   = mt(hyp.leadLep().pt(), met, dPhi1);
+	  float mt2   = mt(hyp.traiLep().pt(), met, dPhi2);
+	  float mtmin = min(mt1, mt2);
+
       //determine which SR this event belongs in 
-      int br = baselineRegion(nbtag);
-      unsigned int ac_sig = ac_base;
-      passesSignalRegionCuts(ht, met, ac_sig);
-      if (debug) cout << "ac_base=" << ac_base << " ac_sig=" << ac_sig << endl;
-      int sr = ac_sig!=0 ? signalRegion(njets, nbtag, met, ht) : -1;
+      int sr = signalRegion(njets, nbtag, met, ht, mtmin, hypleps[0].pt(), hypleps[1].pt());
+      anal_type_t ac_base = analysisCategory(hypleps[0].pt(), hypleps[1].pt());
 
       //write skim here (only SS)
       if (makeSSskim){
@@ -433,27 +436,6 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 	    continue;
       }
 
-      //3rd lepton veto (extra Z veto)  -- should fix this
-     if (debug) cout << "3rd lepton veto" << endl;
-      bool leptonVeto = false;
-      for (unsigned int gl=0;gl<hypleps.size();++gl) {
-	for (unsigned int vl=0;vl<vetoleps.size();++vl) {
-	  if ( hypleps[gl].pdgId()!=-vetoleps[vl].pdgId() ) continue; 
-	  float mll = (hypleps[gl].p4()+vetoleps[vl].p4()).mass();
-	  if (debug) cout << "test mll=" << mll << " l1id=" << hypleps[gl].pdgId() << " pt=" << hypleps[gl].pt() << " vlid=" << vetoleps[vl].pdgId() << " pt=" << vetoleps[vl].pt() << endl;
-	  if ( (fabs(mll-91.)<15&&vetoleps[vl].pt()>10. ) || (mll<12.&&vetoleps[vl].pt()>5. ) ) {
-	    if (debug) cout << "fail mll=" << mll << " l1id=" << hypleps[gl].pdgId() << " pt=" << hypleps[gl].pt() << " vlid=" << vetoleps[vl].pdgId() << " pt=" << vetoleps[vl].pt() << endl;
-	    leptonVeto = true;
-	    break;
-	  }
-	}
-      }
-      if (leptonVeto) {
-	if (debug) cout<< "skip, 3rd lepton veto" << endl;	
-	if (debug) cout<< "hyp leps id=" << hypleps[0].pdgId() << " pt=" << hypleps[0].pt() << " id=" << hypleps[1].pdgId() << " pt=" << hypleps[1].pt() << endl;
-	continue;
-      }
- 
       //Cut-flow
       makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,7,weight_);
       if (isGenSS) makeFillHisto1D<TH1F,int>("cut_flow_ss","cut_flow_ss",50,0,50,7,weight_);
@@ -538,14 +520,8 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 	    if (abs(hyp.traiLep().pdgId())==11 && abs(hyp.leadLep().pdgId())==11) type=3;
 	    if (debug) cout << "type=" << type << endl;
 
-	    float dPhi1 = deltaPhi(hyp.leadLep().p4().phi(),evt_pfmetPhi());
-	    float mt1  = mt(hyp.leadLep().pt(),met,dPhi1);
-	    float dPhi2 = deltaPhi(hyp.traiLep().p4().phi(),evt_pfmetPhi());
-	    float mt2  = mt(hyp.traiLep().pt(),met,dPhi2);
 	    float dPhill = deltaPhi(hyp.p4().phi(),evt_pfmetPhi());
 	    float mtll = mt(hyp.p4().pt(),met,dPhill);
-
-	    float mtmin = min(mt1,mt2);
 	    float mtmin12ll = min(mtmin,mtll);
 
 	    tests::makeSRplots( this, weight_, TString("all"), br, sr, hyp, ht, met, mtmin, type, goodleps, fobs, vetoleps, jets, alljets, btags, ll, lt );
@@ -632,7 +608,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 	        
 	      tests::testLeptonIdVariables( this, weight_, hyp, ll, lt );
 
-	      if (ac_base & 1<<HighHigh) {
+	      if (ac_base == HighHigh){
 	        if (prefix=="TTWJets" && debug) cout << left << setw(10) << ls_  << " "  << setw(10) << evt_ << " "  << setw(10) << njets << " "  << setw(10) << nbtag << " "  << setw(10) << std::setprecision(8) << ht << " "  << setw(10) << std::setprecision(8) << met << " " << sr << endl;
 
 	        if (makeSyncTest /*|| (br==30 && hyp.leadLep().pt()>25. && hyp.traiLep().pt()>25)*/) {
@@ -662,7 +638,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 	        tests::testBtag( this, weight_, alljets );
 
 	      }
-	      if (ac_base & 1<<HighLow) {
+	      if (ac_base == HighLow){
 	        tests::makeSRplots( this, weight_, TString("hilow"), br, sr, hyp, ht, met, mtmin, type, goodleps, fobs, vetoleps, jets, alljets, btags, ll, lt );
 	        if (mtmin>100.) {
 	          tests::makeSRplots( this, weight_, TString("hilow_mt100"), br, sr, hyp, ht, met, mtmin, type, goodleps, fobs, vetoleps, jets, alljets, btags, ll, lt );
@@ -670,7 +646,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 	        if (makeSyncTest) cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f", run_, ls_, evt_, int(vetoleps.size()), hyp.leadLep().pdgId(), hyp.leadLep().pt(), 
 	    				   hyp.traiLep().pdgId(), hyp.traiLep().pt(),  njets, nbtag, met, ht) << endl;
 	      }
-	      if (ac_base & 1<<LowLow) {
+	      if (ac_base == LowLow){
 	        tests::makeSRplots( this, weight_, TString("lowlow"), br, sr, hyp, ht, met, mtmin, type, goodleps, fobs, vetoleps, jets, alljets, btags, ll, lt );
 	        //if (mtmin>100.) {fixme!!!
 	          tests::makeSRplots( this, weight_, TString("lowlow_mt100"), br, sr, hyp, ht, met, mtmin, type, goodleps, fobs, vetoleps, jets, alljets, btags, ll, lt );

@@ -12,7 +12,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
 
     unsigned int maxRuns = std::count(runBaby_str.begin(), runBaby_str.end(), ',') + 1;
 
-    if (maxRuns == 1) babiesToMake[stoi(runBaby_str.c_str())] = 1; 
+    if (maxRuns == 1) babiesToMake[std::stoi(runBaby_str.c_str())] = 1; 
     else { 
       while (i < maxRuns){
         int comma = runBaby_str.find(","); 
