@@ -20,7 +20,7 @@ class TChain;
 struct Lep;
 struct DilepHyp;
 
-int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSync, string runBaby);
+int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSync, string runBaby, std::vector<int> evtToDebug = std::vector<int>());
 
 class looper
 {

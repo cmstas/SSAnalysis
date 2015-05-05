@@ -1,7 +1,7 @@
 #include "TChain.h"
 #include "looper.h"
 
-int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSync, string runBaby_str){
+int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSync, string runBaby_str, std::vector<int> eventsToDebug){
 
   //Figure out which babies to make
   bool runBaby = false;
@@ -31,8 +31,6 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   if (runSync) { 
     TChain *chain_synctest = new TChain("Events");
     chain_synctest->Add("./phys14_sync_CMS3.root");
-    std::vector<int> eventsToDebug;
-    //eventsToDebug.push_back(4878);
     l->ScanChain(chain_synctest,"synctest","",0,"SyncTest",-1,isoCase, eventsToDebug);
     return 0;
   }

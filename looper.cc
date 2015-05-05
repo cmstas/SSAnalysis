@@ -395,16 +395,17 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (isGenSSee) makeFillHisto1D<TH1F,int>("cut_flow_ssee","cut_flow_ssee",50,0,50,4,weight_);
       if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,4,weight_);
 
-      //Choose hypothesis of good leps
-      vector<Lep> hypleps = getBestSSLeps(goodleps);
-      if (debug) cout << "hypleps size=" << hypleps.size() << endl;
-
-      //Skip if best hyp has mass < 8 
-      DilepHyp hyp = (hypleps.size()==2 ? DilepHyp(hypleps[0],hypleps[1]) : DilepHyp(hypfobs[0],hypfobs[1]) );
-      if (hyp.p4().mass()<8){
-        if (debug) cout<< "skip, hyp mass=" << hyp.p4().mass() <<endl;
-        continue;
-      }
+      //Choose hypothesis of good leps (the actual hyp)
+      hyp_result_t best_hyp_info = chooseBestHyp(isoCase);
+      int hyp_class = best_hyp_info.hyp_class;
+      int best_hyp = best_hyp_info.best_hyp;
+      if (hyp_class != 3) continue;
+      vector <Lep> hypleps; 
+      Lep lep_ll(tas::hyp_ll_id().at(best_hyp), tas::hyp_ll_index().at(best_hyp)); 
+      Lep lep_lt(tas::hyp_lt_id().at(best_hyp), tas::hyp_lt_index().at(best_hyp)); 
+      hypleps.push_back( lep_ll.pt() > lep_lt.pt() ? lep_ll : lep_lt); 
+      hypleps.push_back( lep_lt.pt() > lep_ll.pt() ? lep_ll : lep_lt); 
+      DilepHyp hyp = DilepHyp(hypleps[0], hypleps[1]);
 
       //Cut-flow
       makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,5,weight_);
@@ -436,7 +437,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (debug) cout << "ac_base=" << ac_base << " ac_sig=" << ac_sig << endl;
       int sr = ac_sig!=0 ? signalRegion(njets, nbtag, met, ht) : -1;
 
-      //write skim here (only ss)
+      //write skim here (only SS)
       if (makeSSskim){
 	    if (debug) cout << "ss skim" << endl;
 	    if (isGenSS || hyp.charge()!=0) {
