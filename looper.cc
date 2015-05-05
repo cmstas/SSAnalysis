@@ -380,21 +380,6 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 	    continue;
       }
 
-      //Choose hypothesis of FOs, skip if there are no hypotheses
-      vector<Lep> hypfobs = (makeSSskim ? getBestSSLeps(fobs_noiso) : getBestSSLeps(fobs));
-      if (debug) cout << "hypfobs size=" << hypfobs.size() << endl;
-      if (hypfobs.size()<2) {
-        if (debug) cout << "skip, hypfobs size=" << hypfobs.size() << endl;
-        if (isGenSS) tests::testLepIdFailMode(this, weight_, fobs);
-        continue;
-      }
-   
-      //Cut-flow
-      makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,4,weight_);
-      if (isGenSS) makeFillHisto1D<TH1F,int>("cut_flow_ss","cut_flow_ss",50,0,50,4,weight_);
-      if (isGenSSee) makeFillHisto1D<TH1F,int>("cut_flow_ssee","cut_flow_ssee",50,0,50,4,weight_);
-      if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,4,weight_);
-
       //Choose hypothesis of good leps (the actual hyp)
       hyp_result_t best_hyp_info = chooseBestHyp(isoCase);
       int hyp_class = best_hyp_info.hyp_class;
