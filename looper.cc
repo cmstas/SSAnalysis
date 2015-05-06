@@ -399,7 +399,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,5,weight_);
 
       //Reject events that fail baseline analysis cuts
-      int br = baselineRegion(njets, nbtag, met, ht, hypleps[0].pt(), hypleps[1].pt());
+      int br = baselineRegion(njets, nbtag, met, ht);
       if (br < 0){
         if (debug){
           cout << "skip, not passing baseline cuts" << endl;
