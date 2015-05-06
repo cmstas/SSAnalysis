@@ -1,6 +1,10 @@
 #include "../software/dataMCplotMaker/dataMCplotMaker.h"
+#include "../software/tableMaker/CTable.h"
 #include "../CORE/SSSelections.h"
 #include "SS.h"
+
+//Tables on/off
+bool makeTables = 1;
 
 //Switches
 int njets_cut = 5;   //njets high will be >= than this
@@ -15,6 +19,13 @@ int met_ultra_value = 500;
 float lumi = 10.0;
 
 struct results_t { TH1F* hh; TH1F* hl; TH1F* ll; }; 
+
+float getYield(results_t results, int bin, int which){
+  if (which == 0) return results.hh->Integral(bin, bin); 
+  if (which == 1) return results.hl->Integral(bin, bin); 
+  if (which == 2) return results.ll->Integral(bin, bin); 
+  return -1;
+}
 
 results_t run(TChain* chain, string name){
 
@@ -161,5 +172,32 @@ void yields(){
   dataMCplotMaker(null, background_hl  , titles, "H-L", "multiIso", "--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName   hl_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear"); 
   dataMCplotMaker(null, signal_high, signal_titles, "H-H", "", "--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.0325 --noStack --nDivisions 210 --isLinear"); 
   dataMCplotMaker(null, signal_hl  , signal_titles, "H-L", "", "--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName   hl_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.03 --noStack  --nDivisions 210 --isLinear"); 
+
+  //Make tables
+  if (!makeTables) return; 
+  int nSRs[3] = { 32, 26, 8 }; 
+  for (int j = 0; j < 3; j++){
+    CTable table;
+    table.setTable() (      "",    "",    "",   "",     "t1tttt",     "t1tttt",          "t5qqww",            "t5qqww" ) 
+                     ("  ", "ttbar", "ttw", "ttz", "wz", "(1.2, 0.8)", "(1.5, 0.1)", "(1.2, 1.0, 0.8)", "(1.0, 0.315, 0.3)" ); 
+    table.setPrecision(3); 
+    if (j == 0) table.setTitle("H-H Yields");
+    if (j == 1) table.setTitle("H-L Yields");
+    if (j == 2) table.setTitle("L-L Yields");
+    table.useTitle(); 
+    for (int i = 1; i <= nSRs[j]; i++){
+      table.setRowLabel(Form("SR%i", i), i);
+      table.setCell(getYield(ttbar_graphs, i, j), i, 0); 
+      table.setCell(getYield(ttw_graphs, i, j), i, 1); 
+      table.setCell(getYield(ttz_graphs, i, j), i, 2); 
+      table.setCell(getYield(wz_graphs, i, j), i, 3); 
+      table.setCell(getYield(t1tttt_1200_graphs, i, j), i, 4); 
+      table.setCell(getYield(t1tttt_1500_graphs, i, j), i, 5); 
+      table.setCell(getYield(t5qqww_1200_graphs, i, j), i, 6); 
+      table.setCell(getYield(t5qqww_deg_graphs, i, j), i, 7); 
+    }
+    table.print();
+  }
+
 
 }
