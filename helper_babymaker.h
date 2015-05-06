@@ -119,6 +119,7 @@ class babyMaker {
     float mt;
     float mt_l2;
     float mt2;
+    float mtmin;
 
     //SUSY sparms
     float mLSP;

@@ -59,6 +59,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   BabyTree->Branch("mt"                    , &mt                    );
   BabyTree->Branch("mt_l2"                 , &mt_l2                 );
   BabyTree->Branch("mt2"                   , &mt2                   );
+  BabyTree->Branch("mtmin"                 , &mtmin                 );
   BabyTree->Branch("mGluino"               , &mGluino               );
   BabyTree->Branch("mLSP"                  , &mLSP                  );
   BabyTree->Branch("mSbottom"              , &mSbottom              );
@@ -115,7 +116,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   BabyTree->Branch("eleID_sclphiwidth"     , &eleID_sclphiwidth     );
   BabyTree->Branch("eleID_he"              , &eleID_he              );
   BabyTree->Branch("eleID_psEoverEraw"     , &eleID_psEoverEraw     );
-  BabyTree->Branch("eleID_kfchi2   "       , &eleID_kfchi2          );
+  BabyTree->Branch("eleID_kfchi2"          , &eleID_kfchi2          );
   BabyTree->Branch("eleID_chi2_hits"       , &eleID_chi2_hits       );
   BabyTree->Branch("eleID_fbrem"           , &eleID_fbrem           );
   BabyTree->Branch("eleID_ep"              , &eleID_ep              );
@@ -182,6 +183,7 @@ void babyMaker::InitBabyNtuple(){
     mt = -1;
     mt_l2 = -1;
     mt2 = -1;
+    mtmin = -1;
     mGluino = -1;
     mLSP = -1;
     mSbottom = -1;
@@ -418,6 +420,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase){
   mt    = MT(lep1_p4.pt(), lep1_p4.phi(), met, metPhi);
   mt_l2 = MT(lep2_p4.pt(), lep2_p4.phi(), met, metPhi);
   mt2   = MT2(met, metPhi, lep1_p4, lep2_p4);
+  mtmin = mt > mt_l2 ? mt_l2 : mt; 
   
   //Ht and MET
   if (verbose) cout << "ht: " << ht << endl;
