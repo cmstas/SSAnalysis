@@ -50,7 +50,7 @@ CORESOURCES=$(DIR)/$(COREDIR)/CMS3.cc \
  $(DIR)/Tools/utils.cc \
  $(DIR)/$(COREDIR)/SSSelections.cc
 COREOBJECTS=$(CORESOURCES:.cc=.o)
-CORELIB=libCORE.so
+CORELIB=libCMS3CORE.so
 
 SOURCES = $(wildcard $(DIR)/*.cc)
 OBJECTS = $(SOURCES:.cc=.o)
@@ -66,14 +66,14 @@ EXE = main.exe
 # how to make it
 #
 
-$(CORELIB): $(COREOBJECTS)
+$(CORELIB): $(DICT) $(COREOBJECTS)
 	$(QUIET) echo "Linking $@"; \
-	echo "$(LINKER) $(LINKERFLAGS) -shared $(COREOBJECTS) -o $@"; \
-	$(LINKER) $(LINKERFLAGS) -shared $(COREOBJECTS) -o $@
+	echo "$(LINKER) -shared -o $@ $(COREOBJECTS) $(DICT) $(LINKERFLAGS)"; \
+	$(LINKER) -shared -o $@ $(COREOBJECTS) $(DICT) $(LINKERFLAGS)
 
 $(LIB):	$(DICT) $(OBJECTS) $(COREOBJECTS)
 	$(QUIET) echo "Linking $@"; \
-	echo "$(LINKER) $(CFLAGS) $(LINKERFLAGS) -shared $(OBJECTS) $(DICT) -o $@"; \
+	echo "$(LINKER) -shared -o $@ $(OBJECTS) $(COREOBJECTS) $(DICT) $(LINKERFLAGS)"; \
 	$(LINKER) -shared -o $@ $(OBJECTS) $(COREOBJECTS) $(DICT) $(LINKERFLAGS)
 
 LinkDef_out.cxx: LinkDef.h
@@ -81,7 +81,7 @@ LinkDef_out.cxx: LinkDef.h
 	rootcint -f LinkDef_out.cc -c -p $(DICTINCLUDE)  LinkDef.h; \
 	cat LinkDef_out.cc > LinkDef_out.cxx; rm LinkDef_out.cc
 
-%.exe:  $(LIBS) 
+%.exe:  $(LIBS)
 	$(QUIET) echo "Building $@"; \
 	$(CC) -o $@ $(LIBS) $(ROOTLIBS) ${@:.exe=.cc} 
 
