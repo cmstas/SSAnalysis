@@ -1,4 +1,4 @@
-#include "/home/users/cgeorge/software/dataMCplotMaker/dataMCplotMaker.h"
+#include "../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../CORE/SSSelections.h"
 #include "SS.h"
 
@@ -32,8 +32,6 @@ results_t run(TChain* chain, string name){
   TIter fileIter(listOfFiles);
   TFile *currentFile = 0;
 
-  float counter = 0;
-    
   //File Loop
   while ( (currentFile = (TFile*)fileIter.Next()) ) {
 
@@ -90,14 +88,14 @@ void yields(){
   TChain* t5qqww_deg  = new TChain("t");
  
   //Fill chains
-  ttbar      ->Add("../v1.08/TTBAR_multiIso.root"                                 );
-  ttw        ->Add("../v1.08/TTW_multiIso.root"                                   );
-  ttz        ->Add("../v1.08/TTZ_multiIso.root"                                   );
-  wz         ->Add("../v1.08/WZ_multiIso.root"                                    );
-  t1tttt_1200->Add("../v1.08/T1TTTT_1200_multiIso.root"                           );
-  t1tttt_1500->Add("../v1.08/T1TTTT_1500_multiIso.root"                           );
-  t5qqww_1200->Add("../v1.08/private/t5qqqqWW_1200_1000_800_baby_multiIso.root"   );
-  t5qqww_deg ->Add("../v1.08/private/t5qqqqWW_deg_1000_315_300_baby_multiIso.root");
+  ttbar      ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/TTBAR_multiIso.root"                                 );
+  ttw        ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/TTW_multiIso.root"                                   );
+  ttz        ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/TTZ_multiIso.root"                                   );
+  wz         ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/WZ_multiIso.root"                                    );
+  t1tttt_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/T1TTTT_1200_multiIso.root"                           );
+  t1tttt_1500->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/T1TTTT_1500_multiIso.root"                           );
+  t5qqww_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/private/t5qqqqWW_1200_1000_800_baby_multiIso.root"   );
+  t5qqww_deg ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/private/t5qqqqWW_deg_1000_315_300_baby_multiIso.root");
 
   //Make the histograms
   results_t ttbar_graphs       = run(ttbar      , "ttbar"      );
