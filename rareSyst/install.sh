@@ -11,8 +11,8 @@ cd babyMaker
 mkedprod babyMaker
 cd babyMaker
 mkdir interface
-cp ../../../../ConfFile.py test/
-cp ../../../../CfiFile.py test/
+cp ../../../../ConfFile_cfg.py test/
+cp ../../../../CfiFile_cfg.py test/
 cp ../../../../MCUtilities.h interface/
 cp ../../../../producer.cc plugins/
 cp ../../../../filter.cc plugins/
