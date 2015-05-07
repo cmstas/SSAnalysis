@@ -14,6 +14,6 @@ mkdir interface
 cp ../../../../ConfFile.py test/
 cp ../../../../CfiFile.py test/
 cp ../../../../MCUtilities.h interface/
-cp ../../../../producer.cc src/
-cp ../../../../filter.cc src/
-cp ../../../../MCUtilities.cc src/
+cp ../../../../producer.cc plugins/
+cp ../../../../filter.cc plugins/
+cp ../../../../MCUtilities.cc plugins/
