@@ -30,6 +30,10 @@ void yields(){
   TIter fileIter(listOfFiles);
   TFile *currentFile = 0;
 
+  //Set up output text file
+  ofstream textfile;
+  textfile.open("unsorted.txt");
+
   //File Loop
   while ( (currentFile = (TFile*)fileIter.Next()) ) {
 
@@ -75,8 +79,15 @@ void yields(){
       if (categ == HighHigh && BR == 30) y3hh[type]++; 
       if (categ == HighLow  && BR == 30) y3hl[type]++; 
 
+      //Print sync script for 0-0 HH    
+      if (categ == HighHigh && BR >=  0) textfile << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), SR); 
+
+
     }//event loop
   }//file loop
+
+  //Close output text file
+  textfile.close();
 
   //Print counter results
   CTable table;
@@ -92,7 +103,9 @@ void yields(){
                    ("30 H-H", y3hh[2], y3hh[1], y3hh[0]) 
                    ("30 H-L", y3hl[2], y3hl[1], y3hl[0]);
   table.print(); 
-    
-                   
+
+  //Sort the file
+  system("sort -n -k1 -k2 -k3 unsorted.txt > ucsx_SR0_HH_yields.txt");
+  system("rm unsorted.txt"); 
 
 }
