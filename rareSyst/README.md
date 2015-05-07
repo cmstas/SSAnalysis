@@ -2,7 +2,7 @@
 
 This is to make more accurate calculations of the systematic uncertainties on the rare backgrounds.
 
-Last time we privately produced TTW and QQWW samples in Madgraph and decayed them in Pythia to produce AODSIM.  In the next iteration, we will use the official MC samples.  
+Last time we privately produced TTW and QQWW samples in Madgraph and decayed them in Pythia to produce AODSIM (this code is buried in Alex's repository).  In the next iteration, we will use the official MC samples.  
 
 ###BabyMaker
   - This is used to make a baby (actually an EDProducer) holding the systematics information for each event.  
