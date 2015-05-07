@@ -265,7 +265,7 @@ void babyMaker::InitBabyNtuple(){
 } 
 
 //Main function
-int babyMaker::ProcessBaby(IsolationMethods isoCase){
+int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
 
   //Initialize variables
   InitBabyNtuple();
@@ -281,7 +281,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase){
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return -1;
 
   //Fill Easy Variables
-  //filename = currentFile->GetTitle();//fixme
+  filename = filename_in;
   met = evt_pfmet();
   metPhi = evt_pfmetPhi();
   event = tas::evt_event();

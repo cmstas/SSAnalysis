@@ -198,6 +198,4 @@ void yields(){
     }
     table.print();
   }
-
-
 }

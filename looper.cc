@@ -164,7 +164,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //If making baby, fill it
       if (makebaby){	
-	    bm->ProcessBaby(isoCase);
+	    bm->ProcessBaby(isoCase, currentFile->GetTitle());
 	    continue;
       }
 
