@@ -55,7 +55,6 @@ producer::producer(const edm::ParameterSet& iConfig){
    produces<std::vector<float> > ("genpsphi").setBranchAlias("gen_phi");
    produces<std::vector<int> > ("genpsstatus").setBranchAlias("gen_status");
    produces<std::vector<int> > ("genpsmotherid").setBranchAlias("gen_mother_id");
-   produces<std::vector<int> > ("genpsgrandmotherid").setBranchAlias("gen_gmother_id");
    produces<std::vector<LorentzVector> > ("genpsmotherp4").setBranchAlias("gen_mother_p4");
    produces<std::vector<int> > ("genpsmatchtojet").setBranchAlias("gen_matchtojet");
    produces<LorentzVector> ("lep1").setBranchAlias("lep1");
@@ -71,6 +70,7 @@ producer::producer(const edm::ParameterSet& iConfig){
    produces<float> ("genmetphi").setBranchAlias("metphi");
    produces<std::vector<LorentzVector> > ("genBs").setBranchAlias("genBs");
    produces<std::vector<int> > ("genBIDs").setBranchAlias("genBIDs");
+   produces<int> ("genpsgrandmotherid").setBranchAlias("gen_gmother_id");
    produces<int> ("nLeptons").setBranchAlias("nLep");
    produces<int> ("nBtags").setBranchAlias("nBtags");
 
@@ -83,11 +83,12 @@ producer::producer(const edm::ParameterSet& iConfig){
 
    //Declare meta deta branches
    produces<float> ("weight").setBranchAlias("weight");
-   produces<float> ("weightpdf").setBranchAlias("pdf");
    produces<double> ("qScale").setBranchAlias("qScale");
    produces<bool> ("keep").setBranchAlias("keep");
    produces<std::vector<float> > ("weights").setBranchAlias("weights");
    produces<std::vector<std::string> > ("weightsID").setBranchAlias("weightsID");
+   produces<std::vector<float> > ("DJRValues").setBranchAlias("DJR");
+   produces<int> ("nMEPartons").setBranchAlias("nMEPart");
 
    //now do what ever other initialization is needed
    counter = 0;
@@ -107,6 +108,7 @@ double deltaR(float eta1 , float phi1 , float eta2 , float phi2) {
 
 // ------------ Method called to produce the data  ------------
 void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
+
    using namespace edm;
    using namespace reco;
    using namespace std;
@@ -165,9 +167,10 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
 
    //Auto pointers to meta data
    auto_ptr<float> weight(new float);
-   auto_ptr<float> weightpdf(new float);
    auto_ptr<vector<float> > weights(new vector<float> );
    auto_ptr<vector<string> > weightsID(new vector<string> );
+   auto_ptr<vector<float> > DJRValues(new vector<float> );
+   auto_ptr<int> nMEPartons(new int);
    auto_ptr<double> qScale(new double);
 
    //Initialize auto pointers
@@ -185,18 +188,14 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
    //General Information
    *weight = genEvtInfo->weight();
    vector <gen::WeightsInfo> weightsTemp = LHEEventInfo->weights();
-   float weightpdf_temp = 0;
-   for (unsigned int i = 1; i < 21; i++){
-     float temp = max(weightsTemp.at(2*i+7).wgt - weightsTemp.at(0).wgt, weightsTemp.at(2*i+8).wgt - weightsTemp.at(0).wgt);
-     weightpdf_temp += (temp > 0) ? temp*temp : 0;
-   }
-   *weightpdf = weightsTemp.at(0).wgt + sqrt(weightpdf_temp);
    for (unsigned int i = 0; i < weightsTemp.size(); i++){
      weights->push_back(weightsTemp.at(i).wgt);
      weightsID->push_back(weightsTemp.at(i).id);
    }
    *qScale = genEvtInfo->qScale();
-
+   *DJRValues = genEvtInfo->DJRValues();
+   *nMEPartons = genEvtInfo->nMEPartons(); 
+   
    //Loop over Gen Jets
    int jetCounter = 0;
    for ( edm::View<reco::GenJet>::const_iterator jet = genJets->begin(); jet != genJets->end(); ++jet) {
@@ -208,7 +207,7 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
 
      listOfJets.push_back( LorentzVector( jet->p4() ) );
 
-     if (counter == 1) cout << Form("Gen Jets! #%2i.  pT: %5.3f. eta: %5.2f. phi: %5.2f", jetCounter, pt, eta, phi) << endl;
+//     if (counter == 1) cout << Form("Gen Jets! #%2i.  pT: %5.3f. eta: %5.2f. phi: %5.2f", jetCounter, pt, eta, phi) << endl;
 
      jet_pt->push_back(pt); 
      jet_eta->push_back(eta); 
@@ -225,14 +224,13 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
    vector <LorentzVector> leptonVectors;
    vector <int> leptonGramIDs;
 
-
    //Loop over gen particles
    for(vector<GenParticle>::const_iterator genps_it = genps_coll->begin(); genps_it != genps_coll->end(); genps_it++) {
      int id = genps_it->pdgId();
      int status = genps_it->status();
      const GenParticle *mother = MCUtilities::motherID(*genps_it);
      int mother_id = mother->pdgId();
-     int mother_status = mother->status();
+     //int mother_status = mother->status();
      float pt = genps_it->pt();
      float eta = genps_it->eta();
      float phi = genps_it->phi();
@@ -251,7 +249,7 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
      if (status > 30 || status == 2 || (status == 1 && ((abs(id) != 11 && abs(id) != 13) || (abs(mother_id) != 24 && abs(mother_id) != 15 && abs(mother_id) != 6)))) continue;
 
      //Print out status (for debugging)
-     if (counter == 1) cout << Form("Gen Particle! #% 4i. id: % 6i. status: %3i. mother % 6i. pT %7.3f. eta % 6.3f. phi % 6.3f. gmother % 6i. motStat %3i", genParticleCounter, id, status, mother_id, pt, eta, phi, grandmother_id, mother_status) << endl;
+//     if (counter == 1) cout << Form("Gen Particle! #% 4i. id: % 6i. status: %3i. mother % 6i. pT %7.3f. eta % 6.3f. phi % 6.3f. gmother % 6i. motStat %3i", genParticleCounter, id, status, mother_id, pt, eta, phi, grandmother_id, mother_status) << endl;
      genParticleCounter++;
 
      //If it's a final-state lepton from W, t, or tau, count it as a lepton and keep it
@@ -277,7 +275,7 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
      }
 
      //Print out matching (for debugging)
-     if (counter == 1 && match >= 0) cout << "     --> Matched To jet #" << match+1 << endl; 
+//     if (counter == 1 && match >= 0) cout << "     --> Matched To jet #" << match+1 << endl; 
 
      //Push back vectors
      genps->push_back(LorentzVector( genps_it->p4() ));
@@ -297,6 +295,10 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
    *keep = true;
    *nLeptons = leptonIDs.size();
    iEvent.put(nLeptons, "nLeptons");
+   iEvent.put(weight, "weight");
+   iEvent.put(weights, "weights");
+   iEvent.put(DJRValues, "DJRValues");
+   iEvent.put(nMEPartons, "nMEPartons");
    if (leptonIDs.size() != 2){
       *keep = false;
       iEvent.put(keep, "keep");
@@ -366,8 +368,8 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
    *metphi = atan2( metVector.Y(), metVector.X() );
 
    //Print out values (for debugging)
-   if (counter == 1) cout << "MET: " << *met << endl;
-   if (counter == 1) cout << "HT: " << *ht << endl;
+//   if (counter == 1) cout << "MET: " << *met << endl;
+//   if (counter == 1) cout << "HT: " << *ht << endl;
 
    //Store information
    iEvent.put(keep, "keep");
@@ -377,7 +379,6 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
    iEvent.put(gen_eta, "genpseta");
    iEvent.put(gen_phi, "genpsphi");
    iEvent.put(gen_mother_id, "genpsmotherid");
-   iEvent.put(gen_gmother_id, "genpsgrandmotherid");
    iEvent.put(gen_mother_p4, "genpsmotherp4");
    iEvent.put(gen_matchtojet, "genpsmatchtojet");
    iEvent.put(genBs, "genBs");
@@ -390,9 +391,6 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
    iEvent.put(met, "genmet");
    iEvent.put(ht, "genht");
    iEvent.put(metphi, "genmetphi");
-   iEvent.put(weightpdf, "weightpdf");
-   iEvent.put(weight, "weight");
-   iEvent.put(weights, "weights");
    iEvent.put(weightsID, "weightsID");
    iEvent.put(qScale, "qScale");
    iEvent.put(lep1, "lep1");
@@ -414,7 +412,7 @@ void producer::beginJob(){
 
 // ------------ Method called once each job just after ending the event loop  ------------
 void producer::endJob(){
-  std::cout << "Number of events with at least one high Pt Parton: " << highPtCounter << std::endl;
+//  std::cout << "Number of events with at least one high Pt Parton: " << highPtCounter << std::endl;
 }
  
 // ------------ Method fills 'descriptions' with the allowed parameters for the module  ------------
