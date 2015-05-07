@@ -13,6 +13,7 @@ mkedprod babyMaker
 cd babyMaker
 cp ../../../../ConfFile_cfg.py python/
 cp ../../../../CfiFile_cfi.py python/
+cp ../../../../filter_cfg.py python/
 cp ../../../../MCUtilities.h plugins/
 cp ../../../../producer.cc plugins/
 cp ../../../../filter.cc plugins/
