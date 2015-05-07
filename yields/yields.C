@@ -6,14 +6,8 @@
 //Tables on/off
 bool makeTables = 1;
 
-//Switches
-int njets_cut = 5;   //njets high will be >= than this
-int met_cut = 200;   //met high will be >= than this
-int ht_cut_1 = 300;  //ht med will be >= than this
-int ht_cut_2 = 500;  //ht high will be >= than this
-int mtmin_cut = 120; //mtmin high will be >= than this
-int ht_ultra_value = 1600; 
-int met_ultra_value = 500; 
+//Show only particular flavor (UNASSIGNED for all)
+hyp_type_t flavor = UNASSIGNED;
 
 //Lumi
 float lumi = 10.0;
@@ -64,9 +58,14 @@ results_t run(TChain* chain, string name){
       //Reject non-SS
       if (ss::hyp_class() != 3) continue;
 
+      //Flavor selection
+      if (flavor == MM && ss::hyp_type() != 3) continue;
+      if (flavor == EM && ss::hyp_type() != 1 && ss::hyp_type() != 2) continue;
+      if (flavor == EE && ss::hyp_type() != 0) continue;
+   
       //Calculate mtmin
       float mtmin = ss::mt() > ss::mt_l2() ? ss::mt_l2() : ss::mt(); 
-   
+ 
       //Figure out region, fill plot
       anal_type_t categ = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());  
       int SR = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_p4().pt(), ss::lep2_p4().pt());
