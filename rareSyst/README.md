@@ -10,5 +10,5 @@ Last time we privately produced TTW and QQWW samples in Madgraph and decayed the
   - Run two ways: with filter (only keep dilepton events) and without (so we can measure efficiencies).
 
 ###Analyzer
-  - This is used to run on the babies and produce useful errors
+  - This is used to run on the babies and produce useful systematics
   - Still needs resurrected...
