@@ -280,25 +280,25 @@ int analysis(){
   fixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_fixed_mm_all_qcut65.root");
   
   TChain *fixed_pp = new TChain("Events");
-  fixed_pp->Add("/home/users/cgeorge/ss2015/rare_syst_study/CMSSW_7_1_11/src/producer/producer/python/qqWW_baby_fixed_pp_qcut65.root");
+  fixed_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_fixed_pp_qcut65.root");
 
   TChain *fixed_noFilt = new TChain("Events");
   fixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_fixed_mm_all_qcut65_noFilt.root");
 
   TChain *fixed_noFilt_pp = new TChain("Events");
-  fixed_noFilt_pp->Add("/home/users/cgeorge/ss2015/rare_syst_study/CMSSW_7_1_11/src/producer/producer/python/qqWW_baby_fixed_pp_qcut65_noFilt.root");
+  fixed_noFilt_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_fixed_pp_qcut65_noFilt.root");
 
   TChain *notFixed = new TChain("Events");
   notFixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_dynam_mm_all_qcut60.root");
 
   TChain *notFixed_pp = new TChain("Events");
-  notFixed_pp->Add("/home/users/cgeorge/ss2015/rare_syst_study/CMSSW_7_1_11/src/producer/producer/python/qqWW_baby_dynam_pp_qcut60.root");
+  notFixed_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_dynam_pp_qcut60.root");
 
   TChain *notFixed_noFilt = new TChain("Events");
   notFixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_dynam_mm_all_qcut60_noFilt.root");
 
   TChain *notFixed_noFilt_pp = new TChain("Events");
-  notFixed_noFilt_pp->Add("/home/users/cgeorge/ss2015/rare_syst_study/CMSSW_7_1_11/src/producer/producer/python/qqWW_baby_dynam_pp_qcut60_noFilt.root");
+  notFixed_noFilt_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_dynam_pp_qcut60_noFilt.root");
 
   //Cuts
   TCut MET_low("met>50 && met<120");
@@ -357,7 +357,6 @@ int analysis(){
   cout << "\\begin{tabular}{|c|c|c|}" << endl;
   cout << "\\hline" << endl;
   cout << " & Fixed Scales & Dynamic Scales\\\\" << endl;
-  //cout << " & 2012 Way & 2015 Way\\\\" << endl;
   cout << "\\hline" << endl;
   cout << Form("$\\sigma$ & %.2f $\\pm$ $%.2f\\%%^{+%.2f\\%%}_{%.2f\\%%} \\textrm{ }^{+%.2f\\%%}_{-%.2f\\%%}$ & %.2f $\\pm$ $%.2f\\%%^{+%.2f\\%%}_{%.2f\\%%} \\textrm{ }^{+%.2f\\%%}_{-%.2f\\%%}$ \\\\", cs_fixed.value, cs_fixed.stat, cs_fixed.scale_up, cs_fixed.scale_dn, cs_fixed.pdf_up, cs_fixed.pdf_dn, cs_dynam.value, cs_dynam.stat, cs_dynam.scale_up, cs_dynam.scale_dn, cs_dynam.pdf_up, cs_dynam.pdf_dn) << endl;
   cout << "\\hline" << endl;
