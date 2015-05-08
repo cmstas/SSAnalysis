@@ -9,7 +9,6 @@ using namespace std;
 //Switches
 bool doLatex = 1;
 bool verbose = 0;
-bool qcutMode = 0;
 
 //Struct
 struct entry {float SR; float value; float stat; float scale_up; float scale_dn; float pdf_up; float pdf_dn; float eff; float eff_stat; float eff_scale_up; float eff_scale_dn; float eff_pdf_up; float eff_pdf_dn;};
@@ -257,23 +256,19 @@ int analysis(){
 
   //Chains
   TChain *fixed = new TChain("Events");
-  if (qcutMode == 0) fixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/ttW/Babies/myTTW_fixed.root");
-  if (qcutMode == 1) fixed->Add("/home/users/cgeorge/errorCalcProject/CMSSW_6_2_11_slc6/src/producer/producer/python/myTTWbaby_1M_fixed_qcut60.root");
+  fixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/ttW/Babies/myTTW_fixed.root");
   cout << fixed->GetEntries() << endl;
 
   TChain *fixed_noFilt = new TChain("Events");
-  if (qcutMode == 0) fixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/ttW/Babies/myTTW_fixed_noFilt.root");
-  if (qcutMode == 1) fixed_noFilt->Add("/home/users/cgeorge/errorCalcProject/CMSSW_6_2_11_slc6/src/producer/producer/python/myTTWbaby_1M_fixed_qcut60_noFilt.root");
+  fixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/ttW/Babies/myTTW_fixed_noFilt.root");
   cout << fixed_noFilt->GetEntries() << endl;
 
   TChain *notFixed = new TChain("Events");
-  if (qcutMode == 0) notFixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/ttW/Babies/myTTW_dynam.root");
-  if (qcutMode == 1) notFixed->Add("/home/users/cgeorge/errorCalcProject/CMSSW_6_2_11_slc6/src/producer/producer/python/myTTWbaby_1M_fixed_qcut80.root");
+  notFixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/ttW/Babies/myTTW_dynam.root");
   cout << notFixed->GetEntries() << endl;
 
   TChain *notFixed_noFilt = new TChain("Events");
-  if (qcutMode == 0) notFixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/ttW/Babies/myTTW_dynam_noFilt.root");
-  if (qcutMode == 1) notFixed_noFilt->Add("/home/users/cgeorge/errorCalcProject/CMSSW_6_2_11_slc6/src/producer/producer/python/myTTWbaby_1M_fixed_qcut80_noFilt.root");
+  notFixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/ttW/Babies/myTTW_dynam_noFilt.root");
   cout << notFixed_noFilt->GetEntries() << endl;
 
   //Cuts
@@ -327,8 +322,7 @@ int analysis(){
   cout << "\\begin{table}" << endl;
   cout << "\\begin{tabular}{|c|c|c|}" << endl;
   cout << "\\hline" << endl;
-  if (qcutMode == 0) cout << " & Fixed Scales & Dynamic Scales\\\\" << endl;
-  else cout << " & QCUT = 60 GeV & QCUT = 80 GeV\\\\" << endl;
+  cout << " & Fixed Scales & Dynamic Scales\\\\" << endl;
   cout << "\\hline" << endl;
   cout << Form("$\\sigma$ & %.2f $\\pm$ $%.2f\\%%^{+%.2f\\%%}_{%.2f\\%%}$ $\\pm \\textrm{ }^{%.2f\\%%}_{%.2f\\%%} $ & %.2f $\\pm$ $%.2f\\%%^{+%.2f\\%%}_{%.2f\\%%}$ $\\pm \\texrm{ }^{%.2f\\%%}_{%.2f\\%%} $ \\\\", cs_fixed.value, cs_fixed.stat, cs_fixed.scale_up, cs_fixed.scale_dn, cs_fixed.pdf_up, cs_fixed.pdf_dn, cs_dynam.value, cs_dynam.stat, cs_dynam.scale_up, cs_dynam.scale_dn, cs_dynam.pdf_up, cs_dynam.pdf_dn) << endl;
   cout << "\\hline" << endl;
