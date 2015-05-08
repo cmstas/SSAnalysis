@@ -5,11 +5,13 @@ export SCRAM_ARCH=slc6_amd64_gcc481
 cd SSAnalysis/
 if [ $USER == "cgeorge" ]
 then
-  ln -s /home/users/cgeorge/CORE/
-  ln -s /home/users/cgeorge/CORE/Tools/
+  ln -s /home/users/cgeorge/CORE/ .
+  ln -s /home/users/cgeorge/CORE/Tools/ .
+  ln -s /home/users/cgeorge/software/ . 
 else
   git clone git@github.com:cmstas/CORE.git
   git clone git@github.com:cmstas/Tools.git
+  git clone git@github.com:cmstas/software.git
 fi
 cmsrel CMSSW_7_1_6
 cd CMSSW_7_1_6/src

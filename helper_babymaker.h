@@ -29,8 +29,8 @@ class babyMaker {
     }
     void MakeBabyNtuple(const char* output_name, IsolationMethods isoCase);
     void InitBabyNtuple();
-    void CloseBabyNtuple () { BabyFile->cd();BabyTree->Write();BabyFile->Close();}
-    int ProcessBaby(IsolationMethods isoCase);
+    void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
+    int ProcessBaby(IsolationMethods isoCase, string filename_in);
 
   protected:
     TFile* BabyFile;

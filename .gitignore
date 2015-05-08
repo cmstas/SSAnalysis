@@ -6,6 +6,8 @@ LinkDef_out*
 *.exe
 *.png
 *.root
+*.cxx
+*.aux
 CORE
 Tools
 CMSSW_*
