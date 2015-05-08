@@ -1,4 +1,8 @@
 #include "SS.h"
+#ifdef __MAKECINT__ 
+#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+; 
+#pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
+#endif 
 SSAG samesign;
 namespace ss {
 	const float &met() { return samesign.met(); }
