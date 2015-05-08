@@ -143,17 +143,17 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //If debugging, skip all other events
       if (evtToDebug.size() > 0){
-	    bool pass = false;
-	    for (unsigned int evt=0;evt<evtToDebug.size();evt++){
-	      if (evt_event() == abs(evtToDebug[evt])){
-	        pass = true;
-	        break;
-	      }
+	bool pass = false;
+	for (unsigned int evt=0;evt<evtToDebug.size();evt++){
+	  if (evt_event() == abs(evtToDebug[evt])){
+	    pass = true;
+	    break;
+	  }
         }
-	    if (!pass) continue;
-	    std::cout << "event = " << evt_event() << std::endl;
-	    cout << "file=" << currentFile->GetTitle() << " run=" << run_ << " evt=" << evt_ << endl;      
-	    debug = 1;
+	if (!pass) continue;
+	std::cout << "event = " << evt_event() << std::endl;
+	cout << "file=" << currentFile->GetTitle() << " run=" << run_ << " evt=" << evt_ << endl;      
+	debug = 1;
       }
 
       //Print info
@@ -164,8 +164,8 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //If making baby, fill it
       if (makebaby){	
-	    bm->ProcessBaby(isoCase, currentFile->GetTitle());
-	    continue;
+	bm->ProcessBaby(isoCase, currentFile->GetTitle());
+	continue;
       }
 
       //Get event variables
@@ -177,8 +177,8 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //Debug stuff
       if (newfile){
-	    if (debug) cout << "weight=" << weight_ << endl;
-	    newfile = false;
+	if (debug) cout << "weight=" << weight_ << endl;
+	newfile = false;
       }
       if (debug) cout << "file=" << currentFile->GetTitle() << " run= " << run_ << " evt= " << evt_ << endl;
 
@@ -187,19 +187,19 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       int qpe=0, qne=0;
       int qpm=0, qnm=0;
       for (unsigned int gp=0;gp<genps_id().size();++gp){
-	    int pdgid = abs(genps_id()[gp]);
-	    if (pdgid!=13 && pdgid!=11) continue;
-	    if (genps_id_mother()[gp]!=23 && abs(genps_id_mother()[gp])!=24) continue;
-	    if (genps_status()[gp]!=1) continue;
-	    if (fabs(genps_p4()[gp].eta())>2.4) continue;
-	    if (genps_p4()[gp].pt()<5) continue;
-	    if (pdgid==11 && genps_p4()[gp].pt()<10) continue;
-	    if (genps_charge()[gp]==1 ) qp++;
-	    if (genps_charge()[gp]==-1) qn++;
-	    if (pdgid==11 && genps_charge()[gp]==1 ) qpe++;
-	    if (pdgid==11 && genps_charge()[gp]==-1) qne++;
-	    if (pdgid==13 && genps_charge()[gp]==1 ) qpm++;
-	    if (pdgid==13 && genps_charge()[gp]==-1) qnm++;
+	int pdgid = abs(genps_id()[gp]);
+	if (pdgid!=13 && pdgid!=11) continue;
+	if (genps_id_mother()[gp]!=23 && abs(genps_id_mother()[gp])!=24) continue;
+	if (genps_status()[gp]!=1) continue;
+	if (fabs(genps_p4()[gp].eta())>2.4) continue;
+	if (genps_p4()[gp].pt()<5) continue;
+	if (pdgid==11 && genps_p4()[gp].pt()<10) continue;
+	if (genps_charge()[gp]==1 ) qp++;
+	if (genps_charge()[gp]==-1) qn++;
+	if (pdgid==11 && genps_charge()[gp]==1 ) qpe++;
+	if (pdgid==11 && genps_charge()[gp]==-1) qne++;
+	if (pdgid==13 && genps_charge()[gp]==1 ) qpm++;
+	if (pdgid==13 && genps_charge()[gp]==-1) qnm++;
       }
       bool isGenSS = false;
       bool isGenSSee = false;
@@ -210,10 +210,10 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //Accept for skim if isGenSS required
       if (makeSSskim && isGenSS){
-	    cms3.LoadAllBranches();
-	    skim_file->cd(); 
-	    skim_tree->Fill();
-	    continue;	
+	cms3.LoadAllBranches();
+	skim_file->cd(); 
+	skim_tree->Fill();
+	continue;	
       }
 
       //Make cut flow histos
@@ -285,15 +285,6 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       	goodleps.push_back(fobs[fo]);
       }
 
-      //Declare jet variables
-      int nbtag_pt40 = 0;
-      int nbtag_pt35 = 0;
-      int nbtag_pt30 = 0;
-      int nbtag_pt25 = 0;
-      int nbtag_pt20 = 0;
-      int njets = 0;
-      int nbtag = 0;
-
       //Debug for jets
       if (debug) cout << "jets" << endl;
       if (debug){
@@ -312,6 +303,9 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       vector<Jet> jets = jet_results.first;
       vector<Jet> btags = jet_results.second;
 
+      int njets = jets.size();
+      int nbtag = btags.size();
+
       //HT
       float ht = 0;
       for (unsigned int i = 0; i < jets.size(); i++) ht += jets.at(i).pt(); 
@@ -319,15 +313,6 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       //fixme: should add corrections
       //fixme: should set drcut to 1 for makeQCDtest
   
-      //nJets and nBtags
-      for (unsigned int i = 0; i < btags.size(); i++){
-        if (btags.at(i).pt() > 25) nbtag_pt25++;
-        if (btags.at(i).pt() > 30) nbtag_pt30++;
-        if (btags.at(i).pt() > 35) nbtag_pt35++;
-        if (btags.at(i).pt() > 40) nbtag_pt40++;
-      }
-      nbtag = nbtag_pt25;
-
       //Sort jets and b-tags
       std::sort(jets.begin(), jets.end(), jetptsort);
       std::sort(btags.begin(), btags.end(), jetptsort);
@@ -369,15 +354,15 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       }
 
       if (makeDYtest) {
-	    if (debug) cout << "dytest" << endl;
-	    tests::runDYtest(this, weight_, vetoleps_noiso, fobs, goodleps, njets, met, ht, isoCase);
-	    continue;
+	if (debug) cout << "dytest" << endl;
+	tests::runDYtest(this, weight_, vetoleps_noiso, fobs, goodleps, njets, met, ht, isoCase);
+	continue;
       }
-
+      
       if (makeWZtest) {
-	    if (debug) cout << "WZtest" << endl;
-	    tests::runWZtest(this, weight_, vetoleps, fobs, goodleps, njets, met);
-	    continue;
+	if (debug) cout << "WZtest" << endl;
+	tests::runWZtest(this, weight_, vetoleps, fobs, goodleps, njets, met);
+	continue;
       }
 
       //Choose hypothesis of good leps (the actual hyp)
@@ -399,11 +384,11 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,5,weight_);
 
       //Reject events that fail baseline analysis cuts
-      int br = baselineRegion(njets, nbtag, met, ht);
+      int br = baselineRegion(njets, nbtag, met, ht, hypleps[0].pt(), hypleps[1].pt());
       if (br < 0){
         if (debug){
           cout << "skip, not passing baseline cuts" << endl;
-          cout << "njets=" << njets << " nbtag=" << nbtag << " ht=" << ht << " met=" << met << endl;
+          cout << "njets=" << njets << " nbtag=" << nbtag << " ht=" << ht << " met=" << met << " l1pt=" << hypleps[0].pt()  << " l2pt=" << hypleps[1].pt() << endl;
         }
         continue;
       }
@@ -415,11 +400,11 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,6,weight_);
 
       //Calculate mt_min
-	  float dPhi1 = deltaPhi(hyp.leadLep().p4().phi(), evt_pfmetPhi());
-	  float dPhi2 = deltaPhi(hyp.traiLep().p4().phi(), evt_pfmetPhi());
-	  float mt1   = mt(hyp.leadLep().pt(), met, dPhi1);
-	  float mt2   = mt(hyp.traiLep().pt(), met, dPhi2);
-	  float mtmin = min(mt1, mt2);
+      float dPhi1 = deltaPhi(hyp.leadLep().p4().phi(), evt_pfmetPhi());
+      float dPhi2 = deltaPhi(hyp.traiLep().p4().phi(), evt_pfmetPhi());
+      float mt1   = mt(hyp.leadLep().pt(), met, dPhi1);
+      float mt2   = mt(hyp.traiLep().pt(), met, dPhi2);
+      float mtmin = min(mt1, mt2);
 
       //determine which SR this event belongs in 
       int sr = signalRegion(njets, nbtag, met, ht, mtmin, hypleps[0].pt(), hypleps[1].pt());
@@ -427,13 +412,13 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //write skim here (only SS)
       if (makeSSskim){
-	    if (debug) cout << "ss skim" << endl;
-	    if (isGenSS || hyp.charge()!=0) {
-	      cms3.LoadAllBranches();
-	      skim_file->cd(); 
-	      skim_tree->Fill();
-	    }
-	    continue;
+	if (debug) cout << "ss skim" << endl;
+	if (isGenSS || hyp.charge()!=0) {
+	  cms3.LoadAllBranches();
+	  skim_file->cd(); 
+	  skim_tree->Fill();
+	}
+	continue;
       }
 
       //Cut-flow
@@ -474,29 +459,29 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //cut-flow
       if (hypleps.size()==2){
-	    makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,8,weight_);//check that passes ID
-	    if (isGenSS) makeFillHisto1D<TH1F,int>("cut_flow_ss","cut_flow_ss",50,0,50,8,weight_);
-	    if (isGenSSee) makeFillHisto1D<TH1F,int>("cut_flow_ssee","cut_flow_ssee",50,0,50,8,weight_);
-	    if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,8,weight_);
+	makeFillHisto1D<TH1F,int>("cut_flow","cut_flow",50,0,50,8,weight_);//check that passes ID
+	if (isGenSS) makeFillHisto1D<TH1F,int>("cut_flow_ss","cut_flow_ss",50,0,50,8,weight_);
+	if (isGenSSee) makeFillHisto1D<TH1F,int>("cut_flow_ssee","cut_flow_ssee",50,0,50,8,weight_);
+	if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,8,weight_);
       }
 
       //If not two hyps, continue;
       if (hypleps.size()!=2 || hypleps[0].pt()<ptCutLow || hypleps[1].pt()<ptCutLow){
-	    if (debug){
-	      cout << "skip, not passing lepton cuts" << endl; 
-	      cout << "fobs size = " << fobs.size() << " pdgids=" << fobs[0].pdgId() << ", " << fobs[1].pdgId() << endl;
-	      if (hypleps.size()>0) cout << "Good leptons = " << hypleps.size() << " pdgids=" << hypleps[0].pdgId() << " pt=" << hypleps[0].pt() << " eta=" << hypleps[0].eta() << endl;
-	      for (unsigned int fo=0;fo<fobs.size();++fo){
-	        if (abs(fobs[fo].pdgId())!=13) continue;
-	        cout << "fob pt=" << fobs[fo].pt() << " eta=" << fobs[fo].eta() << endl;
-	        if (mus_p4().at(fobs[fo].idx()).pt()<ptCutLow) cout << "fail pt" << endl;
-	        if (isFakableMuonNoIso(fobs[fo].idx())==0) cout << "fail FO" << endl;
-	        if (fobs[fo].relIso03()>1.0) cout << "fail loose iso" << endl;
-	        if (isGoodMuonNoIso(fobs[fo].idx())==0) cout << "fail tight id" << endl;
-	        if (isGoodMuon(fobs[fo].idx())==0 ) cout << "fail tight iso, iso=" << fobs[fo].relIso03() << endl;
-	      }
-	    }
-	    continue;
+	if (debug){
+	  cout << "skip, not passing lepton cuts" << endl; 
+	  cout << "fobs size = " << fobs.size() << " pdgids=" << fobs[0].pdgId() << ", " << fobs[1].pdgId() << endl;
+	  if (hypleps.size()>0) cout << "Good leptons = " << hypleps.size() << " pdgids=" << hypleps[0].pdgId() << " pt=" << hypleps[0].pt() << " eta=" << hypleps[0].eta() << endl;
+	  for (unsigned int fo=0;fo<fobs.size();++fo){
+	    if (abs(fobs[fo].pdgId())!=13) continue;
+	    cout << "fob pt=" << fobs[fo].pt() << " eta=" << fobs[fo].eta() << endl;
+	    if (mus_p4().at(fobs[fo].idx()).pt()<ptCutLow) cout << "fail pt" << endl;
+	    if (isFakableMuonNoIso(fobs[fo].idx())==0) cout << "fail FO" << endl;
+	    if (fobs[fo].relIso03()>1.0) cout << "fail loose iso" << endl;
+	    if (isGoodMuonNoIso(fobs[fo].idx())==0) cout << "fail tight id" << endl;
+	    if (isGoodMuon(fobs[fo].idx())==0 ) cout << "fail tight iso, iso=" << fobs[fo].relIso03() << endl;
+	  }
+	}
+	continue;
       }
 
       //cut-flow
@@ -506,8 +491,8 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (isGenSSmm) makeFillHisto1D<TH1F,int>("cut_flow_ssmm","cut_flow_ssmm",50,0,50,9,weight_);
 
       if (debug){
-	    cout << "Good leptons = " << hypleps.size() << " pdgids=" << hypleps[0].pdgId() << ", " << hypleps[1].pdgId() << endl;
-	    cout << "Total charge = " << hyp.charge() << " m=" << hyp.p4().mass() << endl;
+	cout << "Good leptons = " << hypleps.size() << " pdgids=" << hypleps[0].pdgId() << ", " << hypleps[1].pdgId() << endl;
+	cout << "Total charge = " << hyp.charge() << " m=" << hyp.p4().mass() << endl;
       }
 
       //fill histos (here there be dragons)
@@ -612,16 +597,11 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 	        if (prefix=="TTWJets" && debug) cout << left << setw(10) << ls_  << " "  << setw(10) << evt_ << " "  << setw(10) << njets << " "  << setw(10) << nbtag << " "  << setw(10) << std::setprecision(8) << ht << " "  << setw(10) << std::setprecision(8) << met << " " << sr << endl;
 
 	        if (makeSyncTest /*|| (br==30 && hyp.leadLep().pt()>25. && hyp.traiLep().pt()>25)*/) {
-	          cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f", run_, ls_, evt_, int(vetoleps.size()), hyp.leadLep().pdgId(), hyp.leadLep().pt(), 
-	    		   hyp.traiLep().pdgId(), hyp.traiLep().pt(),  njets, nbtag, met, ht) << endl;
+	          cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d", run_, ls_, evt_, int(vetoleps.size()), hyp.leadLep().pdgId(), hyp.leadLep().pt(), 
+			       hyp.traiLep().pdgId(), hyp.traiLep().pt(),  njets, nbtag, met, ht, sr) << endl;
 	        }
 
 	        tests::makeSRplots( this, weight_, TString("hihi"), br, sr, hyp, ht, met, mtmin, type, goodleps, fobs, vetoleps, jets, alljets, btags, ll, lt );
-	        makeFillHisto1D<TH1F,int>("hyp_hihi_nbtag_pt20","hyp_hihi_nbtag_pt20",8,0,8,nbtag_pt20,weight_);
-	        makeFillHisto1D<TH1F,int>("hyp_hihi_nbtag_pt25","hyp_hihi_nbtag_pt25",8,0,8,nbtag_pt25,weight_);
-	        makeFillHisto1D<TH1F,int>("hyp_hihi_nbtag_pt30","hyp_hihi_nbtag_pt30",8,0,8,nbtag_pt30,weight_);
-	        makeFillHisto1D<TH1F,int>("hyp_hihi_nbtag_pt35","hyp_hihi_nbtag_pt35",8,0,8,nbtag_pt35,weight_);
-	        makeFillHisto1D<TH1F,int>("hyp_hihi_nbtag_pt40","hyp_hihi_nbtag_pt40",8,0,8,nbtag_pt40,weight_);
 
 	        if (mtmin>100.) {
 	          tests::makeSRplots( this, weight_, TString("hihi_mt100"), br, sr, hyp, ht, met, mtmin, type, goodleps, fobs, vetoleps, jets, alljets, btags, ll, lt );
@@ -643,16 +623,20 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 	        if (mtmin>100.) {
 	          tests::makeSRplots( this, weight_, TString("hilow_mt100"), br, sr, hyp, ht, met, mtmin, type, goodleps, fobs, vetoleps, jets, alljets, btags, ll, lt );
 	        }
-	        if (makeSyncTest) cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f", run_, ls_, evt_, int(vetoleps.size()), hyp.leadLep().pdgId(), hyp.leadLep().pt(), 
-	    				   hyp.traiLep().pdgId(), hyp.traiLep().pt(),  njets, nbtag, met, ht) << endl;
+	        if (makeSyncTest) {
+		  cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d", run_, ls_, evt_, int(vetoleps.size()), hyp.leadLep().pdgId(), hyp.leadLep().pt(),
+			       hyp.traiLep().pdgId(), hyp.traiLep().pt(),  njets, nbtag, met, ht, sr) << endl;
+		}
 	      }
 	      if (ac_base == LowLow){
 	        tests::makeSRplots( this, weight_, TString("lowlow"), br, sr, hyp, ht, met, mtmin, type, goodleps, fobs, vetoleps, jets, alljets, btags, ll, lt );
 	        //if (mtmin>100.) {fixme!!!
 	          tests::makeSRplots( this, weight_, TString("lowlow_mt100"), br, sr, hyp, ht, met, mtmin, type, goodleps, fobs, vetoleps, jets, alljets, btags, ll, lt );
 	          //}
-	        if (makeSyncTest) cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f", run_, ls_, evt_, int(vetoleps.size()), hyp.leadLep().pdgId(), hyp.leadLep().pt(), 
-	    				   hyp.traiLep().pdgId(), hyp.traiLep().pt(),  njets, nbtag, met, ht) << endl;
+		  if (makeSyncTest) {
+		    cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d", run_, ls_, evt_, int(vetoleps.size()), hyp.leadLep().pdgId(), hyp.leadLep().pt(), 
+				 hyp.traiLep().pdgId(), hyp.traiLep().pt(),  njets, nbtag, met, ht, sr) << endl;
+		  }
 	      }
 
 	    } 
