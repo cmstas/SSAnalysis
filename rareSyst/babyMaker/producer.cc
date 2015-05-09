@@ -226,6 +226,7 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
 
    //Loop over gen particles
    for(vector<GenParticle>::const_iterator genps_it = genps_coll->begin(); genps_it != genps_coll->end(); genps_it++) {
+     *ht = 0; 
      int id = genps_it->pdgId();
      int status = genps_it->status();
      const GenParticle *mother = MCUtilities::motherID(*genps_it);
@@ -255,7 +256,7 @@ void producer::produce(edm::Event& iEvent, const edm::EventSetup& iSetup){
      //If it's a final-state lepton from W, t, or tau, count it as a lepton and keep it
      if (status == 1){
        if (abs(grandmother_id) > 100 && abs(grandmother_id < 100000)) continue;
-       if (genps_it->pt() < 20) continue; 
+       if (genps_it->pt() < 10) continue; 
        leptonIDs.push_back(id);
        leptonVectors.push_back( LorentzVector( genps_it->p4() ) );
        leptonGramIDs.push_back( grandmother_id );
