@@ -81,7 +81,7 @@ result_t run(TChain* chain){
     }
   }
 
-  //Scale Histos for SR
+  //Scale Errors for SR
   float SR_scale_up[3][32];
   float SR_scale_dn[3][32];
  
@@ -114,11 +114,11 @@ result_t run(TChain* chain){
       //Fill c-s histo
       cs->Fill(0.5, syst::weight());  
  
-      //Fill c-s scale error histos
+      //Fill c-s scale error floats
       cs_scale_up += syst::weights().at(4);
       cs_scale_dn += syst::weights().at(8);
   
-      //Fill c-s PDF error histos
+      //Get c-s PDF errors
       for (int i = 0; i < 40; i++) cs_pdf[i] += syst::weights().at(i+9);  
 
       //Fill total nEvents histos
@@ -152,7 +152,7 @@ result_t run(TChain* chain){
       if (hyp_type == HighLow)  SR_scale_dn[1][SR_-1] += syst::weights().at(8)*scale1fb*lumi;
       if (hyp_type == LowLow)   SR_scale_dn[2][SR_-1] += syst::weights().at(8)*scale1fb*lumi;
 
-      //Fill nEvents PDF error histos
+      //Fill nEvents PDF error floats
       if (hyp_type == HighHigh) for (int i = 0; i < 40; i++) sr_pdf[0][SR_-1][i] += syst::weights().at(i+9)*scale1fb*lumi;  
       if (hyp_type == HighLow)  for (int i = 0; i < 40; i++) sr_pdf[1][SR_-1][i] += syst::weights().at(i+9)*scale1fb*lumi;  
       if (hyp_type == LowLow)   for (int i = 0; i < 40; i++) sr_pdf[2][SR_-1][i] += syst::weights().at(i+9)*scale1fb*lumi;  
@@ -322,15 +322,16 @@ int analysis(){
                    ("c-s", fixed.c_s.value, fixed.c_s.stat, Form("%.2f/%.2f", fixed.c_s.scale_up, fixed.c_s.scale_dn), Form("%.2f/%.2f", fixed.c_s.pdf_up, fixed.c_s.pdf_dn), dynam.c_s.value, dynam.c_s.stat, Form("%.2f/%.2f", dynam.c_s.scale_up, dynam.c_s.scale_dn), Form("%.2f/%.2f", dynam.c_s.pdf_up, dynam.c_s.pdf_dn));
   for (int j = 0; j < (doOld ? 1 : 3); j++){
     for (int i = 0; i < (doOld ? 8 : (j == 0 ? 32 : (j == 1 ? 26 : 8))); i++){
-      table.setRowLabel(Form("%s SR%i", (j == 0 ? "HH" : (j == 1 ? "HL" : "LL")), i+1), i+1+(j == 1 ? 32 : (j == 2 ? 32+26 : 0))); 
-      table.setCell(fixed.sr[j][i].yield.value, i+1+(j == 1 ? 32 : (j == 2 ? 32+26 : 0)), 0); 
-      table.setCell(fixed.sr[j][i].yield.stat, i+1+(j == 1 ? 32 : (j == 2 ? 32+26 : 0)), 1); 
-      table.setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.scale_up, fixed.sr[j][i].yield.scale_dn), i+1+(j == 1 ? 32 : (j == 2 ? 32+26 : 0)), 2); 
-      table.setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.pdf_up, fixed.sr[j][i].yield.pdf_dn), i+1+(j == 1 ? 32 : (j == 2 ? 32+26 : 0)), 3); 
-      table.setCell(dynam.sr[j][i].yield.value, i+1+(j == 1 ? 32 : (j == 2 ? 32+26 : 0)), 4); 
-      table.setCell(dynam.sr[j][i].yield.stat, i+1+(j == 1 ? 32 : (j == 2 ? 32+26 : 0)), 5); 
-      table.setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.scale_up, dynam.sr[j][i].yield.scale_dn), i+1+(j == 1 ? 32 : (j == 2 ? 32+26 : 0)), 6); 
-      table.setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.pdf_up, dynam.sr[j][i].yield.pdf_dn), i+1+(j == 1 ? 32 : (j == 2 ? 32+26 : 0)), 7); 
+      int row = i+1+(j == 1 ? 32 : (j == 2 ? 32+26 : 0)); 
+      table.setRowLabel(Form("%s SR%i", (j == 0 ? "HH" : (j == 1 ? "HL" : "LL")), i+1), row); 
+      table.setCell(fixed.sr[j][i].yield.value, row, 0); 
+      table.setCell(fixed.sr[j][i].yield.stat, row, 1); 
+      table.setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.scale_up, fixed.sr[j][i].yield.scale_dn), row, 2); 
+      table.setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.pdf_up, fixed.sr[j][i].yield.pdf_dn), row, 3); 
+      table.setCell(dynam.sr[j][i].yield.value, row, 4); 
+      table.setCell(dynam.sr[j][i].yield.stat, row, 5); 
+      table.setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.scale_up, dynam.sr[j][i].yield.scale_dn), row, 6); 
+      table.setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.pdf_up, dynam.sr[j][i].yield.pdf_dn), row, 7); 
     }
   }
   table.print(); 
