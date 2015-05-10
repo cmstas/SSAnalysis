@@ -9,7 +9,8 @@
   - We put in protection against HT = nan, this seems to happen a lot, not sure why
   - A number of small bugs were discovered in the "old" way, nothing consequential.  We have a "doOld" mode that reproduces the old numbers using the old babies.  Running in "normal" mode with the old babies will produce slightly different numbers due to these bugs
   - weights[4] is with both up x4, weights[8] is with both down x 1/4.  The resulting weight is not always in the same direction, so it is possible that both errors have the same sign.  For proof, see below:
-    ````
+
+````
 root [8] Events->Scan("weights[4]:weights[8]","weights[4]>0")
 ************************************
 *    Row   * weights[4 * weights[8 *
