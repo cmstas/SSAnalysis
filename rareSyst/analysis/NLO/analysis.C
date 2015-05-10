@@ -309,19 +309,19 @@ result_t run(TChain* chain){
         result.hl[i].eff.pdf_up   =  100*max(eff_pdf_1, eff_pdf_2)/eff;
         result.hl[i].eff.pdf_dn   = -100*min(eff_pdf_1, eff_pdf_2)/eff;
 
-        //cout << " " << endl;
-        //cout << "SR " << i+1 << ": "       << Form("% 9.5f",  result.hl[i].yield.value   ) << endl;
-        //cout << "  --> Stat err (%):     " << Form("% 9.5f",  result.hl[i].yield.stat    ) << endl;
-        //cout << "  --> Scale up (%):     " << Form("% 9.5f",  result.hl[i].yield.scale_up) << endl;
-        //cout << "  --> Scale dn (%):     " << Form("% 9.5f",  result.hl[i].yield.scale_dn) << endl;
-        //cout << "  --> PDF up (%):       " << Form("% 9.5f",  result.hl[i].yield.pdf_up  ) << endl;
-        //cout << "  --> PDF dn (%):       " << Form("% 9.5f",  result.hl[i].yield.pdf_dn  ) << endl;
-        //cout << "  --> Efficiency:       " << Form("% 9.5f",  result.hl[i].eff.value     ) << endl;
-        //cout << "  --> Eff stat (%):     " << Form("% 9.5f",  result.hl[i].eff.stat      ) << endl;
-        //cout << "  --> Eff scale up (%): " << Form("% 9.5f",  result.hl[i].eff.scale_up  ) << endl;
-        //cout << "  --> Eff scale dn (%): " << Form("% 9.5f",  result.hl[i].eff.scale_dn  ) << endl;
-        //cout << "  --> Eff PDF up (%):   " << Form("% 9.5f",  result.hl[i].eff.pdf_up    ) << endl;
-        //cout << "  --> Eff PDF dn (%):   " << Form("% 9.5f",  result.hl[i].eff.pdf_dn    ) << endl;
+        cout << " " << endl;
+        cout << "SR " << i+1 << ": "       << Form("% 9.5f",  result.hl[i].yield.value   ) << endl;
+        cout << "  --> Stat err (%):     " << Form("% 9.5f",  result.hl[i].yield.stat    ) << endl;
+        cout << "  --> Scale up (%):     " << Form("% 9.5f",  result.hl[i].yield.scale_up) << endl;
+        cout << "  --> Scale dn (%):     " << Form("% 9.5f",  result.hl[i].yield.scale_dn) << endl;
+        cout << "  --> PDF up (%):       " << Form("% 9.5f",  result.hl[i].yield.pdf_up  ) << endl;
+        cout << "  --> PDF dn (%):       " << Form("% 9.5f",  result.hl[i].yield.pdf_dn  ) << endl;
+        cout << "  --> Efficiency:       " << Form("% 9.5f",  result.hl[i].eff.value     ) << endl;
+        cout << "  --> Eff stat (%):     " << Form("% 9.5f",  result.hl[i].eff.stat      ) << endl;
+        cout << "  --> Eff scale up (%): " << Form("% 9.5f",  result.hl[i].eff.scale_up  ) << endl;
+        cout << "  --> Eff scale dn (%): " << Form("% 9.5f",  result.hl[i].eff.scale_dn  ) << endl;
+        cout << "  --> Eff PDF up (%):   " << Form("% 9.5f",  result.hl[i].eff.pdf_up    ) << endl;
+        cout << "  --> Eff PDF dn (%):   " << Form("% 9.5f",  result.hl[i].eff.pdf_dn    ) << endl;
       }
 
       if (n == 2){
@@ -341,19 +341,19 @@ result_t run(TChain* chain){
         result.ll[i].eff.pdf_up   =  100*max(eff_pdf_1, eff_pdf_2)/eff;
         result.ll[i].eff.pdf_dn   = -100*min(eff_pdf_1, eff_pdf_2)/eff;
 
-        //cout << " " << endl;
-        //cout << "SR " << i+1 << ": "       << Form("% 9.5f",  result.ll[i].yield.value   ) << endl;
-        //cout << "  --> Stat err (%):     " << Form("% 9.5f",  result.ll[i].yield.stat    ) << endl;
-        //cout << "  --> Scale up (%):     " << Form("% 9.5f",  result.ll[i].yield.scale_up) << endl;
-        //cout << "  --> Scale dn (%):     " << Form("% 9.5f",  result.ll[i].yield.scale_dn) << endl;
-        //cout << "  --> PDF up (%):       " << Form("% 9.5f",  result.ll[i].yield.pdf_up  ) << endl;
-        //cout << "  --> PDF dn (%):       " << Form("% 9.5f",  result.ll[i].yield.pdf_dn  ) << endl;
-        //cout << "  --> Efficiency:       " << Form("% 9.5f",  result.ll[i].eff.value     ) << endl;
-        //cout << "  --> Eff stat (%):     " << Form("% 9.5f",  result.ll[i].eff.stat      ) << endl;
-        //cout << "  --> Eff scale up (%): " << Form("% 9.5f",  result.ll[i].eff.scale_up  ) << endl;
-        //cout << "  --> Eff scale dn (%): " << Form("% 9.5f",  result.ll[i].eff.scale_dn  ) << endl;
-        //cout << "  --> Eff PDF up (%):   " << Form("% 9.5f",  result.ll[i].eff.pdf_up    ) << endl;
-        //cout << "  --> Eff PDF dn (%):   " << Form("% 9.5f",  result.ll[i].eff.pdf_dn    ) << endl;
+        cout << " " << endl;
+        cout << "SR " << i+1 << ": "       << Form("% 9.5f",  result.ll[i].yield.value   ) << endl;
+        cout << "  --> Stat err (%):     " << Form("% 9.5f",  result.ll[i].yield.stat    ) << endl;
+        cout << "  --> Scale up (%):     " << Form("% 9.5f",  result.ll[i].yield.scale_up) << endl;
+        cout << "  --> Scale dn (%):     " << Form("% 9.5f",  result.ll[i].yield.scale_dn) << endl;
+        cout << "  --> PDF up (%):       " << Form("% 9.5f",  result.ll[i].yield.pdf_up  ) << endl;
+        cout << "  --> PDF dn (%):       " << Form("% 9.5f",  result.ll[i].yield.pdf_dn  ) << endl;
+        cout << "  --> Efficiency:       " << Form("% 9.5f",  result.ll[i].eff.value     ) << endl;
+        cout << "  --> Eff stat (%):     " << Form("% 9.5f",  result.ll[i].eff.stat      ) << endl;
+        cout << "  --> Eff scale up (%): " << Form("% 9.5f",  result.ll[i].eff.scale_up  ) << endl;
+        cout << "  --> Eff scale dn (%): " << Form("% 9.5f",  result.ll[i].eff.scale_dn  ) << endl;
+        cout << "  --> Eff PDF up (%):   " << Form("% 9.5f",  result.ll[i].eff.pdf_up    ) << endl;
+        cout << "  --> Eff PDF dn (%):   " << Form("% 9.5f",  result.ll[i].eff.pdf_dn    ) << endl;
       }
 
 
