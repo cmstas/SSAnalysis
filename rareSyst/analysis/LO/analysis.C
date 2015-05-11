@@ -277,28 +277,29 @@ int analysis(){
 
   //Chains
   TChain *fixed = new TChain("Events");
-  fixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_fixed_mm_all_qcut65.root");
+  fixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_fixed_mm_all_qcut65.root");
   
   TChain *fixed_pp = new TChain("Events");
-  fixed_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_fixed_pp_qcut65.root");
+  fixed_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_fixed_pp_qcut65.root");
 
   TChain *fixed_noFilt = new TChain("Events");
-  fixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_fixed_mm_all_qcut65_noFilt.root");
+  fixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_fixed_mm_all_qcut65_noFilt.root");
 
   TChain *fixed_noFilt_pp = new TChain("Events");
-  fixed_noFilt_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_fixed_pp_qcut65_noFilt.root");
+  //fixed_noFilt_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_fixed_pp_qcut65_noFilt.root");
+  fixed_noFilt_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/QQWW_pp_baby_1M_fixed_noFilt.root");
 
   TChain *notFixed = new TChain("Events");
-  notFixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_dynam_mm_all_qcut60.root");
+  notFixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_dynam_mm_all_qcut60.root");
 
   TChain *notFixed_pp = new TChain("Events");
-  notFixed_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_dynam_pp_qcut60.root");
+  notFixed_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_dynam_pp_qcut60.root");
 
   TChain *notFixed_noFilt = new TChain("Events");
-  notFixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_dynam_mm_all_qcut60_noFilt.root");
+  notFixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_dynam_mm_all_qcut60_noFilt.root");
 
   TChain *notFixed_noFilt_pp = new TChain("Events");
-  notFixed_noFilt_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/qqWW_baby_dynam_pp_qcut60_noFilt.root");
+  notFixed_noFilt_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_dynam_pp_qcut60_noFilt.root");
 
   //Cuts
   TCut MET_low("met>50 && met<120");
