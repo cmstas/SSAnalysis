@@ -24,3 +24,10 @@ yields/yields.aux
 yields/yields.log
 yields/*.pdf
 plotsFromBabies/*.pdf
+rareSyst/analysis/LO/*.tex
+rareSyst/analysis/NLO/*.tex
+rareSyst/analysis/LO/*.pdf
+rareSyst/analysis/NLO/*.pdf
+software
+batch/voms_status.txt
+sync/*.txt
