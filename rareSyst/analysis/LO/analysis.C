@@ -3,379 +3,406 @@
 #include "THStack.h"
 #include "TChain.h"
 #include "TCut.h"
+#include "TFile.h"
+#include "SYST.h"
+#include "../../../Tools/utils.h"
+#include "../../../CORE/SSSelections.h"
+#include "../../../software/tableMaker/CTable.h"
 
 using namespace std;
 
 //Switches
-bool doLatex = 1;
-bool verbose = 1;
+bool doOld = false;
 
-//Struct
-struct entry {float SR; float value; float stat; float scale_up; float scale_dn; float pdf_up; float pdf_dn; float eff; float eff_stat; float eff_scale_up; float eff_scale_dn; float eff_pdf_up; float eff_pdf_dn;};
-vector <entry> SR_fixed;
-vector <entry> SR_dynam;
-entry cs_fixed;
-entry cs_dynam;
+//Structs
+struct yield_t { float value; float stat; float scale_up; float scale_dn; float pdf_up; float pdf_dn; }; 
+struct sr_t    { yield_t yield; yield_t eff; }; 
+struct result_t { yield_t c_s; sr_t sr[3][34]; }; 
 
-//Global Variables
-float nTotal = 0;
-float nTotal_err = 0;
-float nTotal_scaleup = 0;
-float nTotal_scaledn = 0;
-float pdf_error_fixed_all_up = 0;
-float pdf_error_fixed_all_dn = 0;
-TH1F* total_fixed = new TH1F("total_fixed","total_fixed", 1, 0, 1);
-float nTotal_dynam = 0;
-float nTotal_dynam_err = 0;
-float nTotal_scaleup_dynam = 0;
-float nTotal_scaledn_dynam = 0;
-float pdf_error_dynam_all_up = 0;
-float pdf_error_dynam_all_dn = 0;
-TH1F* total_dynam = new TH1F("total_dynam","total_dynam", 1, 0, 1);
-
-void calcSR(int which, TCut cuts, TChain* chain, bool isFixed, TChain* chain2, TCut cuts2){
-
-  //Locals
-  float nTotal_local;
-  float nTotal_local_err;
-  float nTotal_local_scaleup;
-  float nTotal_local_scaledn;
-  float pdf_error_local_up;
-  float pdf_error_local_dn;
-  if (isFixed){
-    nTotal_local = nTotal;
-    nTotal_local_err = nTotal_err;
-    nTotal_local_scaleup = nTotal_scaleup;
-    nTotal_local_scaledn = nTotal_scaledn;
-    pdf_error_local_up = pdf_error_fixed_all_up;
-    pdf_error_local_dn = pdf_error_fixed_all_dn;
+int signalRegionAG(int njets, int nbtags, float met, float ht, float mt_min, float lep1_pt, float lep2_pt){
+  if (ht != ht) return -1; //this is to protect against NANs
+  if (!doOld) return signalRegion(njets, nbtags, met, ht, mt_min, lep1_pt, lep2_pt);
+  else {
+    if (met < 50 || njets < 2 || lep1_pt < 20 || lep2_pt < 20 || ht < 200) return 0;
+    if (met >  50 && met < 120 && ht >= 200 && ht <= 400 && njets >= 2 && njets < 4) return 1;
+    if (met >  50 && met < 120 && ht >  400 &&              njets >= 2 && njets < 4) return 2;
+    if (met >  50 && met < 120 && ht >= 200 && ht <= 400 && njets >= 4             ) return 3;
+    if (met >  50 && met < 120 && ht >  400 &&              njets >= 4             ) return 4;
+    if (met > 120 &&              ht >= 200 && ht <= 400 && njets >= 2 && njets < 4) return 5;
+    if (met > 120 &&              ht >  400 &&              njets >= 2 && njets < 4) return 6;
+    if (met > 120 &&              ht >= 200 && ht <= 400 && njets >= 4             ) return 7;
+    if (met > 120 &&              ht >  400 &&              njets >= 4             ) return 8;
   }
-  else if (!isFixed){
-    nTotal_local = nTotal_dynam;
-    nTotal_local_err = nTotal_dynam_err;
-    nTotal_local_scaleup = nTotal_scaleup_dynam;
-    nTotal_local_scaledn = nTotal_scaledn_dynam;
-    pdf_error_local_up = pdf_error_dynam_all_up;
-    pdf_error_local_dn = pdf_error_dynam_all_dn;
-  }
-
-  //Weights
-  TCut weight_normal("weights[4]");
-  TCut weight_up("weights[8] > weights[4] ? 0.1*weights[8] : weights[8]");
-  TCut weight_dn("weights[0] > weights[4] ? weights[0] : 10*weights[0]");
-
-  //Calculate number of passing events
-  TH1F* SR = new TH1F("SR","SR", 1, 0, 1);
-  SR->Sumw2();
-  chain->Draw("0.5>>SR", weight_normal*cuts);
-  chain2->Draw("0.5>>+SR", weight_normal*cuts2);
-  float nPassing = SR->Integral();
-  float nPassing_err = SR->GetBinError(1);
-
-  //Calculate scale error on passing events
-  TH1F* SR_scale_up = new TH1F("SR_scale_up","SR_scale_up", 1, 0, 1);
-  SR_scale_up->Sumw2();
-  chain->Draw("0.5>>SR_scale_up", weight_up*cuts);
-  chain2->Draw("0.5>>+SR_scale_up", weight_up*cuts2);
-  float nPassing_scaleup = SR_scale_up->Integral();
-  TH1F* SR_scale_dn = new TH1F("SR_scale_dn","SR_scale_dn", 1, 0, 1);
-  SR_scale_dn->Sumw2();
-  chain->Draw("0.5>>SR_scale_dn", weight_dn*cuts);
-  chain2->Draw("0.5>>+SR_scale_dn", weight_dn*cuts2);
-  float nPassing_scaledn = SR_scale_dn->Integral();
-
-  //Calculate PDF error on passing events
-  float pdf_error_up = 0;
-  float pdf_error_dn = 0;
-  for (int i = 1; i < 21; i++){
-    TH1F* temp1 = new TH1F("temp1", "temp1", 1, 0, 1);
-    TH1F* temp2 = new TH1F("temp2", "temp2", 1, 0, 1);
-    temp1->Sumw2();
-    temp2->Sumw2();
-    TCut tempWeight1 = TCut(Form("abs(weights[%i] - weights[4]) > 0.5 ? 0.1*weights[%i] : weights[%i]", 2*i+12-1, 2*i+12-1, 2*i+12-1));
-    TCut tempWeight2 = TCut(Form("abs(weights[%i] - weights[4]) > 0.5 ? 0.1*weights[%i] : weights[%i]", 2*i+12, 2*i+12, 2*i+12));
-    chain->Draw("0.5>>temp1", cuts*tempWeight1);
-    chain2->Draw("0.5>>+temp1", cuts2*tempWeight1);
-    chain->Draw("0.5>>temp2", cuts*tempWeight2);
-    chain2->Draw("0.5>>+temp2", cuts2*tempWeight2);
-    float pdf_error_temp_up = max(temp1->Integral() - nPassing, temp2->Integral() - nPassing); 
-    float pdf_error_temp_dn = -min(temp1->Integral() - nPassing, temp2->Integral() - nPassing); 
-    pdf_error_up += (pdf_error_temp_up > 0) ? pow(pdf_error_temp_up, 2) : 0;
-    pdf_error_dn += (pdf_error_temp_dn > 0) ? pow(pdf_error_temp_dn, 2) : 0;
-    delete temp1;
-    delete temp2;
-  }
-
-  entry temp;
-  temp.SR = which;
-  temp.value = nPassing;
-  temp.stat = 100*SR->GetBinError(1)/nPassing;
-  temp.scale_up = 100*(nPassing_scaledn - nPassing)/nPassing;
-  temp.scale_dn = 100*(nPassing_scaleup - nPassing)/nPassing;
-  temp.pdf_up = 100*sqrt(pdf_error_up)/nPassing;
-  temp.pdf_dn = 100*sqrt(pdf_error_dn)/nPassing;
-  temp.eff = nPassing/nTotal_local; 
-  temp.eff_stat = 100*(sqrt( ( (1-2*temp.eff)*pow(nPassing_err, 2) + pow(temp.eff*nTotal_local_err, 2)) / pow(nTotal_local, 2)))/temp.eff;
-  temp.eff_scale_up = 100*(nPassing_scaledn/nTotal_local_scaledn - nPassing/nTotal_local)/(nPassing/nTotal_local);
-  temp.eff_scale_dn = 100*(nPassing_scaleup/nTotal_local_scaleup - nPassing/nTotal_local)/(nPassing/nTotal_local);
-  temp.eff_pdf_up = 100*fabs( nPassing/nTotal_local - (nPassing + sqrt(pdf_error_up))/(nTotal_local + sqrt(pdf_error_local_up)) )/(nPassing/nTotal_local);
-  temp.eff_pdf_dn = 100*fabs( nPassing/nTotal_local - (nPassing + sqrt(pdf_error_dn))/(nTotal_local + sqrt(pdf_error_local_dn)) )/(nPassing/nTotal_local);
-
-  if (isFixed) SR_fixed.push_back(temp);
-  else SR_dynam.push_back(temp);
-
-  if (verbose) cout << "SR" << which << " yield is: " << nPassing << " pm " << temp.stat << "\% pm " << temp.scale_dn << "\%/" << temp.scale_up << "\% pm " << temp.pdf_up << "%" << endl;
-  if (verbose) cout << "SR" << which << " eff is:  " << temp.eff << " pm " << temp.eff_stat  << "\% pm " << temp.eff_scale_dn << "\%/" << temp.eff_scale_up << "\% pm " << temp.eff_pdf_up << "%"  << endl;
-
-  delete SR;
-  delete SR_scale_up;
-  delete SR_scale_dn;
-
+  cout << "WARNING!  No old SR found! Should never get here!" << endl;
+  return -1;
 }
 
-void doCrossSection(TChain* chain, bool isFixed, TCut oom, TChain* chain2, TCut oom2){
+result_t run(TChain* chain){
 
-  TCut weight_normal("weights[4]");
-  TCut weight_up("weights[8] > weights[4] ? 0.1*weights[8] : weights[8]");
-  TCut weight_dn("weights[0] > weights[4] ? weights[0] : 10*weights[0]");
+  //Constants
+  float lumi = 10.0;
+  float scale1fb = 1000.0; //To convert to fb.  No denominator since in sum mode.  
 
-  //Calculate cross-section
+  //Histograms for cross-section calculation
   TH1F* cs = new TH1F("cs","cs", 1, 0, 1);
   cs->Sumw2();
-  chain->Draw("0.5>>cs", weight_normal*oom);
-  chain2->Draw("0.5>>+cs", weight_normal*oom2);
+ 
+  //Histograms for cross-section scale errors
+  float cs_scale_up = 0;
+  float cs_scale_dn = 0;
 
-  //Calculate cross-section scale uncertainties
-  TH1F* cs_scaleup     = new TH1F("cs_scaleup","cs_scaleup", 1, 0, 1);
-  cs_scaleup->Sumw2();
-  chain->Draw("0.5>>cs_scaleup", weight_up*oom);
-  chain2->Draw("0.5>>+cs_scaleup", weight_up*oom2);
-  TH1F* cs_scaledn     = new TH1F("cs_scaledn","cs_scaledn", 1, 0, 1);
-  cs_scaledn->Sumw2();
-  chain->Draw("0.5>>cs_scaledn", weight_dn*oom);
-  chain2->Draw("0.5>>+cs_scaledn", weight_dn*oom2);
+  //Histograms for total number of events
+  TH1F *total = new TH1F("total", "total", 1, 0, 1);
+  total->Sumw2();
+ 
+  //Floats for total nEvents scale errors
+  float nTotal_scale_up = 0;
+  float nTotal_scale_dn = 0;
 
-  //Calculate cross-section PDF uncertainties
-  float cs_pdf_error_up = 0;
-  float cs_pdf_error_dn = 0;
-  TH1F* temp0 = new TH1F("temp0", "temp0", 1, 0, 1);
-  chain->Draw("0.5>>temp0", weight_normal*oom);
-  chain2->Draw("0.5>>+temp0", weight_normal*oom2);
-  for (int i = 1; i < 21; i++){
-    TH1F* temp1 = new TH1F("temp1", "temp1", 1, 0, 1);
-    TH1F* temp2 = new TH1F("temp2", "temp2", 1, 0, 1);
-    temp1->Sumw2();
-    temp2->Sumw2();
-    TCut tempWeight1 = TCut(Form("abs(weights[%i] - weights[4]) > 0.5 ? 0.1*weights[%i] : weights[%i]", 2*i+12-1, 2*i+12-1, 2*i+12-1));
-    TCut tempWeight2 = TCut(Form("abs(weights[%i] - weights[4]) > 0.5 ? 0.1*weights[%i] : weights[%i]", 2*i+12, 2*i+12, 2*i+12));
-    chain->Draw("0.5>>temp1", tempWeight1*oom);
-    chain2->Draw("0.5>>+temp1", tempWeight1*oom2);
-    chain->Draw("0.5>>temp2", tempWeight2*oom);
-    chain2->Draw("0.5>>+temp2", tempWeight2*oom2);
-    float pdf_error_up_sq_temp = max(temp1->Integral() - temp0->Integral(), temp2->Integral() - temp0->Integral());
-    float pdf_error_dn_sq_temp = -min(temp1->Integral() - temp0->Integral(), temp2->Integral() - temp0->Integral());
-    cs_pdf_error_up += (pdf_error_up_sq_temp > 0) ? pow(pdf_error_up_sq_temp, 2) : 0;
-    cs_pdf_error_dn += (pdf_error_dn_sq_temp > 0) ? pow(pdf_error_dn_sq_temp, 2) : 0;
-    delete temp1;
-    delete temp2;
+  //Event Counting
+  unsigned int nEventsTotal = 0;
+  unsigned int nEventsChain = chain->GetEntries();
+
+  //Set up iterator
+  TObjArray *listOfFiles = chain->GetListOfFiles();
+  TIter fileIter(listOfFiles);
+  TFile *currentFile = 0;
+
+  //PDF floats for nTotal
+  float cs_pdf[40] = { 0 }; 
+  float nTotalPDF[40] = { 0 }; 
+
+  //SR Histos
+  TH1F* SR[3][32];
+  for (unsigned int j = 0; j < (doOld ? 1 : 3); j++) { 
+    for (unsigned int i = 0; i < (doOld ? 8 : 32); i++){
+      SR[j][i] = new TH1F(Form("histo%i_%i", j, i), "hist", 1, 0, 1); 
+      SR[j][i]->Sumw2(); 
+    }
   }
 
-  //Store results
-  entry temp;
-  temp.value = 1000*cs->Integral();
-  temp.stat = 100*cs->GetBinError(1)/cs->Integral();
-  temp.scale_up = 100*(cs_scaledn->Integral()-cs->Integral())/cs->Integral();
-  temp.scale_dn = 100*(cs_scaleup->Integral()-cs->Integral())/cs->Integral();
-  temp.pdf_up = 100*sqrt(cs_pdf_error_up)/cs->Integral();
-  temp.pdf_dn = 100*sqrt(cs_pdf_error_dn)/cs->Integral();
-  if (isFixed == true) cs_fixed = temp;
-  else cs_dynam = temp;
+  //Scale Errors for SR
+  float SR_scale_up[3][32];
+  float SR_scale_dn[3][32];
+ 
+  //PDF errors for SR
+  float sr_pdf[3][32][40];
+  for (int n = 0; n < (doOld ? 1 : 3); n++) { for (int i = 0; i < 32; i++){ for (int j = 0; j < 40; j++) sr_pdf[n][i][j] = 0; } } 
 
-  //Display cross-section
-  if (verbose) cout << "cross section: " << temp.value << " pm " << temp.stat << "\% pm " << temp.scale_dn << "\%/" << temp.scale_up << "\% pm " << temp.pdf_up << "%" << endl;
+  //Initialize arrays
+  for (int j = 0; j < 3; j++) { for (int i = 0; i < 32; i++) SR_scale_up[j][i] = 0; }; 
+  for (int j = 0; j < 3; j++) { for (int i = 0; i < 32; i++) SR_scale_dn[j][i] = 0; }; 
 
-  delete cs;
-  delete cs_scaleup;
-  delete cs_scaledn;
-  delete temp0;
+  //File Loop
+  while ( (currentFile = (TFile*)fileIter.Next()) ) {
 
-}
+    // Get File Content
+    TFile *file = new TFile(currentFile->GetTitle());
+    TTree *tree = (TTree*)file->Get("Events");
+    systematics.Init(tree);
 
-void totalEvents(TChain* chain, bool isFixed, TCut scale1fb, TChain* chain2, TCut scale1fb2){
+    //Multiplication factor (because weights don't have scientific notation)
+    float mult = 1e-7;
+    string title = currentFile->GetTitle(); 
+    if (title.find("_pp_") != string::npos) mult *= 10;
 
-  //Cuts
-  TCut lumi("10.0");
-  TCut weight_normal("weights[4]");
-  TCut weight_up("weights[8] > weights[4] ? 0.1*weights[8] : weights[8]");
-  TCut weight_dn("weights[0] > weights[4] ? weights[0] : 10*weights[0]");
+    // Loop over Events in current file
+    for(unsigned int event = 0; event < tree->GetEntriesFast(); event++){
+    
+      //Get Event Content
+      systematics.GetEntry(event);
+      nEventsTotal++;
+    
+      //Progress
+      SYST::progress(nEventsTotal, nEventsChain);
 
-  //Calculate number of total events
-  if (isFixed){
-    total_fixed->Sumw2();
-    chain->Draw("0.5>>total_fixed", weight_normal*scale1fb*lumi);
-    chain2->Draw("0.5>>+total_fixed", weight_normal*scale1fb2*lumi);
-    nTotal = total_fixed->Integral();
-    nTotal_err = total_fixed->GetBinError(1);
+      //Fill c-s histo
+      cs->Fill(0.5, syst::weights().at(4)*mult);  
+ 
+      //Fill c-s scale error floats
+      float mult2 = 1.0, mult3 = 1.0;
+      if (syst::weights().at(8) > syst::weights().at(4)) mult2 = 0.1;
+      if (syst::weights().at(0) < syst::weights().at(4)) mult3 = 10.0;
+      cs_scale_up += syst::weights().at(8)*mult*mult2;
+      cs_scale_dn += syst::weights().at(0)*mult*mult3;
+
+      //Get c-s PDF errors
+      //for (int i = 0; i < 40; i++) cs_pdf[i] += syst::weights().at(i+13)*mult;  
+      for (int i = 0; i < 40; i++){
+        float mult4 = 1.0; 
+        if (fabs(syst::weights()[i+13] - syst::weights()[4]) > 0.5) mult4 = 0.1;  
+        cs_pdf[i] += syst::weights().at(i+13)*mult*mult4; 
+      } 
+
+      //Fill total nEvents histos
+      total->Fill(0.5, syst::weights().at(4)*scale1fb*lumi*mult);
+      nTotal_scale_up += syst::weights().at(8)*scale1fb*lumi*mult*mult2;
+      nTotal_scale_dn += syst::weights().at(0)*scale1fb*lumi*mult*mult3;
+      for (int i = 0; i < 40; i++){
+        float mult4 = 1.0; 
+        if (fabs(syst::weights()[i+13] - syst::weights()[4]) > 0.5) mult4 = 0.1;  
+        nTotalPDF[i] += syst::weights().at(i+13)*scale1fb*lumi*mult*mult4; 
+      } 
+
+      //Reject all events that are not "true SS"
+      if (!syst::keep()) continue;
+      if (syst::id1()*syst::id2() <= 0) continue;
+    
+      //Determine SR for the event
+      float mt_l1 = MT(syst::lep1().pt(), syst::lep1().phi(), syst::met(), syst::metphi());
+      float mt_l2 = MT(syst::lep2().pt(), syst::lep2().phi(), syst::met(), syst::metphi());
+      float mt_min = (mt_l1 > mt_l2 ? mt_l2 : mt_l1); 
+      int SR_ = signalRegionAG(syst::nJets40(), syst::nBtags(), syst::met(), syst::ht(), mt_min, syst::lep1().pt(), syst::lep2().pt());
+      anal_type_t hyp_type = doOld ? HighHigh : analysisCategory(syst::lep1().pt(), syst::lep2().pt());
+      if (SR_ <= 0) continue;
+
+      //Fill SR histograms -- yields
+      if (hyp_type == HighHigh) SR[0][SR_-1]->Fill(0.5, syst::weights().at(4)*scale1fb*lumi*mult);
+      if (hyp_type == HighLow)  SR[1][SR_-1]->Fill(0.5, syst::weights().at(4)*scale1fb*lumi*mult);
+      if (hyp_type == LowLow)   SR[2][SR_-1]->Fill(0.5, syst::weights().at(4)*scale1fb*lumi*mult);
+
+      //Determine SR -- scale errors
+      if (hyp_type == HighHigh) SR_scale_up[0][SR_-1] += syst::weights().at(8)*scale1fb*lumi*mult*mult2;
+      if (hyp_type == HighLow)  SR_scale_up[1][SR_-1] += syst::weights().at(8)*scale1fb*lumi*mult*mult2;
+      if (hyp_type == LowLow)   SR_scale_up[2][SR_-1] += syst::weights().at(8)*scale1fb*lumi*mult*mult2;
+      if (hyp_type == HighHigh) SR_scale_dn[0][SR_-1] += syst::weights().at(0)*scale1fb*lumi*mult*mult3;
+      if (hyp_type == HighLow)  SR_scale_dn[1][SR_-1] += syst::weights().at(0)*scale1fb*lumi*mult*mult3;
+      if (hyp_type == LowLow)   SR_scale_dn[2][SR_-1] += syst::weights().at(0)*scale1fb*lumi*mult*mult3;
+
+      //Fill nEvents PDF error floats
+      if (hyp_type == HighHigh) for (int i = 0; i < 40; i++){
+        float mult4 = 1.0; 
+        if (fabs(syst::weights()[i+13] - syst::weights()[4]) > 0.5) mult4 = 0.1;  
+        sr_pdf[0][SR_-1][i] += syst::weights().at(i+13)*scale1fb*lumi*mult*mult4; 
+      } 
+      if (hyp_type == HighLow) for (int i = 0; i < 40; i++){
+        float mult4 = 1.0; 
+        if (fabs(syst::weights()[i+13] - syst::weights()[4]) > 0.5) mult4 = 0.1;  
+        sr_pdf[1][SR_-1][i] += syst::weights().at(i+13)*scale1fb*lumi*mult*mult4; 
+      } 
+      if (hyp_type == LowLow) for (int i = 0; i < 40; i++){
+        float mult4 = 1.0; 
+        if (fabs(syst::weights()[i+13] - syst::weights()[4]) > 0.5) mult4 = 0.1;  
+        sr_pdf[2][SR_-1][i] += syst::weights().at(i+13)*scale1fb*lumi*mult*mult4; 
+      } 
+
+    }//event loop
+  }//file loop
+
+  //Calculate c-s PDF errors
+  float cs_pdf_up = 0;
+  float cs_pdf_dn = 0;
+  for (int i = 1; i <= 20; i++){
+    float pdf_up_temp = max(cs_pdf[2*i-2]- cs->Integral(), cs_pdf[2*i-1] - cs->Integral());
+    float pdf_dn_temp = max(cs->Integral() - cs_pdf[2*i-2], cs->Integral() - cs_pdf[2*i-1]);
+    cs_pdf_up += (pdf_up_temp > 0) ? pow(pdf_up_temp, 2) : 0;
+    cs_pdf_dn += (pdf_dn_temp > 0) ? pow(pdf_dn_temp, 2) : 0;
   }
-  else{
-    total_dynam->Sumw2();
-    chain->Draw("0.5>>total_dynam", weight_normal*scale1fb*lumi);
-    chain2->Draw("0.5>>+total_dynam", weight_normal*scale1fb2*lumi);
-    nTotal_dynam = total_dynam->Integral();
-    nTotal_dynam_err = total_dynam->GetBinError(1);
+
+  //Declare structs
+  result_t result;
+
+  //Cross-section results
+  result.c_s.value    =  1000*cs->Integral();
+  result.c_s.stat     =  100*cs->GetBinError(1)/cs->Integral(); 
+  result.c_s.scale_up =  100*(cs_scale_dn - cs->Integral())/cs->Integral();
+  result.c_s.scale_dn = -100*(cs_scale_up - cs->Integral())/cs->Integral();
+  result.c_s.pdf_up   =  100*sqrt(cs_pdf_up)/cs->Integral();
+  result.c_s.pdf_dn   =  100*sqrt(cs_pdf_dn)/cs->Integral();
+
+  //Print results 
+  cout << "Cross-Section: "      << result.c_s.value    << endl;
+  cout << "  --> Stat err (%): " << result.c_s.stat     << endl;
+  cout << "  --> Scale up (%): " << result.c_s.scale_up << endl;
+  cout << "  --> Scale dn (%): " << result.c_s.scale_dn << endl;
+  cout << "  --> PDF up (%):   " << result.c_s.pdf_up   << endl;
+  cout << "  --> PDF dn (%):   " << result.c_s.pdf_dn   << endl;
+
+  //Delete c-s histos
+  delete cs; 
+
+  //Calculate nTotal with statistical error
+  float nTotal      = total->Integral();
+  float nTotal_stat = total->GetBinError(1)/nTotal;
+
+  //Calculate nTotal PDF errors
+  float nTotal_pdf_up = 0;
+  float nTotal_pdf_dn = 0;
+  for (int i = 1; i <= 20; i++){
+    float pdf_up_temp = max(nTotalPDF[2*i-2] - nTotal, nTotalPDF[2*i-1] - nTotal);
+    float pdf_dn_temp = max(nTotal - nTotalPDF[2*i-2], nTotal - nTotalPDF[2*i-1]);
+    nTotal_pdf_up += (pdf_up_temp > 0) ? pow(pdf_up_temp, 2) : 0;
+    nTotal_pdf_dn += (pdf_dn_temp > 0) ? pow(pdf_dn_temp, 2) : 0;
   }
 
-  //Calculate scale error on all events
-  TH1F* total_scale_up = new TH1F("total_scale_up","total_scale_up", 1, 0, 1);
-  total_scale_up->Sumw2();
-  chain->Draw("0.5>>total_scale_up", weight_up*scale1fb*lumi);
-  chain2->Draw("0.5>>+total_scale_up", weight_up*scale1fb2*lumi);
-  if (isFixed) nTotal_scaleup = total_scale_up->Integral();
-  if (!isFixed) nTotal_scaleup_dynam = total_scale_up->Integral();
-  TH1F* total_scale_dn = new TH1F("total_scale_dn","total_scale_dn", 1, 0, 1);
-  total_scale_dn->Sumw2();
-  chain->Draw("0.5>>total_scale_dn", weight_dn*scale1fb*lumi);
-  chain2->Draw("0.5>>+total_scale_dn", weight_dn*scale1fb2*lumi);
-  if (isFixed) nTotal_scaledn = total_scale_dn->Integral();
-  if (!isFixed) nTotal_scaledn_dynam = total_scale_dn->Integral();
+  //Print results
+  cout << " " << endl;
+  cout << "nTotal: " << nTotal << endl;
+  cout << "  --> Stat err (%): " <<  100*nTotal_stat                       << endl;
+  cout << "  --> Scale up (%): " <<  100*(nTotal_scale_dn - nTotal)/nTotal << endl;
+  cout << "  --> Scale dn (%): " << -100*(nTotal_scale_up - nTotal)/nTotal << endl;
+  cout << "  --> PDF up (%):   " <<  100*sqrt(nTotal_pdf_up)/nTotal        << endl;
+  cout << "  --> PDF dn (%):   " <<  100*sqrt(nTotal_pdf_dn)/nTotal        << endl;
 
-  //Calculate PDF error on all events
-  for (int i = 1; i < 21; i++){
-    TH1F* temp1 = new TH1F("temp1", "temp1", 1, 0, 1);
-    TH1F* temp2 = new TH1F("temp2", "temp2", 1, 0, 1);
-    temp1->Sumw2();
-    temp2->Sumw2();
-    TCut tempWeight1 = TCut(Form("abs(weights[%i] - weights[4]) > 0.5 ? 0.1*weights[%i] : weights[%i]", 2*i+12-1, 2*i+12-1, 2*i+12-1));
-    TCut tempWeight2 = TCut(Form("abs(weights[%i] - weights[4]) > 0.5 ? 0.1*weights[%i] : weights[%i]", 2*i+12, 2*i+12, 2*i+12));
-    chain->Draw("0.5>>temp1", scale1fb*lumi*tempWeight1);
-    chain2->Draw("0.5>>+temp1", scale1fb2*lumi*tempWeight1);
-    chain->Draw("0.5>>temp2", scale1fb*lumi*tempWeight2);
-    chain2->Draw("0.5>>+temp2", scale1fb2*lumi*tempWeight2);
-    float pdf_error_temp_up = 0;
-    float pdf_error_temp_dn = 0;
-    if (isFixed) pdf_error_temp_up = max(temp1->Integral() - nTotal, temp2->Integral() - nTotal);
-    if (isFixed) pdf_error_temp_dn = -min(temp1->Integral() - nTotal, temp2->Integral() - nTotal);
-    if (!isFixed) pdf_error_temp_up = max(temp1->Integral() - nTotal_dynam, temp2->Integral() - nTotal_dynam);
-    if (!isFixed) pdf_error_temp_dn = -min(temp1->Integral() - nTotal_dynam, temp2->Integral() - nTotal_dynam);
-    if (isFixed) pdf_error_fixed_all_up += (pdf_error_temp_up > 0) ? pow(pdf_error_temp_up, 2) : 0;
-    if (isFixed) pdf_error_fixed_all_dn += -(pdf_error_temp_dn > 0) ? pow(pdf_error_temp_dn, 2) : 0;
-    if (!isFixed) pdf_error_dynam_all_up += (pdf_error_temp_up > 0) ? pow(pdf_error_temp_up, 2) : 0;
-    if (!isFixed) pdf_error_dynam_all_dn += (pdf_error_temp_dn > 0) ? pow(pdf_error_temp_dn, 2) : 0;
-    delete temp1;
-    delete temp2;
+  //Calculate SR PDF errors
+  float sr_pdf_up[3][32];
+  float sr_pdf_dn[3][32];
+  for (unsigned int n = 0; n < (doOld ? 1 : 3); n++){
+    for (unsigned int k = 0; k < 32; k++) sr_pdf_up[n][k] = 0; 
+    for (unsigned int k = 0; k < 32; k++) sr_pdf_dn[n][k] = 0; 
+    for (unsigned int i = 0; i < (doOld ? 8 : (n == 0 ? 32 : (n == 1 ? 26 : 8))); i++){
+      float value = SR[n][i]->Integral();
+      for (int j = 1; j <= 20; j++){
+        float pdf_up_temp = max(sr_pdf[n][i][2*j-2] - value, sr_pdf[n][i][2*j-1] - value);
+        float pdf_dn_temp = doOld ? -min(sr_pdf[n][i][2*j-2] - value, sr_pdf[n][i][2*j-1] - value) : max(value - sr_pdf[n][i][2*j-2], value - sr_pdf[n][i][2*j-1]);
+        sr_pdf_up[n][i] += (pdf_up_temp > 0) ? pow(pdf_up_temp, 2) : 0;
+        sr_pdf_dn[n][i] += (pdf_dn_temp > 0) ? pow(pdf_dn_temp, 2) : 0;
+      }
+    }
   }
 
-  if (isFixed && verbose) cout << "Tot yield is: " << nTotal << " pm " << 100*total_fixed->GetBinError(1)/total_fixed->Integral() << "\% pm " << 100*(nTotal_scaleup - nTotal)/nTotal << "\%/" << 100*(nTotal_scaledn - nTotal)/nTotal << "\% pm " << 100*sqrt(pdf_error_fixed_all_up)/nTotal << "%" << endl;
-  else if (!isFixed && verbose) cout << "Tot yield is: " << nTotal_dynam << " pm " << 100*total_dynam->GetBinError(1)/total_dynam->Integral() << "\% pm " << 100*(nTotal_scaleup_dynam - nTotal_dynam)/nTotal_dynam << "\%/" << 100*(nTotal_scaledn_dynam - nTotal_dynam)/nTotal_dynam << "\% pm " << 100*sqrt(pdf_error_dynam_all_up)/nTotal_dynam << "%" << endl;
+  //Print SR results
+  for (unsigned int n = 0; n < (doOld ? 1 : 3); n++){
+    for (unsigned int i = 0; i < (doOld ? 8 : (n == 0 ? 32 : (n == 1 ? 26 : 8))); i++){
+      float scale_up = SR_scale_up[n][i];
+      float scale_dn = SR_scale_dn[n][i];
+      float value = SR[n][i]->Integral();
+      float stat = SR[n][i]->GetBinError(1);
+      float eff   = float(value)/float(nTotal);
+      float eff_stat = sqrt(((1-2*eff)*pow(stat, 2) + pow(eff*nTotal_stat, 2)) / pow(nTotal, 2));
+      float eff_scale_1 = scale_dn/nTotal_scale_dn - eff;
+      float eff_scale_2 = scale_up/nTotal_scale_up - eff;
+      float eff_pdf_1 = (value + sqrt(sr_pdf_up[n][i]))/(nTotal + sqrt(nTotal_pdf_up)) - eff;
+      float eff_pdf_2 = (value - sqrt(sr_pdf_dn[n][i]))/(nTotal - sqrt(nTotal_pdf_dn)) - eff;
+      if (doOld){ //bugs intentionally reproduced
+        eff_pdf_1 = (value + sqrt(sr_pdf_up[n][i]))/(nTotal + sqrt(nTotal_pdf_up)) - eff;
+        eff_pdf_2 = (value + sqrt(sr_pdf_dn[n][i]))/(nTotal + sqrt(nTotal_pdf_up)) - eff;
+      }
 
-  delete total_scale_up;
-  delete total_scale_dn;
+      //Yields
+      result.sr[n][i].yield.value    =  value;
+      result.sr[n][i].yield.stat     =  100*stat/value;
+      result.sr[n][i].yield.scale_up =  100*(SR_scale_dn[n][i] - value)/value;
+      result.sr[n][i].yield.scale_dn = -100*(SR_scale_up[n][i] - value)/value;
+      result.sr[n][i].yield.pdf_up   =  100*sqrt(sr_pdf_up[n][i])/value;
+      result.sr[n][i].yield.pdf_dn   =  100*sqrt(sr_pdf_dn[n][i])/value;
+    
+      //Efficiencies
+      result.sr[n][i].eff.value    =  eff;
+      result.sr[n][i].eff.stat     =  100*eff_stat/eff;
+      result.sr[n][i].eff.scale_up =  100*max(eff_scale_1, eff_scale_2)/eff;
+      result.sr[n][i].eff.scale_dn = -100*min(eff_scale_1, eff_scale_2)/eff;
+      result.sr[n][i].eff.pdf_up   =  100*max(eff_pdf_1, eff_pdf_2)/eff;
+      result.sr[n][i].eff.pdf_dn   = -100*min(eff_pdf_1, eff_pdf_2)/eff;
+
+      cout << " " << endl;
+      cout << "SR " << i+1 << ": "       << Form("% 9.5f",  result.sr[n][i].yield.value   ) << endl;
+      cout << "  --> Stat err (%):     " << Form("% 9.5f",  result.sr[n][i].yield.stat    ) << endl;
+      cout << "  --> Scale up (%):     " << Form("% 9.5f",  result.sr[n][i].yield.scale_up) << endl;
+      cout << "  --> Scale dn (%):     " << Form("% 9.5f",  result.sr[n][i].yield.scale_dn) << endl;
+      cout << "  --> PDF up (%):       " << Form("% 9.5f",  result.sr[n][i].yield.pdf_up  ) << endl;
+      cout << "  --> PDF dn (%):       " << Form("% 9.5f",  result.sr[n][i].yield.pdf_dn  ) << endl;
+      cout << "  --> Efficiency:       " << Form("% 9.5f",  result.sr[n][i].eff.value     ) << endl;
+      cout << "  --> Eff stat (%):     " << Form("% 9.5f",  result.sr[n][i].eff.stat      ) << endl;
+      cout << "  --> Eff scale up (%): " << Form("% 9.5f",  result.sr[n][i].eff.scale_up  ) << endl;
+      cout << "  --> Eff scale dn (%): " << Form("% 9.5f",  result.sr[n][i].eff.scale_dn  ) << endl;
+      cout << "  --> Eff PDF up (%):   " << Form("% 9.5f",  result.sr[n][i].eff.pdf_up    ) << endl;
+      cout << "  --> Eff PDF dn (%):   " << Form("% 9.5f",  result.sr[n][i].eff.pdf_dn    ) << endl;
+
+    }//SR loop
+  }
+
+  return result;
 
 }
 
 int analysis(){
 
-  //Chains
-  TChain *fixed = new TChain("Events");
-  fixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_fixed_mm_all_qcut65.root");
-  
-  TChain *fixed_pp = new TChain("Events");
-  fixed_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_fixed_pp_qcut65.root");
+  //Declare Chains
+  TChain *fixed_chain = new TChain("Events");
+  TChain *dynam_chain = new TChain("Events");
 
-  TChain *fixed_noFilt = new TChain("Events");
-  fixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_fixed_mm_all_qcut65_noFilt.root");
+  //Fill Chains
+  fixed_chain->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/QQWW_pp_baby_1M_fixed_noFilt.root");
+  fixed_chain->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/QQWW_mm_baby_1M_fixed_noFilt.root");
+  dynam_chain->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/QQWW_pp_baby_1M_dynam_noFilt.root");
+  dynam_chain->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/QQWW_mm_baby_1M_dynam_noFilt.root");
 
-  TChain *fixed_noFilt_pp = new TChain("Events");
-  //fixed_noFilt_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_fixed_pp_qcut65_noFilt.root");
-  fixed_noFilt_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/QQWW_pp_baby_1M_fixed_noFilt.root");
+  //Do everything
+  result_t fixed = run(fixed_chain);
+  result_t dynam = run(dynam_chain);
 
-  TChain *notFixed = new TChain("Events");
-  notFixed->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_dynam_mm_all_qcut60.root");
+  //Make Tables
+  vector <CTable> tables; 
+  CTable table1;
+  CTable table2;
+  CTable table3; 
+  CTable table4; 
+  CTable table5; 
+  CTable table6; 
+  tables.push_back(table1);
+  tables.push_back(table2);
+  tables.push_back(table3);
+  tables.push_back(table4);
+  tables.push_back(table5);
+  tables.push_back(table6);
 
-  TChain *notFixed_pp = new TChain("Events");
-  notFixed_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_dynam_pp_qcut60.root");
-
-  TChain *notFixed_noFilt = new TChain("Events");
-  notFixed_noFilt->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_dynam_mm_all_qcut60_noFilt.root");
-
-  TChain *notFixed_noFilt_pp = new TChain("Events");
-  notFixed_noFilt_pp->Add("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/qqWW/Babies/fall2014/qqWW_baby_dynam_pp_qcut60_noFilt.root");
-
-  //Cuts
-  TCut MET_low("met>50 && met<120");
-  TCut MET_high("met>=120");
-  TCut nJets_low("nJets40 == 2 || nJets40 == 3");
-  TCut nJets_high("nJets40 >= 4");
-  TCut HT_low("ht >= 200 && ht <= 400");
-  TCut HT_high("ht > 400");
-  TCut nBtag0("nBtags == 0");
-  TCut nBtag1("nBtags == 1");
-  TCut nBtag2("nBtags >= 2");
-  TCut weight_normal("weights[4]");
-  TCut weight_up("weights[8] > weights[4] ? 0.10*weights[8] : weights[8]");
-  TCut weight_dn("weights[0] > weights[4] ? weights[0] : 10*weights[0]");
-  TCut SS("id1*id2 > 0");
-  TCut lumi("10.0");
-  TCut scale1fb(".0000001 * 1000 ");
-  TCut scale1fb10(".0000001 * 1000 * 10");  //factor of 10 b/c ++
-  TCut oom(".0000001");  
-  TCut oom10(".0000001 * 10");  //factor of 10 b/c ++
-  
-  //Calculate cross-section
-  doCrossSection(fixed_noFilt, 1, oom, fixed_noFilt_pp, oom10);
-  doCrossSection(notFixed_noFilt, 0, oom, notFixed_noFilt_pp,  oom10);
- 
-  //Calculate total number of events
-  totalEvents(fixed_noFilt, 1, scale1fb, fixed_noFilt_pp, oom10);
-  totalEvents(notFixed_noFilt, 0, scale1fb, notFixed_noFilt_pp, oom10);
-
-  //Calculate yields in each SR
-  calcSR(1, SS*MET_low*nJets_low*HT_low*scale1fb*lumi, fixed, 1   , fixed_pp, SS*MET_low*nJets_low*HT_low*scale1fb10*lumi );
-  calcSR(2, SS*MET_low*nJets_low*HT_high*scale1fb*lumi, fixed, 1  , fixed_pp, SS*MET_low*nJets_low*HT_high*scale1fb10*lumi);
-  calcSR(3, SS*MET_low*nJets_high*HT_low*scale1fb*lumi, fixed, 1  , fixed_pp, SS*MET_low*nJets_high*HT_low*scale1fb10*lumi);
-  calcSR(4, SS*MET_low*nJets_high*HT_high*scale1fb*lumi, fixed, 1 , fixed_pp, SS*MET_low*nJets_high*HT_high*scale1fb10*lumi);
-  calcSR(5, SS*MET_high*nJets_low*HT_low*scale1fb*lumi, fixed, 1  , fixed_pp, SS*MET_high*nJets_low*HT_low*scale1fb10*lumi);
-  calcSR(6, SS*MET_high*nJets_low*HT_high*scale1fb*lumi, fixed, 1 , fixed_pp, SS*MET_high*nJets_low*HT_high*scale1fb10*lumi);
-  calcSR(7, SS*MET_high*nJets_high*HT_low*scale1fb*lumi, fixed, 1 , fixed_pp, SS*MET_high*nJets_high*HT_low*scale1fb10*lumi);
-  calcSR(8, SS*MET_high*nJets_high*HT_high*scale1fb*lumi, fixed, 1, fixed_pp, SS*MET_high*nJets_high*HT_high*scale1fb10*lumi);
-
-  //Calculate yields again
-  calcSR(1, SS*MET_low*nJets_low*HT_low*scale1fb*lumi, notFixed, 0   , notFixed_pp, SS*MET_low*nJets_low*HT_low*scale1fb10*lumi );
-  calcSR(2, SS*MET_low*nJets_low*HT_high*scale1fb*lumi, notFixed, 0  , notFixed_pp, SS*MET_low*nJets_low*HT_high*scale1fb10*lumi);
-  calcSR(3, SS*MET_low*nJets_high*HT_low*scale1fb*lumi, notFixed, 0  , notFixed_pp, SS*MET_low*nJets_high*HT_low*scale1fb10*lumi);
-  calcSR(4, SS*MET_low*nJets_high*HT_high*scale1fb*lumi, notFixed, 0 , notFixed_pp, SS*MET_low*nJets_high*HT_high*scale1fb10*lumi);
-  calcSR(5, SS*MET_high*nJets_low*HT_low*scale1fb*lumi, notFixed, 0  , notFixed_pp, SS*MET_high*nJets_low*HT_low*scale1fb10*lumi);
-  calcSR(6, SS*MET_high*nJets_low*HT_high*scale1fb*lumi, notFixed, 0 , notFixed_pp, SS*MET_high*nJets_low*HT_high*scale1fb10*lumi);
-  calcSR(7, SS*MET_high*nJets_high*HT_low*scale1fb*lumi, notFixed, 0 , notFixed_pp, SS*MET_high*nJets_high*HT_low*scale1fb10*lumi);
-  calcSR(8, SS*MET_high*nJets_high*HT_high*scale1fb*lumi, notFixed, 0, notFixed_pp, SS*MET_high*nJets_high*HT_high*scale1fb10*lumi);
-
-  //Print out results -- latex
-  if (doLatex == false) return 0;
-  cout << "\\documentclass{article}" << endl;
-  cout << "\\begin{document}" << endl;
-  cout << "\\renewcommand{\\arraystretch}{1.5}" << endl;
-  cout << "\\begin{table}" << endl;
-  cout << "\\begin{tabular}{|c|c|c|}" << endl;
-  cout << "\\hline" << endl;
-  cout << " & Fixed Scales & Dynamic Scales\\\\" << endl;
-  cout << "\\hline" << endl;
-  cout << Form("$\\sigma$ & %.2f $\\pm$ $%.2f\\%%^{+%.2f\\%%}_{%.2f\\%%} \\textrm{ }^{+%.2f\\%%}_{-%.2f\\%%}$ & %.2f $\\pm$ $%.2f\\%%^{+%.2f\\%%}_{%.2f\\%%} \\textrm{ }^{+%.2f\\%%}_{-%.2f\\%%}$ \\\\", cs_fixed.value, cs_fixed.stat, cs_fixed.scale_up, cs_fixed.scale_dn, cs_fixed.pdf_up, cs_fixed.pdf_dn, cs_dynam.value, cs_dynam.stat, cs_dynam.scale_up, cs_dynam.scale_dn, cs_dynam.pdf_up, cs_dynam.pdf_dn) << endl;
-  cout << "\\hline" << endl;
-  for (int i = 0; i < 8; i++){
-    cout << Form("$\\sigma \\cdot \\varepsilon \\cdot \\textrm{lumi}$, SR%i & %.2f $\\pm$ $%.2f\\%%^{+%.2f\\%%}_{%.2f\\%%} \\textrm{ }^{+%.2f\\%%}_{-%.2f\\%%}$ & %.2f $\\pm$ $%.2f\\%%^{+%.2f\\%%}_{%.2f\\%%} \\textrm{ }^{+%.2f\\%%}_{-%.2f\\%%}$ \\\\", i+1, SR_fixed[i].value, SR_fixed[i].stat, SR_fixed[i].scale_up, SR_fixed[i].scale_dn, SR_fixed[i].pdf_up, SR_fixed[i].pdf_dn, SR_dynam[i].value, SR_dynam[i].stat, SR_dynam[i].scale_up, SR_dynam[i].scale_dn, SR_dynam[i].pdf_up, SR_dynam[i].pdf_dn) << endl;
-  cout << "\\hline" << endl;
+  //Format Tables
+  for (unsigned int i = 0; i < tables.size(); i++){
+    cout << " " << endl;
+    tables[i].setPrecision(2); 
+    tables[i].setTitle(Form("QQWW: Predicted %s -- %s", i < 3 ? "Yields" : "Efficiencies", i%3==0 ? "HH" : (i%3==1 ? "HL" : "LL")));
+    tables[i].useTitle(); 
+    tables[i].printHLine(1);
+    tables[i].multiColumn(-1, 0, 3); 
+    tables[i].multiColumn(-1, 4, 7); 
+    tables[i].setColLine(3); 
+    tables[i].setColLine(0); 
+    tables[i].setColLine(7); 
   }
-  for (int i = 0; i < 8; i++){
-    cout << Form("$\\varepsilon$, SR%i & %.3f $\\pm$ $%.2f\\%%^{+%.2f\\%%}_{%.2f\\%%} \\textrm{ }^{+%.2f\\%%}_{-%.2f\\%%}$ & %.3f $\\pm$ $%.2f\\%%^{+%.2f\\%%}_{%.2f\\%%} \\textrm{ }^{+%.2f\\%%}_{-%.2f\\%%}$ \\\\ ", i+1, 1000*SR_fixed[i].eff, fabs(SR_fixed[i].eff_stat), max(SR_fixed[i].eff_scale_up, SR_fixed[i].eff_scale_dn), min(SR_fixed[i].eff_scale_dn, SR_fixed[i].eff_scale_up), SR_fixed[i].eff_pdf_up, SR_fixed[i].eff_pdf_dn, 1000*SR_dynam[i].eff, fabs(SR_dynam[i].eff_stat), max(SR_dynam[i].eff_scale_up, SR_dynam[i].eff_scale_up), min(SR_dynam[i].eff_scale_dn, SR_dynam[i].eff_scale_up), SR_dynam[i].eff_pdf_up, SR_dynam[i].eff_pdf_dn) << endl;
-  cout << "\\hline" << endl;
-  }
-  cout << "\\end{tabular}" << endl;
-  cout << "\\caption{$\\sigma$ is in fb; lumi = $10.0\\textrm{ fb}^{-1}$}; efficiencies are multiplied by 1000" << endl;
-  cout << "\\end{table}" << endl;
-  cout << "\\end{document}" << endl;
 
+  //Fill yields tables
+  for (int j = 0; j < (doOld ? 1 : 3); j++){
+    tables[j].setTable() ("fixed", "", "", "", "dynamic", "", "", "")
+                         ("", "yield", "stat", "scale up/dn", "pdf up/dn", "yield", "stat", "scale up/dn", "pdf up/dn")
+                         ("c-s", fixed.c_s.value, fixed.c_s.stat, Form("%.2f/%.2f", fixed.c_s.scale_up, fixed.c_s.scale_dn), Form("%.2f/%.2f", fixed.c_s.pdf_up, fixed.c_s.pdf_dn), dynam.c_s.value, dynam.c_s.stat, Form("%.2f/%.2f", dynam.c_s.scale_up, dynam.c_s.scale_dn), Form("%.2f/%.2f", dynam.c_s.pdf_up, dynam.c_s.pdf_dn));
+    for (int i = 0; i < (doOld ? 8 : (j == 0 ? 32 : (j == 1 ? 26 : 8))); i++){
+      int row = i+2; 
+      tables[j].setRowLabel(Form("%s SR%i", (j == 0 ? "HH" : (j == 1 ? "HL" : "LL")), i+1), row); 
+      tables[j].setCell(fixed.sr[j][i].yield.value, row, 0); 
+      tables[j].setCell(fixed.sr[j][i].yield.stat, row, 1); 
+      tables[j].setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.scale_up, fixed.sr[j][i].yield.scale_dn), row, 2); 
+      tables[j].setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.pdf_up, fixed.sr[j][i].yield.pdf_dn), row, 3); 
+      tables[j].setCell(dynam.sr[j][i].yield.value, row, 4); 
+      tables[j].setCell(dynam.sr[j][i].yield.stat, row, 5); 
+      tables[j].setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.scale_up, dynam.sr[j][i].yield.scale_dn), row, 6); 
+      tables[j].setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.pdf_up, dynam.sr[j][i].yield.pdf_dn), row, 7); 
+    }
+    tables[j].print(); 
+    tables[j].saveTex(Form("yields_%i.tex", j));
+  }
+
+  //Fill eff tables
+  for (int j = 0; j < (doOld ? 1 : 3); j++){
+    int tablenumber = j + 3;
+    tables[tablenumber].setTable() ("fixed", "", "", "", "dynamic", "", "", "")
+                                   ("", "1000*eff", "stat", "scale up/dn", "pdf up/dn", "1000*eff", "stat", "scale up/dn", "pdf up/dn");
+    for (int i = 0; i < (doOld ? 8 : (j == 0 ? 32 : (j == 1 ? 26 : 8))); i++){
+      int row = i+1; 
+      tables[tablenumber].setRowLabel(Form("%s SR%i", (j == 0 ? "HH" : (j == 1 ? "HL" : "LL")), i+1), row); 
+      tables[tablenumber].setCell(1000*fixed.sr[j][i].eff.value, row, 0); 
+      tables[tablenumber].setCell(fixed.sr[j][i].eff.stat, row, 1); 
+      tables[tablenumber].setCell(Form("%.2f/%.2f", fixed.sr[j][i].eff.scale_up, fixed.sr[j][i].eff.scale_dn), row, 2); 
+      tables[tablenumber].setCell(Form("%.2f/%.2f", fixed.sr[j][i].eff.pdf_up, fixed.sr[j][i].eff.pdf_dn), row, 3); 
+      tables[tablenumber].setCell(dynam.sr[j][i].eff.value, row, 4); 
+      tables[tablenumber].setCell(dynam.sr[j][i].eff.stat, row, 5); 
+      tables[tablenumber].setCell(Form("%.2f/%.2f", dynam.sr[j][i].eff.scale_up, dynam.sr[j][i].eff.scale_dn), row, 6); 
+      tables[tablenumber].setCell(Form("%.2f/%.2f", dynam.sr[j][i].eff.pdf_up, dynam.sr[j][i].eff.pdf_dn), row, 7); 
+    }
+    tables[tablenumber].print(); 
+    tables[tablenumber].saveTex(Form("eff_%i.tex", j));
+  }
 
   return 0;
-
 
 }
