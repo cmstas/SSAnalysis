@@ -90,7 +90,7 @@ void run(sample_t which, int file, IsolationMethods ptrel){
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
 
-    mylooper->ProcessBaby(ptrel); 
+    mylooper->ProcessBaby(ptrel, f->GetTitle()); 
 
   }//event loop 
 
