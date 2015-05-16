@@ -135,6 +135,18 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   BabyTree->Branch("muID_medMuonPOG"       , &muID_medMuonPOG       );
   BabyTree->Branch("muID_pt"               , &muID_pt               );
   BabyTree->Branch("muID_eta"              , &muID_eta              );
+  
+  //InSituFR
+  BabyTree->Branch("lep1_inSituFR"         , &lep1_inSituFR         );
+  BabyTree->Branch("lep2_inSituFR"         , &lep2_inSituFR         );
+  BabyTree->Branch("truth_inSituFR"        , &truth_inSituFR        );
+  BabyTree->Branch("lep1_multiIso"         , &lep1_multiIso         );
+  BabyTree->Branch("lep2_multiIso"         , &lep2_multiIso         );
+  BabyTree->Branch("lep1_sip"              , &lep1_sip              );
+  BabyTree->Branch("lep2_sip"              , &lep2_sip              );
+
+
+
   //Print warning!
   cout << "Careful!! Path is " << path << endl;
 
@@ -261,6 +273,13 @@ void babyMaker::InitBabyNtuple(){
     muID_medMuonPOG.clear();
     muID_pt.clear();        
     muID_eta.clear();
+    lep1_inSituFR = 0; 
+    lep2_inSituFR = 0;
+    truth_inSituFR = false;
+    lep1_multiIso = -1;
+    lep2_multiIso = -1;
+    lep1_sip = -1;
+    lep2_sip = -1;
 
 } 
 
@@ -338,9 +357,33 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   lep3_quality = thirdLepton.second;
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
+  lep1_multiIso = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.40, 0.7, 7.0) : passMultiIso(13, lep1_idx, 0.40, 0.68, 6.7);
+  lep2_multiIso = abs(lep2_id) == 11 ? passMultiIso(11, lep2_idx, 0.40, 0.7, 7.0) : passMultiIso(13, lep2_idx, 0.40, 0.68, 6.7);
+  lep1_sip = abs(lep1_id) == 11 ? fabs(els_ip3d().at(lep1_idx))/els_ip3derr().at(lep1_idx) : fabs(mus_ip3d().at(lep1_idx))/mus_ip3derr().at(lep1_idx); 
+  lep2_sip = abs(lep2_id) == 11 ? fabs(els_ip3d().at(lep2_idx))/els_ip3derr().at(lep2_idx) : fabs(mus_ip3d().at(lep2_idx))/mus_ip3derr().at(lep2_idx); 
   dilep_p4 = lep1_p4 + lep2_p4; 
   lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, isoCase);
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, isoCase);
+
+  //For inSituFR, both must pass looser ID (easier than selection ID)
+  bool passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx); 
+  bool passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx); 
+  if (passed_id_inSituFR_lep1 && passed_id_inSituFR_lep2){
+    bool passed_id_numer_lep1 = isGoodLepton(lep1_id, lep1_idx, isoCase);
+    bool passed_id_numer_lep2 = isGoodLepton(lep2_id, lep2_idx, isoCase);
+    int truth_lep1 = lepMotherID( Lep(lep1_id, lep1_idx) ); 
+    int truth_lep2 = lepMotherID( Lep(lep2_id, lep2_idx) ); 
+
+    //Additionally there must be one leg that is truth-matched to prompt and passed numer
+    if (truth_lep1 > 0 && passed_id_numer_lep1) lep1_inSituFR = false; 
+    else lep1_inSituFR = true;
+    if (truth_lep2 > 0 && passed_id_numer_lep2) lep2_inSituFR = false; 
+    else lep2_inSituFR = true;
+ 
+    //And the other leg must be truth-matched to fake
+    if (!lep1_inSituFR && truth_lep1 <= 0) truth_inSituFR = true; 
+    if (!lep2_inSituFR && truth_lep2 <= 0) truth_inSituFR = true; 
+  }
   
   //Fill generated lepton variables, ignoring reco (matching to reco done above)
   vector <particle_t> genPair = getGenPair(verbose);
