@@ -221,4 +221,14 @@ class babyMaker {
     vector <float> muID_pt;        
     vector <float> muID_eta;       
 
+    //InSituFR
+    bool lep1_isGoodLeg;
+    bool lep2_isGoodLeg;
+    bool lep1_isFakeLeg;
+    bool lep2_isFakeLeg;
+    bool truth_inSituFR;
+    bool lep1_multiIso;
+    bool lep2_multiIso;
+    float lep1_sip; 
+    float lep2_sip; 
 };

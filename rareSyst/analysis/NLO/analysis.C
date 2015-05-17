@@ -311,12 +311,18 @@ int analysis(){
   CTable table4; 
   CTable table5; 
   CTable table6; 
+  CTable table7; 
+  CTable table8; 
+  CTable table9; 
   tables.push_back(table1);
   tables.push_back(table2);
   tables.push_back(table3);
   tables.push_back(table4);
   tables.push_back(table5);
   tables.push_back(table6);
+  tables.push_back(table7);
+  tables.push_back(table8);
+  tables.push_back(table9);
 
   //Format Tables
   for (unsigned int i = 0; i < tables.size(); i++){
@@ -324,32 +330,33 @@ int analysis(){
     tables[i].setPrecision(2); 
     tables[i].setTitle(Form("TTW: Predicted %s -- %s", i < 3 ? "Yields" : "Efficiencies", i%3==0 ? "HH" : (i%3==1 ? "HL" : "LL")));
     tables[i].useTitle(); 
-    tables[i].printHLine(1);
-    tables[i].multiColumn(-1, 0, 3); 
-    tables[i].multiColumn(-1, 4, 7); 
+    if (i < 6) tables[i].printHLine(1);
+    if (i < 6) tables[i].multiColumn(-1, 0, 3); 
+    if (i < 6) tables[i].multiColumn(-1, 4, 7); 
     tables[i].setColLine(3); 
     tables[i].setColLine(0); 
     tables[i].setColLine(7); 
+    if (i >= 6) tables[i].setColLine(8); 
   }
 
   //Fill yields tables
   for (int j = 0; j < (doOld ? 1 : 3); j++){
-    tables[j].setTable() ("fixed", "", "", "", "dynamic", "", "", "")
-                         ("", "yield", "stat", "scale up/dn", "pdf up/dn", "yield", "stat", "scale up/dn", "pdf up/dn")
-                         ("c-s", fixed.c_s.value, fixed.c_s.stat, Form("%.2f/%.2f", fixed.c_s.scale_up, fixed.c_s.scale_dn), Form("%.2f/%.2f", fixed.c_s.pdf_up, fixed.c_s.pdf_dn), dynam.c_s.value, dynam.c_s.stat, Form("%.2f/%.2f", dynam.c_s.scale_up, dynam.c_s.scale_dn), Form("%.2f/%.2f", dynam.c_s.pdf_up, dynam.c_s.pdf_dn));
+    tables[j].setTable() ("dynmaic", "", "", "", "fixed", "", "", "")
+                         ("yield", "stat", "scale up/dn", "pdf up/dn", "yield", "stat", "scale up/dn", "pdf up/dn")
+                         ("c-s", dynam.c_s.value, dynam.c_s.stat, Form("%.2f/%.2f", dynam.c_s.scale_up, dynam.c_s.scale_dn), Form("%.2f/%.2f", dynam.c_s.pdf_up, dynam.c_s.pdf_dn),fixed.c_s.value, fixed.c_s.stat, Form("%.2f/%.2f", fixed.c_s.scale_up, fixed.c_s.scale_dn), Form("%.2f/%.2f", fixed.c_s.pdf_up, fixed.c_s.pdf_dn));
     for (int i = 0; i < (doOld ? 8 : (j == 0 ? 32 : (j == 1 ? 26 : 8))); i++){
-      int row = i+2; 
+      int row = i+1; 
       tables[j].setRowLabel(Form("%s SR%i", (j == 0 ? "HH" : (j == 1 ? "HL" : "LL")), i+1), row); 
-      tables[j].setCell(fixed.sr[j][i].yield.value, row, 0); 
-      tables[j].setCell(fixed.sr[j][i].yield.stat, row, 1); 
-      tables[j].setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.scale_up, fixed.sr[j][i].yield.scale_dn), row, 2); 
-      tables[j].setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.pdf_up, fixed.sr[j][i].yield.pdf_dn), row, 3); 
-      tables[j].setCell(dynam.sr[j][i].yield.value, row, 4); 
-      tables[j].setCell(dynam.sr[j][i].yield.stat, row, 5); 
-      tables[j].setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.scale_up, dynam.sr[j][i].yield.scale_dn), row, 6); 
-      tables[j].setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.pdf_up, dynam.sr[j][i].yield.pdf_dn), row, 7); 
+      tables[j].setCell(dynam.sr[j][i].yield.value, row, 0); 
+      tables[j].setCell(dynam.sr[j][i].yield.stat, row, 1); 
+      tables[j].setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.scale_up, dynam.sr[j][i].yield.scale_dn), row, 2); 
+      tables[j].setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.pdf_up, dynam.sr[j][i].yield.pdf_dn), row, 3); 
+      tables[j].setCell(fixed.sr[j][i].yield.value, row, 4); 
+      tables[j].setCell(fixed.sr[j][i].yield.stat, row, 5); 
+      tables[j].setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.scale_up, fixed.sr[j][i].yield.scale_dn), row, 6); 
+      tables[j].setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.pdf_up, fixed.sr[j][i].yield.pdf_dn), row, 7); 
     }
-    tables[j].print(); 
+    //tables[j].print(); 
     tables[j].saveTex(Form("yields_%i.tex", j));
   }
 
@@ -370,8 +377,25 @@ int analysis(){
       tables[tablenumber].setCell(Form("%.2f/%.2f", dynam.sr[j][i].eff.scale_up, dynam.sr[j][i].eff.scale_dn), row, 6); 
       tables[tablenumber].setCell(Form("%.2f/%.2f", dynam.sr[j][i].eff.pdf_up, dynam.sr[j][i].eff.pdf_dn), row, 7); 
     }
-    tables[tablenumber].print(); 
+    //tables[tablenumber].print(); 
     tables[tablenumber].saveTex(Form("eff_%i.tex", j));
+  }
+
+  //Fill yields tables
+  for (int j = 0; j < (doOld ? 1 : 3); j++){
+    int tablenumber = j + 6;
+    tables[tablenumber].setTable() ("yield", "stat", "scale up/dn", "pdf up/dn", "tot err");
+    for (int i = 0; i < (doOld ? 8 : (j == 0 ? 32 : (j == 1 ? 26 : 8))); i++){
+      int row = i; 
+      tables[tablenumber].setRowLabel(Form("%s SR%i", (j == 0 ? "HH" : (j == 1 ? "HL" : "LL")), i+1), row); 
+      tables[tablenumber].setCell(dynam.sr[j][i].yield.value, row, 0); 
+      tables[tablenumber].setCell(dynam.sr[j][i].yield.stat, row, 1); 
+      tables[tablenumber].setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.scale_up/2, dynam.sr[j][i].yield.scale_dn/2), row, 2); 
+      tables[tablenumber].setCell(Form("%.2f/%.2f", dynam.sr[j][i].yield.pdf_up, dynam.sr[j][i].yield.pdf_dn), row, 3); 
+      tables[tablenumber].setCell( sqrt( pow(0.25*(fabs(dynam.sr[j][i].yield.scale_up) + fabs(dynam.sr[j][i].yield.scale_dn)), 2) + pow(0.5*(fabs(dynam.sr[j][i].yield.pdf_up) + fabs(dynam.sr[j][i].yield.pdf_dn)), 2)), row, 4); 
+    }
+    tables[tablenumber].print(); 
+    tables[tablenumber].saveTex(Form("yields_ra5_%i.tex", j));
   }
 
   return 0;

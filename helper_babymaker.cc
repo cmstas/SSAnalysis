@@ -137,8 +137,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   BabyTree->Branch("muID_eta"              , &muID_eta              );
   
   //InSituFR
-  BabyTree->Branch("lep1_inSituFR"         , &lep1_inSituFR         );
-  BabyTree->Branch("lep2_inSituFR"         , &lep2_inSituFR         );
+  BabyTree->Branch("lep1_isGoodLeg"        , &lep1_isGoodLeg         );
+  BabyTree->Branch("lep2_isGoodLeg"        , &lep2_isGoodLeg         );
+  BabyTree->Branch("lep1_isFakeLeg"        , &lep1_isFakeLeg         );
+  BabyTree->Branch("lep2_isFakeLeg"        , &lep2_isFakeLeg         );
   BabyTree->Branch("truth_inSituFR"        , &truth_inSituFR        );
   BabyTree->Branch("lep1_multiIso"         , &lep1_multiIso         );
   BabyTree->Branch("lep2_multiIso"         , &lep2_multiIso         );
@@ -273,8 +275,10 @@ void babyMaker::InitBabyNtuple(){
     muID_medMuonPOG.clear();
     muID_pt.clear();        
     muID_eta.clear();
-    lep1_inSituFR = 0; 
-    lep2_inSituFR = 0;
+    lep1_isGoodLeg = 0; 
+    lep2_isGoodLeg = 0; 
+    lep1_isFakeLeg = 0; 
+    lep2_isFakeLeg = 0; 
     truth_inSituFR = false;
     lep1_multiIso = -1;
     lep2_multiIso = -1;
@@ -374,15 +378,19 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
     int truth_lep1 = lepMotherID( Lep(lep1_id, lep1_idx) ); 
     int truth_lep2 = lepMotherID( Lep(lep2_id, lep2_idx) ); 
 
-    //Additionally there must be one leg that is truth-matched to prompt and passed numer
-    if (truth_lep1 > 0 && passed_id_numer_lep1) lep1_inSituFR = false; 
-    else lep1_inSituFR = true;
-    if (truth_lep2 > 0 && passed_id_numer_lep2) lep2_inSituFR = false; 
-    else lep2_inSituFR = true;
- 
-    //And the other leg must be truth-matched to fake
-    if (!lep1_inSituFR && truth_lep1 <= 0) truth_inSituFR = true; 
-    if (!lep2_inSituFR && truth_lep2 <= 0) truth_inSituFR = true; 
+    //Need one good leg and one fake leg
+    if (truth_lep1 > 0 && passed_id_numer_lep1) lep1_isGoodLeg = true;
+    else lep1_isGoodLeg = false;
+    if (truth_lep1 <= 0) lep1_isFakeLeg = true;
+    else lep1_isFakeLeg = false;
+    if (truth_lep2 > 0 && passed_id_numer_lep2) lep2_isGoodLeg = true;
+    else lep2_isGoodLeg = false;
+    if (truth_lep2 <= 0) lep2_isFakeLeg = true;
+    else lep2_isFakeLeg = false;
+
+    //Now require one good leg and one fake leg
+    if ((lep1_isGoodLeg && lep2_isFakeLeg) || (lep1_isFakeLeg && lep2_isGoodLeg)) truth_inSituFR = true;
+    else truth_inSituFR = false; 
   }
   
   //Fill generated lepton variables, ignoring reco (matching to reco done above)
