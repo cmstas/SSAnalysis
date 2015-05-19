@@ -376,8 +376,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   lep2_ptrel_v1 = getPtRel(lep2_id, lep2_idx, true);
 
   //MiniIso
-  lep1_miniIso = abs(lep1_id)==11 ? elMiniRelIso(lep1_idx, 0.1, true) : muMiniRelIso(lep1_idx, 0.1, true);
-  lep2_miniIso = abs(lep2_id)==11 ? elMiniRelIso(lep2_idx, 0.1, true) : muMiniRelIso(lep2_idx, 0.1, true);
+  lep1_miniIso = abs(lep1_id)==11 ? elMiniRelIso(lep1_idx, true, 0.0, false, true) : muMiniRelIso(lep1_idx, true, 0.5, false, true);
+  lep2_miniIso = abs(lep2_id)==11 ? elMiniRelIso(lep2_idx, true, 0.0, false, true) : muMiniRelIso(lep2_idx, true, 0.5, false, true);
 
   //For inSituFR, both must pass looser ID (easier than selection ID)
   bool passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx); 
@@ -438,7 +438,6 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
     cout << "nbtags: " <<  nbtags << endl;
     for (unsigned int i = 0; i < jets.size(); i++) cout << i << " " << jets[i].pt() << " " << jets[i].eta() << endl;
   } 
-
 
   //Closest Jet
   jet_close_lep1 = closestJet(lep1_p4);

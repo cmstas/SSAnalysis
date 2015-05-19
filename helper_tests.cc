@@ -733,12 +733,12 @@ void tests::testPtRel( looper* loop, float& weight_, DilepHyp& hyp, std::vector<
       if (isGoodLepton(hyp.leadLep().pdgId(), hyp.leadLep().idx(), Standard)==0) {
 	if (ll=="mu") {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso03","hyp_ss_foFromWlead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
-	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIso(hyp.leadLep().idx()),weight_);
+	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIso(hyp.leadLep().idx(),true,0.5,false,true),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02","hyp_ss_foFromWlead_fail_"+ll+"_relIso02",20,0.,1., muRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,false),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB","hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB",20,0.,1., muRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,true),weight_);
 	} else {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso03","hyp_ss_foFromWlead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
-	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., elMiniRelIso(hyp.leadLep().idx()),weight_);
+	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., elMiniRelIso(hyp.leadLep().idx(),true,0.0,false,true),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02","hyp_ss_foFromWlead_fail_"+ll+"_relIso02",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,false),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB","hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,true),weight_);
 	}
