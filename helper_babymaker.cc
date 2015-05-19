@@ -436,10 +436,10 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   lep2_ptrel_v1 = getPtRel(lep2_id, lep2_idx, true);
 
   //MiniIso
-  if (abs(lep1_id)==11) lep1_miniIso = elMiniRelIso(lep1_idx, 0.1, true);
-  else                  lep1_miniIso = muMiniRelIso(lep1_idx, 0.1, true);
-  if (abs(lep2_id)==11) lep2_miniIso = elMiniRelIso(lep2_idx, 0.1, true);
-  else                  lep2_miniIso = muMiniRelIso(lep2_idx, 0.1, true);
+  if (abs(lep1_id)==11) lep1_miniIso = elMiniRelIso(lep1_idx, true, 0.0, false, true);
+  else                  lep1_miniIso = muMiniRelIso(lep1_idx, true, 0.5, false, true);
+  if (abs(lep2_id)==11) lep2_miniIso = elMiniRelIso(lep2_idx, true, 0.0, false, true);
+  else                  lep2_miniIso = muMiniRelIso(lep2_idx, true, 0.5, false, true);
 
   //Closest Jet
   jet_close_lep1 = closestJet(lep1_p4);
