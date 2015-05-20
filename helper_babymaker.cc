@@ -295,6 +295,19 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   
   //Local variables
   bool isData = tas::evt_isRealData();
+
+  //Sync stuff
+  //if (tas::evt_event() != 4787) return -1;
+  //verbose = true;
+  //readMVA* globalEleMVAreader = 0;
+  //globalEleMVAreader = new readMVA();
+  //globalEleMVAreader->InitMVA("CORE/"); 
+  //cout << "MVA VALUE: " << globalEleMVAreader->MVA(0) << endl;
+  //globalEleMVAreader->DumpValues();
+
+  //Results:
+  cout << isGoodLeptonNoIso(11,0) << endl;
+  cout << isNewMiniIsolatedLepton(11,0,1) << endl;
   
   //Debug mode
   if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return -1;
@@ -326,7 +339,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
   
   //Fill lepton variables
-  hyp_result_t best_hyp_info = chooseBestHyp(isoCase);
+  hyp_result_t best_hyp_info = chooseBestHyp(isoCase, verbose);
   hyp_class = best_hyp_info.hyp_class;
   int best_hyp = best_hyp_info.best_hyp;
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
@@ -361,8 +374,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   lep3_quality = thirdLepton.second;
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
-  lep1_multiIso_conecorr = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.40, 0.7, 7.0, true) : passMultiIso(13, lep1_idx, 0.40, 0.68, 6.7, true);
-  lep2_multiIso_conecorr = abs(lep2_id) == 11 ? passMultiIso(11, lep2_idx, 0.40, 0.7, 7.0, true) : passMultiIso(13, lep2_idx, 0.40, 0.68, 6.7, true);
+  lep1_multiIso_conecorr = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.10, 0.7, 7.0, true) : passMultiIso(13, lep1_idx, 0.14, 0.68, 6.7, true);
+  lep2_multiIso_conecorr = abs(lep2_id) == 11 ? passMultiIso(11, lep2_idx, 0.10, 0.7, 7.0, true) : passMultiIso(13, lep2_idx, 0.14, 0.68, 6.7, true);
   lep1_sip = abs(lep1_id) == 11 ? fabs(els_ip3d().at(lep1_idx))/els_ip3derr().at(lep1_idx) : fabs(mus_ip3d().at(lep1_idx))/mus_ip3derr().at(lep1_idx); 
   lep2_sip = abs(lep2_id) == 11 ? fabs(els_ip3d().at(lep2_idx))/els_ip3derr().at(lep2_idx) : fabs(mus_ip3d().at(lep2_idx))/mus_ip3derr().at(lep2_idx); 
   dilep_p4 = lep1_p4 + lep2_p4; 
