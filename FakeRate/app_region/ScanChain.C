@@ -52,6 +52,27 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   obs->GetYaxis()->SetTitle("Events");
   obs->SetLineColor(kRed);
 
+  if (TString(pred->GetName()).Contains("HT")) {
+    pred->GetXaxis()->SetTitle("HT [GeV]"); 
+    obs->GetXaxis()->SetTitle("HT [GeV]"); 
+  }
+  if (TString(pred->GetName()).Contains("MET")) {
+    pred->GetXaxis()->SetTitle("MET [GeV]"); 
+    obs->GetXaxis()->SetTitle("MET [GeV]"); 
+  }
+  if (TString(pred->GetName()).Contains("MTMIN")) {
+    pred->GetXaxis()->SetTitle("MTMIN [GeV]"); 
+    obs->GetXaxis()->SetTitle("MTMIN [GeV]"); 
+  }
+  if (TString(pred->GetName()).Contains("L1PT")) {
+    pred->GetXaxis()->SetTitle("L1PT [GeV]"); 
+    obs->GetXaxis()->SetTitle("L1PT [GeV]"); 
+  }
+  if (TString(pred->GetName()).Contains("L2PT")) {
+    pred->GetXaxis()->SetTitle("L2PT [GeV]"); 
+    obs->GetXaxis()->SetTitle("L2PT [GeV]"); 
+  }
+
   pred->SetLineWidth(2);
   obs->SetLineWidth(2);
 
@@ -64,6 +85,7 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   obs->Draw("samehistE");
 
   //legend
+  leg->Clear();
   leg->SetLineColor(kWhite);
   leg->SetTextFont(42); 
   leg->SetTextSize(0.06);
@@ -79,7 +101,7 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   pad_r->cd();
   TH1F *ratio = (TH1F*) pred->Clone("ratio");
   ratio->Divide(ratio, obs);
-  ratio->GetXaxis()->SetRangeUser(0,40); 
+  // ratio->GetXaxis()->SetRangeUser(0,40); 
   ratio->GetYaxis()->SetRangeUser(0,3);
   ratio->GetYaxis()->SetNdivisions(4);
   ratio->GetYaxis()->SetLabelSize(0.12);
@@ -91,13 +113,15 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   ratio->SetTitle("");
   pad_r->SetGridy();
   ratio->Draw();
+
+  bool print = pred->GetNbinsX()<10;
   
   int w = 18;
-  cout << setw(5) << "SR" <<  setw(w) << "Pred" << setw(w) << "Obs" << setw(w) << "Pred/Obs" << setw(w) << "(p-o)/p" << endl;
+  if (print) cout << setw(5) << "BR" <<  setw(w) << "Pred" << setw(w) << "Obs" << setw(w) << "Pred/Obs" << setw(w) << "(p-o)/p" << endl;
 
   for (int bin=1;bin<=pred->GetNbinsX();++bin) {
-    if (bin%10 == 0) continue;
-    if (bin%10 != 1) continue;
+    //if (bin%10 == 0) continue;
+    //if (bin%10 != 1) continue;
     int sr = bin-1;
     float p = pred->GetBinContent(bin);
     float o = obs->GetBinContent(bin);
@@ -134,21 +158,21 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
     float laste = sqrt((p*p*oe*oe + o*o*pe*pe)/(p*p*p*p));  //error prop
 
     //cout << Form("SR=%2i - pred=%5.2f +/- %5.2f - obs=%5.2f +/- %5.2f - pred/obs=%5.2f +/- %5.2f - (p-o)/p=%5.2f +/- %5.2f", sr, p, pe, o, oe, (o>0?p/o:99.99),ratioe, (p>0?(p-o)/p:99.99), laste ) << endl;	
-	cout << setw(5) << sr <<  setw(w) << Form("%5.2f +/-%5.2f", p, pe) << setw(w) << Form("%5.2f +/-%5.2f", o, oe) << setw(w) << Form("%5.2f +/-%5.2f", (o>0?p/o:99.99),ratioe) << setw(w) << Form("%5.2f +/-%5.2f", (p>0?(p-o)/p:99.99), laste) << endl;
+    if (print) cout << setw(5) << sr <<  setw(w) << Form("%5.2f +/-%5.2f", p, pe) << setw(w) << Form("%5.2f +/-%5.2f", o, oe) << setw(w) << Form("%5.2f +/-%5.2f", (o>0?p/o:99.99),ratioe) << setw(w) << Form("%5.2f +/-%5.2f", (p>0?(p-o)/p:99.99), laste) << endl;
   }
 
 
 }
 
 //getPt and getEta need to stay on sync with meas region
-float getPt(float pt, bool extrPtRel) {
+float getPt(float pt, bool extrPtRel = false) {
   if(pt < 10.)  return 11.;   //use this if lower FR histo bound is 10.
   if(!extrPtRel && pt >= 70.) return 69.;
   if(extrPtRel && pt >= 150.) return 149.;
   return pt;
 }
 
-float getEta(float eta, float ht, bool extrPtRel) {
+float getEta(float eta, float ht, bool extrPtRel = false) {
   if (extrPtRel) {
     if(ht >= 800) return 799;
     return ht;
@@ -157,7 +181,7 @@ float getEta(float eta, float ht, bool extrPtRel) {
   return fabs(eta);
 }
 
-float getFakeRate(TH2D* histo, float pt, float eta, float ht, bool extrPtRel) //change if bounds of histo change
+float getFakeRate(TH2D* histo, float pt, float eta, float ht, bool extrPtRel = false) //change if bounds of histo change
 {
   float e = 0;
 
@@ -179,30 +203,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
   bool coneCorr = false;
   if (option.Contains("coneCorr")) coneCorr=true;
-  bool noSIP = false;
-  if (option.Contains("noSIP")) noSIP = true;
-  bool unIso = false;
-  if (option.Contains("unIso")) unIso = true;
+  bool jetCorr = false;
+  if (option.Contains("jetCorr")) jetCorr=true;
   bool doBonly = false;
   if (option.Contains("doBonly")) doBonly = true;
   bool doConly = false;
   if (option.Contains("doConly")) doConly = true;
   bool doLightonly = false;
   if (option.Contains("doLightonly")) doLightonly = true;
-  bool lowPtRel14 = false;
-  if (option.Contains("lowPtRel14")) lowPtRel14 = true;
-  bool lowPtRel6 = false;
-  if (option.Contains("lowPtRel6")) lowPtRel6 = true;
-  bool useMiniIso = false;
-  if (option.Contains("useMiniIso")) useMiniIso = true;
-  bool useNewMiniIso = false;
-  if (option.Contains("useNewMiniIso")) useNewMiniIso = true;
-  bool extrPtRel = false;
-  if (option.Contains("extrPtRel")) {
-    extrPtRel = true;
-    unIso = true;
-    noSIP = true;
-  }
+
   bool highhigh = false;
   if (ptRegion.Contains("HH")) highhigh = true;
   bool highlow = false;
@@ -213,34 +222,142 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   //histograms
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
 
-  TH1F *Npn_histo_obs = new TH1F("Npn_histo_obs", "Observed Prompt-NonPrompt Background", 40, 0, 40);
-  Npn_histo_obs->SetDirectory(rootdir);
-  Npn_histo_obs->Sumw2();
+  TH1F *Npn_histo_br_obs = new TH1F("Npn_histo_br_obs", "Observed Prompt-NonPrompt Background", 4, 0, 4);
+  Npn_histo_br_obs->SetDirectory(rootdir);
+  Npn_histo_br_obs->Sumw2();
+  TH1F *Npn_histo_br_pred = new TH1F("Npn_histo_br_pred", "Predicted Prompt-NonPrompt Background", 4, 0, 4);
+  Npn_histo_br_pred->SetDirectory(rootdir);
+  Npn_histo_br_pred->Sumw2();
+  TH1F *Npn_histo_br_obs_mu = new TH1F("Npn_histo_br_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 4, 0, 4);
+  Npn_histo_br_obs_mu->SetDirectory(rootdir);
+  Npn_histo_br_obs_mu->Sumw2();
+  TH1F *Npn_histo_br_pred_mu = new TH1F("Npn_histo_br_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 4, 0, 4);
+  Npn_histo_br_pred_mu->SetDirectory(rootdir);
+  Npn_histo_br_pred_mu->Sumw2();
+  TH1F *Npn_histo_br_obs_el = new TH1F("Npn_histo_br_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 4, 0, 4);
+  Npn_histo_br_obs_el->SetDirectory(rootdir);
+  Npn_histo_br_obs_el->Sumw2();
+  TH1F *Npn_histo_br_pred_el = new TH1F("Npn_histo_br_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 4, 0, 4);
+  Npn_histo_br_pred_el->SetDirectory(rootdir);
+  Npn_histo_br_pred_el->Sumw2();
 
-  TH1F *Npn_histo_pred = new TH1F("Npn_histo_pred", "Predicted Prompt-NonPrompt Background", 40, 0, 40);
-  Npn_histo_pred->SetDirectory(rootdir);
-  Npn_histo_pred->Sumw2();
+  TH1F *Npn_histo_sr_obs = new TH1F("Npn_histo_sr_obs", "Observed Prompt-NonPrompt Background", 40, 0, 40);
+  Npn_histo_sr_obs->SetDirectory(rootdir);
+  Npn_histo_sr_obs->Sumw2();
+  TH1F *Npn_histo_sr_pred = new TH1F("Npn_histo_sr_pred", "Predicted Prompt-NonPrompt Background", 40, 0, 40);
+  Npn_histo_sr_pred->SetDirectory(rootdir);
+  Npn_histo_sr_pred->Sumw2();
+  TH1F *Npn_histo_sr_obs_mu = new TH1F("Npn_histo_sr_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 40, 0, 40);
+  Npn_histo_sr_obs_mu->SetDirectory(rootdir);
+  Npn_histo_sr_obs_mu->Sumw2();
+  TH1F *Npn_histo_sr_pred_mu = new TH1F("Npn_histo_sr_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 40, 0, 40);
+  Npn_histo_sr_pred_mu->SetDirectory(rootdir);
+  Npn_histo_sr_pred_mu->Sumw2();
+  TH1F *Npn_histo_sr_obs_el = new TH1F("Npn_histo_sr_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 40, 0, 40);
+  Npn_histo_sr_obs_el->SetDirectory(rootdir);
+  Npn_histo_sr_obs_el->Sumw2();
+  TH1F *Npn_histo_sr_pred_el = new TH1F("Npn_histo_sr_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 40, 0, 40);
+  Npn_histo_sr_pred_el->SetDirectory(rootdir);
+  Npn_histo_sr_pred_el->Sumw2();
 
-  TH1F *Npn_histo_obs_mu = new TH1F("Npn_histo_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 40, 0, 40);
-  Npn_histo_obs_mu->SetDirectory(rootdir);
-  Npn_histo_obs_mu->Sumw2();
+  TH1F *Npn_histo_HT_obs = new TH1F("Npn_histo_HT_obs", "Observed Prompt-NonPrompt Background", 25, 0, 500);
+  Npn_histo_HT_obs->SetDirectory(rootdir);
+  Npn_histo_HT_obs->Sumw2();
+  TH1F *Npn_histo_HT_pred = new TH1F("Npn_histo_HT_pred", "Predicted Prompt-NonPrompt Background", 25, 0, 500);
+  Npn_histo_HT_pred->SetDirectory(rootdir);
+  Npn_histo_HT_pred->Sumw2();
+  TH1F *Npn_histo_HT_obs_mu = new TH1F("Npn_histo_HT_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 25, 0, 500);
+  Npn_histo_HT_obs_mu->SetDirectory(rootdir);
+  Npn_histo_HT_obs_mu->Sumw2();
+  TH1F *Npn_histo_HT_pred_mu = new TH1F("Npn_histo_HT_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 25, 0, 500);
+  Npn_histo_HT_pred_mu->SetDirectory(rootdir);
+  Npn_histo_HT_pred_mu->Sumw2();
+  TH1F *Npn_histo_HT_obs_el = new TH1F("Npn_histo_HT_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 25, 0, 500);
+  Npn_histo_HT_obs_el->SetDirectory(rootdir);
+  Npn_histo_HT_obs_el->Sumw2();
+  TH1F *Npn_histo_HT_pred_el = new TH1F("Npn_histo_HT_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 25, 0, 500);
+  Npn_histo_HT_pred_el->SetDirectory(rootdir);
+  Npn_histo_HT_pred_el->Sumw2();
 
-  TH1F *Npn_histo_pred_mu = new TH1F("Npn_histo_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 40, 0, 40);
-  Npn_histo_pred_mu->SetDirectory(rootdir);
-  Npn_histo_pred_mu->Sumw2();
+  TH1F *Npn_histo_MET_obs = new TH1F("Npn_histo_MET_obs", "Observed Prompt-NonPrompt Background", 25, 0, 500);
+  Npn_histo_MET_obs->SetDirectory(rootdir);
+  Npn_histo_MET_obs->Sumw2();
+  TH1F *Npn_histo_MET_pred = new TH1F("Npn_histo_MET_pred", "Predicted Prompt-NonPrompt Background", 25, 0, 500);
+  Npn_histo_MET_pred->SetDirectory(rootdir);
+  Npn_histo_MET_pred->Sumw2();
+  TH1F *Npn_histo_MET_obs_mu = new TH1F("Npn_histo_MET_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 25, 0, 500);
+  Npn_histo_MET_obs_mu->SetDirectory(rootdir);
+  Npn_histo_MET_obs_mu->Sumw2();
+  TH1F *Npn_histo_MET_pred_mu = new TH1F("Npn_histo_MET_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 25, 0, 500);
+  Npn_histo_MET_pred_mu->SetDirectory(rootdir);
+  Npn_histo_MET_pred_mu->Sumw2();
+  TH1F *Npn_histo_MET_obs_el = new TH1F("Npn_histo_MET_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 25, 0, 500);
+  Npn_histo_MET_obs_el->SetDirectory(rootdir);
+  Npn_histo_MET_obs_el->Sumw2();
+  TH1F *Npn_histo_MET_pred_el = new TH1F("Npn_histo_MET_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 25, 0, 500);
+  Npn_histo_MET_pred_el->SetDirectory(rootdir);
+  Npn_histo_MET_pred_el->Sumw2();
 
-  TH1F *Npn_histo_obs_el = new TH1F("Npn_histo_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 40, 0, 40);
-  Npn_histo_obs_el->SetDirectory(rootdir);
-  Npn_histo_obs_el->Sumw2();
+  TH1F *Npn_histo_MTMIN_obs = new TH1F("Npn_histo_MTMIN_obs", "Observed Prompt-NonPrompt Background", 25, 0, 250);
+  Npn_histo_MTMIN_obs->SetDirectory(rootdir);
+  Npn_histo_MTMIN_obs->Sumw2();
+  TH1F *Npn_histo_MTMIN_pred = new TH1F("Npn_histo_MTMIN_pred", "Predicted Prompt-NonPrompt Background", 25, 0, 250);
+  Npn_histo_MTMIN_pred->SetDirectory(rootdir);
+  Npn_histo_MTMIN_pred->Sumw2();
+  TH1F *Npn_histo_MTMIN_obs_mu = new TH1F("Npn_histo_MTMIN_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 25, 0, 250);
+  Npn_histo_MTMIN_obs_mu->SetDirectory(rootdir);
+  Npn_histo_MTMIN_obs_mu->Sumw2();
+  TH1F *Npn_histo_MTMIN_pred_mu = new TH1F("Npn_histo_MTMIN_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 25, 0, 250);
+  Npn_histo_MTMIN_pred_mu->SetDirectory(rootdir);
+  Npn_histo_MTMIN_pred_mu->Sumw2();
+  TH1F *Npn_histo_MTMIN_obs_el = new TH1F("Npn_histo_MTMIN_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 25, 0, 250);
+  Npn_histo_MTMIN_obs_el->SetDirectory(rootdir);
+  Npn_histo_MTMIN_obs_el->Sumw2();
+  TH1F *Npn_histo_MTMIN_pred_el = new TH1F("Npn_histo_MTMIN_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 25, 0, 250);
+  Npn_histo_MTMIN_pred_el->SetDirectory(rootdir);
+  Npn_histo_MTMIN_pred_el->Sumw2();
 
-  TH1F *Npn_histo_pred_el = new TH1F("Npn_histo_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 40, 0, 40);
-  Npn_histo_pred_el->SetDirectory(rootdir);
-  Npn_histo_pred_el->Sumw2();
+  TH1F *Npn_histo_L1PT_obs = new TH1F("Npn_histo_L1PT_obs", "Observed Prompt-NonPrompt Background", 30, 0, 150);
+  Npn_histo_L1PT_obs->SetDirectory(rootdir);
+  Npn_histo_L1PT_obs->Sumw2();
+  TH1F *Npn_histo_L1PT_pred = new TH1F("Npn_histo_L1PT_pred", "Predicted Prompt-NonPrompt Background", 30, 0, 150);
+  Npn_histo_L1PT_pred->SetDirectory(rootdir);
+  Npn_histo_L1PT_pred->Sumw2();
+  TH1F *Npn_histo_L1PT_obs_mu = new TH1F("Npn_histo_L1PT_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 30, 0, 150);
+  Npn_histo_L1PT_obs_mu->SetDirectory(rootdir);
+  Npn_histo_L1PT_obs_mu->Sumw2();
+  TH1F *Npn_histo_L1PT_pred_mu = new TH1F("Npn_histo_L1PT_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 30, 0, 150);
+  Npn_histo_L1PT_pred_mu->SetDirectory(rootdir);
+  Npn_histo_L1PT_pred_mu->Sumw2();
+  TH1F *Npn_histo_L1PT_obs_el = new TH1F("Npn_histo_L1PT_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 30, 0, 150);
+  Npn_histo_L1PT_obs_el->SetDirectory(rootdir);
+  Npn_histo_L1PT_obs_el->Sumw2();
+  TH1F *Npn_histo_L1PT_pred_el = new TH1F("Npn_histo_L1PT_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 30, 0, 150);
+  Npn_histo_L1PT_pred_el->SetDirectory(rootdir);
+  Npn_histo_L1PT_pred_el->Sumw2();
+
+  TH1F *Npn_histo_L2PT_obs = new TH1F("Npn_histo_L2PT_obs", "Observed Prompt-NonPrompt Background", 30, 0, 150);
+  Npn_histo_L2PT_obs->SetDirectory(rootdir);
+  Npn_histo_L2PT_obs->Sumw2();
+  TH1F *Npn_histo_L2PT_pred = new TH1F("Npn_histo_L2PT_pred", "Predicted Prompt-NonPrompt Background", 30, 0, 150);
+  Npn_histo_L2PT_pred->SetDirectory(rootdir);
+  Npn_histo_L2PT_pred->Sumw2();
+  TH1F *Npn_histo_L2PT_obs_mu = new TH1F("Npn_histo_L2PT_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 30, 0, 150);
+  Npn_histo_L2PT_obs_mu->SetDirectory(rootdir);
+  Npn_histo_L2PT_obs_mu->Sumw2();
+  TH1F *Npn_histo_L2PT_pred_mu = new TH1F("Npn_histo_L2PT_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 30, 0, 150);
+  Npn_histo_L2PT_pred_mu->SetDirectory(rootdir);
+  Npn_histo_L2PT_pred_mu->Sumw2();
+  TH1F *Npn_histo_L2PT_obs_el = new TH1F("Npn_histo_L2PT_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 30, 0, 150);
+  Npn_histo_L2PT_obs_el->SetDirectory(rootdir);
+  Npn_histo_L2PT_obs_el->Sumw2();
+  TH1F *Npn_histo_L2PT_pred_el = new TH1F("Npn_histo_L2PT_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 30, 0, 150);
+  Npn_histo_L2PT_pred_el->SetDirectory(rootdir);
+  Npn_histo_L2PT_pred_el->Sumw2();
 
   TH1F *NBs_BR_histo_e = new TH1F("NBs_BR_histo_e", "Number of FO's from B's vs Nbtags (els)", 4,0,4);
   NBs_BR_histo_e->SetDirectory(rootdir);
   NBs_BR_histo_e->Sumw2();
-
   TH1F *NBs_BR_histo_mu = new TH1F("NBs_BR_histo_mu", "Number of FO's from B's vs Nbtags (muons)", 4,0,4);
   NBs_BR_histo_mu->SetDirectory(rootdir);
   NBs_BR_histo_mu->Sumw2();
@@ -248,7 +365,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   TH1F *NnotBs_BR_histo_e = new TH1F("NnotBs_BR_histo_e", "Number of FO's NOT from B's vs Nbtags (els)", 4,0,4);
   NnotBs_BR_histo_e->SetDirectory(rootdir);
   NnotBs_BR_histo_e->Sumw2();
-
   TH1F *NnotBs_BR_histo_mu = new TH1F("NnotBs_BR_histo_mu", "Number of FO's NOT from B's vs Nbtags (muons)", 4,0,4);
   NnotBs_BR_histo_mu->SetDirectory(rootdir);
   NnotBs_BR_histo_mu->Sumw2();
@@ -256,23 +372,18 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   TH2D *pTrelvsIso_histo_mu = new TH2D("pTrelvsIso_histo_mu", "pTrel vs Iso (Muons)", 10, 0., 1., 15, 0., 30.);
   pTrelvsIso_histo_mu->SetDirectory(rootdir);
   pTrelvsIso_histo_mu->Sumw2();
-
   TH2D *pTrelvsIso_histo_el = new TH2D("pTrelvsIso_histo_el", "pTrel vs Iso (Electrons)", 10, 0., 1., 15, 0., 30.);
   pTrelvsIso_histo_el->SetDirectory(rootdir);
   pTrelvsIso_histo_el->Sumw2();
-
   TH2D *pTrelvsMiniIso_histo_mu = new TH2D("pTrelvsMiniIso_histo_mu", "pTrel vs MiniIso (Muons)", 10, 0., 1., 15, 0., 30.);
   pTrelvsMiniIso_histo_mu->SetDirectory(rootdir);
   pTrelvsMiniIso_histo_mu->Sumw2();
-
   TH2D *pTrelvsMiniIso_histo_el = new TH2D("pTrelvsMiniIso_histo_el", "pTrel vs MiniIso (Electrons)", 10, 0., 1., 15, 0., 30.);
   pTrelvsMiniIso_histo_el->SetDirectory(rootdir);
   pTrelvsMiniIso_histo_el->Sumw2();
-
   TH1D *pTrel_histo_el = new TH1D("pTrel_histo_el", "pTrel (Electrons)", 15, 0., 30.);
   pTrel_histo_el->SetDirectory(rootdir);
   pTrel_histo_el->Sumw2();
-
   TH1D *pTrel_histo_mu = new TH1D("pTrel_histo_mu", "pTrel (Muons)", 15, 0., 30.);
   pTrel_histo_mu->SetDirectory(rootdir);
   pTrel_histo_mu->Sumw2();
@@ -283,15 +394,14 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   cout << "using FR file=" << fakeratefile << endl;
 
   TH2D *rate_histo_e = 0, *rate_histo_mu = 0;
-  // if (extrPtRel) {
-  //   //test same for e and mu
-  //   rate_histo_e  = (TH2D*) InputFile->Get("rate_histo")->Clone("rate_histo");
-  //   rate_histo_mu = (TH2D*) InputFile->Get("rate_histo")->Clone("rate_histo");
-  // } else 
   if (coneCorr) {
     //fake rate as function of pT+pT*RelIso, eta
     rate_histo_e = (TH2D*) InputFile->Get("rate_cone_histo_e")->Clone("rate_cone_histo_e");
     rate_histo_mu = (TH2D*) InputFile->Get("rate_cone_histo_mu")->Clone("rate_cone_histo_mu");
+  } else if (jetCorr) {
+    //fake rate as function of pT+pT*RelIso, eta
+    rate_histo_e = (TH2D*) InputFile->Get("rate_jet_histo_e")->Clone("rate_jet_histo_e");
+    rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_histo_mu")->Clone("rate_jet_histo_mu");
   } else {
     //fake rate as function of pT, eta
     rate_histo_e = (TH2D*) InputFile->Get("rate_histo_e")->Clone("rate_histo_e");
@@ -299,18 +409,81 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   }
 
   //errors
-  TH2D *Npn_histo_err2_pred_mu[40] = {0};
-  TH2D *Npn_histo_err2_pred_el[40] = {0};
-  for (int h=0;h<40;++h) {
-    Npn_histo_err2_pred_mu[h] = (TH2D*) rate_histo_mu->Clone(Form("Npn_histo_err2_pred_mu_sr%i",h));
-    Npn_histo_err2_pred_mu[h]->Reset();
-    Npn_histo_err2_pred_mu[h]->SetDirectory(rootdir);
-    //Npn_histo_err2_pred_mu[h]->Sumw2();
+  TH2D *Npn_histo_br_err2_pred_mu[4] = {0};
+  TH2D *Npn_histo_br_err2_pred_el[4] = {0};
+  for (int h=0;h<4;++h) {
+    Npn_histo_br_err2_pred_mu[h] = (TH2D*) rate_histo_mu->Clone(Form("Npn_histo_br_err2_pred_mu_br%i",h));
+    Npn_histo_br_err2_pred_mu[h]->Reset();
+    Npn_histo_br_err2_pred_mu[h]->SetDirectory(rootdir);
+    Npn_histo_br_err2_pred_el[h] = (TH2D*) rate_histo_e->Clone(Form("Npn_histo_br_err2_pred_el_br%i",h));
+    Npn_histo_br_err2_pred_el[h]->Reset();
+    Npn_histo_br_err2_pred_el[h]->SetDirectory(rootdir);
+  }
 
-    Npn_histo_err2_pred_el[h] = (TH2D*) rate_histo_e->Clone(Form("Npn_histo_err2_pred_el_sr%i",h));
-    Npn_histo_err2_pred_el[h]->Reset();
-    Npn_histo_err2_pred_el[h]->SetDirectory(rootdir);
-    //Npn_histo_err2_pred_el[h]->Sumw2();
+  TH2D *Npn_histo_sr_err2_pred_mu[40] = {0};
+  TH2D *Npn_histo_sr_err2_pred_el[40] = {0};
+  for (int h=0;h<40;++h) {
+    Npn_histo_sr_err2_pred_mu[h] = (TH2D*) rate_histo_mu->Clone(Form("Npn_histo_sr_err2_pred_mu_sr%i",h));
+    Npn_histo_sr_err2_pred_mu[h]->Reset();
+    Npn_histo_sr_err2_pred_mu[h]->SetDirectory(rootdir);
+    Npn_histo_sr_err2_pred_el[h] = (TH2D*) rate_histo_e->Clone(Form("Npn_histo_sr_err2_pred_el_sr%i",h));
+    Npn_histo_sr_err2_pred_el[h]->Reset();
+    Npn_histo_sr_err2_pred_el[h]->SetDirectory(rootdir);
+  }
+
+  TH2D *Npn_histo_HT_err2_pred_mu[50] = {0};
+  TH2D *Npn_histo_HT_err2_pred_el[50] = {0};
+  for (int h=0;h<50;++h) {
+    Npn_histo_HT_err2_pred_mu[h] = (TH2D*) rate_histo_mu->Clone(Form("Npn_histo_HT_err2_pred_mu_HT%i",h));
+    Npn_histo_HT_err2_pred_mu[h]->Reset();
+    Npn_histo_HT_err2_pred_mu[h]->SetDirectory(rootdir);
+    Npn_histo_HT_err2_pred_el[h] = (TH2D*) rate_histo_e->Clone(Form("Npn_histo_HT_err2_pred_el_HT%i",h));
+    Npn_histo_HT_err2_pred_el[h]->Reset();
+    Npn_histo_HT_err2_pred_el[h]->SetDirectory(rootdir);
+  }
+
+  TH2D *Npn_histo_MET_err2_pred_mu[50] = {0};
+  TH2D *Npn_histo_MET_err2_pred_el[50] = {0};
+  for (int h=0;h<50;++h) {
+    Npn_histo_MET_err2_pred_mu[h] = (TH2D*) rate_histo_mu->Clone(Form("Npn_histo_MET_err2_pred_mu_MET%i",h));
+    Npn_histo_MET_err2_pred_mu[h]->Reset();
+    Npn_histo_MET_err2_pred_mu[h]->SetDirectory(rootdir);
+    Npn_histo_MET_err2_pred_el[h] = (TH2D*) rate_histo_e->Clone(Form("Npn_histo_MET_err2_pred_el_MET%i",h));
+    Npn_histo_MET_err2_pred_el[h]->Reset();
+    Npn_histo_MET_err2_pred_el[h]->SetDirectory(rootdir);
+  }
+
+  TH2D *Npn_histo_MTMIN_err2_pred_mu[50] = {0};
+  TH2D *Npn_histo_MTMIN_err2_pred_el[50] = {0};
+  for (int h=0;h<50;++h) {
+    Npn_histo_MTMIN_err2_pred_mu[h] = (TH2D*) rate_histo_mu->Clone(Form("Npn_histo_MTMIN_err2_pred_mu_MTMIN%i",h));
+    Npn_histo_MTMIN_err2_pred_mu[h]->Reset();
+    Npn_histo_MTMIN_err2_pred_mu[h]->SetDirectory(rootdir);
+    Npn_histo_MTMIN_err2_pred_el[h] = (TH2D*) rate_histo_e->Clone(Form("Npn_histo_MTMIN_err2_pred_el_MTMIN%i",h));
+    Npn_histo_MTMIN_err2_pred_el[h]->Reset();
+    Npn_histo_MTMIN_err2_pred_el[h]->SetDirectory(rootdir);
+  }
+
+  TH2D *Npn_histo_L1PT_err2_pred_mu[50] = {0};
+  TH2D *Npn_histo_L1PT_err2_pred_el[50] = {0};
+  for (int h=0;h<50;++h) {
+    Npn_histo_L1PT_err2_pred_mu[h] = (TH2D*) rate_histo_mu->Clone(Form("Npn_histo_L1PT_err2_pred_mu_L1PT%i",h));
+    Npn_histo_L1PT_err2_pred_mu[h]->Reset();
+    Npn_histo_L1PT_err2_pred_mu[h]->SetDirectory(rootdir);
+    Npn_histo_L1PT_err2_pred_el[h] = (TH2D*) rate_histo_e->Clone(Form("Npn_histo_L1PT_err2_pred_el_L1PT%i",h));
+    Npn_histo_L1PT_err2_pred_el[h]->Reset();
+    Npn_histo_L1PT_err2_pred_el[h]->SetDirectory(rootdir);
+  }
+
+  TH2D *Npn_histo_L2PT_err2_pred_mu[50] = {0};
+  TH2D *Npn_histo_L2PT_err2_pred_el[50] = {0};
+  for (int h=0;h<50;++h) {
+    Npn_histo_L2PT_err2_pred_mu[h] = (TH2D*) rate_histo_mu->Clone(Form("Npn_histo_L2PT_err2_pred_mu_L2PT%i",h));
+    Npn_histo_L2PT_err2_pred_mu[h]->Reset();
+    Npn_histo_L2PT_err2_pred_mu[h]->SetDirectory(rootdir);
+    Npn_histo_L2PT_err2_pred_el[h] = (TH2D*) rate_histo_e->Clone(Form("Npn_histo_L2PT_err2_pred_el_L2PT%i",h));
+    Npn_histo_L2PT_err2_pred_el[h]->Reset();
+    Npn_histo_L2PT_err2_pred_el[h]->SetDirectory(rootdir);
   }
 
   //----------------------
@@ -379,8 +552,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       // Analysis Code
       float weight = ss.scale1fb()*10.0;
 	  
-	  //remove pt cut and rely on pT region cuts.
-	  //if( !( ss.lep1_p4().pt() > 15 && ss.lep2_p4().pt() > 15  &&ss.njets() >= 2 && (ss.ht() > 500 ? 1 : ss.met() > 30) ) )
 	  if( !(ss.njets() >= 2 && (ss.ht() > 500 ? 1 : ss.met() > 30) ) )
 	  	{
 	  	  {continue;}
@@ -410,85 +581,53 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 	  float lep2_ptrel_v1 = ss.lep2_ptrel_v1();
 	  assert(fabs(lep1_ptrel_v1 - computePtRel(ss.lep1_p4(),ss.jet_close_lep1(), true))<0.0001);
 	  assert(fabs(lep2_ptrel_v1 - computePtRel(ss.lep2_p4(),ss.jet_close_lep2(), true))<0.0001);
-	  float lep1_ptratio = ss.jet_close_lep1().pt()>0. ? ss.lep1_p4().pt()/ss.jet_close_lep1().pt() : 1.;
-	  float lep2_ptratio = ss.jet_close_lep2().pt()>0. ? ss.lep2_p4().pt()/ss.jet_close_lep2().pt() : 1.;
 
-	  if (lowPtRel6) {
-	    if (ss.lep1_motherID()!=1 && lep1_ptrel_v1>6.) continue;
-	    if (ss.lep2_motherID()!=1 && lep2_ptrel_v1>6.) continue;
-	    if (ss.lep1_motherID()==1 && ss.lep2_motherID()==1 && lep1_ptrel_v1>6.) continue;
-	  }	  
-	  if (useMiniIso) {
-	    if (ss.lep1_motherID()!=1 && lep1_ptrel_v1<=6.) continue;
-	    if (ss.lep2_motherID()!=1 && lep2_ptrel_v1<=6.) continue;
-	    if (ss.lep1_motherID()==1 && ss.lep2_motherID()==1 && lep1_ptrel_v1<=6.) continue;
-	  }	  
-
-	  //if (std::min(ss.mt(),ss.mt_l2())<100) continue;	  
-
-	  bool lep1_passes_id = ss.lep1_passes_id();
-	  bool lep2_passes_id = ss.lep2_passes_id();
-	  if (useNewMiniIso) {
-	    assert( lep1_passes_id == (fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())<4. && 
-				       ( abs( ss.lep1_id() ) == 11 ? ( ss.lep1_miniIso() < 0.075 && (lep1_ptratio>0.725 || lep1_ptrel_v1>7.) ) : 
-					                             ( ss.lep1_miniIso() < 0.100 && (lep1_ptratio>0.700 || lep1_ptrel_v1>7.) )) ) );
-	    assert( lep2_passes_id == (fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())<4. && 
-				       ( abs( ss.lep2_id() ) == 11 ? ( ss.lep2_miniIso() < 0.075 && (lep2_ptratio>0.725 || lep2_ptrel_v1>7.) ) : 
-					                             ( ss.lep2_miniIso() < 0.100 && (lep2_ptratio>0.700 || lep2_ptrel_v1>7.) )) ) );
-	  }
+	  if (fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())>4.) continue;
+	  if (fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())>4.) continue;
 
 	  float lep1_pT = ss.lep1_p4().pt();
 	  float lep2_pT = ss.lep2_p4().pt();
 	  if (coneCorr) {		  
-	    if (useMiniIso) {
-	      lep1_pT *= (1+std::max(0.,ss.lep1_miniIso()-0.05));
-	      lep2_pT *= (1+std::max(0.,ss.lep2_miniIso()-0.05));
-	    } else if (useNewMiniIso) {
-	      // lep1_pT = ss.lep1_p4().pt()*(abs(ss.lep1_id())==11 ? (1+std::max(0.,ss.lep1_miniIso()-0.075)) : (1+std::max(0.,ss.lep1_miniIso()-0.1)));
-	      // lep2_pT = ss.lep2_p4().pt()*(abs(ss.lep2_id())==11 ? (1+std::max(0.,ss.lep2_miniIso()-0.075)) : (1+std::max(0.,ss.lep2_miniIso()-0.1)));
-	      //if (lep1_passes_id==false) {
-	      if (lep1_ptrel_v1>7.) {
-		if (abs(ss.lep1_id())==11) lep1_pT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.075));
-		else lep1_pT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.1));
-	      } else {
-		lep1_pT = std::max(double(lep1_pT),(abs(ss.lep1_id())==11 ? ss.jet_close_lep1().pt()*0.725 : ss.jet_close_lep1().pt()*0.70));
-	      }
-	      //}
-	      //if (lep2_passes_id==false) {
-	      if (lep2_ptrel_v1>7.) { 
-		if (abs(ss.lep2_id())==11) lep2_pT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.075));
-		else lep2_pT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.1));
-	      } else {
-		lep2_pT = std::max(double(lep2_pT),(abs(ss.lep2_id())==11 ? ss.jet_close_lep2().pt()*0.725 : ss.jet_close_lep2().pt()*0.70));
-	      }
-	      //}
-	      if (lep1_passes_id && fabs(lep1_pT-ss.lep1_p4().pt())>0.00001) {
-		cout << ss.lep1_p4().pt() << " " << lep1_pT << endl;
-		assert(0);
-	      }
-	      if (lep2_passes_id && fabs(lep2_pT-ss.lep2_p4().pt())>0.00001) {
-		cout << ss.lep2_p4().pt() << " " << lep2_pT << endl;
-		assert(0);
-	      }
+	    if (abs(ss.lep1_id())==11) {
+	      if (lep1_ptrel_v1>7.0) lep1_pT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.10));
+	      else lep1_pT = std::max(ss.lep1_p4().pt(),ss.jet_close_lep1().pt()*float(0.70));
 	    } else {
-	      lep1_pT *= (1+std::max(0.,ss.lep1_iso()-0.1));
-	      lep2_pT *= (1+std::max(0.,ss.lep2_iso()-0.1));
+	      if (lep1_ptrel_v1>6.7) lep1_pT = ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.14));
+	      else lep1_pT = std::max(ss.lep1_p4().pt(),ss.jet_close_lep1().pt()*float(0.68));
+	    }
+	    if (abs(ss.lep2_id())==11) {
+	      if (lep2_ptrel_v1>7.0) lep2_pT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.10));
+	      else lep2_pT = std::max(ss.lep2_p4().pt(),ss.jet_close_lep2().pt()*float(0.70));
+	    } else {
+	      if (lep2_ptrel_v1>6.7) lep2_pT = ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.14));
+	      else lep2_pT = std::max(ss.lep2_p4().pt(),ss.jet_close_lep2().pt()*float(0.68));
 	    }
 	  }
 
+	  bool lep1_passes_id = ss.lep1_passes_id();
+	  bool lep2_passes_id = ss.lep2_passes_id();
+
 	  //------------------------------------------------------------------------
-	  unsigned int ac_base = analysisCategory(lep1_pT, lep2_pT);
-	  passesBaselineCuts(ss.njets(), ss.nbtags(), ss.met(), ss.ht(), ac_base);
-	  //cout << " ac=" << ac_base;
-	  if (ac_base==0) continue;
-	  int br = baselineRegion(ss.nbtags());
-	  unsigned int ac_sig = ac_base;
-	  passesSignalRegionCuts(ss.ht(), ss.met(), ac_sig);
+	  float mtmin = ss.mt() > ss.mt_l2() ? ss.mt_l2() : ss.mt();
+	  anal_type_t ac_base = analysisCategory(lep1_pT, lep2_pT);//fixme use this as selection
+	  int br = baselineRegion(ss.njets(), ss.nbtags(), ss.met(), ss.ht(), lep1_pT, lep2_pT);
+	  if (br<0) continue;
 	  //if (debug) cout << "ac_base=" << ac_base << " ac_sig=" << ac_sig << endl;
-	  int sr = ac_sig!=0 ? signalRegion(ss.njets(), ss.nbtags(), ss.met(), ss.ht()) : -1;
-	  //if (sr<=0) continue;
+	  int sr = signalRegion(ss.njets(), ss.nbtags(), ss.met(), ss.ht(), mtmin, lep1_pT, lep2_pT);
+	  //if (sr<=0) continue; 
 	  //------------------------------------------------------------------------
 
+	  if(highhigh && ac_base!=HighHigh) continue;
+	  if(highlow  && ac_base!=HighLow ) continue;
+	  if(lowlow   && ac_base!=LowLow  ) continue;
+
+	  //redefine lepton pt only for the FR weights in case of jetCorr
+	  if (jetCorr) {
+	    lep1_pT = ss.jet_close_lep1().pt();
+	    lep2_pT = ss.jet_close_lep2().pt();
+	  }
+
+	  //pTrel plots
 	  if ( (lep1_pT > 25. && lep2_pT > 25.) ) {
 	    if( ss.lep1_id()*ss.lep2_id() > 0 ) {
 	      if (ss.lep1_motherID()<=0 && /*ss.lep1_iso()>0.1 &&*/ fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())<4. && ss.lep2_motherID()==1) {
@@ -516,20 +655,17 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 	    }
 	  }
 
-	  if(highhigh)
-	    {if ( !(lep1_pT > 25. && lep2_pT > 25.) ) continue;}
-	  else if(lowlow)
-	    {if ( !((lep1_pT > 10. && lep1_pT < 25.) && (lep2_pT > 10. && lep2_pT < 25.)) )  continue;}
-	  else if(highlow)
-	    {if ( !((lep1_pT > 10. && lep1_pT < 25. && lep2_pT > 25.) || (lep2_pT > 10. && lep2_pT < 25. && lep1_pT > 25.)) ) continue;}
-
 	  if (ss.hyp_class() == 3)
 		{
-		  //reco->ss on reco level
+
 		  //-----------------------------------------------------------------------
-		  //consider only highhigh pT for the moment
+		  //SS tight-tight
+		  //-----------------------------------------------------------------------
 		  
 		  counter++;
+
+		  if (ss.lep1_passes_id()==0) continue;
+		  if (ss.lep2_passes_id()==0) continue;
 		  
 		  //check for charge misID on reco level.
 		  if( ss.lep1_id()*ss.lep2_id() < 0 )
@@ -553,50 +689,64 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 			    } 
 			  else if( ss.lep1_motherID()==1 && ss.lep2_motherID()<=0 ) //lep2 is nonprompt
 				{
-				  if (unIso && ss.lep2_iso()<=0.1) continue;
-				  if (lowPtRel14 && lep2_ptrel_v1>14.) continue;
-				  if (lowPtRel6  && lep2_ptrel_v1>6. ) continue;
-				  if (useMiniIso && lep2_ptrel_v1<=6.) continue;
 				  prompt1_reco = prompt1_reco + weight;  
 				  NpromptL1_reco = NpromptL1_reco + weight;
-				  Npn_histo_obs->Fill(sr, weight);
-				  Npn_histo_obs->Fill(br, weight);
+				  Npn_histo_sr_obs->Fill(sr, weight);
+				  Npn_histo_br_obs->Fill(br, weight);
+				  Npn_histo_HT_obs->Fill(ss.ht(), weight);
+				  Npn_histo_MET_obs->Fill(ss.met(), weight);
+				  Npn_histo_MTMIN_obs->Fill(mtmin, weight);
+				  Npn_histo_L1PT_obs->Fill(lep1_pT, weight);
+				  Npn_histo_L2PT_obs->Fill(lep2_pT, weight);
 				  if(abs(ss.lep2_id()) == 11) {
-				    Npn_histo_obs_el->Fill(sr, weight);
-				    Npn_histo_obs_el->Fill(br, weight);
+				    Npn_histo_sr_obs_el->Fill(sr, weight);
+				    Npn_histo_br_obs_el->Fill(br, weight);
+				    Npn_histo_HT_obs_el->Fill(ss.ht(), weight);
+				    Npn_histo_MET_obs_el->Fill(ss.met(), weight);
+				    Npn_histo_MTMIN_obs_el->Fill(mtmin, weight);
+				    Npn_histo_L1PT_obs_el->Fill(lep1_pT, weight);
+				    Npn_histo_L2PT_obs_el->Fill(lep2_pT, weight);
 				  } else if(abs(ss.lep2_id()) == 13) {
-				    Npn_histo_obs_mu->Fill(sr, weight);
-				    Npn_histo_obs_mu->Fill(br, weight);
+				    Npn_histo_sr_obs_mu->Fill(sr, weight);
+				    Npn_histo_br_obs_mu->Fill(br, weight);
+				    Npn_histo_HT_obs_mu->Fill(ss.ht(), weight);
+				    Npn_histo_MET_obs_mu->Fill(ss.met(), weight);
+				    Npn_histo_MTMIN_obs_mu->Fill(mtmin, weight);
+				    Npn_histo_L1PT_obs_mu->Fill(lep1_pT, weight);
+				    Npn_histo_L2PT_obs_mu->Fill(lep2_pT, weight);
 				  }
 				}
 			  else if( ss.lep1_motherID()<=0 && ss.lep2_motherID()==1 ) //lep1 is nonprompt
 				{
-				  if (unIso && ss.lep1_iso()<=0.1) continue;
-				  if (lowPtRel14 && lep1_ptrel_v1>14.) continue;
-				  if (lowPtRel6  && lep1_ptrel_v1>6. ) continue;
-				  if (useMiniIso && lep1_ptrel_v1<=6.) continue;
 				  prompt1_reco = prompt1_reco + weight; 
 				  NpromptL2_reco = NpromptL2_reco + weight;				
-				  Npn_histo_obs->Fill(sr, weight);
-				  Npn_histo_obs->Fill(br, weight);
+				  Npn_histo_sr_obs->Fill(sr, weight);
+				  Npn_histo_br_obs->Fill(br, weight);
+				  Npn_histo_HT_obs->Fill(ss.ht(), weight);
+				  Npn_histo_MET_obs->Fill(ss.met(), weight);
+				  Npn_histo_MTMIN_obs->Fill(mtmin, weight);
+				  Npn_histo_L1PT_obs->Fill(lep1_pT, weight);
+				  Npn_histo_L2PT_obs->Fill(lep2_pT, weight);
 				  if(abs(ss.lep1_id()) == 11) {
-				    Npn_histo_obs_el->Fill(sr, weight);
-				    Npn_histo_obs_el->Fill(br, weight);
+				    Npn_histo_sr_obs_el->Fill(sr, weight);
+				    Npn_histo_br_obs_el->Fill(br, weight);
+				    Npn_histo_HT_obs_el->Fill(ss.ht(), weight);
+ 				    Npn_histo_MET_obs_el->Fill(ss.met(), weight);
+ 				    Npn_histo_MTMIN_obs_el->Fill(mtmin, weight);
+ 				    Npn_histo_L1PT_obs_el->Fill(lep1_pT, weight);
+ 				    Npn_histo_L2PT_obs_el->Fill(lep2_pT, weight);
 				  } else if(abs(ss.lep1_id()) == 13) {
-				    Npn_histo_obs_mu->Fill(sr, weight);
-				    Npn_histo_obs_mu->Fill(br, weight);
+				    Npn_histo_sr_obs_mu->Fill(sr, weight);
+				    Npn_histo_br_obs_mu->Fill(br, weight);
+				    Npn_histo_HT_obs_mu->Fill(ss.ht(), weight);
+				    Npn_histo_MET_obs_mu->Fill(ss.met(), weight);
+				    Npn_histo_MTMIN_obs_mu->Fill(mtmin, weight);
+				    Npn_histo_L1PT_obs_mu->Fill(lep1_pT, weight);
+				    Npn_histo_L2PT_obs_mu->Fill(lep2_pT, weight);
 				  }
 				}
 			  else if( (ss.lep1_motherID()<=0 && ss.lep2_motherID()<=0) ) //don't need to explicitly write it.  can just use else
 				{
-				  if (unIso && ss.lep1_iso()<=0.1) continue;
-				  if (unIso && ss.lep2_iso()<=0.1) continue;
-				  if (lowPtRel14 && lep1_ptrel_v1>14.) continue;
-				  if (lowPtRel14 && lep2_ptrel_v1>14.) continue;
-				  if (lowPtRel6  && lep1_ptrel_v1>6. ) continue;
-				  if (lowPtRel6  && lep2_ptrel_v1>6. ) continue;
-				  if (useMiniIso && lep1_ptrel_v1<=6.) continue;
-				  if (useMiniIso && lep2_ptrel_v1<=6.) continue;
 				  prompt0_reco = prompt0_reco + weight;
 				}
 			}
@@ -656,89 +806,119 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 			{			  
 			  if( lep1_passes_id && lep2_passes_id==0 )  //lep1 is tight, lep2 is loose-not-tight
 				{	
-				  if (noSIP && fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())>4.) continue;
-				  if (unIso && ss.lep2_iso()<0.1) continue;
-				  if (lowPtRel14 && lep2_ptrel_v1>14.) continue;
-				  if (lowPtRel6  && lep2_ptrel_v1>6. ) continue;
-				  if (useMiniIso && lep2_ptrel_v1<=6.) continue;
-				  if (extrPtRel && lep2_ptrel_v1<6.0 ) continue;
 				  if( abs(ss.lep2_id()) == 11 )  //if el, use el rate.  FILL WITH NONPROMPT
 					{
-					  e2 = getFakeRate( rate_histo_e, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel );
-					  Npn_histo_pred_el->Fill(sr, (e2/(1-e2))*weight);
-					  Npn_histo_pred_el->Fill(br, (e2/(1-e2))*weight);
-					  if (sr>=0) Npn_histo_err2_pred_el[sr]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
-					  Npn_histo_err2_pred_el[br]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
-					  // //fill el abundance histos here w/ nbtags
+					  e2 = getFakeRate( rate_histo_e, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), false );
+					  Npn_histo_sr_pred_el->Fill(sr, (e2/(1-e2))*weight);
+					  Npn_histo_br_pred_el->Fill(br, (e2/(1-e2))*weight);
+					  Npn_histo_HT_pred_el->Fill(ss.ht(), (e2/(1-e2))*weight);
+					  Npn_histo_MET_pred_el->Fill(ss.met(), (e2/(1-e2))*weight);
+					  Npn_histo_MTMIN_pred_el->Fill(mtmin, (e2/(1-e2))*weight);
+					  Npn_histo_L1PT_pred_el->Fill(lep1_pT, (e2/(1-e2))*weight);
+					  Npn_histo_L2PT_pred_el->Fill(lep2_pT, (e2/(1-e2))*weight);
+					  if (sr>=0) Npn_histo_sr_err2_pred_el[sr]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_br_err2_pred_el[br]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_HT_err2_pred_el[Npn_histo_HT_pred_el->FindBin(ss.ht())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_MET_err2_pred_el[Npn_histo_MET_pred_el->FindBin(ss.met())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_MTMIN_err2_pred_el[Npn_histo_MTMIN_pred_el->FindBin(mtmin)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_L1PT_err2_pred_el[Npn_histo_L1PT_pred_el->FindBin(lep1_pT)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_L2PT_err2_pred_el[Npn_histo_L2PT_pred_el->FindBin(lep2_pT)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  // fill el abundance histos here w/ nbtags
 					  if(ss.lep2_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight);
-					  // if(ss.lep1_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
-					  // if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
 					  if(ss.lep2_motherID() == -1) Bs_e = Bs_e + weight;
 					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) notBs_e = notBs_e + weight;
 					}
 				  else if( abs(ss.lep2_id()) == 13 )  //if mu, use mu rate.  FILL WITH NONPROMPT
 					{
-					  e2 = getFakeRate( rate_histo_mu, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel ) ;
-					  Npn_histo_pred_mu->Fill(sr, (e2/(1-e2))*weight);
-					  Npn_histo_pred_mu->Fill(br, (e2/(1-e2))*weight);
-					  if (sr>=0) Npn_histo_err2_pred_mu[sr]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
-					  Npn_histo_err2_pred_mu[br]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
-					  // //fill mu abundance histos here w/ nbtags
+					  e2 = getFakeRate( rate_histo_mu, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), false ) ;
+					  Npn_histo_sr_pred_mu->Fill(sr, (e2/(1-e2))*weight);
+					  Npn_histo_br_pred_mu->Fill(br, (e2/(1-e2))*weight);
+					  Npn_histo_HT_pred_mu->Fill(ss.ht(), (e2/(1-e2))*weight);
+					  Npn_histo_MET_pred_mu->Fill(ss.met(), (e2/(1-e2))*weight);
+					  Npn_histo_MTMIN_pred_mu->Fill(mtmin, (e2/(1-e2))*weight);
+					  Npn_histo_L1PT_pred_mu->Fill(lep1_pT, (e2/(1-e2))*weight);
+					  Npn_histo_L2PT_pred_mu->Fill(lep2_pT, (e2/(1-e2))*weight);
+					  if (sr>=0) Npn_histo_sr_err2_pred_mu[sr]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_br_err2_pred_mu[br]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_HT_err2_pred_mu[Npn_histo_HT_pred_mu->FindBin(ss.ht())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_MET_err2_pred_mu[Npn_histo_MET_pred_mu->FindBin(ss.met())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_MTMIN_err2_pred_mu[Npn_histo_MTMIN_pred_mu->FindBin(mtmin)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_L1PT_err2_pred_mu[Npn_histo_L1PT_pred_mu->FindBin(lep1_pT)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_L2PT_err2_pred_mu[Npn_histo_L2PT_pred_mu->FindBin(lep2_pT)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  // fill mu abundance histos here w/ nbtags
 					  if(ss.lep2_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight);
-					  // if(ss.lep1_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
-					  // if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
 					  if(ss.lep2_motherID() == -1) Bs_mu = Bs_mu + weight;
 					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) notBs_mu = notBs_mu + weight;
 					}
 				  Npn = Npn + (e2/(1-e2))*weight;
 				  if (ss.lep2_motherID()==1) Npn_s = Npn_s + (e2/(1-e2))*weight;
-				  Npn_histo_pred->Fill(sr, (e2/(1-e2))*weight);
-				  Npn_histo_pred->Fill(br, (e2/(1-e2))*weight);
+				  Npn_histo_sr_pred->Fill(sr, (e2/(1-e2))*weight);
+				  Npn_histo_br_pred->Fill(br, (e2/(1-e2))*weight);
+				  Npn_histo_HT_pred->Fill(ss.ht(), (e2/(1-e2))*weight);
+				  Npn_histo_MET_pred->Fill(ss.met(), (e2/(1-e2))*weight);
+				  Npn_histo_MTMIN_pred->Fill(mtmin, (e2/(1-e2))*weight);
+				  Npn_histo_L1PT_pred->Fill(lep1_pT, (e2/(1-e2))*weight);
+				  Npn_histo_L2PT_pred->Fill(lep2_pT, (e2/(1-e2))*weight);
 				}
 			  else if( lep1_passes_id==0 && lep2_passes_id )   //lep1 is loose-not-tight, lep2 is tight
 				{
-				  if (noSIP && fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())>4.) continue;
-				  if (unIso && ss.lep1_iso()<0.1) continue;
-				  if (lowPtRel14 && lep1_ptrel_v1>14.) continue;
-				  if (lowPtRel6  && lep1_ptrel_v1>6. ) continue;
-				  if (useMiniIso && lep1_ptrel_v1<=6.) continue;
-				  if (extrPtRel && lep1_ptrel_v1<6.0 ) continue;
 				  if( abs(ss.lep1_id()) == 11 )	//if el, use el rate.  FILL WITH NONPROMPT			  
 					{
-					  e1 = getFakeRate(rate_histo_e, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );
-					  Npn_histo_pred_el->Fill(sr, (e1/(1-e1))*weight);
-					  Npn_histo_pred_el->Fill(br, (e1/(1-e1))*weight);
-					  if (sr>=0) Npn_histo_err2_pred_el[sr]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
-					  Npn_histo_err2_pred_el[br]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
-					  // //fill el abundance histos here w/ nbtags
+					  e1 = getFakeRate(rate_histo_e, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), false );
+					  Npn_histo_sr_pred_el->Fill(sr, (e1/(1-e1))*weight);
+					  Npn_histo_br_pred_el->Fill(br, (e1/(1-e1))*weight);
+					  Npn_histo_HT_pred_el->Fill(ss.ht(), (e1/(1-e1))*weight);
+					  Npn_histo_MET_pred_el->Fill(ss.met(), (e1/(1-e1))*weight);
+					  Npn_histo_MTMIN_pred_el->Fill(mtmin, (e1/(1-e1))*weight);
+					  Npn_histo_L1PT_pred_el->Fill(lep1_pT, (e1/(1-e1))*weight);
+					  Npn_histo_L2PT_pred_el->Fill(lep2_pT, (e1/(1-e1))*weight);
+					  if (sr>=0) Npn_histo_sr_err2_pred_el[sr]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_br_err2_pred_el[br]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_HT_err2_pred_el[Npn_histo_HT_pred_el->FindBin(ss.ht())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_MET_err2_pred_el[Npn_histo_MET_pred_el->FindBin(ss.met())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_MTMIN_err2_pred_el[Npn_histo_MTMIN_pred_el->FindBin(mtmin)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_L1PT_err2_pred_el[Npn_histo_L1PT_pred_el->FindBin(lep1_pT)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_L2PT_err2_pred_el[Npn_histo_L2PT_pred_el->FindBin(lep2_pT)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  // fill el abundance histos here w/ nbtags
 					  if(ss.lep1_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight);
-					  // if(ss.lep2_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
-					  // if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
 					  if(ss.lep1_motherID() == -1) Bs_e = Bs_e + weight;
 					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) notBs_e = notBs_e + weight;
 					}
 				  else if( abs(ss.lep1_id()) == 13 ) //if mu, use mu rate.  FILL WITH NONPROMPT				  
 					{
-					  e1 = getFakeRate(rate_histo_mu, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );
-					  Npn_histo_pred_mu->Fill(sr, (e1/(1-e1))*weight);
-					  Npn_histo_pred_mu->Fill(br, (e1/(1-e1))*weight);
-					  if (sr>=0) Npn_histo_err2_pred_mu[sr]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
-					  Npn_histo_err2_pred_mu[br]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
-					  // //fill el abundance histos here w/ nbtags
+					  e1 = getFakeRate(rate_histo_mu, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), false );
+					  Npn_histo_sr_pred_mu->Fill(sr, (e1/(1-e1))*weight);
+					  Npn_histo_br_pred_mu->Fill(br, (e1/(1-e1))*weight);
+					  Npn_histo_HT_pred_mu->Fill(ss.ht(), (e1/(1-e1))*weight);
+					  Npn_histo_MET_pred_mu->Fill(ss.met(), (e1/(1-e1))*weight);
+					  Npn_histo_MTMIN_pred_mu->Fill(mtmin, (e1/(1-e1))*weight);
+					  Npn_histo_L1PT_pred_mu->Fill(lep1_pT, (e1/(1-e1))*weight);
+					  Npn_histo_L2PT_pred_mu->Fill(lep2_pT, (e1/(1-e1))*weight);
+					  if (sr>=0) Npn_histo_sr_err2_pred_mu[sr]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_br_err2_pred_mu[br]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_HT_err2_pred_mu[Npn_histo_HT_pred_mu->FindBin(ss.ht())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_MET_err2_pred_mu[Npn_histo_MET_pred_mu->FindBin(ss.met())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_MTMIN_err2_pred_mu[Npn_histo_MTMIN_pred_mu->FindBin(mtmin)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_L1PT_err2_pred_mu[Npn_histo_L1PT_pred_mu->FindBin(lep1_pT)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_L2PT_err2_pred_mu[Npn_histo_L2PT_pred_mu->FindBin(lep2_pT)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  // fill el abundance histos here w/ nbtags
 					  if(ss.lep1_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight);
-					  // if(ss.lep2_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
-					  // if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight); //USE ONLY FOR NUM ABUNDANCE PLOTS
 					  if(ss.lep1_motherID() == -1) Bs_mu = Bs_mu + weight;
 					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) notBs_mu = notBs_mu + weight;
 					}
 				  Npn = Npn + (e1/(1-e1))*weight;
 				  if (ss.lep1_motherID()==1) Npn_s = Npn_s + (e1/(1-e1))*weight;
-				  Npn_histo_pred->Fill(sr, (e1/(1-e1))*weight);
-				  Npn_histo_pred->Fill(br, (e1/(1-e1))*weight);
+				  Npn_histo_sr_pred->Fill(sr, (e1/(1-e1))*weight);
+				  Npn_histo_br_pred->Fill(br, (e1/(1-e1))*weight);
+				  Npn_histo_HT_pred->Fill(ss.ht(), (e1/(1-e1))*weight);
+				  Npn_histo_MET_pred->Fill(ss.met(), (e1/(1-e1))*weight);
+				  Npn_histo_MTMIN_pred->Fill(mtmin, (e1/(1-e1))*weight);
+				  Npn_histo_L1PT_pred->Fill(lep1_pT, (e1/(1-e1))*weight);
+				  Npn_histo_L2PT_pred->Fill(lep2_pT, (e1/(1-e1))*weight);
 				}
 			}
 		} //end hyp = 2 if statement
@@ -749,16 +929,14 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 			{
 			  if( lep1_passes_id==0 && lep2_passes_id==0 )   //just making sure
 			    {
-				  if (noSIP && fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())>4.) continue;
-				  if (noSIP && fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())>4.) continue;
 				  if( abs(ss.lep2_id()) == 11 )
-					{e2 = getFakeRate( rate_histo_e, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel );}
+					{e2 = getFakeRate( rate_histo_e, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), false );}
 				  else if( abs(ss.lep2_id()) == 13 )
-					{e2 = getFakeRate( rate_histo_mu, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), extrPtRel );}				
+					{e2 = getFakeRate( rate_histo_mu, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), false );}				
 				  if( abs(ss.lep1_id()) == 11 )				  
-					{e1 = getFakeRate( rate_histo_e, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );}
+					{e1 = getFakeRate( rate_histo_e, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), false );}
 				  else if( abs(ss.lep1_id()) == 13 )				  
-					{e1 = getFakeRate( rate_histo_mu, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), extrPtRel );}
+					{e1 = getFakeRate( rate_histo_mu, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), false );}
 				  Nnn = Nnn + (e1/(1-e1))*(e2/(1-e2))*weight;					
 			   }
 			}
@@ -803,14 +981,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   gStyle->SetPaintTextFormat("1.3f");
 
   //Plot fake rate histos
-  //  TCanvas *c0=new TCanvas("c0","Fake Rate vs Pt, eta",800,800);
-  //  rate_histo->Draw("colz,texte");
   TCanvas *c1=new TCanvas("c1","Fake Rate vs Pt, eta (electron)",800,800);
   c1->cd();
   rate_histo_e->Draw("colz,texte");
   TCanvas *c2=new TCanvas("c2","Fake Rate vs Pt, eta (muon)",800,800);
   c2->cd();
   rate_histo_mu->Draw("colz,texte");
+
+  //redefine option to save also ptRegion in output files
+  option=option+"_"+ptRegion;
 
   //Signal region plots
   //---------------------------------------------------------------------------------------
@@ -820,8 +999,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h3->Draw();
   pad_r3->Draw();
   TLegend *leg3 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  cout << "\ndump SR all" << endl;
-  DrawPlots(Npn_histo_pred, Npn_histo_obs, Npn_histo_err2_pred_mu, Npn_histo_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
+  cout << "\ndump BR all" << endl;
+  DrawPlots(Npn_histo_br_pred, Npn_histo_br_obs, Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
 
   TH2D *nullarr[40] = {0};
 
@@ -831,8 +1010,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h4->Draw();
   pad_r4->Draw();
   TLegend *leg4 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  cout << "\ndump SR mu" << endl;
-  DrawPlots(Npn_histo_pred_mu, Npn_histo_obs_mu, Npn_histo_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
+  cout << "\ndump BR mu" << endl;
+  DrawPlots(Npn_histo_br_pred_mu, Npn_histo_br_obs_mu, Npn_histo_br_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
 
   TCanvas *c5=new TCanvas("c5","Predicted and Observed Prompt-NonPrompt Background (Single el)", 800,800);
   TPad *pad_h5 = new TPad("pad_h5","Histo Pad5",0., 0.2, 1., 1.0);
@@ -840,8 +1019,53 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h5->Draw();
   pad_r5->Draw();
   TLegend *leg5 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  cout << "\ndump SR ele" << endl;
-  DrawPlots(Npn_histo_pred_el, Npn_histo_obs_el, nullarr, Npn_histo_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
+  cout << "\ndump BR ele" << endl;
+  DrawPlots(Npn_histo_br_pred_el, Npn_histo_br_obs_el, nullarr, Npn_histo_br_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
+  c3->SaveAs("br_all"+option+".png");
+  c4->SaveAs("br_mu"+option+".png");
+  c5->SaveAs("br_el"+option+".png");
+
+  DrawPlots(Npn_histo_sr_pred, Npn_histo_sr_obs, Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
+  DrawPlots(Npn_histo_sr_pred_mu, Npn_histo_sr_obs_mu, Npn_histo_sr_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
+  DrawPlots(Npn_histo_sr_pred_el, Npn_histo_sr_obs_el, nullarr, Npn_histo_sr_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
+  c3->SaveAs("sr_all"+option+".png");
+  c4->SaveAs("sr_mu"+option+".png");
+  c5->SaveAs("sr_el"+option+".png");
+
+  DrawPlots(Npn_histo_HT_pred, Npn_histo_HT_obs, Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
+  DrawPlots(Npn_histo_HT_pred_mu, Npn_histo_HT_obs_mu, Npn_histo_HT_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
+  DrawPlots(Npn_histo_HT_pred_el, Npn_histo_HT_obs_el, nullarr, Npn_histo_HT_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
+  c3->SaveAs("HT_all"+option+".png");
+  c4->SaveAs("HT_mu"+option+".png");
+  c5->SaveAs("HT_el"+option+".png");
+
+  DrawPlots(Npn_histo_MET_pred, Npn_histo_MET_obs, Npn_histo_MET_err2_pred_mu, Npn_histo_MET_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
+  DrawPlots(Npn_histo_MET_pred_mu, Npn_histo_MET_obs_mu, Npn_histo_MET_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
+  DrawPlots(Npn_histo_MET_pred_el, Npn_histo_MET_obs_el, nullarr, Npn_histo_MET_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
+  c3->SaveAs("MET_all"+option+".png");
+  c4->SaveAs("MET_mu"+option+".png");
+  c5->SaveAs("MET_el"+option+".png");
+
+  DrawPlots(Npn_histo_MTMIN_pred, Npn_histo_MTMIN_obs, Npn_histo_MTMIN_err2_pred_mu, Npn_histo_MTMIN_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
+  DrawPlots(Npn_histo_MTMIN_pred_mu, Npn_histo_MTMIN_obs_mu, Npn_histo_MTMIN_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
+  DrawPlots(Npn_histo_MTMIN_pred_el, Npn_histo_MTMIN_obs_el, nullarr, Npn_histo_MTMIN_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
+  c3->SaveAs("MTMIN_all"+option+".png");
+  c4->SaveAs("MTMIN_mu"+option+".png");
+  c5->SaveAs("MTMIN_el"+option+".png");
+
+  DrawPlots(Npn_histo_L1PT_pred, Npn_histo_L1PT_obs, Npn_histo_L1PT_err2_pred_mu, Npn_histo_L1PT_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
+  DrawPlots(Npn_histo_L1PT_pred_mu, Npn_histo_L1PT_obs_mu, Npn_histo_L1PT_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
+  DrawPlots(Npn_histo_L1PT_pred_el, Npn_histo_L1PT_obs_el, nullarr, Npn_histo_L1PT_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
+  c3->SaveAs("L1PT_all"+option+".png");
+  c4->SaveAs("L1PT_mu"+option+".png");
+  c5->SaveAs("L1PT_el"+option+".png");
+
+  DrawPlots(Npn_histo_L2PT_pred, Npn_histo_L2PT_obs, Npn_histo_L2PT_err2_pred_mu, Npn_histo_L2PT_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
+  DrawPlots(Npn_histo_L2PT_pred_mu, Npn_histo_L2PT_obs_mu, Npn_histo_L2PT_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
+  DrawPlots(Npn_histo_L2PT_pred_el, Npn_histo_L2PT_obs_el, nullarr, Npn_histo_L2PT_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
+  c3->SaveAs("L2PT_all"+option+".png");
+  c4->SaveAs("L2PT_mu"+option+".png");
+  c5->SaveAs("L2PT_el"+option+".png");
   //---------------------------------------------------------------------------------
 
   TH1F *total_BR_histo_e = (TH1F*) NBs_BR_histo_e->Clone("total_BR_histo_e");
@@ -865,10 +1089,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   TCanvas *c7=new TCanvas("c7","B Abundance vs Nbtags (Njets >= 2) (muons)", 800,800);
   c7->cd();
   NBs_BR_histo_mu->Draw("histE");
-
-  c3->SaveAs("sr_all"+option+".png");
-  c4->SaveAs("sr_mu"+option+".png");
-  c5->SaveAs("sr_el"+option+".png");
 
   TCanvas c8;
   pTrel_histo_mu->Draw();

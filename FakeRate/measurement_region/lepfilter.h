@@ -10,6 +10,7 @@
 #include "TFile.h"
 #include "TBits.h"
 #include <vector> 
+#include <unistd.h> 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 
 using namespace std; 
@@ -17,21 +18,33 @@ class lepfilter {
 private: 
 protected: 
 	unsigned int index;
-	float	met_;
-	TBranch *met_branch;
-	bool met_isLoaded;
-	float	metPhi_;
-	TBranch *metPhi_branch;
-	bool metPhi_isLoaded;
-	int	event_;
-	TBranch *event_branch;
-	bool event_isLoaded;
-	int	lumi_;
-	TBranch *lumi_branch;
-	bool lumi_isLoaded;
-	int	run_;
-	TBranch *run_branch;
-	bool run_isLoaded;
+	float	evt_pfmet_;
+	TBranch *evt_pfmet_branch;
+	bool evt_pfmet_isLoaded;
+	float	evt_pfmetPhi_;
+	TBranch *evt_pfmetPhi_branch;
+	bool evt_pfmetPhi_isLoaded;
+	float	evt_trackmet_;
+	TBranch *evt_trackmet_branch;
+	bool evt_trackmet_isLoaded;
+	float	evt_trackmetPhi_;
+	TBranch *evt_trackmetPhi_branch;
+	bool evt_trackmetPhi_isLoaded;
+	float	evt_pfsumet_;
+	TBranch *evt_pfsumet_branch;
+	bool evt_pfsumet_isLoaded;
+	float	evt_pfmetSig_;
+	TBranch *evt_pfmetSig_branch;
+	bool evt_pfmetSig_isLoaded;
+	int	evt_event_;
+	TBranch *evt_event_branch;
+	bool evt_event_isLoaded;
+	int	evt_lumiBlock_;
+	TBranch *evt_lumiBlock_branch;
+	bool evt_lumiBlock_isLoaded;
+	int	evt_run_;
+	TBranch *evt_run_branch;
+	bool evt_run_isLoaded;
 	bool	filt_csc_;
 	TBranch *filt_csc_branch;
 	bool filt_csc_isLoaded;
@@ -50,24 +63,24 @@ protected:
 	bool	filt_eebadsc_;
 	TBranch *filt_eebadsc_branch;
 	bool filt_eebadsc_isLoaded;
-	bool	is_real_data_;
-	TBranch *is_real_data_branch;
-	bool is_real_data_isLoaded;
+	bool	evt_isRealData_;
+	TBranch *evt_isRealData_branch;
+	bool evt_isRealData_isLoaded;
 	float	scale1fb_;
 	TBranch *scale1fb_branch;
 	bool scale1fb_isLoaded;
-	float	xsec_;
-	TBranch *xsec_branch;
-	bool xsec_isLoaded;
-	float	kfactor_;
-	TBranch *kfactor_branch;
-	bool kfactor_isLoaded;
+	float	evt_xsec_incl_;
+	TBranch *evt_xsec_incl_branch;
+	bool evt_xsec_incl_isLoaded;
+	float	evt_kfactor_;
+	TBranch *evt_kfactor_branch;
+	bool evt_kfactor_isLoaded;
 	float	gen_met_;
 	TBranch *gen_met_branch;
 	bool gen_met_isLoaded;
-	float	gen_met_phi_;
-	TBranch *gen_met_phi_branch;
-	bool gen_met_phi_isLoaded;
+	float	gen_metPhi_;
+	TBranch *gen_metPhi_branch;
+	bool gen_metPhi_isLoaded;
 	float	njets_;
 	TBranch *njets_branch;
 	bool njets_isLoaded;
@@ -83,12 +96,21 @@ protected:
 	TString *sample_;
 	TBranch *sample_branch;
 	bool sample_isLoaded;
-	int	nFOs_;
-	TBranch *nFOs_branch;
-	bool nFOs_isLoaded;
+	int	nFOs_SS_;
+	TBranch *nFOs_SS_branch;
+	bool nFOs_SS_isLoaded;
+	int	nvtx_;
+	TBranch *nvtx_branch;
+	bool nvtx_isLoaded;
 	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *p4_;
 	TBranch *p4_branch;
 	bool p4_isLoaded;
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *tag_p4_;
+	TBranch *tag_p4_branch;
+	bool tag_p4_isLoaded;
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *dilep_p4_;
+	TBranch *dilep_p4_branch;
+	bool dilep_p4_isLoaded;
 	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *mc_p4_;
 	TBranch *mc_p4_branch;
 	bool mc_p4_isLoaded;
@@ -101,51 +123,42 @@ protected:
 	int	idx_;
 	TBranch *idx_branch;
 	bool idx_isLoaded;
-	float	d0_;
-	TBranch *d0_branch;
-	bool d0_isLoaded;
+	float	dxyPV_;
+	TBranch *dxyPV_branch;
+	bool dxyPV_isLoaded;
 	float	dZ_;
 	TBranch *dZ_branch;
 	bool dZ_isLoaded;
-	float	d0_err_;
-	TBranch *d0_err_branch;
-	bool d0_err_isLoaded;
+	float	dxyPV_err_;
+	TBranch *dxyPV_err_branch;
+	bool dxyPV_err_isLoaded;
 	int	motherID_;
 	TBranch *motherID_branch;
 	bool motherID_isLoaded;
 	int	mc_id_;
 	TBranch *mc_id_branch;
 	bool mc_id_isLoaded;
-	float	iso_;
-	TBranch *iso_branch;
-	bool iso_isLoaded;
-	bool	passes_id_;
-	TBranch *passes_id_branch;
-	bool passes_id_isLoaded;
-	bool	passes_id_ptrel_;
-	TBranch *passes_id_ptrel_branch;
-	bool passes_id_ptrel_isLoaded;
-	bool	passes_id_miniiso_;
-	TBranch *passes_id_miniiso_branch;
-	bool passes_id_miniiso_isLoaded;
-	bool	passes_id_newminiiso_;
-	TBranch *passes_id_newminiiso_branch;
-	bool passes_id_newminiiso_isLoaded;
-	bool	FO_;
-	TBranch *FO_branch;
-	bool FO_isLoaded;
-	bool	FO_ptrel_;
-	TBranch *FO_ptrel_branch;
-	bool FO_ptrel_isLoaded;
-	bool	FO_miniiso_;
-	TBranch *FO_miniiso_branch;
-	bool FO_miniiso_isLoaded;
-	bool	FO_newminiiso_;
-	TBranch *FO_newminiiso_branch;
-	bool FO_newminiiso_isLoaded;
-	bool	FO_NoIso_;
-	TBranch *FO_NoIso_branch;
-	bool FO_NoIso_isLoaded;
+	float	RelIso03EA_;
+	TBranch *RelIso03EA_branch;
+	bool RelIso03EA_isLoaded;
+	bool	passes_SS_tight_v3_;
+	TBranch *passes_SS_tight_v3_branch;
+	bool passes_SS_tight_v3_isLoaded;
+	bool	passes_SS_tight_noiso_v3_;
+	TBranch *passes_SS_tight_noiso_v3_branch;
+	bool passes_SS_tight_noiso_v3_isLoaded;
+	bool	passes_SS_fo_v3_;
+	TBranch *passes_SS_fo_v3_branch;
+	bool passes_SS_fo_v3_isLoaded;
+	bool	passes_SS_fo_noiso_v3_;
+	TBranch *passes_SS_fo_noiso_v3_branch;
+	bool passes_SS_fo_noiso_v3_isLoaded;
+	bool	passes_SS_fo_looseMVA_v3_;
+	TBranch *passes_SS_fo_looseMVA_v3_branch;
+	bool passes_SS_fo_looseMVA_v3_isLoaded;
+	bool	passes_SS_fo_looseMVA_noiso_v3_;
+	TBranch *passes_SS_fo_looseMVA_noiso_v3_branch;
+	bool passes_SS_fo_looseMVA_noiso_v3_isLoaded;
 	float	ip3d_;
 	TBranch *ip3d_branch;
 	bool ip3d_isLoaded;
@@ -170,66 +183,75 @@ protected:
 	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *jet_close_lep_;
 	TBranch *jet_close_lep_branch;
 	bool jet_close_lep_isLoaded;
-	float	el_sigmaIEtaIEta_full5x5_;
-	TBranch *el_sigmaIEtaIEta_full5x5_branch;
-	bool el_sigmaIEtaIEta_full5x5_isLoaded;
-	float	el_etaSC_;
-	TBranch *el_etaSC_branch;
-	bool el_etaSC_isLoaded;
-	float	el_dEtaIn_;
-	TBranch *el_dEtaIn_branch;
-	bool el_dEtaIn_isLoaded;
-	float	el_dPhiIn_;
-	TBranch *el_dPhiIn_branch;
-	bool el_dPhiIn_isLoaded;
-	float	el_hOverE_;
-	TBranch *el_hOverE_branch;
-	bool el_hOverE_isLoaded;
-	float	el_ecalEnergy_;
-	TBranch *el_ecalEnergy_branch;
-	bool el_ecalEnergy_isLoaded;
-	float	el_eOverPIn_;
-	TBranch *el_eOverPIn_branch;
-	bool el_eOverPIn_isLoaded;
-	bool	el_conv_vtx_flag_;
-	TBranch *el_conv_vtx_flag_branch;
-	bool el_conv_vtx_flag_isLoaded;
-	int	el_exp_innerlayers_;
-	TBranch *el_exp_innerlayers_branch;
-	bool el_exp_innerlayers_isLoaded;
-	int	el_charge_;
-	TBranch *el_charge_branch;
-	bool el_charge_isLoaded;
-	int	el_sccharge_;
-	TBranch *el_sccharge_branch;
-	bool el_sccharge_isLoaded;
-	int	el_ckf_charge_;
-	TBranch *el_ckf_charge_branch;
-	bool el_ckf_charge_isLoaded;
-	bool	el_threeChargeAgree_;
-	TBranch *el_threeChargeAgree_branch;
-	bool el_threeChargeAgree_isLoaded;
-	int	mu_pid_PFMuon_;
-	TBranch *mu_pid_PFMuon_branch;
-	bool mu_pid_PFMuon_isLoaded;
-	float	mu_gfit_chi2_;
-	TBranch *mu_gfit_chi2_branch;
-	bool mu_gfit_chi2_isLoaded;
-	float	mu_gfit_ndof_;
-	TBranch *mu_gfit_ndof_branch;
-	bool mu_gfit_ndof_isLoaded;
-	int	mu_gfit_validSTAHits_;
-	TBranch *mu_gfit_validSTAHits_branch;
-	bool mu_gfit_validSTAHits_isLoaded;
-	int	mu_numberOfMatchedStations_;
-	TBranch *mu_numberOfMatchedStations_branch;
-	bool mu_numberOfMatchedStations_isLoaded;
-	int	mu_validPixelHits_;
-	TBranch *mu_validPixelHits_branch;
-	bool mu_validPixelHits_isLoaded;
-	int	mu_nlayers_;
-	TBranch *mu_nlayers_branch;
-	bool mu_nlayers_isLoaded;
+	float	ptratio_;
+	TBranch *ptratio_branch;
+	bool ptratio_isLoaded;
+	int	tag_charge_;
+	TBranch *tag_charge_branch;
+	bool tag_charge_isLoaded;
+	float	dilep_mass_;
+	TBranch *dilep_mass_branch;
+	bool dilep_mass_isLoaded;
+	float	sigmaIEtaIEta_full5x5_;
+	TBranch *sigmaIEtaIEta_full5x5_branch;
+	bool sigmaIEtaIEta_full5x5_isLoaded;
+	float	etaSC_;
+	TBranch *etaSC_branch;
+	bool etaSC_isLoaded;
+	float	dEtaIn_;
+	TBranch *dEtaIn_branch;
+	bool dEtaIn_isLoaded;
+	float	dPhiIn_;
+	TBranch *dPhiIn_branch;
+	bool dPhiIn_isLoaded;
+	float	hOverE_;
+	TBranch *hOverE_branch;
+	bool hOverE_isLoaded;
+	float	ecalEnergy_;
+	TBranch *ecalEnergy_branch;
+	bool ecalEnergy_isLoaded;
+	float	eOverPIn_;
+	TBranch *eOverPIn_branch;
+	bool eOverPIn_isLoaded;
+	bool	conv_vtx_flag_;
+	TBranch *conv_vtx_flag_branch;
+	bool conv_vtx_flag_isLoaded;
+	int	exp_innerlayers_;
+	TBranch *exp_innerlayers_branch;
+	bool exp_innerlayers_isLoaded;
+	int	charge_;
+	TBranch *charge_branch;
+	bool charge_isLoaded;
+	int	sccharge_;
+	TBranch *sccharge_branch;
+	bool sccharge_isLoaded;
+	int	ckf_charge_;
+	TBranch *ckf_charge_branch;
+	bool ckf_charge_isLoaded;
+	bool	threeChargeAgree_;
+	TBranch *threeChargeAgree_branch;
+	bool threeChargeAgree_isLoaded;
+	int	pid_PFMuon_;
+	TBranch *pid_PFMuon_branch;
+	bool pid_PFMuon_isLoaded;
+	float	gfit_chi2_;
+	TBranch *gfit_chi2_branch;
+	bool gfit_chi2_isLoaded;
+	float	gfit_ndof_;
+	TBranch *gfit_ndof_branch;
+	bool gfit_ndof_isLoaded;
+	int	gfit_validSTAHits_;
+	TBranch *gfit_validSTAHits_branch;
+	bool gfit_validSTAHits_isLoaded;
+	int	numberOfMatchedStations_;
+	TBranch *numberOfMatchedStations_branch;
+	bool numberOfMatchedStations_isLoaded;
+	int	validPixelHits_;
+	TBranch *validPixelHits_branch;
+	bool validPixelHits_isLoaded;
+	int	nlayers_;
+	TBranch *nlayers_branch;
+	bool nlayers_isLoaded;
 public: 
 void Init(TTree *tree) {
 	jets_branch = 0;
@@ -241,6 +263,16 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("p4") != 0) {
 		p4_branch = tree->GetBranch("p4");
 		if (p4_branch) {p4_branch->SetAddress(&p4_);}
+	}
+	tag_p4_branch = 0;
+	if (tree->GetBranch("tag_p4") != 0) {
+		tag_p4_branch = tree->GetBranch("tag_p4");
+		if (tag_p4_branch) {tag_p4_branch->SetAddress(&tag_p4_);}
+	}
+	dilep_p4_branch = 0;
+	if (tree->GetBranch("dilep_p4") != 0) {
+		dilep_p4_branch = tree->GetBranch("dilep_p4");
+		if (dilep_p4_branch) {dilep_p4_branch->SetAddress(&dilep_p4_);}
 	}
 	mc_p4_branch = 0;
 	if (tree->GetBranch("mc_p4") != 0) {
@@ -258,30 +290,50 @@ void Init(TTree *tree) {
 		if (jet_close_lep_branch) {jet_close_lep_branch->SetAddress(&jet_close_lep_);}
 	}
   tree->SetMakeClass(1);
-	met_branch = 0;
-	if (tree->GetBranch("met") != 0) {
-		met_branch = tree->GetBranch("met");
-		if (met_branch) {met_branch->SetAddress(&met_);}
+	evt_pfmet_branch = 0;
+	if (tree->GetBranch("evt_pfmet") != 0) {
+		evt_pfmet_branch = tree->GetBranch("evt_pfmet");
+		if (evt_pfmet_branch) {evt_pfmet_branch->SetAddress(&evt_pfmet_);}
 	}
-	metPhi_branch = 0;
-	if (tree->GetBranch("metPhi") != 0) {
-		metPhi_branch = tree->GetBranch("metPhi");
-		if (metPhi_branch) {metPhi_branch->SetAddress(&metPhi_);}
+	evt_pfmetPhi_branch = 0;
+	if (tree->GetBranch("evt_pfmetPhi") != 0) {
+		evt_pfmetPhi_branch = tree->GetBranch("evt_pfmetPhi");
+		if (evt_pfmetPhi_branch) {evt_pfmetPhi_branch->SetAddress(&evt_pfmetPhi_);}
 	}
-	event_branch = 0;
-	if (tree->GetBranch("event") != 0) {
-		event_branch = tree->GetBranch("event");
-		if (event_branch) {event_branch->SetAddress(&event_);}
+	evt_trackmet_branch = 0;
+	if (tree->GetBranch("evt_trackmet") != 0) {
+		evt_trackmet_branch = tree->GetBranch("evt_trackmet");
+		if (evt_trackmet_branch) {evt_trackmet_branch->SetAddress(&evt_trackmet_);}
 	}
-	lumi_branch = 0;
-	if (tree->GetBranch("lumi") != 0) {
-		lumi_branch = tree->GetBranch("lumi");
-		if (lumi_branch) {lumi_branch->SetAddress(&lumi_);}
+	evt_trackmetPhi_branch = 0;
+	if (tree->GetBranch("evt_trackmetPhi") != 0) {
+		evt_trackmetPhi_branch = tree->GetBranch("evt_trackmetPhi");
+		if (evt_trackmetPhi_branch) {evt_trackmetPhi_branch->SetAddress(&evt_trackmetPhi_);}
 	}
-	run_branch = 0;
-	if (tree->GetBranch("run") != 0) {
-		run_branch = tree->GetBranch("run");
-		if (run_branch) {run_branch->SetAddress(&run_);}
+	evt_pfsumet_branch = 0;
+	if (tree->GetBranch("evt_pfsumet") != 0) {
+		evt_pfsumet_branch = tree->GetBranch("evt_pfsumet");
+		if (evt_pfsumet_branch) {evt_pfsumet_branch->SetAddress(&evt_pfsumet_);}
+	}
+	evt_pfmetSig_branch = 0;
+	if (tree->GetBranch("evt_pfmetSig") != 0) {
+		evt_pfmetSig_branch = tree->GetBranch("evt_pfmetSig");
+		if (evt_pfmetSig_branch) {evt_pfmetSig_branch->SetAddress(&evt_pfmetSig_);}
+	}
+	evt_event_branch = 0;
+	if (tree->GetBranch("evt_event") != 0) {
+		evt_event_branch = tree->GetBranch("evt_event");
+		if (evt_event_branch) {evt_event_branch->SetAddress(&evt_event_);}
+	}
+	evt_lumiBlock_branch = 0;
+	if (tree->GetBranch("evt_lumiBlock") != 0) {
+		evt_lumiBlock_branch = tree->GetBranch("evt_lumiBlock");
+		if (evt_lumiBlock_branch) {evt_lumiBlock_branch->SetAddress(&evt_lumiBlock_);}
+	}
+	evt_run_branch = 0;
+	if (tree->GetBranch("evt_run") != 0) {
+		evt_run_branch = tree->GetBranch("evt_run");
+		if (evt_run_branch) {evt_run_branch->SetAddress(&evt_run_);}
 	}
 	filt_csc_branch = 0;
 	if (tree->GetBranch("filt_csc") != 0) {
@@ -313,35 +365,35 @@ void Init(TTree *tree) {
 		filt_eebadsc_branch = tree->GetBranch("filt_eebadsc");
 		if (filt_eebadsc_branch) {filt_eebadsc_branch->SetAddress(&filt_eebadsc_);}
 	}
-	is_real_data_branch = 0;
-	if (tree->GetBranch("is_real_data") != 0) {
-		is_real_data_branch = tree->GetBranch("is_real_data");
-		if (is_real_data_branch) {is_real_data_branch->SetAddress(&is_real_data_);}
+	evt_isRealData_branch = 0;
+	if (tree->GetBranch("evt_isRealData") != 0) {
+		evt_isRealData_branch = tree->GetBranch("evt_isRealData");
+		if (evt_isRealData_branch) {evt_isRealData_branch->SetAddress(&evt_isRealData_);}
 	}
 	scale1fb_branch = 0;
 	if (tree->GetBranch("scale1fb") != 0) {
 		scale1fb_branch = tree->GetBranch("scale1fb");
 		if (scale1fb_branch) {scale1fb_branch->SetAddress(&scale1fb_);}
 	}
-	xsec_branch = 0;
-	if (tree->GetBranch("xsec") != 0) {
-		xsec_branch = tree->GetBranch("xsec");
-		if (xsec_branch) {xsec_branch->SetAddress(&xsec_);}
+	evt_xsec_incl_branch = 0;
+	if (tree->GetBranch("evt_xsec_incl") != 0) {
+		evt_xsec_incl_branch = tree->GetBranch("evt_xsec_incl");
+		if (evt_xsec_incl_branch) {evt_xsec_incl_branch->SetAddress(&evt_xsec_incl_);}
 	}
-	kfactor_branch = 0;
-	if (tree->GetBranch("kfactor") != 0) {
-		kfactor_branch = tree->GetBranch("kfactor");
-		if (kfactor_branch) {kfactor_branch->SetAddress(&kfactor_);}
+	evt_kfactor_branch = 0;
+	if (tree->GetBranch("evt_kfactor") != 0) {
+		evt_kfactor_branch = tree->GetBranch("evt_kfactor");
+		if (evt_kfactor_branch) {evt_kfactor_branch->SetAddress(&evt_kfactor_);}
 	}
 	gen_met_branch = 0;
 	if (tree->GetBranch("gen_met") != 0) {
 		gen_met_branch = tree->GetBranch("gen_met");
 		if (gen_met_branch) {gen_met_branch->SetAddress(&gen_met_);}
 	}
-	gen_met_phi_branch = 0;
-	if (tree->GetBranch("gen_met_phi") != 0) {
-		gen_met_phi_branch = tree->GetBranch("gen_met_phi");
-		if (gen_met_phi_branch) {gen_met_phi_branch->SetAddress(&gen_met_phi_);}
+	gen_metPhi_branch = 0;
+	if (tree->GetBranch("gen_metPhi") != 0) {
+		gen_metPhi_branch = tree->GetBranch("gen_metPhi");
+		if (gen_metPhi_branch) {gen_metPhi_branch->SetAddress(&gen_metPhi_);}
 	}
 	njets_branch = 0;
 	if (tree->GetBranch("njets") != 0) {
@@ -363,10 +415,15 @@ void Init(TTree *tree) {
 		sample_branch = tree->GetBranch("sample");
 		if (sample_branch) {sample_branch->SetAddress(&sample_);}
 	}
-	nFOs_branch = 0;
-	if (tree->GetBranch("nFOs") != 0) {
-		nFOs_branch = tree->GetBranch("nFOs");
-		if (nFOs_branch) {nFOs_branch->SetAddress(&nFOs_);}
+	nFOs_SS_branch = 0;
+	if (tree->GetBranch("nFOs_SS") != 0) {
+		nFOs_SS_branch = tree->GetBranch("nFOs_SS");
+		if (nFOs_SS_branch) {nFOs_SS_branch->SetAddress(&nFOs_SS_);}
+	}
+	nvtx_branch = 0;
+	if (tree->GetBranch("nvtx") != 0) {
+		nvtx_branch = tree->GetBranch("nvtx");
+		if (nvtx_branch) {nvtx_branch->SetAddress(&nvtx_);}
 	}
 	id_branch = 0;
 	if (tree->GetBranch("id") != 0) {
@@ -378,20 +435,20 @@ void Init(TTree *tree) {
 		idx_branch = tree->GetBranch("idx");
 		if (idx_branch) {idx_branch->SetAddress(&idx_);}
 	}
-	d0_branch = 0;
-	if (tree->GetBranch("d0") != 0) {
-		d0_branch = tree->GetBranch("d0");
-		if (d0_branch) {d0_branch->SetAddress(&d0_);}
+	dxyPV_branch = 0;
+	if (tree->GetBranch("dxyPV") != 0) {
+		dxyPV_branch = tree->GetBranch("dxyPV");
+		if (dxyPV_branch) {dxyPV_branch->SetAddress(&dxyPV_);}
 	}
 	dZ_branch = 0;
 	if (tree->GetBranch("dZ") != 0) {
 		dZ_branch = tree->GetBranch("dZ");
 		if (dZ_branch) {dZ_branch->SetAddress(&dZ_);}
 	}
-	d0_err_branch = 0;
-	if (tree->GetBranch("d0_err") != 0) {
-		d0_err_branch = tree->GetBranch("d0_err");
-		if (d0_err_branch) {d0_err_branch->SetAddress(&d0_err_);}
+	dxyPV_err_branch = 0;
+	if (tree->GetBranch("dxyPV_err") != 0) {
+		dxyPV_err_branch = tree->GetBranch("dxyPV_err");
+		if (dxyPV_err_branch) {dxyPV_err_branch->SetAddress(&dxyPV_err_);}
 	}
 	motherID_branch = 0;
 	if (tree->GetBranch("motherID") != 0) {
@@ -403,55 +460,40 @@ void Init(TTree *tree) {
 		mc_id_branch = tree->GetBranch("mc_id");
 		if (mc_id_branch) {mc_id_branch->SetAddress(&mc_id_);}
 	}
-	iso_branch = 0;
-	if (tree->GetBranch("iso") != 0) {
-		iso_branch = tree->GetBranch("iso");
-		if (iso_branch) {iso_branch->SetAddress(&iso_);}
+	RelIso03EA_branch = 0;
+	if (tree->GetBranch("RelIso03EA") != 0) {
+		RelIso03EA_branch = tree->GetBranch("RelIso03EA");
+		if (RelIso03EA_branch) {RelIso03EA_branch->SetAddress(&RelIso03EA_);}
 	}
-	passes_id_branch = 0;
-	if (tree->GetBranch("passes_id") != 0) {
-		passes_id_branch = tree->GetBranch("passes_id");
-		if (passes_id_branch) {passes_id_branch->SetAddress(&passes_id_);}
+	passes_SS_tight_v3_branch = 0;
+	if (tree->GetBranch("passes_SS_tight_v3") != 0) {
+		passes_SS_tight_v3_branch = tree->GetBranch("passes_SS_tight_v3");
+		if (passes_SS_tight_v3_branch) {passes_SS_tight_v3_branch->SetAddress(&passes_SS_tight_v3_);}
 	}
-	passes_id_ptrel_branch = 0;
-	if (tree->GetBranch("passes_id_ptrel") != 0) {
-		passes_id_ptrel_branch = tree->GetBranch("passes_id_ptrel");
-		if (passes_id_ptrel_branch) {passes_id_ptrel_branch->SetAddress(&passes_id_ptrel_);}
+	passes_SS_tight_noiso_v3_branch = 0;
+	if (tree->GetBranch("passes_SS_tight_noiso_v3") != 0) {
+		passes_SS_tight_noiso_v3_branch = tree->GetBranch("passes_SS_tight_noiso_v3");
+		if (passes_SS_tight_noiso_v3_branch) {passes_SS_tight_noiso_v3_branch->SetAddress(&passes_SS_tight_noiso_v3_);}
 	}
-	passes_id_miniiso_branch = 0;
-	if (tree->GetBranch("passes_id_miniiso") != 0) {
-		passes_id_miniiso_branch = tree->GetBranch("passes_id_miniiso");
-		if (passes_id_miniiso_branch) {passes_id_miniiso_branch->SetAddress(&passes_id_miniiso_);}
+	passes_SS_fo_v3_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_v3") != 0) {
+		passes_SS_fo_v3_branch = tree->GetBranch("passes_SS_fo_v3");
+		if (passes_SS_fo_v3_branch) {passes_SS_fo_v3_branch->SetAddress(&passes_SS_fo_v3_);}
 	}
-	passes_id_newminiiso_branch = 0;
-	if (tree->GetBranch("passes_id_newminiiso") != 0) {
-		passes_id_newminiiso_branch = tree->GetBranch("passes_id_newminiiso");
-		if (passes_id_newminiiso_branch) {passes_id_newminiiso_branch->SetAddress(&passes_id_newminiiso_);}
+	passes_SS_fo_noiso_v3_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_noiso_v3") != 0) {
+		passes_SS_fo_noiso_v3_branch = tree->GetBranch("passes_SS_fo_noiso_v3");
+		if (passes_SS_fo_noiso_v3_branch) {passes_SS_fo_noiso_v3_branch->SetAddress(&passes_SS_fo_noiso_v3_);}
 	}
-	FO_branch = 0;
-	if (tree->GetBranch("FO") != 0) {
-		FO_branch = tree->GetBranch("FO");
-		if (FO_branch) {FO_branch->SetAddress(&FO_);}
+	passes_SS_fo_looseMVA_v3_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_looseMVA_v3") != 0) {
+		passes_SS_fo_looseMVA_v3_branch = tree->GetBranch("passes_SS_fo_looseMVA_v3");
+		if (passes_SS_fo_looseMVA_v3_branch) {passes_SS_fo_looseMVA_v3_branch->SetAddress(&passes_SS_fo_looseMVA_v3_);}
 	}
-	FO_ptrel_branch = 0;
-	if (tree->GetBranch("FO_ptrel") != 0) {
-		FO_ptrel_branch = tree->GetBranch("FO_ptrel");
-		if (FO_ptrel_branch) {FO_ptrel_branch->SetAddress(&FO_ptrel_);}
-	}
-	FO_miniiso_branch = 0;
-	if (tree->GetBranch("FO_miniiso") != 0) {
-		FO_miniiso_branch = tree->GetBranch("FO_miniiso");
-		if (FO_miniiso_branch) {FO_miniiso_branch->SetAddress(&FO_miniiso_);}
-	}
-	FO_newminiiso_branch = 0;
-	if (tree->GetBranch("FO_newminiiso") != 0) {
-		FO_newminiiso_branch = tree->GetBranch("FO_newminiiso");
-		if (FO_newminiiso_branch) {FO_newminiiso_branch->SetAddress(&FO_newminiiso_);}
-	}
-	FO_NoIso_branch = 0;
-	if (tree->GetBranch("FO_NoIso") != 0) {
-		FO_NoIso_branch = tree->GetBranch("FO_NoIso");
-		if (FO_NoIso_branch) {FO_NoIso_branch->SetAddress(&FO_NoIso_);}
+	passes_SS_fo_looseMVA_noiso_v3_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_looseMVA_noiso_v3") != 0) {
+		passes_SS_fo_looseMVA_noiso_v3_branch = tree->GetBranch("passes_SS_fo_looseMVA_noiso_v3");
+		if (passes_SS_fo_looseMVA_noiso_v3_branch) {passes_SS_fo_looseMVA_noiso_v3_branch->SetAddress(&passes_SS_fo_looseMVA_noiso_v3_);}
 	}
 	ip3d_branch = 0;
 	if (tree->GetBranch("ip3d") != 0) {
@@ -488,155 +530,174 @@ void Init(TTree *tree) {
 		miniiso_branch = tree->GetBranch("miniiso");
 		if (miniiso_branch) {miniiso_branch->SetAddress(&miniiso_);}
 	}
-	el_sigmaIEtaIEta_full5x5_branch = 0;
-	if (tree->GetBranch("el_sigmaIEtaIEta_full5x5") != 0) {
-		el_sigmaIEtaIEta_full5x5_branch = tree->GetBranch("el_sigmaIEtaIEta_full5x5");
-		if (el_sigmaIEtaIEta_full5x5_branch) {el_sigmaIEtaIEta_full5x5_branch->SetAddress(&el_sigmaIEtaIEta_full5x5_);}
+	ptratio_branch = 0;
+	if (tree->GetBranch("ptratio") != 0) {
+		ptratio_branch = tree->GetBranch("ptratio");
+		if (ptratio_branch) {ptratio_branch->SetAddress(&ptratio_);}
 	}
-	el_etaSC_branch = 0;
-	if (tree->GetBranch("el_etaSC") != 0) {
-		el_etaSC_branch = tree->GetBranch("el_etaSC");
-		if (el_etaSC_branch) {el_etaSC_branch->SetAddress(&el_etaSC_);}
+	tag_charge_branch = 0;
+	if (tree->GetBranch("tag_charge") != 0) {
+		tag_charge_branch = tree->GetBranch("tag_charge");
+		if (tag_charge_branch) {tag_charge_branch->SetAddress(&tag_charge_);}
 	}
-	el_dEtaIn_branch = 0;
-	if (tree->GetBranch("el_dEtaIn") != 0) {
-		el_dEtaIn_branch = tree->GetBranch("el_dEtaIn");
-		if (el_dEtaIn_branch) {el_dEtaIn_branch->SetAddress(&el_dEtaIn_);}
+	dilep_mass_branch = 0;
+	if (tree->GetBranch("dilep_mass") != 0) {
+		dilep_mass_branch = tree->GetBranch("dilep_mass");
+		if (dilep_mass_branch) {dilep_mass_branch->SetAddress(&dilep_mass_);}
 	}
-	el_dPhiIn_branch = 0;
-	if (tree->GetBranch("el_dPhiIn") != 0) {
-		el_dPhiIn_branch = tree->GetBranch("el_dPhiIn");
-		if (el_dPhiIn_branch) {el_dPhiIn_branch->SetAddress(&el_dPhiIn_);}
+	sigmaIEtaIEta_full5x5_branch = 0;
+	if (tree->GetBranch("sigmaIEtaIEta_full5x5") != 0) {
+		sigmaIEtaIEta_full5x5_branch = tree->GetBranch("sigmaIEtaIEta_full5x5");
+		if (sigmaIEtaIEta_full5x5_branch) {sigmaIEtaIEta_full5x5_branch->SetAddress(&sigmaIEtaIEta_full5x5_);}
 	}
-	el_hOverE_branch = 0;
-	if (tree->GetBranch("el_hOverE") != 0) {
-		el_hOverE_branch = tree->GetBranch("el_hOverE");
-		if (el_hOverE_branch) {el_hOverE_branch->SetAddress(&el_hOverE_);}
+	etaSC_branch = 0;
+	if (tree->GetBranch("etaSC") != 0) {
+		etaSC_branch = tree->GetBranch("etaSC");
+		if (etaSC_branch) {etaSC_branch->SetAddress(&etaSC_);}
 	}
-	el_ecalEnergy_branch = 0;
-	if (tree->GetBranch("el_ecalEnergy") != 0) {
-		el_ecalEnergy_branch = tree->GetBranch("el_ecalEnergy");
-		if (el_ecalEnergy_branch) {el_ecalEnergy_branch->SetAddress(&el_ecalEnergy_);}
+	dEtaIn_branch = 0;
+	if (tree->GetBranch("dEtaIn") != 0) {
+		dEtaIn_branch = tree->GetBranch("dEtaIn");
+		if (dEtaIn_branch) {dEtaIn_branch->SetAddress(&dEtaIn_);}
 	}
-	el_eOverPIn_branch = 0;
-	if (tree->GetBranch("el_eOverPIn") != 0) {
-		el_eOverPIn_branch = tree->GetBranch("el_eOverPIn");
-		if (el_eOverPIn_branch) {el_eOverPIn_branch->SetAddress(&el_eOverPIn_);}
+	dPhiIn_branch = 0;
+	if (tree->GetBranch("dPhiIn") != 0) {
+		dPhiIn_branch = tree->GetBranch("dPhiIn");
+		if (dPhiIn_branch) {dPhiIn_branch->SetAddress(&dPhiIn_);}
 	}
-	el_conv_vtx_flag_branch = 0;
-	if (tree->GetBranch("el_conv_vtx_flag") != 0) {
-		el_conv_vtx_flag_branch = tree->GetBranch("el_conv_vtx_flag");
-		if (el_conv_vtx_flag_branch) {el_conv_vtx_flag_branch->SetAddress(&el_conv_vtx_flag_);}
+	hOverE_branch = 0;
+	if (tree->GetBranch("hOverE") != 0) {
+		hOverE_branch = tree->GetBranch("hOverE");
+		if (hOverE_branch) {hOverE_branch->SetAddress(&hOverE_);}
 	}
-	el_exp_innerlayers_branch = 0;
-	if (tree->GetBranch("el_exp_innerlayers") != 0) {
-		el_exp_innerlayers_branch = tree->GetBranch("el_exp_innerlayers");
-		if (el_exp_innerlayers_branch) {el_exp_innerlayers_branch->SetAddress(&el_exp_innerlayers_);}
+	ecalEnergy_branch = 0;
+	if (tree->GetBranch("ecalEnergy") != 0) {
+		ecalEnergy_branch = tree->GetBranch("ecalEnergy");
+		if (ecalEnergy_branch) {ecalEnergy_branch->SetAddress(&ecalEnergy_);}
 	}
-	el_charge_branch = 0;
-	if (tree->GetBranch("el_charge") != 0) {
-		el_charge_branch = tree->GetBranch("el_charge");
-		if (el_charge_branch) {el_charge_branch->SetAddress(&el_charge_);}
+	eOverPIn_branch = 0;
+	if (tree->GetBranch("eOverPIn") != 0) {
+		eOverPIn_branch = tree->GetBranch("eOverPIn");
+		if (eOverPIn_branch) {eOverPIn_branch->SetAddress(&eOverPIn_);}
 	}
-	el_sccharge_branch = 0;
-	if (tree->GetBranch("el_sccharge") != 0) {
-		el_sccharge_branch = tree->GetBranch("el_sccharge");
-		if (el_sccharge_branch) {el_sccharge_branch->SetAddress(&el_sccharge_);}
+	conv_vtx_flag_branch = 0;
+	if (tree->GetBranch("conv_vtx_flag") != 0) {
+		conv_vtx_flag_branch = tree->GetBranch("conv_vtx_flag");
+		if (conv_vtx_flag_branch) {conv_vtx_flag_branch->SetAddress(&conv_vtx_flag_);}
 	}
-	el_ckf_charge_branch = 0;
-	if (tree->GetBranch("el_ckf_charge") != 0) {
-		el_ckf_charge_branch = tree->GetBranch("el_ckf_charge");
-		if (el_ckf_charge_branch) {el_ckf_charge_branch->SetAddress(&el_ckf_charge_);}
+	exp_innerlayers_branch = 0;
+	if (tree->GetBranch("exp_innerlayers") != 0) {
+		exp_innerlayers_branch = tree->GetBranch("exp_innerlayers");
+		if (exp_innerlayers_branch) {exp_innerlayers_branch->SetAddress(&exp_innerlayers_);}
 	}
-	el_threeChargeAgree_branch = 0;
-	if (tree->GetBranch("el_threeChargeAgree") != 0) {
-		el_threeChargeAgree_branch = tree->GetBranch("el_threeChargeAgree");
-		if (el_threeChargeAgree_branch) {el_threeChargeAgree_branch->SetAddress(&el_threeChargeAgree_);}
+	charge_branch = 0;
+	if (tree->GetBranch("charge") != 0) {
+		charge_branch = tree->GetBranch("charge");
+		if (charge_branch) {charge_branch->SetAddress(&charge_);}
 	}
-	mu_pid_PFMuon_branch = 0;
-	if (tree->GetBranch("mu_pid_PFMuon") != 0) {
-		mu_pid_PFMuon_branch = tree->GetBranch("mu_pid_PFMuon");
-		if (mu_pid_PFMuon_branch) {mu_pid_PFMuon_branch->SetAddress(&mu_pid_PFMuon_);}
+	sccharge_branch = 0;
+	if (tree->GetBranch("sccharge") != 0) {
+		sccharge_branch = tree->GetBranch("sccharge");
+		if (sccharge_branch) {sccharge_branch->SetAddress(&sccharge_);}
 	}
-	mu_gfit_chi2_branch = 0;
-	if (tree->GetBranch("mu_gfit_chi2") != 0) {
-		mu_gfit_chi2_branch = tree->GetBranch("mu_gfit_chi2");
-		if (mu_gfit_chi2_branch) {mu_gfit_chi2_branch->SetAddress(&mu_gfit_chi2_);}
+	ckf_charge_branch = 0;
+	if (tree->GetBranch("ckf_charge") != 0) {
+		ckf_charge_branch = tree->GetBranch("ckf_charge");
+		if (ckf_charge_branch) {ckf_charge_branch->SetAddress(&ckf_charge_);}
 	}
-	mu_gfit_ndof_branch = 0;
-	if (tree->GetBranch("mu_gfit_ndof") != 0) {
-		mu_gfit_ndof_branch = tree->GetBranch("mu_gfit_ndof");
-		if (mu_gfit_ndof_branch) {mu_gfit_ndof_branch->SetAddress(&mu_gfit_ndof_);}
+	threeChargeAgree_branch = 0;
+	if (tree->GetBranch("threeChargeAgree") != 0) {
+		threeChargeAgree_branch = tree->GetBranch("threeChargeAgree");
+		if (threeChargeAgree_branch) {threeChargeAgree_branch->SetAddress(&threeChargeAgree_);}
 	}
-	mu_gfit_validSTAHits_branch = 0;
-	if (tree->GetBranch("mu_gfit_validSTAHits") != 0) {
-		mu_gfit_validSTAHits_branch = tree->GetBranch("mu_gfit_validSTAHits");
-		if (mu_gfit_validSTAHits_branch) {mu_gfit_validSTAHits_branch->SetAddress(&mu_gfit_validSTAHits_);}
+	pid_PFMuon_branch = 0;
+	if (tree->GetBranch("pid_PFMuon") != 0) {
+		pid_PFMuon_branch = tree->GetBranch("pid_PFMuon");
+		if (pid_PFMuon_branch) {pid_PFMuon_branch->SetAddress(&pid_PFMuon_);}
 	}
-	mu_numberOfMatchedStations_branch = 0;
-	if (tree->GetBranch("mu_numberOfMatchedStations") != 0) {
-		mu_numberOfMatchedStations_branch = tree->GetBranch("mu_numberOfMatchedStations");
-		if (mu_numberOfMatchedStations_branch) {mu_numberOfMatchedStations_branch->SetAddress(&mu_numberOfMatchedStations_);}
+	gfit_chi2_branch = 0;
+	if (tree->GetBranch("gfit_chi2") != 0) {
+		gfit_chi2_branch = tree->GetBranch("gfit_chi2");
+		if (gfit_chi2_branch) {gfit_chi2_branch->SetAddress(&gfit_chi2_);}
 	}
-	mu_validPixelHits_branch = 0;
-	if (tree->GetBranch("mu_validPixelHits") != 0) {
-		mu_validPixelHits_branch = tree->GetBranch("mu_validPixelHits");
-		if (mu_validPixelHits_branch) {mu_validPixelHits_branch->SetAddress(&mu_validPixelHits_);}
+	gfit_ndof_branch = 0;
+	if (tree->GetBranch("gfit_ndof") != 0) {
+		gfit_ndof_branch = tree->GetBranch("gfit_ndof");
+		if (gfit_ndof_branch) {gfit_ndof_branch->SetAddress(&gfit_ndof_);}
 	}
-	mu_nlayers_branch = 0;
-	if (tree->GetBranch("mu_nlayers") != 0) {
-		mu_nlayers_branch = tree->GetBranch("mu_nlayers");
-		if (mu_nlayers_branch) {mu_nlayers_branch->SetAddress(&mu_nlayers_);}
+	gfit_validSTAHits_branch = 0;
+	if (tree->GetBranch("gfit_validSTAHits") != 0) {
+		gfit_validSTAHits_branch = tree->GetBranch("gfit_validSTAHits");
+		if (gfit_validSTAHits_branch) {gfit_validSTAHits_branch->SetAddress(&gfit_validSTAHits_);}
+	}
+	numberOfMatchedStations_branch = 0;
+	if (tree->GetBranch("numberOfMatchedStations") != 0) {
+		numberOfMatchedStations_branch = tree->GetBranch("numberOfMatchedStations");
+		if (numberOfMatchedStations_branch) {numberOfMatchedStations_branch->SetAddress(&numberOfMatchedStations_);}
+	}
+	validPixelHits_branch = 0;
+	if (tree->GetBranch("validPixelHits") != 0) {
+		validPixelHits_branch = tree->GetBranch("validPixelHits");
+		if (validPixelHits_branch) {validPixelHits_branch->SetAddress(&validPixelHits_);}
+	}
+	nlayers_branch = 0;
+	if (tree->GetBranch("nlayers") != 0) {
+		nlayers_branch = tree->GetBranch("nlayers");
+		if (nlayers_branch) {nlayers_branch->SetAddress(&nlayers_);}
 	}
   tree->SetMakeClass(0);
 }
-void GetEntry(unsigned int Idx) 
+void GetEntry(unsigned int idxx) 
 	// this only marks branches as not loaded, saving a lot of time
 	{
-		index = Idx;
-		met_isLoaded = false;
-		metPhi_isLoaded = false;
-		event_isLoaded = false;
-		lumi_isLoaded = false;
-		run_isLoaded = false;
+		index = idxx;
+		evt_pfmet_isLoaded = false;
+		evt_pfmetPhi_isLoaded = false;
+		evt_trackmet_isLoaded = false;
+		evt_trackmetPhi_isLoaded = false;
+		evt_pfsumet_isLoaded = false;
+		evt_pfmetSig_isLoaded = false;
+		evt_event_isLoaded = false;
+		evt_lumiBlock_isLoaded = false;
+		evt_run_isLoaded = false;
 		filt_csc_isLoaded = false;
 		filt_hbhe_isLoaded = false;
 		filt_hcallaser_isLoaded = false;
 		filt_ecaltp_isLoaded = false;
 		filt_trkfail_isLoaded = false;
 		filt_eebadsc_isLoaded = false;
-		is_real_data_isLoaded = false;
+		evt_isRealData_isLoaded = false;
 		scale1fb_isLoaded = false;
-		xsec_isLoaded = false;
-		kfactor_isLoaded = false;
+		evt_xsec_incl_isLoaded = false;
+		evt_kfactor_isLoaded = false;
 		gen_met_isLoaded = false;
-		gen_met_phi_isLoaded = false;
+		gen_metPhi_isLoaded = false;
 		njets_isLoaded = false;
 		ht_isLoaded = false;
 		jets_isLoaded = false;
 		jets_disc_isLoaded = false;
 		sample_isLoaded = false;
-		nFOs_isLoaded = false;
+		nFOs_SS_isLoaded = false;
+		nvtx_isLoaded = false;
 		p4_isLoaded = false;
+		tag_p4_isLoaded = false;
+		dilep_p4_isLoaded = false;
 		mc_p4_isLoaded = false;
 		mc_motherp4_isLoaded = false;
 		id_isLoaded = false;
 		idx_isLoaded = false;
-		d0_isLoaded = false;
+		dxyPV_isLoaded = false;
 		dZ_isLoaded = false;
-		d0_err_isLoaded = false;
+		dxyPV_err_isLoaded = false;
 		motherID_isLoaded = false;
 		mc_id_isLoaded = false;
-		iso_isLoaded = false;
-		passes_id_isLoaded = false;
-		passes_id_ptrel_isLoaded = false;
-		passes_id_miniiso_isLoaded = false;
-		passes_id_newminiiso_isLoaded = false;
-		FO_isLoaded = false;
-		FO_ptrel_isLoaded = false;
-		FO_miniiso_isLoaded = false;
-		FO_newminiiso_isLoaded = false;
-		FO_NoIso_isLoaded = false;
+		RelIso03EA_isLoaded = false;
+		passes_SS_tight_v3_isLoaded = false;
+		passes_SS_tight_noiso_v3_isLoaded = false;
+		passes_SS_fo_v3_isLoaded = false;
+		passes_SS_fo_noiso_v3_isLoaded = false;
+		passes_SS_fo_looseMVA_v3_isLoaded = false;
+		passes_SS_fo_looseMVA_noiso_v3_isLoaded = false;
 		ip3d_isLoaded = false;
 		ip3derr_isLoaded = false;
 		type_isLoaded = false;
@@ -645,74 +706,81 @@ void GetEntry(unsigned int Idx)
 		ptrelv1_isLoaded = false;
 		miniiso_isLoaded = false;
 		jet_close_lep_isLoaded = false;
-		el_sigmaIEtaIEta_full5x5_isLoaded = false;
-		el_etaSC_isLoaded = false;
-		el_dEtaIn_isLoaded = false;
-		el_dPhiIn_isLoaded = false;
-		el_hOverE_isLoaded = false;
-		el_ecalEnergy_isLoaded = false;
-		el_eOverPIn_isLoaded = false;
-		el_conv_vtx_flag_isLoaded = false;
-		el_exp_innerlayers_isLoaded = false;
-		el_charge_isLoaded = false;
-		el_sccharge_isLoaded = false;
-		el_ckf_charge_isLoaded = false;
-		el_threeChargeAgree_isLoaded = false;
-		mu_pid_PFMuon_isLoaded = false;
-		mu_gfit_chi2_isLoaded = false;
-		mu_gfit_ndof_isLoaded = false;
-		mu_gfit_validSTAHits_isLoaded = false;
-		mu_numberOfMatchedStations_isLoaded = false;
-		mu_validPixelHits_isLoaded = false;
-		mu_nlayers_isLoaded = false;
+		ptratio_isLoaded = false;
+		tag_charge_isLoaded = false;
+		dilep_mass_isLoaded = false;
+		sigmaIEtaIEta_full5x5_isLoaded = false;
+		etaSC_isLoaded = false;
+		dEtaIn_isLoaded = false;
+		dPhiIn_isLoaded = false;
+		hOverE_isLoaded = false;
+		ecalEnergy_isLoaded = false;
+		eOverPIn_isLoaded = false;
+		conv_vtx_flag_isLoaded = false;
+		exp_innerlayers_isLoaded = false;
+		charge_isLoaded = false;
+		sccharge_isLoaded = false;
+		ckf_charge_isLoaded = false;
+		threeChargeAgree_isLoaded = false;
+		pid_PFMuon_isLoaded = false;
+		gfit_chi2_isLoaded = false;
+		gfit_ndof_isLoaded = false;
+		gfit_validSTAHits_isLoaded = false;
+		numberOfMatchedStations_isLoaded = false;
+		validPixelHits_isLoaded = false;
+		nlayers_isLoaded = false;
 	}
 
 void LoadAllBranches() 
 	// load all branches
 {
-	if (met_branch != 0) met();
-	if (metPhi_branch != 0) metPhi();
-	if (event_branch != 0) event();
-	if (lumi_branch != 0) lumi();
-	if (run_branch != 0) run();
+	if (evt_pfmet_branch != 0) evt_pfmet();
+	if (evt_pfmetPhi_branch != 0) evt_pfmetPhi();
+	if (evt_trackmet_branch != 0) evt_trackmet();
+	if (evt_trackmetPhi_branch != 0) evt_trackmetPhi();
+	if (evt_pfsumet_branch != 0) evt_pfsumet();
+	if (evt_pfmetSig_branch != 0) evt_pfmetSig();
+	if (evt_event_branch != 0) evt_event();
+	if (evt_lumiBlock_branch != 0) evt_lumiBlock();
+	if (evt_run_branch != 0) evt_run();
 	if (filt_csc_branch != 0) filt_csc();
 	if (filt_hbhe_branch != 0) filt_hbhe();
 	if (filt_hcallaser_branch != 0) filt_hcallaser();
 	if (filt_ecaltp_branch != 0) filt_ecaltp();
 	if (filt_trkfail_branch != 0) filt_trkfail();
 	if (filt_eebadsc_branch != 0) filt_eebadsc();
-	if (is_real_data_branch != 0) is_real_data();
+	if (evt_isRealData_branch != 0) evt_isRealData();
 	if (scale1fb_branch != 0) scale1fb();
-	if (xsec_branch != 0) xsec();
-	if (kfactor_branch != 0) kfactor();
+	if (evt_xsec_incl_branch != 0) evt_xsec_incl();
+	if (evt_kfactor_branch != 0) evt_kfactor();
 	if (gen_met_branch != 0) gen_met();
-	if (gen_met_phi_branch != 0) gen_met_phi();
+	if (gen_metPhi_branch != 0) gen_metPhi();
 	if (njets_branch != 0) njets();
 	if (ht_branch != 0) ht();
 	if (jets_branch != 0) jets();
 	if (jets_disc_branch != 0) jets_disc();
 	if (sample_branch != 0) sample();
-	if (nFOs_branch != 0) nFOs();
+	if (nFOs_SS_branch != 0) nFOs_SS();
+	if (nvtx_branch != 0) nvtx();
 	if (p4_branch != 0) p4();
+	if (tag_p4_branch != 0) tag_p4();
+	if (dilep_p4_branch != 0) dilep_p4();
 	if (mc_p4_branch != 0) mc_p4();
 	if (mc_motherp4_branch != 0) mc_motherp4();
 	if (id_branch != 0) id();
 	if (idx_branch != 0) idx();
-	if (d0_branch != 0) d0();
+	if (dxyPV_branch != 0) dxyPV();
 	if (dZ_branch != 0) dZ();
-	if (d0_err_branch != 0) d0_err();
+	if (dxyPV_err_branch != 0) dxyPV_err();
 	if (motherID_branch != 0) motherID();
 	if (mc_id_branch != 0) mc_id();
-	if (iso_branch != 0) iso();
-	if (passes_id_branch != 0) passes_id();
-	if (passes_id_ptrel_branch != 0) passes_id_ptrel();
-	if (passes_id_miniiso_branch != 0) passes_id_miniiso();
-	if (passes_id_newminiiso_branch != 0) passes_id_newminiiso();
-	if (FO_branch != 0) FO();
-	if (FO_ptrel_branch != 0) FO_ptrel();
-	if (FO_miniiso_branch != 0) FO_miniiso();
-	if (FO_newminiiso_branch != 0) FO_newminiiso();
-	if (FO_NoIso_branch != 0) FO_NoIso();
+	if (RelIso03EA_branch != 0) RelIso03EA();
+	if (passes_SS_tight_v3_branch != 0) passes_SS_tight_v3();
+	if (passes_SS_tight_noiso_v3_branch != 0) passes_SS_tight_noiso_v3();
+	if (passes_SS_fo_v3_branch != 0) passes_SS_fo_v3();
+	if (passes_SS_fo_noiso_v3_branch != 0) passes_SS_fo_noiso_v3();
+	if (passes_SS_fo_looseMVA_v3_branch != 0) passes_SS_fo_looseMVA_v3();
+	if (passes_SS_fo_looseMVA_noiso_v3_branch != 0) passes_SS_fo_looseMVA_noiso_v3();
 	if (ip3d_branch != 0) ip3d();
 	if (ip3derr_branch != 0) ip3derr();
 	if (type_branch != 0) type();
@@ -721,92 +789,147 @@ void LoadAllBranches()
 	if (ptrelv1_branch != 0) ptrelv1();
 	if (miniiso_branch != 0) miniiso();
 	if (jet_close_lep_branch != 0) jet_close_lep();
-	if (el_sigmaIEtaIEta_full5x5_branch != 0) el_sigmaIEtaIEta_full5x5();
-	if (el_etaSC_branch != 0) el_etaSC();
-	if (el_dEtaIn_branch != 0) el_dEtaIn();
-	if (el_dPhiIn_branch != 0) el_dPhiIn();
-	if (el_hOverE_branch != 0) el_hOverE();
-	if (el_ecalEnergy_branch != 0) el_ecalEnergy();
-	if (el_eOverPIn_branch != 0) el_eOverPIn();
-	if (el_conv_vtx_flag_branch != 0) el_conv_vtx_flag();
-	if (el_exp_innerlayers_branch != 0) el_exp_innerlayers();
-	if (el_charge_branch != 0) el_charge();
-	if (el_sccharge_branch != 0) el_sccharge();
-	if (el_ckf_charge_branch != 0) el_ckf_charge();
-	if (el_threeChargeAgree_branch != 0) el_threeChargeAgree();
-	if (mu_pid_PFMuon_branch != 0) mu_pid_PFMuon();
-	if (mu_gfit_chi2_branch != 0) mu_gfit_chi2();
-	if (mu_gfit_ndof_branch != 0) mu_gfit_ndof();
-	if (mu_gfit_validSTAHits_branch != 0) mu_gfit_validSTAHits();
-	if (mu_numberOfMatchedStations_branch != 0) mu_numberOfMatchedStations();
-	if (mu_validPixelHits_branch != 0) mu_validPixelHits();
-	if (mu_nlayers_branch != 0) mu_nlayers();
+	if (ptratio_branch != 0) ptratio();
+	if (tag_charge_branch != 0) tag_charge();
+	if (dilep_mass_branch != 0) dilep_mass();
+	if (sigmaIEtaIEta_full5x5_branch != 0) sigmaIEtaIEta_full5x5();
+	if (etaSC_branch != 0) etaSC();
+	if (dEtaIn_branch != 0) dEtaIn();
+	if (dPhiIn_branch != 0) dPhiIn();
+	if (hOverE_branch != 0) hOverE();
+	if (ecalEnergy_branch != 0) ecalEnergy();
+	if (eOverPIn_branch != 0) eOverPIn();
+	if (conv_vtx_flag_branch != 0) conv_vtx_flag();
+	if (exp_innerlayers_branch != 0) exp_innerlayers();
+	if (charge_branch != 0) charge();
+	if (sccharge_branch != 0) sccharge();
+	if (ckf_charge_branch != 0) ckf_charge();
+	if (threeChargeAgree_branch != 0) threeChargeAgree();
+	if (pid_PFMuon_branch != 0) pid_PFMuon();
+	if (gfit_chi2_branch != 0) gfit_chi2();
+	if (gfit_ndof_branch != 0) gfit_ndof();
+	if (gfit_validSTAHits_branch != 0) gfit_validSTAHits();
+	if (numberOfMatchedStations_branch != 0) numberOfMatchedStations();
+	if (validPixelHits_branch != 0) validPixelHits();
+	if (nlayers_branch != 0) nlayers();
 }
 
-	float &met()
+	float &evt_pfmet()
 	{
-		if (not met_isLoaded) {
-			if (met_branch != 0) {
-				met_branch->GetEntry(index);
+		if (not evt_pfmet_isLoaded) {
+			if (evt_pfmet_branch != 0) {
+				evt_pfmet_branch->GetEntry(index);
 			} else { 
-				printf("branch met_branch does not exist!\n");
+				printf("branch evt_pfmet_branch does not exist!\n");
 				exit(1);
 			}
-			met_isLoaded = true;
+			evt_pfmet_isLoaded = true;
 		}
-		return met_;
+		return evt_pfmet_;
 	}
-	float &metPhi()
+	float &evt_pfmetPhi()
 	{
-		if (not metPhi_isLoaded) {
-			if (metPhi_branch != 0) {
-				metPhi_branch->GetEntry(index);
+		if (not evt_pfmetPhi_isLoaded) {
+			if (evt_pfmetPhi_branch != 0) {
+				evt_pfmetPhi_branch->GetEntry(index);
 			} else { 
-				printf("branch metPhi_branch does not exist!\n");
+				printf("branch evt_pfmetPhi_branch does not exist!\n");
 				exit(1);
 			}
-			metPhi_isLoaded = true;
+			evt_pfmetPhi_isLoaded = true;
 		}
-		return metPhi_;
+		return evt_pfmetPhi_;
 	}
-	int &event()
+	float &evt_trackmet()
 	{
-		if (not event_isLoaded) {
-			if (event_branch != 0) {
-				event_branch->GetEntry(index);
+		if (not evt_trackmet_isLoaded) {
+			if (evt_trackmet_branch != 0) {
+				evt_trackmet_branch->GetEntry(index);
 			} else { 
-				printf("branch event_branch does not exist!\n");
+				printf("branch evt_trackmet_branch does not exist!\n");
 				exit(1);
 			}
-			event_isLoaded = true;
+			evt_trackmet_isLoaded = true;
 		}
-		return event_;
+		return evt_trackmet_;
 	}
-	int &lumi()
+	float &evt_trackmetPhi()
 	{
-		if (not lumi_isLoaded) {
-			if (lumi_branch != 0) {
-				lumi_branch->GetEntry(index);
+		if (not evt_trackmetPhi_isLoaded) {
+			if (evt_trackmetPhi_branch != 0) {
+				evt_trackmetPhi_branch->GetEntry(index);
 			} else { 
-				printf("branch lumi_branch does not exist!\n");
+				printf("branch evt_trackmetPhi_branch does not exist!\n");
 				exit(1);
 			}
-			lumi_isLoaded = true;
+			evt_trackmetPhi_isLoaded = true;
 		}
-		return lumi_;
+		return evt_trackmetPhi_;
 	}
-	int &run()
+	float &evt_pfsumet()
 	{
-		if (not run_isLoaded) {
-			if (run_branch != 0) {
-				run_branch->GetEntry(index);
+		if (not evt_pfsumet_isLoaded) {
+			if (evt_pfsumet_branch != 0) {
+				evt_pfsumet_branch->GetEntry(index);
 			} else { 
-				printf("branch run_branch does not exist!\n");
+				printf("branch evt_pfsumet_branch does not exist!\n");
 				exit(1);
 			}
-			run_isLoaded = true;
+			evt_pfsumet_isLoaded = true;
 		}
-		return run_;
+		return evt_pfsumet_;
+	}
+	float &evt_pfmetSig()
+	{
+		if (not evt_pfmetSig_isLoaded) {
+			if (evt_pfmetSig_branch != 0) {
+				evt_pfmetSig_branch->GetEntry(index);
+			} else { 
+				printf("branch evt_pfmetSig_branch does not exist!\n");
+				exit(1);
+			}
+			evt_pfmetSig_isLoaded = true;
+		}
+		return evt_pfmetSig_;
+	}
+	int &evt_event()
+	{
+		if (not evt_event_isLoaded) {
+			if (evt_event_branch != 0) {
+				evt_event_branch->GetEntry(index);
+			} else { 
+				printf("branch evt_event_branch does not exist!\n");
+				exit(1);
+			}
+			evt_event_isLoaded = true;
+		}
+		return evt_event_;
+	}
+	int &evt_lumiBlock()
+	{
+		if (not evt_lumiBlock_isLoaded) {
+			if (evt_lumiBlock_branch != 0) {
+				evt_lumiBlock_branch->GetEntry(index);
+			} else { 
+				printf("branch evt_lumiBlock_branch does not exist!\n");
+				exit(1);
+			}
+			evt_lumiBlock_isLoaded = true;
+		}
+		return evt_lumiBlock_;
+	}
+	int &evt_run()
+	{
+		if (not evt_run_isLoaded) {
+			if (evt_run_branch != 0) {
+				evt_run_branch->GetEntry(index);
+			} else { 
+				printf("branch evt_run_branch does not exist!\n");
+				exit(1);
+			}
+			evt_run_isLoaded = true;
+		}
+		return evt_run_;
 	}
 	bool &	filt_csc()
 	{
@@ -886,18 +1009,18 @@ void LoadAllBranches()
 		}
 		return filt_eebadsc_;
 	}
-	bool &	is_real_data()
+	bool &	evt_isRealData()
 	{
-		if (not is_real_data_isLoaded) {
-			if (is_real_data_branch != 0) {
-				is_real_data_branch->GetEntry(index);
+		if (not evt_isRealData_isLoaded) {
+			if (evt_isRealData_branch != 0) {
+				evt_isRealData_branch->GetEntry(index);
 			} else { 
-				printf("branch is_real_data_branch does not exist!\n");
+				printf("branch evt_isRealData_branch does not exist!\n");
 				exit(1);
 			}
-			is_real_data_isLoaded = true;
+			evt_isRealData_isLoaded = true;
 		}
-		return is_real_data_;
+		return evt_isRealData_;
 	}
 	float &scale1fb()
 	{
@@ -912,31 +1035,31 @@ void LoadAllBranches()
 		}
 		return scale1fb_;
 	}
-	float &xsec()
+	float &evt_xsec_incl()
 	{
-		if (not xsec_isLoaded) {
-			if (xsec_branch != 0) {
-				xsec_branch->GetEntry(index);
+		if (not evt_xsec_incl_isLoaded) {
+			if (evt_xsec_incl_branch != 0) {
+				evt_xsec_incl_branch->GetEntry(index);
 			} else { 
-				printf("branch xsec_branch does not exist!\n");
+				printf("branch evt_xsec_incl_branch does not exist!\n");
 				exit(1);
 			}
-			xsec_isLoaded = true;
+			evt_xsec_incl_isLoaded = true;
 		}
-		return xsec_;
+		return evt_xsec_incl_;
 	}
-	float &kfactor()
+	float &evt_kfactor()
 	{
-		if (not kfactor_isLoaded) {
-			if (kfactor_branch != 0) {
-				kfactor_branch->GetEntry(index);
+		if (not evt_kfactor_isLoaded) {
+			if (evt_kfactor_branch != 0) {
+				evt_kfactor_branch->GetEntry(index);
 			} else { 
-				printf("branch kfactor_branch does not exist!\n");
+				printf("branch evt_kfactor_branch does not exist!\n");
 				exit(1);
 			}
-			kfactor_isLoaded = true;
+			evt_kfactor_isLoaded = true;
 		}
-		return kfactor_;
+		return evt_kfactor_;
 	}
 	float &gen_met()
 	{
@@ -951,18 +1074,18 @@ void LoadAllBranches()
 		}
 		return gen_met_;
 	}
-	float &gen_met_phi()
+	float &gen_metPhi()
 	{
-		if (not gen_met_phi_isLoaded) {
-			if (gen_met_phi_branch != 0) {
-				gen_met_phi_branch->GetEntry(index);
+		if (not gen_metPhi_isLoaded) {
+			if (gen_metPhi_branch != 0) {
+				gen_metPhi_branch->GetEntry(index);
 			} else { 
-				printf("branch gen_met_phi_branch does not exist!\n");
+				printf("branch gen_metPhi_branch does not exist!\n");
 				exit(1);
 			}
-			gen_met_phi_isLoaded = true;
+			gen_metPhi_isLoaded = true;
 		}
-		return gen_met_phi_;
+		return gen_metPhi_;
 	}
 	float &njets()
 	{
@@ -990,7 +1113,7 @@ void LoadAllBranches()
 		}
 		return ht_;
 	}
-	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets()
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets()
 	{
 		if (not jets_isLoaded) {
 			if (jets_branch != 0) {
@@ -1003,7 +1126,7 @@ void LoadAllBranches()
 		}
 		return *jets_;
 	}
-	vector<float> &jets_disc()
+	const vector<float> &jets_disc()
 	{
 		if (not jets_disc_isLoaded) {
 			if (jets_disc_branch != 0) {
@@ -1029,18 +1152,31 @@ void LoadAllBranches()
 		}
 		return *sample_;
 	}
-	int &nFOs()
+	int &nFOs_SS()
 	{
-		if (not nFOs_isLoaded) {
-			if (nFOs_branch != 0) {
-				nFOs_branch->GetEntry(index);
+		if (not nFOs_SS_isLoaded) {
+			if (nFOs_SS_branch != 0) {
+				nFOs_SS_branch->GetEntry(index);
 			} else { 
-				printf("branch nFOs_branch does not exist!\n");
+				printf("branch nFOs_SS_branch does not exist!\n");
 				exit(1);
 			}
-			nFOs_isLoaded = true;
+			nFOs_SS_isLoaded = true;
 		}
-		return nFOs_;
+		return nFOs_SS_;
+	}
+	int &nvtx()
+	{
+		if (not nvtx_isLoaded) {
+			if (nvtx_branch != 0) {
+				nvtx_branch->GetEntry(index);
+			} else { 
+				printf("branch nvtx_branch does not exist!\n");
+				exit(1);
+			}
+			nvtx_isLoaded = true;
+		}
+		return nvtx_;
 	}
 	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &p4()
 	{
@@ -1054,6 +1190,32 @@ void LoadAllBranches()
 			p4_isLoaded = true;
 		}
 		return *p4_;
+	}
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &tag_p4()
+	{
+		if (not tag_p4_isLoaded) {
+			if (tag_p4_branch != 0) {
+				tag_p4_branch->GetEntry(index);
+			} else { 
+				printf("branch tag_p4_branch does not exist!\n");
+				exit(1);
+			}
+			tag_p4_isLoaded = true;
+		}
+		return *tag_p4_;
+	}
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &dilep_p4()
+	{
+		if (not dilep_p4_isLoaded) {
+			if (dilep_p4_branch != 0) {
+				dilep_p4_branch->GetEntry(index);
+			} else { 
+				printf("branch dilep_p4_branch does not exist!\n");
+				exit(1);
+			}
+			dilep_p4_isLoaded = true;
+		}
+		return *dilep_p4_;
 	}
 	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &mc_p4()
 	{
@@ -1107,18 +1269,18 @@ void LoadAllBranches()
 		}
 		return idx_;
 	}
-	float &d0()
+	float &dxyPV()
 	{
-		if (not d0_isLoaded) {
-			if (d0_branch != 0) {
-				d0_branch->GetEntry(index);
+		if (not dxyPV_isLoaded) {
+			if (dxyPV_branch != 0) {
+				dxyPV_branch->GetEntry(index);
 			} else { 
-				printf("branch d0_branch does not exist!\n");
+				printf("branch dxyPV_branch does not exist!\n");
 				exit(1);
 			}
-			d0_isLoaded = true;
+			dxyPV_isLoaded = true;
 		}
-		return d0_;
+		return dxyPV_;
 	}
 	float &dZ()
 	{
@@ -1133,18 +1295,18 @@ void LoadAllBranches()
 		}
 		return dZ_;
 	}
-	float &d0_err()
+	float &dxyPV_err()
 	{
-		if (not d0_err_isLoaded) {
-			if (d0_err_branch != 0) {
-				d0_err_branch->GetEntry(index);
+		if (not dxyPV_err_isLoaded) {
+			if (dxyPV_err_branch != 0) {
+				dxyPV_err_branch->GetEntry(index);
 			} else { 
-				printf("branch d0_err_branch does not exist!\n");
+				printf("branch dxyPV_err_branch does not exist!\n");
 				exit(1);
 			}
-			d0_err_isLoaded = true;
+			dxyPV_err_isLoaded = true;
 		}
-		return d0_err_;
+		return dxyPV_err_;
 	}
 	int &motherID()
 	{
@@ -1172,135 +1334,96 @@ void LoadAllBranches()
 		}
 		return mc_id_;
 	}
-	float &iso()
+	float &RelIso03EA()
 	{
-		if (not iso_isLoaded) {
-			if (iso_branch != 0) {
-				iso_branch->GetEntry(index);
+		if (not RelIso03EA_isLoaded) {
+			if (RelIso03EA_branch != 0) {
+				RelIso03EA_branch->GetEntry(index);
 			} else { 
-				printf("branch iso_branch does not exist!\n");
+				printf("branch RelIso03EA_branch does not exist!\n");
 				exit(1);
 			}
-			iso_isLoaded = true;
+			RelIso03EA_isLoaded = true;
 		}
-		return iso_;
+		return RelIso03EA_;
 	}
-	bool &	passes_id()
+	bool &	passes_SS_tight_v3()
 	{
-		if (not passes_id_isLoaded) {
-			if (passes_id_branch != 0) {
-				passes_id_branch->GetEntry(index);
+		if (not passes_SS_tight_v3_isLoaded) {
+			if (passes_SS_tight_v3_branch != 0) {
+				passes_SS_tight_v3_branch->GetEntry(index);
 			} else { 
-				printf("branch passes_id_branch does not exist!\n");
+				printf("branch passes_SS_tight_v3_branch does not exist!\n");
 				exit(1);
 			}
-			passes_id_isLoaded = true;
+			passes_SS_tight_v3_isLoaded = true;
 		}
-		return passes_id_;
+		return passes_SS_tight_v3_;
 	}
-	bool &	passes_id_ptrel()
+	bool &	passes_SS_tight_noiso_v3()
 	{
-		if (not passes_id_ptrel_isLoaded) {
-			if (passes_id_ptrel_branch != 0) {
-				passes_id_ptrel_branch->GetEntry(index);
+		if (not passes_SS_tight_noiso_v3_isLoaded) {
+			if (passes_SS_tight_noiso_v3_branch != 0) {
+				passes_SS_tight_noiso_v3_branch->GetEntry(index);
 			} else { 
-				printf("branch passes_id_ptrel_branch does not exist!\n");
+				printf("branch passes_SS_tight_noiso_v3_branch does not exist!\n");
 				exit(1);
 			}
-			passes_id_ptrel_isLoaded = true;
+			passes_SS_tight_noiso_v3_isLoaded = true;
 		}
-		return passes_id_ptrel_;
+		return passes_SS_tight_noiso_v3_;
 	}
-	bool &	passes_id_miniiso()
+	bool &	passes_SS_fo_v3()
 	{
-		if (not passes_id_miniiso_isLoaded) {
-			if (passes_id_miniiso_branch != 0) {
-				passes_id_miniiso_branch->GetEntry(index);
+		if (not passes_SS_fo_v3_isLoaded) {
+			if (passes_SS_fo_v3_branch != 0) {
+				passes_SS_fo_v3_branch->GetEntry(index);
 			} else { 
-				printf("branch passes_id_miniiso_branch does not exist!\n");
+				printf("branch passes_SS_fo_v3_branch does not exist!\n");
 				exit(1);
 			}
-			passes_id_miniiso_isLoaded = true;
+			passes_SS_fo_v3_isLoaded = true;
 		}
-		return passes_id_miniiso_;
+		return passes_SS_fo_v3_;
 	}
-	bool &	passes_id_newminiiso()
+	bool &	passes_SS_fo_noiso_v3()
 	{
-		if (not passes_id_newminiiso_isLoaded) {
-			if (passes_id_newminiiso_branch != 0) {
-				passes_id_newminiiso_branch->GetEntry(index);
+		if (not passes_SS_fo_noiso_v3_isLoaded) {
+			if (passes_SS_fo_noiso_v3_branch != 0) {
+				passes_SS_fo_noiso_v3_branch->GetEntry(index);
 			} else { 
-				printf("branch passes_id_newminiiso_branch does not exist!\n");
+				printf("branch passes_SS_fo_noiso_v3_branch does not exist!\n");
 				exit(1);
 			}
-			passes_id_newminiiso_isLoaded = true;
+			passes_SS_fo_noiso_v3_isLoaded = true;
 		}
-		return passes_id_newminiiso_;
+		return passes_SS_fo_noiso_v3_;
 	}
-	bool &	FO()
+	bool &	passes_SS_fo_looseMVA_v3()
 	{
-		if (not FO_isLoaded) {
-			if (FO_branch != 0) {
-				FO_branch->GetEntry(index);
+		if (not passes_SS_fo_looseMVA_v3_isLoaded) {
+			if (passes_SS_fo_looseMVA_v3_branch != 0) {
+				passes_SS_fo_looseMVA_v3_branch->GetEntry(index);
 			} else { 
-				printf("branch FO_branch does not exist!\n");
+				printf("branch passes_SS_fo_looseMVA_v3_branch does not exist!\n");
 				exit(1);
 			}
-			FO_isLoaded = true;
+			passes_SS_fo_looseMVA_v3_isLoaded = true;
 		}
-		return FO_;
+		return passes_SS_fo_looseMVA_v3_;
 	}
-	bool &	FO_ptrel()
+	bool &	passes_SS_fo_looseMVA_noiso_v3()
 	{
-		if (not FO_ptrel_isLoaded) {
-			if (FO_ptrel_branch != 0) {
-				FO_ptrel_branch->GetEntry(index);
+		if (not passes_SS_fo_looseMVA_noiso_v3_isLoaded) {
+			if (passes_SS_fo_looseMVA_noiso_v3_branch != 0) {
+				passes_SS_fo_looseMVA_noiso_v3_branch->GetEntry(index);
 			} else { 
-				printf("branch FO_ptrel_branch does not exist!\n");
+				printf("branch passes_SS_fo_looseMVA_noiso_v3_branch does not exist!\n");
 				exit(1);
 			}
-			FO_ptrel_isLoaded = true;
+			passes_SS_fo_looseMVA_noiso_v3_isLoaded = true;
 		}
-		return FO_ptrel_;
-	}
-	bool &	FO_miniiso()
-	{
-		if (not FO_miniiso_isLoaded) {
-			if (FO_miniiso_branch != 0) {
-				FO_miniiso_branch->GetEntry(index);
-			} else { 
-				printf("branch FO_miniiso_branch does not exist!\n");
-				exit(1);
-			}
-			FO_miniiso_isLoaded = true;
-		}
-		return FO_miniiso_;
-	}
-	bool &	FO_newminiiso()
-	{
-		if (not FO_newminiiso_isLoaded) {
-			if (FO_newminiiso_branch != 0) {
-				FO_newminiiso_branch->GetEntry(index);
-			} else { 
-				printf("branch FO_newminiiso_branch does not exist!\n");
-				exit(1);
-			}
-			FO_newminiiso_isLoaded = true;
-		}
-		return FO_newminiiso_;
-	}
-	bool &	FO_NoIso()
-	{
-		if (not FO_NoIso_isLoaded) {
-			if (FO_NoIso_branch != 0) {
-				FO_NoIso_branch->GetEntry(index);
-			} else { 
-				printf("branch FO_NoIso_branch does not exist!\n");
-				exit(1);
-			}
-			FO_NoIso_isLoaded = true;
-		}
-		return FO_NoIso_;
+		return passes_SS_fo_looseMVA_noiso_v3_;
 	}
 	float &ip3d()
 	{
@@ -1406,265 +1529,304 @@ void LoadAllBranches()
 		}
 		return *jet_close_lep_;
 	}
-	float &el_sigmaIEtaIEta_full5x5()
+	float &ptratio()
 	{
-		if (not el_sigmaIEtaIEta_full5x5_isLoaded) {
-			if (el_sigmaIEtaIEta_full5x5_branch != 0) {
-				el_sigmaIEtaIEta_full5x5_branch->GetEntry(index);
+		if (not ptratio_isLoaded) {
+			if (ptratio_branch != 0) {
+				ptratio_branch->GetEntry(index);
 			} else { 
-				printf("branch el_sigmaIEtaIEta_full5x5_branch does not exist!\n");
+				printf("branch ptratio_branch does not exist!\n");
 				exit(1);
 			}
-			el_sigmaIEtaIEta_full5x5_isLoaded = true;
+			ptratio_isLoaded = true;
 		}
-		return el_sigmaIEtaIEta_full5x5_;
+		return ptratio_;
 	}
-	float &el_etaSC()
+	int &tag_charge()
 	{
-		if (not el_etaSC_isLoaded) {
-			if (el_etaSC_branch != 0) {
-				el_etaSC_branch->GetEntry(index);
+		if (not tag_charge_isLoaded) {
+			if (tag_charge_branch != 0) {
+				tag_charge_branch->GetEntry(index);
 			} else { 
-				printf("branch el_etaSC_branch does not exist!\n");
+				printf("branch tag_charge_branch does not exist!\n");
 				exit(1);
 			}
-			el_etaSC_isLoaded = true;
+			tag_charge_isLoaded = true;
 		}
-		return el_etaSC_;
+		return tag_charge_;
 	}
-	float &el_dEtaIn()
+	float &dilep_mass()
 	{
-		if (not el_dEtaIn_isLoaded) {
-			if (el_dEtaIn_branch != 0) {
-				el_dEtaIn_branch->GetEntry(index);
+		if (not dilep_mass_isLoaded) {
+			if (dilep_mass_branch != 0) {
+				dilep_mass_branch->GetEntry(index);
 			} else { 
-				printf("branch el_dEtaIn_branch does not exist!\n");
+				printf("branch dilep_mass_branch does not exist!\n");
 				exit(1);
 			}
-			el_dEtaIn_isLoaded = true;
+			dilep_mass_isLoaded = true;
 		}
-		return el_dEtaIn_;
+		return dilep_mass_;
 	}
-	float &el_dPhiIn()
+	float &sigmaIEtaIEta_full5x5()
 	{
-		if (not el_dPhiIn_isLoaded) {
-			if (el_dPhiIn_branch != 0) {
-				el_dPhiIn_branch->GetEntry(index);
+		if (not sigmaIEtaIEta_full5x5_isLoaded) {
+			if (sigmaIEtaIEta_full5x5_branch != 0) {
+				sigmaIEtaIEta_full5x5_branch->GetEntry(index);
 			} else { 
-				printf("branch el_dPhiIn_branch does not exist!\n");
+				printf("branch sigmaIEtaIEta_full5x5_branch does not exist!\n");
 				exit(1);
 			}
-			el_dPhiIn_isLoaded = true;
+			sigmaIEtaIEta_full5x5_isLoaded = true;
 		}
-		return el_dPhiIn_;
+		return sigmaIEtaIEta_full5x5_;
 	}
-	float &el_hOverE()
+	float &etaSC()
 	{
-		if (not el_hOverE_isLoaded) {
-			if (el_hOverE_branch != 0) {
-				el_hOverE_branch->GetEntry(index);
+		if (not etaSC_isLoaded) {
+			if (etaSC_branch != 0) {
+				etaSC_branch->GetEntry(index);
 			} else { 
-				printf("branch el_hOverE_branch does not exist!\n");
+				printf("branch etaSC_branch does not exist!\n");
 				exit(1);
 			}
-			el_hOverE_isLoaded = true;
+			etaSC_isLoaded = true;
 		}
-		return el_hOverE_;
+		return etaSC_;
 	}
-	float &el_ecalEnergy()
+	float &dEtaIn()
 	{
-		if (not el_ecalEnergy_isLoaded) {
-			if (el_ecalEnergy_branch != 0) {
-				el_ecalEnergy_branch->GetEntry(index);
+		if (not dEtaIn_isLoaded) {
+			if (dEtaIn_branch != 0) {
+				dEtaIn_branch->GetEntry(index);
 			} else { 
-				printf("branch el_ecalEnergy_branch does not exist!\n");
+				printf("branch dEtaIn_branch does not exist!\n");
 				exit(1);
 			}
-			el_ecalEnergy_isLoaded = true;
+			dEtaIn_isLoaded = true;
 		}
-		return el_ecalEnergy_;
+		return dEtaIn_;
 	}
-	float &el_eOverPIn()
+	float &dPhiIn()
 	{
-		if (not el_eOverPIn_isLoaded) {
-			if (el_eOverPIn_branch != 0) {
-				el_eOverPIn_branch->GetEntry(index);
+		if (not dPhiIn_isLoaded) {
+			if (dPhiIn_branch != 0) {
+				dPhiIn_branch->GetEntry(index);
 			} else { 
-				printf("branch el_eOverPIn_branch does not exist!\n");
+				printf("branch dPhiIn_branch does not exist!\n");
 				exit(1);
 			}
-			el_eOverPIn_isLoaded = true;
+			dPhiIn_isLoaded = true;
 		}
-		return el_eOverPIn_;
+		return dPhiIn_;
 	}
-	bool &	el_conv_vtx_flag()
+	float &hOverE()
 	{
-		if (not el_conv_vtx_flag_isLoaded) {
-			if (el_conv_vtx_flag_branch != 0) {
-				el_conv_vtx_flag_branch->GetEntry(index);
+		if (not hOverE_isLoaded) {
+			if (hOverE_branch != 0) {
+				hOverE_branch->GetEntry(index);
 			} else { 
-				printf("branch el_conv_vtx_flag_branch does not exist!\n");
+				printf("branch hOverE_branch does not exist!\n");
 				exit(1);
 			}
-			el_conv_vtx_flag_isLoaded = true;
+			hOverE_isLoaded = true;
 		}
-		return el_conv_vtx_flag_;
+		return hOverE_;
 	}
-	int &el_exp_innerlayers()
+	float &ecalEnergy()
 	{
-		if (not el_exp_innerlayers_isLoaded) {
-			if (el_exp_innerlayers_branch != 0) {
-				el_exp_innerlayers_branch->GetEntry(index);
+		if (not ecalEnergy_isLoaded) {
+			if (ecalEnergy_branch != 0) {
+				ecalEnergy_branch->GetEntry(index);
 			} else { 
-				printf("branch el_exp_innerlayers_branch does not exist!\n");
+				printf("branch ecalEnergy_branch does not exist!\n");
 				exit(1);
 			}
-			el_exp_innerlayers_isLoaded = true;
+			ecalEnergy_isLoaded = true;
 		}
-		return el_exp_innerlayers_;
+		return ecalEnergy_;
 	}
-	int &el_charge()
+	float &eOverPIn()
 	{
-		if (not el_charge_isLoaded) {
-			if (el_charge_branch != 0) {
-				el_charge_branch->GetEntry(index);
+		if (not eOverPIn_isLoaded) {
+			if (eOverPIn_branch != 0) {
+				eOverPIn_branch->GetEntry(index);
 			} else { 
-				printf("branch el_charge_branch does not exist!\n");
+				printf("branch eOverPIn_branch does not exist!\n");
 				exit(1);
 			}
-			el_charge_isLoaded = true;
+			eOverPIn_isLoaded = true;
 		}
-		return el_charge_;
+		return eOverPIn_;
 	}
-	int &el_sccharge()
+	bool &	conv_vtx_flag()
 	{
-		if (not el_sccharge_isLoaded) {
-			if (el_sccharge_branch != 0) {
-				el_sccharge_branch->GetEntry(index);
+		if (not conv_vtx_flag_isLoaded) {
+			if (conv_vtx_flag_branch != 0) {
+				conv_vtx_flag_branch->GetEntry(index);
 			} else { 
-				printf("branch el_sccharge_branch does not exist!\n");
+				printf("branch conv_vtx_flag_branch does not exist!\n");
 				exit(1);
 			}
-			el_sccharge_isLoaded = true;
+			conv_vtx_flag_isLoaded = true;
 		}
-		return el_sccharge_;
+		return conv_vtx_flag_;
 	}
-	int &el_ckf_charge()
+	int &exp_innerlayers()
 	{
-		if (not el_ckf_charge_isLoaded) {
-			if (el_ckf_charge_branch != 0) {
-				el_ckf_charge_branch->GetEntry(index);
+		if (not exp_innerlayers_isLoaded) {
+			if (exp_innerlayers_branch != 0) {
+				exp_innerlayers_branch->GetEntry(index);
 			} else { 
-				printf("branch el_ckf_charge_branch does not exist!\n");
+				printf("branch exp_innerlayers_branch does not exist!\n");
 				exit(1);
 			}
-			el_ckf_charge_isLoaded = true;
+			exp_innerlayers_isLoaded = true;
 		}
-		return el_ckf_charge_;
+		return exp_innerlayers_;
 	}
-	bool &	el_threeChargeAgree()
+	int &charge()
 	{
-		if (not el_threeChargeAgree_isLoaded) {
-			if (el_threeChargeAgree_branch != 0) {
-				el_threeChargeAgree_branch->GetEntry(index);
+		if (not charge_isLoaded) {
+			if (charge_branch != 0) {
+				charge_branch->GetEntry(index);
 			} else { 
-				printf("branch el_threeChargeAgree_branch does not exist!\n");
+				printf("branch charge_branch does not exist!\n");
 				exit(1);
 			}
-			el_threeChargeAgree_isLoaded = true;
+			charge_isLoaded = true;
 		}
-		return el_threeChargeAgree_;
+		return charge_;
 	}
-	int &mu_pid_PFMuon()
+	int &sccharge()
 	{
-		if (not mu_pid_PFMuon_isLoaded) {
-			if (mu_pid_PFMuon_branch != 0) {
-				mu_pid_PFMuon_branch->GetEntry(index);
+		if (not sccharge_isLoaded) {
+			if (sccharge_branch != 0) {
+				sccharge_branch->GetEntry(index);
 			} else { 
-				printf("branch mu_pid_PFMuon_branch does not exist!\n");
+				printf("branch sccharge_branch does not exist!\n");
 				exit(1);
 			}
-			mu_pid_PFMuon_isLoaded = true;
+			sccharge_isLoaded = true;
 		}
-		return mu_pid_PFMuon_;
+		return sccharge_;
 	}
-	float &mu_gfit_chi2()
+	int &ckf_charge()
 	{
-		if (not mu_gfit_chi2_isLoaded) {
-			if (mu_gfit_chi2_branch != 0) {
-				mu_gfit_chi2_branch->GetEntry(index);
+		if (not ckf_charge_isLoaded) {
+			if (ckf_charge_branch != 0) {
+				ckf_charge_branch->GetEntry(index);
 			} else { 
-				printf("branch mu_gfit_chi2_branch does not exist!\n");
+				printf("branch ckf_charge_branch does not exist!\n");
 				exit(1);
 			}
-			mu_gfit_chi2_isLoaded = true;
+			ckf_charge_isLoaded = true;
 		}
-		return mu_gfit_chi2_;
+		return ckf_charge_;
 	}
-	float &mu_gfit_ndof()
+	bool &	threeChargeAgree()
 	{
-		if (not mu_gfit_ndof_isLoaded) {
-			if (mu_gfit_ndof_branch != 0) {
-				mu_gfit_ndof_branch->GetEntry(index);
+		if (not threeChargeAgree_isLoaded) {
+			if (threeChargeAgree_branch != 0) {
+				threeChargeAgree_branch->GetEntry(index);
 			} else { 
-				printf("branch mu_gfit_ndof_branch does not exist!\n");
+				printf("branch threeChargeAgree_branch does not exist!\n");
 				exit(1);
 			}
-			mu_gfit_ndof_isLoaded = true;
+			threeChargeAgree_isLoaded = true;
 		}
-		return mu_gfit_ndof_;
+		return threeChargeAgree_;
 	}
-	int &mu_gfit_validSTAHits()
+	int &pid_PFMuon()
 	{
-		if (not mu_gfit_validSTAHits_isLoaded) {
-			if (mu_gfit_validSTAHits_branch != 0) {
-				mu_gfit_validSTAHits_branch->GetEntry(index);
+		if (not pid_PFMuon_isLoaded) {
+			if (pid_PFMuon_branch != 0) {
+				pid_PFMuon_branch->GetEntry(index);
 			} else { 
-				printf("branch mu_gfit_validSTAHits_branch does not exist!\n");
+				printf("branch pid_PFMuon_branch does not exist!\n");
 				exit(1);
 			}
-			mu_gfit_validSTAHits_isLoaded = true;
+			pid_PFMuon_isLoaded = true;
 		}
-		return mu_gfit_validSTAHits_;
+		return pid_PFMuon_;
 	}
-	int &mu_numberOfMatchedStations()
+	float &gfit_chi2()
 	{
-		if (not mu_numberOfMatchedStations_isLoaded) {
-			if (mu_numberOfMatchedStations_branch != 0) {
-				mu_numberOfMatchedStations_branch->GetEntry(index);
+		if (not gfit_chi2_isLoaded) {
+			if (gfit_chi2_branch != 0) {
+				gfit_chi2_branch->GetEntry(index);
 			} else { 
-				printf("branch mu_numberOfMatchedStations_branch does not exist!\n");
+				printf("branch gfit_chi2_branch does not exist!\n");
 				exit(1);
 			}
-			mu_numberOfMatchedStations_isLoaded = true;
+			gfit_chi2_isLoaded = true;
 		}
-		return mu_numberOfMatchedStations_;
+		return gfit_chi2_;
 	}
-	int &mu_validPixelHits()
+	float &gfit_ndof()
 	{
-		if (not mu_validPixelHits_isLoaded) {
-			if (mu_validPixelHits_branch != 0) {
-				mu_validPixelHits_branch->GetEntry(index);
+		if (not gfit_ndof_isLoaded) {
+			if (gfit_ndof_branch != 0) {
+				gfit_ndof_branch->GetEntry(index);
 			} else { 
-				printf("branch mu_validPixelHits_branch does not exist!\n");
+				printf("branch gfit_ndof_branch does not exist!\n");
 				exit(1);
 			}
-			mu_validPixelHits_isLoaded = true;
+			gfit_ndof_isLoaded = true;
 		}
-		return mu_validPixelHits_;
+		return gfit_ndof_;
 	}
-	int &mu_nlayers()
+	int &gfit_validSTAHits()
 	{
-		if (not mu_nlayers_isLoaded) {
-			if (mu_nlayers_branch != 0) {
-				mu_nlayers_branch->GetEntry(index);
+		if (not gfit_validSTAHits_isLoaded) {
+			if (gfit_validSTAHits_branch != 0) {
+				gfit_validSTAHits_branch->GetEntry(index);
 			} else { 
-				printf("branch mu_nlayers_branch does not exist!\n");
+				printf("branch gfit_validSTAHits_branch does not exist!\n");
 				exit(1);
 			}
-			mu_nlayers_isLoaded = true;
+			gfit_validSTAHits_isLoaded = true;
 		}
-		return mu_nlayers_;
+		return gfit_validSTAHits_;
+	}
+	int &numberOfMatchedStations()
+	{
+		if (not numberOfMatchedStations_isLoaded) {
+			if (numberOfMatchedStations_branch != 0) {
+				numberOfMatchedStations_branch->GetEntry(index);
+			} else { 
+				printf("branch numberOfMatchedStations_branch does not exist!\n");
+				exit(1);
+			}
+			numberOfMatchedStations_isLoaded = true;
+		}
+		return numberOfMatchedStations_;
+	}
+	int &validPixelHits()
+	{
+		if (not validPixelHits_isLoaded) {
+			if (validPixelHits_branch != 0) {
+				validPixelHits_branch->GetEntry(index);
+			} else { 
+				printf("branch validPixelHits_branch does not exist!\n");
+				exit(1);
+			}
+			validPixelHits_isLoaded = true;
+		}
+		return validPixelHits_;
+	}
+	int &nlayers()
+	{
+		if (not nlayers_isLoaded) {
+			if (nlayers_branch != 0) {
+				nlayers_branch->GetEntry(index);
+			} else { 
+				printf("branch nlayers_branch does not exist!\n");
+				exit(1);
+			}
+			nlayers_isLoaded = true;
+		}
+		return nlayers_;
 	}
 
   static void progress( int nEventsTotal, int nEventsChain ){
@@ -1694,76 +1856,83 @@ extern lepfilter ss;
 #endif
 
 namespace samesign {
-	float &met();
-	float &metPhi();
-	int &event();
-	int &lumi();
-	int &run();
-	bool &filt_csc();
-	bool &filt_hbhe();
-	bool &filt_hcallaser();
-	bool &filt_ecaltp();
-	bool &filt_trkfail();
-	bool &filt_eebadsc();
-	bool &is_real_data();
-	float &scale1fb();
-	float &xsec();
-	float &kfactor();
-	float &gen_met();
-	float &gen_met_phi();
-	float &njets();
-	float &ht();
-	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets();
-	vector<float> &jets_disc();
-	TString &sample();
-	int &nFOs();
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &p4();
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &mc_p4();
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &mc_motherp4();
-	int &id();
-	int &idx();
-	float &d0();
-	float &dZ();
-	float &d0_err();
-	int &motherID();
-	int &mc_id();
-	float &iso();
-	bool &passes_id();
-	bool &passes_id_ptrel();
-	bool &passes_id_miniiso();
-	bool &passes_id_newminiiso();
-	bool &FO();
-	bool &FO_ptrel();
-	bool &FO_miniiso();
-	bool &FO_newminiiso();
-	bool &FO_NoIso();
-	float &ip3d();
-	float &ip3derr();
-	int &type();
-	float &mt();
-	float &ptrelv0();
-	float &ptrelv1();
-	float &miniiso();
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep();
-	float &el_sigmaIEtaIEta_full5x5();
-	float &el_etaSC();
-	float &el_dEtaIn();
-	float &el_dPhiIn();
-	float &el_hOverE();
-	float &el_ecalEnergy();
-	float &el_eOverPIn();
-	bool &el_conv_vtx_flag();
-	int &el_exp_innerlayers();
-	int &el_charge();
-	int &el_sccharge();
-	int &el_ckf_charge();
-	bool &el_threeChargeAgree();
-	int &mu_pid_PFMuon();
-	float &mu_gfit_chi2();
-	float &mu_gfit_ndof();
-	int &mu_gfit_validSTAHits();
-	int &mu_numberOfMatchedStations();
-	int &mu_validPixelHits();
-	int &mu_nlayers();
+	const float &evt_pfmet();
+	const float &evt_pfmetPhi();
+	const float &evt_trackmet();
+	const float &evt_trackmetPhi();
+	const float &evt_pfsumet();
+	const float &evt_pfmetSig();
+	const int &evt_event();
+	const int &evt_lumiBlock();
+	const int &evt_run();
+	const bool &filt_csc();
+	const bool &filt_hbhe();
+	const bool &filt_hcallaser();
+	const bool &filt_ecaltp();
+	const bool &filt_trkfail();
+	const bool &filt_eebadsc();
+	const bool &evt_isRealData();
+	const float &scale1fb();
+	const float &evt_xsec_incl();
+	const float &evt_kfactor();
+	const float &gen_met();
+	const float &gen_metPhi();
+	const float &njets();
+	const float &ht();
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets();
+	const vector<float> &jets_disc();
+	const TString &sample();
+	const int &nFOs_SS();
+	const int &nvtx();
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &p4();
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &tag_p4();
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &dilep_p4();
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &mc_p4();
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &mc_motherp4();
+	const int &id();
+	const int &idx();
+	const float &dxyPV();
+	const float &dZ();
+	const float &dxyPV_err();
+	const int &motherID();
+	const int &mc_id();
+	const float &RelIso03EA();
+	const bool &passes_SS_tight_v3();
+	const bool &passes_SS_tight_noiso_v3();
+	const bool &passes_SS_fo_v3();
+	const bool &passes_SS_fo_noiso_v3();
+	const bool &passes_SS_fo_looseMVA_v3();
+	const bool &passes_SS_fo_looseMVA_noiso_v3();
+	const float &ip3d();
+	const float &ip3derr();
+	const int &type();
+	const float &mt();
+	const float &ptrelv0();
+	const float &ptrelv1();
+	const float &miniiso();
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep();
+	const float &ptratio();
+	const int &tag_charge();
+	const float &dilep_mass();
+	const float &sigmaIEtaIEta_full5x5();
+	const float &etaSC();
+	const float &dEtaIn();
+	const float &dPhiIn();
+	const float &hOverE();
+	const float &ecalEnergy();
+	const float &eOverPIn();
+	const bool &conv_vtx_flag();
+	const int &exp_innerlayers();
+	const int &charge();
+	const int &sccharge();
+	const int &ckf_charge();
+	const bool &threeChargeAgree();
+	const int &pid_PFMuon();
+	const float &gfit_chi2();
+	const float &gfit_ndof();
+	const int &gfit_validSTAHits();
+	const int &numberOfMatchedStations();
+	const int &validPixelHits();
+	const int &nlayers();
 }
 #endif
