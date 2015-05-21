@@ -1,6 +1,6 @@
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
-#include "/home/users/cgeorge/software/dataMCplotMaker/dataMCplotMaker.h"
+#include "../software/dataMCplotMaker/dataMCplotMaker.h"
 
 //Regular includes
 #include "TFile.h"

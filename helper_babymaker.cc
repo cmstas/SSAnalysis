@@ -141,11 +141,11 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   BabyTree->Branch("lep2_isGoodLeg"        , &lep2_isGoodLeg         );
   BabyTree->Branch("lep1_isFakeLeg"        , &lep1_isFakeLeg         );
   BabyTree->Branch("lep2_isFakeLeg"        , &lep2_isFakeLeg         );
-  BabyTree->Branch("truth_inSituFR"        , &truth_inSituFR        );
-  BabyTree->Branch("lep1_multiIso"         , &lep1_multiIso         );
-  BabyTree->Branch("lep2_multiIso"         , &lep2_multiIso         );
-  BabyTree->Branch("lep1_sip"              , &lep1_sip              );
-  BabyTree->Branch("lep2_sip"              , &lep2_sip              );
+  BabyTree->Branch("truth_inSituFR"        , &truth_inSituFR         );
+  BabyTree->Branch("lep1_multiIso_conecorr", &lep1_multiIso_conecorr );
+  BabyTree->Branch("lep2_multiIso_conecorr", &lep2_multiIso_conecorr );
+  BabyTree->Branch("lep1_sip"              , &lep1_sip               );
+  BabyTree->Branch("lep2_sip"              , &lep2_sip               );
 
 
 
@@ -280,8 +280,8 @@ void babyMaker::InitBabyNtuple(){
     lep1_isFakeLeg = 0; 
     lep2_isFakeLeg = 0; 
     truth_inSituFR = false;
-    lep1_multiIso = -1;
-    lep2_multiIso = -1;
+    lep1_multiIso_conecorr = 0;
+    lep2_multiIso_conecorr = 0;
     lep1_sip = -1;
     lep2_sip = -1;
 
@@ -295,6 +295,19 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   
   //Local variables
   bool isData = tas::evt_isRealData();
+
+  //Sync stuff
+  //if (tas::evt_event() != 4787) return -1;
+  //verbose = true;
+  //readMVA* globalEleMVAreader = 0;
+  //globalEleMVAreader = new readMVA();
+  //globalEleMVAreader->InitMVA("CORE/"); 
+  //cout << "MVA VALUE: " << globalEleMVAreader->MVA(0) << endl;
+  //globalEleMVAreader->DumpValues();
+
+  //Results:
+  cout << isGoodLeptonNoIso(11,0) << endl;
+  cout << isNewMiniIsolatedLepton(11,0,1) << endl;
   
   //Debug mode
   if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return -1;
@@ -326,7 +339,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
   
   //Fill lepton variables
-  hyp_result_t best_hyp_info = chooseBestHyp(isoCase);
+  hyp_result_t best_hyp_info = chooseBestHyp(isoCase, verbose);
   hyp_class = best_hyp_info.hyp_class;
   int best_hyp = best_hyp_info.best_hyp;
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
@@ -361,13 +374,23 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   lep3_quality = thirdLepton.second;
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
-  lep1_multiIso = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.40, 0.7, 7.0) : passMultiIso(13, lep1_idx, 0.40, 0.68, 6.7);
-  lep2_multiIso = abs(lep2_id) == 11 ? passMultiIso(11, lep2_idx, 0.40, 0.7, 7.0) : passMultiIso(13, lep2_idx, 0.40, 0.68, 6.7);
+  lep1_multiIso_conecorr = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.10, 0.7, 7.0, true) : passMultiIso(13, lep1_idx, 0.14, 0.68, 6.7, true);
+  lep2_multiIso_conecorr = abs(lep2_id) == 11 ? passMultiIso(11, lep2_idx, 0.10, 0.7, 7.0, true) : passMultiIso(13, lep2_idx, 0.14, 0.68, 6.7, true);
   lep1_sip = abs(lep1_id) == 11 ? fabs(els_ip3d().at(lep1_idx))/els_ip3derr().at(lep1_idx) : fabs(mus_ip3d().at(lep1_idx))/mus_ip3derr().at(lep1_idx); 
   lep2_sip = abs(lep2_id) == 11 ? fabs(els_ip3d().at(lep2_idx))/els_ip3derr().at(lep2_idx) : fabs(mus_ip3d().at(lep2_idx))/mus_ip3derr().at(lep2_idx); 
   dilep_p4 = lep1_p4 + lep2_p4; 
   lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, isoCase);
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, isoCase);
+
+  //PtRel for both leptons
+  lep1_ptrel_v0 = getPtRel(lep1_id, lep1_idx, false);
+  lep2_ptrel_v0 = getPtRel(lep2_id, lep2_idx, false);
+  lep1_ptrel_v1 = getPtRel(lep1_id, lep1_idx, true);
+  lep2_ptrel_v1 = getPtRel(lep2_id, lep2_idx, true);
+
+  //MiniIso
+  lep1_miniIso = abs(lep1_id)==11 ? elMiniRelIso(lep1_idx, true, 0.0, false, true) : muMiniRelIso(lep1_idx, true, 0.5, false, true);
+  lep2_miniIso = abs(lep2_id)==11 ? elMiniRelIso(lep2_idx, true, 0.0, false, true) : muMiniRelIso(lep2_idx, true, 0.5, false, true);
 
   //For inSituFR, both must pass looser ID (easier than selection ID)
   bool passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx); 
@@ -375,23 +398,23 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   if (passed_id_inSituFR_lep1 && passed_id_inSituFR_lep2){
     bool passed_id_numer_lep1 = isGoodLepton(lep1_id, lep1_idx, isoCase);
     bool passed_id_numer_lep2 = isGoodLepton(lep2_id, lep2_idx, isoCase);
-    int truth_lep1 = lepMotherID( Lep(lep1_id, lep1_idx) ); 
-    int truth_lep2 = lepMotherID( Lep(lep2_id, lep2_idx) ); 
+    int truth_lep1 = lepMotherID_inSituFR( Lep(lep1_id, lep1_idx) ); 
+    int truth_lep2 = lepMotherID_inSituFR( Lep(lep2_id, lep2_idx) ); 
 
     //Need one good leg and one fake leg
     if (truth_lep1 > 0 && passed_id_numer_lep1) lep1_isGoodLeg = true;
     else lep1_isGoodLeg = false;
-    if (truth_lep1 <= 0) lep1_isFakeLeg = true;
+    if (truth_lep1 < 0 && lep1_miniIso < 0.4) lep1_isFakeLeg = true;
     else lep1_isFakeLeg = false;
     if (truth_lep2 > 0 && passed_id_numer_lep2) lep2_isGoodLeg = true;
     else lep2_isGoodLeg = false;
-    if (truth_lep2 <= 0) lep2_isFakeLeg = true;
+    if (truth_lep2 < 0 && lep2_miniIso < 0.4) lep2_isFakeLeg = true;
     else lep2_isFakeLeg = false;
 
     //Now require one good leg and one fake leg
     if ((lep1_isGoodLeg && lep2_isFakeLeg) || (lep1_isFakeLeg && lep2_isGoodLeg)) truth_inSituFR = true;
     else truth_inSituFR = false; 
-  }
+ }
   
   //Fill generated lepton variables, ignoring reco (matching to reco done above)
   vector <particle_t> genPair = getGenPair(verbose);
@@ -428,18 +451,6 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
     cout << "nbtags: " <<  nbtags << endl;
     for (unsigned int i = 0; i < jets.size(); i++) cout << i << " " << jets[i].pt() << " " << jets[i].eta() << endl;
   } 
-
-  //PtRel for both leptons
-  lep1_ptrel_v0 = getPtRel(lep1_id, lep1_idx, false);
-  lep2_ptrel_v0 = getPtRel(lep2_id, lep2_idx, false);
-  lep1_ptrel_v1 = getPtRel(lep1_id, lep1_idx, true);
-  lep2_ptrel_v1 = getPtRel(lep2_id, lep2_idx, true);
-
-  //MiniIso
-  if (abs(lep1_id)==11) lep1_miniIso = elMiniRelIso(lep1_idx, 0.1, true);
-  else                  lep1_miniIso = muMiniRelIso(lep1_idx, 0.1, true);
-  if (abs(lep2_id)==11) lep2_miniIso = elMiniRelIso(lep2_idx, 0.1, true);
-  else                  lep2_miniIso = muMiniRelIso(lep2_idx, 0.1, true);
 
   //Closest Jet
   jet_close_lep1 = closestJet(lep1_p4);

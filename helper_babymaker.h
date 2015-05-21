@@ -227,8 +227,8 @@ class babyMaker {
     bool lep1_isFakeLeg;
     bool lep2_isFakeLeg;
     bool truth_inSituFR;
-    bool lep1_multiIso;
-    bool lep2_multiIso;
+    bool lep1_multiIso_conecorr;
+    bool lep2_multiIso_conecorr;
     float lep1_sip; 
     float lep2_sip; 
 };
