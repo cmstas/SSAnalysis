@@ -1,6 +1,6 @@
 universe=grid
 Grid_Resource=condor cmssubmit-r1.t2.ucsd.edu glidein-collector.t2.ucsd.edu
-+DESIRED_Sites="T2_US_UCSD,T2_US_Nebraska,T2_US_Wisconsin,T2_US_MIT,T2_US_FLORIDA"
++DESIRED_Sites="T2_US_UCSD"
 Should_Transfer_Files = YES
 WhenToTransferOutput = ON_EXIT
 Transfer_Input_Files = do.C,CORE.tar.gz,run.C,helper_babymaker.cc,helper_babymaker.h
@@ -13,5 +13,5 @@ notify_user = george@physics.ucsb.edu
 x509userproxy = USER_PROXY
 Executable = condorExecutable.sh
 Transfer_executable = True
-arguments = ARG1 ARG2 ARG3
+arguments = ARG1 ARG2 ARG3 ARG4
 Queue 1

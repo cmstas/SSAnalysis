@@ -106,6 +106,7 @@ do
       sed -i s/ARG1/$sname/g condorFile
       sed -i s/ARG2/$number/g condorFile
       sed -i s/ARG3/$ptrel/g condorFile
+      sed -i s/ARG4/$USER/g condorFile
       sed -i "s,USER_PROXY,$pathToProxy,g" condorFile
       condor_submit condorFile
     done
