@@ -205,6 +205,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   if (option.Contains("coneCorr")) coneCorr=true;
   bool jetCorr = false;
   if (option.Contains("jetCorr")) jetCorr=true;
+  bool usePtRatioCor = false;
+  if (option.Contains("usePtRatioCor")) usePtRatioCor = true;
   bool doBonly = false;
   if (option.Contains("doBonly")) doBonly = true;
   bool doConly = false;
@@ -260,60 +262,60 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   Npn_histo_sr_pred_el->SetDirectory(rootdir);
   Npn_histo_sr_pred_el->Sumw2();
 
-  TH1F *Npn_histo_HT_obs = new TH1F("Npn_histo_HT_obs", "Observed Prompt-NonPrompt Background", 25, 0, 500);
+  TH1F *Npn_histo_HT_obs = new TH1F("Npn_histo_HT_obs", "Observed Prompt-NonPrompt Background", 20, 0, 1000);
   Npn_histo_HT_obs->SetDirectory(rootdir);
   Npn_histo_HT_obs->Sumw2();
-  TH1F *Npn_histo_HT_pred = new TH1F("Npn_histo_HT_pred", "Predicted Prompt-NonPrompt Background", 25, 0, 500);
+  TH1F *Npn_histo_HT_pred = new TH1F("Npn_histo_HT_pred", "Predicted Prompt-NonPrompt Background", 20, 0, 1000);
   Npn_histo_HT_pred->SetDirectory(rootdir);
   Npn_histo_HT_pred->Sumw2();
-  TH1F *Npn_histo_HT_obs_mu = new TH1F("Npn_histo_HT_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 25, 0, 500);
+  TH1F *Npn_histo_HT_obs_mu = new TH1F("Npn_histo_HT_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 20, 0, 1000);
   Npn_histo_HT_obs_mu->SetDirectory(rootdir);
   Npn_histo_HT_obs_mu->Sumw2();
-  TH1F *Npn_histo_HT_pred_mu = new TH1F("Npn_histo_HT_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 25, 0, 500);
+  TH1F *Npn_histo_HT_pred_mu = new TH1F("Npn_histo_HT_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 20, 0, 1000);
   Npn_histo_HT_pred_mu->SetDirectory(rootdir);
   Npn_histo_HT_pred_mu->Sumw2();
-  TH1F *Npn_histo_HT_obs_el = new TH1F("Npn_histo_HT_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 25, 0, 500);
+  TH1F *Npn_histo_HT_obs_el = new TH1F("Npn_histo_HT_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 20, 0, 1000);
   Npn_histo_HT_obs_el->SetDirectory(rootdir);
   Npn_histo_HT_obs_el->Sumw2();
-  TH1F *Npn_histo_HT_pred_el = new TH1F("Npn_histo_HT_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 25, 0, 500);
+  TH1F *Npn_histo_HT_pred_el = new TH1F("Npn_histo_HT_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 20, 0, 1000);
   Npn_histo_HT_pred_el->SetDirectory(rootdir);
   Npn_histo_HT_pred_el->Sumw2();
 
-  TH1F *Npn_histo_MET_obs = new TH1F("Npn_histo_MET_obs", "Observed Prompt-NonPrompt Background", 25, 0, 500);
+  TH1F *Npn_histo_MET_obs = new TH1F("Npn_histo_MET_obs", "Observed Prompt-NonPrompt Background", 20, 0, 200);
   Npn_histo_MET_obs->SetDirectory(rootdir);
   Npn_histo_MET_obs->Sumw2();
-  TH1F *Npn_histo_MET_pred = new TH1F("Npn_histo_MET_pred", "Predicted Prompt-NonPrompt Background", 25, 0, 500);
+  TH1F *Npn_histo_MET_pred = new TH1F("Npn_histo_MET_pred", "Predicted Prompt-NonPrompt Background", 20, 0, 200);
   Npn_histo_MET_pred->SetDirectory(rootdir);
   Npn_histo_MET_pred->Sumw2();
-  TH1F *Npn_histo_MET_obs_mu = new TH1F("Npn_histo_MET_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 25, 0, 500);
+  TH1F *Npn_histo_MET_obs_mu = new TH1F("Npn_histo_MET_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 20, 0, 200);
   Npn_histo_MET_obs_mu->SetDirectory(rootdir);
   Npn_histo_MET_obs_mu->Sumw2();
-  TH1F *Npn_histo_MET_pred_mu = new TH1F("Npn_histo_MET_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 25, 0, 500);
+  TH1F *Npn_histo_MET_pred_mu = new TH1F("Npn_histo_MET_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 20, 0, 200);
   Npn_histo_MET_pred_mu->SetDirectory(rootdir);
   Npn_histo_MET_pred_mu->Sumw2();
-  TH1F *Npn_histo_MET_obs_el = new TH1F("Npn_histo_MET_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 25, 0, 500);
+  TH1F *Npn_histo_MET_obs_el = new TH1F("Npn_histo_MET_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 20, 0, 200);
   Npn_histo_MET_obs_el->SetDirectory(rootdir);
   Npn_histo_MET_obs_el->Sumw2();
-  TH1F *Npn_histo_MET_pred_el = new TH1F("Npn_histo_MET_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 25, 0, 500);
+  TH1F *Npn_histo_MET_pred_el = new TH1F("Npn_histo_MET_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 20, 0, 200);
   Npn_histo_MET_pred_el->SetDirectory(rootdir);
   Npn_histo_MET_pred_el->Sumw2();
 
-  TH1F *Npn_histo_MTMIN_obs = new TH1F("Npn_histo_MTMIN_obs", "Observed Prompt-NonPrompt Background", 25, 0, 250);
+  TH1F *Npn_histo_MTMIN_obs = new TH1F("Npn_histo_MTMIN_obs", "Observed Prompt-NonPrompt Background", 20, 0, 200);
   Npn_histo_MTMIN_obs->SetDirectory(rootdir);
   Npn_histo_MTMIN_obs->Sumw2();
-  TH1F *Npn_histo_MTMIN_pred = new TH1F("Npn_histo_MTMIN_pred", "Predicted Prompt-NonPrompt Background", 25, 0, 250);
+  TH1F *Npn_histo_MTMIN_pred = new TH1F("Npn_histo_MTMIN_pred", "Predicted Prompt-NonPrompt Background", 20, 0, 200);
   Npn_histo_MTMIN_pred->SetDirectory(rootdir);
   Npn_histo_MTMIN_pred->Sumw2();
-  TH1F *Npn_histo_MTMIN_obs_mu = new TH1F("Npn_histo_MTMIN_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 25, 0, 250);
+  TH1F *Npn_histo_MTMIN_obs_mu = new TH1F("Npn_histo_MTMIN_obs_mu", "Observed Prompt-NonPrompt Background (Single mu)", 20, 0, 200);
   Npn_histo_MTMIN_obs_mu->SetDirectory(rootdir);
   Npn_histo_MTMIN_obs_mu->Sumw2();
-  TH1F *Npn_histo_MTMIN_pred_mu = new TH1F("Npn_histo_MTMIN_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 25, 0, 250);
+  TH1F *Npn_histo_MTMIN_pred_mu = new TH1F("Npn_histo_MTMIN_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)", 20, 0, 200);
   Npn_histo_MTMIN_pred_mu->SetDirectory(rootdir);
   Npn_histo_MTMIN_pred_mu->Sumw2();
-  TH1F *Npn_histo_MTMIN_obs_el = new TH1F("Npn_histo_MTMIN_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 25, 0, 250);
+  TH1F *Npn_histo_MTMIN_obs_el = new TH1F("Npn_histo_MTMIN_obs_el", "Observed Prompt-NonPrompt Background (Single el)", 20, 0, 200);
   Npn_histo_MTMIN_obs_el->SetDirectory(rootdir);
   Npn_histo_MTMIN_obs_el->Sumw2();
-  TH1F *Npn_histo_MTMIN_pred_el = new TH1F("Npn_histo_MTMIN_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 25, 0, 250);
+  TH1F *Npn_histo_MTMIN_pred_el = new TH1F("Npn_histo_MTMIN_pred_el", "Predicted Prompt-NonPrompt Background (Single el)", 20, 0, 200);
   Npn_histo_MTMIN_pred_el->SetDirectory(rootdir);
   Npn_histo_MTMIN_pred_el->Sumw2();
 
@@ -395,13 +397,24 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
   TH2D *rate_histo_e = 0, *rate_histo_mu = 0;
   if (coneCorr) {
-    //fake rate as function of pT+pT*RelIso, eta
+    //fake rate as function of cone corrected pT, eta
     rate_histo_e = (TH2D*) InputFile->Get("rate_cone_histo_e")->Clone("rate_cone_histo_e");
     rate_histo_mu = (TH2D*) InputFile->Get("rate_cone_histo_mu")->Clone("rate_cone_histo_mu");
   } else if (jetCorr) {
-    //fake rate as function of pT+pT*RelIso, eta
-    rate_histo_e = (TH2D*) InputFile->Get("rate_jet_histo_e")->Clone("rate_jet_histo_e");
-    rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_histo_mu")->Clone("rate_jet_histo_mu");
+    //fake rate as function of jet pT, eta
+    if (highhigh) {
+      rate_histo_e = (TH2D*) InputFile->Get("rate_jet_highpt_histo_e")->Clone("rate_jet_highpt_histo_e");
+      rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_highpt_histo_mu")->Clone("rate_jet_highpt_histo_mu");
+      //} else if (highlow) {
+      //cout << "ERROR, jet FR not supported for highlow" << endl;
+      //return -1;
+    } else if (lowlow) {
+      rate_histo_e = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_e")->Clone("rate_jet_lowpt_histo_e");
+      rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_mu")->Clone("rate_jet_lowpt_histo_mu");
+    } else {
+      rate_histo_e = (TH2D*) InputFile->Get("rate_jet_histo_e")->Clone("rate_jet_histo_e");
+      rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_histo_mu")->Clone("rate_jet_histo_mu");
+    } 
   } else {
     //fake rate as function of pT, eta
     rate_histo_e = (TH2D*) InputFile->Get("rate_histo_e")->Clone("rate_histo_e");
@@ -581,6 +594,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 	  float lep2_ptrel_v1 = ss.lep2_ptrel_v1();
 	  assert(fabs(lep1_ptrel_v1 - computePtRel(ss.lep1_p4(),ss.jet_close_lep1(), true))<0.0001);
 	  assert(fabs(lep2_ptrel_v1 - computePtRel(ss.lep2_p4(),ss.jet_close_lep2(), true))<0.0001);
+	  float lep1_closejetpt = ss.jet_close_lep1().pt();
+	  float lep2_closejetpt = ss.jet_close_lep2().pt();
 
 	  if (fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())>4.) continue;
 	  if (fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())>4.) continue;
@@ -806,6 +821,28 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 			{			  
 			  if( lep1_passes_id && lep2_passes_id==0 )  //lep1 is tight, lep2 is loose-not-tight
 				{	
+
+				  if (usePtRatioCor) {
+				    //this is a tighter FO than default, so skip if it does not pass
+				    if ( abs(ss.lep2_id())==11 ) {
+				      float ptratiocor = lep2_closejetpt>0. ? ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.10))/lep2_closejetpt : 1.;
+				      if (!(ptratiocor > 0.70 || lep2_ptrel_v1 > 7.0)) continue;
+				    } else {
+				      float ptratiocor = lep2_closejetpt>0. ? ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.14))/lep2_closejetpt : 1.;
+				      if (!(ptratiocor > 0.68 || lep2_ptrel_v1 > 6.7)) continue;
+				    }
+				  }
+
+				  if (highlow && jetCorr) {
+				    if (ss.lep2_p4().pt()>25.) {
+				      rate_histo_e = (TH2D*) InputFile->Get("rate_jet_highpt_histo_e");
+				      rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_highpt_histo_mu");
+				    } else {
+				      rate_histo_e = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_e");
+				      rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_mu");
+				    }
+				  }
+
 				  if( abs(ss.lep2_id()) == 11 )  //if el, use el rate.  FILL WITH NONPROMPT
 					{
 					  e2 = getFakeRate( rate_histo_e, lep2_pT, fabs(ss.lep2_p4().eta()), ss.ht(), false );
@@ -864,6 +901,28 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				}
 			  else if( lep1_passes_id==0 && lep2_passes_id )   //lep1 is loose-not-tight, lep2 is tight
 				{
+
+				  if (usePtRatioCor) {
+				    //this is a tighter FO than default, so skip if it does not pass
+				    if ( abs(ss.lep1_id())==11 ) {
+				      float ptratiocor = lep1_closejetpt>0. ? ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.10))/lep1_closejetpt : 1.;
+				      if (!(ptratiocor > 0.70 || lep1_ptrel_v1 > 7.0)) continue;
+				    } else {
+				      float ptratiocor = lep1_closejetpt>0. ? ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.14))/lep1_closejetpt : 1.;
+				      if (!(ptratiocor > 0.68 || lep1_ptrel_v1 > 6.7)) continue;
+				    }
+				  }
+
+				  if (highlow && jetCorr) {
+				    if (ss.lep1_p4().pt()>25.) {
+				      rate_histo_e = (TH2D*) InputFile->Get("rate_jet_highpt_histo_e");
+				      rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_highpt_histo_mu");
+				    } else {
+				      rate_histo_e = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_e");
+				      rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_mu");
+				    }
+				  }
+
 				  if( abs(ss.lep1_id()) == 11 )	//if el, use el rate.  FILL WITH NONPROMPT			  
 					{
 					  e1 = getFakeRate(rate_histo_e, lep1_pT, fabs(ss.lep1_p4().eta()), ss.ht(), false );

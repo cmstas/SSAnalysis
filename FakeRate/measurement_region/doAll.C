@@ -1,5 +1,5 @@
 {
-  string tag = "leptree-v00";
+  string tag = "leptree-v01";
 
   gROOT->ProcessLine(".L ScanChain.C+");
 
@@ -11,6 +11,7 @@
   ScanChain(qcd,"./rate_histos_qcd.root",""); 
   //alternative versions
   ScanChain(qcd,"./rate_histos_qcd_LooseEMVA.root","useLooseEMVA"); 
+  ScanChain(qcd,"./rate_histos_qcd_PtRatioCor.root","usePtRatioCor"); 
   ScanChain(qcd,"./rate_histos_qcd_RelIso.root","useRelIso"); 
   ScanChain(qcd,"./rate_histos_qcd_RelIso_LooseEMVA.root","useRelIso,useLooseEMVA"); 
   //flavor specific

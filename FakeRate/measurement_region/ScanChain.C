@@ -66,8 +66,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool useRelIso = false;
   if (option.Contains("useRelIso")) useRelIso = true;
 
-  bool useLooseEMVA = false;//fixme make sure it supports other options than multiiso
+  bool useLooseEMVA = false;
   if (option.Contains("useLooseEMVA")) useLooseEMVA = true;
+
+  bool usePtRatioCor = false;
+  if (option.Contains("usePtRatioCor")) usePtRatioCor = true;
 
   bool doBonly = false;
   if (option.Contains("doBonly")) doBonly = true;
@@ -139,6 +142,38 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TH2D *Nl_jet_histo_mu = new TH2D("Nl_jet_histo_mu", "Nl vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
   Nl_jet_histo_mu->SetDirectory(rootdir);
   Nl_jet_histo_mu->Sumw2();
+
+  TH2D *Nt_jet_highpt_histo_e = new TH2D("Nt_jet_highpt_histo_e", "Nt vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  Nt_jet_highpt_histo_e->SetDirectory(rootdir);
+  Nt_jet_highpt_histo_e->Sumw2();
+
+  TH2D *Nt_jet_highpt_histo_mu = new TH2D("Nt_jet_highpt_histo_mu", "Nt vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  Nt_jet_highpt_histo_mu->SetDirectory(rootdir);
+  Nt_jet_highpt_histo_mu->Sumw2();
+
+  TH2D *Nl_jet_highpt_histo_e = new TH2D("Nl_jet_highpt_histo_e", "Nl vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  Nl_jet_highpt_histo_e->SetDirectory(rootdir);
+  Nl_jet_highpt_histo_e->Sumw2();
+
+  TH2D *Nl_jet_highpt_histo_mu = new TH2D("Nl_jet_highpt_histo_mu", "Nl vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  Nl_jet_highpt_histo_mu->SetDirectory(rootdir);
+  Nl_jet_highpt_histo_mu->Sumw2();
+
+  TH2D *Nt_jet_lowpt_histo_e = new TH2D("Nt_jet_lowpt_histo_e", "Nt vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  Nt_jet_lowpt_histo_e->SetDirectory(rootdir);
+  Nt_jet_lowpt_histo_e->Sumw2();
+
+  TH2D *Nt_jet_lowpt_histo_mu = new TH2D("Nt_jet_lowpt_histo_mu", "Nt vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  Nt_jet_lowpt_histo_mu->SetDirectory(rootdir);
+  Nt_jet_lowpt_histo_mu->Sumw2();
+
+  TH2D *Nl_jet_lowpt_histo_e = new TH2D("Nl_jet_lowpt_histo_e", "Nl vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  Nl_jet_lowpt_histo_e->SetDirectory(rootdir);
+  Nl_jet_lowpt_histo_e->Sumw2();
+
+  TH2D *Nl_jet_lowpt_histo_mu = new TH2D("Nl_jet_lowpt_histo_mu", "Nl vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  Nl_jet_lowpt_histo_mu->SetDirectory(rootdir);
+  Nl_jet_lowpt_histo_mu->Sumw2();
 
   TH1F *NBs_BR_histo_e = new TH1F("NBs_BR_histo_e", "Number of FO's from B's vs Nbtags (els)", 5,0,5);
   NBs_BR_histo_e->SetDirectory(rootdir);
@@ -241,11 +276,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //cout << "lepp4=" << ss.p4() << " jetp4=" << ss.jet_close_lep() << endl;
 
       // Analysis Code
-	  float weight = ss.scale1fb()*10.0;
+      float weight = ss.scale1fb()*10.0/1000.;//use 10./pb for sync
 
 	  if(ss.scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
 	  if(abs(ss.id())==13 && ss.p4().pt()<15. && ss.scale1fb() > 79. && ss.scale1fb() < 80.) continue;  //take only Mu15 above pT=15
 	  if(abs(ss.id())==13 && ss.p4().pt()>15. && (ss.scale1fb() < 79. || ss.scale1fb() > 80.)) continue;  //take only Mu5 below pT=15
+
+	  //make sure we use mu from MuEnrich and el from EG+BCtoE
+	  if (abs(ss.id())==13 && fabs(ss.scale1fb()-20.94)>0.1 && fabs(ss.scale1fb()-79.81)>0.1 && fabs(ss.scale1fb()-85.19)>0.1 && fabs(ss.scale1fb()-357.93)>0.1) continue;
+	  if (abs(ss.id())==11 && !(fabs(ss.scale1fb()-20.94)>0.1 && fabs(ss.scale1fb()-79.81)>0.1 && fabs(ss.scale1fb()-85.19)>0.1 && fabs(ss.scale1fb()-357.93)>0.1)) continue;
 
 	  bool jetptcut = false;
 	  float ht = 0.;
@@ -293,6 +332,16 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (useLooseEMVA) {
 	    passFO = ss.passes_SS_fo_looseMVA_v3();
 	    passFO_noiso = ss.passes_SS_fo_looseMVA_noiso_v3();
+	  }
+
+	  if (usePtRatioCor) {
+	    if (abs(ss.id())==11) {
+	      float ptratiocor = closejetpt>0. ? ss.p4().pt()*(1+std::max(0.,ss.miniiso()-0.10))/closejetpt : 1.;
+	      passFO = ss.passes_SS_fo_v3() && (ptratiocor > 0.70 || ptrel > 7.0);
+	    } else {
+	      float ptratiocor = closejetpt>0. ? ss.p4().pt()*(1+std::max(0.,ss.miniiso()-0.14))/closejetpt : 1.;
+	      passFO = ss.passes_SS_fo_v3() && (ptratiocor > 0.68 || ptrel > 6.7);	      
+	    }
 	  }
 
 	  float coneptcorr = 0.;
@@ -392,6 +441,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nt_histo_e->Fill(getPt(ss.p4().pt(),false), getEta(fabs(ss.p4().eta()),ht,false), weight);   //
 				  //jet corrected FR
 				  Nt_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
+				  if (ss.p4().pt()>25.) Nt_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
+				  else Nt_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
 				}
 
 			  if( passFO )  //if el is FO
@@ -403,6 +454,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  else Nl_cone_histo_e->Fill(getPt(ss.p4().pt()*(1+coneptcorr),false), getEta(fabs(ss.p4().eta()),ht,false), weight);
 				  //jet corrected FR
 				  Nl_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
+				  if (ss.p4().pt()>25.) Nl_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
+				  else Nl_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
  
 				  njets40_histo->Fill(njets40, weight);
 
@@ -427,6 +480,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  Nt_histo_mu->Fill(getPt(ss.p4().pt(),false), getEta(fabs(ss.p4().eta()),ht,false), weight);   //
 				  //jet corrected FR
 				  Nt_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
+				  if (ss.p4().pt()>25.) Nt_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
+				  else Nt_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
 				}
 
 			  if( passFO )  //if mu is FO
@@ -438,6 +493,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 				  else Nl_cone_histo_mu->Fill(getPt(ss.p4().pt()*(1+coneptcorr),false), getEta(fabs(ss.p4().eta()),ht,false), weight);
 				  //jet corrected FR
 				  Nl_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
+				  if (ss.p4().pt()>25.) Nl_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
+				  else Nl_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(ss.p4().eta()),ht,false), weight);
 
 				  njets40_histo->Fill(njets40, weight);
 
@@ -487,6 +544,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TH2D *rate_cone_histo_mu = (TH2D*) Nt_histo_mu->Clone("rate_cone_histo_mu");
   TH2D *rate_jet_histo_e = (TH2D*) Nt_jet_histo_e->Clone("rate_jet_histo_e");
   TH2D *rate_jet_histo_mu = (TH2D*) Nt_jet_histo_mu->Clone("rate_jet_histo_mu");
+  TH2D *rate_jet_highpt_histo_e = (TH2D*) Nt_jet_highpt_histo_e->Clone("rate_jet_highpt_histo_e");
+  TH2D *rate_jet_highpt_histo_mu = (TH2D*) Nt_jet_highpt_histo_mu->Clone("rate_jet_highpt_histo_mu");
+  TH2D *rate_jet_lowpt_histo_e = (TH2D*) Nt_jet_lowpt_histo_e->Clone("rate_jet_lowpt_histo_e");
+  TH2D *rate_jet_lowpt_histo_mu = (TH2D*) Nt_jet_lowpt_histo_mu->Clone("rate_jet_lowpt_histo_mu");
   TH1F *total_BR_histo_e = (TH1F*) NBs_BR_histo_e->Clone("total_BR_histo_e");
   TH1F *total_BR_histo_mu = (TH1F*) NBs_BR_histo_mu->Clone("total_BR_histo_mu");
 
@@ -496,6 +557,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   rate_cone_histo_mu->Divide(rate_cone_histo_mu,Nl_cone_histo_mu,1,1,"B");
   rate_jet_histo_e->Divide(rate_jet_histo_e,Nl_jet_histo_e,1,1,"B");
   rate_jet_histo_mu->Divide(rate_jet_histo_mu,Nl_jet_histo_mu,1,1,"B");
+  rate_jet_highpt_histo_e->Divide(rate_jet_highpt_histo_e,Nl_jet_highpt_histo_e,1,1,"B");
+  rate_jet_highpt_histo_mu->Divide(rate_jet_highpt_histo_mu,Nl_jet_highpt_histo_mu,1,1,"B");
+  rate_jet_lowpt_histo_e->Divide(rate_jet_lowpt_histo_e,Nl_jet_lowpt_histo_e,1,1,"B");
+  rate_jet_lowpt_histo_mu->Divide(rate_jet_lowpt_histo_mu,Nl_jet_lowpt_histo_mu,1,1,"B");
   total_BR_histo_e->Add(NnotBs_BR_histo_e);
   total_BR_histo_mu->Add(NnotBs_BR_histo_mu);
   NBs_BR_histo_e->Divide(NBs_BR_histo_e, total_BR_histo_e,1,1,"B");
@@ -525,6 +590,22 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   rate_jet_histo_mu->GetYaxis()->SetTitle("eta");
   rate_jet_histo_mu->GetZaxis()->SetRangeUser(0,.5);
   rate_jet_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
+  rate_jet_highpt_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)"); 
+  rate_jet_highpt_histo_e->GetYaxis()->SetTitle("eta");
+  rate_jet_highpt_histo_e->GetZaxis()->SetRangeUser(0,.5);
+  rate_jet_highpt_histo_e->SetTitle("Fake Rate vs Jet Pt, Eta (electrons)");
+  rate_jet_highpt_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)"); 
+  rate_jet_highpt_histo_mu->GetYaxis()->SetTitle("eta");
+  rate_jet_highpt_histo_mu->GetZaxis()->SetRangeUser(0,.5);
+  rate_jet_highpt_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
+  rate_jet_lowpt_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)"); 
+  rate_jet_lowpt_histo_e->GetYaxis()->SetTitle("eta");
+  rate_jet_lowpt_histo_e->GetZaxis()->SetRangeUser(0,.5);
+  rate_jet_lowpt_histo_e->SetTitle("Fake Rate vs Jet Pt, Eta (electrons)");
+  rate_jet_lowpt_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)"); 
+  rate_jet_lowpt_histo_mu->GetYaxis()->SetTitle("eta");
+  rate_jet_lowpt_histo_mu->GetZaxis()->SetRangeUser(0,.5);
+  rate_jet_lowpt_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
   NBs_BR_histo_e->GetXaxis()->SetTitle("Nbjets"); 
   NBs_BR_histo_e->GetYaxis()->SetTitle("Abundance");
   NBs_BR_histo_e->GetYaxis()->SetRangeUser(0., 1.);
@@ -563,10 +644,28 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   Nt_histo_mu->Write();
   rate_histo_e->Write();
   rate_histo_mu->Write();
+  Nl_cone_histo_e->Write();
+  Nl_cone_histo_mu->Write();
   rate_cone_histo_e->Write();
   rate_cone_histo_mu->Write();
+  Nl_jet_histo_e->Write();
+  Nl_jet_histo_mu->Write();
+  Nt_jet_histo_e->Write();
+  Nt_jet_histo_mu->Write();
   rate_jet_histo_e->Write();
   rate_jet_histo_mu->Write();
+  Nl_jet_highpt_histo_e->Write();
+  Nl_jet_highpt_histo_mu->Write();
+  Nt_jet_highpt_histo_e->Write();
+  Nt_jet_highpt_histo_mu->Write();
+  rate_jet_highpt_histo_e->Write();
+  rate_jet_highpt_histo_mu->Write();
+  Nl_jet_lowpt_histo_e->Write();
+  Nl_jet_lowpt_histo_mu->Write();
+  Nt_jet_lowpt_histo_e->Write();
+  Nt_jet_lowpt_histo_mu->Write();
+  rate_jet_lowpt_histo_e->Write();
+  rate_jet_lowpt_histo_mu->Write();
   NBs_BR_histo_e->Write();
   NBs_BR_histo_mu->Write();  
   pTrelvsIso_histo_el->Write();
@@ -583,12 +682,30 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   delete Nl_histo_e;
   delete Nt_histo_mu;
   delete Nl_histo_mu;
+  delete rate_histo_e;
+  delete rate_histo_mu;
   delete Nl_cone_histo_e;
   delete Nl_cone_histo_mu;
+  delete rate_cone_histo_e;
+  delete rate_cone_histo_mu;
   delete Nl_jet_histo_e;
   delete Nl_jet_histo_mu;
   delete Nt_jet_histo_e;
   delete Nt_jet_histo_mu;
+  delete rate_jet_histo_e;
+  delete rate_jet_histo_mu;
+  delete Nl_jet_highpt_histo_e;
+  delete Nl_jet_highpt_histo_mu;
+  delete Nt_jet_highpt_histo_e;
+  delete Nt_jet_highpt_histo_mu;
+  delete rate_jet_highpt_histo_e;
+  delete rate_jet_highpt_histo_mu;
+  delete Nl_jet_lowpt_histo_e;
+  delete Nl_jet_lowpt_histo_mu;
+  delete Nt_jet_lowpt_histo_e;
+  delete Nt_jet_lowpt_histo_mu;
+  delete rate_jet_lowpt_histo_e;
+  delete rate_jet_lowpt_histo_mu;
   delete NBs_BR_histo_e;
   delete NBs_BR_histo_mu;
   delete NnotBs_BR_histo_e;
