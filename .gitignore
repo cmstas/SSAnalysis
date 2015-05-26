@@ -31,3 +31,5 @@ rareSyst/analysis/NLO/*.pdf
 software
 batch/voms_status.txt
 sync/*.txt
+*.log
+inSituFR/*.pdf
