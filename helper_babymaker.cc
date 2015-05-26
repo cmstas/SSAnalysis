@@ -142,8 +142,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   BabyTree->Branch("lep1_isFakeLeg"        , &lep1_isFakeLeg         );
   BabyTree->Branch("lep2_isFakeLeg"        , &lep2_isFakeLeg         );
   BabyTree->Branch("truth_inSituFR"        , &truth_inSituFR         );
-  BabyTree->Branch("lep1_multiIso_conecorr", &lep1_multiIso_conecorr );
-  BabyTree->Branch("lep2_multiIso_conecorr", &lep2_multiIso_conecorr );
+  BabyTree->Branch("lep1_multiIso"         , &lep1_multiIso          );
+  BabyTree->Branch("lep2_multiIso"         , &lep2_multiIso          );
   BabyTree->Branch("lep1_sip"              , &lep1_sip               );
   BabyTree->Branch("lep2_sip"              , &lep2_sip               );
 
@@ -280,8 +280,8 @@ void babyMaker::InitBabyNtuple(){
     lep1_isFakeLeg = 0; 
     lep2_isFakeLeg = 0; 
     truth_inSituFR = false;
-    lep1_multiIso_conecorr = 0;
-    lep2_multiIso_conecorr = 0;
+    lep1_multiIso          = 0;
+    lep2_multiIso          = 0;
     lep1_sip = -1;
     lep2_sip = -1;
 
@@ -297,18 +297,17 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   bool isData = tas::evt_isRealData();
 
   //Sync stuff
-  //if (tas::evt_event() != 4787) return -1;
+  //if (tas::evt_event() != 132278) return -1;
   //verbose = true;
   //readMVA* globalEleMVAreader = 0;
   //globalEleMVAreader = new readMVA();
   //globalEleMVAreader->InitMVA("CORE/"); 
   //cout << "MVA VALUE: " << globalEleMVAreader->MVA(0) << endl;
   //globalEleMVAreader->DumpValues();
+  //cout << " " << endl;
+  //cout << isGoodLeptonNoIso(11,0) << endl;
+  //cout << isNewMiniIsolatedLepton(11,0,1) << endl;
 
-  //Results:
-  cout << isGoodLeptonNoIso(11,0) << endl;
-  cout << isNewMiniIsolatedLepton(11,0,1) << endl;
-  
   //Debug mode
   if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return -1;
 
@@ -374,8 +373,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   lep3_quality = thirdLepton.second;
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
-  lep1_multiIso_conecorr = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.10, 0.7, 7.0, true) : passMultiIso(13, lep1_idx, 0.14, 0.68, 6.7, true);
-  lep2_multiIso_conecorr = abs(lep2_id) == 11 ? passMultiIso(11, lep2_idx, 0.10, 0.7, 7.0, true) : passMultiIso(13, lep2_idx, 0.14, 0.68, 6.7, true);
+  lep1_multiIso = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.10, 0.7, 7.0, false) : passMultiIso(13, lep1_idx, 0.14, 0.68, 6.7, false);
+  lep2_multiIso = abs(lep2_id) == 11 ? passMultiIso(11, lep2_idx, 0.10, 0.7, 7.0, false) : passMultiIso(13, lep2_idx, 0.14, 0.68, 6.7, false);
   lep1_sip = abs(lep1_id) == 11 ? fabs(els_ip3d().at(lep1_idx))/els_ip3derr().at(lep1_idx) : fabs(mus_ip3d().at(lep1_idx))/mus_ip3derr().at(lep1_idx); 
   lep2_sip = abs(lep2_id) == 11 ? fabs(els_ip3d().at(lep2_idx))/els_ip3derr().at(lep2_idx) : fabs(mus_ip3d().at(lep2_idx))/mus_ip3derr().at(lep2_idx); 
   dilep_p4 = lep1_p4 + lep2_p4; 
@@ -404,11 +403,11 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
     //Need one good leg and one fake leg
     if (truth_lep1 > 0 && passed_id_numer_lep1) lep1_isGoodLeg = true;
     else lep1_isGoodLeg = false;
-    if (truth_lep1 < 0 && lep1_miniIso < 0.4) lep1_isFakeLeg = true;
+    if (truth_lep1 < 0) lep1_isFakeLeg = true;
     else lep1_isFakeLeg = false;
     if (truth_lep2 > 0 && passed_id_numer_lep2) lep2_isGoodLeg = true;
     else lep2_isGoodLeg = false;
-    if (truth_lep2 < 0 && lep2_miniIso < 0.4) lep2_isFakeLeg = true;
+    if (truth_lep2 < 0) lep2_isFakeLeg = true;
     else lep2_isFakeLeg = false;
 
     //Now require one good leg and one fake leg
@@ -457,7 +456,10 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   jet_close_lep2 = closestJet(lep2_p4);
 
   //nVeto Leptons
+  if (verbose) cout << " PRINTING RECO ELECTRONS" << endl;
   for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
+    float miniIso = elMiniRelIso(eidx, true, 0.0, false, true);
+    if (verbose) cout << "pt: " << tas::els_p4().at(eidx).pt() << " miniiso: " << miniIso << endl;
     if (!isGoodVetoElectron(eidx)) continue;
     if (tas::els_p4().at(eidx).pt() < 7) continue;
     nVetoElectrons7++;
@@ -467,7 +469,10 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
     if (tas::els_p4().at(eidx).pt() < 25) continue;
     nVetoElectrons25++;
   }
+  if (verbose) cout << " PRINTING RECO MUONS" << endl;
   for (unsigned int muidx = 0; muidx < tas::mus_p4().size(); muidx++){
+    float miniIso = muMiniRelIso(muidx, true, 0.5, false, true);
+    if (verbose) cout << "pt: " << tas::mus_p4().at(muidx).pt() << " miniiso: " << miniIso << endl;
     if (!isGoodVetoMuon(muidx)) continue;
     if (tas::mus_p4().at(muidx).pt() < 5) continue;
     nVetoMuons5++;
