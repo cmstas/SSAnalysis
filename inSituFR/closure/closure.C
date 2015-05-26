@@ -63,11 +63,9 @@ void closure(){
   TChain *chain = new TChain("t");
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.16/TTBAR_multiIso.root");
 
-  //nfakes
+  //Arrays to store results
   float nFake_e[4] = { 0 }; 
   float nFake_m[4] = { 0 }; 
-
-  //npred
   float nPred_e[4] = { 0 }; 
   float nPred_m[4] = { 0 }; 
 
@@ -108,7 +106,8 @@ void closure(){
 
       //Calculate yields
       for (int i = 0; i < 4; i++){
-        if (ss::nbtags() != i) continue;
+        if (ss::nbtags() != i && i < 3) continue;
+        if (ss::nbtags() < 3 && i == 3) continue;
         //Actual yield -- events that are fake, SIP3D < 4 and isolated
         if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso()) nFake_e[i] += ss::scale1fb()*10.0; 
         if (ss::lep2_isFakeLeg() && abs(ss::lep2_id()) == 11 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso()) nFake_e[i] += ss::scale1fb()*10.0; 
@@ -127,7 +126,6 @@ void closure(){
   CTable table; 
   table.setTitle("electrons");
   table.useTitle(); 
-
   table.setTable() ( "pred", "obs", "pred/obs", "(p-o)/p") 
        ("0 b-tags" , nPred_e[0], nFake_e[0], nPred_e[0]/nFake_e[0], fabs(nPred_e[0]-nFake_e[0])/nPred_e[0]) 
        ("1 b-tags" , nPred_e[1], nFake_e[1], nPred_e[1]/nFake_e[1], fabs(nPred_e[1]-nFake_e[1])/nPred_e[1]) 
@@ -138,7 +136,6 @@ void closure(){
   CTable table2; 
   table2.setTitle("muons");
   table2.useTitle(); 
-
   table2.setTable() ( "pred", "obs", "pred/obs", "(p-o)/p") 
        ("0 b-tags" , nPred_m[0], nFake_m[0], nPred_m[0]/nFake_m[0], fabs(nPred_m[0]-nFake_m[0])/nPred_m[0]) 
        ("1 b-tags" , nPred_m[1], nFake_m[1], nPred_m[1]/nFake_m[1], fabs(nPred_m[1]-nFake_m[1])/nPred_m[1]) 
