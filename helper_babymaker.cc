@@ -306,8 +306,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   //globalEleMVAreader->DumpValues();
 
   //Results:
-  cout << isGoodLeptonNoIso(11,0) << endl;
-  cout << isNewMiniIsolatedLepton(11,0,1) << endl;
+  //cout << isGoodLeptonNoIso(11,0) << endl;
+  //cout << isNewMiniIsolatedLepton(11,0,1) << endl;
   
   //Debug mode
   if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return -1;
