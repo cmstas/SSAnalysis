@@ -5,11 +5,13 @@
 
 struct results_t { TH1F* hh; TH1F* hl; TH1F* ll; }; 
 
+string version = "v1.17";
+
 void yields(){
 
   //Make chains, histograms
   TChain* chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/sync_baby_multiIso.root");
+  chain->Add(Form("../babies/%s/sync_baby_multiIso.root", version.c_str()));
 
   //Declare counters
   int y0hh[3] = { 0 }; 

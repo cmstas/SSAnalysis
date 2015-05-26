@@ -6,7 +6,7 @@
 #include "TH2F.h"
 
 //Lumi
-float lumi = 10.0;
+float lumi = 3.0;
 
 //Errors on MC or data?
 bool dataErrors = true;
@@ -107,41 +107,41 @@ void FR1D(){
       if (ss::met() < 30 && ss::ht() < 500) continue;
 
       //If lep is the fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_sip() > 4){
+      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_miniIso < 0.4 && ss::lep1_sip() > 4){
         if (ss::lep1_multiIso()) numer->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
         denom->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
+      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_miniIso < 0.4 && ss::lep2_sip() > 4){
         if (ss::lep2_multiIso()) numer->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
         denom->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
       }
 
       //If lep is the fake one and it passes SIPID < 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_sip() < 4){
+      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_miniIso < 0.4 && ss::lep1_sip() < 4){
         if (ss::lep1_multiIso()) numer2->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
         denom2->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_sip() < 4){
+      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_miniIso < 0.4 && ss::lep2_sip() < 4){
         if (ss::lep2_multiIso()) numer2->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
         denom2->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
       }
 
       //If lep is the fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_sip() > 4){
+      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_miniIso < 0.4 && ss::lep1_sip() > 4){
         if (ss::lep1_multiIso()) numer3->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
         denom3->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
+      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_miniIso < 0.4&& ss::lep2_sip() > 4){
         if (ss::lep2_multiIso()) numer3->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
         denom3->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
       }
 
       //If lep is the fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_sip() > 4){
+      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_miniIso < 0.4 && ss::lep1_sip() > 4){
         if (ss::lep1_multiIso()) numer4->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
         denom4->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
+      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_miniIso < 0.4 && ss::lep2_sip() > 4){
         if (ss::lep2_multiIso()) numer4->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
         denom4->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
       }
