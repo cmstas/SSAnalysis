@@ -64,24 +64,12 @@ void closure(){
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.16/TTBAR_multiIso.root");
 
   //nfakes
-  float nFake_e0 = 0; 
-  float nFake_e1 = 0; 
-  float nFake_e2 = 0; 
-  float nFake_e3 = 0; 
-  float nFake_m0 = 0; 
-  float nFake_m1 = 0; 
-  float nFake_m2 = 0; 
-  float nFake_m3 = 0; 
+  float nFake_e[4] = { 0 }; 
+  float nFake_m[4] = { 0 }; 
 
   //npred
-  float nPred_e0 = 0; 
-  float nPred_e1 = 0; 
-  float nPred_e2 = 0; 
-  float nPred_e3 = 0; 
-  float nPred_m0 = 0; 
-  float nPred_m1 = 0; 
-  float nPred_m2 = 0; 
-  float nPred_m3 = 0; 
+  float nPred_e[4] = { 0 }; 
+  float nPred_m[4] = { 0 }; 
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -118,41 +106,20 @@ void closure(){
       if (baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_p4().pt(), ss::lep2_p4().pt()) < 0) continue;
       if (analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt()) != HighHigh) continue;
 
-      //Actual yield -- events that are fake, SIP3D < 4 and isolated
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 0 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso()) nFake_e0 += ss::scale1fb()*10.0; 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 0 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso()) nFake_e0 += ss::scale1fb()*10.0; 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 1 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso()) nFake_e1 += ss::scale1fb()*10.0; 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 1 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso()) nFake_e1 += ss::scale1fb()*10.0; 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 2 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso()) nFake_e2 += ss::scale1fb()*10.0; 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 2 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso()) nFake_e2 += ss::scale1fb()*10.0; 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() >= 3 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso()) nFake_e3 += ss::scale1fb()*10.0; 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() >= 3 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso()) nFake_e3 += ss::scale1fb()*10.0; 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 0 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso()) nFake_m0 += ss::scale1fb()*10.0; 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 0 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso()) nFake_m0 += ss::scale1fb()*10.0; 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 1 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso()) nFake_m1 += ss::scale1fb()*10.0; 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 1 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso()) nFake_m1 += ss::scale1fb()*10.0; 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 2 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso()) nFake_m2 += ss::scale1fb()*10.0; 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 2 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso()) nFake_m2 += ss::scale1fb()*10.0; 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() >= 3 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso()) nFake_m3 += ss::scale1fb()*10.0; 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() >= 3 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso()) nFake_m3 += ss::scale1fb()*10.0; 
-
-      //Predicted yield -- events that are real, SIP3D < 4, and not isolated
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 0 && abs(ss::lep1_sip()) < 4) nPred_e0 += ss::scale1fb()*10.0*functionFR(ss::lep1_p4(), 11); 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 0 && abs(ss::lep2_sip()) < 4) nPred_e0 += ss::scale1fb()*10.0*functionFR(ss::lep2_p4(), 11); 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 1 && abs(ss::lep1_sip()) < 4) nPred_e1 += ss::scale1fb()*10.0*functionFR(ss::lep1_p4(), 11); 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 1 && abs(ss::lep2_sip()) < 4) nPred_e1 += ss::scale1fb()*10.0*functionFR(ss::lep2_p4(), 11); 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 2 && abs(ss::lep1_sip()) < 4) nPred_e2 += ss::scale1fb()*10.0*functionFR(ss::lep1_p4(), 11); 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() == 2 && abs(ss::lep2_sip()) < 4) nPred_e2 += ss::scale1fb()*10.0*functionFR(ss::lep2_p4(), 11); 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() >= 3 && abs(ss::lep1_sip()) < 4) nPred_e3 += ss::scale1fb()*10.0*functionFR(ss::lep1_p4(), 11); 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 11 && ss::nbtags() >= 3 && abs(ss::lep2_sip()) < 4) nPred_e3 += ss::scale1fb()*10.0*functionFR(ss::lep2_p4(), 11); 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 0 && abs(ss::lep1_sip()) < 4) nPred_m0 += ss::scale1fb()*10.0*functionFR(ss::lep1_p4(), 13); 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 0 && abs(ss::lep2_sip()) < 4) nPred_m0 += ss::scale1fb()*10.0*functionFR(ss::lep2_p4(), 13); 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 1 && abs(ss::lep1_sip()) < 4) nPred_m1 += ss::scale1fb()*10.0*functionFR(ss::lep1_p4(), 13); 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 1 && abs(ss::lep2_sip()) < 4) nPred_m1 += ss::scale1fb()*10.0*functionFR(ss::lep2_p4(), 13); 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 2 && abs(ss::lep1_sip()) < 4) nPred_m2 += ss::scale1fb()*10.0*functionFR(ss::lep1_p4(), 13); 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() == 2 && abs(ss::lep2_sip()) < 4) nPred_m2 += ss::scale1fb()*10.0*functionFR(ss::lep2_p4(), 13); 
-      if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() >= 3 && abs(ss::lep1_sip()) < 4) nPred_m3 += ss::scale1fb()*10.0*functionFR(ss::lep1_p4(), 13); 
-      if (ss::lep2_isFakeLeg() && abs(ss::lep1_id()) == 13 && ss::nbtags() >= 3 && abs(ss::lep2_sip()) < 4) nPred_m3 += ss::scale1fb()*10.0*functionFR(ss::lep2_p4(), 13); 
+      //Calculate yields
+      for (int i = 0; i < 4; i++){
+        if (ss::nbtags() != i) continue;
+        //Actual yield -- events that are fake, SIP3D < 4 and isolated
+        if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso()) nFake_e[i] += ss::scale1fb()*10.0; 
+        if (ss::lep2_isFakeLeg() && abs(ss::lep2_id()) == 11 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso()) nFake_e[i] += ss::scale1fb()*10.0; 
+        if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso()) nFake_m[i] += ss::scale1fb()*10.0; 
+        if (ss::lep2_isFakeLeg() && abs(ss::lep2_id()) == 13 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso()) nFake_m[i] += ss::scale1fb()*10.0; 
+        //Predicted yield -- events that are real, SIP3D < 4, and not isolated
+        if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && abs(ss::lep1_sip()) < 4) nPred_e[i] += ss::scale1fb()*10.0*functionFR(ss::lep1_p4(), 11); 
+        if (ss::lep2_isFakeLeg() && abs(ss::lep2_id()) == 11 && abs(ss::lep2_sip()) < 4) nPred_e[i] += ss::scale1fb()*10.0*functionFR(ss::lep2_p4(), 11); 
+        if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && abs(ss::lep1_sip()) < 4) nPred_m[i] += ss::scale1fb()*10.0*functionFR(ss::lep1_p4(), 13); 
+        if (ss::lep2_isFakeLeg() && abs(ss::lep2_id()) == 13 && abs(ss::lep2_sip()) < 4) nPred_m[i] += ss::scale1fb()*10.0*functionFR(ss::lep2_p4(), 13); 
+      }
 
     }//event loop
   }//file loop
@@ -162,10 +129,10 @@ void closure(){
   table.useTitle(); 
 
   table.setTable() ( "pred", "obs", "pred/obs", "(p-o)/p") 
-       ("0 b-tags" , nPred_e0, nFake_e0, nPred_e0/nFake_e0, fabs(nPred_e0-nFake_e0)/nPred_e0) 
-       ("1 b-tags" , nPred_e1, nFake_e1, nPred_e1/nFake_e1, fabs(nPred_e1-nFake_e1)/nPred_e1) 
-       ("2 b-tags" , nPred_e2, nFake_e2, nPred_e2/nFake_e2, fabs(nPred_e2-nFake_e2)/nPred_e2) 
-       ("3+ b-tags", nPred_e3, nFake_e3, nPred_e3/nFake_e3, fabs(nPred_e3-nFake_e3)/nPred_e3);
+       ("0 b-tags" , nPred_e[0], nFake_e[0], nPred_e[0]/nFake_e[0], fabs(nPred_e[0]-nFake_e[0])/nPred_e[0]) 
+       ("1 b-tags" , nPred_e[1], nFake_e[1], nPred_e[1]/nFake_e[1], fabs(nPred_e[1]-nFake_e[1])/nPred_e[1]) 
+       ("2 b-tags" , nPred_e[2], nFake_e[2], nPred_e[2]/nFake_e[2], fabs(nPred_e[2]-nFake_e[2])/nPred_e[2]) 
+       ("3+ b-tags", nPred_e[3], nFake_e[3], nPred_e[3]/nFake_e[3], fabs(nPred_e[3]-nFake_e[3])/nPred_e[3]);
   table.print();
 
   CTable table2; 
@@ -173,10 +140,10 @@ void closure(){
   table2.useTitle(); 
 
   table2.setTable() ( "pred", "obs", "pred/obs", "(p-o)/p") 
-       ("0 b-tags" , nPred_m0, nFake_m0, nPred_m0/nFake_m0, fabs(nPred_m0-nFake_m0)/nPred_m0) 
-       ("1 b-tags" , nPred_m1, nFake_m1, nPred_m1/nFake_m1, fabs(nPred_m1-nFake_m1)/nPred_m1) 
-       ("2 b-tags" , nPred_m2, nFake_m2, nPred_m2/nFake_m2, fabs(nPred_m2-nFake_m2)/nPred_m2) 
-       ("3+ b-tags", nPred_m3, nFake_m3, nPred_m3/nFake_m3, fabs(nPred_m3-nFake_m3)/nPred_m3);
+       ("0 b-tags" , nPred_m[0], nFake_m[0], nPred_m[0]/nFake_m[0], fabs(nPred_m[0]-nFake_m[0])/nPred_m[0]) 
+       ("1 b-tags" , nPred_m[1], nFake_m[1], nPred_m[1]/nFake_m[1], fabs(nPred_m[1]-nFake_m[1])/nPred_m[1]) 
+       ("2 b-tags" , nPred_m[2], nFake_m[2], nPred_m[2]/nFake_m[2], fabs(nPred_m[2]-nFake_m[2])/nPred_m[2]) 
+       ("3+ b-tags", nPred_m[3], nFake_m[3], nPred_m[3]/nFake_m[3], fabs(nPred_m[3]-nFake_m[3])/nPred_m[3]);
   table2.print();
 
 }
