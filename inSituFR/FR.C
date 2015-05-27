@@ -9,13 +9,22 @@
 float lumi = 10.0;
 
 //Errors on MC or data?
-bool dataErrors = true;
+bool dataErrors = false;
 
 //Bin fine or actual
 int binFine = false; 
 
 //Eta or pT plot
 bool withEta = true;
+
+//testPC -- test the prompt contamiantion, ie allow numer-numer events
+bool testPC = true;
+
+//Include DY and W+Jets
+bool others = true;
+
+//Path
+string path = "v1.18";
 
 void FR1D(){
 
@@ -68,7 +77,11 @@ void FR1D(){
 
   //Declare chain
   TChain *chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.16/TTBAR_multiIso.root");
+  chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root", path.c_str()));
+  if (others){
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY.root", path.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root", path.c_str()));
+  }
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -97,51 +110,47 @@ void FR1D(){
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
 
-      //Reject events that don't pass selection (inclusive for SIP and multiIso)
-      if (ss::hyp_class() == 1 || ss::hyp_class() == 4) continue;
-      if (!ss::truth_inSituFR()) continue;
-
       //Event Selection
       if (ss::njets() < 2) continue;
       if (ss::ht() < 80) continue;
       if (ss::met() < 30 && ss::ht() < 500) continue;
 
       //If lep is the fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_sip() > 4){
+      if (abs(ss::lep1_id()) == 11 && ss::lep2_passes_id() && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_miniIso() < 0.4 && ss::lep1_sip() > 4){
         if (ss::lep1_multiIso()) numer->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
         denom->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
+      if (abs(ss::lep2_id()) == 11 && ss::lep1_passes_id() && ss::lep1_isGoodLeg() && ss::lep2_isFakeLeg() && ss::lep2_miniIso() < 0.4 && ss::lep2_sip() > 4){
         if (ss::lep2_multiIso()) numer->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
         denom->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
       }
 
       //If lep is the fake one and it passes SIPID < 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_sip() < 4){
+      if (abs(ss::lep1_id()) == 11 && ss::lep2_passes_id() && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_miniIso() < 0.4 && ss::lep1_sip() < 4){
         if (ss::lep1_multiIso()) numer2->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
         denom2->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_sip() < 4){
+      if (abs(ss::lep2_id()) == 11 && ss::lep1_passes_id() && ss::lep2_isFakeLeg() && ss::lep2_miniIso() < 0.4 && ss::lep2_sip() < 4){
         if (ss::lep2_multiIso()) numer2->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
         denom2->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
       }
 
       //If lep is the fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_sip() > 4){
+      if (abs(ss::lep1_id()) == 11 && ss::lep2_passes_id() && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_miniIso() < 0.4 && ss::lep1_sip() > 4){
         if (ss::lep1_multiIso()) numer3->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
         denom3->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
+      if (abs(ss::lep2_id()) == 11 && ss::lep1_passes_id() && ss::lep2_isFakeLeg() && ss::lep2_miniIso() < 0.4 && ss::lep2_sip() > 4){
         if (ss::lep2_multiIso()) numer3->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
         denom3->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
       }
 
       //If lep is the fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_sip() > 4){
+      if (abs(ss::lep1_id()) == 11 && ss::lep2_passes_id() && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_miniIso() < 0.4 && ss::lep1_sip() > 4){
         if (ss::lep1_multiIso()) numer4->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
         denom4->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
+      if (abs(ss::lep2_id()) == 11 && ss::lep1_passes_id() && ss::lep2_isFakeLeg() && ss::lep2_miniIso() < 0.4 && ss::lep2_sip() > 4){
         if (ss::lep2_multiIso()) numer4->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
         denom4->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
       }
@@ -238,7 +247,11 @@ void FR2D(){
 
   //Declare chain
   TChain *chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.16/TTBAR_multiIso.root");
+  chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root", path.c_str()));
+  if (others){
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY.root", path.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root", path.c_str()));
+  }
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -267,51 +280,47 @@ void FR2D(){
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
 
-      //Reject events that don't pass selection (inclusive for SIP and multiIso)
-      if (ss::hyp_class() == 1 || ss::hyp_class() == 4) continue;
-      if (!ss::truth_inSituFR()) continue;
-
       //Event Selection
       if (ss::njets() < 2) continue;
       if (ss::ht() < 80) continue;
       if (ss::met() < 30 && ss::ht() < 500) continue;
 
-      //If lep is the fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_sip() > 4){
+      //If lep is the Fake one and it passes SIPID > 4, it goes in plot
+      if (abs(ss::lep1_id()) == 11 && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_sip() > 4){
         if (ss::lep1_multiIso()) numer->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
          denom->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
+      if (abs(ss::lep2_id()) == 11 && ss::lep1_isGoodLeg() && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
         if (ss::lep2_multiIso()) numer->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
          denom->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
-      //If lep is the fake one and it passes SIPID < 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep1_isFakeLeg() && ss::lep1_sip() < 4){
+      //If lep is the Fake one and it passes SIPID < 4, it goes in plot
+      if (abs(ss::lep1_id()) == 11 && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_sip() < 4){
         if (ss::lep1_multiIso()) numer2->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
         denom2->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep2_isFakeLeg() && ss::lep2_sip() < 4){
+      if (abs(ss::lep2_id()) == 11 && ss::lep1_isGoodLeg() && ss::lep2_isFakeLeg() && ss::lep2_sip() < 4){
         if (ss::lep2_multiIso()) numer2->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
         denom2->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
-      //If lep is the fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 13 && ss::lep1_isFakeLeg() && ss::lep1_sip() > 4){
+      //If lep is the Fake one and it passes SIPID > 4, it goes in plot
+      if (abs(ss::lep1_id()) == 13 && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_sip() > 4){
         if (ss::lep1_multiIso()) numer3->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
          denom3->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 13 && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
+      if (abs(ss::lep2_id()) == 13 && ss::lep1_isGoodLeg() && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
         if (ss::lep2_multiIso()) numer3->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
          denom3->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
-      //If lep is the fake one and it passes SIPID < 4, it goes in plot
-      if (abs(ss::lep1_id()) == 13 && ss::lep1_isFakeLeg() && ss::lep1_sip() < 4){
+      //If lep is the Fake one and it passes SIPID < 4, it goes in plot
+      if (abs(ss::lep1_id()) == 13 && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_sip() < 4){
         if (ss::lep1_multiIso()) numer4->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
         denom4->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 13 && ss::lep2_isFakeLeg() && ss::lep2_sip() < 4){
+      if (abs(ss::lep2_id()) == 13 && ss::lep1_isGoodLeg() && ss::lep2_isFakeLeg() && ss::lep2_sip() < 4){
         if (ss::lep2_multiIso()) numer4->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
         denom4->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }

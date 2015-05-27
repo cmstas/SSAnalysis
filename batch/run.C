@@ -4,7 +4,7 @@
 #include "TFile.h"
 #include "helper_babymaker.h"
 
-enum sample_t { TTBAR, TTW, TTZ, WZ, T1TTTT_1500, T1TTTT_1200, T5qqqqWW_1200_1000_800, T5qqqqWW_deg_1000_315_300 };
+enum sample_t { TTBAR, TTW, TTZ, WZ, T1TTTT_1500, T1TTTT_1200, T5qqqqWW_1200_1000_800, T5qqqqWW_deg_1000_315_300, DY, WJets };
 
 void run(sample_t which, int file, IsolationMethods ptrel){
 
@@ -47,6 +47,16 @@ void run(sample_t which, int file, IsolationMethods ptrel){
     case T1TTTT_1200:
       name = "SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1";
       shortname = "t1tttt_1200";
+      path = "root://cmsxrootd.fnal.gov///store/group/snt/phys14/"; 
+      break;
+    case DY:
+      name = "DYJetsToLL_M-50_13TeV-madgraph-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+      shortname = "DY";
+      path = "root://cmsxrootd.fnal.gov///store/group/snt/phys14/"; 
+      break;
+    case WJets:
+      name = "WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+      shortname = "WJets";
       path = "root://cmsxrootd.fnal.gov///store/group/snt/phys14/"; 
       break;
     case  T5qqqqWW_1200_1000_800:

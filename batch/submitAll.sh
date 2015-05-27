@@ -21,13 +21,13 @@ pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 nIter=0
 for ptrel in "4"
 do
-  for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200" "T5qqqqWW_1200_1000_800" "T5qqqqWW_deg_1000_315_300"
+  for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200" "DY" "WJets" "T5qqqqWW_1200_1000_800" "T5qqqqWW_deg_1000_315_300"
   do
     #Iter
     nIter=$(( $nIter + 1 ))
 
     #Get Path
-    if [ "$nIter" -lt "7" ]; then path=$pathPublic; else path=$pathPrivate; fi 
+    if [ "$nIter" -lt "9" ]; then path=$pathPublic; else path=$pathPrivate; fi 
 
     #Get Name
     if   [ $sname == "TTW"         ]; then name="TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1"; 
@@ -36,25 +36,15 @@ do
     elif [ $sname == "WZ"          ]; then name="WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1"; 
     elif [ $sname == "T1TTTT_1500" ]; then name="SMS-T1tttt_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1";
     elif [ $sname == "T1TTTT_1200" ]; then name="SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1";
+    elif [ $sname == "DY"          ]; then name="DYJetsToLL_M-50_13TeV-madgraph-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+    elif [ $sname == "WJets"       ]; then name="WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
     else name=$sname 
     fi
 
     #Get pTRel suffix
-    if [ "$ptrel" == "0" ] 
+    if [ "$ptrel" == "4" ] 
     then
       ptrelsuf=""
-    elif [ "$ptrel" == "1" ] 
-    then
-      ptrelsuf="_ptRel"
-    elif [ "$ptrel" == "2" ] 
-    then
-      ptrelsuf="_miniIso"
-    elif [ "$ptrel" == "3" ] 
-    then
-      ptrelsuf="_newMiniIso"
-    elif [ "$ptrel" == "4" ] 
-    then
-      ptrelsuf="_multiIso"
     fi
   
     #Get number of files
