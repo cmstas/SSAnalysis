@@ -6,12 +6,7 @@ using namespace tas;
 void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase){
 
   //Create Baby
-  string suffix = "";
-  if (isoCase == PtRel) suffix = "_ptRel";
-  else if (isoCase == MiniIso) suffix = "_miniIso";
-  else if (isoCase == NewMiniIso) suffix = "_newMiniIso";
-  else if (isoCase == MultiIso) suffix = "_multiIso";
-  BabyFile = new TFile(Form("%s/%s%s.root", path.Data(), output_name, suffix.c_str()), "RECREATE");
+  BabyFile = new TFile(Form("%s/%s.root", path.Data(), output_name), "RECREATE");
   BabyFile->cd();
   BabyTree = new TTree("t", "SS2015 Baby Ntuple");
 
@@ -297,7 +292,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   bool isData = tas::evt_isRealData();
 
   //Sync stuff
-  //if (tas::evt_event() != 132278) return -1;
+  //if (tas::evt_event() != 54977) return -1;
   //verbose = true;
   //readMVA* globalEleMVAreader = 0;
   //globalEleMVAreader = new readMVA();
@@ -395,17 +390,15 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   bool passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx); 
   bool passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx); 
   if (passed_id_inSituFR_lep1 && passed_id_inSituFR_lep2){
-    bool passed_id_numer_lep1 = isGoodLepton(lep1_id, lep1_idx, isoCase);
-    bool passed_id_numer_lep2 = isGoodLepton(lep2_id, lep2_idx, isoCase);
     int truth_lep1 = lepMotherID_inSituFR( Lep(lep1_id, lep1_idx) ); 
     int truth_lep2 = lepMotherID_inSituFR( Lep(lep2_id, lep2_idx) ); 
 
     //Need one good leg and one fake leg
-    if (truth_lep1 > 0 && passed_id_numer_lep1) lep1_isGoodLeg = true;
+    if (truth_lep1 > 0) lep1_isGoodLeg = true;
     else lep1_isGoodLeg = false;
     if (truth_lep1 < 0) lep1_isFakeLeg = true;
     else lep1_isFakeLeg = false;
-    if (truth_lep2 > 0 && passed_id_numer_lep2) lep2_isGoodLeg = true;
+    if (truth_lep2 > 0) lep2_isGoodLeg = true;
     else lep2_isGoodLeg = false;
     if (truth_lep2 < 0) lep2_isFakeLeg = true;
     else lep2_isFakeLeg = false;
@@ -448,6 +441,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   if (verbose){
     cout << "njets: " << njets << endl;
     cout << "nbtags: " <<  nbtags << endl;
+    cout << "Printing Jets: " << endl;
     for (unsigned int i = 0; i < jets.size(); i++) cout << i << " " << jets[i].pt() << " " << jets[i].eta() << endl;
   } 
 
@@ -497,7 +491,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   for (unsigned int index = 0; index < els_fbrem().size(); index++){
     if (!isGoodVetoElectron(index)) continue;
     if (tas::els_p4().at(index).pt() < 7) continue;
-    if ((tas::els_p4().at(index).eta()) > 2.4) continue;
+    if ((tas::els_p4().at(index).eta()) > 2.5) continue;
     eleID_kfhits          .push_back(tas::els_ckf_laywithmeas().at(index));
     eleID_oldsigmaietaieta.push_back(tas::els_sigmaIEtaIEta_full5x5().at(index)); 
     eleID_oldsigmaiphiiphi.push_back(tas::els_sigmaIPhiIPhi_full5x5().at(index));
