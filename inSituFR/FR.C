@@ -18,7 +18,7 @@ int binFine = false;
 bool withEta = true;
 
 //testPC -- test the prompt contamiantion, ie allow numer-numer events
-bool testPC = true;
+bool testPC = false;
 
 //Include DY and W+Jets
 bool others = true;
