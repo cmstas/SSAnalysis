@@ -37,14 +37,14 @@ do
   echo $sname $numberOfFiles
 
   #If only one, done
-  if [ "$numberOfFiles" == "1" ]; then cp "$pathCondor/${sname_lower}_1_multiIso.root" . ; continue; fi 
+  if [ "$numberOfFiles" == "1" ]; then cp "$pathCondor/${sname_lower}_1" "${sname_lower}" ; continue; fi 
   
   #Write array with file names
   for (( counter=1; counter<=$numberOfFiles; counter++ ))
   do
-    file5[$(( $counter - 1 )) ]="$pathCondor/${sname_lower}_${counter}_multiIso.root"
+    file5[$(( $counter - 1 )) ]="$pathCondor/${sname_lower}_${counter}.root"
   done
 
-  hadd ${sname}_multiIso.root ${file5[*]}
+  hadd ${sname}.root ${file5[*]}
 
  done 
