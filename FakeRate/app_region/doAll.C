@@ -8,12 +8,13 @@
   gROOT->ProcessLine(".L ../../CORE/MCSelections.cc+");
   gROOT->ProcessLine(".L ../../CORE/JetSelections.cc+");
   gROOT->ProcessLine(".L ../../CORE/SSSelections.cc+");
+  gROOT->ProcessLine(".L ../../Tools/utils.cc+");
 
   gROOT->ProcessLine(".L ScanChain.C+");
 
   bool doConeCorr   = 1;
   bool doJetCorr    = 0;
-  bool doLooseEMVA  = 0;
+  bool doLooseEMVA  = 1;
   bool doPtRatioCor = 0;
   bool doBonly      = 0;
   bool doConly      = 0;

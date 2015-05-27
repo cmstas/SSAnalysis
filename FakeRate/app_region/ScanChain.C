@@ -22,6 +22,7 @@
 #include "TString.h"
 
 #include "../../CORE/SSSelections.h"
+#include "../../Tools/utils.h"
 
 // lepfilter
 #include "lepfilter.cc"
@@ -51,6 +52,8 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   obs->GetXaxis()->SetTitle("Signal Region"); 
   obs->GetYaxis()->SetTitle("Events");
   obs->SetLineColor(kRed);
+
+  pred->GetYaxis()->SetRangeUser(0,1.1*std::max(pred->GetMaximum(),obs->GetMaximum()));
 
   if (TString(pred->GetName()).Contains("HT")) {
     pred->GetXaxis()->SetTitle("HT [GeV]"); 
@@ -624,6 +627,11 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
 	  //------------------------------------------------------------------------
 	  float mtmin = ss.mt() > ss.mt_l2() ? ss.mt_l2() : ss.mt();
+	  if (coneCorr) {
+	    float mtl1 = MT(lep1_pT, ss.lep1_p4().phi(), ss.met(), ss.metPhi());
+	    float mtl2 = MT(lep2_pT, ss.lep2_p4().phi(), ss.met(), ss.metPhi());
+	    mtmin = mtl1 > mtl2 ? mtl2 : mtl1;
+	  }
 	  anal_type_t ac_base = analysisCategory(lep1_pT, lep2_pT);//fixme use this as selection
 	  int br = baselineRegion(ss.njets(), ss.nbtags(), ss.met(), ss.ht(), lep1_pT, lep2_pT);
 	  if (br<0) continue;
@@ -711,24 +719,24 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				  Npn_histo_HT_obs->Fill(ss.ht(), weight);
 				  Npn_histo_MET_obs->Fill(ss.met(), weight);
 				  Npn_histo_MTMIN_obs->Fill(mtmin, weight);
-				  Npn_histo_L1PT_obs->Fill(lep1_pT, weight);
-				  Npn_histo_L2PT_obs->Fill(lep2_pT, weight);
+				  Npn_histo_L1PT_obs->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), weight);
+				  Npn_histo_L2PT_obs->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), weight);
 				  if(abs(ss.lep2_id()) == 11) {
 				    Npn_histo_sr_obs_el->Fill(sr, weight);
 				    Npn_histo_br_obs_el->Fill(br, weight);
 				    Npn_histo_HT_obs_el->Fill(ss.ht(), weight);
 				    Npn_histo_MET_obs_el->Fill(ss.met(), weight);
 				    Npn_histo_MTMIN_obs_el->Fill(mtmin, weight);
-				    Npn_histo_L1PT_obs_el->Fill(lep1_pT, weight);
-				    Npn_histo_L2PT_obs_el->Fill(lep2_pT, weight);
+				    Npn_histo_L1PT_obs_el->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), weight);
+				    Npn_histo_L2PT_obs_el->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), weight);
 				  } else if(abs(ss.lep2_id()) == 13) {
 				    Npn_histo_sr_obs_mu->Fill(sr, weight);
 				    Npn_histo_br_obs_mu->Fill(br, weight);
 				    Npn_histo_HT_obs_mu->Fill(ss.ht(), weight);
 				    Npn_histo_MET_obs_mu->Fill(ss.met(), weight);
 				    Npn_histo_MTMIN_obs_mu->Fill(mtmin, weight);
-				    Npn_histo_L1PT_obs_mu->Fill(lep1_pT, weight);
-				    Npn_histo_L2PT_obs_mu->Fill(lep2_pT, weight);
+				    Npn_histo_L1PT_obs_mu->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), weight);
+				    Npn_histo_L2PT_obs_mu->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), weight);
 				  }
 				}
 			  else if( ss.lep1_motherID()<=0 && ss.lep2_motherID()==1 ) //lep1 is nonprompt
@@ -740,24 +748,24 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				  Npn_histo_HT_obs->Fill(ss.ht(), weight);
 				  Npn_histo_MET_obs->Fill(ss.met(), weight);
 				  Npn_histo_MTMIN_obs->Fill(mtmin, weight);
-				  Npn_histo_L1PT_obs->Fill(lep1_pT, weight);
-				  Npn_histo_L2PT_obs->Fill(lep2_pT, weight);
+				  Npn_histo_L1PT_obs->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), weight);
+				  Npn_histo_L2PT_obs->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), weight);
 				  if(abs(ss.lep1_id()) == 11) {
 				    Npn_histo_sr_obs_el->Fill(sr, weight);
 				    Npn_histo_br_obs_el->Fill(br, weight);
 				    Npn_histo_HT_obs_el->Fill(ss.ht(), weight);
  				    Npn_histo_MET_obs_el->Fill(ss.met(), weight);
  				    Npn_histo_MTMIN_obs_el->Fill(mtmin, weight);
- 				    Npn_histo_L1PT_obs_el->Fill(lep1_pT, weight);
- 				    Npn_histo_L2PT_obs_el->Fill(lep2_pT, weight);
+ 				    Npn_histo_L1PT_obs_el->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), weight);
+ 				    Npn_histo_L2PT_obs_el->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), weight);
 				  } else if(abs(ss.lep1_id()) == 13) {
 				    Npn_histo_sr_obs_mu->Fill(sr, weight);
 				    Npn_histo_br_obs_mu->Fill(br, weight);
 				    Npn_histo_HT_obs_mu->Fill(ss.ht(), weight);
 				    Npn_histo_MET_obs_mu->Fill(ss.met(), weight);
 				    Npn_histo_MTMIN_obs_mu->Fill(mtmin, weight);
-				    Npn_histo_L1PT_obs_mu->Fill(lep1_pT, weight);
-				    Npn_histo_L2PT_obs_mu->Fill(lep2_pT, weight);
+				    Npn_histo_L1PT_obs_mu->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), weight);
+				    Npn_histo_L2PT_obs_mu->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), weight);
 				  }
 				}
 			  else if( (ss.lep1_motherID()<=0 && ss.lep2_motherID()<=0) ) //don't need to explicitly write it.  can just use else
@@ -851,15 +859,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 					  Npn_histo_HT_pred_el->Fill(ss.ht(), (e2/(1-e2))*weight);
 					  Npn_histo_MET_pred_el->Fill(ss.met(), (e2/(1-e2))*weight);
 					  Npn_histo_MTMIN_pred_el->Fill(mtmin, (e2/(1-e2))*weight);
-					  Npn_histo_L1PT_pred_el->Fill(lep1_pT, (e2/(1-e2))*weight);
-					  Npn_histo_L2PT_pred_el->Fill(lep2_pT, (e2/(1-e2))*weight);
+					  Npn_histo_L1PT_pred_el->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), (e2/(1-e2))*weight);
+					  Npn_histo_L2PT_pred_el->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), (e2/(1-e2))*weight);
 					  if (sr>=0) Npn_histo_sr_err2_pred_el[sr]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  Npn_histo_br_err2_pred_el[br]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  Npn_histo_HT_err2_pred_el[Npn_histo_HT_pred_el->FindBin(ss.ht())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  Npn_histo_MET_err2_pred_el[Npn_histo_MET_pred_el->FindBin(ss.met())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  Npn_histo_MTMIN_err2_pred_el[Npn_histo_MTMIN_pred_el->FindBin(mtmin)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
-					  Npn_histo_L1PT_err2_pred_el[Npn_histo_L1PT_pred_el->FindBin(lep1_pT)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
-					  Npn_histo_L2PT_err2_pred_el[Npn_histo_L2PT_pred_el->FindBin(lep2_pT)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_L1PT_err2_pred_el[Npn_histo_L1PT_pred_el->FindBin(coneCorr ? lep1_pT : ss.lep1_p4().pt())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_L2PT_err2_pred_el[Npn_histo_L2PT_pred_el->FindBin(coneCorr ? lep2_pT : ss.lep2_p4().pt())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  // fill el abundance histos here w/ nbtags
 					  if(ss.lep2_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight);
@@ -874,15 +882,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 					  Npn_histo_HT_pred_mu->Fill(ss.ht(), (e2/(1-e2))*weight);
 					  Npn_histo_MET_pred_mu->Fill(ss.met(), (e2/(1-e2))*weight);
 					  Npn_histo_MTMIN_pred_mu->Fill(mtmin, (e2/(1-e2))*weight);
-					  Npn_histo_L1PT_pred_mu->Fill(lep1_pT, (e2/(1-e2))*weight);
-					  Npn_histo_L2PT_pred_mu->Fill(lep2_pT, (e2/(1-e2))*weight);
+					  Npn_histo_L1PT_pred_mu->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), (e2/(1-e2))*weight);
+					  Npn_histo_L2PT_pred_mu->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), (e2/(1-e2))*weight);
 					  if (sr>=0) Npn_histo_sr_err2_pred_mu[sr]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  Npn_histo_br_err2_pred_mu[br]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  Npn_histo_HT_err2_pred_mu[Npn_histo_HT_pred_mu->FindBin(ss.ht())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  Npn_histo_MET_err2_pred_mu[Npn_histo_MET_pred_mu->FindBin(ss.met())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  Npn_histo_MTMIN_err2_pred_mu[Npn_histo_MTMIN_pred_mu->FindBin(mtmin)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
-					  Npn_histo_L1PT_err2_pred_mu[Npn_histo_L1PT_pred_mu->FindBin(lep1_pT)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
-					  Npn_histo_L2PT_err2_pred_mu[Npn_histo_L2PT_pred_mu->FindBin(lep2_pT)-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_L1PT_err2_pred_mu[Npn_histo_L1PT_pred_mu->FindBin(coneCorr ? lep1_pT : ss.lep1_p4().pt())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
+					  Npn_histo_L2PT_err2_pred_mu[Npn_histo_L2PT_pred_mu->FindBin(coneCorr ? lep2_pT : ss.lep2_p4().pt())-1]->Fill(lep2_pT, fabs(ss.lep2_p4().eta()), weight);
 					  // fill mu abundance histos here w/ nbtags
 					  if(ss.lep2_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep2_motherID() == -2 || ss.lep2_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight);
@@ -896,8 +904,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				  Npn_histo_HT_pred->Fill(ss.ht(), (e2/(1-e2))*weight);
 				  Npn_histo_MET_pred->Fill(ss.met(), (e2/(1-e2))*weight);
 				  Npn_histo_MTMIN_pred->Fill(mtmin, (e2/(1-e2))*weight);
-				  Npn_histo_L1PT_pred->Fill(lep1_pT, (e2/(1-e2))*weight);
-				  Npn_histo_L2PT_pred->Fill(lep2_pT, (e2/(1-e2))*weight);
+				  Npn_histo_L1PT_pred->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), (e2/(1-e2))*weight);
+				  Npn_histo_L2PT_pred->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), (e2/(1-e2))*weight);
 				}
 			  else if( lep1_passes_id==0 && lep2_passes_id )   //lep1 is loose-not-tight, lep2 is tight
 				{
@@ -931,15 +939,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 					  Npn_histo_HT_pred_el->Fill(ss.ht(), (e1/(1-e1))*weight);
 					  Npn_histo_MET_pred_el->Fill(ss.met(), (e1/(1-e1))*weight);
 					  Npn_histo_MTMIN_pred_el->Fill(mtmin, (e1/(1-e1))*weight);
-					  Npn_histo_L1PT_pred_el->Fill(lep1_pT, (e1/(1-e1))*weight);
-					  Npn_histo_L2PT_pred_el->Fill(lep2_pT, (e1/(1-e1))*weight);
+					  Npn_histo_L1PT_pred_el->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), (e1/(1-e1))*weight);
+					  Npn_histo_L2PT_pred_el->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), (e1/(1-e1))*weight);
 					  if (sr>=0) Npn_histo_sr_err2_pred_el[sr]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  Npn_histo_br_err2_pred_el[br]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  Npn_histo_HT_err2_pred_el[Npn_histo_HT_pred_el->FindBin(ss.ht())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  Npn_histo_MET_err2_pred_el[Npn_histo_MET_pred_el->FindBin(ss.met())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  Npn_histo_MTMIN_err2_pred_el[Npn_histo_MTMIN_pred_el->FindBin(mtmin)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
-					  Npn_histo_L1PT_err2_pred_el[Npn_histo_L1PT_pred_el->FindBin(lep1_pT)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
-					  Npn_histo_L2PT_err2_pred_el[Npn_histo_L2PT_pred_el->FindBin(lep2_pT)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_L1PT_err2_pred_el[Npn_histo_L1PT_pred_el->FindBin(coneCorr ? lep1_pT : ss.lep1_p4().pt())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_L2PT_err2_pred_el[Npn_histo_L2PT_pred_el->FindBin(coneCorr ? lep2_pT : ss.lep2_p4().pt())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  // fill el abundance histos here w/ nbtags
 					  if(ss.lep1_motherID() == -1) NBs_BR_histo_e->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_e->Fill(nbjets, weight);
@@ -954,15 +962,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 					  Npn_histo_HT_pred_mu->Fill(ss.ht(), (e1/(1-e1))*weight);
 					  Npn_histo_MET_pred_mu->Fill(ss.met(), (e1/(1-e1))*weight);
 					  Npn_histo_MTMIN_pred_mu->Fill(mtmin, (e1/(1-e1))*weight);
-					  Npn_histo_L1PT_pred_mu->Fill(lep1_pT, (e1/(1-e1))*weight);
-					  Npn_histo_L2PT_pred_mu->Fill(lep2_pT, (e1/(1-e1))*weight);
+					  Npn_histo_L1PT_pred_mu->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), (e1/(1-e1))*weight);
+					  Npn_histo_L2PT_pred_mu->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), (e1/(1-e1))*weight);
 					  if (sr>=0) Npn_histo_sr_err2_pred_mu[sr]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  Npn_histo_br_err2_pred_mu[br]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  Npn_histo_HT_err2_pred_mu[Npn_histo_HT_pred_mu->FindBin(ss.ht())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  Npn_histo_MET_err2_pred_mu[Npn_histo_MET_pred_mu->FindBin(ss.met())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  Npn_histo_MTMIN_err2_pred_mu[Npn_histo_MTMIN_pred_mu->FindBin(mtmin)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
-					  Npn_histo_L1PT_err2_pred_mu[Npn_histo_L1PT_pred_mu->FindBin(lep1_pT)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
-					  Npn_histo_L2PT_err2_pred_mu[Npn_histo_L2PT_pred_mu->FindBin(lep2_pT)-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_L1PT_err2_pred_mu[Npn_histo_L1PT_pred_mu->FindBin(coneCorr ? lep1_pT : ss.lep1_p4().pt())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
+					  Npn_histo_L2PT_err2_pred_mu[Npn_histo_L2PT_pred_mu->FindBin(coneCorr ? lep2_pT : ss.lep2_p4().pt())-1]->Fill(lep1_pT, fabs(ss.lep1_p4().eta()), weight);
 					  // fill el abundance histos here w/ nbtags
 					  if(ss.lep1_motherID() == -1) NBs_BR_histo_mu->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
 					  if(ss.lep1_motherID() == -2 || ss.lep1_motherID() == 0) NnotBs_BR_histo_mu->Fill(nbjets, weight);
@@ -976,8 +984,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				  Npn_histo_HT_pred->Fill(ss.ht(), (e1/(1-e1))*weight);
 				  Npn_histo_MET_pred->Fill(ss.met(), (e1/(1-e1))*weight);
 				  Npn_histo_MTMIN_pred->Fill(mtmin, (e1/(1-e1))*weight);
-				  Npn_histo_L1PT_pred->Fill(lep1_pT, (e1/(1-e1))*weight);
-				  Npn_histo_L2PT_pred->Fill(lep2_pT, (e1/(1-e1))*weight);
+				  Npn_histo_L1PT_pred->Fill(coneCorr ? lep1_pT : ss.lep1_p4().pt(), (e1/(1-e1))*weight);
+				  Npn_histo_L2PT_pred->Fill(coneCorr ? lep2_pT : ss.lep2_p4().pt(), (e1/(1-e1))*weight);
 				}
 			}
 		} //end hyp = 2 if statement
