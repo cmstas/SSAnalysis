@@ -241,6 +241,8 @@ void babyMaker::InitBabyNtuple(){
     lep3_p4 = LorentzVector(0,0,0,0);
     lep1_p4_gen = LorentzVector(0,0,0,0);
     lep2_p4_gen = LorentzVector(0,0,0,0);
+    lep1_closeJet = LorentzVector(0,0,0,0);
+    lep2_closeJet = LorentzVector(0,0,0,0);
     dilep_p4 = LorentzVector(0,0,0,0);
     eleID_kfhits.clear();
     eleID_oldsigmaietaieta.clear();
@@ -407,6 +409,10 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
     if ((lep1_isGoodLeg && lep2_isFakeLeg) || (lep1_isFakeLeg && lep2_isGoodLeg)) truth_inSituFR = true;
     else truth_inSituFR = false; 
  }
+
+  //Closest jet for both leptons
+  lep1_closeJet = closestJet(lep1_p4, 0.4, 2.4);
+  lep2_closeJet = closestJet(lep2_p4, 0.4, 2.4);
   
   //Fill generated lepton variables, ignoring reco (matching to reco done above)
   vector <particle_t> genPair = getGenPair(verbose);
