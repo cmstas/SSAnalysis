@@ -3,7 +3,7 @@
 using namespace tas;
 
 //Main functions
-void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase){
+void babyMaker::MakeBabyNtuple(const char* output_name){
 
   //Create Baby
   BabyFile = new TFile(Form("%s/%s.root", path.Data(), output_name), "RECREATE");
@@ -141,6 +141,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, IsolationMethods isoCase
   BabyTree->Branch("lep2_multiIso"         , &lep2_multiIso          );
   BabyTree->Branch("lep1_sip"              , &lep1_sip               );
   BabyTree->Branch("lep2_sip"              , &lep2_sip               );
+  BabyTree->Branch("lep1_closeJet"         , &lep1_closeJet          );
+  BabyTree->Branch("lep2_closeJet"         , &lep2_closeJet          );
 
 
 

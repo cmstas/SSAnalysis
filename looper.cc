@@ -63,7 +63,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   babyMaker* bm=0;
   if (makebaby){
     bm = new babyMaker(debug);
-    bm->MakeBabyNtuple( Form( "%s%s", prefix.Data(), suffix.Data() ), isoCase );
+    bm->MakeBabyNtuple( Form( "%s%s", prefix.Data(), suffix.Data() ));
   }
   
   //Instiantiate Hists, if making hists

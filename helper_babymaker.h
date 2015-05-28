@@ -27,7 +27,7 @@ class babyMaker {
       verbose = debug;
       evt_cut = 0;
     }
-    void MakeBabyNtuple(const char* output_name, IsolationMethods isoCase);
+    void MakeBabyNtuple(const char* output_name);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
     int ProcessBaby(IsolationMethods isoCase, string filename_in);
@@ -231,4 +231,6 @@ class babyMaker {
     bool lep2_multiIso;
     float lep1_sip; 
     float lep2_sip; 
+    LorentzVector lep1_closeJet;
+    LorentzVector lep2_closeJet;
 };

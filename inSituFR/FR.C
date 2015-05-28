@@ -17,16 +17,21 @@ int binFine = false;
 //Eta or pT plot
 bool withEta = true;
 
-//testPC -- test the prompt contamiantion, ie allow numer-numer events
+//testPC -- test the prompt contamination, ie allow numer-numer events
 bool testPC = false;
 
 //Include DY and W+Jets
-bool others = true;
+bool others = false;
+
+//FO1 vs. FO4
+bool FO4 = false;
 
 //Path
-string path = "v1.18";
+string path = "v1.19";
 
 void FR1D(){
+
+  cout << "WARNING!  This function is out of date, needs synched with 2D one." << endl;
 
   //Declare hists
   int nBinsX = 20;
@@ -284,43 +289,55 @@ void FR2D(){
       if (ss::njets() < 2) continue;
       if (ss::ht() < 80) continue;
       if (ss::met() < 30 && ss::ht() < 500) continue;
+ 
+      //FO1 vs. FO4 selection
+      bool lep1_denom_iso = false;
+      bool lep2_denom_iso = false;
+      float ptrel_cut_1 = (abs(ss::lep1_id()) == 11 ? 7.0 : 6.7); 
+      float ptrel_cut_2 = (abs(ss::lep2_id()) == 11 ? 7.0 : 6.7); 
+      float ptratio_cut_1 = (abs(ss::lep1_id()) == 11 ? 0.7 : 0.68); 
+      float ptratio_cut_2 = (abs(ss::lep2_id()) == 11 ? 0.7 : 0.68); 
+      if (!FO4) lep1_denom_iso = (ss::lep1_miniIso() < 0.4);
+      if (!FO4) lep2_denom_iso = (ss::lep2_miniIso() < 0.4);
+      if (FO4)  lep1_denom_iso = (ss::lep1_miniIso() < 0.4) || (ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1/ptratio_cut_1 + ss::lep1_miniIso())); 
+      if (FO4)  lep2_denom_iso = (ss::lep2_miniIso() < 0.4) || (ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1/ptratio_cut_2 + ss::lep2_miniIso())); 
 
       //If lep is the Fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_sip() > 4){
+      if (abs(ss::lep1_id()) == 11 && (testPC || ss::lep2_isGoodLeg()) && (testPC || ss::lep1_isFakeLeg()) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
         if (ss::lep1_multiIso()) numer->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
          denom->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep1_isGoodLeg() && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
+      else if (abs(ss::lep2_id()) == 11 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
         if (ss::lep2_multiIso()) numer->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
          denom->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID < 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_sip() < 4){
+      else if (abs(ss::lep1_id()) == 11 && (testPC || ss::lep2_isGoodLeg()) && (ss::lep1_isFakeLeg() || testPC) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
         if (ss::lep1_multiIso()) numer2->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
         denom2->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 11 && ss::lep1_isGoodLeg() && ss::lep2_isFakeLeg() && ss::lep2_sip() < 4){
+      else if (abs(ss::lep2_id()) == 11 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
         if (ss::lep2_multiIso()) numer2->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
         denom2->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 13 && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_sip() > 4){
+      else if (abs(ss::lep1_id()) == 13 && (testPC || ss::lep2_isGoodLeg()) && (ss::lep1_isFakeLeg() || testPC) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
         if (ss::lep1_multiIso()) numer3->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
          denom3->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 13 && ss::lep1_isGoodLeg() && ss::lep2_isFakeLeg() && ss::lep2_sip() > 4){
+      else if (abs(ss::lep2_id()) == 13 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
         if (ss::lep2_multiIso()) numer3->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
          denom3->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID < 4, it goes in plot
-      if (abs(ss::lep1_id()) == 13 && ss::lep2_isGoodLeg() && (ss::lep1_isFakeLeg() || (testPC && ss::lep1_isGoodLeg())) && ss::lep1_sip() < 4){
+      else if (abs(ss::lep1_id()) == 13 && (testPC || ss::lep2_isGoodLeg()) && (testPC || ss::lep1_isFakeLeg()) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
         if (ss::lep1_multiIso()) numer4->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
         denom4->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      if (abs(ss::lep2_id()) == 13 && ss::lep1_isGoodLeg() && ss::lep2_isFakeLeg() && ss::lep2_sip() < 4){
+      else if (abs(ss::lep2_id()) == 13 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
         if (ss::lep2_multiIso()) numer4->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
         denom4->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
