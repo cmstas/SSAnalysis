@@ -58,52 +58,53 @@ float functionAG_FO1(LorentzVector lep, int id){
     } 
   } 
   return 0;
-} 
+}  
+
 float functionAG_FO4(LorentzVector lep, int id){
   if (abs(id) == 11){ 
     if (fabs(lep.eta()) < 1){ 
-      if (fabs(lep.pt()) < 15) return 0.0490804;
-      if (fabs(lep.pt()) < 25) return 0.0328247;
-      if (fabs(lep.pt()) < 35) return 0.0232552;
-      if (fabs(lep.pt()) < 50) return 0.0301939;
-      return 0.100629;
+      if (fabs(lep.pt()) < 15) return 0.405474;
+      if (fabs(lep.pt()) < 25) return 0.199506;
+      if (fabs(lep.pt()) < 35) return 0.10685;
+      if (fabs(lep.pt()) < 50) return 0.10411;
+      return 0.181361;
     } 
     if (fabs(lep.eta()) < 2){ 
-      if (fabs(lep.pt()) < 15) return 0.0554459;
-      if (fabs(lep.pt()) < 25) return 0.0391964;
-      if (fabs(lep.pt()) < 35) return 0.0464943;
-      if (fabs(lep.pt()) < 50) return 0.0454541;
-      return 0.164179;
+      if (fabs(lep.pt()) < 15) return 0.438143;
+      if (fabs(lep.pt()) < 25) return 0.242775;
+      if (fabs(lep.pt()) < 35) return 0.181564;
+      if (fabs(lep.pt()) < 50) return 0.124122;
+      return 0.286729;
     } 
     if (fabs(lep.eta()) < 4){ 
-      if (fabs(lep.pt()) < 15) return 0.0650406;
-      if (fabs(lep.pt()) < 25) return 0.0659339;
-      if (fabs(lep.pt()) < 35) return 0.0769231;
-      if (fabs(lep.pt()) < 50) return 0.107143;
-      return 0.157895;
+      if (fabs(lep.pt()) < 15) return 0.363636;
+      if (fabs(lep.pt()) < 25) return 0.48;
+      if (fabs(lep.pt()) < 35) return 0.25;
+      if (fabs(lep.pt()) < 50) return 0.214286;
+      return 0.230769;
     } 
   } 
   if (abs(id) == 13){ 
     if (fabs(lep.eta()) < 1){ 
-      if (fabs(lep.pt()) < 15) return 0.0458408;
-      if (fabs(lep.pt()) < 25) return 0.0213895;
-      if (fabs(lep.pt()) < 35) return 0.0123283;
-      if (fabs(lep.pt()) < 50) return 0.0123153;
-      return 0.0151633;
+      if (fabs(lep.pt()) < 15) return 0.439522;
+      if (fabs(lep.pt()) < 25) return 0.23404;
+      if (fabs(lep.pt()) < 35) return 0.134676;
+      if (fabs(lep.pt()) < 50) return 0.123153;
+      return 0.0992838;
     } 
     if (fabs(lep.eta()) < 2){ 
-      if (fabs(lep.pt()) < 15) return 0.0597093;
-      if (fabs(lep.pt()) < 25) return 0.0429994;
-      if (fabs(lep.pt()) < 35) return 0.0269799;
-      if (fabs(lep.pt()) < 50) return 0.0215321;
-      return 0.0330346;
+      if (fabs(lep.pt()) < 15) return 0.47399;
+      if (fabs(lep.pt()) < 25) return 0.30977;
+      if (fabs(lep.pt()) < 35) return 0.176471;
+      if (fabs(lep.pt()) < 50) return 0.144195;
+      return 0.154839;
     } 
     if (fabs(lep.eta()) < 4){ 
-      if (fabs(lep.pt()) < 15) return 0.0967746;
-      if (fabs(lep.pt()) < 25) return 0.0555558;
-      if (fabs(lep.pt()) < 35) return 0.0289257;
-      if (fabs(lep.pt()) < 50) return 0.0238096;
-      return 0.0307692;
+      if (fabs(lep.pt()) < 15) return 0.594594;
+      if (fabs(lep.pt()) < 25) return 0.328244;
+      if (fabs(lep.pt()) < 35) return 0.177215;
+      if (fabs(lep.pt()) < 50) return 0.142857;
+      return 0.153846;
     } 
   } 
   return 0; 

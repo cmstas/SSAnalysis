@@ -128,8 +128,8 @@ void FR1D(){
       float ptratio_cut_2 = (abs(ss::lep2_id()) == 11 ? 0.7 : 0.68); 
       if (!FO4) lep1_denom_iso = (ss::lep1_miniIso() < 0.4);
       if (!FO4) lep2_denom_iso = (ss::lep2_miniIso() < 0.4);
-      if (FO4)  lep1_denom_iso = ((ss::lep1_miniIso() < 0.4) || (ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1/ptratio_cut_1 + ss::lep1_miniIso()))); 
-      if (FO4)  lep2_denom_iso = ((ss::lep2_miniIso() < 0.4) || (ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1/ptratio_cut_2 + ss::lep2_miniIso()))); 
+      if (FO4)  lep1_denom_iso = (ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1/ptratio_cut_1 + ss::lep1_miniIso()))); 
+      if (FO4)  lep2_denom_iso = (ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1/ptratio_cut_2 + ss::lep2_miniIso()))); 
 
       //If lep is the Fake one and it passes SIPID > 4, it goes in plot
       if (abs(ss::lep1_id()) == 11 && (testPC || ss::lep2_isGoodLeg()) && (testPC || ss::lep1_isFakeLeg()) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
@@ -310,8 +310,8 @@ void FR2D(){
       float ptratio_cut_2 = (abs(ss::lep2_id()) == 11 ? 0.7 : 0.68); 
       if (!FO4) lep1_denom_iso = (ss::lep1_miniIso() < 0.4);
       if (!FO4) lep2_denom_iso = (ss::lep2_miniIso() < 0.4);
-      if (FO4)  lep1_denom_iso = ((ss::lep1_miniIso() < 0.4) || (ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1/ptratio_cut_1 + ss::lep1_miniIso()))); 
-      if (FO4)  lep2_denom_iso = ((ss::lep2_miniIso() < 0.4) || (ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1/ptratio_cut_2 + ss::lep2_miniIso()))); 
+      if (FO4)  lep1_denom_iso = (ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1/ptratio_cut_1 + ss::lep1_miniIso()))); 
+      if (FO4)  lep2_denom_iso = (ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1/ptratio_cut_2 + ss::lep2_miniIso()))); 
 
       //If lep is the Fake one and it passes SIPID > 4, it goes in plot
       if (abs(ss::lep1_id()) == 11 && (testPC || ss::lep2_isGoodLeg()) && (testPC || ss::lep1_isFakeLeg()) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
