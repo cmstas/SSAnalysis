@@ -132,19 +132,19 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("muID_eta"              , &muID_eta              );
   
   //InSituFR
-  BabyTree->Branch("lep1_isGoodLeg"        , &lep1_isGoodLeg         );
-  BabyTree->Branch("lep2_isGoodLeg"        , &lep2_isGoodLeg         );
-  BabyTree->Branch("lep1_isFakeLeg"        , &lep1_isFakeLeg         );
-  BabyTree->Branch("lep2_isFakeLeg"        , &lep2_isFakeLeg         );
-  BabyTree->Branch("truth_inSituFR"        , &truth_inSituFR         );
-  BabyTree->Branch("lep1_multiIso"         , &lep1_multiIso          );
-  BabyTree->Branch("lep2_multiIso"         , &lep2_multiIso          );
-  BabyTree->Branch("lep1_sip"              , &lep1_sip               );
-  BabyTree->Branch("lep2_sip"              , &lep2_sip               );
-  BabyTree->Branch("lep1_closeJet"         , &lep1_closeJet          );
-  BabyTree->Branch("lep2_closeJet"         , &lep2_closeJet          );
-
-
+  BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
+  BabyTree->Branch("lep2_isGoodLeg"         , &lep2_isGoodLeg         );
+  BabyTree->Branch("lep1_isFakeLeg"         , &lep1_isFakeLeg         );
+  BabyTree->Branch("lep2_isFakeLeg"         , &lep2_isFakeLeg         );
+  BabyTree->Branch("truth_inSituFR"         , &truth_inSituFR         );
+  BabyTree->Branch("lep1_multiIso"          , &lep1_multiIso          );
+  BabyTree->Branch("lep2_multiIso"          , &lep2_multiIso          );
+  BabyTree->Branch("lep1_sip"               , &lep1_sip               );
+  BabyTree->Branch("lep2_sip"               , &lep2_sip               );
+  BabyTree->Branch("lep1_closeJet"          , &lep1_closeJet          );
+  BabyTree->Branch("lep2_closeJet"          , &lep2_closeJet          );
+  BabyTree->Branch("passed_id_inSituFR_lep1", &passed_id_inSituFR_lep1); 
+  BabyTree->Branch("passed_id_inSituFR_lep2", &passed_id_inSituFR_lep2); 
 
   //Print warning!
   cout << "Careful!! Path is " << path << endl;
@@ -283,6 +283,8 @@ void babyMaker::InitBabyNtuple(){
     lep2_multiIso          = 0;
     lep1_sip = -1;
     lep2_sip = -1;
+    passed_id_inSituFR_lep1 = 0;
+    passed_id_inSituFR_lep2 = 0;
 
 } 
 
@@ -391,8 +393,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   lep2_miniIso = abs(lep2_id)==11 ? elMiniRelIso(lep2_idx, true, 0.0, false, true) : muMiniRelIso(lep2_idx, true, 0.5, false, true);
 
   //For inSituFR, both must pass looser ID (easier than selection ID)
-  bool passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx); 
-  bool passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx); 
+  passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx); 
+  passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx); 
   if (passed_id_inSituFR_lep1 && passed_id_inSituFR_lep2){
     int truth_lep1 = lepMotherID_inSituFR( Lep(lep1_id, lep1_idx) ); 
     int truth_lep2 = lepMotherID_inSituFR( Lep(lep2_id, lep2_idx) ); 

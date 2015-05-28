@@ -233,4 +233,7 @@ class babyMaker {
     float lep2_sip; 
     LorentzVector lep1_closeJet;
     LorentzVector lep2_closeJet;
+    bool passed_id_inSituFR_lep1;
+    bool passed_id_inSituFR_lep2;
+
 };

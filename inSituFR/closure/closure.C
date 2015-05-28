@@ -7,61 +7,119 @@
 //Lumi
 float lumi = 10.0;
 
-float functionFR(LorentzVector lep, int id){
+//FO4
+bool FO4 = true;
+
+float functionAG_FO1(LorentzVector lep, int id){
   if (abs(id) == 11){ 
     if (fabs(lep.eta()) < 1){ 
-      if (fabs(lep.pt()) < 15) return 0.0608462;
-      if (fabs(lep.pt()) < 25) return 0.0562874;
-      if (fabs(lep.pt()) < 35) return 0.0595631;
-      if (fabs(lep.pt()) < 50) return 0.0771002;
-      return 0.163017;
+      if (fabs(lep.pt()) < 15) return 0.0596617;
+      if (fabs(lep.pt()) < 25) return 0.0560961;
+      if (fabs(lep.pt()) < 35) return 0.0591798;
+      if (fabs(lep.pt()) < 50) return 0.0804231;
+      return 0.163637;
     } 
     if (fabs(lep.eta()) < 2){ 
-      if (fabs(lep.pt()) < 15) return 0.0642792;
-      if (fabs(lep.pt()) < 25) return 0.0516121;
-      if (fabs(lep.pt()) < 35) return 0.0809662;
-      if (fabs(lep.pt()) < 50) return 0.0907507;
-      return 0.221545;
+      if (fabs(lep.pt()) < 15) return 0.0620429;
+      if (fabs(lep.pt()) < 25) return 0.0541576;
+      if (fabs(lep.pt()) < 35) return 0.0835479;
+      if (fabs(lep.pt()) < 50) return 0.083994;
+      return 0.227872;
     } 
     if (fabs(lep.eta()) < 4){ 
-      if (fabs(lep.pt()) < 15) return 0.0652174;
-      if (fabs(lep.pt()) < 25) return 0.090909;
-      if (fabs(lep.pt()) < 35) return 0.0545455;
-      if (fabs(lep.pt()) < 50) return 0.135135;
-      return 0.153846;
+      if (fabs(lep.pt()) < 15) return 0.0689655;
+      if (fabs(lep.pt()) < 25) return 0.0799999;
+      if (fabs(lep.pt()) < 35) return 0.114754;
+      if (fabs(lep.pt()) < 50) return 0.146341;
+      return 0.176471;
     } 
   } 
   if (abs(id) == 13){ 
     if (fabs(lep.eta()) < 1){ 
-      if (fabs(lep.pt()) < 15) return 0.0775365;
-      if (fabs(lep.pt()) < 25) return 0.0712675;
-      if (fabs(lep.pt()) < 35) return 0.0719187;
-      if (fabs(lep.pt()) < 50) return 0.0865916;
-      return 0.0802095;
+      if (fabs(lep.pt()) < 15) return 0.0724891;
+      if (fabs(lep.pt()) < 25) return 0.0667128;
+      if (fabs(lep.pt()) < 35) return 0.0721167;
+      if (fabs(lep.pt()) < 50) return 0.0864296;
+      return 0.0785428;
     } 
     if (fabs(lep.eta()) < 2){ 
-      if (fabs(lep.pt()) < 15) return 0.0720359;
-      if (fabs(lep.pt()) < 25) return 0.0775695;
-      if (fabs(lep.pt()) < 35) return 0.0847586;
-      if (fabs(lep.pt()) < 50) return 0.0875302;
-      return 0.110974;
+      if (fabs(lep.pt()) < 15) return 0.0696282;
+      if (fabs(lep.pt()) < 25) return 0.0742888;
+      if (fabs(lep.pt()) < 35) return 0.0806561;
+      if (fabs(lep.pt()) < 50) return 0.0863229;
+      return 0.111888;
     } 
     if (fabs(lep.eta()) < 4){ 
-      if (fabs(lep.pt()) < 15) return 0.121331;
-      if (fabs(lep.pt()) < 25) return 0.0983609;
-      if (fabs(lep.pt()) < 35) return 0.0701753;
-      if (fabs(lep.pt()) < 50) return 0.0873787;
-      return 0.117647;
+      if (fabs(lep.pt()) < 15) return 0.116402;
+      if (fabs(lep.pt()) < 25) return 0.0930738;
+      if (fabs(lep.pt()) < 35) return 0.0773479;
+      if (fabs(lep.pt()) < 50) return 0.0833334;
+      return 0.115385;
+    } 
+  } 
+  return 0;
+} 
+float functionAG_FO4(LorentzVector lep, int id){
+  if (abs(id) == 11){ 
+    if (fabs(lep.eta()) < 1){ 
+      if (fabs(lep.pt()) < 15) return 0.0490804;
+      if (fabs(lep.pt()) < 25) return 0.0328247;
+      if (fabs(lep.pt()) < 35) return 0.0232552;
+      if (fabs(lep.pt()) < 50) return 0.0301939;
+      return 0.100629;
+    } 
+    if (fabs(lep.eta()) < 2){ 
+      if (fabs(lep.pt()) < 15) return 0.0554459;
+      if (fabs(lep.pt()) < 25) return 0.0391964;
+      if (fabs(lep.pt()) < 35) return 0.0464943;
+      if (fabs(lep.pt()) < 50) return 0.0454541;
+      return 0.164179;
+    } 
+    if (fabs(lep.eta()) < 4){ 
+      if (fabs(lep.pt()) < 15) return 0.0650406;
+      if (fabs(lep.pt()) < 25) return 0.0659339;
+      if (fabs(lep.pt()) < 35) return 0.0769231;
+      if (fabs(lep.pt()) < 50) return 0.107143;
+      return 0.157895;
+    } 
+  } 
+  if (abs(id) == 13){ 
+    if (fabs(lep.eta()) < 1){ 
+      if (fabs(lep.pt()) < 15) return 0.0458408;
+      if (fabs(lep.pt()) < 25) return 0.0213895;
+      if (fabs(lep.pt()) < 35) return 0.0123283;
+      if (fabs(lep.pt()) < 50) return 0.0123153;
+      return 0.0151633;
+    } 
+    if (fabs(lep.eta()) < 2){ 
+      if (fabs(lep.pt()) < 15) return 0.0597093;
+      if (fabs(lep.pt()) < 25) return 0.0429994;
+      if (fabs(lep.pt()) < 35) return 0.0269799;
+      if (fabs(lep.pt()) < 50) return 0.0215321;
+      return 0.0330346;
+    } 
+    if (fabs(lep.eta()) < 4){ 
+      if (fabs(lep.pt()) < 15) return 0.0967746;
+      if (fabs(lep.pt()) < 25) return 0.0555558;
+      if (fabs(lep.pt()) < 35) return 0.0289257;
+      if (fabs(lep.pt()) < 50) return 0.0238096;
+      return 0.0307692;
     } 
   } 
   return 0; 
 } 
 
+float functionAG(LorentzVector lep, int id){
+  if (FO4)  return functionAG_FO4(lep, id);
+  if (!FO4) return functionAG_FO1(lep, id);
+}
+
+
 void closure(){
 
   //Declare chain
   TChain *chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.16/TTBAR_multiIso.root");
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.19/TTBAR.root");
 
   //Arrays to store results
   float nFake_e[3][4] = { { 0 } }; 
@@ -96,12 +154,21 @@ void closure(){
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
 
-      //Reject events that don't pass selection (inclusive for SIP and multiIso)
-      if (ss::hyp_class() == 1 || ss::hyp_class() == 4) continue;
-      if (!ss::truth_inSituFR()) continue;
-
       //Event Selection
       if (baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_p4().pt(), ss::lep2_p4().pt()) < 0) continue;
+      if (ss::hyp_class() == 4) continue;
+
+      //FO1 vs. FO4 selection
+      bool lep1_denom_iso = false;
+      bool lep2_denom_iso = false;
+      float ptrel_cut_1 = (abs(ss::lep1_id()) == 11 ? 7.0 : 6.7); 
+      float ptrel_cut_2 = (abs(ss::lep2_id()) == 11 ? 7.0 : 6.7); 
+      float ptratio_cut_1 = (abs(ss::lep1_id()) == 11 ? 0.7 : 0.68); 
+      float ptratio_cut_2 = (abs(ss::lep2_id()) == 11 ? 0.7 : 0.68); 
+      if (!FO4) lep1_denom_iso = (ss::lep1_miniIso() < 0.4);
+      if (!FO4) lep2_denom_iso = (ss::lep2_miniIso() < 0.4);
+      if (FO4)  lep1_denom_iso = ((ss::lep1_miniIso() < 0.4) || (ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1/ptratio_cut_1 + ss::lep1_miniIso()))); 
+      if (FO4)  lep2_denom_iso = ((ss::lep2_miniIso() < 0.4) || (ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1/ptratio_cut_2 + ss::lep2_miniIso()))); 
 
       //Calculate yields
       for (int j = 0; j < 3; j++){
@@ -112,15 +179,15 @@ void closure(){
           if (ss::nbtags() != i && i < 3) continue;
           if (ss::nbtags() < 3 && i == 3) continue;
           //Actual yield -- events that are fake, SIP3D < 4 and isolated
-          if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso() && lep1_miniIso < 0.4) nFake_e[j][i] += ss::scale1fb()*lumi; 
-          if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso() && lep1_miniIso < 0.4) nFake_m[j][i] += ss::scale1fb()*lumi; 
-          if (ss::lep2_isFakeLeg() && abs(ss::lep2_id()) == 11 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso() && lep2_miniIso < 0.4) nFake_e[j][i] += ss::scale1fb()*lumi; 
-          if (ss::lep2_isFakeLeg() && abs(ss::lep2_id()) == 13 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso() && lep2_miniIso < 0.4) nFake_m[j][i] += ss::scale1fb()*lumi; 
+          if (ss::lep1_isFakeLeg() && ss::lep2_isGoodLeg() && ss::lep2_passes_id() && abs(ss::lep1_id()) == 11 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso() && lep1_denom_iso) nFake_e[j][i] += ss::scale1fb()*lumi; 
+          if (ss::lep1_isFakeLeg() && ss::lep2_isGoodLeg() && ss::lep2_passes_id() && abs(ss::lep1_id()) == 13 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso() && lep1_denom_iso) nFake_m[j][i] += ss::scale1fb()*lumi; 
+          if (ss::lep2_isFakeLeg() && ss::lep1_isGoodLeg() && ss::lep1_passes_id() && abs(ss::lep2_id()) == 11 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso() && lep2_denom_iso) nFake_e[j][i] += ss::scale1fb()*lumi; 
+          if (ss::lep2_isFakeLeg() && ss::lep1_isGoodLeg() && ss::lep1_passes_id() && abs(ss::lep2_id()) == 13 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso() && lep2_denom_iso) nFake_m[j][i] += ss::scale1fb()*lumi; 
           //Predicted yield -- events that are real, SIP3D < 4, and not isolated
-          if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 11 && abs(ss::lep1_sip()) < 4 && !ss::lep1_multiIso() && lep1_miniIso < 0.4) nPred_e[j][i] += ss::scale1fb()*lumi*functionFR(ss::lep1_p4(), 11)/(1.0-functionFR(ss::lep1_p4(), 11)); 
-          if (ss::lep1_isFakeLeg() && abs(ss::lep1_id()) == 13 && abs(ss::lep1_sip()) < 4 && !ss::lep1_multiIso() && lep1_miniIso < 0.4) nPred_m[j][i] += ss::scale1fb()*lumi*functionFR(ss::lep1_p4(), 13)/(1.0-functionFR(ss::lep1_p4(), 13)); 
-          if (ss::lep2_isFakeLeg() && abs(ss::lep2_id()) == 11 && abs(ss::lep2_sip()) < 4 && !ss::lep2_multiIso() && lep2_miniIso < 0.4) nPred_e[j][i] += ss::scale1fb()*lumi*functionFR(ss::lep2_p4(), 11)/(1.0-functionFR(ss::lep2_p4(), 11)); 
-          if (ss::lep2_isFakeLeg() && abs(ss::lep2_id()) == 13 && abs(ss::lep2_sip()) < 4 && !ss::lep2_multiIso() && lep2_miniIso < 0.4) nPred_m[j][i] += ss::scale1fb()*lumi*functionFR(ss::lep2_p4(), 13)/(1.0-functionFR(ss::lep2_p4(), 13)); 
+          if (ss::lep1_isFakeLeg() && ss::lep2_isGoodLeg() && ss::lep2_passes_id() && abs(ss::lep1_id()) == 11 && abs(ss::lep1_sip()) < 4 && !ss::lep1_multiIso() && lep1_denom_iso) nPred_e[j][i] += ss::scale1fb()*lumi*functionAG(ss::lep1_p4(), 11)/(1.0-functionAG(ss::lep1_p4(), 11)); 
+          if (ss::lep1_isFakeLeg() && ss::lep2_isGoodLeg() && ss::lep2_passes_id() && abs(ss::lep1_id()) == 13 && abs(ss::lep1_sip()) < 4 && !ss::lep1_multiIso() && lep1_denom_iso) nPred_m[j][i] += ss::scale1fb()*lumi*functionAG(ss::lep1_p4(), 13)/(1.0-functionAG(ss::lep1_p4(), 13)); 
+          if (ss::lep2_isFakeLeg() && ss::lep1_isGoodLeg() && ss::lep1_passes_id() && abs(ss::lep2_id()) == 11 && abs(ss::lep2_sip()) < 4 && !ss::lep2_multiIso() && lep2_denom_iso) nPred_e[j][i] += ss::scale1fb()*lumi*functionAG(ss::lep2_p4(), 11)/(1.0-functionAG(ss::lep2_p4(), 11)); 
+          if (ss::lep2_isFakeLeg() && ss::lep1_isGoodLeg() && ss::lep1_passes_id() && abs(ss::lep2_id()) == 13 && abs(ss::lep2_sip()) < 4 && !ss::lep2_multiIso() && lep2_denom_iso) nPred_m[j][i] += ss::scale1fb()*lumi*functionAG(ss::lep2_p4(), 13)/(1.0-functionAG(ss::lep2_p4(), 13)); 
         }
       }
 
@@ -154,3 +221,8 @@ void closure(){
   }
 
 }
+
+
+
+
+
