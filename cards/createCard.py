@@ -3,11 +3,11 @@ import sys
 import os
 import subprocess
 
-#example: python createCard.py results_PHYS14 T1ttttG1500 _excl_sr
-#example: python createCard.py results_PHYS14 T1ttttG1500 hyp_hihi_excl_sr card-hihi.txt
-#example: for dir in dir1 dir2; do for sig in T1ttttG1200 T1ttttG1500; do for name in _excl_sr _excl_sr_mt100; do python createCard.py ${dir} ${sig} ${name}; done; done; done
+#example: python createCard.py v1.16 t1tttt_1500 _excl_sr
+#example: python createCard.py v1.16 t1tttt_1500 hyp_hihi_excl_sr card-hihi.txt
+#example: for dir in dir1 dir2; do for sig in t1tttt_1200 t1tttt_1500; do for name in _excl_sr _excl_sr_mt100; do python createCard.py ${dir} ${sig} ${name}; done; done; done
 
-#then get expected limits with: combine -M Asymptotic results_PHYS14/card.txt --run expected --noFitAsimov
+#then get expected limits with: combine -M Asymptotic dir/card.txt --run expected --noFitAsimov
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
@@ -38,7 +38,7 @@ def writeOneCardFromProcesses(dir, plot, output, processes):
     card.write(line+"\n")
     for process in processes:
         card.write("shapes "+process.name+" * "+dir+"/"+process.rootf+" "+plot+" "+plot+"\n")
-    card.write("shapes data_obs * "+dir+"/TTWJets_histos.root "+plot+" "+plot+"\n")#dummy for now, please use --noFitAsimov option
+    card.write("shapes data_obs * "+dir+"/ttw_histos.root "+plot+" "+plot+"\n")#dummy for now, please use --noFitAsimov option
     card.write(line+"\n")
     card.write("bin "+str(bin)+"\n")
     card.write("observation "+str(processes[1].rate())+"\n")#dummy for now, please use --noFitAsimov option
@@ -78,9 +78,9 @@ def writeOneCardFromProcesses(dir, plot, output, processes):
 def writeOneCard(dir, signal, plot, output):
     #define processes (signal first)
     signal = Process(0,signal,signal+"_histos.root",plot)
-    TTW = Process(1,"TTW","TTWJets_histos.root",plot)
-    TTZ = Process(2,"TTZ","TTZJets_histos.root",plot)
-    WZ  = Process(3,"WZ","WZJets_histos.root",plot)
+    TTW = Process(1,"ttw","ttw_histos.root",plot)
+    TTZ = Process(2,"ttz","ttz_histos.root",plot)
+    WZ  = Process(3,"wz","wz_histos.root",plot)
     ttbar = Process(4,"ttbar","ttbar_histos.root",plot)
     #overwrite nuisances
     TTW.TTV = "1.2"
