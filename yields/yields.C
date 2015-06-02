@@ -6,6 +6,9 @@
 //Tables on/off
 bool makeTables = 1;
 
+//Root files on/off
+bool makeRootFiles = 0;
+
 //Lumi
 float lumi = 10.0;
 
@@ -72,6 +75,18 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
 
     }//event loop
   }//file loop
+
+  //Make root files
+  if (makeRootFiles && flavor==UNASSIGNED) {
+    TFile *fileOut = TFile::Open("../cards/v1.16/"+TString(name)+"_histos.root","RECREATE");
+    TH1F* hyp_hihi   = (TH1F*) HighHighPlot->Clone("hyp_hihi");
+    TH1F* hyp_hilow  = (TH1F*) HighLowPlot->Clone("hyp_hilow");
+    TH1F* hyp_lowlow = (TH1F*) LowLowPlot->Clone("hyp_lowlow");
+    hyp_hihi->Write();
+    hyp_hilow->Write();
+    hyp_lowlow->Write();
+    fileOut->Close();
+  }
  
   //Return hists
   results_t result; 
@@ -95,14 +110,14 @@ void yields(){
   TChain* t5qqww_deg  = new TChain("t");
  
   //Fill chains
-  ttbar      ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/TTBAR_multiIso.root"                                 );
-  ttw        ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/TTW_multiIso.root"                                   );
-  ttz        ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/TTZ_multiIso.root"                                   );
-  wz         ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/WZ_multiIso.root"                                    );
-  t1tttt_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/T1TTTT_1200_multiIso.root"                           );
-  t1tttt_1500->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/T1TTTT_1500_multiIso.root"                           );
-  t5qqww_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/private/t5qqqqWW_1200_1000_800_baby_multiIso.root"   );
-  t5qqww_deg ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/private/t5qqqqWW_deg_1000_315_300_baby_multiIso.root");
+  ttbar      ->Add("../babies/v1.16/TTBAR_multiIso.root"                      );
+  ttw        ->Add("../babies/v1.16/TTW_multiIso.root"                        );
+  ttz        ->Add("../babies/v1.16/TTZ_multiIso.root"                        );
+  wz         ->Add("../babies/v1.16/WZ_multiIso.root"                         );
+  t1tttt_1200->Add("../babies/v1.16/t1tttt_1200_1_multiIso.root"              );
+  t1tttt_1500->Add("../babies/v1.16/t1tttt_1500_1_multiIso.root"              );
+  t5qqww_1200->Add("../babies/v1.16/t5qqqqWW_1200_1000_800_1_multiIso.root"   );
+  t5qqww_deg ->Add("../babies/v1.16/t5qqqqWW_deg_1000_315_300_1_multiIso.root");
 
   //Chains for type
   TChain* all_bkgd = new TChain("t");
