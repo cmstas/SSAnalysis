@@ -92,6 +92,8 @@ class babyMaker {
     int lep1_idx;
     int lep2_idx;
     int hyp_type; 
+    float lep1_coneCorrPt;
+    float lep2_coneCorrPt;
 
     //Lepton Mother (old isFromW function)
     int lep1_motherID;
