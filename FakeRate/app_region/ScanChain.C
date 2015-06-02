@@ -210,6 +210,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   if (option.Contains("jetCorr")) jetCorr=true;
   bool usePtRatioCor = false;
   if (option.Contains("PtRatioCor")) usePtRatioCor = true;
+  bool useInvPtRatio = false;
+  if (option.Contains("InvPtRatio")) useInvPtRatio = true;
   bool doBonly = false;
   if (option.Contains("doBonly")) doBonly = true;
   bool doConly = false;
@@ -599,6 +601,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 	  assert(fabs(lep2_ptrel_v1 - computePtRel(ss.lep2_p4(),ss.jet_close_lep2(), true))<0.0001);
 	  float lep1_closejetpt = ss.jet_close_lep1().pt();
 	  float lep2_closejetpt = ss.jet_close_lep2().pt();
+          float lep1_ptratio = lep1_closejetpt>0. ? ss.lep1_p4().pt()/lep1_closejetpt : 1.;
+          float lep2_ptratio = lep2_closejetpt>0. ? ss.lep2_p4().pt()/lep2_closejetpt : 1.;
 
 	  if (fabs(ss.lep1_ip3d()/ss.lep1_ip3d_err())>4.) continue;
 	  if (fabs(ss.lep2_ip3d()/ss.lep2_ip3d_err())>4.) continue;
@@ -839,6 +843,13 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				      float ptratiocor = lep2_closejetpt>0. ? ss.lep2_p4().pt()*(1+std::max(0.,ss.lep2_miniIso()-0.14))/lep2_closejetpt : 1.;
 				      if (!(ptratiocor > 0.68 || lep2_ptrel_v1 > 6.7)) continue;
 				    }
+				  } else if (useInvPtRatio) {
+				    //this is a tighter FO than default, so skip if it does not pass
+				    if ( abs(ss.lep2_id())==11 ) {
+				      if (!(1./lep2_ptratio < (1./0.70+lep2_miniIso()) || lep2_ptrel_v1 > 7.0)) continue;
+				    } else {
+				      if (!(1./lep2_ptratio < (1./0.68+lep2_miniIso()) || lep2_ptrel_v1 > 6.7)) continue;
+				    }
 				  }
 
 				  if (highlow && jetCorr) {
@@ -919,7 +930,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 				      float ptratiocor = lep1_closejetpt>0. ? ss.lep1_p4().pt()*(1+std::max(0.,ss.lep1_miniIso()-0.14))/lep1_closejetpt : 1.;
 				      if (!(ptratiocor > 0.68 || lep1_ptrel_v1 > 6.7)) continue;
 				    }
+				  } else if (useInvPtRatio) {
+				    //this is a tighter FO than default, so skip if it does not pass
+				    if ( abs(ss.lep1_id())==11 ) {
+				      if (!(1./lep1_ptratio < (1./0.70+lep1_miniIso()) || lep1_ptrel_v1 > 7.0)) continue;
+				    } else {
+				      if (!(1./lep1_ptratio < (1./0.68+lep1_miniIso()) || lep1_ptrel_v1 > 6.7)) continue;
+				    }
 				  }
+
 
 				  if (highlow && jetCorr) {
 				    if (ss.lep1_p4().pt()>25.) {

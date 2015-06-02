@@ -16,6 +16,7 @@
   bool doJetCorr    = 0;
   bool doLooseEMVA  = 1;
   bool doPtRatioCor = 0;
+  bool doInvPtRatio = 0;
   bool doBonly      = 0;
   bool doConly      = 0;
   bool doLightonly  = 0;
@@ -27,6 +28,7 @@
   TString option = "";
   if (doLooseEMVA) option+="_LooseEMVA";
   if (doPtRatioCor) option+="_PtRatioCor";
+  if (doInvPtRatio) option+="_InvPtRatio";
   if (doBonly) option+="_doBonly";
   if (doConly) option+="_doConly";
   if (doLightonly) option+="_doLightonly";

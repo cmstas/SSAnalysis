@@ -12,7 +12,9 @@
   //alternative versions
   ScanChain(qcd,"./rate_histos_qcd_LooseEMVA.root","useLooseEMVA"); 
   ScanChain(qcd,"./rate_histos_qcd_PtRatioCor.root","usePtRatioCor"); 
+  ScanChain(qcd,"./rate_histos_qcd_InvPtRatio.root","useInvPtRatio"); 
   ScanChain(qcd,"./rate_histos_qcd_LooseEMVA_PtRatioCor.root","useLooseEMVA,usePtRatioCor"); 
+  ScanChain(qcd,"./rate_histos_qcd_LooseEMVA_InvPtRatio.root","useLooseEMVA,useInvPtRatio"); 
   // ScanChain(qcd,"./rate_histos_qcd_RelIso.root","useRelIso"); 
   // ScanChain(qcd,"./rate_histos_qcd_RelIso_LooseEMVA.root","useRelIso,useLooseEMVA"); 
   //flavor specific

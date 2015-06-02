@@ -9,6 +9,7 @@
   TString postfix = "";
   // postfix+="_LooseEMVA";
   // postfix+="_PtRatioCor";
+  // postfix+="_InvPtRatio";
   // postfix+="_doBonly";
   // postfix+="_doLightonly";
   TString var = "";
@@ -23,7 +24,7 @@
   muf->SetTitle("muon fake rate");
   muf->GetXaxis()->SetTitle("muon p_{T} [GeV]");
   if (var=="_cone") muf->GetXaxis()->SetTitle("cone corrected muon p_{T} [GeV]");
-  if (var=="_jet") muf->GetXaxis()->SetTitle("jet p_{T} [GeV]");
+  if (var.Contains("_jet")) muf->GetXaxis()->SetTitle("jet p_{T} [GeV]");
   muf->GetYaxis()->SetTitle("|#eta|");
   if (postfix=="_extrPtRel") muf->GetYaxis()->SetTitle("H_{T} [GeV]");
   TCanvas c1;
@@ -37,7 +38,7 @@
   elf->SetTitle("electron fake rate");
   elf->GetXaxis()->SetTitle("electron p_{T} [GeV]");
   if (var=="_cone") elf->GetXaxis()->SetTitle("cone corrected electron p_{T} [GeV]");
-  if (var=="_jet") elf->GetXaxis()->SetTitle("jet p_{T} [GeV]");
+  if (var.Contains("_jet")) elf->GetXaxis()->SetTitle("jet p_{T} [GeV]");
   elf->GetYaxis()->SetTitle("|#eta|");
   if (postfix=="_extrPtRel") elf->GetYaxis()->SetTitle("H_{T} [GeV]");
   TCanvas c2;
@@ -56,7 +57,7 @@
     mud->SetTitle("muon fake rate denominator");
     mud->GetXaxis()->SetTitle("muon p_{T} [GeV]");
     if (var=="_cone") mud->GetXaxis()->SetTitle("cone corrected muon p_{T} [GeV]");
-    if (var=="_jet") mud->GetXaxis()->SetTitle("jet p_{T} [GeV]");
+    if (var.Contains("_jet")) mud->GetXaxis()->SetTitle("jet p_{T} [GeV]");
     mud->GetYaxis()->SetTitle("|#eta|");
     if (postfix=="_extrPtRel") mud->GetYaxis()->SetTitle("H_{T} [GeV]");
     TCanvas c3;
@@ -69,7 +70,7 @@
     eld->SetTitle("electron fake rate denominator");
     eld->GetXaxis()->SetTitle("electron p_{T} [GeV]");
     if (var=="_cone") eld->GetXaxis()->SetTitle("cone corrected electron p_{T} [GeV]");
-    if (var=="_jet") eld->GetXaxis()->SetTitle("jet p_{T} [GeV]");
+    if (var.Contains("_jet")) eld->GetXaxis()->SetTitle("jet p_{T} [GeV]");
     eld->GetYaxis()->SetTitle("|#eta|");
     if (postfix=="_extrPtRel") eld->GetYaxis()->SetTitle("H_{T} [GeV]");
     TCanvas c4;

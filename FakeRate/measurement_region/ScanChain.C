@@ -72,6 +72,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool usePtRatioCor = false;
   if (option.Contains("usePtRatioCor")) usePtRatioCor = true;
 
+  bool useInvPtRatio = false;
+  if (option.Contains("useInvPtRatio")) useInvPtRatio = true;
+
   bool doBonly = false;
   if (option.Contains("doBonly")) doBonly = true;
 
@@ -303,8 +306,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  float ptrel = ss.ptrelv1();
 	  assert(fabs(ptrel - computePtRel(ss.p4(),ss.jet_close_lep(),true))<0.0001);
 	  float closejetpt = ss.jet_close_lep().pt();
+	  if (closejetpt<ss.p4().pt()) closejetpt=ss.p4().pt();
 	  //float miniIso = ss.miniiso();
 	  float relIso = ss.RelIso03EA();
+	  float ptratio = closejetpt>0. ? ss.p4().pt()/closejetpt : 1.;
 
 	  if( !(jetptcut && ss.evt_pfmet() < 20. && ss.mt() < 20) )
 	  	{continue;}
@@ -341,6 +346,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	    } else {
 	      float ptratiocor = closejetpt>0. ? ss.p4().pt()*(1+std::max(0.,ss.miniiso()-0.14))/closejetpt : 1.;
 	      passFO = ss.passes_SS_fo_v3() && (ptratiocor > 0.68 || ptrel > 6.7);	      
+	    }
+	  } else if (useInvPtRatio) {
+	    if (abs(ss.id())==11) {
+	      passFO = ss.passes_SS_fo_v3() && ( (1./ptratio < (1./0.70+ss.miniiso())) /*|| ptrel > 7.0*/);
+	    } else {
+	      passFO = ss.passes_SS_fo_v3() && ( (1./ptratio < (1./0.68+ss.miniiso())) /*|| ptrel > 6.7*/);
 	    }
 	  }
 
@@ -417,7 +428,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  
 	  //Using gen level info to see if prompt -> no prompt contamination in measurement region
 	  //everything else is RECO (p4, id, passes_id, FO, etc.)
-	  
 
 	  if( ss.motherID() <= 0 && (doBonly==0 || ss.motherID() == -1) && (doConly==0 || ss.motherID() == -2) && (doLightonly==0 || ss.motherID() == 0) )  //if el is nonprompt (GEN info)
 		{
