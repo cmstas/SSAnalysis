@@ -27,7 +27,7 @@ class babyMaker {
       verbose = debug;
       evt_cut = 0;
     }
-    void MakeBabyNtuple(const char* output_name, IsolationMethods isoCase);
+    void MakeBabyNtuple(const char* output_name);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
     int ProcessBaby(IsolationMethods isoCase, string filename_in);
@@ -92,6 +92,8 @@ class babyMaker {
     int lep1_idx;
     int lep2_idx;
     int hyp_type; 
+    float lep1_coneCorrPt;
+    float lep2_coneCorrPt;
 
     //Lepton Mother (old isFromW function)
     int lep1_motherID;
@@ -231,4 +233,9 @@ class babyMaker {
     bool lep2_multiIso;
     float lep1_sip; 
     float lep2_sip; 
+    LorentzVector lep1_closeJet;
+    LorentzVector lep2_closeJet;
+    bool passed_id_inSituFR_lep1;
+    bool passed_id_inSituFR_lep2;
+
 };

@@ -402,6 +402,12 @@ protected:
 	float	lep2_sip_;
 	TBranch *lep2_sip_branch;
 	bool lep2_sip_isLoaded;
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *lep1_closeJet_;
+	TBranch *lep1_closeJet_branch;
+	bool lep1_closeJet_isLoaded;
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *lep2_closeJet_;
+	TBranch *lep2_closeJet_branch;
+	bool lep2_closeJet_isLoaded;
 public: 
 void Init(TTree *tree) {
 	lep1_p4_branch = 0;
@@ -458,6 +464,16 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("jet_close_lep2") != 0) {
 		jet_close_lep2_branch = tree->GetBranch("jet_close_lep2");
 		if (jet_close_lep2_branch) {jet_close_lep2_branch->SetAddress(&jet_close_lep2_);}
+	}
+	lep1_closeJet_branch = 0;
+	if (tree->GetBranch("lep1_closeJet") != 0) {
+		lep1_closeJet_branch = tree->GetBranch("lep1_closeJet");
+		if (lep1_closeJet_branch) {lep1_closeJet_branch->SetAddress(&lep1_closeJet_);}
+	}
+	lep2_closeJet_branch = 0;
+	if (tree->GetBranch("lep2_closeJet") != 0) {
+		lep2_closeJet_branch = tree->GetBranch("lep2_closeJet");
+		if (lep2_closeJet_branch) {lep2_closeJet_branch->SetAddress(&lep2_closeJet_);}
 	}
   tree->SetMakeClass(1);
 	met_branch = 0;
@@ -1179,6 +1195,8 @@ void GetEntry(unsigned int idx)
 		lep2_multiIso_isLoaded = false;
 		lep1_sip_isLoaded = false;
 		lep2_sip_isLoaded = false;
+		lep1_closeJet_isLoaded = false;
+		lep2_closeJet_isLoaded = false;
 	}
 
 void LoadAllBranches() 
@@ -1312,6 +1330,8 @@ void LoadAllBranches()
 	if (lep2_multiIso_branch != 0) lep2_multiIso();
 	if (lep1_sip_branch != 0) lep1_sip();
 	if (lep2_sip_branch != 0) lep2_sip();
+	if (lep1_closeJet_branch != 0) lep1_closeJet();
+	if (lep2_closeJet_branch != 0) lep2_closeJet();
 }
 
 	float &met()
@@ -2978,6 +2998,32 @@ void LoadAllBranches()
 		}
 		return lep2_sip_;
 	}
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_closeJet()
+	{
+		if (not lep1_closeJet_isLoaded) {
+			if (lep1_closeJet_branch != 0) {
+				lep1_closeJet_branch->GetEntry(index);
+			} else { 
+				printf("branch lep1_closeJet_branch does not exist!\n");
+				exit(1);
+			}
+			lep1_closeJet_isLoaded = true;
+		}
+		return *lep1_closeJet_;
+	}
+	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_closeJet()
+	{
+		if (not lep2_closeJet_isLoaded) {
+			if (lep2_closeJet_branch != 0) {
+				lep2_closeJet_branch->GetEntry(index);
+			} else { 
+				printf("branch lep2_closeJet_branch does not exist!\n");
+				exit(1);
+			}
+			lep2_closeJet_isLoaded = true;
+		}
+		return *lep2_closeJet_;
+	}
 
   static void progress( int nEventsTotal, int nEventsChain ){
     int period = 1000;
@@ -3134,5 +3180,7 @@ namespace ss {
 	const bool &lep2_multiIso();
 	const float &lep1_sip();
 	const float &lep2_sip();
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_closeJet();
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_closeJet();
 }
 #endif

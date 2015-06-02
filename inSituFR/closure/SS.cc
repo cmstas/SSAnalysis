@@ -129,4 +129,6 @@ namespace ss {
 	const bool &lep2_multiIso() { return samesign.lep2_multiIso(); }
 	const float &lep1_sip() { return samesign.lep1_sip(); }
 	const float &lep2_sip() { return samesign.lep2_sip(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_closeJet() { return samesign.lep1_closeJet(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_closeJet() { return samesign.lep2_closeJet(); }
 }
