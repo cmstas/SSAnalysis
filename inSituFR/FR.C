@@ -4,6 +4,7 @@
 #include "../CORE/SSSelections.h"
 #include "SS.h"
 #include "TH2F.h"
+#include "TCanvas.h"
 
 //Lumi
 float lumi = 10.0;
@@ -26,8 +27,27 @@ bool others = false;
 //FO1 vs. FO4
 bool FO4 = true;
 
+//Include Florida's bugs?
+bool ufl = false;
+
 //Path
-string path = "v1.19";
+string path = "v1.21";
+
+bool isFakeLeg(int lep){
+  if (lep == 1 && ufl) return ss::lep1_isFakeLeg(); 
+  if (lep == 2 && ufl) return ss::lep2_isFakeLeg(); 
+  if (lep == 1 && !ufl) return (ss::lep1_motherID() <= 0); 
+  if (lep == 2 && !ufl) return (ss::lep2_motherID() <= 0); 
+  return 0;
+}
+
+bool isGoodLeg(int lep){
+  if (lep == 1 && ufl) return ss::lep1_isGoodLeg(); 
+  if (lep == 2 && ufl) return ss::lep2_isGoodLeg(); 
+  if (lep == 1 && !ufl) return (ss::lep1_motherID() > 0); 
+  if (lep == 2 && !ufl) return (ss::lep2_motherID() > 0); 
+  return 0;
+}
 
 void FR1D(){
 
@@ -128,47 +148,47 @@ void FR1D(){
       float ptratio_cut_2 = (abs(ss::lep2_id()) == 11 ? 0.7 : 0.68); 
       if (!FO4) lep1_denom_iso = (ss::lep1_miniIso() < 0.4);
       if (!FO4) lep2_denom_iso = (ss::lep2_miniIso() < 0.4);
-      if (FO4)  lep1_denom_iso = (ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1/ptratio_cut_1 + ss::lep1_miniIso()))); 
-      if (FO4)  lep2_denom_iso = (ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1/ptratio_cut_2 + ss::lep2_miniIso()))); 
+      if (FO4)  lep1_denom_iso = (ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_coneCorrPt()) < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))); 
+      if (FO4)  lep2_denom_iso = (ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_coneCorrPt()) < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))); 
 
       //If lep is the Fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && (testPC || ss::lep2_isGoodLeg()) && (testPC || ss::lep1_isFakeLeg()) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
-         denom->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
+      if (abs(ss::lep1_id()) == 11 && (testPC || isGoodLeg(2)) && (testPC || isFakeLeg(1)) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
+        if (ss::lep1_multiIso()) numer->Fill(ss::lep1_coneCorrPt(), ss::scale1fb()*lumi);  
+         denom->Fill(ss::lep1_coneCorrPt(), ss::scale1fb()*lumi);
       }
-      else if (abs(ss::lep2_id()) == 11 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
-         denom->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
+      else if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
+        if (ss::lep2_multiIso()) numer->Fill(ss::lep2_coneCorrPt(), ss::scale1fb()*lumi);  
+         denom->Fill(ss::lep2_coneCorrPt(), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID < 4, it goes in plot
-      else if (abs(ss::lep1_id()) == 11 && (testPC || ss::lep2_isGoodLeg()) && (ss::lep1_isFakeLeg() || testPC) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer2->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
-        denom2->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
+      else if (abs(ss::lep1_id()) == 11 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
+        if (ss::lep1_multiIso()) numer2->Fill(ss::lep1_coneCorrPt(), ss::scale1fb()*lumi);  
+        denom2->Fill(ss::lep1_coneCorrPt(), ss::scale1fb()*lumi);
       }
-      else if (abs(ss::lep2_id()) == 11 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer2->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
-        denom2->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
+      else if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
+        if (ss::lep2_multiIso()) numer2->Fill(ss::lep2_coneCorrPt(), ss::scale1fb()*lumi);  
+        denom2->Fill(ss::lep2_coneCorrPt(), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID > 4, it goes in plot
-      else if (abs(ss::lep1_id()) == 13 && (testPC || ss::lep2_isGoodLeg()) && (ss::lep1_isFakeLeg() || testPC) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer3->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
-         denom3->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
+      else if (abs(ss::lep1_id()) == 13 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
+        if (ss::lep1_multiIso()) numer3->Fill(ss::lep1_coneCorrPt(), ss::scale1fb()*lumi);  
+         denom3->Fill(ss::lep1_coneCorrPt(), ss::scale1fb()*lumi);
       }
-      else if (abs(ss::lep2_id()) == 13 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer3->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
-         denom3->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
+      else if (abs(ss::lep2_id()) == 13 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
+        if (ss::lep2_multiIso()) numer3->Fill(ss::lep2_coneCorrPt(), ss::scale1fb()*lumi);  
+         denom3->Fill(ss::lep2_coneCorrPt(), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID < 4, it goes in plot
-      else if (abs(ss::lep1_id()) == 13 && (testPC || ss::lep2_isGoodLeg()) && (testPC || ss::lep1_isFakeLeg()) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer4->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);  
-        denom4->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumi);
+      else if (abs(ss::lep1_id()) == 13 && (testPC || isGoodLeg(2)) && (testPC || isFakeLeg(1)) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
+        if (ss::lep1_multiIso()) numer4->Fill(ss::lep1_coneCorrPt(), ss::scale1fb()*lumi);  
+        denom4->Fill(ss::lep1_coneCorrPt(), ss::scale1fb()*lumi);
       }
-      else if (abs(ss::lep2_id()) == 13 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer4->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);  
-        denom4->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumi);
+      else if (abs(ss::lep2_id()) == 13 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
+        if (ss::lep2_multiIso()) numer4->Fill(ss::lep2_coneCorrPt(), ss::scale1fb()*lumi);  
+        denom4->Fill(ss::lep2_coneCorrPt(), ss::scale1fb()*lumi);
       }
 
     }//event loop
@@ -238,7 +258,7 @@ void FR2D(){
   nBinsX = 5; 
   int nBinsY = 3; 
   float xbins[] = { 10, 15, 25, 35, 50, 70 }; 
-  float ybins[] = { 0, 1, 2, 4 }; 
+  float ybins[] = { 0, 1, 2, 2.4 }; 
   numer  = new TH2F("numer" , "numer" , nBinsX, xbins, nBinsY, ybins);
   denom  = new TH2F("denom" , "denom" , nBinsX, xbins, nBinsY, ybins);
   numer2 = new TH2F("numer2", "numer2", nBinsX, xbins, nBinsY, ybins);
@@ -310,47 +330,47 @@ void FR2D(){
       float ptratio_cut_2 = (abs(ss::lep2_id()) == 11 ? 0.7 : 0.68); 
       if (!FO4) lep1_denom_iso = (ss::lep1_miniIso() < 0.4);
       if (!FO4) lep2_denom_iso = (ss::lep2_miniIso() < 0.4);
-      if (FO4)  lep1_denom_iso = (ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1/ptratio_cut_1 + ss::lep1_miniIso()))); 
-      if (FO4)  lep2_denom_iso = (ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1/ptratio_cut_2 + ss::lep2_miniIso()))); 
+      if (FO4)  lep1_denom_iso = ((ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1.0/ptratio_cut_1 + ss::lep1_miniIso())))); 
+      if (FO4)  lep2_denom_iso = ((ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1.0/ptratio_cut_2 + ss::lep2_miniIso())))); 
 
       //If lep is the Fake one and it passes SIPID > 4, it goes in plot
-      if (abs(ss::lep1_id()) == 11 && (testPC || ss::lep2_isGoodLeg()) && (testPC || ss::lep1_isFakeLeg()) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
-         denom->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
+      if (abs(ss::lep1_id()) == 11 && (testPC || isGoodLeg(2)) && (testPC || isFakeLeg(1)) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
+        if (ss::lep1_multiIso()) numer->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
+         denom->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      else if (abs(ss::lep2_id()) == 11 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
-         denom->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
+      else if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
+        if (ss::lep2_multiIso()) numer->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
+         denom->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID < 4, it goes in plot
-      else if (abs(ss::lep1_id()) == 11 && (testPC || ss::lep2_isGoodLeg()) && (ss::lep1_isFakeLeg() || testPC) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer2->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
-        denom2->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
+      else if (abs(ss::lep1_id()) == 11 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
+        if (ss::lep1_multiIso()) numer2->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
+        denom2->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      else if (abs(ss::lep2_id()) == 11 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer2->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
-        denom2->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
+      else if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
+        if (ss::lep2_multiIso()) numer2->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
+        denom2->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID > 4, it goes in plot
-      else if (abs(ss::lep1_id()) == 13 && (testPC || ss::lep2_isGoodLeg()) && (ss::lep1_isFakeLeg() || testPC) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer3->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
-         denom3->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
+      else if (abs(ss::lep1_id()) == 13 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
+        if (ss::lep1_multiIso()) numer3->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
+         denom3->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      else if (abs(ss::lep2_id()) == 13 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer3->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
-         denom3->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
+      else if (abs(ss::lep2_id()) == 13 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
+        if (ss::lep2_multiIso()) numer3->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
+         denom3->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID < 4, it goes in plot
-      else if (abs(ss::lep1_id()) == 13 && (testPC || ss::lep2_isGoodLeg()) && (testPC || ss::lep1_isFakeLeg()) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer4->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
-        denom4->Fill(ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
+      else if (abs(ss::lep1_id()) == 13 && (testPC || isGoodLeg(2)) && (testPC || isFakeLeg(1)) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
+        if (ss::lep1_multiIso()) numer4->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
+        denom4->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
-      else if (abs(ss::lep2_id()) == 13 && (testPC || ss::lep1_isGoodLeg()) && (testPC || ss::lep2_isFakeLeg()) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer4->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
-        denom4->Fill(ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
+      else if (abs(ss::lep2_id()) == 13 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
+        if (ss::lep2_multiIso()) numer4->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
+        denom4->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
 
@@ -387,56 +407,67 @@ void FR2D(){
   numer3->Divide(numer3, denom3, 1, 1, "b"); 
   numer4->Divide(numer4, denom4, 1, 1, "b"); 
 
+  ofstream myfile;
+  std::string name; 
+  if (binFine == false &&  withEta == true && testPC == false && others == false && FO4 == false && ufl == false){
+    myfile.open("FO1.cc"); 
+    name = "FO1";
+  }
+  if (binFine == false &&  withEta == true && testPC == false && others == false && FO4 == true && ufl == false){
+    myfile.open("FO4.cc"); 
+    name = "FO4";
+  }
+
   //Function Output
-  cout << "float functionAG(LorentzVector lep, int id){" << endl;
-  cout << "  if (abs(id) == 11){ " << endl;
-  cout << "    if (fabs(lep.eta()) < 1){ " << endl;
-  cout << "      if (fabs(lep.pt()) < 15) return " << numer->GetBinContent(1,1) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 25) return " << numer->GetBinContent(2,1) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 35) return " << numer->GetBinContent(3,1) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 50) return " << numer->GetBinContent(4,1) << ";" << endl;
-  cout << "      return " << numer->GetBinContent(5,1) << ";" << endl;
-  cout << "    } " << endl;
-  cout << "    if (fabs(lep.eta()) < 2){ " << endl;
-  cout << "      if (fabs(lep.pt()) < 15) return " << numer->GetBinContent(1,2) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 25) return " << numer->GetBinContent(2,2) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 35) return " << numer->GetBinContent(3,2) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 50) return " << numer->GetBinContent(4,2) << ";" << endl;
-  cout << "      return " << numer->GetBinContent(5,2) << ";" << endl;
-  cout << "    } " << endl;
-  cout << "    if (fabs(lep.eta()) < 4){ " << endl;
-  cout << "      if (fabs(lep.pt()) < 15) return " << numer->GetBinContent(1,3) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 25) return " << numer->GetBinContent(2,3) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 35) return " << numer->GetBinContent(3,3) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 50) return " << numer->GetBinContent(4,3) << ";" << endl;
-  cout << "      return " << numer->GetBinContent(5,3) << ";" << endl;
-  cout << "    } " << endl;
-  cout << "  } " << endl;
-  cout << "  if (abs(id) == 13){ " << endl;
-  cout << "    if (fabs(lep.eta()) < 1){ " << endl;
-  cout << "      if (fabs(lep.pt()) < 15) return " << numer3->GetBinContent(1,1) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 25) return " << numer3->GetBinContent(2,1) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 35) return " << numer3->GetBinContent(3,1) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 50) return " << numer3->GetBinContent(4,1) << ";" << endl;
-  cout << "      return " << numer3->GetBinContent(5,1) << ";" << endl;
-  cout << "    } " << endl;
-  cout << "    if (fabs(lep.eta()) < 2){ " << endl;
-  cout << "      if (fabs(lep.pt()) < 15) return " << numer3->GetBinContent(1,2) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 25) return " << numer3->GetBinContent(2,2) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 35) return " << numer3->GetBinContent(3,2) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 50) return " << numer3->GetBinContent(4,2) << ";" << endl;
-  cout << "      return " << numer3->GetBinContent(5,2) << ";" << endl;
-  cout << "    } " << endl;
-  cout << "    if (fabs(lep.eta()) < 4){ " << endl;
-  cout << "      if (fabs(lep.pt()) < 15) return " << numer3->GetBinContent(1,3) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 25) return " << numer3->GetBinContent(2,3) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 35) return " << numer3->GetBinContent(3,3) << ";" << endl;
-  cout << "      if (fabs(lep.pt()) < 50) return " << numer3->GetBinContent(4,3) << ";" << endl;
-  cout << "      return " << numer3->GetBinContent(5,3) << ";" << endl;
-  cout << "    } " << endl;
-  cout << "  } " << endl;
-  cout << "  return 0; " << endl;
-  cout << "} " << endl;
+  myfile << "float functionAG_" << name << "(float pt, float eta, int id){" << endl;
+  myfile << "  if (abs(id) == 11){ " << endl;
+  myfile << "    if (fabs(eta) < 1){ " << endl;
+  myfile << "      if (fabs(pt) < 15) return " << numer->GetBinContent(1,1) << ";" << endl;
+  myfile << "      if (fabs(pt) < 25) return " << numer->GetBinContent(2,1) << ";" << endl;
+  myfile << "      if (fabs(pt) < 35) return " << numer->GetBinContent(3,1) << ";" << endl;
+  myfile << "      if (fabs(pt) < 50) return " << numer->GetBinContent(4,1) << ";" << endl;
+  myfile << "      return " << numer->GetBinContent(5,1) << ";" << endl;
+  myfile << "    } " << endl;
+  myfile << "    if (fabs(eta) < 2){ " << endl;
+  myfile << "      if (fabs(pt) < 15) return " << numer->GetBinContent(1,2) << ";" << endl;
+  myfile << "      if (fabs(pt) < 25) return " << numer->GetBinContent(2,2) << ";" << endl;
+  myfile << "      if (fabs(pt) < 35) return " << numer->GetBinContent(3,2) << ";" << endl;
+  myfile << "      if (fabs(pt) < 50) return " << numer->GetBinContent(4,2) << ";" << endl;
+  myfile << "      return " << numer->GetBinContent(5,2) << ";" << endl;
+  myfile << "    } " << endl;
+  myfile << "    if (fabs(eta) < 4){ " << endl;
+  myfile << "      if (fabs(pt) < 15) return " << numer->GetBinContent(1,3) << ";" << endl;
+  myfile << "      if (fabs(pt) < 25) return " << numer->GetBinContent(2,3) << ";" << endl;
+  myfile << "      if (fabs(pt) < 35) return " << numer->GetBinContent(3,3) << ";" << endl;
+  myfile << "      if (fabs(pt) < 50) return " << numer->GetBinContent(4,3) << ";" << endl;
+  myfile << "      return " << numer->GetBinContent(5,3) << ";" << endl;
+  myfile << "    } " << endl;
+  myfile << "  } " << endl;
+  myfile << "  if (abs(id) == 13){ " << endl;
+  myfile << "    if (fabs(eta) < 1){ " << endl;
+  myfile << "      if (fabs(pt) < 15) return " << numer3->GetBinContent(1,1) << ";" << endl;
+  myfile << "      if (fabs(pt) < 25) return " << numer3->GetBinContent(2,1) << ";" << endl;
+  myfile << "      if (fabs(pt) < 35) return " << numer3->GetBinContent(3,1) << ";" << endl;
+  myfile << "      if (fabs(pt) < 50) return " << numer3->GetBinContent(4,1) << ";" << endl;
+  myfile << "      return " << numer3->GetBinContent(5,1) << ";" << endl;
+  myfile << "    } " << endl;
+  myfile << "    if (fabs(eta) < 2){ " << endl;
+  myfile << "      if (fabs(pt) < 15) return " << numer3->GetBinContent(1,2) << ";" << endl;
+  myfile << "      if (fabs(pt) < 25) return " << numer3->GetBinContent(2,2) << ";" << endl;
+  myfile << "      if (fabs(pt) < 35) return " << numer3->GetBinContent(3,2) << ";" << endl;
+  myfile << "      if (fabs(pt) < 50) return " << numer3->GetBinContent(4,2) << ";" << endl;
+  myfile << "      return " << numer3->GetBinContent(5,2) << ";" << endl;
+  myfile << "    } " << endl;
+  myfile << "    if (fabs(eta) < 2.4){ " << endl;
+  myfile << "      if (fabs(pt) < 15) return " << numer3->GetBinContent(1,3) << ";" << endl;
+  myfile << "      if (fabs(pt) < 25) return " << numer3->GetBinContent(2,3) << ";" << endl;
+  myfile << "      if (fabs(pt) < 35) return " << numer3->GetBinContent(3,3) << ";" << endl;
+  myfile << "      if (fabs(pt) < 50) return " << numer3->GetBinContent(4,3) << ";" << endl;
+  myfile << "      return " << numer3->GetBinContent(5,3) << ";" << endl;
+  myfile << "    } " << endl;
+  myfile << "  } " << endl;
+  myfile << "  return 0; " << endl;
+  myfile << "} " << endl;
 
   //Print output
   PlotMaker2D(numer , "--outputName gt_elec.pdf --noOverflow --setTitle elec, SIP3D > 4 --Xaxis fake p_{T} --Yaxis |#eta|"); 

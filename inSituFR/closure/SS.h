@@ -102,6 +102,12 @@ protected:
 	int	lep2_id_;
 	TBranch *lep2_id_branch;
 	bool lep2_id_isLoaded;
+	float	lep1_coneCorrPt_;
+	TBranch *lep1_coneCorrPt_branch;
+	bool lep1_coneCorrPt_isLoaded;
+	float	lep2_coneCorrPt_;
+	TBranch *lep2_coneCorrPt_branch;
+	bool lep2_coneCorrPt_isLoaded;
 	int	lep1_idx_;
 	TBranch *lep1_idx_branch;
 	bool lep1_idx_isLoaded;
@@ -408,6 +414,12 @@ protected:
 	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *lep2_closeJet_;
 	TBranch *lep2_closeJet_branch;
 	bool lep2_closeJet_isLoaded;
+	bool	passed_id_inSituFR_lep1_;
+	TBranch *passed_id_inSituFR_lep1_branch;
+	bool passed_id_inSituFR_lep1_isLoaded;
+	bool	passed_id_inSituFR_lep2_;
+	TBranch *passed_id_inSituFR_lep2_branch;
+	bool passed_id_inSituFR_lep2_isLoaded;
 public: 
 void Init(TTree *tree) {
 	lep1_p4_branch = 0;
@@ -605,6 +617,16 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("lep2_id") != 0) {
 		lep2_id_branch = tree->GetBranch("lep2_id");
 		if (lep2_id_branch) {lep2_id_branch->SetAddress(&lep2_id_);}
+	}
+	lep1_coneCorrPt_branch = 0;
+	if (tree->GetBranch("lep1_coneCorrPt") != 0) {
+		lep1_coneCorrPt_branch = tree->GetBranch("lep1_coneCorrPt");
+		if (lep1_coneCorrPt_branch) {lep1_coneCorrPt_branch->SetAddress(&lep1_coneCorrPt_);}
+	}
+	lep2_coneCorrPt_branch = 0;
+	if (tree->GetBranch("lep2_coneCorrPt") != 0) {
+		lep2_coneCorrPt_branch = tree->GetBranch("lep2_coneCorrPt");
+		if (lep2_coneCorrPt_branch) {lep2_coneCorrPt_branch->SetAddress(&lep2_coneCorrPt_);}
 	}
 	lep1_idx_branch = 0;
 	if (tree->GetBranch("lep1_idx") != 0) {
@@ -1061,6 +1083,16 @@ void Init(TTree *tree) {
 		lep2_sip_branch = tree->GetBranch("lep2_sip");
 		if (lep2_sip_branch) {lep2_sip_branch->SetAddress(&lep2_sip_);}
 	}
+	passed_id_inSituFR_lep1_branch = 0;
+	if (tree->GetBranch("passed_id_inSituFR_lep1") != 0) {
+		passed_id_inSituFR_lep1_branch = tree->GetBranch("passed_id_inSituFR_lep1");
+		if (passed_id_inSituFR_lep1_branch) {passed_id_inSituFR_lep1_branch->SetAddress(&passed_id_inSituFR_lep1_);}
+	}
+	passed_id_inSituFR_lep2_branch = 0;
+	if (tree->GetBranch("passed_id_inSituFR_lep2") != 0) {
+		passed_id_inSituFR_lep2_branch = tree->GetBranch("passed_id_inSituFR_lep2");
+		if (passed_id_inSituFR_lep2_branch) {passed_id_inSituFR_lep2_branch->SetAddress(&passed_id_inSituFR_lep2_);}
+	}
   tree->SetMakeClass(0);
 }
 void GetEntry(unsigned int idx) 
@@ -1095,6 +1127,8 @@ void GetEntry(unsigned int idx)
 		lep2_mc_id_isLoaded = false;
 		lep1_id_isLoaded = false;
 		lep2_id_isLoaded = false;
+		lep1_coneCorrPt_isLoaded = false;
+		lep2_coneCorrPt_isLoaded = false;
 		lep1_idx_isLoaded = false;
 		lep2_idx_isLoaded = false;
 		jets_isLoaded = false;
@@ -1197,6 +1231,8 @@ void GetEntry(unsigned int idx)
 		lep2_sip_isLoaded = false;
 		lep1_closeJet_isLoaded = false;
 		lep2_closeJet_isLoaded = false;
+		passed_id_inSituFR_lep1_isLoaded = false;
+		passed_id_inSituFR_lep2_isLoaded = false;
 	}
 
 void LoadAllBranches() 
@@ -1230,6 +1266,8 @@ void LoadAllBranches()
 	if (lep2_mc_id_branch != 0) lep2_mc_id();
 	if (lep1_id_branch != 0) lep1_id();
 	if (lep2_id_branch != 0) lep2_id();
+	if (lep1_coneCorrPt_branch != 0) lep1_coneCorrPt();
+	if (lep2_coneCorrPt_branch != 0) lep2_coneCorrPt();
 	if (lep1_idx_branch != 0) lep1_idx();
 	if (lep2_idx_branch != 0) lep2_idx();
 	if (jets_branch != 0) jets();
@@ -1332,6 +1370,8 @@ void LoadAllBranches()
 	if (lep2_sip_branch != 0) lep2_sip();
 	if (lep1_closeJet_branch != 0) lep1_closeJet();
 	if (lep2_closeJet_branch != 0) lep2_closeJet();
+	if (passed_id_inSituFR_lep1_branch != 0) passed_id_inSituFR_lep1();
+	if (passed_id_inSituFR_lep2_branch != 0) passed_id_inSituFR_lep2();
 }
 
 	float &met()
@@ -1697,6 +1737,32 @@ void LoadAllBranches()
 			lep2_id_isLoaded = true;
 		}
 		return lep2_id_;
+	}
+	float &lep1_coneCorrPt()
+	{
+		if (not lep1_coneCorrPt_isLoaded) {
+			if (lep1_coneCorrPt_branch != 0) {
+				lep1_coneCorrPt_branch->GetEntry(index);
+			} else { 
+				printf("branch lep1_coneCorrPt_branch does not exist!\n");
+				exit(1);
+			}
+			lep1_coneCorrPt_isLoaded = true;
+		}
+		return lep1_coneCorrPt_;
+	}
+	float &lep2_coneCorrPt()
+	{
+		if (not lep2_coneCorrPt_isLoaded) {
+			if (lep2_coneCorrPt_branch != 0) {
+				lep2_coneCorrPt_branch->GetEntry(index);
+			} else { 
+				printf("branch lep2_coneCorrPt_branch does not exist!\n");
+				exit(1);
+			}
+			lep2_coneCorrPt_isLoaded = true;
+		}
+		return lep2_coneCorrPt_;
 	}
 	int &lep1_idx()
 	{
@@ -3024,6 +3090,32 @@ void LoadAllBranches()
 		}
 		return *lep2_closeJet_;
 	}
+	bool &	passed_id_inSituFR_lep1()
+	{
+		if (not passed_id_inSituFR_lep1_isLoaded) {
+			if (passed_id_inSituFR_lep1_branch != 0) {
+				passed_id_inSituFR_lep1_branch->GetEntry(index);
+			} else { 
+				printf("branch passed_id_inSituFR_lep1_branch does not exist!\n");
+				exit(1);
+			}
+			passed_id_inSituFR_lep1_isLoaded = true;
+		}
+		return passed_id_inSituFR_lep1_;
+	}
+	bool &	passed_id_inSituFR_lep2()
+	{
+		if (not passed_id_inSituFR_lep2_isLoaded) {
+			if (passed_id_inSituFR_lep2_branch != 0) {
+				passed_id_inSituFR_lep2_branch->GetEntry(index);
+			} else { 
+				printf("branch passed_id_inSituFR_lep2_branch does not exist!\n");
+				exit(1);
+			}
+			passed_id_inSituFR_lep2_isLoaded = true;
+		}
+		return passed_id_inSituFR_lep2_;
+	}
 
   static void progress( int nEventsTotal, int nEventsChain ){
     int period = 1000;
@@ -3080,6 +3172,8 @@ namespace ss {
 	const int &lep2_mc_id();
 	const int &lep1_id();
 	const int &lep2_id();
+	const float &lep1_coneCorrPt();
+	const float &lep2_coneCorrPt();
 	const int &lep1_idx();
 	const int &lep2_idx();
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets();
@@ -3182,5 +3276,7 @@ namespace ss {
 	const float &lep2_sip();
 	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_closeJet();
 	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_closeJet();
+	const bool &passed_id_inSituFR_lep1();
+	const bool &passed_id_inSituFR_lep2();
 }
 #endif

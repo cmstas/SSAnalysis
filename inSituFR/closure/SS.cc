@@ -29,6 +29,8 @@ namespace ss {
 	const int &lep2_mc_id() { return samesign.lep2_mc_id(); }
 	const int &lep1_id() { return samesign.lep1_id(); }
 	const int &lep2_id() { return samesign.lep2_id(); }
+	const float &lep1_coneCorrPt() { return samesign.lep1_coneCorrPt(); }
+	const float &lep2_coneCorrPt() { return samesign.lep2_coneCorrPt(); }
 	const int &lep1_idx() { return samesign.lep1_idx(); }
 	const int &lep2_idx() { return samesign.lep2_idx(); }
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets() { return samesign.jets(); }
@@ -131,4 +133,6 @@ namespace ss {
 	const float &lep2_sip() { return samesign.lep2_sip(); }
 	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_closeJet() { return samesign.lep1_closeJet(); }
 	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_closeJet() { return samesign.lep2_closeJet(); }
+	const bool &passed_id_inSituFR_lep1() { return samesign.passed_id_inSituFR_lep1(); }
+	const bool &passed_id_inSituFR_lep2() { return samesign.passed_id_inSituFR_lep2(); }
 }

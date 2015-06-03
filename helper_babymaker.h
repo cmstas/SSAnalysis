@@ -57,6 +57,10 @@ class babyMaker {
     float kfactor;      
     TString filename;
 
+    //Pileup
+    vector <float> trueNumInt;
+    vector <int> nPUvertices;
+
     //Filters
     bool filt_csc;
     bool filt_hbhe;

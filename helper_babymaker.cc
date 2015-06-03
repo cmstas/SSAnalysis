@@ -132,6 +132,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("muID_medMuonPOG"       , &muID_medMuonPOG       );
   BabyTree->Branch("muID_pt"               , &muID_pt               );
   BabyTree->Branch("muID_eta"              , &muID_eta              );
+  BabyTree->Branch("trueNumInt"            , &trueNumInt            );
+  BabyTree->Branch("nPUvertices"           , &nPUvertices           ); 
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -289,6 +291,8 @@ void babyMaker::InitBabyNtuple(){
     lep2_sip = -1;
     passed_id_inSituFR_lep1 = 0;
     passed_id_inSituFR_lep2 = 0;
+    trueNumInt.clear();
+    nPUvertices.clear(); 
 
 } 
 
@@ -332,6 +336,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   kfactor = tas::evt_kfactor();
   gen_met = tas::gen_met();
   gen_met_phi = tas::gen_metPhi();
+  trueNumInt = tas::puInfo_trueNumInteractions();
+  nPUvertices = puInfo_nPUvertices();
 
   //Fill data vs. mc variables
   filt_csc = is_real_data ? tas::evt_cscTightHaloId() : 1;
