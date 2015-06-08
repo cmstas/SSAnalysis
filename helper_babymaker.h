@@ -60,6 +60,7 @@ class babyMaker {
     //Pileup
     vector <float> trueNumInt;
     vector <int> nPUvertices;
+    int nGoodVertices; 
 
     //Filters
     bool filt_csc;

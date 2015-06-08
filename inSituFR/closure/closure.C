@@ -10,6 +10,12 @@ float lumi = 10.0;
 //FO4
 bool FO4 = true;
 
+//others
+bool others = false;
+
+//cont
+bool cont = false;
+
 bool isFakeLeg(int lep){
   if (lep == 1) return (ss::lep1_motherID() <= 0); 
   if (lep == 2) return (ss::lep2_motherID() <= 0); 
@@ -23,17 +29,25 @@ bool isGoodLeg(int lep){
 }
 
 float functionAG_FO4(float pt, float eta, int id);
+float functionAG_PC(float pt, float eta, int id);
+float functionAG_threesig_nocont(float pt, float eta, int id);
 
 float functionAG(float pt, float eta, int id){
-  return functionAG_FO4(pt, eta, id);
+  if (FO4 && !cont) return functionAG_FO4(pt, eta, id);
+  if (FO4 && cont) return functionAG_PC(pt, eta, id);           //this has contaminiton
+  //if (FO4 && cont) return functionAG_threesig_nocont(pt, eta, id);  //this has noe but all 3 signals
+  return 0; 
 }
-
 
 void closure(){
 
   //Declare chain
   TChain *chain = new TChain("t");
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.21/TTBAR.root");
+  if (others){
+    chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.21/DY.root");
+    chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.21/WJets.root");
+  }
 
   //Arrays to store results
   float nFake_e[3][4] = { { 0 } }; 
@@ -110,29 +124,24 @@ void closure(){
   
   for (int j = 0; j < 3; j++){
     CTable table; 
-    if (j == 0) table.setTitle("electrons H-H");
-    if (j == 1) table.setTitle("electrons H-L");
-    if (j == 2) table.setTitle("electrons L-L");
+    if (j == 0) table.setTitle("H-H");
+    if (j == 1) table.setTitle("H-L");
+    if (j == 2) table.setTitle("L-L");
     table.useTitle(); 
     table.setTable() ( "pred", "obs", "pred/obs", "(p-o)/p") 
-         ("0 b-tags" , nPred_e[j][0], nFake_e[j][0], nPred_e[j][0]/nFake_e[j][0], fabs(nPred_e[j][0]-nFake_e[j][0])/nPred_e[j][0]) 
-         ("1 b-tags" , nPred_e[j][1], nFake_e[j][1], nPred_e[j][1]/nFake_e[j][1], fabs(nPred_e[j][1]-nFake_e[j][1])/nPred_e[j][1]) 
-         ("2 b-tags" , nPred_e[j][2], nFake_e[j][2], nPred_e[j][2]/nFake_e[j][2], fabs(nPred_e[j][2]-nFake_e[j][2])/nPred_e[j][2]) 
-         ("3+ b-tags", nPred_e[j][3], nFake_e[j][3], nPred_e[j][3]/nFake_e[j][3], fabs(nPred_e[j][3]-nFake_e[j][3])/nPred_e[j][3]);
+         ("0 b-tags elec" , nPred_e[j][0], nFake_e[j][0], nPred_e[j][0]/nFake_e[j][0], fabs(nPred_e[j][0]-nFake_e[j][0])/nPred_e[j][0]) 
+         ("1 b-tags elec" , nPred_e[j][1], nFake_e[j][1], nPred_e[j][1]/nFake_e[j][1], fabs(nPred_e[j][1]-nFake_e[j][1])/nPred_e[j][1]) 
+         ("2 b-tags elec" , nPred_e[j][2], nFake_e[j][2], nPred_e[j][2]/nFake_e[j][2], fabs(nPred_e[j][2]-nFake_e[j][2])/nPred_e[j][2]) 
+         ("3+ b-tags elec", nPred_e[j][3], nFake_e[j][3], nPred_e[j][3]/nFake_e[j][3], fabs(nPred_e[j][3]-nFake_e[j][3])/nPred_e[j][3])
+         ("0 b-tags muon" , nPred_m[j][0], nFake_m[j][0], nPred_m[j][0]/nFake_m[j][0], fabs(nPred_m[j][0]-nFake_m[j][0])/nPred_m[j][0]) 
+         ("1 b-tags muon" , nPred_m[j][1], nFake_m[j][1], nPred_m[j][1]/nFake_m[j][1], fabs(nPred_m[j][1]-nFake_m[j][1])/nPred_m[j][1]) 
+         ("2 b-tags muon" , nPred_m[j][2], nFake_m[j][2], nPred_m[j][2]/nFake_m[j][2], fabs(nPred_m[j][2]-nFake_m[j][2])/nPred_m[j][2]) 
+         ("3+ b-tags muon", nPred_m[j][3], nFake_m[j][3], nPred_m[j][3]/nFake_m[j][3], fabs(nPred_m[j][3]-nFake_m[j][3])/nPred_m[j][3]);
     table.print();
-    table.forSlideMaker("table.tex"); 
+    if (j == 0) table.forSlideMaker("tableHH.tex"); 
+    if (j == 1) table.forSlideMaker("tableHL.tex"); 
+    if (j == 2) table.forSlideMaker("tableLL.tex"); 
 
-    CTable table2; 
-    if (j == 0) table2.setTitle("muons H-H");
-    if (j == 1) table2.setTitle("muons H-L");
-    if (j == 2) table2.setTitle("muons L-L");
-    table2.useTitle(); 
-    table2.setTable() ( "pred", "obs", "pred/obs", "(p-o)/p") 
-         ("0 b-tags" , nPred_m[j][0], nFake_m[j][0], nPred_m[j][0]/nFake_m[j][0], fabs(nPred_m[j][0]-nFake_m[j][0])/nPred_m[j][0]) 
-         ("1 b-tags" , nPred_m[j][1], nFake_m[j][1], nPred_m[j][1]/nFake_m[j][1], fabs(nPred_m[j][1]-nFake_m[j][1])/nPred_m[j][1]) 
-         ("2 b-tags" , nPred_m[j][2], nFake_m[j][2], nPred_m[j][2]/nFake_m[j][2], fabs(nPred_m[j][2]-nFake_m[j][2])/nPred_m[j][2]) 
-         ("3+ b-tags", nPred_m[j][3], nFake_m[j][3], nPred_m[j][3]/nFake_m[j][3], fabs(nPred_m[j][3]-nFake_m[j][3])/nPred_m[j][3]);
-    table2.print();
   }
 
   float overall_p[3] = { 0 };

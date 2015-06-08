@@ -95,14 +95,14 @@ void yields(){
   TChain* t5qqww_deg  = new TChain("t");
  
   //Fill chains
-  ttbar      ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/TTBAR_multiIso.root"                                 );
-  ttw        ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/TTW_multiIso.root"                                   );
-  ttz        ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/TTZ_multiIso.root"                                   );
-  wz         ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/WZ_multiIso.root"                                    );
-  t1tttt_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/T1TTTT_1200_multiIso.root"                           );
-  t1tttt_1500->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/T1TTTT_1500_multiIso.root"                           );
-  t5qqww_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/private/t5qqqqWW_1200_1000_800_baby_multiIso.root"   );
-  t5qqww_deg ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.08/private/t5qqqqWW_deg_1000_315_300_baby_multiIso.root");
+  ttbar      ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/TTBAR_multiIso.root"                                 );
+  ttw        ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/TTW_multiIso.root"                                   );
+  ttz        ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/TTZ_multiIso.root"                                   );
+  wz         ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/WZ_multiIso.root"                                    );
+  t1tttt_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/T1TTTT_1200_multiIso.root"                           );
+  t1tttt_1500->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/T1TTTT_1500_multiIso.root"                           );
+  t5qqww_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/private/t5qqqqWW_1200_1000_800_baby_multiIso.root"   );
+  t5qqww_deg ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/private/t5qqqqWW_deg_1000_315_300_baby_multiIso.root");
 
   //Chains for type
   TChain* all_bkgd = new TChain("t");

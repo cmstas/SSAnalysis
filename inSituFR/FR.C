@@ -31,7 +31,7 @@ bool FO4 = true;
 bool ufl = false;
 
 //Path
-string path = "v1.21";
+string path = "v1.21/FO2plusFO4";
 
 bool isFakeLeg(int lep){
   if (lep == 1 && ufl) return ss::lep1_isFakeLeg(); 
@@ -413,9 +413,17 @@ void FR2D(){
     myfile.open("FO1.cc"); 
     name = "FO1";
   }
-  if (binFine == false &&  withEta == true && testPC == false && others == false && FO4 == true && ufl == false){
+  else if (binFine == false &&  withEta == true && testPC == false && others == false && FO4 == true && ufl == false){
     myfile.open("FO4.cc"); 
     name = "FO4";
+  }
+  else if (binFine == false &&  withEta == true && testPC == true && others == true && FO4 == true && ufl == false){
+    myfile.open("PC.cc"); 
+    name = "PC";
+  }
+  else{
+    myfile.open("EXPT.cc"); 
+    name = "EXPT";
   }
 
   //Function Output

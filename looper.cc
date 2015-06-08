@@ -366,7 +366,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       }
 
       //Choose hypothesis of good leps (the actual hyp)
-      hyp_result_t best_hyp_info = chooseBestHyp(isoCase);
+      hyp_result_t best_hyp_info = chooseBestHyp(isoCase, false); //2nd argument is whether to use FO2 + FO4, this is only supported in babymaking mode
       int hyp_class = best_hyp_info.hyp_class;
       int best_hyp = best_hyp_info.best_hyp;
       if (hyp_class != 3) continue;

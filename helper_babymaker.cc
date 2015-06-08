@@ -134,6 +134,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("muID_eta"              , &muID_eta              );
   BabyTree->Branch("trueNumInt"            , &trueNumInt            );
   BabyTree->Branch("nPUvertices"           , &nPUvertices           ); 
+  BabyTree->Branch("nGoodVertices"         , &nGoodVertices         ); 
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -293,11 +294,15 @@ void babyMaker::InitBabyNtuple(){
     passed_id_inSituFR_lep2 = 0;
     trueNumInt.clear();
     nPUvertices.clear(); 
+    nGoodVertices = 0; 
 
 } 
 
 //Main function
 int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
+
+  //Manually set expt (FO2 + FO4)
+  bool expt = true;
 
   //Initialize variables
   InitBabyNtuple();
@@ -349,7 +354,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
   
   //Fill lepton variables
-  hyp_result_t best_hyp_info = chooseBestHyp(isoCase, verbose);
+  hyp_result_t best_hyp_info = chooseBestHyp(isoCase, expt, verbose);
   hyp_class = best_hyp_info.hyp_class;
   int best_hyp = best_hyp_info.best_hyp;
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
@@ -405,8 +410,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   lep2_miniIso = abs(lep2_id)==11 ? elMiniRelIso(lep2_idx, true, 0.0, false, true) : muMiniRelIso(lep2_idx, true, 0.5, false, true);
 
   //For inSituFR, both must pass looser ID (easier than selection ID)
-  passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx); 
-  passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx); 
+  passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx, expt); 
+  passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx, expt); 
   if (passed_id_inSituFR_lep1 && passed_id_inSituFR_lep2){
     int truth_lep1 = lepMotherID_inSituFR( Lep(lep1_id, lep1_idx) ); 
     int truth_lep2 = lepMotherID_inSituFR( Lep(lep2_id, lep2_idx) ); 
@@ -549,6 +554,12 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
     muID_medMuonPOG.push_back(isMediumMuonPOG(index));
     muID_pt        .push_back(mus_p4().at(index).pt());
     muID_eta       .push_back(fabs(mus_p4().at(index).eta()));
+  }
+
+  //Number of good vertices
+  for (unsigned int i = 0; i < tas::vtxs_ndof().size(); i++){
+    if (!isGoodVertex(i)) continue;
+    nGoodVertices++;
   }
   
   //Fill Baby
