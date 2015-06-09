@@ -2,6 +2,7 @@
   gSystem->Load("../../CORE/CMS3_CORE.so");
   gSystem->Load("../../Tools/libTools.so");
 
+  gROOT->ProcessLine(".L lepfilter.cc+");
   gROOT->ProcessLine(".L ScanChain.C+");
 
   bool doConeCorr   = 1;

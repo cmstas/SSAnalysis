@@ -1,31 +1,19 @@
-// Usage:
-// > root -b doAll.C
-
-// C++
 #include <iostream>
 #include <iomanip>
 #include <vector>
-
-// ROOT
-#include "TBenchmark.h"
 #include "TChain.h"
 #include "TDirectory.h"
 #include "TFile.h"
 #include "TROOT.h"
-#include "TTreeCache.h"
 #include "TH2D.h"
 #include "TH1F.h"
 #include "TCanvas.h"
 #include "TStyle.h"
 #include "TLegend.h"
-#include "TColor.h"
 #include "TString.h"
-
 #include "../../CORE/SSSelections.h"
 #include "../../Tools/utils.h"
-
-// lepfilter
-#include "lepfilter.cc"
+#include "lepfilter.h"
 
 using namespace std;
 using namespace samesign;
@@ -199,7 +187,7 @@ int getHist(string name){
   return -1;
 }
 
-int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", bool fast = true, int nEvents = -1){
+int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", int nEvents = -1){
 
   //Parse options
   bool coneCorr = option.Contains("coneCorr") ? true : false;
@@ -428,8 +416,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
     // Get File Content
     TFile *file = new TFile( currentFile->GetTitle() );
     TTree *tree = (TTree*)file->Get("t");
-    if(fast) TTreeCache::SetLearnEntries(10);
-    if(fast) tree->SetCacheSize(128*1024*1024);
     ss.Init(tree);
     
     // Loop over Events in current file
@@ -439,7 +425,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
     
       // Get Event Content
       if( nEventsTotal >= nEventsChain ) continue;
-      if(fast) tree->LoadTree(event);
       ss.GetEntry(event);
       ++nEventsTotal;
     
