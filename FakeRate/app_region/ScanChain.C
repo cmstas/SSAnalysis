@@ -188,6 +188,8 @@ float getFakeRate(TH2D* histo, float pt, float eta, float ht, bool extrPtRel = f
 {
   float e = 0;
 
+  //if(pt >= 35./* && fabs(eta)<2.*/) pt = 34.;//fixme test truncation
+
   //if above or below bounds, reassign so pick rate from closest bin.
   pt = getPt(pt,extrPtRel);
   eta = getEta(eta,ht,extrPtRel);
