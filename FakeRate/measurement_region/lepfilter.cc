@@ -64,6 +64,7 @@ namespace samesign {
 	const float &dEtaIn() { return ss.dEtaIn(); }
 	const float &dPhiIn() { return ss.dPhiIn(); }
 	const float &hOverE() { return ss.hOverE(); }
+	const float &mva() { return ss.mva(); }
 	const float &ecalEnergy() { return ss.ecalEnergy(); }
 	const float &eOverPIn() { return ss.eOverPIn(); }
 	const bool &conv_vtx_flag() { return ss.conv_vtx_flag(); }

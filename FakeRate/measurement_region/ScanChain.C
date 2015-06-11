@@ -66,6 +66,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool useRelIso = false;
   if (option.Contains("useRelIso")) useRelIso = true;
 
+  bool noPtRel = false;
+  if (option.Contains("noPtRel")) noPtRel = true;
+
   bool useLooseEMVA = false;
   if (option.Contains("useLooseEMVA")) useLooseEMVA = true;
 
@@ -83,6 +86,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
   bool doLightonly = false;
   if (option.Contains("doLightonly")) doLightonly = true;
+
+  bool onlyMuPt15 = false;
+  if (option.Contains("onlyMuPt15")) onlyMuPt15 = true;
+
+  bool onlyEM80to170 = false;
+  if (option.Contains("onlyEM80to170")) onlyEM80to170 = true;
+
+  bool onlyEM30to80 = false;
+  if (option.Contains("onlyEM30to80")) onlyEM30to80 = true;
 
   int nptbins = 5;
   int netabins = 3;
@@ -275,15 +287,22 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       // Progress
       lepfilter::progress( nEventsTotal, nEventsChain );
 
-      //cout << "pt=" << ss.p4().pt() << " iso=" << ss.RelIso03EA() << endl;
-      //cout << "lepp4=" << ss.p4() << " jetp4=" << ss.jet_close_lep() << endl;
+      int evtToDebug = -999999;
+      if (ss.evt_event()==evtToDebug) {
+	cout << __FILE__ << " " << __LINE__ << endl;
+	cout << "pt=" << ss.p4().pt() << " eta=" << ss.p4().eta() << " sip=" << fabs(ss.ip3d()/ss.ip3derr()) << " mva=" << ss.mva() << endl;
+	cout << "lepp4=" << ss.p4() << " jetp4=" << ss.jet_close_lep() << endl;
+      }
 
       // Analysis Code
       float weight = ss.scale1fb()*10.0/1000.;//use 10./pb for sync
 
 	  if(ss.scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
-	  if(abs(ss.id())==13 && ss.p4().pt()<15. && ss.scale1fb() > 79. && ss.scale1fb() < 80.) continue;  //take only Mu15 above pT=15
-	  if(abs(ss.id())==13 && ss.p4().pt()>15. && (ss.scale1fb() < 79. || ss.scale1fb() > 80.)) continue;  //take only Mu5 below pT=15
+	  if(abs(ss.id())==13 && ss.p4().pt()<15. && ss.scale1fb() > 79. && ss.scale1fb() < 80.) continue;  //take only Mu5 below pT=15
+	  if(abs(ss.id())==13 && ss.p4().pt()>15. && (ss.scale1fb() < 79. || ss.scale1fb() > 80.)) continue;  //take only Mu15 above pT=15
+	  if (onlyMuPt15 && (ss.scale1fb() < 79. || ss.scale1fb() > 80.)) continue;
+	  if (onlyEM80to170 && (ss.scale1fb() < 284.5521 || ss.scale1fb() > 284.5522)) continue;
+	  if (onlyEM30to80  && (ss.scale1fb() < 5203.01  || ss.scale1fb() > 5203.03 )) continue;
 
 	  //make sure we use mu from MuEnrich and el from EG+BCtoE
 	  if (abs(ss.id())==13 && fabs(ss.scale1fb()-20.94)>0.1 && fabs(ss.scale1fb()-79.81)>0.1 && fabs(ss.scale1fb()-85.19)>0.1 && fabs(ss.scale1fb()-357.93)>0.1) continue;
@@ -294,6 +313,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  int njets40 = 0;
 	  int nbtags = 0;
 	  for(unsigned int i=0; i<ss.jets().size(); i++)  {
+	        if(fabs(ss.jets()[i].eta()) > 2.4) continue;
 		if(ROOT::Math::VectorUtil::DeltaR(ss.jets()[i], ss.p4()) < 1.) continue; //0.4 in babymaker
 		if(ss.jets_disc()[i] > 0.814) nbtags++;
 		if(ss.jets()[i].pt() > 40.) {
@@ -305,6 +325,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 	  float ptrel = ss.ptrelv1();
 	  assert(fabs(ptrel - computePtRel(ss.p4(),ss.jet_close_lep(),true))<0.0001);
+	  if (noPtRel && ptrel > 7.0) continue;
 	  float closejetpt = ss.jet_close_lep().pt();
 	  if (closejetpt<ss.p4().pt()) closejetpt=ss.p4().pt();
 	  //float miniIso = ss.miniiso();
@@ -323,7 +344,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
 	  // |eta|>2.4 will mess up the rate in the highest eta bins (2<|eta|<3)
 	  //Don't think eta cut is anywhere else
-	  if(ss.p4().pt() < 10. || fabs(ss.p4().eta()) > 2.4) //What do we want here? 
+	  if(ss.p4().pt() < 10. || fabs(ss.p4().eta()) > 2.5 || (abs(ss.id()==13 && fabs(ss.p4().eta()) > 2.4)) )
 	  	{continue;}
 
 	  if (doLightonly && abs(ss.id())==11 && ss.p4().pt() < 20.) continue;//because EMEnriched does not go below 20 GeV
@@ -441,6 +462,32 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		    if( abs( ss.id() ) == 13 ) pTrelvsIso_histo_mu->Fill( std::min(ss.RelIso03EA(),float(0.99)), std::min(ptrel,float(29.9)) );
 		    if( abs( ss.id() ) == 11 ) pTrel_histo_el->Fill( std::min(ptrel,float(29.9)) );
 		    if( abs( ss.id() ) == 13 ) pTrel_histo_mu->Fill( std::min(ptrel,float(29.9)) );
+
+		    /*
+		    //TURN ON TO DEBUG LEPTONS IN SPECIFIC BINS
+		    //if (ss.p4().pt()>50. && ss.p4().pt()<70. && fabs(ss.p4().eta())>2.) {
+		    if (ss.p4().pt()>35. && ss.p4().pt()<50. && fabs(ss.p4().eta())>2.) {
+		      char type = 'n';
+		      if (ss.motherID() == -1) type = 'b'; 
+		      if (ss.motherID() == -2) type = 'c'; 
+		      if (ss.motherID() ==  0) type = 'l'; 
+		      cout << Form("%11d %3i %6.2f %5.2f %5.2f %5.2f %5.2f %c %i %5.2f %i %i %i",
+				   ss.evt_event(),ss.id(),ss.p4().pt(),ss.p4().eta(),
+				   ss.miniiso(),ptrel,ptratio,type,passId,ss.mva(),
+				   ss.exp_innerlayers(),ss.conv_vtx_flag(),ss.threeChargeAgree()) << endl;
+		      if (ss.evt_event()==1137407433 || ss.evt_event()==1658883658) {
+			cout << "close jet pt=" << ss.jet_close_lep().pt() << " eta=" << ss.jet_close_lep().eta() << " phi=" << ss.jet_close_lep().phi() << endl;
+			for(unsigned int i=0; i<ss.jets().size(); i++)  {
+			  if(ROOT::Math::VectorUtil::DeltaR(ss.jets()[i], ss.p4()) < 1.) continue; //0.4 in babymaker
+			  if(ss.jets()[i].pt() > 40.) {
+			    cout << "jet pt=" << ss.jets()[i].pt() << " eta=" <<  ss.jets()[i].eta() << " phi=" <<  ss.jets()[i].phi() << " dR(j,l)=" << ROOT::Math::VectorUtil::DeltaR(ss.jets()[i], ss.p4()) << endl;
+			  }
+			}
+			cout << endl;
+		      }
+		    }
+		    */
+
 		  }
 
 		  if( abs( ss.id() ) == 11 ) // it's an el

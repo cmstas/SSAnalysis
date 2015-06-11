@@ -207,6 +207,9 @@ protected:
 	float	hOverE_;
 	TBranch *hOverE_branch;
 	bool hOverE_isLoaded;
+	float	mva_;
+	TBranch *mva_branch;
+	bool mva_isLoaded;
 	float	ecalEnergy_;
 	TBranch *ecalEnergy_branch;
 	bool ecalEnergy_isLoaded;
@@ -570,6 +573,11 @@ void Init(TTree *tree) {
 		hOverE_branch = tree->GetBranch("hOverE");
 		if (hOverE_branch) {hOverE_branch->SetAddress(&hOverE_);}
 	}
+	mva_branch = 0;
+	if (tree->GetBranch("mva") != 0) {
+		mva_branch = tree->GetBranch("mva");
+		if (mva_branch) {mva_branch->SetAddress(&mva_);}
+	}
 	ecalEnergy_branch = 0;
 	if (tree->GetBranch("ecalEnergy") != 0) {
 		ecalEnergy_branch = tree->GetBranch("ecalEnergy");
@@ -714,6 +722,7 @@ void GetEntry(unsigned int idxx)
 		dEtaIn_isLoaded = false;
 		dPhiIn_isLoaded = false;
 		hOverE_isLoaded = false;
+		mva_isLoaded = false;
 		ecalEnergy_isLoaded = false;
 		eOverPIn_isLoaded = false;
 		conv_vtx_flag_isLoaded = false;
@@ -797,6 +806,7 @@ void LoadAllBranches()
 	if (dEtaIn_branch != 0) dEtaIn();
 	if (dPhiIn_branch != 0) dPhiIn();
 	if (hOverE_branch != 0) hOverE();
+	if (mva_branch != 0) mva();
 	if (ecalEnergy_branch != 0) ecalEnergy();
 	if (eOverPIn_branch != 0) eOverPIn();
 	if (conv_vtx_flag_branch != 0) conv_vtx_flag();
@@ -1633,6 +1643,19 @@ void LoadAllBranches()
 		}
 		return hOverE_;
 	}
+	float &mva()
+	{
+		if (not mva_isLoaded) {
+			if (mva_branch != 0) {
+				mva_branch->GetEntry(index);
+			} else { 
+				printf("branch mva_branch does not exist!\n");
+				exit(1);
+			}
+			mva_isLoaded = true;
+		}
+		return mva_;
+	}
 	float &ecalEnergy()
 	{
 		if (not ecalEnergy_isLoaded) {
@@ -1919,6 +1942,7 @@ namespace samesign {
 	const float &dEtaIn();
 	const float &dPhiIn();
 	const float &hOverE();
+	const float &mva();
 	const float &ecalEnergy();
 	const float &eOverPIn();
 	const bool &conv_vtx_flag();
