@@ -4,14 +4,19 @@
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("4.2f");
 
-  bool saveDen = true;
+  bool saveNum = false;
+  bool saveDen = false;
 
   TString postfix = "";
-  // postfix+="_LooseEMVA";
-  // postfix+="_PtRatioCor";
-  // postfix+="_InvPtRatio";
+  // postfix+="_LooseEMVA";//FO2
+  // postfix+="_PtRatioCor";//FO3
+  // postfix+="_InvPtRatio";//FO4
   // postfix+="_doBonly";
   // postfix+="_doLightonly";
+  // postfix+="_noPtRel";
+  // postfix+="_RelIso";
+  // postfix+="_onlyMuPt15";
+  // postfix+="_onlyEM30to80";
   TString var = "";
   // var="_cone";
   // var="_jet";
@@ -81,6 +86,43 @@
     
     c3.SaveAs("mu_den_fr"+var+postfix+".png");
     c4.SaveAs("el_den_fr"+var+postfix+".png");
+
+  }
+
+  if (saveNum) {
+
+    TH2F* mun = 0;
+    if (var.Contains("_jet")) mun = (TH2F*) f->Get("Nt"+var+"_histo_mu");
+    else mun = (TH2F*) f->Get("Nt_histo_mu");
+    mun->SetTitle("muon fake rate numerator");
+    mun->GetXaxis()->SetTitle("muon p_{T} [GeV]");
+    if (var=="_cone") mun->GetXaxis()->SetTitle("cone corrected muon p_{T} [GeV]");
+    if (var.Contains("_jet")) mun->GetXaxis()->SetTitle("jet p_{T} [GeV]");
+    mun->GetYaxis()->SetTitle("|#eta|");
+    if (postfix=="_extrPtRel") mun->GetYaxis()->SetTitle("H_{T} [GeV]");
+    TCanvas c5;
+    mun->SetMarkerSize(1.5);
+    if (postfix!="_extrPtRel") mun->GetXaxis()->SetNdivisions(6,0);
+    mun->Draw("texte");
+    c5.RedrawAxis();
+    
+    TH2F* eln = 0;
+    if (var.Contains("_jet")) eln = (TH2F*) f->Get("Nt"+var+"_histo_e");
+    else eln = (TH2F*) f->Get("Nt_histo_e");
+    eln->SetTitle("electron fake rate numerator");
+    eln->GetXaxis()->SetTitle("electron p_{T} [GeV]");
+    if (var=="_cone") eln->GetXaxis()->SetTitle("cone corrected electron p_{T} [GeV]");
+    if (var.Contains("_jet")) eln->GetXaxis()->SetTitle("jet p_{T} [GeV]");
+    eln->GetYaxis()->SetTitle("|#eta|");
+    if (postfix=="_extrPtRel") eln->GetYaxis()->SetTitle("H_{T} [GeV]");
+    TCanvas c6;
+    eln->SetMarkerSize(1.5);
+    if (postfix!="_extrPtRel") eln->GetXaxis()->SetNdivisions(6,0);
+    eln->Draw("texte");
+    c6.RedrawAxis();
+    
+    c5.SaveAs("mu_num_fr"+var+postfix+".png");
+    c6.SaveAs("el_num_fr"+var+postfix+".png");
 
   }
 
