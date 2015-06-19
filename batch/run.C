@@ -89,12 +89,12 @@ void run(sample_t which, int file, IsolationMethods ptrel){
       shortname = "wjets1";
       path = "/hadoop/cms/store/group/snt/phys14/"; 
       break;
-    case DY
+    case DY:
       name="DYJetsToLL_M-50_13TeV-madgraph-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "dy_incl";
       path = "/hadoop/cms/store/group/snt/phys14/"; 
       break;
-    case WJets
+    case WJets:
       name="WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "wjets_incl";
       path = "/hadoop/cms/store/group/snt/phys14/"; 
