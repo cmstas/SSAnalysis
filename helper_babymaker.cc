@@ -87,6 +87,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("lep2_d0_err"           , &lep2_d0_err           );
   BabyTree->Branch("lep1_ip3d"             , &lep1_ip3d             );
   BabyTree->Branch("lep2_ip3d"             , &lep2_ip3d             );
+  BabyTree->Branch("lep1_MVA"             , &lep1_MVA             );
+  BabyTree->Branch("lep2_MVA"             , &lep2_MVA             );
   BabyTree->Branch("lep1_ip3d_err"         , &lep1_ip3d_err         );
   BabyTree->Branch("lep2_ip3d_err"         , &lep2_ip3d_err         );
   BabyTree->Branch("nVetoElectrons7"       , &nVetoElectrons7       );
@@ -228,6 +230,8 @@ void babyMaker::InitBabyNtuple(){
     lep2_d0_err = -999998;
     lep1_ip3d = -999998;
     lep2_ip3d = -999998;
+    lep1_MVA = -999998;
+    lep2_MVA = -999998;
     lep1_ip3d_err = -999998;
     lep2_ip3d_err = -999998;
     nVetoElectrons7 = 0;
@@ -311,11 +315,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   bool isData = tas::evt_isRealData();
 
   //Sync stuff
-  //if (tas::evt_event() != 72688) return -1;
+  //if (tas::evt_event() != 103973) return -1;
   //verbose = true;
-  //readMVA* globalEleMVAreader = 0;
-  //globalEleMVAreader = new readMVA();
-  //globalEleMVAreader->InitMVA("CORE/"); 
   //cout << "MVA VALUE: " << globalEleMVAreader->MVA(0) << endl;
   //globalEleMVAreader->DumpValues();
   //cout << " " << endl;
@@ -398,6 +399,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   dilep_p4 = lep1_p4 + lep2_p4; 
   lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, isoCase);
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, isoCase);
+  lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
+  lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
 
   //PtRel for both leptons
   lep1_ptrel_v0 = getPtRel(lep1_id, lep1_idx, false);
@@ -561,9 +564,10 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
     if (!isGoodVertex(i)) continue;
     nGoodVertices++;
   }
-  
+
   //Fill Baby
   BabyTree->Fill();
+
 
   return 0;  
 

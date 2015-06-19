@@ -122,9 +122,6 @@ namespace ss {
 	const vector<float> &muID_medMuonPOG() { return samesign.muID_medMuonPOG(); }
 	const vector<float> &muID_pt() { return samesign.muID_pt(); }
 	const vector<float> &muID_eta() { return samesign.muID_eta(); }
-	const vector<float> &trueNumInt() { return samesign.trueNumInt(); }
-	const vector<int> &nPUvertices() { return samesign.nPUvertices(); }
-	const int &nGoodVertices() { return samesign.nGoodVertices(); }
 	const bool &lep1_isGoodLeg() { return samesign.lep1_isGoodLeg(); }
 	const bool &lep2_isGoodLeg() { return samesign.lep2_isGoodLeg(); }
 	const bool &lep1_isFakeLeg() { return samesign.lep1_isFakeLeg(); }

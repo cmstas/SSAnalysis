@@ -23,8 +23,8 @@ bool isFakeLeg(int lep){
 }
 
 bool isGoodLeg(int lep){
-  if (lep == 1) return (ss::lep1_motherID() > 0); 
-  if (lep == 2) return (ss::lep2_motherID() > 0); 
+  if (lep == 1) return (ss::lep1_motherID() == 1); 
+  if (lep == 2) return (ss::lep2_motherID() == 1); 
   return 0;
 }
 
@@ -83,8 +83,9 @@ void closure(){
       SSAG::progress(nEventsTotal, nEventsChain);
 
       //Event Selection
+      //if (ss::event() != 308) continue;
       if (baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_p4().pt(), ss::lep2_p4().pt()) < 0) continue;
-      if (ss::hyp_class() == 4) continue;
+      if (ss::hyp_class() == 4 || ss::hyp_class() == 6) continue;
 
       //FO1 vs. FO4 selection
       bool lep1_denom_iso = false;
@@ -107,15 +108,15 @@ void closure(){
           if (ss::nbtags() != i && i < 3) continue;
           if (ss::nbtags() < 3 && i == 3) continue;
           //Actual yield -- events that are fake, SIP3D < 4 and isolated
-          if (isFakeLeg(1) && isGoodLeg(2) && ss::lep2_passes_id() && abs(ss::lep1_id()) == 11 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso() && lep1_denom_iso) nFake_e[j][i] += ss::scale1fb()*lumi; 
-          if (isFakeLeg(1) && isGoodLeg(2) && ss::lep2_passes_id() && abs(ss::lep1_id()) == 13 && abs(ss::lep1_sip()) < 4 && ss::lep1_multiIso() && lep1_denom_iso) nFake_m[j][i] += ss::scale1fb()*lumi; 
-          if (isFakeLeg(2) && isGoodLeg(1) && ss::lep1_passes_id() && abs(ss::lep2_id()) == 11 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso() && lep2_denom_iso) nFake_e[j][i] += ss::scale1fb()*lumi; 
-          if (isFakeLeg(2) && isGoodLeg(1) && ss::lep1_passes_id() && abs(ss::lep2_id()) == 13 && abs(ss::lep2_sip()) < 4 && ss::lep2_multiIso() && lep2_denom_iso) nFake_m[j][i] += ss::scale1fb()*lumi; 
+          if (ss::hyp_class() == 3){
+            if ((isFakeLeg(1) && isGoodLeg(2) && abs(ss::lep1_id()) == 11) || (isFakeLeg(2) && isGoodLeg(1) && abs(ss::lep2_id()) == 11)) nFake_e[j][i] += ss::scale1fb()*lumi; 
+            if ((isFakeLeg(1) && isGoodLeg(2) && abs(ss::lep1_id()) == 13) || (isFakeLeg(2) && isGoodLeg(1) && abs(ss::lep2_id()) == 13)) nFake_m[j][i] += ss::scale1fb()*lumi; 
+          }
           //Predicted yield -- events that are real, SIP3D < 4, and not isolated
           if (isFakeLeg(1) && isGoodLeg(2) && ss::lep2_passes_id() && abs(ss::lep1_id()) == 11 && abs(ss::lep1_sip()) < 4 && !ss::lep1_multiIso() && lep1_denom_iso) nPred_e[j][i] += ss::scale1fb()*lumi*functionAG(ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), 11)/(1.0-functionAG(ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), 11)); 
-          if (isFakeLeg(1) && isGoodLeg(2) && ss::lep2_passes_id() && abs(ss::lep1_id()) == 13 && abs(ss::lep1_sip()) < 4 && !ss::lep1_multiIso() && lep1_denom_iso) nPred_m[j][i] += ss::scale1fb()*lumi*functionAG(ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), 13)/(1.0-functionAG(ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), 13)); 
+          if (isFakeLeg(1) && isGoodLeg(2) && ss::lep2_passes_id() && abs(ss::lep1_id()) == 13 && abs(ss::lep1_sip()) < 4 && !ss::lep1_multiIso() && lep1_denom_iso){ nPred_m[j][i] += ss::scale1fb()*lumi*functionAG(ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), 13)/(1.0-functionAG(ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), 13)); if (i == 0) cout << ss::event() << endl; }
           if (isFakeLeg(2) && isGoodLeg(1) && ss::lep1_passes_id() && abs(ss::lep2_id()) == 11 && abs(ss::lep2_sip()) < 4 && !ss::lep2_multiIso() && lep2_denom_iso) nPred_e[j][i] += ss::scale1fb()*lumi*functionAG(ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), 11)/(1.0-functionAG(ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), 11)); 
-          if (isFakeLeg(2) && isGoodLeg(1) && ss::lep1_passes_id() && abs(ss::lep2_id()) == 13 && abs(ss::lep2_sip()) < 4 && !ss::lep2_multiIso() && lep2_denom_iso) nPred_m[j][i] += ss::scale1fb()*lumi*functionAG(ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), 13)/(1.0-functionAG(ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), 13)); 
+          if (isFakeLeg(2) && isGoodLeg(1) && ss::lep1_passes_id() && abs(ss::lep2_id()) == 13 && abs(ss::lep2_sip()) < 4 && !ss::lep2_multiIso() && lep2_denom_iso){ nPred_m[j][i] += ss::scale1fb()*lumi*functionAG(ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), 13)/(1.0-functionAG(ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), 13));  if (i == 0) cout << ss::event() << endl; }
         }
       }
 
@@ -161,8 +162,3 @@ void closure(){
   cout << "Overall closure L-L (100\% best): " << 100*overall[2] << "%" << endl;
 
 }
-
-
-
-
-

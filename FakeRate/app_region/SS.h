@@ -381,15 +381,6 @@ protected:
 	vector<float> *muID_eta_;
 	TBranch *muID_eta_branch;
 	bool muID_eta_isLoaded;
-	vector<float> *trueNumInt_;
-	TBranch *trueNumInt_branch;
-	bool trueNumInt_isLoaded;
-	vector<int> *nPUvertices_;
-	TBranch *nPUvertices_branch;
-	bool nPUvertices_isLoaded;
-	int	nGoodVertices_;
-	TBranch *nGoodVertices_branch;
-	bool nGoodVertices_isLoaded;
 	bool	lep1_isGoodLeg_;
 	TBranch *lep1_isGoodLeg_branch;
 	bool lep1_isGoodLeg_isLoaded;
@@ -1047,21 +1038,6 @@ void Init(TTree *tree) {
 		muID_eta_branch = tree->GetBranch("muID_eta");
 		if (muID_eta_branch) {muID_eta_branch->SetAddress(&muID_eta_);}
 	}
-	trueNumInt_branch = 0;
-	if (tree->GetBranch("trueNumInt") != 0) {
-		trueNumInt_branch = tree->GetBranch("trueNumInt");
-		if (trueNumInt_branch) {trueNumInt_branch->SetAddress(&trueNumInt_);}
-	}
-	nPUvertices_branch = 0;
-	if (tree->GetBranch("nPUvertices") != 0) {
-		nPUvertices_branch = tree->GetBranch("nPUvertices");
-		if (nPUvertices_branch) {nPUvertices_branch->SetAddress(&nPUvertices_);}
-	}
-	nGoodVertices_branch = 0;
-	if (tree->GetBranch("nGoodVertices") != 0) {
-		nGoodVertices_branch = tree->GetBranch("nGoodVertices");
-		if (nGoodVertices_branch) {nGoodVertices_branch->SetAddress(&nGoodVertices_);}
-	}
 	lep1_isGoodLeg_branch = 0;
 	if (tree->GetBranch("lep1_isGoodLeg") != 0) {
 		lep1_isGoodLeg_branch = tree->GetBranch("lep1_isGoodLeg");
@@ -1244,9 +1220,6 @@ void GetEntry(unsigned int idx)
 		muID_medMuonPOG_isLoaded = false;
 		muID_pt_isLoaded = false;
 		muID_eta_isLoaded = false;
-		trueNumInt_isLoaded = false;
-		nPUvertices_isLoaded = false;
-		nGoodVertices_isLoaded = false;
 		lep1_isGoodLeg_isLoaded = false;
 		lep2_isGoodLeg_isLoaded = false;
 		lep1_isFakeLeg_isLoaded = false;
@@ -1386,9 +1359,6 @@ void LoadAllBranches()
 	if (muID_medMuonPOG_branch != 0) muID_medMuonPOG();
 	if (muID_pt_branch != 0) muID_pt();
 	if (muID_eta_branch != 0) muID_eta();
-	if (trueNumInt_branch != 0) trueNumInt();
-	if (nPUvertices_branch != 0) nPUvertices();
-	if (nGoodVertices_branch != 0) nGoodVertices();
 	if (lep1_isGoodLeg_branch != 0) lep1_isGoodLeg();
 	if (lep2_isGoodLeg_branch != 0) lep2_isGoodLeg();
 	if (lep1_isFakeLeg_branch != 0) lep1_isFakeLeg();
@@ -2977,45 +2947,6 @@ void LoadAllBranches()
 		}
 		return *muID_eta_;
 	}
-	const vector<float> &trueNumInt()
-	{
-		if (not trueNumInt_isLoaded) {
-			if (trueNumInt_branch != 0) {
-				trueNumInt_branch->GetEntry(index);
-			} else { 
-				printf("branch trueNumInt_branch does not exist!\n");
-				exit(1);
-			}
-			trueNumInt_isLoaded = true;
-		}
-		return *trueNumInt_;
-	}
-	const vector<int> &nPUvertices()
-	{
-		if (not nPUvertices_isLoaded) {
-			if (nPUvertices_branch != 0) {
-				nPUvertices_branch->GetEntry(index);
-			} else { 
-				printf("branch nPUvertices_branch does not exist!\n");
-				exit(1);
-			}
-			nPUvertices_isLoaded = true;
-		}
-		return *nPUvertices_;
-	}
-	int &nGoodVertices()
-	{
-		if (not nGoodVertices_isLoaded) {
-			if (nGoodVertices_branch != 0) {
-				nGoodVertices_branch->GetEntry(index);
-			} else { 
-				printf("branch nGoodVertices_branch does not exist!\n");
-				exit(1);
-			}
-			nGoodVertices_isLoaded = true;
-		}
-		return nGoodVertices_;
-	}
 	bool &	lep1_isGoodLeg()
 	{
 		if (not lep1_isGoodLeg_isLoaded) {
@@ -3334,9 +3265,6 @@ namespace ss {
 	const vector<float> &muID_medMuonPOG();
 	const vector<float> &muID_pt();
 	const vector<float> &muID_eta();
-	const vector<float> &trueNumInt();
-	const vector<int> &nPUvertices();
-	const int &nGoodVertices();
 	const bool &lep1_isGoodLeg();
 	const bool &lep2_isGoodLeg();
 	const bool &lep1_isFakeLeg();

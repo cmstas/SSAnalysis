@@ -3,7 +3,7 @@
 #include "../software/tableMaker/CTable.h"
 #include "../CORE/SSSelections.h"
 #include "SS.h"
-#include "TH2F.h"
+#include "TH2D.h"
 #include "TCanvas.h"
 
 //Lumi
@@ -30,8 +30,33 @@ bool FO4 = true;
 //Include Florida's bugs?
 bool ufl = false;
 
+//SS Z-veto
+bool ssZveto = false;
+
 //Path
-string path = "v1.21/FO2plusFO4";
+string path = "v1.25/FO2pFO4";
+
+//coneCorrection
+bool coneCorr = false;
+
+bool passesNumeratorMVA(int which){
+  if (which == 1){
+    float aeta = fabs(ss::lep1_p4().eta());
+    float disc = fabs(ss::lep1_MVA());
+    if (aeta < 0.8) return disc > 0.73;
+    if ((aeta >= 0.8 && aeta <= 1.479)) return disc > 0.57;
+    if (aeta > 1.479) return disc > 0.05;
+  }
+  if (which == 2){
+    float aeta = fabs(ss::lep2_p4().eta());
+    float disc = fabs(ss::lep2_MVA());
+    if (aeta < 0.8) return disc > 0.73;
+    if ((aeta >= 0.8 && aeta <= 1.479)) return disc > 0.57;
+    if (aeta > 1.479) return disc > 0.05;
+  }
+  return false; 
+}
+
 
 bool isFakeLeg(int lep){
   if (lep == 1 && ufl) return ss::lep1_isFakeLeg(); 
@@ -51,6 +76,7 @@ bool isGoodLeg(int lep){
 
 void FR1D(){
 
+  if (coneCorr == false) cout << "NOT SUPPORTED!!" << endl;
   //Declare hists
   int nBinsX = 20;
   TH1F *numer ; 
@@ -98,6 +124,7 @@ void FR1D(){
     denom4->Sumw2();
   }
 
+
   //Declare chain
   TChain *chain = new TChain("t");
   chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root", path.c_str()));
@@ -137,7 +164,13 @@ void FR1D(){
       if (ss::njets() < 2) continue;
       if (ss::ht() < 80) continue;
       if (ss::met() < 30 && ss::ht() < 500) continue;
-      if (ss::hyp_class() == 4) continue;
+      if (ss::hyp_class() == 4 || ss::hyp_class() == 6) continue;
+
+      //SS Z veto
+      if (ssZveto == true){
+        cout << "HERE" << endl;
+        if (fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15) cout << "HERE2" << endl;
+      }
 
       //FO1 vs. FO4 selection
       bool lep1_denom_iso = false;
@@ -193,7 +226,6 @@ void FR1D(){
 
     }//event loop
   }//file loop
-
   //Overflow
   denom ->SetBinContent(nBinsX, denom->GetBinContent(nBinsX) + denom->GetBinContent(nBinsX+1)); 
   numer ->SetBinContent(nBinsX, numer->GetBinContent(nBinsX) + numer->GetBinContent(nBinsX+1)); 
@@ -245,28 +277,28 @@ void FR2D(){
 
   //Declare hists
   int nBinsX = 20;
-  TH2F *numer ; 
-  TH2F *denom ; 
-  TH2F *numer2; 
-  TH2F *denom2; 
-  TH2F *numer3; 
-  TH2F *denom3; 
-  TH2F *numer4; 
-  TH2F *denom4; 
+  TH2D *numer ; 
+  TH2D *denom ; 
+  TH2D *numer2; 
+  TH2D *denom2; 
+  TH2D *numer3; 
+  TH2D *denom3; 
+  TH2D *numer4; 
+  TH2D *denom4; 
 
   //Define hists
   nBinsX = 5; 
   int nBinsY = 3; 
   float xbins[] = { 10, 15, 25, 35, 50, 70 }; 
   float ybins[] = { 0, 1, 2, 2.4 }; 
-  numer  = new TH2F("numer" , "numer" , nBinsX, xbins, nBinsY, ybins);
-  denom  = new TH2F("denom" , "denom" , nBinsX, xbins, nBinsY, ybins);
-  numer2 = new TH2F("numer2", "numer2", nBinsX, xbins, nBinsY, ybins);
-  denom2 = new TH2F("denom2", "denom2", nBinsX, xbins, nBinsY, ybins);
-  numer3 = new TH2F("numer3", "numer3", nBinsX, xbins, nBinsY, ybins);
-  denom3 = new TH2F("denom3", "denom3", nBinsX, xbins, nBinsY, ybins);
-  numer4 = new TH2F("numer4", "numer4", nBinsX, xbins, nBinsY, ybins);
-  denom4 = new TH2F("denom4", "denom4", nBinsX, xbins, nBinsY, ybins);
+  numer  = new TH2D("numer" , "numer" , nBinsX, xbins, nBinsY, ybins);
+  denom  = new TH2D("denom" , "denom" , nBinsX, xbins, nBinsY, ybins);
+  numer2 = new TH2D("numer2", "numer2", nBinsX, xbins, nBinsY, ybins);
+  denom2 = new TH2D("denom2", "denom2", nBinsX, xbins, nBinsY, ybins);
+  numer3 = new TH2D("numer3", "numer3", nBinsX, xbins, nBinsY, ybins);
+  denom3 = new TH2D("denom3", "denom3", nBinsX, xbins, nBinsY, ybins);
+  numer4 = new TH2D("numer4", "numer4", nBinsX, xbins, nBinsY, ybins);
+  denom4 = new TH2D("denom4", "denom4", nBinsX, xbins, nBinsY, ybins);
 
   //Set hist errors
   if (!dataErrors){
@@ -311,7 +343,11 @@ void FR2D(){
       //Get Event Content
       samesign.GetEntry(event);
       nEventsTotal++;
-    
+
+      //Pt
+      float pt1 = coneCorr ? ss::lep1_coneCorrPt() : ss::lep1_p4().pt(); 
+      float pt2 = coneCorr ? ss::lep2_coneCorrPt() : ss::lep2_p4().pt(); 
+
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
 
@@ -320,6 +356,9 @@ void FR2D(){
       if (ss::ht() < 80) continue;
       if (ss::met() < 30 && ss::ht() < 500) continue;
       if (ss::hyp_class() == 4) continue;
+
+      //SS Z veto
+      if (ssZveto && fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15) continue;
  
       //FO1 vs. FO4 selection
       bool lep1_denom_iso = false;
@@ -335,42 +374,42 @@ void FR2D(){
 
       //If lep is the Fake one and it passes SIPID > 4, it goes in plot
       if (abs(ss::lep1_id()) == 11 && (testPC || isGoodLeg(2)) && (testPC || isFakeLeg(1)) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
-         denom->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
+        if (ss::lep1_multiIso() && passesNumeratorMVA(1)) numer->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
+        denom->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
       else if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
-         denom->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
+        if (ss::lep2_multiIso() && passesNumeratorMVA(2)) numer->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
+        denom->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID < 4, it goes in plot
       else if (abs(ss::lep1_id()) == 11 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer2->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
-        denom2->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
+        if (ss::lep1_multiIso() && passesNumeratorMVA(1)) numer2->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
+        denom2->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
       else if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer2->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
-        denom2->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
+        if (ss::lep2_multiIso() && passesNumeratorMVA(2)) numer2->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
+        denom2->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID > 4, it goes in plot
       else if (abs(ss::lep1_id()) == 13 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer3->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
-         denom3->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
+        if (ss::lep1_multiIso()) numer3->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
+        denom3->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
       else if (abs(ss::lep2_id()) == 13 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer3->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
-         denom3->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
+        if (ss::lep2_multiIso()) numer3->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
+        denom3->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
       //If lep is the Fake one and it passes SIPID < 4, it goes in plot
       else if (abs(ss::lep1_id()) == 13 && (testPC || isGoodLeg(2)) && (testPC || isFakeLeg(1)) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer4->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
-        denom4->Fill(ss::lep1_coneCorrPt(), fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
+        if (ss::lep1_multiIso()) numer4->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);  
+        denom4->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*lumi);
       }
       else if (abs(ss::lep2_id()) == 13 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer4->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
-        denom4->Fill(ss::lep2_coneCorrPt(), fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
+        if (ss::lep2_multiIso()) numer4->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);  
+        denom4->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*lumi);
       }
 
 
@@ -408,7 +447,7 @@ void FR2D(){
   numer4->Divide(numer4, denom4, 1, 1, "b"); 
 
   ofstream myfile;
-  std::string name; 
+  string name; 
   if (binFine == false &&  withEta == true && testPC == false && others == false && FO4 == false && ufl == false){
     myfile.open("FO1.cc"); 
     name = "FO1";
@@ -477,11 +516,29 @@ void FR2D(){
   myfile << "  return 0; " << endl;
   myfile << "} " << endl;
 
+
+  //Save output
+  string name2 = "blah";
+  if (!others  && !testPC && !ssZveto && coneCorr) name2 = "_FO2pFO4"; 
+  if (!others  && !testPC && !ssZveto && !coneCorr) name2 = "_notCC"; 
+  if ( others  &&  testPC && !ssZveto && coneCorr) name2 = "_PC"; 
+  if ( others  && !testPC && !ssZveto && coneCorr) name2 = "_soup";
+  if (!others  && !testPC &&  ssZveto && coneCorr) name2 = "_ssZ"; 
+  if ( others  &&  testPC &&  ssZveto && coneCorr) name2 = "_PCssZ"; 
+
+  TFile *file = new TFile(Form("inSituFR_cone_FR_histos%s.root", name2.c_str()), "RECREATE");
+  file->Write(); 
+  numer->Write("elec");
+  numer3->Write("muon");
+  file->Close(); 
+
+  //Plots
+  PlotMaker2D(numer , Form("--outputName FR_elec%s.pdf --noOverflow --setTitle elec, SIP3D > 4 --Xaxis fake p_{T} --Yaxis |#eta|", name2.c_str())); 
+  PlotMaker2D(numer3, Form("--outputName FR_muon%s.pdf --noOverflow --setTitle muon, SIP3D > 4 --Xaxis fake p_{T} --Yaxis |#eta|", name2.c_str())); 
+
   //Print output
-  PlotMaker2D(numer , "--outputName gt_elec.pdf --noOverflow --setTitle elec, SIP3D > 4 --Xaxis fake p_{T} --Yaxis |#eta|"); 
-  PlotMaker2D(numer2, "--outputName lt_elec.pdf --noOverflow --setTitle elec, SIP3D < 4 --Xaxis fake p_{T} --Yaxis |#eta|"); 
-  PlotMaker2D(numer3, "--outputName gt_muon.pdf --noOverflow --setTitle muon, SIP3D > 4 --Xaxis fake p_{T} --Yaxis |#eta|"); 
-  PlotMaker2D(numer4, "--outputName lt_muon.pdf --noOverflow --setTitle muon, SIP3D < 4 --Xaxis fake p_{T} --Yaxis |#eta|"); 
+  //PlotMaker2D(numer2, "--outputName lt_elec.pdf --noOverflow --setTitle elec, SIP3D < 4 --Xaxis fake p_{T} --Yaxis |#eta|"); 
+  //PlotMaker2D(numer4, "--outputName lt_muon.pdf --noOverflow --setTitle muon, SIP3D < 4 --Xaxis fake p_{T} --Yaxis |#eta|"); 
 }
 
 void FR(){
