@@ -556,7 +556,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 	  }
 
 
-  if (ss::hyp_class() == 3 && lep1_pT >= 20 && lep2_pT >= 20){
+  if (ss::hyp_class() == 3){
 
     counter++;
 
