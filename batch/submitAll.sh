@@ -21,23 +21,29 @@ pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 nIter=0
 for ptrel in "4"
 do
-  for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200" "DY" "WJets" "T5qqqqWW_1200_1000_800" "T5qqqqWW_deg_1000_315_300"
+  for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200" "DY1" "DY2" "DY3" "DY4" "WJets1" "WJets2" "WJets3" "WJets4" "T5qqqqWW_1200_1000_800" "T5qqqqWW_deg_1000_315_300"
   do
     #Iter
     nIter=$(( $nIter + 1 ))
 
     #Get Path
-    if [ "$nIter" -lt "9" ]; then path=$pathPublic; else path=$pathPrivate; fi 
+    if [ "$nIter" -lt "15" ]; then path=$pathPublic; else path=$pathPrivate; fi 
 
     #Get Name
     if   [ $sname == "TTW"         ]; then name="TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1"; 
     elif [ $sname == "TTZ"         ]; then name="TTZJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1"; 
     elif [ $sname == "TTBAR"       ]; then name="TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1"; 
     elif [ $sname == "WZ"          ]; then name="WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1"; 
+    elif [ $sname == "DY1"         ]; then name="DYJetsToLL_M-50_HT-100to200_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+    elif [ $sname == "DY2"         ]; then name="DYJetsToLL_M-50_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+    elif [ $sname == "DY3"         ]; then name="DYJetsToLL_M-50_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+    elif [ $sname == "DY4"         ]; then name="DYJetsToLL_M-50_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+    elif [ $sname == "WJets1"      ]; then name="WJetsToLNu_HT-100to200_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+    elif [ $sname == "WJets2"      ]; then name="WJetsToLNu_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+    elif [ $sname == "WJets3"      ]; then name="WJetsToLNu_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+    elif [ $sname == "WJets4"      ]; then name="WJetsToLNu_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
     elif [ $sname == "T1TTTT_1500" ]; then name="SMS-T1tttt_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1";
     elif [ $sname == "T1TTTT_1200" ]; then name="SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1";
-    elif [ $sname == "DY"          ]; then name="DYJetsToLL_M-50_13TeV-madgraph-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-    elif [ $sname == "WJets"       ]; then name="WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
     else name=$sname 
     fi
 

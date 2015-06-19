@@ -170,6 +170,8 @@ class babyMaker {
     float lep1_dZ;
     float lep2_dZ;
     float lep1_ip3d;
+    float lep1_MVA;
+    float lep2_MVA;
     float lep1_ip3d_err;
     float lep2_ip3d;
     float lep2_ip3d_err;

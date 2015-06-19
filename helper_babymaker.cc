@@ -317,9 +317,6 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   //Sync stuff
   //if (tas::evt_event() != 103973) return -1;
   //verbose = true;
-  readMVA* globalEleMVAreader = 0;
-  globalEleMVAreader = new readMVA();
-  globalEleMVAreader->InitMVA("CORE/"); 
   //cout << "MVA VALUE: " << globalEleMVAreader->MVA(0) << endl;
   //globalEleMVAreader->DumpValues();
   //cout << " " << endl;
@@ -402,8 +399,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   dilep_p4 = lep1_p4 + lep2_p4; 
   lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, isoCase);
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, isoCase);
-  lep1_MVA = abs(lep1_id) == 11 ? globalEleMVAreader->MVA(lep1_idx) : -9999; 
-  lep2_MVA = abs(lep2_id) == 11 ? globalEleMVAreader->MVA(lep2_idx) : -9999; 
+  lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
+  lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
 
   //PtRel for both leptons
   lep1_ptrel_v0 = getPtRel(lep1_id, lep1_idx, false);
@@ -567,9 +564,10 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
     if (!isGoodVertex(i)) continue;
     nGoodVertices++;
   }
-  
+
   //Fill Baby
   BabyTree->Fill();
+
 
   return 0;  
 

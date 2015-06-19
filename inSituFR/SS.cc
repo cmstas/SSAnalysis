@@ -77,6 +77,8 @@ namespace ss {
 	const float &lep2_d0_err() { return samesign.lep2_d0_err(); }
 	const float &lep1_ip3d() { return samesign.lep1_ip3d(); }
 	const float &lep2_ip3d() { return samesign.lep2_ip3d(); }
+	const float &lep1_MVA() { return samesign.lep1_MVA(); }
+	const float &lep2_MVA() { return samesign.lep2_MVA(); }
 	const float &lep1_ip3d_err() { return samesign.lep1_ip3d_err(); }
 	const float &lep2_ip3d_err() { return samesign.lep2_ip3d_err(); }
 	const int &nVetoElectrons7() { return samesign.nVetoElectrons7(); }
@@ -122,6 +124,9 @@ namespace ss {
 	const vector<float> &muID_medMuonPOG() { return samesign.muID_medMuonPOG(); }
 	const vector<float> &muID_pt() { return samesign.muID_pt(); }
 	const vector<float> &muID_eta() { return samesign.muID_eta(); }
+	const vector<float> &trueNumInt() { return samesign.trueNumInt(); }
+	const vector<int> &nPUvertices() { return samesign.nPUvertices(); }
+	const int &nGoodVertices() { return samesign.nGoodVertices(); }
 	const bool &lep1_isGoodLeg() { return samesign.lep1_isGoodLeg(); }
 	const bool &lep2_isGoodLeg() { return samesign.lep2_isGoodLeg(); }
 	const bool &lep1_isFakeLeg() { return samesign.lep1_isFakeLeg(); }

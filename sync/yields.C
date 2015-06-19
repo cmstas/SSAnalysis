@@ -5,7 +5,7 @@
 
 struct results_t { TH1F* hh; TH1F* hl; TH1F* ll; }; 
 
-string version = "v1.21";
+string version = "v1.22";
 
 void yields(){
 
@@ -74,15 +74,15 @@ void yields(){
       //Counters
       if (categ == HighHigh && BR >=  0) y0hh[type]++; 
       if (categ == HighLow  && BR >=  0) y0hl[type]++; 
-      if (categ == HighHigh && BR == 10) y1hh[type]++; 
-      if (categ == HighLow  && BR == 10) y1hl[type]++; 
-      if (categ == HighHigh && BR == 20) y2hh[type]++; 
-      if (categ == HighLow  && BR == 20) y2hl[type]++; 
-      if (categ == HighHigh && BR == 30) y3hh[type]++; 
-      if (categ == HighLow  && BR == 30) y3hl[type]++; 
+      if (categ == HighHigh && BR == 1) y1hh[type]++; 
+      if (categ == HighLow  && BR == 1) y1hl[type]++; 
+      if (categ == HighHigh && BR == 2) y2hh[type]++; 
+      if (categ == HighLow  && BR == 2) y2hl[type]++; 
+      if (categ == HighHigh && BR == 3) y3hh[type]++; 
+      if (categ == HighLow  && BR == 3) y3hl[type]++; 
 
       //Print sync script for 0-0 HH    
-      if (categ == HighHigh && BR >=  0) textfile << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), SR); 
+      if (categ == HighLow && BR >=  0) textfile << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), SR); 
 
     }//event loop
   }//file loop
@@ -106,7 +106,7 @@ void yields(){
   table.print(); 
 
   //Sort the file
-  system("sort -n -k1 -k2 -k3 unsorted.txt > ucsx_SR0_HH_yields.txt");
+  system("sort -n -k1 -k2 -k3 unsorted.txt > ucsx_SR0_HL_yields.txt");
   system("rm unsorted.txt"); 
 
 }

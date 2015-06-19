@@ -33,6 +33,12 @@
   }
   else {
     fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos.root";
+    //fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_notCC.root";
+    //fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_PC.root";
+    //fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_soup.root";
+    //fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_ssZ.root";
+    //fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_PCssZ.root";
+    //fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_FO2pFO4.root";
     option += "inSitu"; 
   }
 
