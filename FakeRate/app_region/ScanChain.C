@@ -556,7 +556,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 	  }
 
 
-  if (ss::hyp_class() == 3){
+  if (ss::hyp_class() == 3 && lep1_pT >= 20 && lep2_pT >= 20){
 
     counter++;
 
@@ -680,9 +680,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
     float fr_m = getFakeRate( rate_histo_mu, pt, eta, ss::ht(), false );
 
     if (isFakeLeg(1) && isGoodLeg(2) && ss::lep2_passes_id() && abs(ss::lep1_id()) == 11 && abs(ss::lep1_sip()) < 4 && !ss::lep1_multiIso() && lep1_denom_iso) hists[getHist("Npn_histo_br_pred_el")]->Fill(br, (fr_e/(1-fr_e))*weight);
-    if (isFakeLeg(1) && isGoodLeg(2) && ss::lep2_passes_id() && abs(ss::lep1_id()) == 13 && abs(ss::lep1_sip()) < 4 && !ss::lep1_multiIso() && lep1_denom_iso){ hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, (fr_m/(1-fr_m))*weight); if (ss::nbtags() == 0) cout << ss::event() << endl; }
+    if (isFakeLeg(1) && isGoodLeg(2) && ss::lep2_passes_id() && abs(ss::lep1_id()) == 13 && abs(ss::lep1_sip()) < 4 && !ss::lep1_multiIso() && lep1_denom_iso) hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, (fr_m/(1-fr_m))*weight);     
     if (isFakeLeg(2) && isGoodLeg(1) && ss::lep1_passes_id() && abs(ss::lep2_id()) == 11 && abs(ss::lep2_sip()) < 4 && !ss::lep2_multiIso() && lep2_denom_iso) hists[getHist("Npn_histo_br_pred_el")]->Fill(br, (fr_e/(1-fr_e))*weight);
-    if (isFakeLeg(2) && isGoodLeg(1) && ss::lep1_passes_id() && abs(ss::lep2_id()) == 13 && abs(ss::lep2_sip()) < 4 && !ss::lep2_multiIso() && lep2_denom_iso){ hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, (fr_m/(1-fr_m))*weight); if (ss::nbtags() == 0) cout << ss::event() << endl; }
+    if (isFakeLeg(2) && isGoodLeg(1) && ss::lep1_passes_id() && abs(ss::lep2_id()) == 13 && abs(ss::lep2_sip()) < 4 && !ss::lep2_multiIso() && lep2_denom_iso) hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, (fr_m/(1-fr_m))*weight);
     
   }
   if (inSitu) continue;
