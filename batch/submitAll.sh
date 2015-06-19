@@ -27,7 +27,7 @@ do
     nIter=$(( $nIter + 1 ))
 
     #Get Path
-    if [ "$nIter" -lt "15" ]; then path=$pathPublic; else path=$pathPrivate; fi 
+    if [ "$nIter" -lt "17" ]; then path=$pathPublic; else path=$pathPrivate; fi 
 
     #Get Name
     if   [ $sname == "TTW"         ]; then name="TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1"; 
