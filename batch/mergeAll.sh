@@ -33,6 +33,7 @@ do
   elif [ $sname == "WJets2"      ]; then name="WJetsToLNu_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
   elif [ $sname == "WJets3"      ]; then name="WJetsToLNu_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
   elif [ $sname == "WJets4"      ]; then name="WJetsToLNu_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+
   else name=$sname; path=$path2
   fi
   

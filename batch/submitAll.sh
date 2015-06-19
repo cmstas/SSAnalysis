@@ -21,7 +21,7 @@ pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 nIter=0
 for ptrel in "4"
 do
-  for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200" "DY1" "DY2" "DY3" "DY4" "WJets1" "WJets2" "WJets3" "WJets4" "Wjets" "DY" "T5qqqqWW_1200_1000_800" "T5qqqqWW_deg_1000_315_300"
+  for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200" "DY1" "DY2" "DY3" "DY4" "WJets1" "WJets2" "WJets3" "WJets4" "WJets" "DY" "T5qqqqWW_1200_1000_800" "T5qqqqWW_deg_1000_315_300"
   do
     #Iter
     nIter=$(( $nIter + 1 ))
