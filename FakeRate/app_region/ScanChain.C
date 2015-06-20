@@ -476,6 +476,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       assert(fabs(lep2_ptrel_v1 - computePtRel(ss::lep2_p4(),ss::jet_close_lep2(), true))<0.0001);
       float lep1_closejetpt = ss::jet_close_lep1().pt();
       float lep2_closejetpt = ss::jet_close_lep2().pt();
+      float lep1_ptratio = lep1_closejetpt>0. ? ss.lep1_p4().pt()/lep1_closejetpt : 1.;
+      float lep2_ptratio = lep2_closejetpt>0. ? ss.lep2_p4().pt()/lep2_closejetpt : 1.;
 
       if (fabs(ss::lep1_ip3d()/ss::lep1_ip3d_err())>4.) continue;
       if (fabs(ss::lep2_ip3d()/ss::lep2_ip3d_err())>4.) continue;
@@ -676,10 +678,12 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
         if (nbjets > 3) nbjets = 3; 
 
         //0) InSituFR variables
+        float iso_cut_1 = (abs(ss::lep1_id()) == 11 ? 0.10 : 0.14); 
+        float iso_cut_2 = (abs(ss::lep2_id()) == 11 ? 0.10 : 0.14); 
         float ptrel_cut_1 = (abs(ss::lep1_id()) == 11 ? 7.0 : 6.7); 
         float ptrel_cut_2 = (abs(ss::lep2_id()) == 11 ? 7.0 : 6.7); 
-        float ptratio_cut_1 = (abs(ss::lep1_id()) == 11 ? 0.7 : 0.68); 
-        float ptratio_cut_2 = (abs(ss::lep2_id()) == 11 ? 0.7 : 0.68); 
+        float ptratio_cut_1 = (abs(ss::lep1_id()) == 11 ? 0.70 : 0.68); 
+        float ptratio_cut_2 = (abs(ss::lep2_id()) == 11 ? 0.70 : 0.68); 
         bool lep1_denom_iso = ((ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1/ptratio_cut_1 + ss::lep1_miniIso())))); 
         bool lep2_denom_iso = ((ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1/ptratio_cut_2 + ss::lep2_miniIso())))); 
 
@@ -690,18 +694,14 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           if (!inSitu && ss::hyp_class() != 2) continue;
           if (inSitu && (ss::lep2_multiIso() || !isFakeLeg(2) || !isGoodLeg(1) || !lep2_denom_iso)) continue;
         
- 
           if (usePtRatioCor){
             //this is a tighter FO than default, so skip if it does not pass
-            if ( abs(ss::lep2_id())==11 ){
-              float ptratiocor = lep2_closejetpt>0. ? ss::lep2_p4().pt()*(1+std::max(0.,ss::lep2_miniIso()-0.10))/lep2_closejetpt : 1.;
-              if (!(ptratiocor > 0.70 || lep2_ptrel_v1 > 7.0)) continue;
-            } 
-            else {
-              float ptratiocor = lep2_closejetpt>0. ? ss::lep2_p4().pt()*(1+std::max(0.,ss::lep2_miniIso()-0.14))/lep2_closejetpt : 1.;
-              if (!(ptratiocor > 0.68 || lep2_ptrel_v1 > 6.7)) continue;
-            }
-          }
+	    float ptratiocor = lep2_closejetpt>0. ? ss::lep2_p4().pt()*(1+std::max(0.,ss::lep2_miniIso()-iso_cut_2))/lep2_closejetpt : 1.;
+	    if (!(ptratiocor > ptratio_cut_2 || lep2_ptrel_v1 > ptrel_cut_2)) continue;
+	  } else if (useInvPtRatio) {
+	    //this is a tighter FO than default, so skip if it does not pass
+	    if (!(1./lep2_ptratio < (1./ptratio_cut_2+lep2_miniIso()) || lep2_ptrel_v1 > ptrel_cut_2)) continue;
+          } 
           if (highlow && jetCorr){
             if (ss::lep2_p4().pt()>25.){
               rate_histo_e = (TH2D*) InputFile->Get("rate_jet_highpt_histo_e");
@@ -775,15 +775,13 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           if (inSitu && (ss::lep1_multiIso() || !isFakeLeg(1) || !isGoodLeg(2) || !lep1_denom_iso)) continue;
 
           if (usePtRatioCor){
-            if ( abs(ss::lep1_id())==11 ){
-              float ptratiocor = lep1_closejetpt>0. ? ss::lep1_p4().pt()*(1+std::max(0.,ss::lep1_miniIso()-0.10))/lep1_closejetpt : 1.;
-              if (!(ptratiocor > 0.70 || lep1_ptrel_v1 > 7.0)) continue;
-            } 
-            else {
-              float ptratiocor = lep1_closejetpt>0. ? ss::lep1_p4().pt()*(1+std::max(0.,ss::lep1_miniIso()-0.14))/lep1_closejetpt : 1.;
-              if (!(ptratiocor > 0.68 || lep1_ptrel_v1 > 6.7)) continue;
-            }
-          }
+            //this is a tighter FO than default, so skip if it does not pass
+	    float ptratiocor = lep1_closejetpt>0. ? ss::lep1_p4().pt()*(1+std::max(0.,ss::lep1_miniIso()-iso_cut_1))/lep1_closejetpt : 1.;
+	    if (!(ptratiocor > ptratio_cut_1 || lep1_ptrel_v1 > ptrel_cut_1)) continue;
+	  } else if (useInvPtRatio) {
+	    //this is a tighter FO than default, so skip if it does not pass
+	    if (!(1./lep1_ptratio < (1./ptratio_cut_1+lep1_miniIso()) || lep1_ptrel_v1 > ptrel_cut_1)) continue;
+          } 
           if (highlow && jetCorr){
             if (ss::lep1_p4().pt()>25.){
               rate_histo_e = (TH2D*) InputFile->Get("rate_jet_highpt_histo_e");
