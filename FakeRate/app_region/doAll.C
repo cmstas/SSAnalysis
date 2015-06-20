@@ -11,10 +11,11 @@
   bool highlow    = 0;
   bool lowlow     = 0;
 
-  //These are only for not-in-situ
   bool doConeCorr   = 1;
   bool doJetCorr    = 0;
-  bool doLooseEMVA  = 0;
+
+  //These are only for not-in-situ
+  bool doLooseEMVA  = 1;
   bool doPtRatioCor = 0;
   bool doInvPtRatio = 0;
   bool doBonly      = 0;
@@ -25,12 +26,12 @@
   TString option = "";
 
   if (!doInSitu){
-    if (doLooseEMVA) option+="_LooseEMVA";
+    if (doLooseEMVA)  option+="_LooseEMVA";
     if (doPtRatioCor) option+="_PtRatioCor";
     if (doInvPtRatio) option+="_InvPtRatio";
-    if (doBonly) option+="_doBonly";
-    if (doConly) option+="_doConly";
-    if (doLightonly) option+="_doLightonly";
+    if (doBonly)      option+="_doBonly";
+    if (doConly)      option+="_doConly";
+    if (doLightonly)  option+="_doLightonly";
     fakeratefile = "../measurement_region/rate_histos_qcd"+option+".root";
   }
   else {
@@ -53,8 +54,9 @@
   else if (doJetCorr) option+="_jetCorr";  //option only for ScanChain
 
   TChain *ch = new TChain("t"); 
-  if (doLooseEMVA) ch->Add("../../babies/v1.16_looseEMVA/TTBAR.root");
-  else ch->Add("../../babies/v1.21/TTBAR.root");
+  ch->Add("../../babies/gc.v1.24/TTBAR.root");
+  // if (doLooseEMVA) ch->Add("../../babies/v1.16_looseEMVA/TTBAR_multiIso.root");
+  // else ch->Add("../../babies/v1.21/TTBAR.root");
   ScanChain(ch, fakeratefile, option, ptRegion); 
 
   //TChain *ch_wjets = new TChain("t"); 

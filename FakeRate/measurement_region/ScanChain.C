@@ -355,7 +355,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  bool passFO = ss.passes_SS_fo_v3();
 	  bool passId_noiso = ss.passes_SS_tight_noiso_v3();
 	  bool passFO_noiso = ss.passes_SS_fo_noiso_v3();
-	  if (useLooseEMVA) {
+	  if (abs(ss.id())==11 && useLooseEMVA) {
 	    passFO = ss.passes_SS_fo_looseMVA_v3();
 	    passFO_noiso = ss.passes_SS_fo_looseMVA_noiso_v3();
 	  }
