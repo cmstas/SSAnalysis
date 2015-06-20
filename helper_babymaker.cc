@@ -87,6 +87,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("lep2_d0_err"           , &lep2_d0_err           );
   BabyTree->Branch("lep1_ip3d"             , &lep1_ip3d             );
   BabyTree->Branch("lep2_ip3d"             , &lep2_ip3d             );
+  BabyTree->Branch("lep1_MVA"             , &lep1_MVA             );
+  BabyTree->Branch("lep2_MVA"             , &lep2_MVA             );
   BabyTree->Branch("lep1_ip3d_err"         , &lep1_ip3d_err         );
   BabyTree->Branch("lep2_ip3d_err"         , &lep2_ip3d_err         );
   BabyTree->Branch("nVetoElectrons7"       , &nVetoElectrons7       );
@@ -134,6 +136,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("muID_eta"              , &muID_eta              );
   BabyTree->Branch("trueNumInt"            , &trueNumInt            );
   BabyTree->Branch("nPUvertices"           , &nPUvertices           ); 
+  BabyTree->Branch("nGoodVertices"         , &nGoodVertices         ); 
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -227,6 +230,8 @@ void babyMaker::InitBabyNtuple(){
     lep2_d0_err = -999998;
     lep1_ip3d = -999998;
     lep2_ip3d = -999998;
+    lep1_MVA = -999998;
+    lep2_MVA = -999998;
     lep1_ip3d_err = -999998;
     lep2_ip3d_err = -999998;
     nVetoElectrons7 = 0;
@@ -293,11 +298,15 @@ void babyMaker::InitBabyNtuple(){
     passed_id_inSituFR_lep2 = 0;
     trueNumInt.clear();
     nPUvertices.clear(); 
+    nGoodVertices = 0; 
 
 } 
 
 //Main function
 int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
+
+  //Manually set expt (FO2 + FO4)
+  bool expt = true;
 
   //Initialize variables
   InitBabyNtuple();
@@ -306,11 +315,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   bool isData = tas::evt_isRealData();
 
   //Sync stuff
-  //if (tas::evt_event() != 72688) return -1;
+  //if (tas::evt_event() != 103973) return -1;
   //verbose = true;
-  //readMVA* globalEleMVAreader = 0;
-  //globalEleMVAreader = new readMVA();
-  //globalEleMVAreader->InitMVA("CORE/"); 
   //cout << "MVA VALUE: " << globalEleMVAreader->MVA(0) << endl;
   //globalEleMVAreader->DumpValues();
   //cout << " " << endl;
@@ -349,7 +355,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
   
   //Fill lepton variables
-  hyp_result_t best_hyp_info = chooseBestHyp(isoCase, verbose);
+  hyp_result_t best_hyp_info = chooseBestHyp(isoCase, expt, verbose);
   hyp_class = best_hyp_info.hyp_class;
   int best_hyp = best_hyp_info.best_hyp;
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
@@ -393,6 +399,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   dilep_p4 = lep1_p4 + lep2_p4; 
   lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, isoCase);
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, isoCase);
+  lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
+  lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
 
   //PtRel for both leptons
   lep1_ptrel_v0 = getPtRel(lep1_id, lep1_idx, false);
@@ -405,8 +413,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   lep2_miniIso = abs(lep2_id)==11 ? elMiniRelIso(lep2_idx, true, 0.0, false, true) : muMiniRelIso(lep2_idx, true, 0.5, false, true);
 
   //For inSituFR, both must pass looser ID (easier than selection ID)
-  passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx); 
-  passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx); 
+  passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx, expt); 
+  passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx, expt); 
   if (passed_id_inSituFR_lep1 && passed_id_inSituFR_lep2){
     int truth_lep1 = lepMotherID_inSituFR( Lep(lep1_id, lep1_idx) ); 
     int truth_lep2 = lepMotherID_inSituFR( Lep(lep2_id, lep2_idx) ); 
@@ -550,9 +558,16 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
     muID_pt        .push_back(mus_p4().at(index).pt());
     muID_eta       .push_back(fabs(mus_p4().at(index).eta()));
   }
-  
+
+  //Number of good vertices
+  for (unsigned int i = 0; i < tas::vtxs_ndof().size(); i++){
+    if (!isGoodVertex(i)) continue;
+    nGoodVertices++;
+  }
+
   //Fill Baby
   BabyTree->Fill();
+
 
   return 0;  
 

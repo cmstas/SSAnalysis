@@ -5,7 +5,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
 
   //Figure out which babies to make
   bool runBaby = false;
-  bool babiesToMake[20] = {0};
+  bool babiesToMake[50] = {0};
   if (runBaby_str != ""){
     runBaby = true;
     unsigned int i = 0;
@@ -35,28 +35,46 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     return 0;
   }
 
-  TChain *chain_T1ttttG1200               = new TChain("Events");
-  TChain *chain_T1ttttG1500               = new TChain("Events");
-  TChain *chain_T5qqqqWW1200              = new TChain("Events");
-  TChain *chain_T5qqqqWW1500              = new TChain("Events");
-  TChain *chain_T6ttWW600_150             = new TChain("Events");
-  TChain *chain_T6ttWW600_425             = new TChain("Events");
-  TChain *chain_TTJets                    = new TChain("Events");
-  TChain *chain_TTWJets                   = new TChain("Events");
-  TChain *chain_TTZJets                   = new TChain("Events");
-  TChain *chain_WHZH                      = new TChain("Events");
-  TChain *chain_WW                        = new TChain("Events");
-  TChain *chain_WZJets                    = new TChain("Events");
-  TChain *chain_DY                        = new TChain("Events");
-  TChain *chain_TTbarH                    = new TChain("Events");
-  TChain *chain_TW                        = new TChain("Events");
-  TChain *chain_WJets                     = new TChain("Events");
-  TChain *chain_Wjets_ht                  = new TChain("Events");
-  TChain *chain_ZZTo4L                    = new TChain("Events");
-  TChain *chain_Wjets                     = new TChain("Events");
-  TChain *chain_T5qqqqWW_deg_1000_315_300 = new TChain("Events");
-  TChain *chain_T5qqqqWW_1200_1000_800    = new TChain("Events");
-  TChain *chain_sync                      = new TChain("Events");
+  TChain *chain_T1ttttG1200                                                     = new TChain("Events");
+  TChain *chain_T1ttttG1500                                                     = new TChain("Events");
+  TChain *chain_T5qqqqWW1200                                                    = new TChain("Events");
+  TChain *chain_T5qqqqWW1500                                                    = new TChain("Events");
+  TChain *chain_T6ttWW600_150                                                   = new TChain("Events");
+  TChain *chain_T6ttWW600_425                                                   = new TChain("Events");
+  TChain *chain_TTJets                                                          = new TChain("Events");
+  TChain *chain_TTWJets                                                         = new TChain("Events");
+  TChain *chain_TTZJets                                                         = new TChain("Events");
+  TChain *chain_WHZH                                                            = new TChain("Events");
+  TChain *chain_WW                                                              = new TChain("Events");
+  TChain *chain_WZJets                                                          = new TChain("Events");
+  TChain *chain_DY                                                              = new TChain("Events");
+  TChain *chain_TTbarH                                                          = new TChain("Events");
+  TChain *chain_TW                                                              = new TChain("Events");
+  TChain *chain_WJets                                                           = new TChain("Events");
+  TChain *chain_Wjets_ht                                                        = new TChain("Events");
+  TChain *chain_ZZTo4L                                                          = new TChain("Events");
+  TChain *chain_Wjets                                                           = new TChain("Events");
+  TChain *chain_sync                                                            = new TChain("Events");
+  TChain *chain_T1ttbb_2J_mGo1500_mChi100_3bodydec_asymmDecOnly                 = new TChain("Events");
+  TChain *chain_T1ttbbWW_2J_mGo1000_mCh725_mChi715_3bodydec_v2                  = new TChain("Events");
+  TChain *chain_T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2                  = new TChain("Events");
+  TChain *chain_T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2                  = new TChain("Events");
+  TChain *chain_T1ttbbWW_2J_mGo1300_mCh300_mChi295_3bodydec_v2                  = new TChain("Events");
+  TChain *chain_T5Full_Gl1500_Chi800_LSP100                                     = new TChain("Events");
+  TChain *chain_T5qqqqWW_1200_1000_800                                          = new TChain("Events");
+  TChain *chain_T5qqqqWW_deg_1000_315_300                                       = new TChain("Events");
+  TChain *chain_T5qqqqWWDeg_mGo1000_mCh310_mChi300                              = new TChain("Events");
+  TChain *chain_T5qqqqWWDeg_mGo1000_mCh315_mChi300                              = new TChain("Events");
+  TChain *chain_T5qqqqWWDeg_mGo1000_mCh325_mChi300                              = new TChain("Events");
+  TChain *chain_T5qqqqWWDeg_mGo800_mCh305_mChi300                               = new TChain("Events");
+  TChain *chain_T5qqqqWW_mGo1000_mCh800_mChi700                                 = new TChain("Events");
+  TChain *chain_T5qqqqWW_mGo1200_mCh1000_mChi800                                = new TChain("Events");
+  TChain *chain_T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2          = new TChain("Events");
+  TChain *chain_T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec_v2                  = new TChain("Events");
+  TChain *chain_T5ttttDeg_mGo1300_mStop300_mCh285_mChi280_23bodydec_v2          = new TChain("Events");
+  TChain *chain_T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2                  = new TChain("Events");
+  TChain *chain_T6ttWW_600_425_50_v2                                            = new TChain("Events");
+  TChain *chain_T6ttWW_650_150_50_v2                                            = new TChain("Events");
 
   if (useSkim) {
     TString dir  = "PHYS14_v2_new";
@@ -109,21 +127,31 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     chain_TW ->Add(dir + "TToLeptons_t-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"    + tag);
     chain_TW ->Add(dir + "TBarToLeptons_t-channel_Tune4C_CSA14_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
 
-    //Private samples
-    TString private_dir = "/nfs-7/userdata/ss2015/privateSamples/";
-    chain_T5qqqqWW_deg_1000_315_300 ->Add(private_dir + "T5qqqqWW_deg_1000_315_300/" + tag);
-    chain_T5qqqqWW_1200_1000_800    ->Add(private_dir + "T5qqqqWW_1200_1000_800/"    + tag);
-
-    //Private (I don't trust these anymore)
-    dir = "/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/";
-    TString dir2 = "/merged/merged_ntuple_*.root";
-    chain_T5qqqqWW1200 ->Add(dir + "T5qqqqWW_mGo1200_mCh1000_mChi800"    + dir2);
-    chain_T5qqqqWW1500 ->Add(dir + "13TeV_T5qqqqWW_Gl1500_Chi800_LSP100" + dir2);
-    chain_T6ttWW600_150->Add(dir + "T6ttWW_mSbottom600_mCh150_mChi50_v2" + dir2);
-    chain_T6ttWW600_425->Add(dir + "T6ttWW_mSbottom600_mCh425_mChi50_v2" + dir2);
-
     //Sync sample
     chain_sync->Add("/nfs-7/userdata/ss2015/sync_file/V07-02-08/sync_file.root");
+
+    //Private samples
+    TString private_dir = "/nfs-7/userdata/ss2015/signalSamples/V07-02-08/";
+    chain_T1ttbb_2J_mGo1500_mChi100_3bodydec_asymmDecOnly       ->Add(private_dir + "T1ttbb_2J_mGo1500_mChi100_3bodydec_asymmDecOnly/*.root"); 
+    chain_T1ttbbWW_2J_mGo1000_mCh725_mChi715_3bodydec_v2        ->Add(private_dir + "T1ttbbWW_2J_mGo1000_mCh725_mChi715_3bodydec_v2/*.root");
+    chain_T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2        ->Add(private_dir + "T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2/*.root");
+    chain_T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2        ->Add(private_dir + "T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2/*.root");
+    chain_T1ttbbWW_2J_mGo1300_mCh300_mChi295_3bodydec_v2        ->Add(private_dir + "T1ttbbWW_2J_mGo1300_mCh300_mChi295_3bodydec_v2/*.root");
+    chain_T5Full_Gl1500_Chi800_LSP100                           ->Add(private_dir + "T5Full_Gl1500_Chi800_LSP100/*.root");
+    chain_T5qqqqWW_1200_1000_800                                ->Add(private_dir + "T5qqqqWW_1200_1000_800/*.root");
+    chain_T5qqqqWW_deg_1000_315_300                             ->Add(private_dir + "T5qqqqWW_deg_1000_315_300/*.root");
+    chain_T5qqqqWWDeg_mGo1000_mCh310_mChi300                    ->Add(private_dir + "T5qqqqWWDeg_mGo1000_mCh310_mChi300/*.root");
+    chain_T5qqqqWWDeg_mGo1000_mCh315_mChi300                    ->Add(private_dir + "T5qqqqWWDeg_mGo1000_mCh315_mChi300/*.root");
+    chain_T5qqqqWWDeg_mGo1000_mCh325_mChi300                    ->Add(private_dir + "T5qqqqWWDeg_mGo1000_mCh325_mChi300/*.root");
+    chain_T5qqqqWWDeg_mGo800_mCh305_mChi300                     ->Add(private_dir + "T5qqqqWWDeg_mGo800_mCh305_mChi300/*.root");
+    chain_T5qqqqWW_mGo1000_mCh800_mChi700                       ->Add(private_dir + "T5qqqqWW_mGo1000_mCh800_mChi700/*.root");
+    chain_T5qqqqWW_mGo1200_mCh1000_mChi800                      ->Add(private_dir + "T5qqqqWW_mGo1200_mCh1000_mChi800/*.root");
+    chain_T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2->Add(private_dir + "T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2/*.root");
+    chain_T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec_v2        ->Add(private_dir + "T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec_v2/*.root");
+    chain_T5ttttDeg_mGo1300_mStop300_mCh285_mChi280_23bodydec_v2->Add(private_dir + "T5ttttDeg_mGo1300_mStop300_mCh285_mChi280_23bodydec_v2/*.root");
+    chain_T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2        ->Add(private_dir + "T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2/*.root");
+    chain_T6ttWW_600_425_50_v2                                  ->Add(private_dir + "T6ttWW_600_425_50_v2/*.root");
+    chain_T6ttWW_650_150_50_v2                                  ->Add(private_dir + "T6ttWW_650_150_50_v2/*.root");
 
   }
 
@@ -184,9 +212,29 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     if (babiesToMake[9]  == 1) l->ScanChain(chain_T6ttWW600_425            , "t6ttWW600_425"            , "baby", 0, "MakeBaby", -1, isoCase);
     if (babiesToMake[10] == 1) l->ScanChain(chain_Wjets                    , "Wjets"                    , "baby", 0, "MakeBaby", -1, isoCase);
     if (babiesToMake[11] == 1) l->ScanChain(chain_Wjets_ht                 , "Wjets_ht"                 , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[12] == 1) l->ScanChain(chain_T5qqqqWW_deg_1000_315_300, "t5qqqqWW_deg_1000_315_300", "baby", 0, "MakeBaby", -1, isoCase); 
-    if (babiesToMake[13] == 1) l->ScanChain(chain_T5qqqqWW_1200_1000_800   , "t5qqqqWW_1200_1000_800"   , "baby", 0, "MakeBaby", -1, isoCase); 
-    if (babiesToMake[14] == 1) l->ScanChain(chain_sync                     , "sync"                     , "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[12] == 1) l->ScanChain(chain_sync                     , "sync"                     , "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[13] == 1) l->ScanChain(chain_T1ttbb_2J_mGo1500_mChi100_3bodydec_asymmDecOnly       , "T1ttbb_2J_mGo1500_mChi100_3bodydec_asymmDecOnly", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[14] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1000_mCh725_mChi715_3bodydec_v2        , "T1ttbbWW_2J_mGo1000_mCh725_mChi715_3bodydec_v2" , "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[15] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2        , "T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2" , "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[16] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2        , "T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2" , "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[17] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1300_mCh300_mChi295_3bodydec_v2        , "T1ttbbWW_2J_mGo1300_mCh300_mChi295_3bodydec_v2" , "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[18] == 1) l->ScanChain(chain_T5Full_Gl1500_Chi800_LSP100                           , "T5Full_Gl1500_Chi800_LSP100", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[19] == 1) l->ScanChain(chain_T5qqqqWW_1200_1000_800                                , "T5qqqqWW_1200_1000_800", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[20] == 1) l->ScanChain(chain_T5qqqqWW_deg_1000_315_300                             , "T5qqqqWW_deg_1000_315_300", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[21] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo1000_mCh310_mChi300                    , "T5qqqqWWDeg_mGo1000_mCh310_mChi300", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[22] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo1000_mCh315_mChi300                    , "T5qqqqWWDeg_mGo1000_mCh315_mChi300", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[23] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo1000_mCh325_mChi300                    , "T5qqqqWWDeg_mGo1000_mCh325_mChi300", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[24] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo800_mCh305_mChi300                     , "T5qqqqWWDeg_mGo800_mCh305_mChi300", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[25] == 1) l->ScanChain(chain_T5qqqqWW_mGo1000_mCh800_mChi700                       , "T5qqqqWW_mGo1000_mCh800_mChi700", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[26] == 1) l->ScanChain(chain_T5qqqqWW_mGo1200_mCh1000_mChi800                      , "T5qqqqWW_mGo1200_mCh1000_mChi800", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[27] == 1) l->ScanChain(chain_T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2, "T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[28] == 1) l->ScanChain(chain_T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec_v2        , "T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec_v2", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[29] == 1) l->ScanChain(chain_T5ttttDeg_mGo1300_mStop300_mCh285_mChi280_23bodydec_v2, "T5ttttDeg_mGo1300_mStop300_mCh285_mChi280_23bodydec_v2", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[30] == 1) l->ScanChain(chain_T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2        , "T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[31] == 1) l->ScanChain(chain_T6ttWW_600_425_50_v2                                  , "T6ttWW_600_425_50_v2", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[32] == 1) l->ScanChain(chain_T6ttWW_650_150_50_v2                                  , "T6ttWW_650_150_50_v2", "baby", 0, "MakeBaby", -1, isoCase);
+
+
   }
  
   return 0;

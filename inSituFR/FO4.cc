@@ -1,48 +1,48 @@
 float functionAG_FO4(float pt, float eta, int id){
   if (abs(id) == 11){ 
     if (fabs(eta) < 1){ 
-      if (fabs(pt) < 15) return 0.457629;
-      if (fabs(pt) < 25) return 0.220728;
-      if (fabs(pt) < 35) return 0.118385;
-      if (fabs(pt) < 50) return 0.100756;
-      return 0.181331;
+      if (fabs(pt) < 15) return 0.392252;
+      if (fabs(pt) < 25) return 0.201227;
+      if (fabs(pt) < 35) return 0.11471;
+      if (fabs(pt) < 50) return 0.107817;
+      return 0.203614;
     } 
     if (fabs(eta) < 2){ 
-      if (fabs(pt) < 15) return 0.475137;
-      if (fabs(pt) < 25) return 0.287097;
-      if (fabs(pt) < 35) return 0.190476;
-      if (fabs(pt) < 50) return 0.12743;
-      return 0.278746;
+      if (fabs(pt) < 15) return 0.438776;
+      if (fabs(pt) < 25) return 0.250704;
+      if (fabs(pt) < 35) return 0.17942;
+      if (fabs(pt) < 50) return 0.12854;
+      return 0.322581;
     } 
     if (fabs(eta) < 4){ 
-      if (fabs(pt) < 15) return 0.380952;
-      if (fabs(pt) < 25) return 0.6;
-      if (fabs(pt) < 35) return 0.222222;
-      if (fabs(pt) < 50) return 0.263158;
-      return 0.15;
+      if (fabs(pt) < 15) return 0.347826;
+      if (fabs(pt) < 25) return 0.5625;
+      if (fabs(pt) < 35) return 0.214286;
+      if (fabs(pt) < 50) return 0.27027;
+      return 0.166667;
     } 
   } 
   if (abs(id) == 13){ 
     if (fabs(eta) < 1){ 
-      if (fabs(pt) < 15) return 0.498646;
-      if (fabs(pt) < 25) return 0.250212;
-      if (fabs(pt) < 35) return 0.131808;
-      if (fabs(pt) < 50) return 0.112885;
-      return 0.0864425;
+      if (fabs(pt) < 15) return 0.439665;
+      if (fabs(pt) < 25) return 0.231379;
+      if (fabs(pt) < 35) return 0.130811;
+      if (fabs(pt) < 50) return 0.122981;
+      return 0.0979381;
     } 
     if (fabs(eta) < 2){ 
-      if (fabs(pt) < 15) return 0.528263;
-      if (fabs(pt) < 25) return 0.325999;
-      if (fabs(pt) < 35) return 0.18322;
-      if (fabs(pt) < 50) return 0.13849;
-      return 0.131542;
+      if (fabs(pt) < 15) return 0.468208;
+      if (fabs(pt) < 25) return 0.305412;
+      if (fabs(pt) < 35) return 0.179229;
+      if (fabs(pt) < 50) return 0.144737;
+      return 0.152459;
     } 
     if (fabs(eta) < 2.4){ 
-      if (fabs(pt) < 15) return 0.62037;
-      if (fabs(pt) < 25) return 0.350427;
-      if (fabs(pt) < 35) return 0.168831;
-      if (fabs(pt) < 50) return 0.142857;
-      return 0.133333;
+      if (fabs(pt) < 15) return 0.603604;
+      if (fabs(pt) < 25) return 0.322835;
+      if (fabs(pt) < 35) return 0.164557;
+      if (fabs(pt) < 50) return 0.140625;
+      return 0.157895;
     } 
   } 
   return 0; 

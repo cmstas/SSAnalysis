@@ -33,3 +33,5 @@ batch/voms_status.txt
 sync/*.txt
 *.log
 inSituFR/*.pdf
+inSituFR/closure/*.tex
+*.pcm

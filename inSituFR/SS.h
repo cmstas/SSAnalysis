@@ -246,6 +246,12 @@ protected:
 	float	lep2_ip3d_;
 	TBranch *lep2_ip3d_branch;
 	bool lep2_ip3d_isLoaded;
+	float	lep1_MVA_;
+	TBranch *lep1_MVA_branch;
+	bool lep1_MVA_isLoaded;
+	float	lep2_MVA_;
+	TBranch *lep2_MVA_branch;
+	bool lep2_MVA_isLoaded;
 	float	lep1_ip3d_err_;
 	TBranch *lep1_ip3d_err_branch;
 	bool lep1_ip3d_err_isLoaded;
@@ -381,6 +387,15 @@ protected:
 	vector<float> *muID_eta_;
 	TBranch *muID_eta_branch;
 	bool muID_eta_isLoaded;
+	vector<float> *trueNumInt_;
+	TBranch *trueNumInt_branch;
+	bool trueNumInt_isLoaded;
+	vector<int> *nPUvertices_;
+	TBranch *nPUvertices_branch;
+	bool nPUvertices_isLoaded;
+	int	nGoodVertices_;
+	TBranch *nGoodVertices_branch;
+	bool nGoodVertices_isLoaded;
 	bool	lep1_isGoodLeg_;
 	TBranch *lep1_isGoodLeg_branch;
 	bool lep1_isGoodLeg_isLoaded;
@@ -823,6 +838,16 @@ void Init(TTree *tree) {
 		lep2_ip3d_branch = tree->GetBranch("lep2_ip3d");
 		if (lep2_ip3d_branch) {lep2_ip3d_branch->SetAddress(&lep2_ip3d_);}
 	}
+	lep1_MVA_branch = 0;
+	if (tree->GetBranch("lep1_MVA") != 0) {
+		lep1_MVA_branch = tree->GetBranch("lep1_MVA");
+		if (lep1_MVA_branch) {lep1_MVA_branch->SetAddress(&lep1_MVA_);}
+	}
+	lep2_MVA_branch = 0;
+	if (tree->GetBranch("lep2_MVA") != 0) {
+		lep2_MVA_branch = tree->GetBranch("lep2_MVA");
+		if (lep2_MVA_branch) {lep2_MVA_branch->SetAddress(&lep2_MVA_);}
+	}
 	lep1_ip3d_err_branch = 0;
 	if (tree->GetBranch("lep1_ip3d_err") != 0) {
 		lep1_ip3d_err_branch = tree->GetBranch("lep1_ip3d_err");
@@ -1038,6 +1063,21 @@ void Init(TTree *tree) {
 		muID_eta_branch = tree->GetBranch("muID_eta");
 		if (muID_eta_branch) {muID_eta_branch->SetAddress(&muID_eta_);}
 	}
+	trueNumInt_branch = 0;
+	if (tree->GetBranch("trueNumInt") != 0) {
+		trueNumInt_branch = tree->GetBranch("trueNumInt");
+		if (trueNumInt_branch) {trueNumInt_branch->SetAddress(&trueNumInt_);}
+	}
+	nPUvertices_branch = 0;
+	if (tree->GetBranch("nPUvertices") != 0) {
+		nPUvertices_branch = tree->GetBranch("nPUvertices");
+		if (nPUvertices_branch) {nPUvertices_branch->SetAddress(&nPUvertices_);}
+	}
+	nGoodVertices_branch = 0;
+	if (tree->GetBranch("nGoodVertices") != 0) {
+		nGoodVertices_branch = tree->GetBranch("nGoodVertices");
+		if (nGoodVertices_branch) {nGoodVertices_branch->SetAddress(&nGoodVertices_);}
+	}
 	lep1_isGoodLeg_branch = 0;
 	if (tree->GetBranch("lep1_isGoodLeg") != 0) {
 		lep1_isGoodLeg_branch = tree->GetBranch("lep1_isGoodLeg");
@@ -1175,6 +1215,8 @@ void GetEntry(unsigned int idx)
 		lep2_d0_err_isLoaded = false;
 		lep1_ip3d_isLoaded = false;
 		lep2_ip3d_isLoaded = false;
+		lep1_MVA_isLoaded = false;
+		lep2_MVA_isLoaded = false;
 		lep1_ip3d_err_isLoaded = false;
 		lep2_ip3d_err_isLoaded = false;
 		nVetoElectrons7_isLoaded = false;
@@ -1220,6 +1262,9 @@ void GetEntry(unsigned int idx)
 		muID_medMuonPOG_isLoaded = false;
 		muID_pt_isLoaded = false;
 		muID_eta_isLoaded = false;
+		trueNumInt_isLoaded = false;
+		nPUvertices_isLoaded = false;
+		nGoodVertices_isLoaded = false;
 		lep1_isGoodLeg_isLoaded = false;
 		lep2_isGoodLeg_isLoaded = false;
 		lep1_isFakeLeg_isLoaded = false;
@@ -1314,6 +1359,8 @@ void LoadAllBranches()
 	if (lep2_d0_err_branch != 0) lep2_d0_err();
 	if (lep1_ip3d_branch != 0) lep1_ip3d();
 	if (lep2_ip3d_branch != 0) lep2_ip3d();
+	if (lep1_MVA_branch != 0) lep1_MVA();
+	if (lep2_MVA_branch != 0) lep2_MVA();
 	if (lep1_ip3d_err_branch != 0) lep1_ip3d_err();
 	if (lep2_ip3d_err_branch != 0) lep2_ip3d_err();
 	if (nVetoElectrons7_branch != 0) nVetoElectrons7();
@@ -1359,6 +1406,9 @@ void LoadAllBranches()
 	if (muID_medMuonPOG_branch != 0) muID_medMuonPOG();
 	if (muID_pt_branch != 0) muID_pt();
 	if (muID_eta_branch != 0) muID_eta();
+	if (trueNumInt_branch != 0) trueNumInt();
+	if (nPUvertices_branch != 0) nPUvertices();
+	if (nGoodVertices_branch != 0) nGoodVertices();
 	if (lep1_isGoodLeg_branch != 0) lep1_isGoodLeg();
 	if (lep2_isGoodLeg_branch != 0) lep2_isGoodLeg();
 	if (lep1_isFakeLeg_branch != 0) lep1_isFakeLeg();
@@ -2362,6 +2412,32 @@ void LoadAllBranches()
 		}
 		return lep2_ip3d_;
 	}
+	float &lep1_MVA()
+	{
+		if (not lep1_MVA_isLoaded) {
+			if (lep1_MVA_branch != 0) {
+				lep1_MVA_branch->GetEntry(index);
+			} else { 
+				printf("branch lep1_MVA_branch does not exist!\n");
+				exit(1);
+			}
+			lep1_MVA_isLoaded = true;
+		}
+		return lep1_MVA_;
+	}
+	float &lep2_MVA()
+	{
+		if (not lep2_MVA_isLoaded) {
+			if (lep2_MVA_branch != 0) {
+				lep2_MVA_branch->GetEntry(index);
+			} else { 
+				printf("branch lep2_MVA_branch does not exist!\n");
+				exit(1);
+			}
+			lep2_MVA_isLoaded = true;
+		}
+		return lep2_MVA_;
+	}
 	float &lep1_ip3d_err()
 	{
 		if (not lep1_ip3d_err_isLoaded) {
@@ -2947,6 +3023,45 @@ void LoadAllBranches()
 		}
 		return *muID_eta_;
 	}
+	const vector<float> &trueNumInt()
+	{
+		if (not trueNumInt_isLoaded) {
+			if (trueNumInt_branch != 0) {
+				trueNumInt_branch->GetEntry(index);
+			} else { 
+				printf("branch trueNumInt_branch does not exist!\n");
+				exit(1);
+			}
+			trueNumInt_isLoaded = true;
+		}
+		return *trueNumInt_;
+	}
+	const vector<int> &nPUvertices()
+	{
+		if (not nPUvertices_isLoaded) {
+			if (nPUvertices_branch != 0) {
+				nPUvertices_branch->GetEntry(index);
+			} else { 
+				printf("branch nPUvertices_branch does not exist!\n");
+				exit(1);
+			}
+			nPUvertices_isLoaded = true;
+		}
+		return *nPUvertices_;
+	}
+	int &nGoodVertices()
+	{
+		if (not nGoodVertices_isLoaded) {
+			if (nGoodVertices_branch != 0) {
+				nGoodVertices_branch->GetEntry(index);
+			} else { 
+				printf("branch nGoodVertices_branch does not exist!\n");
+				exit(1);
+			}
+			nGoodVertices_isLoaded = true;
+		}
+		return nGoodVertices_;
+	}
 	bool &	lep1_isGoodLeg()
 	{
 		if (not lep1_isGoodLeg_isLoaded) {
@@ -3220,6 +3335,8 @@ namespace ss {
 	const float &lep2_d0_err();
 	const float &lep1_ip3d();
 	const float &lep2_ip3d();
+	const float &lep1_MVA();
+	const float &lep2_MVA();
 	const float &lep1_ip3d_err();
 	const float &lep2_ip3d_err();
 	const int &nVetoElectrons7();
@@ -3265,6 +3382,9 @@ namespace ss {
 	const vector<float> &muID_medMuonPOG();
 	const vector<float> &muID_pt();
 	const vector<float> &muID_eta();
+	const vector<float> &trueNumInt();
+	const vector<int> &nPUvertices();
+	const int &nGoodVertices();
 	const bool &lep1_isGoodLeg();
 	const bool &lep2_isGoodLeg();
 	const bool &lep1_isFakeLeg();
