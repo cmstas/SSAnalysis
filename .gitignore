@@ -35,3 +35,5 @@ sync/*.txt
 inSituFR/*.pdf
 inSituFR/closure/*.tex
 *.pcm
+FakeRate/measurement_region/*.txt
+cards/*.pdf
