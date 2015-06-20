@@ -8,11 +8,13 @@ import math
 #example: python createCard.py dir t1tttt_1500 hihi sr card-hihi.txt
 #example: for dir in dir1 dir2; do for sig in t1tttt_1200 t1tttt_1500; do python createCard.py ${dir} ${sig}; done; done
 
+#for dir in gc.v1.24; do for sig in t1tttt_1500 t1tttt_1200 t1ttbbww_1300 t5tttt_1000 t5qqww_1500 t5qqww_1200 t5qqww_deg t6ttww_650 t6ttww_600; do python createCard.py ${dir} ${sig}; done; done
+
 #then get expected limits with: combine -M Asymptotic dir/card.txt --run expected --noFitAsimov
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
-lumi = "3.0" #"10.0"
+lumi = "10.0" #"3.0"
 
 class Process:
     def __init__(self, mycount, myname, myrootf, myplot):

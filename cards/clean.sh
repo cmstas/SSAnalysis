@@ -20,3 +20,7 @@ done
 if [ -e higgsCombineTest.Asymptotic.mH120.root ] 
 then rm higgsCombineTest.Asymptotic.mH120.root
 fi
+
+if [ -e higgsCombineTest.ProfileLikelihood.mH120.root ] 
+then rm higgsCombineTest.ProfileLikelihood.mH120.root
+fi

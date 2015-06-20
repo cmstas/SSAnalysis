@@ -133,6 +133,33 @@ void writeJesSyst(TH1F* central,string name,TString kine,bool down) {
     }
   }
 
+  if (TString(name)=="t1ttbbww_1000" || TString(name)=="t1ttbbww_1300") {
+    systValue = 1.08;
+    for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+      if (val>0) systUpDown->SetBinContent(bin,val);
+    }
+  }
+
+  if (TString(name)=="t5tttt_1000") {
+    for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+      if (kine.Contains("hihi")) {
+	if (bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29) systValue = 1.05;
+	else if (bin==31) systValue = 1.10;
+	else systValue = 1.03;
+      }
+      if (kine.Contains("hilow")) {
+	if (bin==1 || bin==3 || bin==7 || bin==9 || bin==13 || bin==15 || bin==19 || bin==21 || bin==23) systValue = 1.05;
+	else systValue = 1.10;
+      }
+      if (kine.Contains("lowlow")) {
+	systValue = 1.10;
+      }
+      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+      if (val>0) systUpDown->SetBinContent(bin,val);
+    }
+  }
+
   if (TString(name)=="t5qqww_1200") {
     if (kine.Contains("hihi")) {
       systValue = 1.07;
@@ -149,6 +176,14 @@ void writeJesSyst(TH1F* central,string name,TString kine,bool down) {
     }
   }
 
+  if (TString(name)=="t5qqww_1500") {
+    systValue = 1.05;
+    for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+      if (val>0) systUpDown->SetBinContent(bin,val);
+    }
+  }
+
   if (TString(name)=="t5qqww_deg") {
     if (kine.Contains("hihi")) {
       systValue = 1.15;
@@ -159,6 +194,14 @@ void writeJesSyst(TH1F* central,string name,TString kine,bool down) {
     if (kine.Contains("lowlow")) {
       systValue = 1.02;
     }
+    for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+      if (val>0) systUpDown->SetBinContent(bin,val);
+    }
+  }
+
+  if (TString(name)=="t6ttww_600" || TString(name)=="t6ttww_650") {
+    systValue = 1.10;
     for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
       float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
       if (val>0) systUpDown->SetBinContent(bin,val);
@@ -219,6 +262,14 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED, est_ty
 
       float lep1_pT = ss::lep1_p4().pt();
       float lep2_pT = ss::lep2_p4().pt();
+
+      //fixme bug in cross section
+      float fixit = 1.;
+      if (name=="t1ttbbww_1000") fixit=0.325388 /0.0856418;
+      if (name=="t1ttbbww_1300") fixit=0.0460525/0.0856418;
+      if (name=="t5tttt_1000"  ) fixit=0.325388 /0.0856418;
+      if (name=="t6ttww_600"   ) fixit=0.174599 /0.0856418;
+      if (name=="t6ttww_650"   ) fixit=0.107045 /0.0856418;
 
       float evt_weight = 1.;
       //Reject non-SS
@@ -281,9 +332,9 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED, est_ty
       if (est_type == SFAKEMC && !( (ss::lep1_motherID()<1 && ss::lep2_motherID()==1) || (ss::lep1_motherID()==1 && ss::lep2_motherID()<1) ) ) continue;
       if (est_type == DFAKEMC && (ss::lep1_motherID()>=1 || ss::lep2_motherID()>=1 ) ) continue;
 
-      if (SR > 0 && categ == HighHigh) HighHighPlot->Fill(SR, ss::scale1fb()*lumi*evt_weight);
-      if (SR > 0 && categ == HighLow)  HighLowPlot ->Fill(SR, ss::scale1fb()*lumi*evt_weight);
-      if (SR > 0 && categ == LowLow)   LowLowPlot  ->Fill(SR, ss::scale1fb()*lumi*evt_weight);
+      if (SR > 0 && categ == HighHigh) HighHighPlot->Fill(SR, ss::scale1fb()*lumi*evt_weight*fixit);
+      if (SR > 0 && categ == HighLow)  HighLowPlot ->Fill(SR, ss::scale1fb()*lumi*evt_weight*fixit);
+      if (SR > 0 && categ == LowLow)   LowLowPlot  ->Fill(SR, ss::scale1fb()*lumi*evt_weight*fixit);
 
     }//event loop
   }//file loop
@@ -328,9 +379,12 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED, est_ty
       }
       
       //jes
-      if (name=="ttw" || name=="ttz" || 
-	  name=="t1tttt_1200" || name=="t1tttt_1500" || 
-	  name=="t5qqww_1200" || name=="t5qqww_deg") {
+      if (name=="ttw"           || name=="ttz"           || 
+	  name=="t1tttt_1200"   || name=="t1tttt_1500"   || 
+	  name=="t5qqww_1200"   || name=="t5qqww_deg"    ||
+	  name=="t1ttbbww_1000" || name=="t1ttbbww_1300" ||
+	  name=="t6ttww_600"    || name=="t6ttww_650"    ||
+	  name=="t5tttt_1000" ) {
 	writeJesSyst(h_sr,name,kinRegs[kr],0);
 	writeJesSyst(h_sr,name,kinRegs[kr],1);
       }
@@ -354,16 +408,23 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED, est_ty
 void yields(){
 
   //Make chains
-  TChain* ttbar       = new TChain("t");
-  TChain* ttw         = new TChain("t");
-  TChain* ttz         = new TChain("t");
-  TChain* wz          = new TChain("t");
-  TChain* wjets       = new TChain("t");
-  TChain* dy          = new TChain("t");
-  TChain* t1tttt_1200 = new TChain("t");
-  TChain* t1tttt_1500 = new TChain("t");
-  TChain* t5qqww_1200 = new TChain("t");
-  TChain* t5qqww_deg  = new TChain("t");
+  TChain* ttbar         = new TChain("t");
+  TChain* ttw           = new TChain("t");
+  TChain* ttz           = new TChain("t");
+  TChain* wz            = new TChain("t");
+  TChain* wjets         = new TChain("t");
+  TChain* dy            = new TChain("t");
+
+  TChain* t1tttt_1200   = new TChain("t");
+  TChain* t1tttt_1500   = new TChain("t");
+  TChain* t1ttbbww_1000 = new TChain("t");
+  TChain* t1ttbbww_1300 = new TChain("t");
+  TChain* t5tttt_1000   = new TChain("t");
+  TChain* t6ttww_600    = new TChain("t");
+  TChain* t6ttww_650    = new TChain("t");
+  TChain* t5qqww_1200   = new TChain("t");
+  TChain* t5qqww_1500   = new TChain("t");
+  TChain* t5qqww_deg    = new TChain("t");
  
   //Fill chains
   ttbar      ->Add("../babies/gc.v1.24/TTBAR.root"                      );
@@ -372,9 +433,16 @@ void yields(){
   wz         ->Add("../babies/gc.v1.24/WZ.root"                         );
   wjets      ->Add("../babies/gc.v1.24/WJets.root"                      );
   dy         ->Add("../babies/gc.v1.24/DY.root"                         );
+
   t1tttt_1200->Add("../babies/gc.v1.24/t1tttt_1200_1.root"              );
   t1tttt_1500->Add("../babies/gc.v1.24/t1tttt_1500_1.root"              );
+  t1ttbbww_1000->Add("../babies/gc.v1.24/signals/T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2_baby.root"              );
+  t1ttbbww_1300->Add("../babies/gc.v1.24/signals/T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2_baby.root"              );
+  t5tttt_1000->Add("../babies/gc.v1.24/signals/T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2_baby.root"              );
+  t6ttww_600->Add("../babies/gc.v1.24/signals/T6ttWW_600_425_50_v2_baby.root");
+  t6ttww_650->Add("../babies/gc.v1.24/signals/T6ttWW_650_150_50_v2_baby.root");
   t5qqww_1200->Add("../babies/gc.v1.24/t5qqqqWW_1200_1000_800_1.root"   );
+  t5qqww_1500->Add("../babies/gc.v1.24/signals/T5Full_Gl1500_Chi800_LSP100_baby.root"   );
   t5qqww_deg ->Add("../babies/gc.v1.24/t5qqqqWW_deg_1000_315_300_1.root");
 
   //Chains for type
@@ -386,13 +454,19 @@ void yields(){
   all_bkgd->Add(wjets);
   all_bkgd->Add(dy);
 
-  //Make the signal histograms
+  //Make the histograms from MC processes
   results_t ttw_graphs         = run(ttw        , "ttw"        ,UNASSIGNED,MCSS);
   results_t ttz_graphs         = run(ttz        , "ttz"        ,UNASSIGNED,MCSS);
   results_t wz_graphs          = run(wz         , "wz"         ,UNASSIGNED,MCSS);
   results_t t1tttt_1200_graphs = run(t1tttt_1200, "t1tttt_1200",UNASSIGNED,MCSS);
   results_t t1tttt_1500_graphs = run(t1tttt_1500, "t1tttt_1500",UNASSIGNED,MCSS);
+  results_t t1ttbbww_1000_graphs = run(t1ttbbww_1000, "t1ttbbww_1000",UNASSIGNED,MCSS);
+  results_t t1ttbbww_1300_graphs = run(t1ttbbww_1300, "t1ttbbww_1300",UNASSIGNED,MCSS);
+  results_t t5tttt_1000_graphs = run(t5tttt_1000, "t5tttt_1000",UNASSIGNED,MCSS);
+  results_t t6ttww_600_graphs = run(t6ttww_600, "t6ttww_600",UNASSIGNED,MCSS);
+  results_t t6ttww_650_graphs = run(t6ttww_650, "t6ttww_650",UNASSIGNED,MCSS);
   results_t t5qqww_1200_graphs = run(t5qqww_1200, "t5qqww_1200",UNASSIGNED,MCSS);
+  results_t t5qqww_1500_graphs = run(t5qqww_1500, "t5qqww_1500",UNASSIGNED,MCSS);
   results_t t5qqww_deg_graphs  = run(t5qqww_deg , "t5qqww_deg" ,UNASSIGNED,MCSS);
 
   //mc predictions
@@ -497,7 +571,10 @@ void yields(){
 
   //Make plots -- sample
   dataMCplotMaker(null, background_high, titles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields_%.1fifb --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear",lumi,lumi)); 
+  dataMCplotMaker(null, background_high, titles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields_log_%.1fifb --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --nDivisions 210 --legendRight -0.00 --noXaxisUnit --setMaximum 500 --setMinimum 0.01  --legendTextSize 0.0325",lumi,lumi)); 
   dataMCplotMaker(null, background_hl  , titles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName hl_yields_%.1fifb --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear",lumi,lumi)); 
+  dataMCplotMaker(null, background_hl  , titles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName hl_yields_log_%.1fifb --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --nDivisions 210 --legendRight -0.00 --noXaxisUnit --setMaximum 800 --setMinimum 0.01  --legendTextSize 0.0325",lumi,lumi)); 
+
   dataMCplotMaker(null, signal_high, signal_titles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields_s_%.1fifb --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.0325 --noStack --nDivisions 210 --isLinear",lumi,lumi)); 
   dataMCplotMaker(null, signal_hl  , signal_titles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName hl_yields_s_%.1fifb --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.03 --noStack  --nDivisions 210 --isLinear",lumi,lumi)); 
 
