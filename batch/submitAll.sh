@@ -18,7 +18,7 @@ lineWithPath=`sed -n /path/= voms_status.txt`
 pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 
 #Then submit jobs
-ptrel="0"
+ptrel="4"
 for expt in "0" "1"
 do
   nIter=0
