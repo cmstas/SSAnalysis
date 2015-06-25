@@ -312,8 +312,9 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   bool isData = tas::evt_isRealData();
 
   //Sync stuff
-  //if (tas::evt_event() != 103973) return -1;
-  //verbose = true;
+  if (tas::evt_event() != 852218) return -1;
+  cout << "FOUND THE EVENT" << endl;
+  verbose = true;
   //cout << "MVA VALUE: " << globalEleMVAreader->MVA(0) << endl;
   //globalEleMVAreader->DumpValues();
   //cout << " " << endl;
