@@ -76,6 +76,21 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   TChain *chain_T6ttWW_600_425_50_v2                                            = new TChain("Events");
   TChain *chain_T6ttWW_650_150_50_v2                                            = new TChain("Events");
 
+  TChain *chain_TTJets_50ns = new TChain("Events");
+  chain_TTJets_50ns->Add("/hadoop/cms/store/group/snt/run2_50ns/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/V07-04-03/merged_ntuple_*.root");
+  //l->ScanChain(chain_TTJets_50ns, "ttbar_50ns", "baby", 0, "MakeBaby", -1, isoCase);
+  //l->ScanChain(chain_TTJets,      "ttbar"       , "", 0, "", -1, isoCase);
+
+  TChain *chain_TTJets_25ns = new TChain("Events");
+  //chain_TTJets_25ns->Add("/hadoop/cms/store/group/snt/run2_25ns/TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/V07-04-03/merged_ntuple_*.root");
+  chain_TTJets_25ns->Add("/hadoop/cms/store/group/snt/run2_25ns/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/V07-04-03/merged_ntuple_*.root");
+  l->ScanChain(chain_TTJets_25ns, "ttbar_25ns", "baby", 0, "MakeBaby", -1, isoCase);
+
+  TChain *chain_WZJets_25ns = new TChain("Events");
+  chain_WZJets_25ns->Add("/hadoop/cms/store/group/snt/run2_25ns/WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/V07-04-03/merged_ntuple_*.root"); 
+  //l->ScanChain(chain_WZJets_25ns, "wz_25ns", "baby", 0, "MakeBaby", -1, isoCase);
+  // l->ScanChain(chain_WZJets,      "WZJets"      , "", 0, "", -1, isoCase);
+
   if (useSkim) {
     TString dir  = "PHYS14_v2_new";
     TString dir2 = "/merged_ntuple_*.root";
