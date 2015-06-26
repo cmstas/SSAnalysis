@@ -19,10 +19,14 @@ int binFine = false;
 bool withEta = true;
 
 //testPC -- test the prompt contamination, ie allow numer-numer events
-bool testPC = false;
+bool testPC = true;
 
 //Include DY and W+Jets
-bool others = false;
+bool others = true;
+
+//Limited Samples
+bool DYonly = false;
+bool WJetsOnly = false;
 
 //FO1 vs. FO4
 bool FO2 = true;
@@ -324,12 +328,14 @@ void FR2D(){
   TChain *chain = new TChain("t");
   int fo2_suffix = 0;
   if (FO2) fo2_suffix = 1; 
-  chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_%i.root", path.c_str(), fo2_suffix));
-  if (others){
+  if (!DYonly && !WJetsOnly) chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_%i.root", path.c_str(), fo2_suffix));
+  if (others || DYonly){
     chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY1_%i.root", path.c_str(), fo2_suffix));
     chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY2_%i.root", path.c_str(), fo2_suffix));
     chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY3_%i.root", path.c_str(), fo2_suffix));
     chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY4_%i.root", path.c_str(), fo2_suffix));
+  }
+  if (others || WJetsOnly){
     chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets1_%i.root", path.c_str(), fo2_suffix));
     chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets2_%i.root", path.c_str(), fo2_suffix));
     chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets3_%i.root", path.c_str(), fo2_suffix));
@@ -458,7 +464,7 @@ void FR2D(){
   }
 
   //Divide numer/denom
-  cout << numer->GetBinContent(22) << " " << denom->GetBinContent(22) << " = " << 1.0*numer->GetBinContent(22)/denom->GetBinContent(22)<< endl;
+  cout << numer->Integral() << " " << denom->Integral() << " = " << 1.0*numer->Integral()/denom->Integral()<< endl;
   numer ->Divide(numer , denom , 1, 1, "b"); 
   numer2->Divide(numer2, denom2, 1, 1, "b"); 
   numer3->Divide(numer3, denom3, 1, 1, "b"); 
@@ -540,6 +546,10 @@ void FR2D(){
   if (!FO2 &&  others  && !testPC && !ssZveto && coneCorr) name2 = "soup";
   if (!FO2 && !others  && !testPC &&  ssZveto && coneCorr) name2 = "ssZ"; 
   if (!FO2 &&  others  &&  testPC &&  ssZveto && coneCorr) name2 = "PCssZ"; 
+  if (DYonly    && !ssZveto) name2 = "DYonly";
+  if (WJetsOnly && !ssZveto) name2 = "WJetsonly";
+  if (DYonly    && ssZveto) name2 = "DYonly_ssZ";
+  if (WJetsOnly && ssZveto) name2 = "WJetsonly_ssZ";
 
   TFile *file = new TFile(Form("inSituFR_cone_FR_histos%s.root", name2.c_str()), "RECREATE");
   file->Write(); 

@@ -21,7 +21,7 @@
   bool doLightonly  = 0;
 
   //For both inSitu and not-in-Situ
-  bool doLooseEMVA  = 1;
+  bool doLooseEMVA  = 0;
 
   //These are only for inSitu (choose only one of these)
   bool soup         = 0;
@@ -29,6 +29,8 @@
   bool ssZ          = 0;
   bool PCssZ        = 0;
   bool notCC        = 0;
+  bool only_DY      = 1;
+  bool only_WJets   = 0;
 
   TString fakeratefile = "";
   TString option = "";
@@ -48,12 +50,16 @@
     if (ssZ) option += "_ssZ";
     if (PCssZ) option += "_PCssZ";
     if (notCC) option += "_notCC";
+    if (only_DY) option += "_onlyDY";
+    if (only_WJets) option += "_onlyWJets";
     if (soup) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_soup.root";
     else if (PC) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_PC.root";
     else if (ssZ) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_ssZ.root";
     else if (PCssZ) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_PCssZ.root";
     else if (notCC) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_notCC.root";
     else if (doLooseEMVA) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_FO2pFO4.root";
+    else if (only_DY) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_onlyDY.root";
+    else if (only_WJets) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_onlyWJets.root";
     else fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos.root";
     option += "_inSitu"; 
   }
