@@ -406,8 +406,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   lep2_ptrel_v1 = getPtRel(lep2_id, lep2_idx, true);
 
   //MiniIso
-  lep1_miniIso = abs(lep1_id)==11 ? elMiniRelIso(lep1_idx, true, 0.0, false, true) : muMiniRelIso(lep1_idx, true, 0.5, false, true);
-  lep2_miniIso = abs(lep2_id)==11 ? elMiniRelIso(lep2_idx, true, 0.0, false, true) : muMiniRelIso(lep2_idx, true, 0.5, false, true);
+  lep1_miniIso = abs(lep1_id)==11 ? elMiniRelIsoCMS3_EA(lep1_idx) : muMiniRelIsoCMS3_EA(lep1_idx);
+  lep2_miniIso = abs(lep2_id)==11 ? elMiniRelIsoCMS3_EA(lep2_idx) : muMiniRelIsoCMS3_EA(lep2_idx);
 
   //For inSituFR, both must pass looser ID (easier than selection ID)
   passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx, expt); 
@@ -480,7 +480,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   //nVeto Leptons
   if (verbose) cout << " PRINTING RECO ELECTRONS" << endl;
   for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
-    float miniIso = elMiniRelIso(eidx, true, 0.0, false, true);
+    float miniIso = elMiniRelIsoCMS3_EA(eidx);
     if (verbose) cout << "pt: " << tas::els_p4().at(eidx).pt() << " miniiso: " << miniIso << endl;
     if (!isGoodVetoElectron(eidx)) continue;
     if (tas::els_p4().at(eidx).pt() < 7) continue;
@@ -493,7 +493,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   }
   if (verbose) cout << " PRINTING RECO MUONS" << endl;
   for (unsigned int muidx = 0; muidx < tas::mus_p4().size(); muidx++){
-    float miniIso = muMiniRelIso(muidx, true, 0.5, false, true);
+    float miniIso = muMiniRelIsoCMS3_EA(muidx);
     if (verbose) cout << "pt: " << tas::mus_p4().at(muidx).pt() << " miniiso: " << miniIso << endl;
     if (!isGoodVetoMuon(muidx)) continue;
     if (tas::mus_p4().at(muidx).pt() < 5) continue;

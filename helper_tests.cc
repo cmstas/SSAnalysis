@@ -733,12 +733,12 @@ void tests::testPtRel( looper* loop, float& weight_, DilepHyp& hyp, std::vector<
       if (isGoodLepton(hyp.leadLep().pdgId(), hyp.leadLep().idx(), Standard)==0) {
 	if (ll=="mu") {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso03","hyp_ss_foFromWlead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
-	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIso(hyp.leadLep().idx(),true,0.5,false,true),weight_);
+	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIsoCMS3_EA(hyp.leadLep().idx()),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02","hyp_ss_foFromWlead_fail_"+ll+"_relIso02",20,0.,1., muRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,false),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB","hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB",20,0.,1., muRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,true),weight_);
 	} else {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso03","hyp_ss_foFromWlead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
-	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., elMiniRelIso(hyp.leadLep().idx(),true,0.0,false,true),weight_);
+	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., elMiniRelIsoCMS3_EA(hyp.leadLep().idx()),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02","hyp_ss_foFromWlead_fail_"+ll+"_relIso02",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,false),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB","hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,true),weight_);
 	}
@@ -784,12 +784,12 @@ void tests::testPtRel( looper* loop, float& weight_, DilepHyp& hyp, std::vector<
       if (isGoodLepton(hyp.leadLep().pdgId(), hyp.leadLep().idx(), Standard)==0) {
 	if (ll=="mu") {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso03","hyp_ss_foFakelead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
-	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_miniRelIso","hyp_ss_foFakelead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIso(hyp.leadLep().idx()),weight_);
+	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_miniRelIso","hyp_ss_foFakelead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIsoCMS3_EA(hyp.leadLep().idx()),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso02","hyp_ss_foFakelead_fail_"+ll+"_relIso02",20,0.,1., muRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,false),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso02DB","hyp_ss_foFakelead_fail_"+ll+"_relIso02DB",20,0.,1., muRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,true),weight_);
 	} else {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso03","hyp_ss_foFakelead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
-	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_miniRelIso","hyp_ss_foFakelead_fail_"+ll+"_miniRelIso",20,0.,1., elMiniRelIso(hyp.leadLep().idx()),weight_);
+	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_miniRelIso","hyp_ss_foFakelead_fail_"+ll+"_miniRelIso",20,0.,1., elMiniRelIsoCMS3_EA(hyp.leadLep().idx()),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso02","hyp_ss_foFakelead_fail_"+ll+"_relIso02",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,false),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso02DB","hyp_ss_foFakelead_fail_"+ll+"_relIso02DB",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,true),weight_);
 	}
@@ -910,16 +910,16 @@ void tests::testBtag( looper* loop, float& weight_, std::vector<Jet>& alljets ) 
 	if (jet.pt()>35) genbjets_pt35++;
 	if (jet.pt()>40) genbjets_pt40++;
 	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_genbjets_csv","hyp_hihi_genbjets_csv",50,0,1.,jet.csv(),weight_);
-	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_genbjets_tche","hyp_hihi_genbjets_tche",50,-5.,5.,pfjets_trackCountingHighEffBJetTag()[jet.idx()],weight_);
-	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_genbjets_tchp","hyp_hihi_genbjets_tchp",50,-5.,5.,pfjets_trackCountingHighPurBJetTag()[jet.idx()],weight_);
-	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_genbjets_jbp","hyp_hihi_genbjets_jbp",50,0,10.,pfjets_jetBProbabilityBJetTag()[jet.idx()],weight_);
+	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_genbjets_tche","hyp_hihi_genbjets_tche",50,-5.,5.,tas::getbtagvalue("pfTrackCountingHighEffBJetTags",jet.idx()),weight_);
+	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_genbjets_tchp","hyp_hihi_genbjets_tchp",50,-5.,5.,tas::getbtagvalue("pfTrackCountingHighPurBJetTags",jet.idx()),weight_);
+	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_genbjets_jbp","hyp_hihi_genbjets_jbp"  ,50,0,10. ,tas::getbtagvalue("pfJetBProbabilityBJetTags",jet.idx())     ,weight_);
       }
     } else {
       if (jet.pt()>20) {
 	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_gennobjets_csv","hyp_hihi_gennobjets_csv",50,0,1.,jet.csv(),weight_);
-	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_gennobjets_tche","hyp_hihi_gennobjets_tche",50,-5.,5.,pfjets_trackCountingHighEffBJetTag()[jet.idx()],weight_);
-	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_gennobjets_tchp","hyp_hihi_gennobjets_tchp",50,-5.,5.,pfjets_trackCountingHighPurBJetTag()[jet.idx()],weight_);
-	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_gennobjets_jbp","hyp_hihi_gennobjets_jbp",50,0,10.,pfjets_jetBProbabilityBJetTag()[jet.idx()],weight_);
+	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_gennobjets_tche","hyp_hihi_gennobjets_tche",50,-5.,5.,tas::getbtagvalue("pfTrackCountingHighEffBJetTags",jet.idx()),weight_);
+	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_gennobjets_tchp","hyp_hihi_gennobjets_tchp",50,-5.,5.,tas::getbtagvalue("pfTrackCountingHighPurBJetTags",jet.idx()),weight_);
+	loop->makeFillHisto1D<TH1F,float>("hyp_hihi_gennobjets_jbp","hyp_hihi_gennobjets_jbp"  ,50,0,10. ,tas::getbtagvalue("pfJetBProbabilityBJetTags",jet.idx())     ,weight_);
 	/*
 	  OBJ: TNamed	pfjets_combinedSecondaryVertexBJetTag	floats_pfJetMaker_pfjetscombinedSecondaryVertexBJetTag_CMS2.obj : 0 at: 0x7fb6f3a4bf20
 	  OBJ: TNamed	pfjets_jetBProbabilityBJetTag	floats_pfJetMaker_pfjetsjetBProbabilityBJetTag_CMS2.obj : 0 at: 0x7fb6f3a4c540
