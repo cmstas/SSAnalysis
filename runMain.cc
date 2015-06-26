@@ -1,7 +1,7 @@
 #include "TChain.h"
 #include "looper.h"
 
-int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSync, string runBaby_str, std::vector<int> eventsToDebug){
+int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSync, string runBaby_str, bool expt, std::vector<int> eventsToDebug){
 
   //Figure out which babies to make
   bool runBaby = false;
@@ -31,7 +31,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   if (runSync) { 
     TChain *chain_synctest = new TChain("Events");
     chain_synctest->Add("./phys14_sync_CMS3.root");
-    l->ScanChain(chain_synctest,"synctest","",0,"SyncTest",-1,isoCase, eventsToDebug);
+    l->ScanChain(chain_synctest,"synctest","",0,"SyncTest",-1,isoCase, eventsToDebug, expt);
     return 0;
   }
 
@@ -75,6 +75,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   TChain *chain_T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2                  = new TChain("Events");
   TChain *chain_T6ttWW_600_425_50_v2                                            = new TChain("Events");
   TChain *chain_T6ttWW_650_150_50_v2                                            = new TChain("Events");
+  TChain *chain_test                                                            = new TChain("Events");
 
   TChain *chain_TTJets_50ns = new TChain("Events");
   chain_TTJets_50ns->Add("/hadoop/cms/store/group/snt/run2_50ns/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/V07-04-03/merged_ntuple_*.root");
@@ -141,6 +142,9 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     chain_TW ->Add(dir + "TBarToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
     chain_TW ->Add(dir + "TToLeptons_t-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"    + tag);
     chain_TW ->Add(dir + "TBarToLeptons_t-channel_Tune4C_CSA14_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
+
+    //test
+    chain_test->Add(dir + "TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-08/merged_ntuple_1.root"); 
 
     //Sync sample
     chain_sync->Add("/nfs-7/userdata/ss2015/sync_file/V07-02-08/sync_file.root");
@@ -248,6 +252,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     if (babiesToMake[30] == 1) l->ScanChain(chain_T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2        , "T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2", "baby", 0, "MakeBaby", -1, isoCase);
     if (babiesToMake[31] == 1) l->ScanChain(chain_T6ttWW_600_425_50_v2                                  , "T6ttWW_600_425_50_v2", "baby", 0, "MakeBaby", -1, isoCase);
     if (babiesToMake[32] == 1) l->ScanChain(chain_T6ttWW_650_150_50_v2                                  , "T6ttWW_650_150_50_v2", "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[33] == 1) l->ScanChain(chain_test                                                  , "test"                , "baby", 0, "MakeBaby", -1, isoCase);
 
 
   }

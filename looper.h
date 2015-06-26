@@ -20,7 +20,7 @@ class TChain;
 struct Lep;
 struct DilepHyp;
 
-int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSync, string runBaby, std::vector<int> evtToDebug = std::vector<int>());
+int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSync, string runBaby, bool expt, std::vector<int> evtToDebug = std::vector<int>());
 
 class looper
 {
@@ -34,7 +34,7 @@ class looper
     //delete babyTree_;
   };
   
-  int ScanChain ( TChain* chain, TString prefix, TString postfix, bool isData, TString whatTest = "", int nEvents = -1, IsolationMethods isoCase = Standard, std::vector<int> evtToDebug = std::vector<int>());
+  int ScanChain ( TChain* chain, TString prefix, TString postfix, bool isData, TString whatTest = "", int nEvents = -1, IsolationMethods isoCase = Standard, std::vector<int> evtToDebug = std::vector<int>(), bool expt = 0);
 
 
 
