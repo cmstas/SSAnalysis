@@ -14,6 +14,7 @@
 #include "../../CORE/SSSelections.h"
 #include "../../Tools/utils.h"
 #include "SS.h"
+#include "../../software/tableMaker/CTable.h"
 
 #ifdef __MAKECINT__
 #pragma link C++ class ROOT::Math::PxPyPzE4D<float>+;
@@ -23,6 +24,8 @@
 using namespace std;
 
 bool doLatex = true;
+CTable electrons;
+CTable muons;
 
 bool isFakeLeg(int lep){
   if (lep == 1) return (ss::lep1_motherID() <= 0);
@@ -44,6 +47,8 @@ float computePtRel(LorentzVector lepp4, LorentzVector jetp4, bool subtractLep){
   ptrel = ptrel>0 ? sqrt(ptrel) : 0.0;
   return ptrel;
 }
+
+int number = 0;
 
 void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, TH2D *rate_histo_mu,  TH2D *rate_histo_e, TCanvas *c, TPad *pad_h, TPad *pad_r, TLegend *leg){
 
@@ -119,6 +124,7 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   ratio->Draw();
 
   bool print = pred->GetNbinsX() < 10;
+  if (print) number++;
 
   int w = 18;
   if (print && !doLatex) cout << setw(5) << "BR" <<  setw(w) << "Pred" << setw(w) << "Obs" << setw(w) << "Pred/Obs" << setw(w) << "(p-o)/p" << endl;
@@ -161,8 +167,16 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
     float laste = sqrt((p*p*oe*oe + o*o*pe*pe)/(p*p*p*p));  //error prop
 
     if (print && !doLatex)  cout << setw(5) << sr <<  setw(w) << Form("%5.2f +/-%5.2f", p, pe) << setw(w) << Form("%5.2f +/-%5.2f", o, oe) << setw(w) << Form("%5.2f +/-%5.2f", (o>0?p/o:99.99),ratioe) << setw(w) << Form("%5.2f +/-%5.2f", (p>0?(p-o)/p:99.99), laste) << endl;
+    //latex on screen
     if (print && doLatex )  cout << Form("%i & %5.1f $\\pm$ %5.1f & %5.1f $\\pm$ %5.1f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f \\\\",
-						       sr, p, pe, o, oe, (o>0?p/o:99.99), ratioe, (p>0?(p-o)/p:99.99), laste) << endl;
+    						       sr, p, pe, o, oe, (o>0?p/o:99.99), ratioe, (p>0?(p-o)/p:99.99), laste) << endl;
+    //latex output file
+    if (print && number == 2) muons.setCell(Form("%5.2f $\\pm$ %5.2f", p, pe), bin-1, 0); 
+    if (print && number == 2) muons.setCell(Form("%5.2f $\\pm$ %5.2f", o, oe), bin-1, 1); 
+    if (print && number == 2) muons.setCell(Form("%5.2f $\\pm$ %5.2f", (o>0?p/o:99.99), ratioe), bin-1, 2); 
+    if (print && number == 3) electrons.setCell(Form("%5.2f $\\pm$ %5.2f", p, pe), bin-1, 0); 
+    if (print && number == 3) electrons.setCell(Form("%5.2f $\\pm$ %5.2f", o, oe), bin-1, 1); 
+    if (print && number == 3) electrons.setCell(Form("%5.2f $\\pm$ %5.2f", (o>0?p/o:99.99), ratioe), bin-1, 2); 
 
   }
 }
@@ -208,6 +222,12 @@ int getHist(string name){
 
 int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", int nEvents = -1){
 
+  //Make tables
+  electrons.setTable() ("Pred", "Obs", "Pred/Obs");
+  muons.setTable() ("Pred", "Obs", "Pred/Obs");
+  electrons.setPrecision(2);
+  muons.setPrecision(2);
+
   //Parse options
   bool coneCorr = option.Contains("coneCorr") ? true : false;
   bool jetCorr = option.Contains("jetCorr") ? true : false;
@@ -217,6 +237,12 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   bool doConly = option.Contains("doConly") ? true : false;
   bool doLightonly = option.Contains("doLightonly") ? true : false;
   bool inSitu = option.Contains("inSitu") ? true : false;
+  bool soup = option.Contains("soup") ? true : false;
+  bool PCssZ = option.Contains("PCssZ") ? true : false;
+  bool ssZ = (!PCssZ && option.Contains("ssZ")) ? true : false;
+  bool PC = (!PCssZ && option.Contains("PC")) ? true : false;
+  bool notCC = option.Contains("notCC") ? true : false;
+  bool looseEMVA = option.Contains("LooseEMVA") ? true : false;
   bool highhigh = ptRegion.Contains("HH") ? true : false;
   bool highlow = ptRegion.Contains("HL") ? true : false;
   bool lowlow = ptRegion.Contains("LL") ? true : false;
@@ -453,6 +479,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       if(nEventsTotal >= nEventsChain) continue;
       samesign.GetEntry(eventAG);
       ++nEventsTotal;
+
+      //debug
+      //if (ss::event() != 48767071) continue;
 
       // Progress
       SSAG::progress(nEventsTotal, nEventsChain);
@@ -704,7 +733,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           //Baseline selections
           if (!inSitu && ss::hyp_class() != 2) continue;
           if (inSitu && (ss::lep2_multiIso() || !isFakeLeg(2) || !isGoodLeg(1) || !lep2_denom_iso)) continue;
-        
+          if (inSitu && (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2())) continue;
           if (usePtRatioCor){
             //this is a tighter FO than default, so skip if it does not pass
 	    float ptratiocor = lep2_closejetpt>0. ? ss::lep2_p4().pt()*(1+std::max(float(0.),ss::lep2_miniIso()-iso_cut_2))/lep2_closejetpt : 1.;
@@ -784,6 +813,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           //Baseline selections
           if (!inSitu && ss::hyp_class() != 2) continue;
           if (inSitu && (ss::lep1_multiIso() || !isFakeLeg(1) || !isGoodLeg(2) || !lep1_denom_iso)) continue;
+          if (inSitu && (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2())) continue;
 
           if (usePtRatioCor){
             //this is a tighter FO than default, so skip if it does not pass
@@ -925,8 +955,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h3->Draw();
   pad_r3->Draw();
   TLegend *leg3 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  if (print && !doLatex) cout << "\ndump BR all" << endl;
-  if (print && doLatex ) cout << "\\hline \\multicolumn{5}{c}{all} \\\\ \\hline" << endl;
+  if (!doLatex) cout << "\ndump BR all" << endl;
+  if (doLatex ) cout << "\\hline \\multicolumn{5}{c}{all} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred")], hists[getHist("Npn_histo_br_obs")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
 
   TH2D *nullarr[40] = {0};
@@ -937,8 +967,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h4->Draw();
   pad_r4->Draw();
   TLegend *leg4 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  if (print && !doLatex) cout << "\ndump BR mu" << endl;
-  if (print && doLatex ) cout << "\\\hline \\multicolumn{5}{c}{muons} \\\\ \\hline" << endl;
+  if (!doLatex) cout << "\ndump BR mu" << endl;
+  if (doLatex ) cout << "\\\hline \\multicolumn{5}{c}{muons} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred_mu")], hists[getHist("Npn_histo_br_obs_mu")], Npn_histo_br_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
 
   TCanvas *c5=new TCanvas("c5","Predicted and Observed Prompt-NonPrompt Background (Single el)", 800,800);
@@ -947,8 +977,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h5->Draw();
   pad_r5->Draw();
   TLegend *leg5 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  if (print && !doLatex) cout << "\ndump BR ele" << endl;
-  if (print && doLatex ) cout << "\\hline \\multicolumn{5}{c}{electrons} \\\\ \\hline" << endl;
+  if (!doLatex) cout << "\ndump BR ele" << endl;
+  if (doLatex ) cout << "\\hline \\multicolumn{5}{c}{electrons} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred_el")], hists[getHist("Npn_histo_br_obs_el")], nullarr, Npn_histo_br_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
   c3->SaveAs("br_all"+option+".png");
   c4->SaveAs("br_mu"+option+".png");
@@ -1032,6 +1062,47 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   c8.SaveAs("pTrelvsMiniIso_mu"+option+".png");
   pTrelvsMiniIso_histo_el->Draw("colz");
   c8.SaveAs("pTrelvsMiniIso_el"+option+".png");
+
+  //Print tables
+  for (int i = 0; i < 4; i++){
+    electrons.setRowLabel(Form("%i", i), i);
+    muons.setRowLabel(Form("%i", i), i);
+  }
+  if (soup){
+    cout << "setting soup" << endl;
+    electrons.forSlideMaker("closure_elec_soup.tex");
+    muons.forSlideMaker("closure_muon_soup.tex"); 
+  }
+  else if (PC){
+    cout << "setting PC" << endl;
+    electrons.forSlideMaker("closure_elec_PC.tex");
+    muons.forSlideMaker("closure_muon_PC.tex"); 
+  }
+  else if (PCssZ){
+    cout << "setting PCssZ" << endl;
+    electrons.forSlideMaker("closure_elec_PCssZ.tex");
+    muons.forSlideMaker("closure_muon_PCssZ.tex"); 
+  }
+  else if (ssZ){
+    cout << "setting ssZ" << endl;
+    electrons.forSlideMaker("closure_elec_ssZ.tex");
+    muons.forSlideMaker("closure_muon_ssZ.tex"); 
+  }
+  else if (notCC){
+    cout << "setting notCC" << endl;
+    electrons.forSlideMaker("closure_elec_notCC.tex");
+    muons.forSlideMaker("closure_muon_notCC.tex"); 
+  }
+  else if (looseEMVA){
+    cout << "setting FO2pFO4" << endl;
+    electrons.forSlideMaker("closure_elec_FO2pFO4.tex");
+    muons.forSlideMaker("closure_muon_FO2pFO4.tex"); 
+  }
+  else {
+    cout << "setting normal" << endl;
+    electrons.forSlideMaker("closure_elec_normal.tex");
+    muons.forSlideMaker("closure_muon_normal.tex"); 
+  }
 
   return 0;
 }

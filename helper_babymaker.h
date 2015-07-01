@@ -27,10 +27,10 @@ class babyMaker {
       verbose = debug;
       evt_cut = 0;
     }
-    void MakeBabyNtuple(const char* output_name);
+    void MakeBabyNtuple(const char* output_name, bool expt);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
-    int ProcessBaby(IsolationMethods isoCase, string filename_in);
+    int ProcessBaby(IsolationMethods isoCase, string filename_in, bool expt);
 
   protected:
     TFile* BabyFile;

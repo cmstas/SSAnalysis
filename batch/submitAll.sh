@@ -18,9 +18,10 @@ lineWithPath=`sed -n /path/= voms_status.txt`
 pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 
 #Then submit jobs
-nIter=0
-for ptrel in "4"
+ptrel="4"
+for expt in "0" "1"
 do
+  nIter=0
   for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200" "DY1" "DY2" "DY3" "DY4" "WJets1" "WJets2" "WJets3" "WJets4" "WJets" "DY" "T5qqqqWW_1200_1000_800" "T5qqqqWW_deg_1000_315_300"
   do
     #Iter
@@ -65,16 +66,16 @@ do
       number=$(( $i + 1 ))
 
       #Except they've finished
-      if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}$ptrelsuf.root ] 
+      if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}${ptrelsuf}_$expt.root ] 
       then 
         continue
       fi
 
       echo "-------------"
-      echo "Working on $sname $number $ptrel"
+      echo "Working on $sname $number $ptrel $expt"
   
       #Or if they're still running
-      if [ -e logs/condorLog_${sname}_${number}_${ptrel}.log ] 
+      if [ -e logs/condorLog_${sname}_${number}_$expt.log ] 
       then
         while read line
         do
@@ -85,7 +86,7 @@ do
           then
             process=`echo $line | awk '{ print $3 }'`
           fi
-        done < logs/condorLog_${sname}_${number}_${ptrel}.log
+        done < logs/condorLog_${sname}_${number}_$expt.log
         jobid="$cluster.$process"
         condor_q $jobid > temp.txt
         result=`more temp.txt | awk 'END{print $1}'`
@@ -105,6 +106,7 @@ do
       sed -i s/ARG2/$number/g condorFile
       sed -i s/ARG3/$ptrel/g condorFile
       sed -i s/ARG4/$USER/g condorFile
+      sed -i s/ARG5/$expt/g condorFile
       sed -i "s,USER_PROXY,$pathToProxy,g" condorFile
       condor_submit condorFile
     done

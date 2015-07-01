@@ -24,7 +24,7 @@
 using namespace tas;
 using namespace std;
 
-int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData, TString whatTest, int nEvents, IsolationMethods isoCase, vector<int> evtToDebug){
+int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData, TString whatTest, int nEvents, IsolationMethods isoCase, vector<int> evtToDebug, bool expt_){
 
   //Don't change these parameters by hand, please set them from main.cc
   makebaby       = 0;
@@ -36,6 +36,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   bool makeSSskim     = 0;
   bool makeQCDskim    = 0;
   bool makeSyncTest   = 0;
+  bool expt = 0;
   if (whatTest=="QCDtest") makeQCDtest    = 1;
   if (whatTest=="DYtest" ) makeDYtest     = 1;
   if (whatTest=="WZtest" ) makeWZtest     = 1;
@@ -43,6 +44,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   if (whatTest=="QCDskim") makeQCDskim    = 1;
   if (whatTest=="SyncTest")makeSyncTest   = 1;
   if (whatTest=="MakeBaby"){makebaby   = 1; makehist = 0;}
+  if (expt_ == true) expt = 1;
 
   //Status Message
   cout << "Processing " << prefix << " " << suffix << " " << whatTest << endl;
@@ -63,7 +65,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   babyMaker* bm=0;
   if (makebaby){
     bm = new babyMaker(debug);
-    bm->MakeBabyNtuple( Form( "%s%s", prefix.Data(), suffix.Data() ));
+    bm->MakeBabyNtuple( Form( "%s%s", prefix.Data(), suffix.Data() ), expt);
   }
   
   //Instiantiate Hists, if making hists
@@ -164,7 +166,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //If making baby, fill it
       if (makebaby){	
-	bm->ProcessBaby(isoCase, currentFile->GetTitle());
+	bm->ProcessBaby(isoCase, currentFile->GetTitle(), expt);
 	continue;
       }
 

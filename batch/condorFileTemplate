@@ -5,13 +5,13 @@ Should_Transfer_Files = YES
 WhenToTransferOutput = ON_EXIT
 Transfer_Input_Files = do.C,CORE.tar.gz,run.C,helper_babymaker.cc,helper_babymaker.h
 Transfer_Output_Files = /dev/null
-Output = logs/condorLog_ARG1_ARG2_ARG3.stdout
-Error = logs/condorLog_ARG1_ARG2_ARG3.stderr
-Log = logs/condorLog_ARG1_ARG2_ARG3.log
+Output = logs/condorLog_ARG1_ARG2_ARG5.stdout
+Error = logs/condorLog_ARG1_ARG2_ARG5.stderr
+Log = logs/condorLog_ARG1_ARG2_ARG5.log
 +Owner = undefined
 notify_user = george@physics.ucsb.edu
 x509userproxy = USER_PROXY
 Executable = condorExecutable.sh
 Transfer_executable = True
-arguments = ARG1 ARG2 ARG3 ARG4
+arguments = ARG1 ARG2 ARG3 ARG4 ARG5
 Queue 1

@@ -3,10 +3,10 @@
 using namespace tas;
 
 //Main functions
-void babyMaker::MakeBabyNtuple(const char* output_name){
+void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
 
   //Create Baby
-  BabyFile = new TFile(Form("%s/%s.root", path.Data(), output_name), "RECREATE");
+  BabyFile = new TFile(Form("%s/%s_%i.root", path.Data(), output_name, expt ? 1 : 0), "RECREATE");
   BabyFile->cd();
   BabyTree = new TTree("t", "SS2015 Baby Ntuple");
 
@@ -143,7 +143,6 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("lep2_isGoodLeg"         , &lep2_isGoodLeg         );
   BabyTree->Branch("lep1_isFakeLeg"         , &lep1_isFakeLeg         );
   BabyTree->Branch("lep2_isFakeLeg"         , &lep2_isFakeLeg         );
-  BabyTree->Branch("truth_inSituFR"         , &truth_inSituFR         );
   BabyTree->Branch("lep1_multiIso"          , &lep1_multiIso          );
   BabyTree->Branch("lep2_multiIso"          , &lep2_multiIso          );
   BabyTree->Branch("lep1_sip"               , &lep1_sip               );
@@ -289,7 +288,6 @@ void babyMaker::InitBabyNtuple(){
     lep2_isGoodLeg = 0; 
     lep1_isFakeLeg = 0; 
     lep2_isFakeLeg = 0; 
-    truth_inSituFR = false;
     lep1_multiIso          = 0;
     lep2_multiIso          = 0;
     lep1_sip = -1;
@@ -303,10 +301,7 @@ void babyMaker::InitBabyNtuple(){
 } 
 
 //Main function
-int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
-
-  //Manually set expt (FO2 + FO4)
-  bool expt = true;
+int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool expt){
 
   //Initialize variables
   InitBabyNtuple();
@@ -315,7 +310,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   bool isData = tas::evt_isRealData();
 
   //Sync stuff
-  //if (tas::evt_event() != 103973) return -1;
+  //if (tas::evt_event() != 852218) return -1;
+  //cout << "FOUND THE EVENT" << endl;
   //verbose = true;
   //cout << "MVA VALUE: " << globalEleMVAreader->MVA(0) << endl;
   //globalEleMVAreader->DumpValues();
@@ -415,24 +411,6 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in){
   //For inSituFR, both must pass looser ID (easier than selection ID)
   passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx, expt); 
   passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx, expt); 
-  if (passed_id_inSituFR_lep1 && passed_id_inSituFR_lep2){
-    int truth_lep1 = lepMotherID_inSituFR( Lep(lep1_id, lep1_idx) ); 
-    int truth_lep2 = lepMotherID_inSituFR( Lep(lep2_id, lep2_idx) ); 
-
-    //Need one good leg and one fake leg
-    if (truth_lep1 > 0) lep1_isGoodLeg = true;
-    else lep1_isGoodLeg = false;
-    if (truth_lep1 < 0) lep1_isFakeLeg = true;
-    else lep1_isFakeLeg = false;
-    if (truth_lep2 > 0) lep2_isGoodLeg = true;
-    else lep2_isGoodLeg = false;
-    if (truth_lep2 < 0) lep2_isFakeLeg = true;
-    else lep2_isFakeLeg = false;
-
-    //Now require one good leg and one fake leg
-    if ((lep1_isGoodLeg && lep2_isFakeLeg) || (lep1_isFakeLeg && lep2_isGoodLeg)) truth_inSituFR = true;
-    else truth_inSituFR = false; 
- }
 
   //Closest jet for both leptons
   lep1_closeJet = closestJet(lep1_p4, 0.4, 2.4);
