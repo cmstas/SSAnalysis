@@ -22,10 +22,10 @@ bool withEta = true;
 bool testPC = true;
 
 //Include DY and W+Jets
-bool others = true;
+bool others = false;
 
 //Limited Samples
-bool DYonly = false;
+bool DYonly = true;
 bool WJetsOnly = false;
 
 //FO1 vs. FO4
@@ -182,8 +182,7 @@ void FR1D(){
 
       //SS Z veto
       if (ssZveto == true){
-        cout << "HERE" << endl;
-        if (fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15) cout << "HERE2" << endl;
+        if (fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15) continue;
       }
 
       //FO1 vs. FO4 selection
@@ -464,7 +463,8 @@ void FR2D(){
   }
 
   //Divide numer/denom
-  cout << numer->Integral() << " " << denom->Integral() << " = " << 1.0*numer->Integral()/denom->Integral()<< endl;
+  cout << numer->FindBin(12.5, 1.5) << endl; 
+  cout << numer->GetBinContent(15) << " " << denom->GetBinContent(15) << " = " << 1.0*numer->GetBinContent(15)/denom->GetBinContent(15) << endl;
   numer ->Divide(numer , denom , 1, 1, "b"); 
   numer2->Divide(numer2, denom2, 1, 1, "b"); 
   numer3->Divide(numer3, denom3, 1, 1, "b"); 
