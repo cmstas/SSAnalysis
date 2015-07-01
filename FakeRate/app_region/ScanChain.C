@@ -22,6 +22,8 @@
 
 using namespace std;
 
+bool doLatex = true;
+
 bool isFakeLeg(int lep){
   if (lep == 1) return (ss::lep1_motherID() <= 0);
   if (lep == 2) return (ss::lep2_motherID() <= 0);
@@ -119,7 +121,8 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   bool print = pred->GetNbinsX() < 10;
 
   int w = 18;
-  if (print) cout << setw(5) << "BR" <<  setw(w) << "Pred" << setw(w) << "Obs" << setw(w) << "Pred/Obs" << setw(w) << "(p-o)/p" << endl;
+  if (print && !doLatex) cout << setw(5) << "BR" <<  setw(w) << "Pred" << setw(w) << "Obs" << setw(w) << "Pred/Obs" << setw(w) << "(p-o)/p" << endl;
+  if (print && doLatex ) cout << "BR & Pred & Obs & Pred/Obs & (Pred-Obs)/Pred \\\\" << endl;
 
   for (int bin=1;bin<=pred->GetNbinsX();++bin) {
     int sr = bin-1;
@@ -157,7 +160,10 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
     float ratioe = sqrt((p*p*oe*oe + o*o*pe*pe)/(o*o*o*o)); //error prop
     float laste = sqrt((p*p*oe*oe + o*o*pe*pe)/(p*p*p*p));  //error prop
 
-    if (print) cout << setw(5) << sr <<  setw(w) << Form("%5.2f +/-%5.2f", p, pe) << setw(w) << Form("%5.2f +/-%5.2f", o, oe) << setw(w) << Form("%5.2f +/-%5.2f", (o>0?p/o:99.99),ratioe) << setw(w) << Form("%5.2f +/-%5.2f", (p>0?(p-o)/p:99.99), laste) << endl;
+    if (print && !doLatex)  cout << setw(5) << sr <<  setw(w) << Form("%5.2f +/-%5.2f", p, pe) << setw(w) << Form("%5.2f +/-%5.2f", o, oe) << setw(w) << Form("%5.2f +/-%5.2f", (o>0?p/o:99.99),ratioe) << setw(w) << Form("%5.2f +/-%5.2f", (p>0?(p-o)/p:99.99), laste) << endl;
+    if (print && doLatex )  cout << Form("%i & %5.1f $\\pm$ %5.1f & %5.1f $\\pm$ %5.1f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f \\\\",
+						       sr, p, pe, o, oe, (o>0?p/o:99.99), ratioe, (p>0?(p-o)/p:99.99), laste) << endl;
+
   }
 }
 
@@ -919,7 +925,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h3->Draw();
   pad_r3->Draw();
   TLegend *leg3 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  cout << "\ndump BR all" << endl;
+  if (print && !doLatex) cout << "\ndump BR all" << endl;
+  if (print && doLatex ) cout << "\\hline \\multicolumn{5}{c}{all} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred")], hists[getHist("Npn_histo_br_obs")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
 
   TH2D *nullarr[40] = {0};
@@ -930,7 +937,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h4->Draw();
   pad_r4->Draw();
   TLegend *leg4 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  cout << "\ndump BR mu" << endl;
+  if (print && !doLatex) cout << "\ndump BR mu" << endl;
+  if (print && doLatex ) cout << "\\\hline \\multicolumn{5}{c}{muons} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred_mu")], hists[getHist("Npn_histo_br_obs_mu")], Npn_histo_br_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
 
   TCanvas *c5=new TCanvas("c5","Predicted and Observed Prompt-NonPrompt Background (Single el)", 800,800);
@@ -939,7 +947,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h5->Draw();
   pad_r5->Draw();
   TLegend *leg5 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  cout << "\ndump BR ele" << endl;
+  if (print && !doLatex) cout << "\ndump BR ele" << endl;
+  if (print && doLatex ) cout << "\\hline \\multicolumn{5}{c}{electrons} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred_el")], hists[getHist("Npn_histo_br_obs_el")], nullarr, Npn_histo_br_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
   c3->SaveAs("br_all"+option+".png");
   c4->SaveAs("br_mu"+option+".png");

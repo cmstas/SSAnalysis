@@ -32,9 +32,10 @@
     if (doBonly)      option+="_doBonly";
     if (doConly)      option+="_doConly";
     if (doLightonly)  option+="_doLightonly";
-    fakeratefile = "../measurement_region/rate_histos_qcd"+option+".root";
+    fakeratefile = "../measurement_region/rate_histos_qcd"+option+"_v1.04.root";
   }
   else {
+    doLooseEMVA  = 0;
     fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos.root";
     //fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_notCC.root";
     //fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_PC.root";
@@ -54,9 +55,7 @@
   else if (doJetCorr) option+="_jetCorr";  //option only for ScanChain
 
   TChain *ch = new TChain("t"); 
-  ch->Add("../../babies/gc.v1.24/TTBAR.root");
-  // if (doLooseEMVA) ch->Add("../../babies/v1.16_looseEMVA/TTBAR_multiIso.root");
-  // else ch->Add("../../babies/v1.21/TTBAR.root");
+  ch->Add("../../babies/v1.26/TTBAR_0.root");
   ScanChain(ch, fakeratefile, option, ptRegion); 
 
   //TChain *ch_wjets = new TChain("t"); 
