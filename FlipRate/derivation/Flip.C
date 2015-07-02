@@ -9,7 +9,7 @@ using namespace ss;
 float theLumi = 1.0; 
 
 //DY only
-bool DYonly = false;
+bool DYonly = true;
 
 void flip(){
 
@@ -26,10 +26,11 @@ void flip(){
   //Set up chains
   TChain *chain = new TChain("t");
   if (!DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/TTBAR_0.root"); 
-               chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY1_0.root"); 
-               chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY2_0.root"); 
-               chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY3_0.root"); 
-               chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY4_0.root"); 
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY1_0.root"); 
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY2_0.root"); 
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY3_0.root"); 
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY4_0.root"); 
+  //if (DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/dy_0.root"); 
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -58,8 +59,11 @@ void flip(){
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
 
-      //Consider only numerator events of either charge
-      if (hyp_class() != 3 && hyp_class() != 4) continue;
+      //Consider only numerator events of either charge, without extra Z veto
+      if (hyp_class() != 3 && hyp_class() != 4 && hyp_class() != 6) continue;
+
+      //Hyp-6 events don't necessarily pass ID (in v1.26, to be fixed); impose that here
+      if (!lep1_passes_id() || !lep2_passes_id()) continue;
 
       //Only care about electrons
       if (abs(lep1_id()) == 13 && abs(lep2_id()) == 13) continue;
