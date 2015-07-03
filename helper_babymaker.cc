@@ -79,6 +79,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("genps_id_grandma"      , &genps_id_grandma      );
   BabyTree->Branch("lep1_passes_id"        , &lep1_passes_id        );
   BabyTree->Branch("lep2_passes_id"        , &lep2_passes_id        );
+  BabyTree->Branch("lep3_passes_id"        , &lep3_passes_id        );
+  BabyTree->Branch("lep3_tight"            , &lep3_tight            );
+  BabyTree->Branch("lep3_veto"             , &lep3_veto             );
+  BabyTree->Branch("lep3_fo"               , &lep3_fo               );
   BabyTree->Branch("lep1_dxyPV"            , &lep1_dxyPV            );
   BabyTree->Branch("lep2_dxyPV"            , &lep2_dxyPV            );
   BabyTree->Branch("lep1_dZ"               , &lep1_dZ               );
@@ -221,6 +225,10 @@ void babyMaker::InitBabyNtuple(){
     genps_id_grandma.clear();
     lep1_passes_id = false;
     lep2_passes_id = false;
+    lep3_passes_id = false;
+    lep3_tight = false;
+    lep3_veto = false;
+    lep3_fo = false;
     lep1_dxyPV = -999998;
     lep2_dxyPV = -999998;
     lep1_dZ = -999998;
@@ -395,6 +403,12 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   dilep_p4 = lep1_p4 + lep2_p4; 
   lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, isoCase);
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, isoCase);
+  lep3_passes_id = isGoodLepton(lep3_id, lep3_idx, isoCase);
+
+  lep3_tight = abs(lep3_id) == 11 ? isGoodElectron(lep3_idx) : isGoodMuon(lep3_idx);
+  lep3_veto = abs(lep3_id) == 11 ? isGoodVetoElectron(lep3_idx) : isGoodVetoMuon(lep3_idx);
+  lep3_fo = abs(lep3_id) == 11 ? isFakableElectron(lep3_idx) : isFakableMuon(lep3_idx);
+
   lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
   lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
 
