@@ -6,7 +6,7 @@
 #include "../../CORE/SSSelections.h"
 
 //truth-matching
-bool truthMatching = true;
+bool truthMatching = false;
 
 //cutting
 bool cutting = false;
@@ -163,12 +163,11 @@ void closure(){
         float FR_err = rate->GetBinError(i, j);
         float nEntries = errors[k]->GetBinContent(i, j); 
         error = FR_err*nEntries/pow(1-FR_val,2);
-        theerror[k]=error/FR_val;
-        //cout << k << " " << i << " " << j << " " << nEntries << " " << error << endl;
-        fr_err2 += error*error; 
+        theerror[k] += pow(error, 2);
+        fr_err2 += pow(error, 2); 
       }
     }
-    clos_MC->SetBinError(k+1, theerror[k]);
+    clos_MC->SetBinError(k+1, sqrt(theerror[k] + pow(clos_MC->GetBinError(k+1),2)));
   }
 
   cout << "pred: " << nPred << " pm " << sqrt(stat2 + fr_err2) << endl;
@@ -180,6 +179,6 @@ void closure(){
   bkgd.push_back(clos_MC); 
   vector <string> titles;
   titles.push_back("pred"); 
-  dataMCplotMaker(clos_data, bkgd, titles, "flip closure", "", Form("--outputName flip_closure.pdf --xAxisLabel M_{ll} --lumi 1 --dataName obs --topYaxisTitle obs/pred --isLinear --noFill %s", "--noOverflow")); 
+  dataMCplotMaker(clos_data, bkgd, titles, "flip closure", "", Form("--outputName flip_closure%s.pdf --xAxisLabel M_{ll} --lumi 1 --dataName obs --topYaxisTitle obs/pred --isLinear --noFill --histoErrors %s", truthMatching ? "_TM" : "", "--noOverflow")); 
 
 }
