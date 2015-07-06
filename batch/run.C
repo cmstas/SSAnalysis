@@ -3,10 +3,12 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "helper_babymaker.h"
+#include "base.h"
 
-enum sample_t { TTBAR, TTW, TTZ, WZ, T1TTTT_1500, T1TTTT_1200, T5qqqqWW_1200_1000_800, T5qqqqWW_deg_1000_315_300, DY1, DY2, DY3, DY4, WJets1, WJets2, WJets3, WJets4, DY, WJets };
+void run(int which_in, int file, int ptrel_in, bool expt){
 
-void run(sample_t which, int file, IsolationMethods ptrel, bool expt){
+  sample_t which = static_cast<sample_t>(which_in);
+  IsolationMethods ptrel = static_cast<IsolationMethods>(ptrel_in); 
 
   babyMaker *mylooper = new babyMaker();
 
@@ -20,99 +22,58 @@ void run(sample_t which, int file, IsolationMethods ptrel, bool expt){
   //Info for each sample
   switch (which){
     case TTBAR:
-      name = "TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+      name = "TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
       shortname = "ttbar";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
     case TTW:
-      name = "TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+      cout << "TTW NOT SUPPORTED!!" << endl;
+      name = "";
       shortname = "ttw";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
     case TTZ:
+      cout << "TTZ NOT SUPPORTED!!" << endl;
       name = "TTZJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "ttz";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
     case WZ:
-      name = "WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+      name = "WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
       shortname = "wz";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
     case T1TTTT_1500:
+      cout << "T1TTTT NOT SUPPORTED!!" << endl;
       name = "SMS-T1tttt_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1";
       shortname = "t1tttt_1500";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
     case T1TTTT_1200:
+      cout << "T1TTTT NOT SUPPORTED!!" << endl;
       name = "SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1";
       shortname = "t1tttt_1200";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
-    case DY1:
-      name = "DYJetsToLL_M-50_HT-100to200_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/";
-      shortname = "dy1";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
-      break;
-    case DY2:
-      name = "DYJetsToLL_M-50_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/";
-      shortname = "dy2";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
-      break;
-    case DY3:
-      name = "DYJetsToLL_M-50_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/";
-      shortname = "dy3";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
-      break;
-    case DY4: 
-      name = "DYJetsToLL_M-50_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/";
-      shortname = "dy4";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
-      break;
-    case WJets1:
-      name = "WJetsToLNu_HT-100to200_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-      shortname = "wjets1";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
-      break;
-    case WJets2:
-      name = "WJetsToLNu_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-      shortname = "wjets2";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
-      break;
-    case WJets3:
-      name = "WJetsToLNu_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-      shortname = "wjets3";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
-      break;
-    case WJets4:
-      name = "WJetsToLNu_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-      shortname = "wjets4";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
-      break;
-    case DY:
-      name="DYJetsToLL_M-50_13TeV-madgraph-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+    case DY_high:
+      name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
       shortname = "dy";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
+      break;
+    case DY_low:
+      name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
+      shortname = "dy";
+      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
     case WJets:
-      name="WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+      name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
       shortname = "wjets";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
-      break;
-    case  T5qqqqWW_1200_1000_800:
-      name = "T5qqqqWW_1200_1000_800";
-      shortname = "t5qqqqww_1200_1000_800";
-      path = "/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/"; 
-      break;
-    case T5qqqqWW_deg_1000_315_300:
-      name = "T5qqqqWW_deg_1000_315_300";
-      shortname = "t5qqqqww_deg_1000_315_300";
-      path = "/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/"; 
+      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
   }
   
   //Name of tag to be used
-  string tag = "V07-02-08";
+  string tag = "V07-04-03";
   
   //Set up file and tree
   cout << "Using xrootd " << endl;
@@ -144,8 +105,8 @@ void run(sample_t which, int file, IsolationMethods ptrel, bool expt){
 
   }//event loop 
 
-//Delete Chain
-mylooper->CloseBabyNtuple();
-delete f; 
+  //Delete Chain
+  mylooper->CloseBabyNtuple();
+  delete f; 
 
 }

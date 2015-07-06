@@ -9,26 +9,20 @@ expt=$5
 #Show where you are
 hostname
 
-##Environment
-#source /nfs-7/cmssoft/cms.cern.ch/cmssw/cmsset_default.sh
-#pushd /nfs-7/cmssoft/cms.cern.ch/cmssw/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0/src/
-#eval `scramv1 runtime -sh`
-#popd
-
 #Environment
 export CMS_PATH=/cvmfs/cms.cern.ch
-export SCRAM_ARCH=slc6_amd64_gcc481
+export SCRAM_ARCH=slc6_amd64_gcc491
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
 #Set CMSSW environment
-pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0/src/
+pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_1/src/
 eval `scramv1 runtime -sh`
 popd
 
 #Specify name of output file and name of dierctory in /hadoop/...
 export DIRNAME=ss_13_babies
 export WHICH_SMALL=`echo ${WHICH,,}`
-if [ "$PTREL" == "4" ] 
+if [ "$PTREL" == "MultiIso" ] 
 then
   PT=""
 fi
@@ -40,7 +34,7 @@ export COPYDIR=/hadoop/cms/store/user/$cgeorge/condor/${DIRNAME}
 #Untar the zip dir
 tar xzvf CORE.tar.gz
 
-root -b -q do.C\($WHICH,$FILE,$PTREL,$expt\)
+root -b -q doIt.C\($WHICH,$FILE,$PTREL,$expt\)
 ls -l `pwd`/${OUTPUT}.root
 
 echo "copying.  LS is: "
