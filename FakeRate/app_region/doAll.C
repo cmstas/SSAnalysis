@@ -6,7 +6,7 @@
   gROOT->ProcessLine(".L SS.cc+");
   gROOT->ProcessLine(".L ScanChain.C++");
 
-  bool doInSitu = 1;
+  bool doInSitu = 0;
 
   bool highhigh   = 1;
   bool highlow    = 0;
@@ -14,7 +14,7 @@
 
   //For both inSitu and not-in-Situ
   bool doConeCorr   = 1;
-  bool doLooseEMVA  = 0;
+  bool doLooseEMVA  = 1;
   bool doJetCorr    = 0;
 
   //These are only for not-in-situ

@@ -23,6 +23,7 @@
 
 using namespace std;
 
+bool dataStats = true;
 bool doLatex = true;
 CTable electrons;
 CTable muons;
@@ -135,8 +136,8 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
     float p = pred->GetBinContent(bin);
     float o = obs->GetBinContent(bin);
     //stat error on nFO's
-    float pe = pred->GetBinError(bin);
-    float oe = obs->GetBinError(bin);
+    float pe = dataStats ? sqrt(pred->GetBinContent(bin)) : pred->GetBinError(bin);
+    float oe = dataStats ? sqrt(obs->GetBinContent(bin)) : obs->GetBinError(bin);
     //stat error on FR (fixme, needs to added to plots as well!)
     float pefr2 = 0;
     if (pred_err2_mu[sr]!=0) { 
@@ -1064,45 +1065,46 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   c8.SaveAs("pTrelvsMiniIso_el"+option+".png");
 
   //Print tables
-  for (int i = 0; i < 4; i++){
-    electrons.setRowLabel(Form("%i", i), i);
-    muons.setRowLabel(Form("%i", i), i);
+  if (inSitu) {
+    for (int i = 0; i < 4; i++){
+      electrons.setRowLabel(Form("%i", i), i);
+      muons.setRowLabel(Form("%i", i), i);
+    }
+    if (soup){
+      cout << "setting soup" << endl;
+      electrons.forSlideMaker("closure_elec_soup.tex");
+      muons.forSlideMaker("closure_muon_soup.tex"); 
+    }
+    else if (PC){
+      cout << "setting PC" << endl;
+      electrons.forSlideMaker("closure_elec_PC.tex");
+      muons.forSlideMaker("closure_muon_PC.tex"); 
+    }
+    else if (PCssZ){
+      cout << "setting PCssZ" << endl;
+      electrons.forSlideMaker("closure_elec_PCssZ.tex");
+      muons.forSlideMaker("closure_muon_PCssZ.tex"); 
+    }
+    else if (ssZ){
+      cout << "setting ssZ" << endl;
+      electrons.forSlideMaker("closure_elec_ssZ.tex");
+      muons.forSlideMaker("closure_muon_ssZ.tex"); 
+    }
+    else if (notCC){
+      cout << "setting notCC" << endl;
+      electrons.forSlideMaker("closure_elec_notCC.tex");
+      muons.forSlideMaker("closure_muon_notCC.tex"); 
+    }
+    else if (looseEMVA){
+      cout << "setting FO2pFO4" << endl;
+      electrons.forSlideMaker("closure_elec_FO2pFO4.tex");
+      muons.forSlideMaker("closure_muon_FO2pFO4.tex"); 
+    }
+    else {
+      cout << "setting normal" << endl;
+      electrons.forSlideMaker("closure_elec_normal.tex");
+      muons.forSlideMaker("closure_muon_normal.tex"); 
+    }
   }
-  if (soup){
-    cout << "setting soup" << endl;
-    electrons.forSlideMaker("closure_elec_soup.tex");
-    muons.forSlideMaker("closure_muon_soup.tex"); 
-  }
-  else if (PC){
-    cout << "setting PC" << endl;
-    electrons.forSlideMaker("closure_elec_PC.tex");
-    muons.forSlideMaker("closure_muon_PC.tex"); 
-  }
-  else if (PCssZ){
-    cout << "setting PCssZ" << endl;
-    electrons.forSlideMaker("closure_elec_PCssZ.tex");
-    muons.forSlideMaker("closure_muon_PCssZ.tex"); 
-  }
-  else if (ssZ){
-    cout << "setting ssZ" << endl;
-    electrons.forSlideMaker("closure_elec_ssZ.tex");
-    muons.forSlideMaker("closure_muon_ssZ.tex"); 
-  }
-  else if (notCC){
-    cout << "setting notCC" << endl;
-    electrons.forSlideMaker("closure_elec_notCC.tex");
-    muons.forSlideMaker("closure_muon_notCC.tex"); 
-  }
-  else if (looseEMVA){
-    cout << "setting FO2pFO4" << endl;
-    electrons.forSlideMaker("closure_elec_FO2pFO4.tex");
-    muons.forSlideMaker("closure_muon_FO2pFO4.tex"); 
-  }
-  else {
-    cout << "setting normal" << endl;
-    electrons.forSlideMaker("closure_elec_normal.tex");
-    muons.forSlideMaker("closure_muon_normal.tex"); 
-  }
-
   return 0;
 }
