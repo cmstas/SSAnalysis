@@ -427,23 +427,30 @@ void yields(){
   TChain* t5qqww_deg    = new TChain("t");
  
   //Fill chains
-  ttbar      ->Add("../babies/gc.v1.24/TTBAR.root"                      );
-  ttw        ->Add("../babies/gc.v1.24/TTW.root"                        );
-  ttz        ->Add("../babies/gc.v1.24/TTZ.root"                        );
-  wz         ->Add("../babies/gc.v1.24/WZ.root"                         );
-  wjets      ->Add("../babies/gc.v1.24/WJets.root"                      );
-  dy         ->Add("../babies/gc.v1.24/DY.root"                         );
-
-  t1tttt_1200->Add("../babies/gc.v1.24/t1tttt_1200_1.root"              );
-  t1tttt_1500->Add("../babies/gc.v1.24/t1tttt_1500_1.root"              );
-  t1ttbbww_1000->Add("../babies/gc.v1.24/signals/T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2_baby.root"              );
-  t1ttbbww_1300->Add("../babies/gc.v1.24/signals/T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2_baby.root"              );
-  t5tttt_1000->Add("../babies/gc.v1.24/signals/T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2_baby.root"              );
-  t6ttww_600->Add("../babies/gc.v1.24/signals/T6ttWW_600_425_50_v2_baby.root");
-  t6ttww_650->Add("../babies/gc.v1.24/signals/T6ttWW_650_150_50_v2_baby.root");
-  t5qqww_1200->Add("../babies/gc.v1.24/t5qqqqWW_1200_1000_800_1.root"   );
-  t5qqww_1500->Add("../babies/gc.v1.24/signals/T5Full_Gl1500_Chi800_LSP100_baby.root"   );
-  t5qqww_deg ->Add("../babies/gc.v1.24/t5qqqqWW_deg_1000_315_300_1.root");
+  //backgrounds
+  ttbar      ->Add("../babies/v1.26/TTBAR_0.root"                    );
+  ttw        ->Add("../babies/v1.26/TTW_0.root"                      );
+  ttz        ->Add("../babies/v1.26/TTZ_0.root"                      );
+  wz         ->Add("../babies/v1.26/WZ_0.root"                       );
+  wjets      ->Add("../babies/v1.26/WJets1_0.root"                   );
+  wjets      ->Add("../babies/v1.26/WJets2_0.root"                   );
+  wjets      ->Add("../babies/v1.26/WJets3_0.root"                   );
+  wjets      ->Add("../babies/v1.26/WJets4_0.root"                   );
+  dy         ->Add("../babies/v1.26/DY1_0.root"                      );
+  dy         ->Add("../babies/v1.26/DY2_0.root"                      );
+  dy         ->Add("../babies/v1.26/DY3_0.root"                      );
+  dy         ->Add("../babies/v1.26/DY4_0.root"                      );
+  //signals
+  t1tttt_1200  ->Add("../babies/v1.26/t1tttt_1200_1.root"                                              );
+  t1tttt_1500  ->Add("../babies/v1.26/t1tttt_1500_1.root"                                              );
+  t1ttbbww_1000->Add("../babies/v1.26/T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2_baby.root"        );
+  t1ttbbww_1300->Add("../babies/v1.26/T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2_baby.root"        );
+  t5tttt_1000  ->Add("../babies/v1.26/T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2_baby.root");
+  t6ttww_600   ->Add("../babies/v1.26/T6ttWW_600_425_50_v2_baby.root"                                  );
+  t6ttww_650   ->Add("../babies/v1.26/T6ttWW_650_150_50_v2_baby.root"                                  );
+  t5qqww_1200  ->Add("../babies/v1.26/t5qqqqWW_1200_1000_800_1.root"                                   );
+  t5qqww_1500  ->Add("../babies/v1.26/T5Full_Gl1500_Chi800_LSP100_baby.root"                           );
+  t5qqww_deg   ->Add("../babies/v1.26/t5qqqqWW_deg_1000_315_300_1.root"                                );
 
   //Chains for type
   TChain* all_bkgd = new TChain("t");
@@ -585,30 +592,57 @@ void yields(){
   //Make tables
   if (!makeTables) return; 
   int nSRs[3] = { 32, 26, 8 }; 
+
+  //backgrounds
   for (int j = 0; j < 3; j++){
     CTable table;
-    table.setTable() (    "t1tttt"    , "t1tttt"    , "t5qqww"         , "t5qqww"           , ""   , ""   , ""  , ""         , ""         , ""         , ""        , "" ) 
-                     ("", "(1.2, 0.8)", "(1.5, 0.1)", "(1.2, 1.0, 0.8)", "(1.0, 0.315, 0.3)", "ttw", "ttz", "wz", "sfakes_mc", "sfakes_dd", "dfakes_mc", "flips_mc", "pdata" ); 
-    table.setPrecision(3); 
+    table.setTable() 
+      ("", "ttW", "ttZ", "WZ", "SingleFakes", /*"SingleFakesPred",*/ "DoubleFakes", "ChargeFlips", "PseudoData" ); 
+    table.setPrecision(1); 
     if (j == 0) table.setTitle("H-H Yields");
     if (j == 1) table.setTitle("H-L Yields");
     if (j == 2) table.setTitle("L-L Yields");
     table.useTitle(); 
     for (int i = 1; i <= nSRs[j]; i++){
       table.setRowLabel(Form("SR%i", i), i);
-      table.setCell(getYield(t1tttt_1200_graphs, i, j), i, 0); 
-      table.setCell(getYield(t1tttt_1500_graphs, i, j), i, 1); 
-      table.setCell(getYield(t5qqww_1200_graphs, i, j), i, 2); 
-      table.setCell(getYield(t5qqww_deg_graphs , i, j), i, 3); 
-      table.setCell(getYield(ttw_graphs        , i, j), i, 4); 
-      table.setCell(getYield(ttz_graphs        , i, j), i, 5); 
-      table.setCell(getYield(wz_graphs         , i, j), i, 6); 
-      table.setCell(getYield(sfakes_mc_graphs  , i, j), i, 7); 
-      table.setCell(getYield(sfakes_dd_graphs  , i, j), i, 8); 
-      table.setCell(getYield(dfakes_mc_graphs  , i, j), i, 9); 
-      table.setCell(getYield(flips_mc_graphs   , i, j), i, 10); 
-      table.setCell(getYield(pdata_graphs      , i, j), i, 11); 
+      int cnt = 0;
+      table.setCell(getYield(ttw_graphs        , i, j), i, cnt++); 
+      table.setCell(getYield(ttz_graphs        , i, j), i, cnt++); 
+      table.setCell(getYield(wz_graphs         , i, j), i, cnt++); 
+      table.setCell(getYield(sfakes_mc_graphs  , i, j), i, cnt++); 
+      //table.setCell(getYield(sfakes_dd_graphs  , i, j), i, cnt++); 
+      table.setCell(getYield(dfakes_mc_graphs  , i, j), i, cnt++); 
+      table.setCell(getYield(flips_mc_graphs   , i, j), i, cnt++); 
+      table.setCell(getYield(pdata_graphs      , i, j), i, cnt++); 
     }
-    table.print();
+    table.printTex();
   }
+
+  //signals
+  for (int j = 0; j < 3; j++){
+    CTable table;
+    table.setTable() 
+      (   "T1tttt"    ,"T1tttt"    ,"T1ttbbww"      ,"T5tttt"            ,"T5qqww"        ,"T5qqww"         ,"T5qqww"        ,"T6ttww"      ,"T6ttww"      ) 
+      ("","(1500,100)","(1200,800)","(1300,300,290)","(1000,300,285,280)","(1500,800,100)","(1200,1000,800)","(1000,315,300)","(650,150,50)","(600,425,50)"); 
+    table.setPrecision(1); 
+    if (j == 0) table.setTitle("H-H Yields");
+    if (j == 1) table.setTitle("H-L Yields");
+    if (j == 2) table.setTitle("L-L Yields");
+    table.useTitle(); 
+    for (int i = 1; i <= nSRs[j]; i++){
+      table.setRowLabel(Form("SR%i", i), i);
+      int cnt = 0;
+      table.setCell(getYield(t1tttt_1500_graphs,   i, j), i, cnt++); 
+      table.setCell(getYield(t1tttt_1200_graphs,   i, j), i, cnt++); 
+      table.setCell(getYield(t1ttbbww_1300_graphs, i, j), i, cnt++); 
+      table.setCell(getYield(t5tttt_1000_graphs,   i, j), i, cnt++); 
+      table.setCell(getYield(t5qqww_1500_graphs,   i, j), i, cnt++); 
+      table.setCell(getYield(t5qqww_1200_graphs,   i, j), i, cnt++); 
+      table.setCell(getYield(t5qqww_deg_graphs ,   i, j), i, cnt++); 
+      table.setCell(getYield(t6ttww_650_graphs,    i, j), i, cnt++); 
+      table.setCell(getYield(t6ttww_600_graphs,    i, j), i, cnt++); 
+    }
+    table.printTex();
+  }
+
 }
