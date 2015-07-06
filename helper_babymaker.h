@@ -161,6 +161,12 @@ class babyMaker {
     //Leptons pass numerator ID
     bool lep1_passes_id;
     bool lep2_passes_id;
+    bool lep3_passes_id;
+
+    //Lep3 IDISO
+    bool lep3_tight;
+    bool lep3_veto;
+    bool lep3_fo;
 
     //Imparct parameter
     float lep1_dxyPV;
