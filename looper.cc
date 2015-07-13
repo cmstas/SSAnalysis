@@ -48,6 +48,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
   //Status Message
   cout << "Processing " << prefix << " " << suffix << " " << whatTest << endl;
+  cout << "nEntries: " << chain->GetEntries() << endl;
 
   //Debug Flag
   bool debug = 0;  

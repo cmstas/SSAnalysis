@@ -79,6 +79,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("genps_id_grandma"      , &genps_id_grandma      );
   BabyTree->Branch("lep1_passes_id"        , &lep1_passes_id        );
   BabyTree->Branch("lep2_passes_id"        , &lep2_passes_id        );
+  BabyTree->Branch("lep3_passes_id"        , &lep3_passes_id        );
+  BabyTree->Branch("lep3_tight"            , &lep3_tight            );
+  BabyTree->Branch("lep3_veto"             , &lep3_veto             );
+  BabyTree->Branch("lep3_fo"               , &lep3_fo               );
   BabyTree->Branch("lep1_dxyPV"            , &lep1_dxyPV            );
   BabyTree->Branch("lep2_dxyPV"            , &lep2_dxyPV            );
   BabyTree->Branch("lep1_dZ"               , &lep1_dZ               );
@@ -87,8 +91,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep2_d0_err"           , &lep2_d0_err           );
   BabyTree->Branch("lep1_ip3d"             , &lep1_ip3d             );
   BabyTree->Branch("lep2_ip3d"             , &lep2_ip3d             );
-  BabyTree->Branch("lep1_MVA"             , &lep1_MVA             );
-  BabyTree->Branch("lep2_MVA"             , &lep2_MVA             );
+  BabyTree->Branch("lep1_MVA"             , &lep1_MVA               );
+  BabyTree->Branch("lep2_MVA"             , &lep2_MVA               );
   BabyTree->Branch("lep1_ip3d_err"         , &lep1_ip3d_err         );
   BabyTree->Branch("lep2_ip3d_err"         , &lep2_ip3d_err         );
   BabyTree->Branch("nVetoElectrons7"       , &nVetoElectrons7       );
@@ -143,7 +147,6 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep2_isGoodLeg"         , &lep2_isGoodLeg         );
   BabyTree->Branch("lep1_isFakeLeg"         , &lep1_isFakeLeg         );
   BabyTree->Branch("lep2_isFakeLeg"         , &lep2_isFakeLeg         );
-  BabyTree->Branch("truth_inSituFR"         , &truth_inSituFR         );
   BabyTree->Branch("lep1_multiIso"          , &lep1_multiIso          );
   BabyTree->Branch("lep2_multiIso"          , &lep2_multiIso          );
   BabyTree->Branch("lep1_sip"               , &lep1_sip               );
@@ -222,6 +225,10 @@ void babyMaker::InitBabyNtuple(){
     genps_id_grandma.clear();
     lep1_passes_id = false;
     lep2_passes_id = false;
+    lep3_passes_id = false;
+    lep3_tight = false;
+    lep3_veto = false;
+    lep3_fo = false;
     lep1_dxyPV = -999998;
     lep2_dxyPV = -999998;
     lep1_dZ = -999998;
@@ -289,7 +296,6 @@ void babyMaker::InitBabyNtuple(){
     lep2_isGoodLeg = 0; 
     lep1_isFakeLeg = 0; 
     lep2_isFakeLeg = 0; 
-    truth_inSituFR = false;
     lep1_multiIso          = 0;
     lep2_multiIso          = 0;
     lep1_sip = -1;
@@ -312,9 +318,9 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   bool isData = tas::evt_isRealData();
 
   //Sync stuff
-  // if (tas::evt_event() != 852218) return -1;
-  // cout << "FOUND THE EVENT" << endl;
-  // verbose = true;
+  //if (tas::evt_event() != 852218) return -1;
+  //cout << "FOUND THE EVENT" << endl;
+  //verbose = true;
   //cout << "MVA VALUE: " << globalEleMVAreader->MVA(0) << endl;
   //globalEleMVAreader->DumpValues();
   //cout << " " << endl;
@@ -340,8 +346,11 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   kfactor = tas::evt_kfactor();
   gen_met = tas::gen_met();
   gen_met_phi = tas::gen_metPhi();
-  trueNumInt = tas::puInfo_trueNumInteractions();
-  nPUvertices = puInfo_nPUvertices();
+
+  if (!is_real_data){
+    trueNumInt = tas::puInfo_trueNumInteractions();
+    nPUvertices = puInfo_nPUvertices();
+  }
 
   //Fill data vs. mc variables
   filt_csc = is_real_data ? tas::evt_cscTightHaloId() : 1;
@@ -350,6 +359,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   filt_ecaltp = is_real_data ? tas::filt_ecalTP() : 1;
   filt_trkfail = is_real_data ? tas::filt_trackingFailure() : 1;
   filt_eebadsc = is_real_data ? tas::filt_eeBadSc() : 1;
+
+  //Scale1fb
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
   
   //Fill lepton variables
@@ -378,10 +389,6 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   lep2_ip3d = lep2.ip3d();
   lep1_ip3d_err = lep1.ip3dErr();
   lep2_ip3d_err = lep2.ip3dErr();
-  lep1_motherID = lepMotherID(lep1);
-  lep2_motherID = lepMotherID(lep2);
-  lep1_mc_id = lep1.mc_id();
-  lep2_mc_id = lep2.mc_id();
   hyp_type = tas::hyp_type().at(best_hyp);
   pair <particle_t, int> thirdLepton = getThirdLepton(best_hyp);
   lep3_id = thirdLepton.first.id;
@@ -400,6 +407,22 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
   lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
 
+  //More Third lepton stuff
+  if (abs(lep3_id) == 11 || abs(lep3_id) == 13){
+    lep3_passes_id = isGoodLepton(lep3_id, lep3_idx, isoCase);
+    lep3_tight = abs(lep3_id) == 11 ? isGoodElectron(lep3_idx) : isGoodMuon(lep3_idx);
+    lep3_veto = abs(lep3_id) == 11 ? isGoodVetoElectron(lep3_idx) : isGoodVetoMuon(lep3_idx);
+    lep3_fo = abs(lep3_id) == 11 ? isFakableElectron(lep3_idx) : isFakableMuon(lep3_idx);
+  }
+
+  //Lepton MC variables
+  if (!is_real_data){
+    lep1_mc_id = lep1.mc_id();
+    lep2_mc_id = lep2.mc_id();
+    lep1_motherID = lepMotherID(lep1);
+    lep2_motherID = lepMotherID(lep2);
+  }
+
   //PtRel for both leptons
   lep1_ptrel_v0 = getPtRel(lep1_id, lep1_idx, false);
   lep2_ptrel_v0 = getPtRel(lep2_id, lep2_idx, false);
@@ -413,37 +436,10 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   //For inSituFR, both must pass looser ID (easier than selection ID)
   passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx, expt); 
   passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx, expt); 
-  if (passed_id_inSituFR_lep1 && passed_id_inSituFR_lep2){
-    int truth_lep1 = lepMotherID_inSituFR( Lep(lep1_id, lep1_idx) ); 
-    int truth_lep2 = lepMotherID_inSituFR( Lep(lep2_id, lep2_idx) ); 
-
-    //Need one good leg and one fake leg
-    if (truth_lep1 > 0) lep1_isGoodLeg = true;
-    else lep1_isGoodLeg = false;
-    if (truth_lep1 < 0) lep1_isFakeLeg = true;
-    else lep1_isFakeLeg = false;
-    if (truth_lep2 > 0) lep2_isGoodLeg = true;
-    else lep2_isGoodLeg = false;
-    if (truth_lep2 < 0) lep2_isFakeLeg = true;
-    else lep2_isFakeLeg = false;
-
-    //Now require one good leg and one fake leg
-    if ((lep1_isGoodLeg && lep2_isFakeLeg) || (lep1_isFakeLeg && lep2_isGoodLeg)) truth_inSituFR = true;
-    else truth_inSituFR = false; 
- }
 
   //Closest jet for both leptons
   lep1_closeJet = closestJet(lep1_p4, 0.4, 2.4);
   lep2_closeJet = closestJet(lep2_p4, 0.4, 2.4);
-  
-  //Fill generated lepton variables, ignoring reco (matching to reco done above)
-  vector <particle_t> genPair = getGenPair(verbose);
-  if (genPair.size() == 2){
-    lep1_id_gen = genPair.at(0).id;
-    lep2_id_gen = genPair.at(1).id;
-    lep1_p4_gen = genPair.at(0).p4;
-    lep2_p4_gen = genPair.at(1).p4;
-  }
   
   //Fill all generated particles
   if (!isData){
@@ -481,7 +477,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   //nVeto Leptons
   if (verbose) cout << " PRINTING RECO ELECTRONS" << endl;
   for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
-    float miniIso = elMiniRelIsoCMS3_EA(eidx);
+    float miniIso = elMiniRelIso(eidx, true, 0.0, false, true);
     if (verbose) cout << "pt: " << tas::els_p4().at(eidx).pt() << " miniiso: " << miniIso << endl;
     if (!isGoodVetoElectron(eidx)) continue;
     if (tas::els_p4().at(eidx).pt() < 7) continue;
@@ -494,7 +490,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   }
   if (verbose) cout << " PRINTING RECO MUONS" << endl;
   for (unsigned int muidx = 0; muidx < tas::mus_p4().size(); muidx++){
-    float miniIso = muMiniRelIsoCMS3_EA(muidx);
+    float miniIso = muMiniRelIso(muidx, true, 0.5, false, true);
     if (verbose) cout << "pt: " << tas::mus_p4().at(muidx).pt() << " miniiso: " << miniIso << endl;
     if (!isGoodVetoMuon(muidx)) continue;
     if (tas::mus_p4().at(muidx).pt() < 5) continue;

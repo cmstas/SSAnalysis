@@ -75,6 +75,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   TChain *chain_T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2                  = new TChain("Events");
   TChain *chain_T6ttWW_600_425_50_v2                                            = new TChain("Events");
   TChain *chain_T6ttWW_650_150_50_v2                                            = new TChain("Events");
+  TChain *chain_data_doubleMuon                                                 = new TChain("Events"); 
   TChain *chain_test                                                            = new TChain("Events");
 
   TChain *chain_TTJets_50ns = new TChain("Events");
@@ -89,8 +90,8 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
 
   TChain *chain_WZJets_25ns = new TChain("Events");
   chain_WZJets_25ns->Add("/hadoop/cms/store/group/snt/run2_25ns/WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/V07-04-03/merged_ntuple_*.root"); 
-  l->ScanChain(chain_WZJets_25ns, "wz_25ns", "baby", 0, "MakeBaby", -1, isoCase);
-  l->ScanChain(chain_WZJets,      "WZJets"      , "", 0, "", -1, isoCase);
+  //l->ScanChain(chain_WZJets_25ns, "wz_25ns", "baby", 0, "MakeBaby", -1, isoCase);
+  //l->ScanChain(chain_WZJets,      "WZJets"      , "", 0, "", -1, isoCase);
 
   if (useSkim) {
     TString dir  = "PHYS14_v2_new";
@@ -110,7 +111,9 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   } 
   else {
     TString dir = "/hadoop/cms/store/group/snt/phys14/";
+    TString dataDir = "/hadoop/cms/store/group/snt/run2_data/";
     TString tag = "V07-02-08/merged_ntuple_*.root";
+    TString dataTag = "V07-04-04/merged_ntuple_*.root";
 
     //SMS
     chain_T1ttttG1200 ->Add(dir + "SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/" + tag);
@@ -142,6 +145,9 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     chain_TW ->Add(dir + "TBarToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
     chain_TW ->Add(dir + "TToLeptons_t-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"    + tag);
     chain_TW ->Add(dir + "TBarToLeptons_t-channel_Tune4C_CSA14_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
+
+    //data
+    chain_data_doubleMuon ->Add(dataDir + "Run2015B_DoubleEG_MINIAOD_PromptReco-v1/merged/" + dataTag); 
 
     //test
     chain_test->Add(dir + "TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-08/merged_ntuple_1.root"); 
@@ -253,6 +259,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     if (babiesToMake[31] == 1) l->ScanChain(chain_T6ttWW_600_425_50_v2                                  , "T6ttWW_600_425_50_v2", "baby", 0, "MakeBaby", -1, isoCase);
     if (babiesToMake[32] == 1) l->ScanChain(chain_T6ttWW_650_150_50_v2                                  , "T6ttWW_650_150_50_v2", "baby", 0, "MakeBaby", -1, isoCase);
     if (babiesToMake[33] == 1) l->ScanChain(chain_test                                                  , "test"                , "baby", 0, "MakeBaby", -1, isoCase);
+    if (babiesToMake[34] == 1) l->ScanChain(chain_data_doubleMuon                                       , "data_doubleMuon"     , "baby", 0, "MakeBaby", -1, isoCase); 
 
 
   }
