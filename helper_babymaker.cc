@@ -91,8 +91,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep2_d0_err"           , &lep2_d0_err           );
   BabyTree->Branch("lep1_ip3d"             , &lep1_ip3d             );
   BabyTree->Branch("lep2_ip3d"             , &lep2_ip3d             );
-  BabyTree->Branch("lep1_MVA"             , &lep1_MVA             );
-  BabyTree->Branch("lep2_MVA"             , &lep2_MVA             );
+  BabyTree->Branch("lep1_MVA"             , &lep1_MVA               );
+  BabyTree->Branch("lep2_MVA"             , &lep2_MVA               );
   BabyTree->Branch("lep1_ip3d_err"         , &lep1_ip3d_err         );
   BabyTree->Branch("lep2_ip3d_err"         , &lep2_ip3d_err         );
   BabyTree->Branch("nVetoElectrons7"       , &nVetoElectrons7       );
