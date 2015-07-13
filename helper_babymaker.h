@@ -1,3 +1,6 @@
+#ifndef SSBABYMAKER_H
+#define SSBABYMAKER_H
+
 #include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -253,3 +256,5 @@ class babyMaker {
     bool passed_id_inSituFR_lep2;
 
 };
+
+#endif

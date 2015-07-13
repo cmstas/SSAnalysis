@@ -26,16 +26,25 @@ then
 fi
 cp ../Tools/utils.h CORE/Tools/
 cp ../Tools/utils.cc CORE/Tools/
+cp ../Tools/goodrun.cc        CORE/Tools/
+cp ../Tools/goodrun.h         CORE/Tools/
 
 #And MT2 directory inside CORE
 if [ ! -d CORE/Tools/MT2 ] 
 then
   mkdir CORE/Tools/MT2
 fi
-cp ../Tools/MT2/MT2.h CORE/Tools/MT2
-cp ../Tools/MT2/MT2.cc CORE/Tools/MT2
-cp ../Tools/MT2/MT2Utility.h CORE/Tools/MT2
+cp ../Tools/MT2/MT2.h         CORE/Tools/MT2
+cp ../Tools/MT2/MT2.cc        CORE/Tools/MT2
+cp ../Tools/MT2/MT2Utility.h  CORE/Tools/MT2
 cp ../Tools/MT2/MT2Utility.cc CORE/Tools/MT2
+
+#And goodrun list directory 
+if [ ! -d goodRunList ] 
+then
+  mkdir goodRunList
+fi
+cp ../goodRunList/json_*.txt goodRunList/
 
 #Make log dir
 if [ ! -d logs ] 

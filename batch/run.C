@@ -4,6 +4,7 @@
 #include "TFile.h"
 #include "helper_babymaker.h"
 #include "base.h"
+#include "CORE/Tools/goodrun.h"
 
 void run(int which_in, int file, int ptrel_in, bool expt){
 
@@ -70,10 +71,20 @@ void run(int which_in, int file, int ptrel_in, bool expt){
       shortname = "wjets";
       path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
+    case DataDoubleMuon:
+      name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1/merged/";
+      shortname = "DataDoubleMuon";
+      path = "/hadoop/cms/store/group/snt/run2_data/"; 
+      break;
+    case DataDoubleEG:
+      name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1/merged/";
+      shortname = "DataDoubleEG";
+      path = "/hadoop/cms/store/group/snt/run2_data/"; 
+      break;
   }
   
   //Name of tag to be used
-  string tag = "V07-04-03";
+  string tag = "V07-04-04";
   
   //Set up file and tree
   cout << "Using xrootd " << endl;
@@ -88,6 +99,9 @@ void run(int which_in, int file, int ptrel_in, bool expt){
   unsigned int nEventsTotal = 0;
   cout << "nEvents: " << tree->GetEntries() << endl;
 
+  //Add good run list
+  set_goodrun_file("goodRunList/json_DCSONLY_Run2015B_snt_071315.txt");
+
   //Init MVA
   createAndInitMVA("./CORE");
 
@@ -97,6 +111,9 @@ void run(int which_in, int file, int ptrel_in, bool expt){
     //Get Event Content
     cms3.GetEntry(event);
     nEventsTotal++;
+
+    //If data, check good run list
+    if (tas::evt_isRealData() && !goodrun(tas::evt_run(), tas::evt_lumiBlock())) continue; 
 
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
