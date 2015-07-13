@@ -48,6 +48,7 @@ CORESOURCES=$(DIR)/$(COREDIR)/CMS3.cc \
  $(DIR)/Tools/MT2/MT2Utility.cc \
  $(DIR)/Tools/MT2/MT2.cc \
  $(DIR)/Tools/utils.cc \
+ $(DIR)/Tools/goodrun.cc \
  $(DIR)/$(COREDIR)/SSSelections.cc
 COREOBJECTS=$(CORESOURCES:.cc=.o)
 CORELIB=libCMS3CORE.so
@@ -116,5 +117,6 @@ clean: loopclean
 	$(CORELIB) \
 	./$(COREDIR)/*.o \
 	./Tools/MT2/*.o \
+	./Tools/*.o \
 
 endif

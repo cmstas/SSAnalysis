@@ -20,6 +20,7 @@
 
 //CMS3
 #include "./CORE/CMS3.h"
+#include "Tools/goodrun.h"
 
 using namespace tas;
 using namespace std;
@@ -78,6 +79,9 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
   //Instantiate MVA for electron ID
   createAndInitMVA("./CORE");
+
+  //Add good run list
+  set_goodrun_file("goodRunList/json_DCSONLY_Run2015B_snt_071315.txt");
 
   //Set up the file loop
   if(nEvents == -1) nEvents = chain->GetEntries();
@@ -143,6 +147,9 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (makebaby) bm->InitBabyNtuple();
 
       //-------- DO THE ANALYSIS HERE --------//
+
+      //If data, check good run list
+      if (evt_isRealData() && !goodrun(evt_run(), evt_lumiBlock())) continue; 
 
       //If debugging, skip all other events
       if (evtToDebug.size() > 0){

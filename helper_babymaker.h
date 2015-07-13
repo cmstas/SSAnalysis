@@ -10,6 +10,7 @@
 #include "CORE/SSSelections.h"
 #include "CORE/ElectronSelections.h"
 #include "CORE/IsolationTools.h"
+#include "Tools/goodrun.h"
 #include "TROOT.h"
 #include <vector>
 
