@@ -18,7 +18,7 @@ void run(int which_in, int file, int ptrel_in, bool expt){
   string name = ""; 
   string shortname = ""; 
   const char* filename = Form("merged_ntuple_%i.root", file);
-  const char* suffix = file == 0 ? "" : Form("_%i", file);
+  const char* suffix = file < 0 ? "" : Form("_%i", file);
 
   //Info for each sample
   switch (which){
@@ -73,12 +73,12 @@ void run(int which_in, int file, int ptrel_in, bool expt){
       break;
     case DataDoubleMuon:
       name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1/merged/";
-      shortname = "DataDoubleMuon";
+      shortname = "datadoublemuon";
       path = "/hadoop/cms/store/group/snt/run2_data/"; 
       break;
     case DataDoubleEG:
       name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1/merged/";
-      shortname = "DataDoubleEG";
+      shortname = "datadoubleeg";
       path = "/hadoop/cms/store/group/snt/run2_data/"; 
       break;
   }
