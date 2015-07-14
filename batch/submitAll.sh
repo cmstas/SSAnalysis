@@ -48,7 +48,6 @@ do
     #Get number of files
     if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]; then infix="merged/"; path=$pathData; isData="1"; else infix="" isData="0"; path=$pathPublic; fi
     numberOfFiles=$((`ls -l $path/$name/$infix$tag | wc -l` - 1))
-    echo "numberOfFiles: $numberOfFiles" 
   
     #Submit all of them
     for (( i=0; i<$numberOfFiles; i++))
