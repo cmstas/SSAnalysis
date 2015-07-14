@@ -46,7 +46,7 @@ do
     fi
   
     #Get number of files
-    if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]; then infix="merged/"; path=$pathData; else infix=""; path=$pathPublic; fi
+    if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]; then infix="merged/"; path=$pathData; isData="1"; else infix="" isData="0"; path=$pathPublic; fi
     numberOfFiles=$((`ls -l $path/$name/$infix$tag | wc -l` - 1))
     echo "numberOfFiles: $numberOfFiles" 
   
@@ -54,7 +54,8 @@ do
     for (( i=0; i<$numberOfFiles; i++))
     do
       sname_lower=`echo ${sname,,}`
-      number=$(( $i + 1 ))
+      if [ "$isData" == "1" ]; then number=$i; fi
+      if [ "$isData" == "0" ]; then number=$(( $i + 1 )); fi
 
       #Except they've finished
       if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}${ptrelsuf}_$expt.root ] 
