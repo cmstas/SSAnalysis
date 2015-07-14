@@ -346,8 +346,11 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   kfactor = tas::evt_kfactor();
   gen_met = tas::gen_met();
   gen_met_phi = tas::gen_metPhi();
-  trueNumInt = tas::puInfo_trueNumInteractions();
-  nPUvertices = puInfo_nPUvertices();
+
+  if (!is_real_data){
+    trueNumInt = tas::puInfo_trueNumInteractions();
+    nPUvertices = puInfo_nPUvertices();
+  }
 
   //Fill data vs. mc variables
   filt_csc = is_real_data ? tas::evt_cscTightHaloId() : 1;
@@ -356,6 +359,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   filt_ecaltp = is_real_data ? tas::filt_ecalTP() : 1;
   filt_trkfail = is_real_data ? tas::filt_trackingFailure() : 1;
   filt_eebadsc = is_real_data ? tas::filt_eeBadSc() : 1;
+
+  //Scale1fb
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
   
   //Fill lepton variables
@@ -384,10 +389,6 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   lep2_ip3d = lep2.ip3d();
   lep1_ip3d_err = lep1.ip3dErr();
   lep2_ip3d_err = lep2.ip3dErr();
-  lep1_motherID = lepMotherID(lep1);
-  lep2_motherID = lepMotherID(lep2);
-  lep1_mc_id = lep1.mc_id();
-  lep2_mc_id = lep2.mc_id();
   hyp_type = tas::hyp_type().at(best_hyp);
   pair <particle_t, int> thirdLepton = getThirdLepton(best_hyp);
   lep3_id = thirdLepton.first.id;
@@ -403,14 +404,24 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   dilep_p4 = lep1_p4 + lep2_p4; 
   lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, isoCase);
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, isoCase);
-  lep3_passes_id = isGoodLepton(lep3_id, lep3_idx, isoCase);
-
-  lep3_tight = abs(lep3_id) == 11 ? isGoodElectron(lep3_idx) : isGoodMuon(lep3_idx);
-  lep3_veto = abs(lep3_id) == 11 ? isGoodVetoElectron(lep3_idx) : isGoodVetoMuon(lep3_idx);
-  lep3_fo = abs(lep3_id) == 11 ? isFakableElectron(lep3_idx) : isFakableMuon(lep3_idx);
-
   lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
   lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
+
+  //More Third lepton stuff
+  if (abs(lep3_id) == 11 || abs(lep3_id) == 13){
+    lep3_passes_id = isGoodLepton(lep3_id, lep3_idx, isoCase);
+    lep3_tight = abs(lep3_id) == 11 ? isGoodElectron(lep3_idx) : isGoodMuon(lep3_idx);
+    lep3_veto = abs(lep3_id) == 11 ? isGoodVetoElectron(lep3_idx) : isGoodVetoMuon(lep3_idx);
+    lep3_fo = abs(lep3_id) == 11 ? isFakableElectron(lep3_idx) : isFakableMuon(lep3_idx);
+  }
+
+  //Lepton MC variables
+  if (!is_real_data){
+    lep1_mc_id = lep1.mc_id();
+    lep2_mc_id = lep2.mc_id();
+    lep1_motherID = lepMotherID(lep1);
+    lep2_motherID = lepMotherID(lep2);
+  }
 
   //PtRel for both leptons
   lep1_ptrel_v0 = getPtRel(lep1_id, lep1_idx, false);
@@ -429,15 +440,6 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   //Closest jet for both leptons
   lep1_closeJet = closestJet(lep1_p4, 0.4, 2.4);
   lep2_closeJet = closestJet(lep2_p4, 0.4, 2.4);
-  
-  //Fill generated lepton variables, ignoring reco (matching to reco done above)
-  vector <particle_t> genPair = getGenPair(verbose);
-  if (genPair.size() == 2){
-    lep1_id_gen = genPair.at(0).id;
-    lep2_id_gen = genPair.at(1).id;
-    lep1_p4_gen = genPair.at(0).p4;
-    lep2_p4_gen = genPair.at(1).p4;
-  }
   
   //Fill all generated particles
   if (!isData){
