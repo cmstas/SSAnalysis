@@ -255,6 +255,13 @@ class babyMaker {
     bool passed_id_inSituFR_lep1;
     bool passed_id_inSituFR_lep2;
 
+    //Trigger matching
+    bool fired_trigger;
+    bool lep1_trigMatch_noIsoReq;
+    bool lep1_trigMatch_isoReq; 
+    bool lep2_trigMatch_noIsoReq;
+    bool lep2_trigMatch_isoReq; 
+ 
 };
 
 #endif
