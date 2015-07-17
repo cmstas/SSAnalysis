@@ -81,7 +81,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   createAndInitMVA("./CORE");
 
   //Add good run list
-  set_goodrun_file("goodRunList/json_DCSONLY_Run2015B_snt_071315.txt");
+  set_goodrun_file("goodRunList/json_DCSONLY_Run2015B_snt_071615.txt");
 
   //Set up the file loop
   if(nEvents == -1) nEvents = chain->GetEntries();
