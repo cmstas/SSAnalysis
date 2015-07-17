@@ -11,6 +11,7 @@ LinkDef_out*
 CORE
 Tools
 CMSSW_*
+LeptonBabyMaker
 batch/CORE.tar.gz
 batch/condorFile
 batch/dont_need/

@@ -18,6 +18,7 @@ else
   git clone git@github.com:cmstas/software.git
   cp /nfs-7/userdata/ss2015/ssBabies/$babiesVersion babies/$babiesVersion/
 fi
+git clone git@github.com:cmstas/LeptonBabyMaker.git
 cmsrel CMSSW_7_1_6
 cd CMSSW_7_1_6/src
 cmsenv
