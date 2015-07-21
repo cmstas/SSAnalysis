@@ -9,7 +9,7 @@ using namespace ss;
 float theLumi = 1.0; 
 
 //DY only
-bool DYonly = true;
+bool DYonly = false;
 
 void flip(){
 
