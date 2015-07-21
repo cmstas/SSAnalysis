@@ -10,7 +10,7 @@ int main() {
   bool runSync   = false;
   string runBaby = "5,14";
 
-  runMain(useSkim, skimAll, runAll, runLepEff, runSync, runBaby);
+  runMain(useSkim, skimAll, runAll, runLepEff, runSync, runBaby, 0);
 
   return 0;
 
