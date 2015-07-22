@@ -8,14 +8,23 @@
 #include "TF1.h"
 #include "Math/VectorUtil.h" 
 #include "CORE/CMS3.h"
-#include "Tools/utils.h"
-#include "Tools/MT2/MT2.h"
+#include "CORE/Tools/utils.h"
+#include "CORE/Tools/JetCorrector.h"
+#include "CORE/Tools/MT2/MT2.h"
 #include "CORE/SSSelections.h"
 #include "CORE/ElectronSelections.h"
 #include "CORE/IsolationTools.h"
-#include "Tools/goodrun.h"
+#include "CORE/Tools/goodrun.h"
 #include "TROOT.h"
 #include <vector>
+#include "Math/Vector4D.h" 
+#include "Math/LorentzVector.h" 
+
+#ifdef __MAKECINT__
+#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+;
+#pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
+#pragma link C++ typedef ROOT::Math::XYZTVectorF;
+#endif
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef vector<pair<const LorentzVector *, double> > jets_with_corr_t;
@@ -34,7 +43,7 @@ class babyMaker {
     void MakeBabyNtuple(const char* output_name, bool expt);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
-    int ProcessBaby(IsolationMethods isoCase, string filename_in, bool expt);
+    int ProcessBaby(IsolationMethods isoCase, string filename_in, FactorizedJetCorrector* jetCorr, bool expt);
 
   protected:
     TFile* BabyFile;
@@ -83,6 +92,7 @@ class babyMaker {
     float ht;
     vector <LorentzVector> jets;
     vector <float> jets_disc;
+    vector <float> jets_JEC; 
 
     //Hyp Class -- in this order
        //3 for num-num SS leptons
@@ -118,6 +128,7 @@ class babyMaker {
     //b-tags
     vector <LorentzVector> btags;
     vector <float> btags_disc;
+    vector <float> btags_JEC; 
     int nbtags;
 
     //Scale factors (from 8 TeV, outdated)

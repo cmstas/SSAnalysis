@@ -5,6 +5,7 @@
 #include "helper_babymaker.h"
 #include "base.h"
 #include "CORE/Tools/goodrun.h"
+#include "CORE/Tools/JetCorrector.h"
 
 void run(int which_in, int file, int ptrel_in, bool expt){
 
@@ -84,7 +85,7 @@ void run(int which_in, int file, int ptrel_in, bool expt){
   }
   
   //Name of tag to be used
-  string tag = "V07-04-04";
+  string tag = "V07-04-06";
   
   //Set up file and tree
   cout << "Using xrootd " << endl;
@@ -105,6 +106,14 @@ void run(int which_in, int file, int ptrel_in, bool expt){
   //Init MVA
   createAndInitMVA("./CORE");
 
+  //Set up jet corrs
+  vector <std::string> files;
+  files.push_back("/home/users/cgeorge/CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
+  files.push_back("/home/users/cgeorge/CORE/Tools/jetcorr/data/PHYS14_V1_MC_L2Relative_AK4PFchs.txt");
+  files.push_back("/home/users/cgeorge/CORE/Tools/jetcorr/data/PHYS14_V1_MC_L3Absolute_AK4PFchs.txt");
+  const vector <std::string> files2 = files;
+  FactorizedJetCorrector* jetCorr = makeJetCorrector(files2); 
+
   //Event Loop
   for(unsigned int event = 0; event < nEvents; event++){
 
@@ -118,7 +127,7 @@ void run(int which_in, int file, int ptrel_in, bool expt){
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
 
-    mylooper->ProcessBaby(ptrel, f->GetTitle(), expt); 
+    mylooper->ProcessBaby(ptrel, f->GetTitle(), jetCorr, expt); 
 
   }//event loop 
 
