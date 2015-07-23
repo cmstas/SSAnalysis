@@ -3,7 +3,8 @@
 pathPublic="/hadoop/cms/store/group/snt/run2_50ns"
 pathPrivate="/hadoop/cms/store/user/cgeorge/privateSusySignalsSS"
 pathData="/hadoop/cms/store/group/snt/run2_data"
-tag="V07-04-04"
+tag_data="V07-04-06"
+tag_MC="V07-04-03"
 
 nSubmitted=0
 
@@ -23,7 +24,7 @@ ptrel="MultiIso"
 for expt in "0" "1"
 do
   nIter=0
-  for sname in "DataDoubleEG" "DataDoubleMuon" #"TTBAR" "WZ" "DY_low" "DY_high" "WJets"
+  for sname in "DataDoubleEG" "DataDoubleMuon" "TTBAR" "WZ" "DY_low" "DY_high" "WJets" "TTPOWHEG"
   do
     #Iter
     nIter=$(( $nIter + 1 ))
@@ -34,6 +35,7 @@ do
     elif [ $sname == "DY_low"          ]; then name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
     elif [ $sname == "DY_high"         ]; then name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
     elif [ $sname == "WJets"           ]; then name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
+    elif [ $sname == "TTPOWHEG"        ]; then name="/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM";
     elif [ $sname == "DataDoubleEG"    ]; then name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1";
     elif [ $sname == "DataDoubleMuon"  ]; then name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1";
     else name=$sname 
@@ -45,16 +47,28 @@ do
       ptrelsuf=""
     fi
   
+    #Data vs. MC variables
+    if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]
+    then 
+      infix="merged/"
+      path=$pathData
+      isData="1"
+      tag=$tag_data
+    else 
+      infix="" 
+      isData="0"
+      path=$pathPublic
+      tag=$tag_mc
+    fi
+
     #Get number of files
-    if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]; then infix="merged/"; path=$pathData; isData="1"; else infix="" isData="0"; path=$pathPublic; fi
     numberOfFiles=$((`ls -l $path/$name/$infix$tag | wc -l` - 1))
   
     #Submit all of them
     for (( i=0; i<$numberOfFiles; i++))
     do
       sname_lower=`echo ${sname,,}`
-      if [ "$isData" == "1" ]; then number=$i; fi
-      if [ "$isData" == "0" ]; then number=$(( $i + 1 )); fi
+      number=$(( $i + 1 )); fi
 
       #Except they've finished
       if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}${ptrelsuf}_$expt.root ] 
