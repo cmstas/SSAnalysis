@@ -20,6 +20,8 @@ void run(int which_in, int file, int ptrel_in, bool expt){
   string shortname = ""; 
   const char* filename = Form("merged_ntuple_%i.root", file);
   const char* suffix = file < 0 ? "" : Form("_%i", file);
+  string tag = "V07-04-03";
+  
 
   //Info for each sample
   switch (which){
@@ -72,20 +74,24 @@ void run(int which_in, int file, int ptrel_in, bool expt){
       shortname = "wjets";
       path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
+    case TTPOWHEG:
+      name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
+      shortname = "ttpowheg";
+      path = "TT_TuneZ2star_13TeV-powheg-pythia6-tauola_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v3";
+      break;
     case DataDoubleMuon:
       name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1/merged/";
       shortname = "datadoublemuon";
       path = "/hadoop/cms/store/group/snt/run2_data/"; 
+      tag = "V07-04-06";
       break;
     case DataDoubleEG:
       name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1/merged/";
       shortname = "datadoubleeg";
       path = "/hadoop/cms/store/group/snt/run2_data/"; 
+      tag = "V07-04-06";
       break;
   }
-  
-  //Name of tag to be used
-  string tag = "V07-04-06";
   
   //Set up file and tree
   cout << "Using xrootd " << endl;
@@ -108,9 +114,9 @@ void run(int which_in, int file, int ptrel_in, bool expt){
 
   //Set up jet corrs
   vector <std::string> files;
-  files.push_back("/home/users/cgeorge/CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
-  files.push_back("/home/users/cgeorge/CORE/Tools/jetcorr/data/PHYS14_V1_MC_L2Relative_AK4PFchs.txt");
-  files.push_back("/home/users/cgeorge/CORE/Tools/jetcorr/data/PHYS14_V1_MC_L3Absolute_AK4PFchs.txt");
+  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
+  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L2Relative_AK4PFchs.txt");
+  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L3Absolute_AK4PFchs.txt");
   const vector <std::string> files2 = files;
   FactorizedJetCorrector* jetCorr = makeJetCorrector(files2); 
 
