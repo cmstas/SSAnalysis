@@ -47,7 +47,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("btags_disc"              , &btags_disc              );
   BabyTree->Branch("jets_disc"               , &jets_disc               );
   BabyTree->Branch("jets_JEC"                , &jets_JEC                );
-  BabyTree->Branch("btags_JEC"               , &btags_JEC               )
+  BabyTree->Branch("btags_JEC"               , &btags_JEC               );
   BabyTree->Branch("btags"                   , &btags                   );
   BabyTree->Branch("nbtags"                  , &nbtags                  );
   BabyTree->Branch("sf_dilepTrig_hpt"        , &sf_dilepTrig_hpt        );
@@ -614,10 +614,6 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
     if (!isGoodVertex(i)) continue;
     nGoodVertices++;
   }
-
-  //Get JECs
-  if (jets.size() > 0) cout << jets_JEC.at(0) << endl;
-  
 
   //Fill Baby
   BabyTree->Fill();

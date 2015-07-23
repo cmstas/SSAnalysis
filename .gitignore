@@ -36,3 +36,4 @@ sync/*.txt
 inSituFR/*.pdf
 inSituFR/closure/*.tex
 *.pcm
+*.nfs*

@@ -45,10 +45,11 @@ CORESOURCES=$(DIR)/$(COREDIR)/CMS3.cc \
  $(DIR)/$(COREDIR)/TriggerSelections.cc \
  $(DIR)/$(COREDIR)/MCSelections.cc \
  $(DIR)/$(COREDIR)/IsolationTools.cc \
- $(DIR)/Tools/MT2/MT2Utility.cc \
- $(DIR)/Tools/MT2/MT2.cc \
- $(DIR)/Tools/utils.cc \
- $(DIR)/Tools/goodrun.cc \
+ $(DIR)/$(COREDIR)/Tools/MT2/MT2Utility.cc \
+ $(DIR)/$(COREDIR)/Tools/MT2/MT2.cc \
+ $(DIR)/$(COREDIR)/Tools/utils.cc \
+ $(DIR)/$(COREDIR)/Tools/JetCorrector.cc \
+ $(DIR)/$(COREDIR)/Tools/goodrun.cc \
  $(DIR)/$(COREDIR)/SSSelections.cc
 COREOBJECTS=$(CORESOURCES:.cc=.o)
 CORELIB=libCMS3CORE.so

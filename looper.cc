@@ -20,7 +20,8 @@
 
 //CMS3
 #include "./CORE/CMS3.h"
-#include "Tools/goodrun.h"
+#include "CORE/Tools/goodrun.h"
+#include "CORE/Tools/JetCorrector.h"
 
 using namespace tas;
 using namespace std;
@@ -82,6 +83,14 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
   //Add good run list
   set_goodrun_file("goodRunList/json_DCSONLY_Run2015B_snt_071615.txt");
+
+  //Set up jet corrs
+  vector <std::string> files;
+  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
+  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L2Relative_AK4PFchs.txt");
+  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L3Absolute_AK4PFchs.txt");
+  const vector <std::string> files2 = files;
+  FactorizedJetCorrector *jetCorr = makeJetCorrector(files2); 
 
   //Set up the file loop
   if(nEvents == -1) nEvents = chain->GetEntries();
@@ -174,7 +183,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //If making baby, fill it
       if (makebaby){	
-	bm->ProcessBaby(isoCase, currentFile->GetTitle(), expt);
+	bm->ProcessBaby(isoCase, currentFile->GetTitle(), jetCorr, expt);
 	continue;
       }
 
@@ -309,7 +318,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++) alljets.push_back(Jet(i)); 
 
       //Selected jets and b-tags
-      std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(); 
+      std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr); 
       vector<Jet> jets = jet_results.first;
       vector<Jet> btags = jet_results.second;
 
