@@ -101,7 +101,7 @@ void run(int which_in, int file, int ptrel_in, bool expt){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  set_goodrun_file("goodRunList/json_DCSONLY_Run2015B_snt_071615.txt");
+  set_goodrun_file("goodRunList/json_combined_snt_fromGolf_072315_33p9.txt");
 
   //Init MVA
   createAndInitMVA("./CORE");
