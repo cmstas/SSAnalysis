@@ -61,12 +61,12 @@ void run(int which_in, int file, int ptrel_in, bool expt){
       break;
     case DY_high:
       name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
-      shortname = "dy";
+      shortname = "dy_high";
       path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
     case DY_low:
       name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
-      shortname = "dy";
+      shortname = "dy_low";
       path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
     case WJets:
