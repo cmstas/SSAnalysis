@@ -35,7 +35,7 @@ do
     elif [ $sname == "DY_low"          ]; then name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
     elif [ $sname == "DY_high"         ]; then name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
     elif [ $sname == "WJets"           ]; then name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
-    elif [ $sname == "TTPOWHEG"        ]; then name="/TT_TuneCUETP8M1_13TeV-powheg-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM";
+    elif [ $sname == "TTPOWHEG"        ]; then name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2";
     elif [ $sname == "DataDoubleEG"    ]; then name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1";
     elif [ $sname == "DataDoubleMuon"  ]; then name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1";
     else name=$sname 
@@ -68,7 +68,7 @@ do
     for (( i=0; i<$numberOfFiles; i++))
     do
       sname_lower=`echo ${sname,,}`
-      number=$(( $i + 1 )); fi
+      number=$(( $i + 1 ))
 
       #Except they've finished
       if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}${ptrelsuf}_$expt.root ] 
