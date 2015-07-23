@@ -30,7 +30,7 @@ cp ../CORE/Tools/goodrun.cc        CORE/Tools/
 cp ../CORE/Tools/goodrun.h         CORE/Tools/
 cp ../CORE/Tools/JetCorrector.h    CORE/Tools/
 
-#And MT2 directory inside CORE
+#And MT2 directory inside Tools
 if [ ! -d CORE/Tools/MT2 ] 
 then
   mkdir CORE/Tools/MT2
@@ -40,12 +40,26 @@ cp ../CORE/Tools/MT2/MT2.cc        CORE/Tools/MT2
 cp ../CORE/Tools/MT2/MT2Utility.h  CORE/Tools/MT2
 cp ../CORE/Tools/MT2/MT2Utility.cc CORE/Tools/MT2
 
+#And jetcorr directory inside Tools
+if [ ! -d CORE/Tools/jetcorr ] 
+then
+  mkdir CORE/Tools/jetcorr
+fi
+cp ../CORE/Tools/jetcorr/*.h       CORE/Tools/jetcorr
+
+#And data directory inside jetcorr
+if [ ! -d CORE/Tools/jetcorr/data ] 
+then
+  mkdir CORE/Tools/jetcorr/data
+fi
+cp ../CORE/Tools/jetcorr/data/*.txt CORE/Tools/jetcorr/data
+
 #And goodrun list directory 
 if [ ! -d goodRunList ] 
 then
   mkdir goodRunList
 fi
-cp ../goodRunList/json_*.txt goodRunList/
+cp ../goodRunList/json_*.txt        goodRunList/
 
 #Make log dir
 if [ ! -d logs ] 
