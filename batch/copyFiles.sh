@@ -24,12 +24,11 @@ if [ ! -d CORE/Tools ]
 then
   mkdir CORE/Tools
 fi
-cp ../Tools/utils.h           CORE/Tools/
-cp ../Tools/utils.cc          CORE/Tools/
-cp ../Tools/goodrun.cc        CORE/Tools/
-cp ../Tools/goodrun.h         CORE/Tools/
-cp ../Tools/libTools.so       CORE/Tools/
-cp ../Tools/JetCorrector.h    CORE/Tools/
+cp ../CORE/Tools/utils.h           CORE/Tools/
+cp ../CORE/Tools/utils.cc          CORE/Tools/
+cp ../CORE/Tools/goodrun.cc        CORE/Tools/
+cp ../CORE/Tools/goodrun.h         CORE/Tools/
+cp ../CORE/Tools/JetCorrector.h    CORE/Tools/
 
 #And MT2 directory inside CORE
 if [ ! -d CORE/Tools/MT2 ] 
