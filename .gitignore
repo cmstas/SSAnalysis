@@ -37,3 +37,8 @@ inSituFR/*.pdf
 inSituFR/closure/*.tex
 *.pcm
 *.nfs*
+FlipRate/derivation/*.pdf
+FakeRate/app_region/*.tex
+babies
+batch/goodRunList/
+FlipRate/application/*.pdf

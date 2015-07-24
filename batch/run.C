@@ -75,9 +75,9 @@ void run(int which_in, int file, int ptrel_in, bool expt){
       path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
     case TTPOWHEG:
-      name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
+      name = "TT_TuneZ2star_13TeV-powheg-pythia6-tauola_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v3";
       shortname = "ttpowheg";
-      path = "TT_TuneZ2star_13TeV-powheg-pythia6-tauola_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v3";
+      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
       break;
     case DataDoubleMuon:
       name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1/merged/";
@@ -107,24 +107,25 @@ void run(int which_in, int file, int ptrel_in, bool expt){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  set_goodrun_file("goodRunList/json_combined_snt_fromGolf_072315_33p9.txt");
+  set_goodrun_file("goodRunList/final_golden_50ns_40p24pb.txt");
 
   //Init MVA
   createAndInitMVA("./CORE");
 
-  //Set up jet corrs
-  vector <std::string> files;
-  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
-  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L2Relative_AK4PFchs.txt");
-  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L3Absolute_AK4PFchs.txt");
-  const vector <std::string> files2 = files;
-  FactorizedJetCorrector* jetCorr = makeJetCorrector(files2); 
+  //JECs
+  std::vector<std::string> filenames;
+  FactorizedJetCorrector *jetCorr;
+  filenames.clear();
+  filenames.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L1FastJet_AK4PFchs.txt");
+  filenames.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L2Relative_AK4PFchs.txt");
+  filenames.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L3Absolute_AK4PFchs.txt");
+  jetCorr = makeJetCorrector(filenames);
 
   //Event Loop
-  for(unsigned int event = 0; event < nEvents; event++){
+  for(unsigned int eventAG = 0; eventAG < nEvents; eventAG++){
 
     //Get Event Content
-    cms3.GetEntry(event);
+    cms3.GetEntry(eventAG);
     nEventsTotal++;
 
     //If data, check good run list

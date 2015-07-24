@@ -48,18 +48,19 @@ fi
 cp ../CORE/Tools/jetcorr/*.h       CORE/Tools/jetcorr
 
 #And data directory inside jetcorr
-if [ ! -d CORE/Tools/jetcorr/data ] 
+if [ ! -d CORE/Tools/jetcorr/data/run2_50ns ] 
 then
-  mkdir CORE/Tools/jetcorr/data
+  mkdir -p CORE/Tools/jetcorr/data/run2_50ns
 fi
-cp ../CORE/Tools/jetcorr/data/*.txt CORE/Tools/jetcorr/data
+cp ../CORE/Tools/jetcorr/data/run2_50ns/*.txt CORE/Tools/jetcorr/data/run2_50ns/
+cp ../CORE/Tools/jetcorr/data/*.txt CORE/Tools/jetcorr/data/
 
 #And goodrun list directory 
 if [ ! -d goodRunList ] 
 then
   mkdir goodRunList
 fi
-cp ../goodRunList/json_*.txt        goodRunList/
+cp ../goodRunList/*.txt        goodRunList/
 
 #Make log dir
 if [ ! -d logs ] 

@@ -24,7 +24,7 @@ ptrel="MultiIso"
 for expt in "0" "1"
 do
   nIter=0
-  for sname in "DataDoubleEG" "DataDoubleMuon" "TTBAR" "WZ" "DY_low" "DY_high" "WJets" "TTPOWHEG"
+  for sname in "TTBAR" "DataDoubleEG" "DataDoubleMuon" "WZ" "DY_low" "DY_high" "WJets" "TTPOWHEG"
   do
     #Iter
     nIter=$(( $nIter + 1 ))
@@ -36,6 +36,8 @@ do
     elif [ $sname == "DY_high"         ]; then name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
     elif [ $sname == "WJets"           ]; then name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
     elif [ $sname == "TTPOWHEG"        ]; then name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v4";
+    elif [ $sname == "DataDoubleMuon"  ]; then name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1";
+    elif [ $sname == "DataDoubleEG"    ]; then name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1";
     else name=$sname 
     fi
 
@@ -56,11 +58,13 @@ do
       infix="" 
       isData="0"
       path=$pathPublic
-      tag=$tag_mc
+      tag=$tag_MC
     fi
 
     #Get number of files
     numberOfFiles=$((`ls -l $path/$name/$infix$tag | wc -l` - 1))
+    echo "number of files: $numberOfFiles"
+    echo "dir: $path/$name/$infix$tag"
   
     #Submit all of them
     for (( i=0; i<$numberOfFiles; i++))
