@@ -132,9 +132,9 @@ int main(int argc, char *argv[]){
   //JECs
   std::vector<std::string> filenames;
   FactorizedJetCorrector *jetCorrAG;
-  filenames.push_back("Summer15_50nsV2_MC_L1FastJet_AK4PFchs.txt");
-  filenames.push_back("Summer15_50nsV2_MC_L3Absolute_AK4PFchs.txt");
-  filenames.push_back("Summer15_50nsV2_MC_L2Relative_AK4PFchs.txt");
+  filenames.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L1FastJet_AK4PFchs.txt");
+  filenames.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L3Absolute_AK4PFchs.txt");
+  filenames.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L2Relative_AK4PFchs.txt");
   jetCorrAG = makeJetCorrector(filenames);
 
   //Event Loop

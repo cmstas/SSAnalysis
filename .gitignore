@@ -42,3 +42,4 @@ FakeRate/app_region/*.tex
 babies
 batch/goodRunList/
 FlipRate/application/*.pdf
+LinkDef.h

@@ -10,7 +10,7 @@ then
   mkdir CORE 
 fi
 cp ../CORE/*.h CORE/
-cp ../CORE/CMS3_CORE.so CORE/
+cp ../CORE/*.cc CORE/
 
 #And data directory inside CORE
 if [ ! -d CORE/data ] 
@@ -24,28 +24,7 @@ if [ ! -d CORE/Tools ]
 then
   mkdir CORE/Tools
 fi
-cp ../CORE/Tools/utils.h           CORE/Tools/
-cp ../CORE/Tools/utils.cc          CORE/Tools/
-cp ../CORE/Tools/goodrun.cc        CORE/Tools/
-cp ../CORE/Tools/goodrun.h         CORE/Tools/
-cp ../CORE/Tools/JetCorrector.h    CORE/Tools/
-
-#And MT2 directory inside Tools
-if [ ! -d CORE/Tools/MT2 ] 
-then
-  mkdir CORE/Tools/MT2
-fi
-cp ../CORE/Tools/MT2/MT2.h         CORE/Tools/MT2
-cp ../CORE/Tools/MT2/MT2.cc        CORE/Tools/MT2
-cp ../CORE/Tools/MT2/MT2Utility.h  CORE/Tools/MT2
-cp ../CORE/Tools/MT2/MT2Utility.cc CORE/Tools/MT2
-
-#And jetcorr directory inside Tools
-if [ ! -d CORE/Tools/jetcorr ] 
-then
-  mkdir CORE/Tools/jetcorr
-fi
-cp ../CORE/Tools/jetcorr/*.h       CORE/Tools/jetcorr
+cp -r ../CORE/Tools               CORE/Tools/
 
 #And data directory inside jetcorr
 if [ ! -d CORE/Tools/jetcorr/data/run2_50ns ] 
@@ -53,7 +32,6 @@ then
   mkdir -p CORE/Tools/jetcorr/data/run2_50ns
 fi
 cp ../CORE/Tools/jetcorr/data/run2_50ns/*.txt CORE/Tools/jetcorr/data/run2_50ns/
-cp ../CORE/Tools/jetcorr/data/*.txt CORE/Tools/jetcorr/data/
 
 #And goodrun list directory 
 if [ ! -d goodRunList ] 
