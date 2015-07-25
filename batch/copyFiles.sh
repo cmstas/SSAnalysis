@@ -24,7 +24,7 @@ if [ ! -d CORE/Tools ]
 then
   mkdir CORE/Tools
 fi
-cp -r ../CORE/Tools               CORE/Tools/
+cp -r ../CORE/Tools               CORE/
 
 #And data directory inside jetcorr
 if [ ! -d CORE/Tools/jetcorr/data/run2_50ns ] 
