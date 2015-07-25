@@ -62,6 +62,9 @@ then
 fi
 cp ../goodRunList/*.txt        goodRunList/
 
+#Linkdef
+cp ../LinkDef.h . 
+
 #Make log dir
 if [ ! -d logs ] 
 then
