@@ -20,7 +20,7 @@ lineWithPath=`sed -n /path/= voms_status.txt`
 pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 
 #Then submit jobs
-ptrel="MultiIso"
+ptrel="4"
 for expt in "0" "1"
 do
   nIter=0
@@ -30,19 +30,39 @@ do
     nIter=$(( $nIter + 1 ))
 
     #Get Name
-    if   [ $sname == "TTBAR"           ]; then name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
-    elif [ $sname == "WZ"              ]; then name="WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
-    elif [ $sname == "DY_low"          ]; then name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
-    elif [ $sname == "DY_high"         ]; then name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
-    elif [ $sname == "WJets"           ]; then name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
-    elif [ $sname == "TTPOWHEG"        ]; then name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v4";
-    elif [ $sname == "DataDoubleMuon"  ]; then name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1";
-    elif [ $sname == "DataDoubleEG"    ]; then name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1";
-    else name=$sname 
+    if   [ $sname == "TTBAR"           ]
+    then 
+      name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1"
+      nameNu=0
+    elif [ $sname == "WZ"              ]
+    then 
+      name="WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
+      nameNu=3
+    elif [ $sname == "DY_low"          ]; 
+      then name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
+      nameNu=6
+    elif [ $sname == "DY_high"         ]; 
+      then name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
+      nameNu=7
+    elif [ $sname == "WJets"           ]; 
+      then name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
+      nameNu=8
+    elif [ $sname == "TTPOWHEG"        ]; 
+      then name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v4";
+      nameNu=11
+    elif [ $sname == "DataDoubleMuon"  ]; 
+      then name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1";
+      nameNu=9
+    elif [ $sname == "DataDoubleEG"    ]; 
+      then name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1";
+      nameNu=10
+    else 
+      name=$sname 
+      nameNu=9999
     fi
 
     #Get pTRel suffix
-    if [ "$ptrel" == "MultiIso" ] 
+    if [ "$ptrel" == "4" ] 
     then
       ptrelsuf=""
     fi
@@ -109,7 +129,7 @@ do
   
       #submit it
       cp condorFileTemplate condorFile
-      sed -i s/ARG1/$sname/g condorFile
+      sed -i s/ARG1/$nameNu/g condorFile
       sed -i s/ARG2/$number/g condorFile
       sed -i s/ARG3/$ptrel/g condorFile
       sed -i s/ARG4/$USER/g condorFile

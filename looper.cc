@@ -86,9 +86,9 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
   //Set up jet corrs
   vector <std::string> files;
-  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
-  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L2Relative_AK4PFchs.txt");
-  files.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L3Absolute_AK4PFchs.txt");
+  files.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L1FastJet_AK4PFchs.txt");
+  files.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L2Relative_AK4PFchs.txt");
+  files.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L3Absolute_AK4PFchs.txt");
   const vector <std::string> files2 = files;
   FactorizedJetCorrector *jetCorr = makeJetCorrector(files2); 
 

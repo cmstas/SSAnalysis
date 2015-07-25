@@ -4,7 +4,7 @@ WHICH=$1
 FILE=$2
 PTREL=$3
 cgeorge=$4
-expt=$5
+EXPT=$5
 
 #Show where you are
 hostname
@@ -22,11 +22,24 @@ popd
 #Specify name of output file and name of dierctory in /hadoop/...
 export DIRNAME=ss_13_babies
 export WHICH_SMALL=`echo ${WHICH,,}`
-if [ "$PTREL" == "MultiIso" ] 
+if [ "$WHICH" == "0" ]; then WHICH_SMALL="ttbar"; fi
+if [ "$WHICH" == "1" ]; then WHICH_SMALL="ttw"; fi
+if [ "$WHICH" == "2" ]; then WHICH_SMALL="ttz"; fi
+if [ "$WHICH" == "3" ]; then WHICH_SMALL="wz"; fi
+if [ "$WHICH" == "4" ]; then WHICH_SMALL="t1tttt_1500"; fi
+if [ "$WHICH" == "5" ]; then WHICH_SMALL="t1tttt_1200"; fi
+if [ "$WHICH" == "6" ]; then WHICH_SMALL="dy_low"; fi
+if [ "$WHICH" == "7" ]; then WHICH_SMALL="dy_high"; fi
+if [ "$WHICH" == "8" ]; then WHICH_SMALL="wjets"; fi
+if [ "$WHICH" == "9" ]; then WHICH_SMALL="datadoublemuon"; fi
+if [ "$WHICH" == "10" ]; then WHICH_SMALL="datadoubleeg"; fi
+if [ "$WHICH" == "11" ]; then WHICH_SMALL="ttpowheg"; fi
+
+if [ "$PTREL" == "4" ] 
 then
   PT=""
 fi
-export OUTPUT=${WHICH_SMALL}_${FILE}${PT}_$expt
+export OUTPUT=${WHICH_SMALL}_${FILE}${PT}_$EXPT
 
 #This stuff to get output back
 export COPYDIR=/hadoop/cms/store/user/$cgeorge/condor/${DIRNAME}
@@ -34,7 +47,9 @@ export COPYDIR=/hadoop/cms/store/user/$cgeorge/condor/${DIRNAME}
 #Untar the zip dir
 tar xzvf CORE.tar.gz
 
-root -b -q doIt.C\($WHICH,$FILE,$PTREL,$expt\)
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
+echo "running: ./main.exe $WHICH $FILE $PTREL $EXPT"
+./main.exe $WHICH $FILE $PTREL $EXPT
 ls -l `pwd`/${OUTPUT}.root
 
 echo "copying.  LS is: "
