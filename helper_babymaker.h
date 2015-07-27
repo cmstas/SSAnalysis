@@ -93,6 +93,7 @@ class babyMaker {
     vector <LorentzVector> jets;
     vector <float> jets_disc;
     vector <float> jets_JEC; 
+    vector <float> jets_undoJEC; 
 
     //Hyp Class -- in this order
        //3 for num-num SS leptons
@@ -129,6 +130,7 @@ class babyMaker {
     vector <LorentzVector> btags;
     vector <float> btags_disc;
     vector <float> btags_JEC; 
+    vector <float> btags_undoJEC; 
     int nbtags;
 
     //Scale factors (from 8 TeV, outdated)

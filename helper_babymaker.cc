@@ -48,6 +48,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("jets_disc"               , &jets_disc               );
   BabyTree->Branch("jets_JEC"                , &jets_JEC                );
   BabyTree->Branch("btags_JEC"               , &btags_JEC               );
+  BabyTree->Branch("jets_undoJEC"                , &jets_undoJEC                );
+  BabyTree->Branch("btags_undoJEC"               , &btags_undoJEC               );
   BabyTree->Branch("btags"                   , &btags                   );
   BabyTree->Branch("nbtags"                  , &nbtags                  );
   BabyTree->Branch("sf_dilepTrig_hpt"        , &sf_dilepTrig_hpt        );
@@ -206,6 +208,8 @@ void babyMaker::InitBabyNtuple(){
     jets_disc.clear();
     jets_JEC.clear();
     btags_JEC.clear();
+    jets_undoJEC.clear();
+    btags_undoJEC.clear();
     btags.clear();
     nbtags = -1;
     sf_dilepTrig_hpt = -1;
@@ -363,16 +367,15 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   filt_eebadsc = is_real_data ? tas::filt_eeBadSc() : 1;
 
   //Make sure one of our triggers fired (for data)
-  if (is_real_data){
-    if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))      (triggers |= 1<<0);
-    if (passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")))  (triggers |= 1<<1); 
-    if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
-    if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")))              (triggers |= 1<<3); 
-    if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))            (triggers |= 1<<4); 
-    if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))    (triggers |= 1<<5); 
-    if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")))        (triggers |= 1<<6); 
-    if (triggers != 0) fired_trigger = true;
-  }
+  if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))      (triggers |= 1<<0);
+  if (passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")))  (triggers |= 1<<1); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")))              (triggers |= 1<<3); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))            (triggers |= 1<<4); 
+  if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))    (triggers |= 1<<5); 
+  if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")))        (triggers |= 1<<6); 
+  if (triggers != 0) fired_trigger = true;
+  if (fired_trigger) cout << "FIRED TRIGGER!" << endl; 
 
   //Scale1fb
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
@@ -516,6 +519,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc.push_back(jet_results.second.at(i).csv());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_JEC.push_back(jet_results.first.at(i).jec());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_JEC.push_back(jet_results.second.at(i).jec());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_undoJEC.push_back(jet_results.first.at(i).undo_jec());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_undoJEC.push_back(jet_results.second.at(i).undo_jec());
   njets = jets.size();
   nbtags = btags.size();
   ht = 0;

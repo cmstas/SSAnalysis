@@ -260,6 +260,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     if (babiesToMake[32] == 1) l->ScanChain(chain_T6ttWW_650_150_50_v2                                  , "T6ttWW_650_150_50_v2", "baby", 0, "MakeBaby", -1, isoCase);
     if (babiesToMake[33] == 1) l->ScanChain(chain_test                                                  , "test"                , "baby", 0, "MakeBaby", -1, isoCase);
     if (babiesToMake[34] == 1) l->ScanChain(chain_data_doubleEG                                         , "data_doubleEG"     , "baby", 0, "MakeBaby", -1, isoCase); 
+    if (babiesToMake[35] == 1) l->ScanChain(chain_TTJets_50ns                                           , "TTJets_50ns"       , "baby", 0, "MakeBaby", -1, isoCase); 
 
 
   }
