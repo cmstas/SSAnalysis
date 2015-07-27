@@ -82,13 +82,16 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   createAndInitMVA("./CORE");
 
   //Add good run list
-  set_goodrun_file("goodRunList/json_combined_snt_fromGolf_072315_33p9.txt");
+  set_goodrun_file("goodRunList/final_golden_50ns_40p24pb.txt");
 
   //Set up jet corrs
   vector <std::string> files;
-  files.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L1FastJet_AK4PFchs.txt");
-  files.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L2Relative_AK4PFchs.txt");
-  files.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L3Absolute_AK4PFchs.txt");
+  std::string L1file = "CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L1FastJet_AK4PFchs.txt";
+  std::string L2file = "CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L2Relative_AK4PFchs.txt";
+  std::string L3file = "CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L3Absolute_AK4PFchs.txt";
+  files.push_back(L1file);
+  files.push_back(L2file);
+  files.push_back(L3file);
   const vector <std::string> files2 = files;
   FactorizedJetCorrector *jetCorr = makeJetCorrector(files2); 
 
