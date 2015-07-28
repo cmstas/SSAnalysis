@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD:$PWD/batch
 
 git update-index --assume-unchanged main.cc
 
