@@ -1,6 +1,6 @@
 {
 
-  bool doMu = 0;
+  bool doMu = 1;
 
   TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/v0.08/2015DoubleMuon.root" : "/nfs-7/userdata/leptonTree/v0.08/2015DoubleEG.root");
 
@@ -17,19 +17,28 @@
 
   if (doMu) {
     //mm
-    t_data->Draw("dilep_mass>>mll_data","HLT_Mu24*(abs(id)==13 && passes_SS_tight_v3 && HLT_Mu24>0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
-    t_dy->Draw("dilep_mass>>mll_dy","0.040*scale1fb*(abs(id)==13 && passes_SS_tight_v3 && HLT_Mu24!=0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
+    t_data->Draw("dilep_mass>>mll_data","HLT_Mu17*(abs(id)==13 && passes_SS_tight_v3 && HLT_Mu17>0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
+    t_dy->Draw("dilep_mass>>mll_dy","0.040*scale1fb*(abs(id)==13 && passes_SS_tight_v3 && HLT_Mu17!=0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
   } else {
     //ee
     t_data->Draw("dilep_mass>>mll_data","abs(id)==11 && passes_SS_tight_v3 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30==1 && tag_p4.pt()>30. && p4.pt()>25.","goff");
-    t_dy->Draw("dilep_mass>>mll_dy","0.35*0.040*scale1fb*(abs(id)==11 && passes_SS_tight_v3 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30!=0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
+    t_dy->Draw("dilep_mass>>mll_dy","0.040*scale1fb*(abs(id)==11 && passes_SS_tight_v3 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30!=0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
   }
-  
+
+  float mc_zpeak   = mll_dy->Integral(mll_dy->FindBin(75),mll_dy->FindBin(105));
+  float data_zpeak = mll_data->Integral(mll_data->FindBin(75),mll_data->FindBin(105));
+
+  cout << "mc_zpeak=" << mc_zpeak << " data_zpeak=" << data_zpeak << " sf=" << data_zpeak/mc_zpeak << endl;  
+
+  TCanvas c1;
+
   mll_data->SetMarkerStyle(kFullCircle);
   mll_dy->SetFillColor(kGreen+2);
   
-  mll_data->Draw("PE");
-  mll_dy->Draw("hist,same");
+  //mll_data->Draw("PE");
+  mll_dy->Draw("hist");
   mll_data->Draw("PEsame");
+
+  c1.SaveAs( (doMu ? "zpeak_mu.png" : "zpeak_el.png") );
 
 }

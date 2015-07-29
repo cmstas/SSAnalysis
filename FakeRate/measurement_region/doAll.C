@@ -6,20 +6,20 @@
   TChain *data = new TChain("t"); 
   data->Add( "/nfs-7/userdata/leptonTree/v0.08/2015DoubleMuon.root" );
   data->Add( "/nfs-7/userdata/leptonTree/v0.08/2015DoubleEG.root" );
-  //ScanChain(data,"./rate_histos_data_LooseEMVA.root","useLooseEMVA"); 
+  ScanChain(data,"./rate_histos_data_LooseEMVA.root","useLooseEMVA"); 
 
   TChain *dy = new TChain("t"); 
   dy->Add( "/nfs-7/userdata/leptonTree/v0.03/DY_M10_50ns.root" );
   dy->Add( "/nfs-7/userdata/leptonTree/v0.03/DY_M50_50ns.root" );
-  //ScanChain(dy,"./rate_histos_dy_LooseEMVA.root","useLooseEMVA"); 
+  ScanChain(dy,"./rate_histos_dy_LooseEMVA.root","useLooseEMVA"); 
 
   TChain *wj = new TChain("t"); 
   wj->Add( "/nfs-7/userdata/leptonTree/v0.03/WJets_50ns.root" );
-  //ScanChain(wj,"./rate_histos_wj_LooseEMVA.root","useLooseEMVA"); 
+  ScanChain(wj,"./rate_histos_wj_LooseEMVA.root","useLooseEMVA"); 
 
   TChain *qcd_mu = new TChain("t"); 
   qcd_mu->Add( "/nfs-7/userdata/leptonTree/v0.08/QCD_Mu_Enriched.root" );
-  ScanChain(qcd_mu,"./rate_histos_qcd_mu_LooseEMVA.root","useLooseEMVA"); 
+  canChain(qcd_mu,"./rate_histos_qcd_mu_LooseEMVA.root","useLooseEMVA"); 
 
   TChain *qcd_el = new TChain("t"); 
   qcd_el->Add( "/nfs-7/userdata/leptonTree/v0.08/QCD_EM_Enriched.root" );

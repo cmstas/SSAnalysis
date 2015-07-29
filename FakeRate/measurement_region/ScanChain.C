@@ -215,6 +215,18 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   histo_met->SetDirectory(rootdir);
   histo_met->Sumw2();
 
+  TH1F *histo_met_all = new TH1F("histo_met_all", "MET", 20,0,200);
+  histo_met_all->SetDirectory(rootdir);
+  histo_met_all->Sumw2();
+
+  TH1F *histo_met_all_el = new TH1F("histo_met_all_el", "MET", 20,0,200);
+  histo_met_all_el->SetDirectory(rootdir);
+  histo_met_all_el->Sumw2();
+
+  TH1F *histo_met_all_mu = new TH1F("histo_met_all_mu", "MET", 20,0,200);
+  histo_met_all_mu->SetDirectory(rootdir);
+  histo_met_all_mu->Sumw2();
+
   TH1F *histo_met_lm = new TH1F("histo_met_lm", "MET", 20,0,200);
   histo_met_lm->SetDirectory(rootdir);
   histo_met_lm->Sumw2();
@@ -242,6 +254,18 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TH1F *histo_mt = new TH1F("histo_mt", "MT", 20,0,1000);
   histo_mt->SetDirectory(rootdir);
   histo_mt->Sumw2();
+
+  TH1F *histo_mt_all = new TH1F("histo_mt_all", "MT", 20,0,200);
+  histo_mt_all->SetDirectory(rootdir);
+  histo_mt_all->Sumw2();
+
+  TH1F *histo_mt_all_el = new TH1F("histo_mt_all_el", "MT", 20,0,200);
+  histo_mt_all_el->SetDirectory(rootdir);
+  histo_mt_all_el->Sumw2();
+
+  TH1F *histo_mt_all_mu = new TH1F("histo_mt_all_mu", "MT", 20,0,200);
+  histo_mt_all_mu->SetDirectory(rootdir);
+  histo_mt_all_mu->Sumw2();
 
   TH1F *histo_mt_lm = new TH1F("histo_mt_lm", "MT", 20,0,200);
   histo_mt_lm->SetDirectory(rootdir);
@@ -368,16 +392,18 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //cout << "lepp4=" << p4() << " jetp4=" << jet_close_lep() << endl;
 
       bool isData = evt_isRealData();
-      bool noMCMatch = true;
+      bool noMCMatch = false;
       if (isData) noMCMatch = true;
 
+      bool isEWK = false;
+      if (TString(currentFile->GetTitle()).Contains("WJets") || TString(currentFile->GetTitle()).Contains("DY")) isEWK = true;
+
       // Analysis Code
-      float lumi = 0.04024;//in /fb
+      float lumi = 0.040;//in /fb
       float weight = scale1fb()*lumi;
       if (isData) weight = 1.;
 
-      
-      if (isData==0) {
+      if (isData==0 && isEWK==0) {
 
 	if (abs(id())==13) {
 	  /*
@@ -563,58 +589,64 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	float cut_dphi  = isEB ? 0.04 : 0.08;
 	float cut_invep = 0.01;
 	bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
-	//passHltCuts = true;//fixme
 	passFO = passHltCuts && passes_SS_fo_looseMVA_v3();
 	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v3();
       }
 
 
-      //test if bad data/MC ratio in mt control region is due to met
-      if (mt() < 30. && passId) {
-	histo_met_lm->Fill( std::min(evt_pfmet(),float(200.)), weight );
-	if (abs(id()==11)) histo_met_lm_el->Fill( std::min(evt_pfmet(),float(200.)), weight );
-	if (abs(id()==13)) histo_met_lm_mu->Fill( std::min(evt_pfmet(),float(200.)), weight );
+      if (passId) {
+	//mt control region
+	if (evt_pfmet() > 30. && p4().pt()>30) {
+	  histo_mt_all->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==11)) histo_mt_all_el->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==13)) histo_mt_all_mu->Fill( std::min(mt(),float(200.)), weight );
+	}
+	if (evt_pfmet() < 20.) {
+	  histo_mt_lm->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==11)) histo_mt_lm_el->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==13)) histo_mt_lm_mu->Fill( std::min(mt(),float(200.)), weight );
+	}
+	if (evt_pfmet() > 30.) {
+	  histo_mt_cr->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==11)) histo_mt_cr_el->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==13)) histo_mt_cr_mu->Fill( std::min(mt(),float(200.)), weight );
+	}
+	//test if bad data/MC ratio in mt control region is due to met
+	if (p4().pt()>30) {
+	  histo_met_all->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==11)) histo_met_all_el->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==13)) histo_met_all_mu->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	}
+	if (mt() < 20.) {
+	  histo_met_lm->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==11)) histo_met_lm_el->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==13)) histo_met_lm_mu->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	}
+	if (mt() > 30.) {
+	  histo_met_cr->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==11)) histo_met_cr_el->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==13)) histo_met_cr_mu->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	}
       }
-      if (mt() > 30. && passId) {
-	histo_met_cr->Fill( std::min(evt_pfmet(),float(200.)), weight );
-	if (abs(id()==11)) histo_met_cr_el->Fill( std::min(evt_pfmet(),float(200.)), weight );
-	if (abs(id()==13)) histo_met_cr_mu->Fill( std::min(evt_pfmet(),float(200.)), weight );
-      }
-
-      //mt control region
-      if (evt_pfmet() < 30. && passId) {
-	histo_mt_lm->Fill( std::min(mt(),float(200.)), weight );
-	if (abs(id()==11)) histo_mt_lm_el->Fill( std::min(mt(),float(200.)), weight );
-	if (abs(id()==13)) histo_mt_lm_mu->Fill( std::min(mt(),float(200.)), weight );
-      }
-      if (evt_pfmet() > 30. && passId) {
-	histo_mt_cr->Fill( std::min(mt(),float(200.)), weight );
-	if (abs(id()==11)) histo_mt_cr_el->Fill( std::min(mt(),float(200.)), weight );
-	if (abs(id()==13)) histo_mt_cr_mu->Fill( std::min(mt(),float(200.)), weight );
-      }
-      if( !(evt_pfmet() < 30. && mt() < 30) ) {//fixme relaxed for now
+      if( !(evt_pfmet() < 20. && mt() < 20) ) {
 	continue;
       }
 
-      if (passFO) {
+      if (isData && passFO) {
 	if (abs(id())==11) {
-
 	  if (HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el34->Fill(p4().pt(),HLT_Ele33_CaloIdM_TrackIdM_PFJet30());
 	  if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el24->Fill(p4().pt(),HLT_Ele23_CaloIdM_TrackIdM_PFJet30());
 	  if (HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el17->Fill(p4().pt(),HLT_Ele18_CaloIdM_TrackIdM_PFJet30());
 	  if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el12->Fill(p4().pt(),HLT_Ele12_CaloIdM_TrackIdM_PFJet30());
 	  if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 ) histo_pt_el8->Fill(p4().pt() ,HLT_Ele8_CaloIdM_TrackIdM_PFJet30() );
 	  histo_pt_el->Fill(p4().pt(), prescale );
-
 	}
 	if (abs(id())==13) {
-
 	  if (HLT_Mu34()>0) histo_pt_mu34->Fill(p4().pt(),HLT_Mu34());
 	  if (HLT_Mu24()>0) histo_pt_mu24->Fill(p4().pt(),HLT_Mu24());
 	  if (HLT_Mu17()>0) histo_pt_mu17->Fill(p4().pt(),HLT_Mu17());
 	  if (HLT_Mu8()>0 ) histo_pt_mu8->Fill(p4().pt() ,HLT_Mu8() );
-	  histo_pt_mu->Fill(p4().pt(), prescale );
-	  
+	  histo_pt_mu->Fill(p4().pt(), prescale );	  
 	}
       } 
 
@@ -659,7 +691,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //Using gen level info to see if prompt -> no prompt contamination in measurement region
       //everything else is RECO (p4, id, passes_id, FO, etc.)
 
-      if( noMCMatch || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if lep is nonprompt
+      if( noMCMatch || (isEWK && motherID() == 1) || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if lep is nonprompt
 	{
 
 	  if( abs( id() ) == 11 ) //it's an el
@@ -703,7 +735,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //everything else is RECO (p4, id, passes_id, FO, etc.)
 	  
 
-      if( noMCMatch || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if el is nonprompt (GEN info)
+      if( noMCMatch || (isEWK && motherID() == 1) || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if el is nonprompt (GEN info)
 	{
 
 	  if (passFO) {
@@ -958,6 +990,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   pTrel_histo_mu->Write();
   histo_ht->Write();
   histo_met->Write();
+  histo_met_all->Write();
+  histo_met_all_el->Write();
+  histo_met_all_mu->Write();
   histo_met_lm->Write();
   histo_met_lm_el->Write();
   histo_met_lm_mu->Write();
@@ -965,6 +1000,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   histo_met_cr_el->Write();
   histo_met_cr_mu->Write();
   histo_mt->Write();
+  histo_mt_all->Write();
+  histo_mt_all_el->Write();
+  histo_mt_all_mu->Write();
   histo_mt_lm->Write();
   histo_mt_lm_el->Write();
   histo_mt_lm_mu->Write();
@@ -1023,6 +1061,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   delete pTrel_histo_mu;
   delete histo_ht;
   delete histo_met;
+  delete histo_met_all;
+  delete histo_met_all_el;
+  delete histo_met_all_mu;
   delete histo_met_lm;
   delete histo_met_lm_el;
   delete histo_met_lm_mu;
@@ -1030,6 +1071,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   delete histo_met_cr_el;
   delete histo_met_cr_mu;
   delete histo_mt;
+  delete histo_mt_all;
+  delete histo_mt_all_el;
+  delete histo_mt_all_mu;
   delete histo_mt_lm;
   delete histo_mt_lm_el;
   delete histo_mt_lm_mu;
