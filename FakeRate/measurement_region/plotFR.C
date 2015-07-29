@@ -6,8 +6,8 @@
 
   bool saveDen = true;
 
-  TString sample = "qcd";
-  sample = "data";
+  TString sample = "qcd_el";
+  // sample = "data";
   // sample = "wj";
 
   TString postfix = "";
