@@ -34,6 +34,10 @@ if [ "$WHICH" == "8" ]; then WHICH_SMALL="wjets"; fi
 if [ "$WHICH" == "9" ]; then WHICH_SMALL="datadoublemuon"; fi
 if [ "$WHICH" == "10" ]; then WHICH_SMALL="datadoubleeg"; fi
 if [ "$WHICH" == "11" ]; then WHICH_SMALL="ttpowheg"; fi
+if [ "$WHICH" == "12" ]; then WHICH_SMALL="singletop1"; fi
+if [ "$WHICH" == "13" ]; then WHICH_SMALL="singletop2"; fi
+if [ "$WHICH" == "14" ]; then WHICH_SMALL="singletop3"; fi
+if [ "$WHICH" == "15" ]; then WHICH_SMALL="singletop4"; fi
 
 if [ "$PTREL" == "4" ] 
 then

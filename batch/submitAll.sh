@@ -24,7 +24,7 @@ ptrel="4"
 for expt in "0" "1"
 do
   nIter=0
-  for sname in "TTBAR" "DataDoubleEG" "DataDoubleMuon" "WZ" "DY_low" "DY_high" "WJets" "TTPOWHEG"
+  for sname in "DataDoubleEG" "DataDoubleMuon" #"TTPOWHEG" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4"  "TTBAR"  "WZ" "DY_low" "DY_high" "WJets" 
   do
     #Iter
     nIter=$(( $nIter + 1 ))
@@ -56,6 +56,18 @@ do
     elif [ $sname == "DataDoubleEG"    ]; 
       then name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1";
       nameNu=10
+    elif [ $sname == "SINGLETOP1"    ]; 
+      then name="ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1"
+      nameNu=12
+    elif [ $sname == "SINGLETOP2"    ]; 
+      then name="ST_t-channel_5f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2"
+      nameNu=13
+    elif [ $sname == "SINGLETOP3"    ]; 
+      then name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1"
+      nameNu=14
+    elif [ $sname == "SINGLETOP4"    ]; 
+      then name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1"
+      nameNu=15
     else 
       name=$sname 
       nameNu=9999

@@ -375,7 +375,6 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))    (triggers |= 1<<5); 
   if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")))        (triggers |= 1<<6); 
   if (triggers != 0) fired_trigger = true;
-  if (fired_trigger) cout << "FIRED TRIGGER!" << endl; 
 
   //Scale1fb
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();

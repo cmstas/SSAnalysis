@@ -43,3 +43,5 @@ babies
 batch/goodRunList/
 FlipRate/application/*.pdf
 LinkDef.h
+kinem/*.pdf
+kinem/presentation.*

@@ -5,32 +5,22 @@
 #include "../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../CORE/SSSelections.h"
 
-struct plotHolder{ TH1F* met[4][5][5]; TH1F* ht[4][5][5]; TH1F* njets[4][5][5]; TH1F* nbtags[4][5][5]; TH1F* leppt[4][5][5]; TH1F* mtmin[4][5][5]; TH1F* mll[4][5][5]; TH1F* mht[4][5][5]; };
-
-struct doublePlotHolder{ plotHolder OS; plotHolder SS; };
+struct doublePlotHolder{ TH1F* OS[8][4][3][5]; TH1F* SS[8][4][3][5]; };
 
 doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
 
+  int      max[8] = { 700, 800, 10, 5, 300, 200, 400, 300 };
+  int nBins_OS[8] = { 50, 25, 10, 5, 30, 50, 40, 50 };
+  int nBins_SS[8] = { 50, 20, 10, 5, 30, 25, 40, 25 };
+
   doublePlotHolder plots;
-  for (int i = 0; i < 4; i++){     //i - b-tag region
-    for (int j = 0; j < 3; j++){   //j - HH, HL, LL
-      for (int k = 0; k < 5; k++){ //k - ee, em, mm, ee+mm, total
-        plots.SS.met[i][j][k]    = new TH1F(Form("hist_ss_met_%i_%i_%i", i, j, k), "hist", 50, 0, 700); 
-        plots.SS.ht[i][j][k]     = new TH1F(Form("hist_ss_ht_%i_%i_%i", i, j, k), "hist", 20, 0, 800); 
-        plots.SS.njets[i][j][k]  = new TH1F(Form("hist_ss_njets_%i_%i_%i", i, j, k), "hist", 10, 0, 10); 
-        plots.SS.nbtags[i][j][k] = new TH1F(Form("hist_ss_nbtags_%i_%i_%i", i, j, k), "hist", 5, 0, 5); 
-        plots.SS.leppt[i][j][k]  = new TH1F(Form("hist_ss_leppt_%i_%i_%i", i, j, k), "hist", 30, 0, 300); 
-        plots.SS.mtmin[i][j][k]  = new TH1F(Form("hist_ss_mtmin_%i_%i_%i", i, j, k), "hist", 25, 0, 200); 
-        plots.SS.mll[i][j][k]    = new TH1F(Form("hist_ss_mll_%i_%i_%i", i, j, k), "hist", 40, 0, 400); 
-        plots.SS.mht[i][j][k]    = new TH1F(Form("hist_ss_mht_%i_%i_%i", i, j, k), "hist", 25, 0, 300); 
-        plots.OS.met[i][j][k]    = new TH1F(Form("hist_os_met_%i_%i_%i", i, j, k), "hist", 50, 0, 700); 
-        plots.OS.ht[i][j][k]     = new TH1F(Form("hist_os_ht_%i_%i_%i", i, j, k), "hist", 25, 0, 800); 
-        plots.OS.njets[i][j][k]  = new TH1F(Form("hist_os_njets_%i_%i_%i", i, j, k), "hist", 10, 0, 10); 
-        plots.OS.nbtags[i][j][k] = new TH1F(Form("hist_os_nbtags_%i_%i_%i", i, j, k), "hist", 5, 0, 5); 
-        plots.OS.leppt[i][j][k]  = new TH1F(Form("hist_os_leppt_%i_%i_%i", i, j, k), "hist", 30, 0, 300); 
-        plots.OS.mtmin[i][j][k]  = new TH1F(Form("hist_os_mtmin_%i_%i_%i", i, j, k), "hist", 50, 0, 200); 
-        plots.OS.mll[i][j][k]    = new TH1F(Form("hist_os_mll_%i_%i_%i", i, j, k), "hist", 40, 0, 400); 
-        plots.OS.mht[i][j][k]    = new TH1F(Form("hist_os_mht_%i_%i_%i", i, j, k), "hist", 50, 0, 300); 
+  for (int m = 0; m < 8; m++){       //m - which plots
+    for (int i = 0; i < 4; i++){     //i - b-tag region
+      for (int j = 0; j < 3; j++){   //j - HH, HL, LL
+        for (int k = 0; k < 5; k++){ //k - ee, em, mm, ee+mm, total
+          plots.SS[m][i][j][k] = new TH1F(Form("hist_ss_%i_%i_%i_%i", m, i, j, k), "hist", nBins_SS[m], 0, max[m]); 
+          plots.OS[m][i][j][k] = new TH1F(Form("hist_os_%i_%i_%i_%i", m, i, j, k), "hist", nBins_OS[m], 0, max[m]); 
+        }
       }
     }
   }
@@ -99,67 +89,39 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
 
       //Fill MET, HT
       if (ss::hyp_class() == 4){
-        plots.OS.met[BR][AC][type]   ->Fill(ss::met()                          , weight); 
-        plots.OS.ht[BR][AC][type]    ->Fill(ss::ht()                           , weight); 
-        plots.OS.njets[BR][AC][type] ->Fill(ss::njets()                        , weight); 
-        plots.OS.nbtags[BR][AC][type]->Fill(ss::nbtags()                       , weight); 
-        plots.OS.leppt[BR][AC][type] ->Fill(ss::lep1_p4().pt()                 , weight); 
-        plots.OS.leppt[BR][AC][type] ->Fill(ss::lep2_p4().pt()                 , weight); 
-        plots.OS.mtmin[BR][AC][type] ->Fill(ss::mtmin()                        , weight); 
-        plots.OS.mll[BR][AC][type]   ->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), weight);
-        plots.OS.mht[BR][AC][type]   ->Fill(mht.pt()                           , weight);
+        plots.OS[0][BR][AC][type]   ->Fill(ss::met()                          , weight); 
+        plots.OS[1][BR][AC][type]    ->Fill(ss::ht()                           , weight); 
+        plots.OS[2][BR][AC][type] ->Fill(ss::njets()                        , weight); 
+        plots.OS[3][BR][AC][type]->Fill(ss::nbtags()                       , weight); 
+        plots.OS[4][BR][AC][type] ->Fill(ss::lep1_p4().pt()                 , weight); 
+        plots.OS[4][BR][AC][type] ->Fill(ss::lep2_p4().pt()                 , weight); 
+        plots.OS[5][BR][AC][type] ->Fill(ss::mtmin()                        , weight); 
+        plots.OS[6][BR][AC][type]   ->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), weight);
+        plots.OS[7][BR][AC][type]   ->Fill(mht.pt()                           , weight);
       }
       else { 
-        plots.SS.met[BR][AC][type]   ->Fill(ss::met()                          , weight); 
-        plots.SS.ht[BR][AC][type]    ->Fill(ss::ht()                           , weight); 
-        plots.SS.njets[BR][AC][type] ->Fill(ss::njets()                        , weight); 
-        plots.SS.nbtags[BR][AC][type]->Fill(ss::nbtags()                       , weight); 
-        plots.SS.leppt[BR][AC][type] ->Fill(ss::lep1_p4().pt()                 , weight); 
-        plots.SS.leppt[BR][AC][type] ->Fill(ss::lep2_p4().pt()                 , weight); 
-        plots.SS.mtmin[BR][AC][type] ->Fill(ss::mtmin()                        , weight); 
-        plots.SS.mll[BR][AC][type]   ->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), weight);
-        plots.SS.mht[BR][AC][type]   ->Fill(mht.pt()                           , weight);
+        plots.SS[0][BR][AC][type]   ->Fill(ss::met()                          , weight); 
+        plots.SS[1][BR][AC][type]    ->Fill(ss::ht()                           , weight); 
+        plots.SS[2][BR][AC][type] ->Fill(ss::njets()                        , weight); 
+        plots.SS[3][BR][AC][type]->Fill(ss::nbtags()                       , weight); 
+        plots.SS[4][BR][AC][type] ->Fill(ss::lep1_p4().pt()                 , weight); 
+        plots.SS[4][BR][AC][type] ->Fill(ss::lep2_p4().pt()                 , weight); 
+        plots.SS[5][BR][AC][type] ->Fill(ss::mtmin()                        , weight); 
+        plots.SS[6][BR][AC][type]   ->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), weight);
+        plots.SS[7][BR][AC][type]   ->Fill(mht.pt()                           , weight);
       }
 
     }//event loop
   }//file loop
 
-  for (int i = 0; i < 4; i++){     
-    for (int j = 0; j < 3; j++){   
-      //k = 3 (ee+mm)
-      plots.SS.met[i][j][3]    ->Add( plots.SS.met[i][j][0]    , plots.SS.met[i][j][2]   );
-      plots.SS.ht[i][j][3]     ->Add( plots.SS.ht[i][j][0]     , plots.SS.ht[i][j][2]    );
-      plots.SS.njets[i][j][3]  ->Add( plots.SS.njets[i][j][0]  , plots.SS.njets[i][j][2] );
-      plots.SS.nbtags[i][j][3] ->Add( plots.SS.nbtags[i][j][0] , plots.SS.nbtags[i][j][2]);
-      plots.SS.leppt[i][j][3]  ->Add( plots.SS.leppt[i][j][0]  , plots.SS.leppt[i][j][2] );
-      plots.SS.mtmin[i][j][3]  ->Add( plots.SS.mtmin[i][j][0]  , plots.SS.mtmin[i][j][2] );
-      plots.SS.mll[i][j][3]    ->Add( plots.SS.mll[i][j][0]    , plots.SS.mll[i][j][2]   );
-      plots.SS.mht[i][j][3]    ->Add( plots.SS.mht[i][j][0]    , plots.SS.mht[i][j][2]   );
-      plots.OS.met[i][j][3]    ->Add( plots.OS.met[i][j][0]    , plots.OS.met[i][j][2]   );
-      plots.OS.ht[i][j][3]     ->Add( plots.OS.ht[i][j][0]     , plots.OS.ht[i][j][2]    );
-      plots.OS.njets[i][j][3]  ->Add( plots.OS.njets[i][j][0]  , plots.OS.njets[i][j][2] );
-      plots.OS.nbtags[i][j][3] ->Add( plots.OS.nbtags[i][j][0] , plots.OS.nbtags[i][j][2]);
-      plots.OS.leppt[i][j][3]  ->Add( plots.OS.leppt[i][j][0]  , plots.OS.leppt[i][j][2] );
-      plots.OS.mtmin[i][j][3]  ->Add( plots.OS.mtmin[i][j][0]  , plots.OS.mtmin[i][j][2] );
-      plots.OS.mll[i][j][3]    ->Add( plots.OS.mll[i][j][0]    , plots.OS.mll[i][j][2]   );
-      plots.OS.mht[i][j][3]    ->Add( plots.OS.mht[i][j][0]    , plots.OS.mht[i][j][2]   );
-      //k = 5 (ee+em+mm)
-      plots.SS.met[i][j][4]    ->Add( plots.SS.met[i][j][3]    , plots.SS.met[i][j][1]   );
-      plots.SS.ht[i][j][4]     ->Add( plots.SS.ht[i][j][3]     , plots.SS.ht[i][j][1]    );
-      plots.SS.njets[i][j][4]  ->Add( plots.SS.njets[i][j][3]  , plots.SS.njets[i][j][1] );
-      plots.SS.nbtags[i][j][4] ->Add( plots.SS.nbtags[i][j][3] , plots.SS.nbtags[i][j][1]);
-      plots.SS.leppt[i][j][4]  ->Add( plots.SS.leppt[i][j][3]  , plots.SS.leppt[i][j][1] );
-      plots.SS.mtmin[i][j][4]  ->Add( plots.SS.mtmin[i][j][3]  , plots.SS.mtmin[i][j][1] );
-      plots.SS.mll[i][j][4]    ->Add( plots.SS.mll[i][j][3]    , plots.SS.mll[i][j][1]   );
-      plots.SS.mht[i][j][4]    ->Add( plots.SS.mht[i][j][3]    , plots.SS.mht[i][j][1]   );
-      plots.OS.met[i][j][4]    ->Add( plots.OS.met[i][j][3]    , plots.OS.met[i][j][1]   );
-      plots.OS.ht[i][j][4]     ->Add( plots.OS.ht[i][j][3]     , plots.OS.ht[i][j][1]    );
-      plots.OS.njets[i][j][4]  ->Add( plots.OS.njets[i][j][3]  , plots.OS.njets[i][j][1] );
-      plots.OS.nbtags[i][j][4] ->Add( plots.OS.nbtags[i][j][3] , plots.OS.nbtags[i][j][1]);
-      plots.OS.leppt[i][j][4]  ->Add( plots.OS.leppt[i][j][3]  , plots.OS.leppt[i][j][1] );
-      plots.OS.mtmin[i][j][4]  ->Add( plots.OS.mtmin[i][j][3]  , plots.OS.mtmin[i][j][1] );
-      plots.OS.mll[i][j][4]    ->Add( plots.OS.mll[i][j][3]    , plots.OS.mll[i][j][1]   );
-      plots.OS.mht[i][j][4]    ->Add( plots.OS.mht[i][j][3]    , plots.OS.mht[i][j][1]   );
+  for (int m = 0; m < 8; m++){
+    for (int i = 0; i < 4; i++){     
+      for (int j = 0; j < 3; j++){   
+        plots.SS[m][i][j][3]->Add( plots.SS[m][i][j][0], plots.SS[m][i][j][2] );
+        plots.OS[m][i][j][3]->Add( plots.OS[m][i][j][0], plots.OS[m][i][j][2] );
+        plots.SS[m][i][j][4]->Add( plots.SS[m][i][j][3], plots.SS[m][i][j][1] );
+        plots.OS[m][i][j][4]->Add( plots.OS[m][i][j][3], plots.OS[m][i][j][1] );
+      }
     }
   }
 
@@ -199,106 +161,79 @@ void plots(){
   doublePlotHolder dy = plotMaker(chain_DY, 0, 0);
 
   //Make vectors for plots
-  vector <TH1F*> bkgd_met_OS;
-  bkgd_met_OS.push_back(ttw.OS.met[0][0][4]);
-  bkgd_met_OS.push_back(ttz.OS.met[0][0][4]); 
-  bkgd_met_OS.push_back(wz.OS.met[0][0][4]); 
-  bkgd_met_OS.push_back(ttbar.OS.met[0][0][4]); 
-  bkgd_met_OS.push_back(dy.OS.met[0][0][4]); 
-  vector <TH1F*> bkgd_ht_OS;
-  bkgd_ht_OS.push_back(ttw.OS.ht[0][0][4]); 
-  bkgd_ht_OS.push_back(ttz.OS.ht[0][0][4]); 
-  bkgd_ht_OS.push_back(wz.OS.ht[0][0][4]); 
-  bkgd_ht_OS.push_back(ttbar.OS.ht[0][0][4]); 
-  bkgd_ht_OS.push_back(dy.OS.ht[0][0][4]); 
-  vector <TH1F*> bkgd_njets_OS;
-  bkgd_njets_OS.push_back(ttw.OS.njets[0][0][4]); 
-  bkgd_njets_OS.push_back(ttz.OS.njets[0][0][4]); 
-  bkgd_njets_OS.push_back(wz.OS.njets[0][0][4]); 
-  bkgd_njets_OS.push_back(ttbar.OS.njets[0][0][4]); 
-  bkgd_njets_OS.push_back(dy.OS.njets[0][0][4]); 
-  vector <TH1F*> bkgd_nbtags_OS;
-  bkgd_nbtags_OS.push_back(ttw.OS.nbtags[0][0][4]); 
-  bkgd_nbtags_OS.push_back(ttz.OS.nbtags[0][0][4]); 
-  bkgd_nbtags_OS.push_back(wz.OS.nbtags[0][0][4]); 
-  bkgd_nbtags_OS.push_back(ttbar.OS.nbtags[0][0][4]); 
-  bkgd_nbtags_OS.push_back(dy.OS.nbtags[0][0][4]); 
-  vector <TH1F*> bkgd_leppt_OS;
-  bkgd_leppt_OS.push_back(ttw.OS.leppt[0][0][4]); 
-  bkgd_leppt_OS.push_back(ttz.OS.leppt[0][0][4]); 
-  bkgd_leppt_OS.push_back(wz.OS.leppt[0][0][4]); 
-  bkgd_leppt_OS.push_back(ttbar.OS.leppt[0][0][4]); 
-  bkgd_leppt_OS.push_back(dy.OS.leppt[0][0][4]); 
-  vector <TH1F*> bkgd_mtmin_OS;
-  bkgd_mtmin_OS.push_back(ttw.OS.mtmin[0][0][4]); 
-  bkgd_mtmin_OS.push_back(ttz.OS.mtmin[0][0][4]); 
-  bkgd_mtmin_OS.push_back(wz.OS.mtmin[0][0][4]); 
-  bkgd_mtmin_OS.push_back(ttbar.OS.mtmin[0][0][4]); 
-  bkgd_mtmin_OS.push_back(dy.OS.mtmin[0][0][4]); 
-  vector <TH1F*> bkgd_mll_OS;
-  bkgd_mll_OS.push_back(ttw.OS.mll[0][0][4]); 
-  bkgd_mll_OS.push_back(ttz.OS.mll[0][0][4]); 
-  bkgd_mll_OS.push_back(wz.OS.mll[0][0][4]); 
-  bkgd_mll_OS.push_back(ttbar.OS.mll[0][0][4]); 
-  bkgd_mll_OS.push_back(dy.OS.mll[0][0][4]); 
-  vector <TH1F*> bkgd_mht_OS;
-  bkgd_mht_OS.push_back(ttw.OS.mht[0][0][4]); 
-  bkgd_mht_OS.push_back(ttz.OS.mht[0][0][4]); 
-  bkgd_mht_OS.push_back(wz.OS.mht[0][0][4]); 
-  bkgd_mht_OS.push_back(ttbar.OS.mht[0][0][4]); 
-  bkgd_mht_OS.push_back(dy.OS.mht[0][0][4]); 
+  vector < vector < TH1F*> > OS_plots_em; 
+  for (int i = 0; i < 8; i++){
+    vector <TH1F*> temp; 
+    temp.push_back(ttw.OS[i][0][0][1]);
+    temp.push_back(ttz.OS[i][0][0][1]);
+    temp.push_back(wz.OS[i][0][0][1]);
+    temp.push_back(ttbar.OS[i][0][0][1]);
+    temp.push_back(dy.OS[i][0][0][1]);
+    OS_plots_em.push_back(temp); 
+    temp.clear();
+  }
 
-  //And ditto for SS plots
-  vector <TH1F*> bkgd_met_SS;
-  bkgd_met_SS.push_back(ttw.SS.met[0][0][4]); 
-  bkgd_met_SS.push_back(ttz.SS.met[0][0][4]); 
-  bkgd_met_SS.push_back(wz.SS.met[0][0][4]); 
-  bkgd_met_SS.push_back(ttbar.SS.met[0][0][4]); 
-  bkgd_met_SS.push_back(dy.SS.met[0][0][4]); 
-  vector <TH1F*> bkgd_ht_SS;
-  bkgd_ht_SS.push_back(ttw.SS.ht[0][0][4]); 
-  bkgd_ht_SS.push_back(ttz.SS.ht[0][0][4]); 
-  bkgd_ht_SS.push_back(wz.SS.ht[0][0][4]); 
-  bkgd_ht_SS.push_back(ttbar.SS.ht[0][0][4]); 
-  bkgd_ht_SS.push_back(dy.SS.ht[0][0][4]); 
-  vector <TH1F*> bkgd_njets_SS;
-  bkgd_njets_SS.push_back(ttw.SS.njets[0][0][4]); 
-  bkgd_njets_SS.push_back(ttz.SS.njets[0][0][4]); 
-  bkgd_njets_SS.push_back(wz.SS.njets[0][0][4]); 
-  bkgd_njets_SS.push_back(ttbar.SS.njets[0][0][4]); 
-  bkgd_njets_SS.push_back(dy.SS.njets[0][0][4]); 
-  vector <TH1F*> bkgd_nbtags_SS;
-  bkgd_nbtags_SS.push_back(ttw.SS.nbtags[0][0][4]); 
-  bkgd_nbtags_SS.push_back(ttz.SS.nbtags[0][0][4]); 
-  bkgd_nbtags_SS.push_back(wz.SS.nbtags[0][0][4]); 
-  bkgd_nbtags_SS.push_back(ttbar.SS.nbtags[0][0][4]); 
-  bkgd_nbtags_SS.push_back(dy.SS.nbtags[0][0][4]); 
-  vector <TH1F*> bkgd_leppt_SS;
-  bkgd_leppt_SS.push_back(ttw.SS.leppt[0][0][4]); 
-  bkgd_leppt_SS.push_back(ttz.SS.leppt[0][0][4]); 
-  bkgd_leppt_SS.push_back(wz.SS.leppt[0][0][4]); 
-  bkgd_leppt_SS.push_back(ttbar.SS.leppt[0][0][4]); 
-  bkgd_leppt_SS.push_back(dy.SS.leppt[0][0][4]); 
-  vector <TH1F*> bkgd_mtmin_SS;
-  bkgd_mtmin_SS.push_back(ttw.SS.mtmin[0][0][4]); 
-  bkgd_mtmin_SS.push_back(ttz.SS.mtmin[0][0][4]); 
-  bkgd_mtmin_SS.push_back(wz.SS.mtmin[0][0][4]); 
-  bkgd_mtmin_SS.push_back(ttbar.SS.mtmin[0][0][4]); 
-  bkgd_mtmin_SS.push_back(dy.SS.mtmin[0][0][4]); 
-  vector <TH1F*> bkgd_mll_SS;
-  bkgd_mll_SS.push_back(ttw.SS.mll[0][0][4]); 
-  bkgd_mll_SS.push_back(ttz.SS.mll[0][0][4]); 
-  bkgd_mll_SS.push_back(wz.SS.mll[0][0][4]); 
-  bkgd_mll_SS.push_back(ttbar.SS.mll[0][0][4]); 
-  bkgd_mll_SS.push_back(dy.SS.mll[0][0][4]); 
-  vector <TH1F*> bkgd_mht_SS;
-  bkgd_mht_SS.push_back(ttw.SS.mht[0][0][4]); 
-  bkgd_mht_SS.push_back(ttz.SS.mht[0][0][4]); 
-  bkgd_mht_SS.push_back(wz.SS.mht[0][0][4]); 
-  bkgd_mht_SS.push_back(ttbar.SS.mht[0][0][4]); 
-  bkgd_mht_SS.push_back(dy.SS.mht[0][0][4]); 
+  vector < vector < TH1F*> > SS_plots_em; 
+  for (int i = 0; i < 8; i++){
+    vector <TH1F*> temp; 
+    temp.push_back(ttw.SS[i][0][0][1]);
+    temp.push_back(ttz.SS[i][0][0][1]);
+    temp.push_back(wz.SS[i][0][0][1]);
+    temp.push_back(ttbar.SS[i][0][0][1]);
+    temp.push_back(dy.SS[i][0][0][1]);
+    SS_plots_em.push_back(temp); 
+    temp.clear();
+  }
 
-  //Titles for plots
+  vector < vector < TH1F*> > OS_plots_eemm; 
+  for (int i = 0; i < 8; i++){
+    vector <TH1F*> temp; 
+    temp.push_back(ttw.OS[i][0][0][3]);
+    temp.push_back(ttz.OS[i][0][0][3]);
+    temp.push_back(wz.OS[i][0][0][3]);
+    temp.push_back(ttbar.OS[i][0][0][3]);
+    temp.push_back(dy.OS[i][0][0][3]);
+    OS_plots_eemm.push_back(temp); 
+    temp.clear();
+  }
+
+  vector < vector < TH1F*> > SS_plots_eemm; 
+  for (int i = 0; i < 8; i++){
+    vector <TH1F*> temp; 
+    temp.push_back(ttw.SS[i][0][0][3]);
+    temp.push_back(ttz.SS[i][0][0][3]);
+    temp.push_back(wz.SS[i][0][0][3]);
+    temp.push_back(ttbar.SS[i][0][0][3]);
+    temp.push_back(dy.SS[i][0][0][3]);
+    SS_plots_eemm.push_back(temp); 
+    temp.clear();
+  }
+
+  vector < vector < TH1F*> > OS_plots; 
+  for (int i = 0; i < 8; i++){
+    vector <TH1F*> temp; 
+    temp.push_back(ttw.OS[i][0][0][4]);
+    temp.push_back(ttz.OS[i][0][0][4]);
+    temp.push_back(wz.OS[i][0][0][4]);
+    temp.push_back(ttbar.OS[i][0][0][4]);
+    temp.push_back(dy.OS[i][0][0][4]);
+    OS_plots.push_back(temp); 
+    temp.clear();
+  }
+
+  vector < vector < TH1F*> > SS_plots; 
+  for (int i = 0; i < 8; i++){
+    vector <TH1F*> temp; 
+    temp.push_back(ttw.SS[i][0][0][4]);
+    temp.push_back(ttz.SS[i][0][0][4]);
+    temp.push_back(wz.SS[i][0][0][4]);
+    temp.push_back(ttbar.SS[i][0][0][4]);
+    temp.push_back(dy.SS[i][0][0][4]);
+    SS_plots.push_back(temp); 
+    temp.clear();
+  }
+
+  //Titles for legend
   vector <string> titles;
   titles.push_back("ttW"); 
   titles.push_back("ttZ"); 
@@ -306,22 +241,45 @@ void plots(){
   titles.push_back("ttbar"); 
   titles.push_back("DY"); 
 
+  //Titles for plots
+  vector <string> names;
+  names.push_back("met");
+  names.push_back("ht");
+  names.push_back("nJets");
+  names.push_back("nBtags");
+  names.push_back("lep p_{T}");
+  names.push_back("mt min");
+  names.push_back("m_{ll}");
+  names.push_back("mht");
+
+  //Titles for output
+  vector <string> out;
+  out.push_back("MET");
+  out.push_back("HT");
+  out.push_back("nJets");
+  out.push_back("nBtags");
+  out.push_back("leppt");
+  out.push_back("mtmin");
+  out.push_back("mll");
+  out.push_back("mht");
+
+  double max[8] = { 5e4, 5e4, 5e5, 1e5, 1e5, 1e5, 1e5, 1e4 }; 
+  double min[8] = {1e-3, 1e-3, 1e-2, 1e-1, 1e-3, 1e-3, 1e-3, 1e-3 };
+
+  std::string title = "Run2, HH,HL,LL, BR0-3";
+  //std::string title = "Run2, HH,HL,LL, no kinem cuts";
+
   //Make plots
-  dataMCplotMaker(data.OS.met[0][0][4], bkgd_met_OS, titles, "MET (OS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName MET_OS.pdf --xAxisLabel MET --percentageInBox --setMinimum .001 --legendUp -.05"); 
-//  dataMCplotMaker(data.OS.ht[0][0], bkgd_ht_OS, titles, "HT (OS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName HT_OS.pdf --xAxisLabel HT --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 50000"); 
-//  dataMCplotMaker(data.OS.njets[0][0], bkgd_njets_OS, titles, "nJets (OS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName nJets_OS.pdf --xAxisLabel nJets --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 50000"); 
-//  dataMCplotMaker(data.OS.nbtags[0][0], bkgd_nbtags_OS, titles, "nBtags (OS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName nBtags_OS.pdf --xAxisLabel nBtags --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 500000 --nDivisions 5");
-//  dataMCplotMaker(data.OS.mtmin[0][0], bkgd_mtmin_OS, titles, "mtmin (OS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName mtmin_OS.pdf --xAxisLabel mt min --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 100000 --nDivisions 5"); 
-//  dataMCplotMaker(data.OS.leppt[0][0], bkgd_leppt_OS, titles, "lep p_{T} (OS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName leppt_OS.pdf --xAxisLabel lep p_{T} --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 100000 --nDivisions 5"); 
-//  dataMCplotMaker(data.OS.mll[0][0], bkgd_mll_OS, titles, "lep m_{ll} (OS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName mll_OS.pdf --xAxisLabel m_{ll} --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 100000"); 
-//  dataMCplotMaker(data.OS.mht[0][0], bkgd_mht_OS, titles, "MHT (OS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName mht_OS.pdf --xAxisLabel MHT --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 100000"); 
-//  dataMCplotMaker(data.SS.met[0][0], bkgd_met_SS, titles, "MET (SS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName MET.pdf --xAxisLabel MET --percentageInBox --setMinimum .001 --legendUp -.05"); 
-//  dataMCplotMaker(data.SS.ht[0][0], bkgd_ht_SS, titles, "HT (SS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName HT.pdf --xAxisLabel HT --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 50000"); 
-//  dataMCplotMaker(data.SS.njets[0][0], bkgd_njets_SS, titles, "nJets (SS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName nJets.pdf --xAxisLabel nJets --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 50000"); 
-//  dataMCplotMaker(data.SS.nbtags[0][0], bkgd_nbtags_SS, titles, "nBtags (SS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName nBtags.pdf --xAxisLabel nBtags --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 500000 --nDivisions 5");
-//  dataMCplotMaker(data.SS.mtmin[0][0], bkgd_mtmin_SS, titles, "mtmin (SS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName mtmin.pdf --xAxisLabel mt min --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 100000 --nDivisions 5"); 
-//  dataMCplotMaker(data.SS.leppt[0][0], bkgd_leppt_SS, titles, "lep p_{T} (SS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName leppt.pdf --xAxisLabel lep p_{T} --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 100000 --nDivisions 5"); 
-//  dataMCplotMaker(data.SS.mll[0][0], bkgd_mll_SS, titles, "lep m_{ll} (SS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName mll.pdf --xAxisLabel m_{ll} --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 100000"); 
-//  dataMCplotMaker(data.SS.mht[0][0], bkgd_mht_SS, titles, "MHT (SS)", "Run2, HH,HL,LL, BR0-3", "--lumi 40.24 --lumiUnit pb --outputName mht.pdf --xAxisLabel MHT --percentageInBox --setMinimum .001 --legendUp -.05 --setMaximum 100000"); 
+  for (int i = 0; i < 8; i++){
+    //ee+mm
+    dataMCplotMaker(data.OS[i][0][0][3], OS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(OS ee+#mu#mu)"), title.c_str(), Form("--lumi 40.24 --lumiUnit pb --outputName %s_eemm_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][0][3], SS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(SS ee+#mu#mu)"), title.c_str(), Form("--lumi 40.24 --lumiUnit pb --outputName %s_eemm.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+   //emu
+    dataMCplotMaker(data.OS[i][0][0][1], OS_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(OS e#mu)"), title.c_str(), Form("--lumi 40.24 --lumiUnit pb --outputName %s_em_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][0][1], SS_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(SS e#mu)"), title.c_str(), Form("--lumi 40.24 --lumiUnit pb --outputName %s_em.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+   //all
+    dataMCplotMaker(data.OS[i][0][0][4], OS_plots[i], titles, Form("%s %s", names[i].c_str(), "(OS)"), title.c_str(), Form("--lumi 40.24 --lumiUnit pb --outputName %s_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][0][4], SS_plots[i], titles, Form("%s %s", names[i].c_str(), "(SS)"), title.c_str(), Form("--lumi 40.24 --lumiUnit pb --outputName %s.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+  }
 
 }

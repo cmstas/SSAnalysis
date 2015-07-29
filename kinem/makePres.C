@@ -1,4 +1,5 @@
 #include "/home/users/cgeorge/software/SlideMaker/SlideMaker.h"
+#include "TString.h"
 
 void makePres(){
 
@@ -20,87 +21,34 @@ void makePres(){
   )");
   myTest.FinishSlide();
 
-  //Third slide
-  myTest.NewSlide();
-  myTest.Plot("leppt_OS.pdf"); 
-  myTest.FinishSlide();
+  vector <string> out;
+  out.push_back("MET");
+  out.push_back("HT");
+  out.push_back("nJets");
+  out.push_back("nBtags");
+  out.push_back("mtmin");
+  out.push_back("leppt");
+  out.push_back("mll");
+  out.push_back("mht");
 
-  //Fourth slide
-  myTest.NewSlide();
-  myTest.Plot("MET_OS.pdf"); 
-  myTest.FinishSlide();
+  vector <string> type;
+  type.push_back("");
+  type.push_back("_eemm");
+  type.push_back("_em");
 
-  //Fifth slide
-  myTest.NewSlide();
-  myTest.Plot("HT_OS.pdf"); 
-  myTest.FinishSlide();
-
-  //Sixth slide
-  myTest.NewSlide();
-  myTest.Plot("mtmin_OS.pdf"); 
-  myTest.FinishSlide();
-
-  //Seventh slide
-  myTest.NewSlide();
-  myTest.Plot("nJets_OS.pdf"); 
-  myTest.FinishSlide();
-
-  //Eighth slide
-  myTest.NewSlide();
-  myTest.Plot("nBtags_OS.pdf"); 
-  myTest.FinishSlide();
-
-  //mll slide
-  myTest.NewSlide();
-  myTest.Plot("mll_OS.pdf"); 
-  myTest.FinishSlide();
-
-  //mht slide
-  myTest.NewSlide();
-  myTest.Plot("mht_OS.pdf"); 
-  myTest.FinishSlide();
-
- //////////////////////
- //        SS        //
- //////////////////////
-
-  myTest.NewSlide();
-  myTest.Plot("leppt.pdf"); 
-  myTest.FinishSlide();
-
-  //Fourth slide
-  myTest.NewSlide();
-  myTest.Plot("MET.pdf"); 
-  myTest.FinishSlide();
-
-  //Fifth slide
-  myTest.NewSlide();
-  myTest.Plot("HT.pdf"); 
-  myTest.FinishSlide();
-
-  //Sixth slide
-  myTest.NewSlide();
-  myTest.Plot("mtmin.pdf"); 
-  myTest.FinishSlide();
-
-  //Seventh slide
-  myTest.NewSlide();
-  myTest.Plot("nJets.pdf"); 
-  myTest.FinishSlide();
-
-  //Eighth slide
-  myTest.NewSlide();
-  myTest.Plot("nBtags.pdf"); 
-  myTest.FinishSlide();
-
-  //mll slide
-  myTest.NewSlide();
-  myTest.Plot("mll.pdf"); 
-  myTest.FinishSlide();
-
-  //mht slide
-  myTest.NewSlide();
-  myTest.Plot("mht.pdf"); 
-  myTest.FinishSlide();
+  for (unsigned int i = 0; i < 8; i++){
+    for (unsigned int j = 0; j < 3; j++){
+      myTest.NewSlide();
+      myTest.Plot(Form("%s%s_OS.pdf", out[i].c_str(), type[j].c_str() )); 
+      myTest.FinishSlide();
+    }
+  }
+  for (unsigned int i = 0; i < 8; i++){
+    for (unsigned int j = 0; j < 3; j++){
+      myTest.NewSlide();
+      myTest.Plot(Form("%s%s.pdf", out[i].c_str(), type[j].c_str() )); 
+      myTest.FinishSlide();
+    }
+  }
 
 }
