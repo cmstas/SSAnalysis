@@ -46,6 +46,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("jets"                    , &jets                    );
   BabyTree->Branch("btags_disc"              , &btags_disc              );
   BabyTree->Branch("jets_disc"               , &jets_disc               );
+  BabyTree->Branch("jets_JEC"                , &jets_JEC                );
+  BabyTree->Branch("btags_JEC"               , &btags_JEC               );
+  BabyTree->Branch("jets_undoJEC"                , &jets_undoJEC                );
+  BabyTree->Branch("btags_undoJEC"               , &btags_undoJEC               );
   BabyTree->Branch("btags"                   , &btags                   );
   BabyTree->Branch("nbtags"                  , &nbtags                  );
   BabyTree->Branch("sf_dilepTrig_hpt"        , &sf_dilepTrig_hpt        );
@@ -202,6 +206,10 @@ void babyMaker::InitBabyNtuple(){
     jets.clear();
     btags_disc.clear();
     jets_disc.clear();
+    jets_JEC.clear();
+    btags_JEC.clear();
+    jets_undoJEC.clear();
+    btags_undoJEC.clear();
     btags.clear();
     nbtags = -1;
     sf_dilepTrig_hpt = -1;
@@ -320,7 +328,7 @@ void babyMaker::InitBabyNtuple(){
 } 
 
 //Main function
-int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool expt){
+int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, FactorizedJetCorrector* jetCorr, bool expt){
 
   //Initialize variables
   InitBabyNtuple();
@@ -367,7 +375,6 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))    (triggers |= 1<<5); 
   if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")))        (triggers |= 1<<6); 
   if (triggers != 0) fired_trigger = true;
-  if (triggers != 0) cout << triggers << endl;
 
   //Scale1fb
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
@@ -433,45 +440,47 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   }
 
   //Electron trigger stuff
-  if (abs(lep1_id) == 11){
-    //Double electron triggers
-    if (lep1_idx >= 0 && tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
-    if (passHLTTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", lep1_p4) > 0)                             lep1_trigMatch_isoReq   = true;
-    //Mu-El triggers
-    if (lep1_idx >= 0 && tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0    ) lep1_trigMatch_noIsoReq = true;
-    if (lep1_idx >= 0 && tas::els_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_isoReq   = true;
-    if (lep1_idx >= 0 && tas::els_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep1_idx) > 0 ) lep1_trigMatch_isoReq   = true;
-  }
-  if (abs(lep2_id) == 11){
-    //Double electron triggers
-    if (lep2_idx >= 0 && tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
-    if (passHLTTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", lep2_p4) > 0)                             lep2_trigMatch_isoReq   = true;
-    //Mu-El triggers
-    if (lep2_idx >= 0 && tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0    ) lep2_trigMatch_noIsoReq = true;
-    if (lep2_idx >= 0 && tas::els_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_isoReq   = true;
-    if (lep2_idx >= 0 && tas::els_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep2_idx) > 0 ) lep2_trigMatch_isoReq   = true;
-  }
+  if (is_real_data){
+    if (abs(lep1_id) == 11){
+      //Double electron triggers
+      if (lep1_idx >= 0 && tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
+      if (passHLTTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", lep1_p4) > 0)                             lep1_trigMatch_isoReq   = true;
+      //Mu-El triggers
+      if (lep1_idx >= 0 && tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0    ) lep1_trigMatch_noIsoReq = true;
+      if (lep1_idx >= 0 && tas::els_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_isoReq   = true;
+      if (lep1_idx >= 0 && tas::els_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep1_idx) > 0 ) lep1_trigMatch_isoReq   = true;
+    }
+    if (abs(lep2_id) == 11){
+      //Double electron triggers
+      if (lep2_idx >= 0 && tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
+      if (passHLTTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", lep2_p4) > 0)                             lep2_trigMatch_isoReq   = true;
+      //Mu-El triggers
+      if (lep2_idx >= 0 && tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0    ) lep2_trigMatch_noIsoReq = true;
+      if (lep2_idx >= 0 && tas::els_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_isoReq   = true;
+      if (lep2_idx >= 0 && tas::els_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep2_idx) > 0 ) lep2_trigMatch_isoReq   = true;
+    }
 
-  //Muon trigger stuff
-  if (abs(lep1_id) == 13){
-    //Double muon triggers
-    if (lep1_idx >= 0 && tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
-    if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", lep1_p4) > 0)             lep1_trigMatch_isoReq = true;
-    if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", lep1_p4) > 0)           lep1_trigMatch_isoReq = true;
-    //Mu-El triggers
-    if (lep1_idx >= 0 && tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0    ) lep1_trigMatch_noIsoReq = true;
-    if (lep1_idx >= 0 && tas::mus_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_isoReq   = true;
-    if (lep1_idx >= 0 && tas::mus_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep1_idx) > 0 ) lep1_trigMatch_isoReq   = true;
-  }
-  if (abs(lep2_id) == 13){
-    //Double muon triggers
-    if (lep2_idx >= 0 && tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
-    if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", lep2_p4) > 0)             lep2_trigMatch_isoReq = true;
-    if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", lep2_p4) > 0)           lep2_trigMatch_isoReq = true;
-    //Mu-El triggers
-    if (lep2_idx >= 0 && tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0    ) lep2_trigMatch_noIsoReq = true;
-    if (lep2_idx >= 0 && tas::mus_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_isoReq   = true;
-    if (lep2_idx >= 0 && tas::mus_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep2_idx) > 0 ) lep2_trigMatch_isoReq   = true;
+    //Muon trigger stuff
+    if (abs(lep1_id) == 13){
+      //Double muon triggers
+      if (lep1_idx >= 0 && tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
+      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", lep1_p4) > 0)             lep1_trigMatch_isoReq = true;
+      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", lep1_p4) > 0)           lep1_trigMatch_isoReq = true;
+      //Mu-El triggers
+      if (lep1_idx >= 0 && tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0    ) lep1_trigMatch_noIsoReq = true;
+      if (lep1_idx >= 0 && tas::mus_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_isoReq   = true;
+      if (lep1_idx >= 0 && tas::mus_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep1_idx) > 0 ) lep1_trigMatch_isoReq   = true;
+    }
+    if (abs(lep2_id) == 13){
+      //Double muon triggers
+      if (lep2_idx >= 0 && tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
+      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", lep2_p4) > 0)             lep2_trigMatch_isoReq = true;
+      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", lep2_p4) > 0)           lep2_trigMatch_isoReq = true;
+      //Mu-El triggers
+      if (lep2_idx >= 0 && tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0    ) lep2_trigMatch_noIsoReq = true;
+      if (lep2_idx >= 0 && tas::mus_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_isoReq   = true;
+      if (lep2_idx >= 0 && tas::mus_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep2_idx) > 0 ) lep2_trigMatch_isoReq   = true;
+    }
   }
 
   //PtRel for both leptons
@@ -502,11 +511,15 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   }
   
   //Determine and save jet and b-tag variables
-  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator();
+  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr);
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets.push_back(jet_results.first.at(i).p4());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags.push_back(jet_results.second.at(i).p4());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_disc.push_back(jet_results.first.at(i).csv());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc.push_back(jet_results.second.at(i).csv());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_JEC.push_back(jet_results.first.at(i).jec());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_JEC.push_back(jet_results.second.at(i).jec());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_undoJEC.push_back(jet_results.first.at(i).undo_jec());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_undoJEC.push_back(jet_results.second.at(i).undo_jec());
   njets = jets.size();
   nbtags = btags.size();
   ht = 0;

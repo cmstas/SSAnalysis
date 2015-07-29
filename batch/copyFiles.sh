@@ -10,7 +10,7 @@ then
   mkdir CORE 
 fi
 cp ../CORE/*.h CORE/
-cp ../CORE/CMS3_CORE.so CORE/
+cp ../CORE/*.cc CORE/
 
 #And data directory inside CORE
 if [ ! -d CORE/data ] 
@@ -24,27 +24,24 @@ if [ ! -d CORE/Tools ]
 then
   mkdir CORE/Tools
 fi
-cp ../Tools/utils.h CORE/Tools/
-cp ../Tools/utils.cc CORE/Tools/
-cp ../Tools/goodrun.cc        CORE/Tools/
-cp ../Tools/goodrun.h         CORE/Tools/
+cp -r ../CORE/Tools               CORE/
 
-#And MT2 directory inside CORE
-if [ ! -d CORE/Tools/MT2 ] 
+#And data directory inside jetcorr
+if [ ! -d CORE/Tools/jetcorr/data/run2_50ns ] 
 then
-  mkdir CORE/Tools/MT2
+  mkdir -p CORE/Tools/jetcorr/data/run2_50ns
 fi
-cp ../Tools/MT2/MT2.h         CORE/Tools/MT2
-cp ../Tools/MT2/MT2.cc        CORE/Tools/MT2
-cp ../Tools/MT2/MT2Utility.h  CORE/Tools/MT2
-cp ../Tools/MT2/MT2Utility.cc CORE/Tools/MT2
+cp ../CORE/Tools/jetcorr/data/run2_50ns/*.txt CORE/Tools/jetcorr/data/run2_50ns/
 
 #And goodrun list directory 
 if [ ! -d goodRunList ] 
 then
   mkdir goodRunList
 fi
-cp ../goodRunList/json_*.txt goodRunList/
+cp ../goodRunList/*.txt        goodRunList/
+
+#Linkdef
+cp ../LinkDef.h . 
 
 #Make log dir
 if [ ! -d logs ] 
@@ -56,7 +53,6 @@ fi
 sed -i "s,\"Tools\/,\"CORE/Tools\/,g" helper_babymaker.h 
 sed -i "s/output_name,\ bool\ usePtRel)/output_name)/" helper_babymaker.h
 sed -i "s/output_name,\ bool\ usePtRel)/output_name)/" helper_babymaker.cc
-#sed -i "s/%s\/%s%s/%s\/%s/g" helper_babymaker.cc
 sed -i "s/output_name,\ usePtRel\ ?\ \"_ptRel\"\ :\ \"\"/output_name/" helper_babymaker.cc
 sed -i "/<vector>/a #include\ \"Math/Vector4D.h\" \n#include\ \"Math/LorentzVector.h\" \n\n\#ifdef\ __MAKECINT__\n\#pragma\ link\ C++\ class\ ROOT::Math::PxPyPzE4D<float>+;\n\#pragma\ link\ C++\ class\ ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float>\ >+;\n\#pragma\ link\ C++\ typedef ROOT::Math::XYZTVectorF;\n\#endif" helper_babymaker.h
 sed -i "s/USERNAME/$USER/g" condorExecutable.sh

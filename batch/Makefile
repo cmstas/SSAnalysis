@@ -55,8 +55,8 @@ COREOBJECTS=$(CORESOURCES:.cc=.o)
 CORELIB=libCMS3CORE.so
 
 SOURCES = $(wildcard $(DIR)/*.cc)
-OBJECTS = $(SOURCES:.cc=.o)
-LIB = liblooper.so
+OBJECTS = $(SOURCES:.cc=.o) 
+LIB = liblooperBatch.so
 
 DICT = LinkDef_out.o
 

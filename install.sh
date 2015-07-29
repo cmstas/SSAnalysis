@@ -9,12 +9,10 @@ if [ ! -d babies ]; then mkdir babies; fi
 if [ $USER == "cgeorge" ]
 then
   ln -s /home/users/cgeorge/CORE/ .
-  ln -s /home/users/cgeorge/CORE/Tools/ .
   ln -s /home/users/cgeorge/software/ . 
   ln -s /nfs-7/userdata/ss2015/ssBabies/$babiesVersion babies/$babiesVersion
 else
   git clone git@github.com:cmstas/CORE.git
-  git clone git@github.com:cmstas/Tools.git
   git clone git@github.com:cmstas/software.git
   cp /nfs-7/userdata/ss2015/ssBabies/$babiesVersion babies/$babiesVersion/
 fi
