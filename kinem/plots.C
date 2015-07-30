@@ -326,9 +326,9 @@ void plots(){
   double min[8] = {1e-3, 1e-3, 1e-2, 1e-1, 1e-3, 1e-3, 1e-3, 1e-3 };
 
   std::string title;
-  if (mode == 0) title = "Run2, HH,HL,LL, BR0-3";
-  if (mode == 1) title = "Run2, HH,HL,LL, upstream";
-  if (mode == 2) title = "Run2, HH,HL,LL, MET > 30";
+  if (mode == 0) title = Form("Run2, HH,HL,LL, BR0-3 %s"   , corrected ? "corr" : "" );
+  if (mode == 1) title = Form("Run2, HH,HL,LL, upstream %s", corrected ? "corr" : "" );
+  if (mode == 2) title = Form("Run2, HH,HL,LL, MET > 30 %s", corrected ? "corr" : "" );
 
   //Make plots
   for (int i = 0; i < 8; i++){

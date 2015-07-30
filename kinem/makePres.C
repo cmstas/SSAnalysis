@@ -22,35 +22,170 @@ void makePres(){
   \item Run-2 MC samples are used whenever available, otherwise PHYS14 samples are used.
   \item For data, we use DoubleEG, DoubleMuon, and MuonEG, with duplicate removal
   \item We apply ``our'' triggers to both data and MC (except for phys14 samples)
-  \item Jet corrections are ``out of the box'' (not applied by us) -- I have the JECs stored though.
+  \item Jet corrections are ``out of the box'' (not applied by us), except where indicated
   \end{itemize} 
   )");
+  myTest.FinishSlide();
+
+  //HT
+  myTest.NewSlide();
+  myTest.Title("HT OS");
+  myTest.TextPlotPlot("nominal/HT_OS.pdf", "upstream/HT_OS.pdf");
+  myTest.Text(R"(
+  \begin{itemize}
+  \item Left shows OS HT plot; it seems we overpredict
+  \item Right shows same plot without nJets, MET requirement -- much better!
+  \end{itemize} 
+  )");
+  myTest.FinishSlide();
+
+  myTest.NewSlide();
+  myTest.Title("HT OS -- between up- and down-stream");
+  myTest.TextPlotPlot("special/HT_OS_met30.pdf", "special/HT_OS_2jet.pdf");
+  myTest.Text(R"(
+  \begin{itemize}
+  \item Apparently the MET $\geq$ 30 cut causes problems (left)
+  \item The nJets cut causes no problems  (right)
+  \end{itemize} 
+  )", "--size -2");
   myTest.FinishSlide();
 
   //MET
   myTest.NewSlide();
-  myTest.Title("MET");
-  myTest.TextPlotPlot("nominal/MET_OS.pdf", "nominal/MET.pdf");
+  myTest.Title("MET OS");
+  myTest.TextPlotPlot("nominal/MET_OS.pdf", "upstream/MET_OS.pdf");
   myTest.Text(R"(
   \begin{itemize}
-  \item Consistently overpredict in OS channel; shape looks OK.
-  \item SS channel looks fine, limited statistics
+  \item Left shows OS MET -- underpredicts
+  \item Right shows MET without MET $\geq$ 30 cut (and nJets cut) -- data is skewed to left!  Jet corrections?
   \end{itemize} 
   )");
   myTest.FinishSlide();
 
   myTest.NewSlide();
-  myTest.Title("MET -- Upstream");
-  myTest.TextPlotPlot("upstream/MET_OS.pdf", "upstream/MET.pdf");
+  myTest.Title("MET OS -- Upstream with MET corrections");
+  myTest.TextPlot("jetcorr/MET_OS.pdf");
   myTest.Text(R"(
   \begin{itemize}
-  \item We try going upstream -- no nJets, MET/HT cut
-  \item OS looks good, everything seems shifted by one bin -- jet corrections?
-  \item SS channel looks fine at high MET, probably missing samples at low MET 
+  \item Now we try MET corrections.  Only available for MC, but we try to use those for both data and MC.
+  \item Agreement is terrible; these MET corrections aren't helping!
+  \item Vince and Maria (and Indara, and me) are still discussing the details of this, possible our procedure is not perfect yet
+  \item This solves the OS mystery: need better jet corrections
   \end{itemize} 
   )", "--size -1");
   myTest.FinishSlide();
 
+  myTest.NewSlide();
+  myTest.Title("HT SS ");
+  myTest.TextPlotPlot("nominal/HT.pdf", "upstream/HT.pdf");
+  myTest.Text(R"(
+  \begin{itemize}
+  \item As for SS, looks like things are OK, hard to tell with statistics, MET problem probably has same effect here but obfuscated
+  \item Without nJets, MET cuts (right), we underpredict a lot.  
+  \end{itemize} 
+  )", "--size -1");
+  myTest.FinishSlide();
+
+  myTest.NewSlide();
+  myTest.Title("MET SS");
+  myTest.TextPlotPlot("nominal/MET.pdf", "upstream/MET.pdf");
+  myTest.Text(R"(
+  \begin{itemize}
+  \item MET also looks OK to within statistics
+  \item Without nJets, MET corrections (right), we see lots of missing events at low MET.  This is probably from missing low-MET samples (QCD, ....).  This explains the underprediction
+  \end{itemize} 
+  )", "--size -1");
+  myTest.FinishSlide();
+
+  //Lepton pT
+  myTest.NewSlide();
+  myTest.Title("Lepton $p_{T}$");
+  myTest.TextPlotPlot("nominal/leppt_OS.pdf", "nominal/leppt.pdf");
+  myTest.Text(R"(
+  \begin{itemize}
+  \item The rest of the slides look good except for the two issues already solved.
+  \item OS (left) overpredicts as before (due to bad MET corrections)
+  \item SS (right) looks OK as before, limited statistics
+  \end{itemize} 
+  )", "--size -1");
+  myTest.FinishSlide();
+
+  //nJets
+  myTest.NewSlide();
+  myTest.Title("nJets");
+  myTest.TextPlotPlot("nominal/nJets_OS.pdf", "nominal/nJets.pdf");
+  myTest.Text(R"(
+  \begin{itemize}
+  \item OS (left)  overpredicts as before (due to bad MET corrections)
+  \item SS (right)  looks OK as before, limited statistics
+  \end{itemize} 
+  )", "--size -1");
+  myTest.FinishSlide();
+
+  //nBtags
+  myTest.NewSlide();
+  myTest.Title("nBtags");
+  myTest.TextPlotPlot("nominal/nBtags_OS.pdf", "nominal/nBtags.pdf");
+  myTest.Text(R"(
+  \begin{itemize}
+  \item OS (left)  overpredicts as before (due to bad MET corrections)
+  \item SS (right) looks OK as before, limited statistics
+  \end{itemize} 
+  )", "--size -1");
+  myTest.FinishSlide();
+
+  //mll
+  myTest.NewSlide();
+  myTest.Title(R"($\textrm{M}_{\ell \ell}$)");
+  myTest.TextPlotPlot("nominal/mll_OS.pdf", "nominal/mll.pdf");
+  myTest.Text(R"(
+  \begin{itemize}
+  \item OS (left)  overpredicts as before (due to bad MET corrections)
+  \item SS (right) looks OK as before, limited statistics
+  \end{itemize} 
+  )", "--size -1");
+  myTest.FinishSlide();
+
+  //mht
+  myTest.NewSlide();
+  myTest.Title("MHT");
+  myTest.TextPlotPlot("nominal/mht_OS.pdf", "nominal/mht.pdf");
+  myTest.Text(R"(
+  \begin{itemize}
+  \item OS (left)  overpredicts as before (due to bad MET corrections)
+  \item SS (right) looks OK as before, limited statistics
+  \end{itemize} 
+  )", "--size -1");
+  myTest.FinishSlide();
+
+  //mtmin
+  myTest.NewSlide();
+  myTest.Title(R"($\textrm{M}_{T}$ min)");
+  myTest.TextPlotPlot("nominal/mtmin_OS.pdf", "nominal/mtmin.pdf");
+  myTest.Text(R"(
+  \begin{itemize}
+  \item OS (left)  overpredicts as before (due to bad MET corrections)
+  \item SS (right) looks OK as before, limited statistics
+  \end{itemize} 
+  )", "--size -1");
+  myTest.FinishSlide();
+
+  //Conclusions
+  myTest.NewSlide();
+  myTest.AllText();
+  myTest.Title(R"(Conclusions)");
+  myTest.Text(R"(
+  \begin{itemize}
+  \item OS has right shape, MET corrections need work
+  \item SS looks OK, though statistics are limited.  Missing low-MET samples are critical, but this is suppressed by our CR cuts
+  \end{itemize} 
+  )", "--size -1");
+  myTest.FinishSlide();
+
+  //Start Backup
+  myTest.StartBackup();
+
+  //Backup
   myTest.NewSlide();
   myTest.Title("MET -- Upstream, OS");
   myTest.TextPlotPlot("upstream/MET_eemm_OS.pdf", "upstream/MET_em_OS.pdf");
@@ -62,123 +197,6 @@ void makePres(){
   )");
   myTest.FinishSlide();
 
-  //HT
-  myTest.NewSlide();
-  myTest.Title("HT");
-  myTest.TextPlotPlot("nominal/HT_OS.pdf", "nominal/HT.pdf");
-  myTest.Text(R"(
-  \begin{itemize}
-  \item Consistently overpredict in OS channel; shape looks OK.
-  \item SS channel looks fine, limited statistics
-  \end{itemize} 
-  )");
-  myTest.FinishSlide();
-
-  myTest.NewSlide();
-  myTest.Title("HT -- upstream");
-  myTest.TextPlotPlot("upstream/HT_OS.pdf", "upstream/HT.pdf");
-  myTest.Text(R"(
-  \begin{itemize}
-  \item We try going upstream -- no nJets, MET/HT cut
-  \item OS looks great!  
-  \item SS still suffers from missing samples
-  \end{itemize} 
-  )", "--size -1");
-  myTest.FinishSlide();
-
-  myTest.NewSlide();
-  myTest.Title("HT OS looks worse downstream due to the MET $\\geq$ 30 requirement");
-  myTest.TextPlotPlot("special/HT_OS_met30.pdf", "upstream/HT_OS_2jet.pdf");
-  myTest.Text(R"(
-  \begin{itemize}
-  \item Apparently the MET discrepencies we noted previously are causing problems
-  \item The nJets cut causes no problems 
-  \end{itemize} 
-  )", "--size -1");
-  myTest.FinishSlide();
-
-  //Lepton pT
-  myTest.NewSlide();
-  myTest.Title("Lepton $p_{T}$");
-  myTest.TextPlotPlot("nominal/leppt_OS.pdf", "nominal/leppt.pdf");
-  myTest.Text(R"(
-  \begin{itemize}
-  \item OS overpredicts as before
-  \item SS looks OK as before, limited statistics
-  \end{itemize} 
-  )", "--size -1");
-  myTest.FinishSlide();
-
-  //nJets
-  myTest.NewSlide();
-  myTest.Title("nJets");
-  myTest.TextPlotPlot("nominal/nJets_OS.pdf", "nominal/nJets.pdf");
-  myTest.Text(R"(
-  \begin{itemize}
-  \item OS overpredicts as before
-  \item SS looks OK as before, limited statistics
-  \end{itemize} 
-  )", "--size -1");
-  myTest.FinishSlide();
-
-  //nBtags
-  myTest.NewSlide();
-  myTest.Title("nBtags");
-  myTest.TextPlotPlot("nominal/nBtags_OS.pdf", "nominal/nBtags.pdf");
-  myTest.Text(R"(
-  \begin{itemize}
-  \item OS overpredicts as before
-  \item SS looks OK as before, limited statistics
-  \end{itemize} 
-  )", "--size -1");
-  myTest.FinishSlide();
-
-  //mll
-  myTest.NewSlide();
-  myTest.Title(R"($\textrm{M}_{\ell \ell}$)");
-  myTest.TextPlotPlot("nominal/mll_OS.pdf", "nominal/mll.pdf");
-  myTest.Text(R"(
-  \begin{itemize}
-  \item OS overpredicts as before
-  \item SS looks OK as before, limited statistics
-  \end{itemize} 
-  )", "--size -1");
-  myTest.FinishSlide();
-
-  //mht
-  myTest.NewSlide();
-  myTest.Title("MHT");
-  myTest.TextPlotPlot("nominal/mht_OS.pdf", "nominal/mht.pdf");
-  myTest.Text(R"(
-  \begin{itemize}
-  \item OS overpredicts as before
-  \item SS looks OK as before, limited statistics
-  \end{itemize} 
-  )", "--size -1");
-  myTest.FinishSlide();
-
-  //mtmin
-  myTest.NewSlide();
-  myTest.Title(R"($\textrm{M}_{T}$ min)");
-  myTest.TextPlotPlot("nominal/mtmin_OS.pdf", "nominal/mtmin.pdf");
-  myTest.Text(R"(
-  \begin{itemize}
-  \item OS overpredicts as before
-  \item SS looks OK as before, limited statistics
-  \end{itemize} 
-  )", "--size -1");
-  myTest.FinishSlide();
-
-  //Conclusions
-  myTest.AllText();
-  myTest.Title(R"(Conclusions)");
-  myTest.Text(R"(
-  \begin{itemize}
-  \item OS plots consistently underpredict with our selections, but look OK upstream.
-  \item SS looks OK as before, limited statistics
-  \end{itemize} 
-  )", "--size -1");
-  myTest.FinishSlide();
 
   vector <string> out;
   out.push_back("MET");

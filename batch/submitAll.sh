@@ -24,7 +24,7 @@ ptrel="4"
 for expt in "0" "1"
 do
   nIter=0
-  for sname in "DATAMUEG" "TTPOWHEG" "TTBAR"  "WZ" "DY_low" "DY_high" "WJets" "DataDoubleEG" "DataDoubleMuon" # "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4"  
+  for sname in "DY_high" "DATAMUEG" "TTPOWHEG" "TTBAR"  "WZ" "DY_low" "WJets" "DataDoubleEG" "DataDoubleMuon" # "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4"  
   do
     #Iter
     nIter=$(( $nIter + 1 ))
