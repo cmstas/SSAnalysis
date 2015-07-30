@@ -25,6 +25,14 @@
 #pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
 #pragma link C++ typedef ROOT::Math::XYZTVectorF;
 #endif
+#include "Math/Vector4D.h" 
+#include "Math/LorentzVector.h" 
+
+#ifdef __MAKECINT__
+#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+;
+#pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
+#pragma link C++ typedef ROOT::Math::XYZTVectorF;
+#endif
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef vector<pair<const LorentzVector *, double> > jets_with_corr_t;
@@ -59,6 +67,8 @@ class babyMaker {
     //MET
     float met;
     float metPhi;
+    float corrMET;
+    float corrMETphi;
  
     //Meta Variables
     int event;
