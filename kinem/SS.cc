@@ -3,6 +3,8 @@ SSAG samesign;
 namespace ss {
 	const float &met() { return samesign.met(); }
 	const float &metPhi() { return samesign.metPhi(); }
+	const float &corrMET() { return samesign.corrMET(); }
+	const float &corrMETphi() { return samesign.corrMETphi(); }
 	const int &event() { return samesign.event(); }
 	const int &lumi() { return samesign.lumi(); }
 	const int &run() { return samesign.run(); }
@@ -36,6 +38,10 @@ namespace ss {
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets() { return samesign.jets(); }
 	const vector<float> &btags_disc() { return samesign.btags_disc(); }
 	const vector<float> &jets_disc() { return samesign.jets_disc(); }
+	const vector<float> &jets_JEC() { return samesign.jets_JEC(); }
+	const vector<float> &btags_JEC() { return samesign.btags_JEC(); }
+	const vector<float> &jets_undoJEC() { return samesign.jets_undoJEC(); }
+	const vector<float> &btags_undoJEC() { return samesign.btags_undoJEC(); }
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags() { return samesign.btags(); }
 	const int &nbtags() { return samesign.nbtags(); }
 	const float &sf_dilepTrig_hpt() { return samesign.sf_dilepTrig_hpt(); }

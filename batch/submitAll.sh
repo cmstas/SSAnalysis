@@ -24,7 +24,7 @@ ptrel="4"
 for expt in "0" "1"
 do
   nIter=0
-  for sname in "DataDoubleEG" "DataDoubleMuon" #"TTPOWHEG" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4"  "TTBAR"  "WZ" "DY_low" "DY_high" "WJets" 
+  for sname in "DATAMUEG" "TTPOWHEG" "TTBAR"  "WZ" "DY_low" "DY_high" "WJets" "DataDoubleEG" "DataDoubleMuon" # "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4"  
   do
     #Iter
     nIter=$(( $nIter + 1 ))
@@ -68,6 +68,9 @@ do
     elif [ $sname == "SINGLETOP4"    ]; 
       then name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1"
       nameNu=15
+    elif [ $sname == "DATAMUEG"    ]; 
+      then name="Run2015B_MuonEG_MINIAOD_PromptReco-v1";
+      nameNu=16
     else 
       name=$sname 
       nameNu=9999

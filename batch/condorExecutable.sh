@@ -38,6 +38,7 @@ if [ "$WHICH" == "12" ]; then WHICH_SMALL="singletop1"; fi
 if [ "$WHICH" == "13" ]; then WHICH_SMALL="singletop2"; fi
 if [ "$WHICH" == "14" ]; then WHICH_SMALL="singletop3"; fi
 if [ "$WHICH" == "15" ]; then WHICH_SMALL="singletop4"; fi
+if [ "$WHICH" == "16" ]; then WHICH_SMALL="datamueg"; fi
 
 if [ "$PTREL" == "4" ] 
 then

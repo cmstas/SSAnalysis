@@ -24,6 +24,12 @@ protected:
 	float	metPhi_;
 	TBranch *metPhi_branch;
 	bool metPhi_isLoaded;
+	float	corrMET_;
+	TBranch *corrMET_branch;
+	bool corrMET_isLoaded;
+	float	corrMETphi_;
+	TBranch *corrMETphi_branch;
+	bool corrMETphi_isLoaded;
 	int	event_;
 	TBranch *event_branch;
 	bool event_isLoaded;
@@ -123,6 +129,18 @@ protected:
 	vector<float> *jets_disc_;
 	TBranch *jets_disc_branch;
 	bool jets_disc_isLoaded;
+	vector<float> *jets_JEC_;
+	TBranch *jets_JEC_branch;
+	bool jets_JEC_isLoaded;
+	vector<float> *btags_JEC_;
+	TBranch *btags_JEC_branch;
+	bool btags_JEC_isLoaded;
+	vector<float> *jets_undoJEC_;
+	TBranch *jets_undoJEC_branch;
+	bool jets_undoJEC_isLoaded;
+	vector<float> *btags_undoJEC_;
+	TBranch *btags_undoJEC_branch;
+	bool btags_undoJEC_isLoaded;
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > *btags_;
 	TBranch *btags_branch;
 	bool btags_isLoaded;
@@ -540,6 +558,16 @@ void Init(TTree *tree) {
 		metPhi_branch = tree->GetBranch("metPhi");
 		if (metPhi_branch) {metPhi_branch->SetAddress(&metPhi_);}
 	}
+	corrMET_branch = 0;
+	if (tree->GetBranch("corrMET") != 0) {
+		corrMET_branch = tree->GetBranch("corrMET");
+		if (corrMET_branch) {corrMET_branch->SetAddress(&corrMET_);}
+	}
+	corrMETphi_branch = 0;
+	if (tree->GetBranch("corrMETphi") != 0) {
+		corrMETphi_branch = tree->GetBranch("corrMETphi");
+		if (corrMETphi_branch) {corrMETphi_branch->SetAddress(&corrMETphi_);}
+	}
 	event_branch = 0;
 	if (tree->GetBranch("event") != 0) {
 		event_branch = tree->GetBranch("event");
@@ -689,6 +717,26 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("jets_disc") != 0) {
 		jets_disc_branch = tree->GetBranch("jets_disc");
 		if (jets_disc_branch) {jets_disc_branch->SetAddress(&jets_disc_);}
+	}
+	jets_JEC_branch = 0;
+	if (tree->GetBranch("jets_JEC") != 0) {
+		jets_JEC_branch = tree->GetBranch("jets_JEC");
+		if (jets_JEC_branch) {jets_JEC_branch->SetAddress(&jets_JEC_);}
+	}
+	btags_JEC_branch = 0;
+	if (tree->GetBranch("btags_JEC") != 0) {
+		btags_JEC_branch = tree->GetBranch("btags_JEC");
+		if (btags_JEC_branch) {btags_JEC_branch->SetAddress(&btags_JEC_);}
+	}
+	jets_undoJEC_branch = 0;
+	if (tree->GetBranch("jets_undoJEC") != 0) {
+		jets_undoJEC_branch = tree->GetBranch("jets_undoJEC");
+		if (jets_undoJEC_branch) {jets_undoJEC_branch->SetAddress(&jets_undoJEC_);}
+	}
+	btags_undoJEC_branch = 0;
+	if (tree->GetBranch("btags_undoJEC") != 0) {
+		btags_undoJEC_branch = tree->GetBranch("btags_undoJEC");
+		if (btags_undoJEC_branch) {btags_undoJEC_branch->SetAddress(&btags_undoJEC_);}
 	}
 	nbtags_branch = 0;
 	if (tree->GetBranch("nbtags") != 0) {
@@ -1213,6 +1261,8 @@ void GetEntry(unsigned int idx)
 		index = idx;
 		met_isLoaded = false;
 		metPhi_isLoaded = false;
+		corrMET_isLoaded = false;
+		corrMETphi_isLoaded = false;
 		event_isLoaded = false;
 		lumi_isLoaded = false;
 		run_isLoaded = false;
@@ -1246,6 +1296,10 @@ void GetEntry(unsigned int idx)
 		jets_isLoaded = false;
 		btags_disc_isLoaded = false;
 		jets_disc_isLoaded = false;
+		jets_JEC_isLoaded = false;
+		btags_JEC_isLoaded = false;
+		jets_undoJEC_isLoaded = false;
+		btags_undoJEC_isLoaded = false;
 		btags_isLoaded = false;
 		nbtags_isLoaded = false;
 		sf_dilepTrig_hpt_isLoaded = false;
@@ -1366,6 +1420,8 @@ void LoadAllBranches()
 {
 	if (met_branch != 0) met();
 	if (metPhi_branch != 0) metPhi();
+	if (corrMET_branch != 0) corrMET();
+	if (corrMETphi_branch != 0) corrMETphi();
 	if (event_branch != 0) event();
 	if (lumi_branch != 0) lumi();
 	if (run_branch != 0) run();
@@ -1399,6 +1455,10 @@ void LoadAllBranches()
 	if (jets_branch != 0) jets();
 	if (btags_disc_branch != 0) btags_disc();
 	if (jets_disc_branch != 0) jets_disc();
+	if (jets_JEC_branch != 0) jets_JEC();
+	if (btags_JEC_branch != 0) btags_JEC();
+	if (jets_undoJEC_branch != 0) jets_undoJEC();
+	if (btags_undoJEC_branch != 0) btags_undoJEC();
 	if (btags_branch != 0) btags();
 	if (nbtags_branch != 0) nbtags();
 	if (sf_dilepTrig_hpt_branch != 0) sf_dilepTrig_hpt();
@@ -1539,6 +1599,32 @@ void LoadAllBranches()
 			metPhi_isLoaded = true;
 		}
 		return metPhi_;
+	}
+	float &corrMET()
+	{
+		if (not corrMET_isLoaded) {
+			if (corrMET_branch != 0) {
+				corrMET_branch->GetEntry(index);
+			} else { 
+				printf("branch corrMET_branch does not exist!\n");
+				exit(1);
+			}
+			corrMET_isLoaded = true;
+		}
+		return corrMET_;
+	}
+	float &corrMETphi()
+	{
+		if (not corrMETphi_isLoaded) {
+			if (corrMETphi_branch != 0) {
+				corrMETphi_branch->GetEntry(index);
+			} else { 
+				printf("branch corrMETphi_branch does not exist!\n");
+				exit(1);
+			}
+			corrMETphi_isLoaded = true;
+		}
+		return corrMETphi_;
 	}
 	int &event()
 	{
@@ -1968,6 +2054,58 @@ void LoadAllBranches()
 			jets_disc_isLoaded = true;
 		}
 		return *jets_disc_;
+	}
+	const vector<float> &jets_JEC()
+	{
+		if (not jets_JEC_isLoaded) {
+			if (jets_JEC_branch != 0) {
+				jets_JEC_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_JEC_branch does not exist!\n");
+				exit(1);
+			}
+			jets_JEC_isLoaded = true;
+		}
+		return *jets_JEC_;
+	}
+	const vector<float> &btags_JEC()
+	{
+		if (not btags_JEC_isLoaded) {
+			if (btags_JEC_branch != 0) {
+				btags_JEC_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_JEC_branch does not exist!\n");
+				exit(1);
+			}
+			btags_JEC_isLoaded = true;
+		}
+		return *btags_JEC_;
+	}
+	const vector<float> &jets_undoJEC()
+	{
+		if (not jets_undoJEC_isLoaded) {
+			if (jets_undoJEC_branch != 0) {
+				jets_undoJEC_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_undoJEC_branch does not exist!\n");
+				exit(1);
+			}
+			jets_undoJEC_isLoaded = true;
+		}
+		return *jets_undoJEC_;
+	}
+	const vector<float> &btags_undoJEC()
+	{
+		if (not btags_undoJEC_isLoaded) {
+			if (btags_undoJEC_branch != 0) {
+				btags_undoJEC_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_undoJEC_branch does not exist!\n");
+				exit(1);
+			}
+			btags_undoJEC_isLoaded = true;
+		}
+		return *btags_undoJEC_;
 	}
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags()
 	{
@@ -3468,6 +3606,8 @@ extern SSAG samesign;
 namespace ss {
 	const float &met();
 	const float &metPhi();
+	const float &corrMET();
+	const float &corrMETphi();
 	const int &event();
 	const int &lumi();
 	const int &run();
@@ -3501,6 +3641,10 @@ namespace ss {
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets();
 	const vector<float> &btags_disc();
 	const vector<float> &jets_disc();
+	const vector<float> &jets_JEC();
+	const vector<float> &btags_JEC();
+	const vector<float> &jets_undoJEC();
+	const vector<float> &btags_undoJEC();
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags();
 	const int &nbtags();
 	const float &sf_dilepTrig_hpt();
