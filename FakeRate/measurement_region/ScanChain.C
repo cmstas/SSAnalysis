@@ -215,9 +215,57 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   histo_met->SetDirectory(rootdir);
   histo_met->Sumw2();
 
+  TH1F *histo_met_all = new TH1F("histo_met_all", "MET", 20,0,200);
+  histo_met_all->SetDirectory(rootdir);
+  histo_met_all->Sumw2();
+
+  TH1F *histo_met_all_el = new TH1F("histo_met_all_el", "MET", 20,0,200);
+  histo_met_all_el->SetDirectory(rootdir);
+  histo_met_all_el->Sumw2();
+
+  TH1F *histo_met_all_mu = new TH1F("histo_met_all_mu", "MET", 20,0,200);
+  histo_met_all_mu->SetDirectory(rootdir);
+  histo_met_all_mu->Sumw2();
+
+  TH1F *histo_met_lm = new TH1F("histo_met_lm", "MET", 20,0,200);
+  histo_met_lm->SetDirectory(rootdir);
+  histo_met_lm->Sumw2();
+
+  TH1F *histo_met_lm_el = new TH1F("histo_met_lm_el", "MET", 20,0,200);
+  histo_met_lm_el->SetDirectory(rootdir);
+  histo_met_lm_el->Sumw2();
+
+  TH1F *histo_met_lm_mu = new TH1F("histo_met_lm_mu", "MET", 20,0,200);
+  histo_met_lm_mu->SetDirectory(rootdir);
+  histo_met_lm_mu->Sumw2();
+
+  TH1F *histo_met_cr = new TH1F("histo_met_cr", "MET", 20,0,200);
+  histo_met_cr->SetDirectory(rootdir);
+  histo_met_cr->Sumw2();
+
+  TH1F *histo_met_cr_el = new TH1F("histo_met_cr_el", "MET", 20,0,200);
+  histo_met_cr_el->SetDirectory(rootdir);
+  histo_met_cr_el->Sumw2();
+
+  TH1F *histo_met_cr_mu = new TH1F("histo_met_cr_mu", "MET", 20,0,200);
+  histo_met_cr_mu->SetDirectory(rootdir);
+  histo_met_cr_mu->Sumw2();
+
   TH1F *histo_mt = new TH1F("histo_mt", "MT", 20,0,1000);
   histo_mt->SetDirectory(rootdir);
   histo_mt->Sumw2();
+
+  TH1F *histo_mt_all = new TH1F("histo_mt_all", "MT", 20,0,200);
+  histo_mt_all->SetDirectory(rootdir);
+  histo_mt_all->Sumw2();
+
+  TH1F *histo_mt_all_el = new TH1F("histo_mt_all_el", "MT", 20,0,200);
+  histo_mt_all_el->SetDirectory(rootdir);
+  histo_mt_all_el->Sumw2();
+
+  TH1F *histo_mt_all_mu = new TH1F("histo_mt_all_mu", "MT", 20,0,200);
+  histo_mt_all_mu->SetDirectory(rootdir);
+  histo_mt_all_mu->Sumw2();
 
   TH1F *histo_mt_lm = new TH1F("histo_mt_lm", "MT", 20,0,200);
   histo_mt_lm->SetDirectory(rootdir);
@@ -242,6 +290,50 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TH1F *histo_mt_cr_mu = new TH1F("histo_mt_cr_mu", "MT", 20,0,200);
   histo_mt_cr_mu->SetDirectory(rootdir);
   histo_mt_cr_mu->Sumw2();
+
+  TH1F *histo_pt_mu = new TH1F("histo_pt_mu", "pt mu", 100,0,200);
+  histo_pt_mu->SetDirectory(rootdir);
+  histo_pt_mu->Sumw2();
+
+  TH1F *histo_pt_mu8 = new TH1F("histo_pt_mu8", "pt mu8", 100,0,200);
+  histo_pt_mu8->SetDirectory(rootdir);
+  histo_pt_mu8->Sumw2();
+
+  TH1F *histo_pt_mu17 = new TH1F("histo_pt_mu17", "pt mu17", 100,0,200);
+  histo_pt_mu17->SetDirectory(rootdir);
+  histo_pt_mu17->Sumw2();
+
+  TH1F *histo_pt_mu24 = new TH1F("histo_pt_mu24", "pt mu24", 100,0,200);
+  histo_pt_mu24->SetDirectory(rootdir);
+  histo_pt_mu24->Sumw2();
+
+  TH1F *histo_pt_mu34 = new TH1F("histo_pt_mu34", "pt mu34", 100,0,200);
+  histo_pt_mu34->SetDirectory(rootdir);
+  histo_pt_mu34->Sumw2();
+
+  TH1F *histo_pt_el = new TH1F("histo_pt_el", "pt el", 100,0,200);
+  histo_pt_el->SetDirectory(rootdir);
+  histo_pt_el->Sumw2();
+
+  TH1F *histo_pt_el8 = new TH1F("histo_pt_el8", "pt el8", 100,0,200);
+  histo_pt_el8->SetDirectory(rootdir);
+  histo_pt_el8->Sumw2();
+
+  TH1F *histo_pt_el12 = new TH1F("histo_pt_el12", "pt el12", 100,0,200);
+  histo_pt_el12->SetDirectory(rootdir);
+  histo_pt_el12->Sumw2();
+
+  TH1F *histo_pt_el17 = new TH1F("histo_pt_el17", "pt el17", 100,0,200);
+  histo_pt_el17->SetDirectory(rootdir);
+  histo_pt_el17->Sumw2();
+
+  TH1F *histo_pt_el24 = new TH1F("histo_pt_el24", "pt el24", 100,0,200);
+  histo_pt_el24->SetDirectory(rootdir);
+  histo_pt_el24->Sumw2();
+
+  TH1F *histo_pt_el34 = new TH1F("histo_pt_el34", "pt el34", 100,0,200);
+  histo_pt_el34->SetDirectory(rootdir);
+  histo_pt_el34->Sumw2();
 
   TH1F *njets40_histo = new TH1F("njets40_histo", "Njets with pT > 40 GeV", 5,0,5);
   njets40_histo->SetDirectory(rootdir);
@@ -300,22 +392,71 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //cout << "lepp4=" << p4() << " jetp4=" << jet_close_lep() << endl;
 
       bool isData = evt_isRealData();
-      bool noMCMatch = true;
+      bool noMCMatch = false;
       if (isData) noMCMatch = true;
 
+      bool isEWK = false;
+      if (TString(currentFile->GetTitle()).Contains("WJets") || TString(currentFile->GetTitle()).Contains("DY")) isEWK = true;
+
       // Analysis Code
-      float weight = scale1fb()*0.0057;//10.0/1000.;//use 10./pb for sync
+      float lumi = 0.040;//in /fb
+      float weight = scale1fb()*lumi;
       if (isData) weight = 1.;
 
-      /*
-      if(isData==0 && scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
-      if(isData==0 && abs(id())==13 && p4().pt()<15. && scale1fb() > 79. && scale1fb() < 80.) continue;  //take only Mu15 above pT=15
-      if(isData==0 && abs(id())==13 && p4().pt()>15. && (scale1fb() < 79. || scale1fb() > 80.)) continue;  //take only Mu5 below pT=15
+      if (isData==0 && isEWK==0) {
 
-      //make sure we use mu from MuEnrich and el from EG+BCtoE
-      if (isData==0 && abs(id())==13 && fabs(scale1fb()-20.94)>0.1 && fabs(scale1fb()-79.81)>0.1 && fabs(scale1fb()-85.19)>0.1 && fabs(scale1fb()-357.93)>0.1) continue;
-      if (isData==0 && abs(id())==11 && !(fabs(scale1fb()-20.94)>0.1 && fabs(scale1fb()-79.81)>0.1 && fabs(scale1fb()-85.19)>0.1 && fabs(scale1fb()-357.93)>0.1)) continue;
-      */
+	if (abs(id())==13) {
+	  /*
+	  //Map of samples and correspongding scale1fb
+	  /QCD_Pt-15to20_MuEnrichedPt5    1618.8612
+	  /QCD_Pt-20to30_MuEnrichedPt5    564.34503
+	  /QCD_Pt-30to50_MuEnrichedPt5    334.38748
+	  /QCD_Pt-50to80_MuEnrichedPt5    86.584976
+	  /QCD_Pt-80to120_MuEnrichedPt5   27.320997
+	  /QCD_Pt-120to170_MuEnrichedPt5  6.2567968
+	  /QCD_Pt-170to300_MuEnrichedPt5  2.1951010
+	  /QCD_Pt-300to470_MuEnrichedPt5  0.2039125
+	  /QCD_Pt-470to600_MuEnrichedPt5  0.0409794
+	  /QCD_Pt-600to800_MuEnrichedPt5  0.0126527
+	  /QCD_Pt-800to1000_MuEnrichedPt5 0.0023746
+	  /QCD_Pt-1000toInf_MuEnrichedPt5 0.0008180
+	  /QCD_Pt-20toInf_MuEnrichedPt15 22.926769
+	  */
+	  if (p4().pt()<15. &&  scale1fb() > 22.9 && scale1fb() < 23.0 ) continue;  //take only Mu15 above pT=15
+	  if (p4().pt()>15. && (scale1fb() < 22.9 || scale1fb() > 23.0)) continue;  //take only Mu5 below pT=15
+	  if (scale1fb() < 5.0 || scale1fb() > 600.) continue; //avoid extreme ranges and weights
+	}	
+	
+	if (abs(id())==11) {
+	  /*
+	  //Map of samples and correspongding scale1fb
+	  /QCD_Pt_15to20_bcToE   280.49151
+	  /QCD_Pt_20to30_bcToE   101.22869
+	  /QCD_Pt_30to80_bcToE   79.645675
+	  /QCD_Pt_80to170_bcToE  7.4107956
+	  /QCD_Pt_170to250_bcToE 0.9143287
+	  /QCD_Pt_250toInf_bcToE 0.2412396
+	  /QCD_Pt-15to20_EMEnriched   1085.0196
+	  /QCD_Pt-20to30_EMEnriched   583.37152
+	  /QCD_Pt-30to50_EMEnriched   2114.1918
+	  /QCD_Pt-50to80_EMEnriched   553.06378
+	  /QCD_Pt-80to120_EMEnriched  43.048187
+	  /QCD_Pt-120to170_EMEnriched 7.4082317
+	  /QCD_Pt-170to300_EMEnriched 3.2795264
+	  /QCD_Pt-300toInf_EMEnriched 0.3651889
+	  */
+	  //if(isData==0 && scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
+	  if (scale1fb() < 5.0) continue; //avoid extreme ranges and weights
+	  if (scale1fb() > 280 && scale1fb() < 281) continue; 
+	  if (scale1fb() > 1085 && scale1fb() < 1086) continue; 
+	}
+
+	//fixme
+	//make sure we use mu from MuEnrich and el from EG+BCtoE
+	// if (isData==0 && abs(id())==13 && fabs(scale1fb()-20.94)>0.1 && fabs(scale1fb()-79.81)>0.1 && fabs(scale1fb()-85.19)>0.1 && fabs(scale1fb()-357.93)>0.1) continue;
+	// if (isData==0 && abs(id())==11 && !(fabs(scale1fb()-20.94)>0.1 && fabs(scale1fb()-79.81)>0.1 && fabs(scale1fb()-85.19)>0.1 && fabs(scale1fb()-357.93)>0.1)) continue;
+
+      }
 
       bool jetptcut = false;
       float ht = 0.;
@@ -342,46 +483,77 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	{continue;}
 
       //trigger selection (fixme add also iso triggers)
-      if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()==0  && 
-	  HLT_Ele12_CaloIdM_TrackIdM_PFJet30()==0 && 
-	  HLT_Ele18_CaloIdM_TrackIdM_PFJet30()==0 && 
-	  HLT_Ele23_CaloIdM_TrackIdM_PFJet30()==0 && 
-	  HLT_Ele33_CaloIdM_TrackIdM_PFJet30()==0 &&
-	  abs(id())==11) continue;
-      if (HLT_Mu8()<=0  && 
-	  HLT_Mu17()<=0 && 
-	  HLT_Mu24()<=0 && 
-	  HLT_Mu34()<=0 &&
-	  abs(id())==13) continue;
-
-      //fixme hacks for first data! add prescales when available...
       if (abs(id())==11) {
-	if (isData && evt_run()!=251244 && evt_run()!=251251 && evt_run()!=251252 && evt_run()!=251561 && evt_run()!=251562) continue;
-	if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()==0 && HLT_Ele33_CaloIdM_TrackIdM_PFJet30()==0) continue;
-      }
-      if (isData && abs(id())==13) {
-	if (evt_run()==251244 || evt_run()==251251 || evt_run()==251252) {
-	  if (HLT_Mu34())      weight*=37.;
-	  // else if (HLT_Mu24()) weight*=140.;
-	  // else if (HLT_Mu17()) weight*=1000.;
-	  // else if (HLT_Mu8())  weight*=680.;
-	  else continue;
-	} else if (evt_run()==251559 || evt_run()==251560 || evt_run()==251561 || evt_run()==251562 || evt_run()==251883) {
-	  if (HLT_Mu34())      weight*=75.;
-	  // else if (HLT_Mu24()) weight*=280.;
-	  else if (HLT_Mu17()) weight*=11.;
-	  else if (HLT_Mu8())  weight*=520.;
-	  else continue;
-	} else if (evt_run()==251638 || evt_run()==251640 || evt_run()==251643 || evt_run()==251721) {
-	  // if (HLT_Mu34())      weight*=112.;
-	  // else if (HLT_Mu24()) weight*=420.;
-	  // else 
-	  if (HLT_Mu17()) weight*=15.;
-	  // else if (HLT_Mu8())  weight*=800.;
-	  else continue;
-	} else continue; 
-      }
+	//fixme
+	if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()==0  && 
+	    HLT_Ele12_CaloIdM_TrackIdM_PFJet30()==0 && 
+	    HLT_Ele18_CaloIdM_TrackIdM_PFJet30()==0 && 
+	    HLT_Ele23_CaloIdM_TrackIdM_PFJet30()==0 && 
+	    HLT_Ele33_CaloIdM_TrackIdM_PFJet30()==0 ) continue;
+	
+	if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()==0) continue;//fixme temp
 
+      }
+      if (abs(id())==13) {
+	if (HLT_Mu8()<=0  && 
+	    HLT_Mu17()<=0 && 
+	    HLT_Mu24()<=0 && 
+	    HLT_Mu34()<=0 ) continue;
+
+	if (HLT_Mu8()<=0 && HLT_Mu17()<=0) continue;//fixme temp
+
+      }	
+      //check prescales for data
+      int prescale = -1;
+      if (isData) {
+	if (abs(id())==11) {
+
+	  // if (p4().pt()>35 && HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele33_CaloIdM_TrackIdM_PFJet30();
+	  // else if (p4().pt()<=35 && p4().pt()>25 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
+	  // else if (p4().pt()<=25 && p4().pt()>20 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();
+	  // else if (p4().pt()<=20 && p4().pt()>15 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
+	  // else if (p4().pt()<=15 && p4().pt()>10 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 ) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30() ;
+	  // if (prescale>0) weight *= prescale;
+	  // else continue;
+
+	  if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
+
+	  if (p4().pt()>25 && prescale!=1) continue;
+
+	  // if (p4().pt()>25) continue;
+	  // int prescale = INT_MAX;
+	  // if (HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele33_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele33_CaloIdM_TrackIdM_PFJet30();
+	  // if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
+	  // if (HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();
+	  // if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
+	  // if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
+	  // if (prescale>0 && prescale<1500) weight *= prescale;
+	  // else continue;
+	  
+	  // if ((HLT_Ele23_CaloIdM_TrackIdM_PFJet30() || HLT_Ele33_CaloIdM_TrackIdM_PFJet30()) && minPrescale>1000) {
+	    // cout << evt_run() << " " << 
+	    //   minPrescale << " " <<
+	    //   HLT_Ele8_CaloIdM_TrackIdM_PFJet30() << " " << 
+	    //   HLT_Ele12_CaloIdM_TrackIdM_PFJet30() << " " << 
+	    //   HLT_Ele18_CaloIdM_TrackIdM_PFJet30() << " " << 
+	    //   HLT_Ele23_CaloIdM_TrackIdM_PFJet30() << " " << 
+	    //   HLT_Ele33_CaloIdM_TrackIdM_PFJet30() << " " << 
+	    //   endl;
+	  // }
+
+	}
+	if (abs(id())==13) {
+
+	  // if (p4().pt()>38 && HLT_Mu34()>0) prescale = HLT_Mu34();
+	  // else if (p4().pt()<=38 && p4().pt()>28 && HLT_Mu24()>0) prescale = HLT_Mu24();
+	  // else if (p4().pt()<=28 && p4().pt()>20 && HLT_Mu17()>0) prescale = HLT_Mu17();
+	  if (p4().pt()>20 && HLT_Mu17()>0) prescale = HLT_Mu17();
+	  else if (p4().pt()<=20 && p4().pt()>10 && HLT_Mu8() >0) prescale = HLT_Mu8();
+	  if (prescale>0) weight *= prescale;
+	  else continue;
+	  
+	}
+      } 
 
       if(nFOs_SS() > 1) //if more than 1 FO in event
 	{continue;}
@@ -416,26 +588,67 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	float cut_deta  = 0.01;
 	float cut_dphi  = isEB ? 0.04 : 0.08;
 	float cut_invep = 0.01;
-	bool passCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
-	passFO = passCuts && passes_SS_fo_looseMVA_v3();
-	passFO_noiso = passCuts && passes_SS_fo_looseMVA_noiso_v3();
+	bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
+	passFO = passHltCuts && passes_SS_fo_looseMVA_v3();
+	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v3();
       }
 
 
-      if (evt_pfmet() < 30. && passId) {
-	histo_mt_lm->Fill( std::min(mt(),float(200.)), weight );
-	if (abs(id()==11)) histo_mt_lm_el->Fill( std::min(mt(),float(200.)), weight );
-	if (abs(id()==13)) histo_mt_lm_mu->Fill( std::min(mt(),float(200.)), weight );
-      }
-      if (evt_pfmet() > 30. && passId) {
-	histo_mt_cr->Fill( std::min(mt(),float(200.)), weight );
-	if (abs(id()==11)) histo_mt_cr_el->Fill( std::min(mt(),float(200.)), weight );
-	if (abs(id()==13)) histo_mt_cr_mu->Fill( std::min(mt(),float(200.)), weight );
+      if (passId) {
+	//mt control region
+	if (evt_pfmet() > 30. && p4().pt()>30) {
+	  histo_mt_all->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==11)) histo_mt_all_el->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==13)) histo_mt_all_mu->Fill( std::min(mt(),float(200.)), weight );
+	}
+	if (evt_pfmet() < 20.) {
+	  histo_mt_lm->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==11)) histo_mt_lm_el->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==13)) histo_mt_lm_mu->Fill( std::min(mt(),float(200.)), weight );
+	}
+	if (evt_pfmet() > 30.) {
+	  histo_mt_cr->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==11)) histo_mt_cr_el->Fill( std::min(mt(),float(200.)), weight );
+	  if (abs(id()==13)) histo_mt_cr_mu->Fill( std::min(mt(),float(200.)), weight );
+	}
+	//test if bad data/MC ratio in mt control region is due to met
+	if (p4().pt()>30) {
+	  histo_met_all->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==11)) histo_met_all_el->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==13)) histo_met_all_mu->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	}
+	if (mt() < 20.) {
+	  histo_met_lm->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==11)) histo_met_lm_el->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==13)) histo_met_lm_mu->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	}
+	if (mt() > 30.) {
+	  histo_met_cr->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==11)) histo_met_cr_el->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  if (abs(id()==13)) histo_met_cr_mu->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	}
       }
       if( !(evt_pfmet() < 20. && mt() < 20) ) {
 	continue;
       }
 
+      if (isData && passFO) {
+	if (abs(id())==11) {
+	  if (HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el34->Fill(p4().pt(),HLT_Ele33_CaloIdM_TrackIdM_PFJet30());
+	  if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el24->Fill(p4().pt(),HLT_Ele23_CaloIdM_TrackIdM_PFJet30());
+	  if (HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el17->Fill(p4().pt(),HLT_Ele18_CaloIdM_TrackIdM_PFJet30());
+	  if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el12->Fill(p4().pt(),HLT_Ele12_CaloIdM_TrackIdM_PFJet30());
+	  if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 ) histo_pt_el8->Fill(p4().pt() ,HLT_Ele8_CaloIdM_TrackIdM_PFJet30() );
+	  histo_pt_el->Fill(p4().pt(), prescale );
+	}
+	if (abs(id())==13) {
+	  if (HLT_Mu34()>0) histo_pt_mu34->Fill(p4().pt(),HLT_Mu34());
+	  if (HLT_Mu24()>0) histo_pt_mu24->Fill(p4().pt(),HLT_Mu24());
+	  if (HLT_Mu17()>0) histo_pt_mu17->Fill(p4().pt(),HLT_Mu17());
+	  if (HLT_Mu8()>0 ) histo_pt_mu8->Fill(p4().pt() ,HLT_Mu8() );
+	  histo_pt_mu->Fill(p4().pt(), prescale );	  
+	}
+      } 
 
       if (usePtRatioCor) {
 	if (abs(id())==11) {
@@ -478,7 +691,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //Using gen level info to see if prompt -> no prompt contamination in measurement region
       //everything else is RECO (p4, id, passes_id, FO, etc.)
 
-      if( noMCMatch || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if lep is nonprompt
+      if( noMCMatch || (isEWK && motherID() == 1) || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if lep is nonprompt
 	{
 
 	  if( abs( id() ) == 11 ) //it's an el
@@ -522,7 +735,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //everything else is RECO (p4, id, passes_id, FO, etc.)
 	  
 
-      if( noMCMatch || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if el is nonprompt (GEN info)
+      if( noMCMatch || (isEWK && motherID() == 1) || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if el is nonprompt (GEN info)
 	{
 
 	  if (passFO) {
@@ -777,13 +990,36 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   pTrel_histo_mu->Write();
   histo_ht->Write();
   histo_met->Write();
+  histo_met_all->Write();
+  histo_met_all_el->Write();
+  histo_met_all_mu->Write();
+  histo_met_lm->Write();
+  histo_met_lm_el->Write();
+  histo_met_lm_mu->Write();
+  histo_met_cr->Write();
+  histo_met_cr_el->Write();
+  histo_met_cr_mu->Write();
   histo_mt->Write();
+  histo_mt_all->Write();
+  histo_mt_all_el->Write();
+  histo_mt_all_mu->Write();
   histo_mt_lm->Write();
   histo_mt_lm_el->Write();
   histo_mt_lm_mu->Write();
   histo_mt_cr->Write();
   histo_mt_cr_el->Write();
   histo_mt_cr_mu->Write();
+  histo_pt_mu34->Write();
+  histo_pt_mu24->Write();
+  histo_pt_mu17->Write();
+  histo_pt_mu8->Write();
+  histo_pt_mu->Write();
+  histo_pt_el34->Write();
+  histo_pt_el24->Write();
+  histo_pt_el17->Write();
+  histo_pt_el12->Write();
+  histo_pt_el8->Write();
+  histo_pt_el->Write();
   njets40_histo->Write();
   OutputFile->Close();
 
@@ -825,13 +1061,36 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   delete pTrel_histo_mu;
   delete histo_ht;
   delete histo_met;
+  delete histo_met_all;
+  delete histo_met_all_el;
+  delete histo_met_all_mu;
+  delete histo_met_lm;
+  delete histo_met_lm_el;
+  delete histo_met_lm_mu;
+  delete histo_met_cr;
+  delete histo_met_cr_el;
+  delete histo_met_cr_mu;
   delete histo_mt;
+  delete histo_mt_all;
+  delete histo_mt_all_el;
+  delete histo_mt_all_mu;
   delete histo_mt_lm;
   delete histo_mt_lm_el;
   delete histo_mt_lm_mu;
   delete histo_mt_cr;
   delete histo_mt_cr_el;
   delete histo_mt_cr_mu;
+  delete histo_pt_mu34;
+  delete histo_pt_mu24;
+  delete histo_pt_mu17;
+  delete histo_pt_mu8 ;
+  delete histo_pt_mu  ;
+  delete histo_pt_el34;
+  delete histo_pt_el24;
+  delete histo_pt_el17;
+  delete histo_pt_el12;
+  delete histo_pt_el8 ;
+  delete histo_pt_el  ;
   delete njets40_histo;
 
   // return

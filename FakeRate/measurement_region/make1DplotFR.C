@@ -1,4 +1,9 @@
-{
+#include "../../software/dataMCplotMaker/dataMCplotMaker.cc"
+#include "TFile.h"
+#include "TH2.h"
+#include "TPaveText.h"
+
+void make1DplotFR(){
 
   gROOT->Reset();
   gStyle->SetOptStat(0);
@@ -16,10 +21,19 @@
   // var="_jet_highpt";
   // var="_jet_lowpt";
 
-  TFile* f_qcd = TFile::Open("rate_histos_qcd"+postfix+".root");
+  //scale factors from MT control region plot
+  float muSF = 0.54;
+  float elSF = 0.42;
 
-  TH2F* mud_qcd = (TH2F*) f_qcd->Get("Nl"+var+"_histo_mu");  
-  TH2F* eld_qcd = (TH2F*) f_qcd->Get("Nl"+var+"_histo_e");
+  //scale factors from Z peak
+  float muSF_zp = 0.93;
+  float elSF_zp = 0.44;
+
+  TFile* f_qcd_mu = TFile::Open("rate_histos_qcd_mu"+postfix+".root");
+  TFile* f_qcd_el = TFile::Open("rate_histos_qcd_el"+postfix+".root");
+
+  TH2F* mud_qcd = (TH2F*) f_qcd_mu->Get("Nl"+var+"_histo_mu");  
+  TH2F* eld_qcd = (TH2F*) f_qcd_el->Get("Nl"+var+"_histo_e");
 
   TH1D* mud1d_qcd = mud_qcd->ProjectionX();
   TH1D* eld1d_qcd = eld_qcd->ProjectionX();
@@ -27,11 +41,11 @@
   TH2F* mun_qcd = 0;
   TH2F* eln_qcd = 0;
   if (var.Contains("_jet")) {
-    mun_qcd = (TH2F*) f_qcd->Get("Nt"+var+"_histo_mu");  
-    eln_qcd = (TH2F*) f_qcd->Get("Nt"+var+"_histo_e");
+    mun_qcd = (TH2F*) f_qcd_mu->Get("Nt"+var+"_histo_mu");  
+    eln_qcd = (TH2F*) f_qcd_el->Get("Nt"+var+"_histo_e");
   } else {
-    mun_qcd = (TH2F*) f_qcd->Get("Nt_histo_mu");  
-    eln_qcd = (TH2F*) f_qcd->Get("Nt_histo_e");
+    mun_qcd = (TH2F*) f_qcd_mu->Get("Nt_histo_mu");  
+    eln_qcd = (TH2F*) f_qcd_el->Get("Nt_histo_e");
   }
 
   TH1D* mun1d_qcd = mun_qcd->ProjectionX();
@@ -53,19 +67,28 @@
   TH2F* eld_wj = (TH2F*) f_wj->Get("Nl"+var+"_histo_e");
   TH2F* eld_dy = (TH2F*) f_dy->Get("Nl"+var+"_histo_e");
 
-  //scale factors from MT control region plot
-  mud_wj->Scale(4.5);
-  mud_dy->Scale(4.5);
-  eld_wj->Scale(0.8);
-  eld_dy->Scale(0.8);
-
-  mud_data->Add(mud_wj,-1.);
-  mud_data->Add(mud_dy,-1.);
-  eld_data->Add(eld_wj,-1.);
-  eld_data->Add(eld_dy,-1.);
+  mud_data->Add(mud_wj,-1.*muSF);
+  mud_data->Add(mud_dy,-1.*muSF);
+  eld_data->Add(eld_wj,-1.*elSF);
+  eld_data->Add(eld_dy,-1.*elSF);
 
   TH1D* mud1d_data = mud_data->ProjectionX();
   TH1D* eld1d_data = eld_data->ProjectionX();
+
+  TH2F* mud_data_zp = (TH2F*) mud_data->Clone("mud_data_zp");
+  TH2F* mud_wj_zp   = (TH2F*) mud_wj->Clone("mud_wj_zp");
+  TH2F* mud_dy_zp   = (TH2F*) mud_dy->Clone("mud_dy_zp");
+  TH2F* eld_data_zp = (TH2F*) eld_data->Clone("eld_data_zp");
+  TH2F* eld_wj_zp   = (TH2F*) eld_wj->Clone("eld_wj_zp");
+  TH2F* eld_dy_zp   = (TH2F*) eld_dy->Clone("eld_dy_zp");
+
+  mud_data_zp->Add(mud_wj_zp,-1.*muSF_zp);
+  mud_data_zp->Add(mud_dy_zp,-1.*muSF_zp);
+  eld_data_zp->Add(eld_wj_zp,-1.*elSF_zp);
+  eld_data_zp->Add(eld_dy_zp,-1.*elSF_zp);
+
+  TH1D* mud1d_data_zp = mud_data_zp->ProjectionX();
+  TH1D* eld1d_data_zp = eld_data_zp->ProjectionX();
 
   TH2F* mun_data = 0;
   TH2F* mun_wj   = 0;
@@ -89,13 +112,28 @@
     eln_dy   = (TH2F*) f_dy->Get("Nt_histo_e");
   }
 
-  mun_data->Add(mun_wj,-1.);
-  mun_data->Add(mun_dy,-1.);
-  eln_data->Add(eln_wj,-1.);
-  eln_data->Add(eln_dy,-1.);
+  mun_data->Add(mun_wj,-1.*muSF);
+  mun_data->Add(mun_dy,-1.*muSF);
+  eln_data->Add(eln_wj,-1.*elSF);
+  eln_data->Add(eln_dy,-1.*elSF);
 
   TH1D* mun1d_data = mun_data->ProjectionX();
   TH1D* eln1d_data = eln_data->ProjectionX();
+
+  TH2F* mun_data_zp = (TH2F*) mun_data->Clone("mun_data_zp");
+  TH2F* mun_wj_zp   = (TH2F*) mun_wj->Clone("mun_wj_zp");
+  TH2F* mun_dy_zp   = (TH2F*) mun_dy->Clone("mun_dy_zp");
+  TH2F* eln_data_zp = (TH2F*) eln_data->Clone("eln_data_zp");
+  TH2F* eln_wj_zp   = (TH2F*) eln_wj->Clone("eln_wj_zp");
+  TH2F* eln_dy_zp   = (TH2F*) eln_dy->Clone("eln_dy_zp");
+
+  mun_data_zp->Add(mun_wj_zp,-1.*muSF_zp);
+  mun_data_zp->Add(mun_dy_zp,-1.*muSF_zp);
+  eln_data_zp->Add(eln_wj_zp,-1.*elSF_zp);
+  eln_data_zp->Add(eln_dy_zp,-1.*elSF_zp);
+
+  TH1D* mun1d_data_zp = mun_data_zp->ProjectionX();
+  TH1D* eln1d_data_zp = eln_data_zp->ProjectionX();
 
   TH1D *muf_data = (TH1D*) mun1d_data->Clone("rate_histo_mu");
   muf_data->Divide(mun1d_data,mud1d_data,1,1,"B");
@@ -104,8 +142,53 @@
   elf_data->Divide(eln1d_data,eld1d_data,1,1,"B");
   elf_data->SetMarkerStyle(20);
 
+  TH1D *muf_data_zp = (TH1D*) mun1d_data_zp->Clone("rate_histo_mu_zp");
+  muf_data_zp->Divide(mun1d_data_zp,mud1d_data_zp,1,1,"B");
+  TH1D *elf_data_zp = (TH1D*) eln1d_data_zp->Clone("rate_histo_el_zp");
+  elf_data_zp->Divide(eln1d_data_zp,eld1d_data_zp,1,1,"B");
+
+  TH1D *muf_data_syst = (TH1D*) muf_data->Clone("rate_histo_mu_syst");
+  muf_data_syst->SetFillColor(kBlack);
+  muf_data_syst->SetFillStyle(3004);
+  for (int bin=1;bin<=muf_data_syst->GetNbinsX();++bin) {
+    muf_data_syst->SetBinError(bin,fabs(muf_data->GetBinContent(bin)-muf_data_zp->GetBinContent(bin)));
+  }
+  TH1D *elf_data_syst = (TH1D*) elf_data->Clone("rate_histo_el_syst");
+  elf_data_syst->SetFillColor(kBlack);
+  elf_data_syst->SetFillStyle(3004);
+  for (int bin=1;bin<=elf_data_syst->GetNbinsX();++bin) {
+    elf_data_syst->SetBinError(bin,fabs(elf_data->GetBinContent(bin)-elf_data_zp->GetBinContent(bin)));
+  }
+
+  /*
+  std::vector <string> Titles;
+  Titles.push_back("Syst");
+  Titles.push_back("QCD MC");
+  TH1F* muf_data_copy = new TH1F("mu_data","mu_data",1,0,1);
+  muf_data->Copy(*muf_data_copy);
+  TH1F* muf_data_syst_copy = new TH1F("mu_data_syst","mu_data_syst",1,0,1);
+  muf_data_syst->Copy(*muf_data_syst_copy);
+  TH1F* muf_qcd_copy = new TH1F("qcd","qcd",1,0,1);
+  muf_qcd->Copy(*muf_qcd_copy);
+  std::vector<TH1F*> mu_qcd_vec;
+  mu_qcd_vec.push_back(muf_data_syst_copy);
+  mu_qcd_vec.push_back(muf_qcd_copy);
+  dataMCplotMaker(muf_data_copy, mu_qcd_vec, Titles, "", "", Form("--outputName mu_1dfr%s%s --png --noStack --isLinear --drawDots --lumi 0.040 --xAxisLabel muon p_{T}^{corr.} --xAxisUnit GeV --setMaximum 0.5 --errHistAtBottom",var.Data(),postfix.Data()));//, std::vector<TH1F*>(), std::vector<string>(), std::vector<Color_t>()
+  TH1F* elf_data_copy = new TH1F("el_data","el_data",1,0,1);
+  elf_data->Copy(*elf_data_copy);
+  TH1F* elf_data_syst_copy = new TH1F("el_data_syst","el_data_syst",1,0,1);
+  elf_data_syst->Copy(*elf_data_syst_copy);
+  TH1F* elf_qcd_copy = new TH1F("qcd","qcd",1,0,1);
+  elf_qcd->Copy(*elf_qcd_copy);
+  std::vector<TH1F*> el_qcd_vec;
+  el_qcd_vec.push_back(elf_data_syst_copy);
+  el_qcd_vec.push_back(elf_qcd_copy);
+  dataMCplotMaker(elf_data_copy, el_qcd_vec, Titles, "", "", Form("--outputName el_1dfr%s%s --png --noStack --isLinear --drawDots --lumi 0.040 --xAxisLabel electron p_{T}^{corr.} --xAxisUnit GeV --setMaximum 0.5 --errHistAtBottom",var.Data(),postfix.Data()));//, std::vector<TH1F*>(), std::vector<string>(), std::vector<Color_t>()
+  */
+
   muf_qcd->SetTitle("");
   muf_qcd->GetYaxis()->SetTitleOffset(1.25);
+  muf_qcd->GetXaxis()->SetTitleOffset(1.1);
   muf_qcd->GetYaxis()->SetTitle("muon fake rate");
   muf_qcd->GetXaxis()->SetTitle("muon p_{T} [GeV]");
   if (var=="_cone") muf_qcd->GetXaxis()->SetTitle("muon p_{T}^{corr.} [GeV]");
@@ -116,24 +199,23 @@
   muf_qcd->SetMarkerColor(kRed);
   muf_qcd->SetLineColor(kRed);
   muf_qcd->Draw("PE");
+  muf_data_syst->Draw("E2,same");
   muf_data->Draw("PEsame");
   c1.RedrawAxis();
 
-  TLegend* leg = new TLegend(0.7,0.7,0.89,0.89);
+  TLegend* leg = new TLegend(0.12,0.78,0.4,0.89);
   leg->SetFillColor(kWhite);
   leg->SetLineColor(kWhite);
-  // leg->SetHeader("CMS Preliminary, L~few/pb");
   leg->AddEntry(muf_qcd,"QCD MC","ple");
   leg->AddEntry(muf_data,"data","ple");
   leg->Draw();
 
-  TPaveText* labelcms  = new TPaveText(0.12,0.75,0.5,0.89,"NDCBR");
+  TPaveText* labelcms  = new TPaveText(0.52,0.78,0.89,0.89,"NDCBR");
   labelcms->SetTextAlign(12);
   labelcms->SetTextSize(0.035);
   labelcms->SetFillColor(kWhite);
   labelcms->AddText("CMS Preliminary");
-  labelcms->AddText("#sqrt{s} = 13 TeV");
-  labelcms->AddText("L ~ O(10) pb^{-1}");
+  labelcms->AddText("#sqrt{s} = 13 TeV, L = 40 pb^{-1}");
   labelcms->SetBorderSize(0);
   labelcms->SetTextFont(42);
   labelcms->SetLineWidth(2);
@@ -141,6 +223,7 @@
 
   elf_qcd->SetTitle("");
   elf_qcd->GetYaxis()->SetTitleOffset(1.25);
+  elf_qcd->GetXaxis()->SetTitleOffset(1.1);
   elf_qcd->GetYaxis()->SetTitle("electron fake rate");
   elf_qcd->GetXaxis()->SetTitle("electron p_{T} [GeV]");
   if (var=="_cone") elf_qcd->GetXaxis()->SetTitle("electron p_{T}^{corr.} [GeV]");
@@ -151,6 +234,7 @@
   elf_qcd->SetMarkerColor(kRed);
   elf_qcd->SetLineColor(kRed);
   elf_qcd->Draw("PE");
+  elf_data_syst->Draw("E2,same");
   elf_data->Draw("PEsame");
   c2.RedrawAxis();
   leg->Draw();

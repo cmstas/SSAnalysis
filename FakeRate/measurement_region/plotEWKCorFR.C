@@ -4,7 +4,7 @@
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("4.2f");
 
-  bool doMu = true;
+  bool doMu = 0;
 
   TString suffix = (doMu ? "_mu" : "_e");
   TString lepname = (doMu ? "muon" : "electron");
@@ -20,27 +20,19 @@
   TH2F* den_dy = (TH2F*) _file_dy->Get("Nl_cone_histo"+suffix);
 
   //scale factors from MT control region plot
-  if (doMu) {
-    den_wj->Scale(4.5);
-    den_dy->Scale(4.5);
-  } else {
-    den_wj->Scale(0.8);
-    den_dy->Scale(0.8);
-  }
+  float muSF = 0.54;
+  float elSF = 0.42;
+  float ewkSF = (doMu ? muSF : elSF);
 
-  den_data->Add(den_wj,-1.);
-  den_data->Add(den_dy,-1.);
+  den_data->Add(den_wj,-1.*ewkSF);
+  den_data->Add(den_dy,-1.*ewkSF);
 
   TH2F* num_data = (TH2F*) _file_data->Get("Nt_histo"+suffix);
   TH2F* num_wj = (TH2F*) _file_wj->Get("Nt_histo"+suffix);
   TH2F* num_dy = (TH2F*) _file_dy->Get("Nt_histo"+suffix);
-  num_wj->Scale(0.8);
-  num_dy->Scale(0.8);
-  // num_wj->Scale(1./65.);
-  // num_dy->Scale(1./65.);
 
-  num_data->Add(den_wj,-1.);
-  num_data->Add(den_dy,-1.);
+  num_data->Add(num_wj,-1.*ewkSF);
+  num_data->Add(num_dy,-1.*ewkSF);
 
   num_data->Divide(num_data, den_data, 1, 1, "B");
 
