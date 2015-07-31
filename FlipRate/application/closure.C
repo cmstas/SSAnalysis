@@ -15,7 +15,7 @@ bool cutting = false;
 bool overflow = false;
 
 //lumi
-float theLumi = 1.0;
+float theLumi = 0.04003;
 
 using namespace ss;
 
@@ -69,7 +69,9 @@ void closure(){
 
   //Set up chains
   TChain *chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/dy_0.root"); 
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v2.08/DataDoubleEG_0.root");
+
+  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/dy_0.root"); 
   //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY1_0.root"); 
   //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY2_0.root"); 
   //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY3_0.root"); 
@@ -102,6 +104,12 @@ void closure(){
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
 
+      //Reject not triggered
+      if (!fired_trigger()) continue;
+
+      //Not in int lumi
+      if (run() == 251864) continue;
+
       //Throw away unneeded events
       if (hyp_class() != 3 && hyp_class() != 4 && hyp_class() != 6) continue;
 
@@ -128,7 +136,7 @@ void closure(){
       }
 
       //Weight
-      float weight = scale1fb()*theLumi;
+      float weight = 1.0; //scale1fb()*theLumi;
 
       //Observation
       if (isSS){
@@ -179,6 +187,6 @@ void closure(){
   bkgd.push_back(clos_MC); 
   vector <string> titles;
   titles.push_back("pred"); 
-  dataMCplotMaker(clos_data, bkgd, titles, "flip closure", "", Form("--outputName flip_closure%s.pdf --xAxisLabel M_{ll} --lumi 1 --dataName obs --topYaxisTitle obs/pred --isLinear --noFill --histoErrors %s", truthMatching ? "_TM" : "", "--noOverflow")); 
+  dataMCplotMaker(clos_data, bkgd, titles, "flip closure", "", Form("--lumi 40.03 --lumiUnit pb --outputName flip_closure%s.pdf --xAxisLabel M_{ll} --dataName obs --topYaxisTitle obs/pred --isLinear --noFill --histoErrors %s", truthMatching ? "_TM" : "", "--noOverflow")); 
 
 }
