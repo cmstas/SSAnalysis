@@ -3,6 +3,8 @@ SSAG samesign;
 namespace ss {
 	const float &met() { return samesign.met(); }
 	const float &metPhi() { return samesign.metPhi(); }
+	const float &corrMET() { return samesign.corrMET(); }
+	const float &corrMETphi() { return samesign.corrMETphi(); }
 	const int &event() { return samesign.event(); }
 	const int &lumi() { return samesign.lumi(); }
 	const int &run() { return samesign.run(); }
@@ -36,6 +38,10 @@ namespace ss {
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets() { return samesign.jets(); }
 	const vector<float> &btags_disc() { return samesign.btags_disc(); }
 	const vector<float> &jets_disc() { return samesign.jets_disc(); }
+	const vector<float> &jets_JEC() { return samesign.jets_JEC(); }
+	const vector<float> &btags_JEC() { return samesign.btags_JEC(); }
+	const vector<float> &jets_undoJEC() { return samesign.jets_undoJEC(); }
+	const vector<float> &btags_undoJEC() { return samesign.btags_undoJEC(); }
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags() { return samesign.btags(); }
 	const int &nbtags() { return samesign.nbtags(); }
 	const float &sf_dilepTrig_hpt() { return samesign.sf_dilepTrig_hpt(); }
@@ -69,6 +75,10 @@ namespace ss {
 	const vector<int> &genps_id_grandma() { return samesign.genps_id_grandma(); }
 	const bool &lep1_passes_id() { return samesign.lep1_passes_id(); }
 	const bool &lep2_passes_id() { return samesign.lep2_passes_id(); }
+	const bool &lep3_passes_id() { return samesign.lep3_passes_id(); }
+	const bool &lep3_tight() { return samesign.lep3_tight(); }
+	const bool &lep3_veto() { return samesign.lep3_veto(); }
+	const bool &lep3_fo() { return samesign.lep3_fo(); }
 	const float &lep1_dxyPV() { return samesign.lep1_dxyPV(); }
 	const float &lep2_dxyPV() { return samesign.lep2_dxyPV(); }
 	const float &lep1_dZ() { return samesign.lep1_dZ(); }
@@ -127,11 +137,14 @@ namespace ss {
 	const vector<float> &trueNumInt() { return samesign.trueNumInt(); }
 	const vector<int> &nPUvertices() { return samesign.nPUvertices(); }
 	const int &nGoodVertices() { return samesign.nGoodVertices(); }
+	const bool &lep1_trigMatch_noIsoReq() { return samesign.lep1_trigMatch_noIsoReq(); }
+	const bool &lep1_trigMatch_isoReq() { return samesign.lep1_trigMatch_isoReq(); }
+	const bool &lep2_trigMatch_noIsoReq() { return samesign.lep2_trigMatch_noIsoReq(); }
+	const bool &lep2_trigMatch_isoReq() { return samesign.lep2_trigMatch_isoReq(); }
 	const bool &lep1_isGoodLeg() { return samesign.lep1_isGoodLeg(); }
 	const bool &lep2_isGoodLeg() { return samesign.lep2_isGoodLeg(); }
 	const bool &lep1_isFakeLeg() { return samesign.lep1_isFakeLeg(); }
 	const bool &lep2_isFakeLeg() { return samesign.lep2_isFakeLeg(); }
-	const bool &truth_inSituFR() { return samesign.truth_inSituFR(); }
 	const bool &lep1_multiIso() { return samesign.lep1_multiIso(); }
 	const bool &lep2_multiIso() { return samesign.lep2_multiIso(); }
 	const float &lep1_sip() { return samesign.lep1_sip(); }
@@ -140,4 +153,6 @@ namespace ss {
 	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_closeJet() { return samesign.lep2_closeJet(); }
 	const bool &passed_id_inSituFR_lep1() { return samesign.passed_id_inSituFR_lep1(); }
 	const bool &passed_id_inSituFR_lep2() { return samesign.passed_id_inSituFR_lep2(); }
+	const bool &fired_trigger() { return samesign.fired_trigger(); }
+	const unsigned int &triggers() { return samesign.triggers(); }
 }

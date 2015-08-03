@@ -50,8 +50,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("jets_disc"               , &jets_disc               );
   BabyTree->Branch("jets_JEC"                , &jets_JEC                );
   BabyTree->Branch("btags_JEC"               , &btags_JEC               );
-  BabyTree->Branch("jets_undoJEC"                , &jets_undoJEC                );
-  BabyTree->Branch("btags_undoJEC"               , &btags_undoJEC               );
+  BabyTree->Branch("jets_undoJEC"            , &jets_undoJEC            );
+  BabyTree->Branch("btags_undoJEC"           , &btags_undoJEC           );
   BabyTree->Branch("btags"                   , &btags                   );
   BabyTree->Branch("nbtags"                  , &nbtags                  );
   BabyTree->Branch("sf_dilepTrig_hpt"        , &sf_dilepTrig_hpt        );
@@ -151,6 +151,9 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep1_trigMatch_isoReq"   , &lep1_trigMatch_isoReq   );
   BabyTree->Branch("lep2_trigMatch_noIsoReq" , &lep2_trigMatch_noIsoReq );
   BabyTree->Branch("lep2_trigMatch_isoReq"   , &lep2_trigMatch_isoReq   );
+  BabyTree->Branch("met3p0"                  , &met3p0                  );
+  BabyTree->Branch("metphi3p0"               , &metphi3p0               );
+  BabyTree->Branch("passes_met_filters"      , &passes_met_filters      );
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -329,6 +332,9 @@ void babyMaker::InitBabyNtuple(){
     lep2_trigMatch_isoReq = 0; 
     fired_trigger = 0;
     triggers = 0;
+    met3p0 = 0;
+    metphi3p0 = 0;
+    passes_met_filters = 0;
 } 
 
 //Main function
@@ -631,9 +637,16 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   corrMET = correctedMET(jetCorr).pt();
   corrMETphi = correctedMET(jetCorr).phi();
 
+  //MET3p0 (aka FKW MET)
+  pair<float,float> MET3p0_ = MET3p0();
+  met3p0 = MET3p0_.first;
+  metphi3p0 = MET3p0_.second;
+
+  //MET filters
+  passes_met_filters = hbheNoiseFilter();
+
   //Fill Baby
   BabyTree->Fill();
-
 
   return 0;  
 

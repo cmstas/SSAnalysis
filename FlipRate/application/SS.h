@@ -24,6 +24,12 @@ protected:
 	float	metPhi_;
 	TBranch *metPhi_branch;
 	bool metPhi_isLoaded;
+	float	corrMET_;
+	TBranch *corrMET_branch;
+	bool corrMET_isLoaded;
+	float	corrMETphi_;
+	TBranch *corrMETphi_branch;
+	bool corrMETphi_isLoaded;
 	int	event_;
 	TBranch *event_branch;
 	bool event_isLoaded;
@@ -123,6 +129,18 @@ protected:
 	vector<float> *jets_disc_;
 	TBranch *jets_disc_branch;
 	bool jets_disc_isLoaded;
+	vector<float> *jets_JEC_;
+	TBranch *jets_JEC_branch;
+	bool jets_JEC_isLoaded;
+	vector<float> *btags_JEC_;
+	TBranch *btags_JEC_branch;
+	bool btags_JEC_isLoaded;
+	vector<float> *jets_undoJEC_;
+	TBranch *jets_undoJEC_branch;
+	bool jets_undoJEC_isLoaded;
+	vector<float> *btags_undoJEC_;
+	TBranch *btags_undoJEC_branch;
+	bool btags_undoJEC_isLoaded;
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > *btags_;
 	TBranch *btags_branch;
 	bool btags_isLoaded;
@@ -222,6 +240,18 @@ protected:
 	bool	lep2_passes_id_;
 	TBranch *lep2_passes_id_branch;
 	bool lep2_passes_id_isLoaded;
+	bool	lep3_passes_id_;
+	TBranch *lep3_passes_id_branch;
+	bool lep3_passes_id_isLoaded;
+	bool	lep3_tight_;
+	TBranch *lep3_tight_branch;
+	bool lep3_tight_isLoaded;
+	bool	lep3_veto_;
+	TBranch *lep3_veto_branch;
+	bool lep3_veto_isLoaded;
+	bool	lep3_fo_;
+	TBranch *lep3_fo_branch;
+	bool lep3_fo_isLoaded;
 	float	lep1_dxyPV_;
 	TBranch *lep1_dxyPV_branch;
 	bool lep1_dxyPV_isLoaded;
@@ -396,6 +426,18 @@ protected:
 	int	nGoodVertices_;
 	TBranch *nGoodVertices_branch;
 	bool nGoodVertices_isLoaded;
+	bool	lep1_trigMatch_noIsoReq_;
+	TBranch *lep1_trigMatch_noIsoReq_branch;
+	bool lep1_trigMatch_noIsoReq_isLoaded;
+	bool	lep1_trigMatch_isoReq_;
+	TBranch *lep1_trigMatch_isoReq_branch;
+	bool lep1_trigMatch_isoReq_isLoaded;
+	bool	lep2_trigMatch_noIsoReq_;
+	TBranch *lep2_trigMatch_noIsoReq_branch;
+	bool lep2_trigMatch_noIsoReq_isLoaded;
+	bool	lep2_trigMatch_isoReq_;
+	TBranch *lep2_trigMatch_isoReq_branch;
+	bool lep2_trigMatch_isoReq_isLoaded;
 	bool	lep1_isGoodLeg_;
 	TBranch *lep1_isGoodLeg_branch;
 	bool lep1_isGoodLeg_isLoaded;
@@ -408,9 +450,6 @@ protected:
 	bool	lep2_isFakeLeg_;
 	TBranch *lep2_isFakeLeg_branch;
 	bool lep2_isFakeLeg_isLoaded;
-	bool	truth_inSituFR_;
-	TBranch *truth_inSituFR_branch;
-	bool truth_inSituFR_isLoaded;
 	bool	lep1_multiIso_;
 	TBranch *lep1_multiIso_branch;
 	bool lep1_multiIso_isLoaded;
@@ -435,6 +474,12 @@ protected:
 	bool	passed_id_inSituFR_lep2_;
 	TBranch *passed_id_inSituFR_lep2_branch;
 	bool passed_id_inSituFR_lep2_isLoaded;
+	bool	fired_trigger_;
+	TBranch *fired_trigger_branch;
+	bool fired_trigger_isLoaded;
+	unsigned int	triggers_;
+	TBranch *triggers_branch;
+	bool triggers_isLoaded;
 public: 
 void Init(TTree *tree) {
 	lep1_p4_branch = 0;
@@ -512,6 +557,16 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("metPhi") != 0) {
 		metPhi_branch = tree->GetBranch("metPhi");
 		if (metPhi_branch) {metPhi_branch->SetAddress(&metPhi_);}
+	}
+	corrMET_branch = 0;
+	if (tree->GetBranch("corrMET") != 0) {
+		corrMET_branch = tree->GetBranch("corrMET");
+		if (corrMET_branch) {corrMET_branch->SetAddress(&corrMET_);}
+	}
+	corrMETphi_branch = 0;
+	if (tree->GetBranch("corrMETphi") != 0) {
+		corrMETphi_branch = tree->GetBranch("corrMETphi");
+		if (corrMETphi_branch) {corrMETphi_branch->SetAddress(&corrMETphi_);}
 	}
 	event_branch = 0;
 	if (tree->GetBranch("event") != 0) {
@@ -663,6 +718,26 @@ void Init(TTree *tree) {
 		jets_disc_branch = tree->GetBranch("jets_disc");
 		if (jets_disc_branch) {jets_disc_branch->SetAddress(&jets_disc_);}
 	}
+	jets_JEC_branch = 0;
+	if (tree->GetBranch("jets_JEC") != 0) {
+		jets_JEC_branch = tree->GetBranch("jets_JEC");
+		if (jets_JEC_branch) {jets_JEC_branch->SetAddress(&jets_JEC_);}
+	}
+	btags_JEC_branch = 0;
+	if (tree->GetBranch("btags_JEC") != 0) {
+		btags_JEC_branch = tree->GetBranch("btags_JEC");
+		if (btags_JEC_branch) {btags_JEC_branch->SetAddress(&btags_JEC_);}
+	}
+	jets_undoJEC_branch = 0;
+	if (tree->GetBranch("jets_undoJEC") != 0) {
+		jets_undoJEC_branch = tree->GetBranch("jets_undoJEC");
+		if (jets_undoJEC_branch) {jets_undoJEC_branch->SetAddress(&jets_undoJEC_);}
+	}
+	btags_undoJEC_branch = 0;
+	if (tree->GetBranch("btags_undoJEC") != 0) {
+		btags_undoJEC_branch = tree->GetBranch("btags_undoJEC");
+		if (btags_undoJEC_branch) {btags_undoJEC_branch->SetAddress(&btags_undoJEC_);}
+	}
 	nbtags_branch = 0;
 	if (tree->GetBranch("nbtags") != 0) {
 		nbtags_branch = tree->GetBranch("nbtags");
@@ -797,6 +872,26 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("lep2_passes_id") != 0) {
 		lep2_passes_id_branch = tree->GetBranch("lep2_passes_id");
 		if (lep2_passes_id_branch) {lep2_passes_id_branch->SetAddress(&lep2_passes_id_);}
+	}
+	lep3_passes_id_branch = 0;
+	if (tree->GetBranch("lep3_passes_id") != 0) {
+		lep3_passes_id_branch = tree->GetBranch("lep3_passes_id");
+		if (lep3_passes_id_branch) {lep3_passes_id_branch->SetAddress(&lep3_passes_id_);}
+	}
+	lep3_tight_branch = 0;
+	if (tree->GetBranch("lep3_tight") != 0) {
+		lep3_tight_branch = tree->GetBranch("lep3_tight");
+		if (lep3_tight_branch) {lep3_tight_branch->SetAddress(&lep3_tight_);}
+	}
+	lep3_veto_branch = 0;
+	if (tree->GetBranch("lep3_veto") != 0) {
+		lep3_veto_branch = tree->GetBranch("lep3_veto");
+		if (lep3_veto_branch) {lep3_veto_branch->SetAddress(&lep3_veto_);}
+	}
+	lep3_fo_branch = 0;
+	if (tree->GetBranch("lep3_fo") != 0) {
+		lep3_fo_branch = tree->GetBranch("lep3_fo");
+		if (lep3_fo_branch) {lep3_fo_branch->SetAddress(&lep3_fo_);}
 	}
 	lep1_dxyPV_branch = 0;
 	if (tree->GetBranch("lep1_dxyPV") != 0) {
@@ -1078,6 +1173,26 @@ void Init(TTree *tree) {
 		nGoodVertices_branch = tree->GetBranch("nGoodVertices");
 		if (nGoodVertices_branch) {nGoodVertices_branch->SetAddress(&nGoodVertices_);}
 	}
+	lep1_trigMatch_noIsoReq_branch = 0;
+	if (tree->GetBranch("lep1_trigMatch_noIsoReq") != 0) {
+		lep1_trigMatch_noIsoReq_branch = tree->GetBranch("lep1_trigMatch_noIsoReq");
+		if (lep1_trigMatch_noIsoReq_branch) {lep1_trigMatch_noIsoReq_branch->SetAddress(&lep1_trigMatch_noIsoReq_);}
+	}
+	lep1_trigMatch_isoReq_branch = 0;
+	if (tree->GetBranch("lep1_trigMatch_isoReq") != 0) {
+		lep1_trigMatch_isoReq_branch = tree->GetBranch("lep1_trigMatch_isoReq");
+		if (lep1_trigMatch_isoReq_branch) {lep1_trigMatch_isoReq_branch->SetAddress(&lep1_trigMatch_isoReq_);}
+	}
+	lep2_trigMatch_noIsoReq_branch = 0;
+	if (tree->GetBranch("lep2_trigMatch_noIsoReq") != 0) {
+		lep2_trigMatch_noIsoReq_branch = tree->GetBranch("lep2_trigMatch_noIsoReq");
+		if (lep2_trigMatch_noIsoReq_branch) {lep2_trigMatch_noIsoReq_branch->SetAddress(&lep2_trigMatch_noIsoReq_);}
+	}
+	lep2_trigMatch_isoReq_branch = 0;
+	if (tree->GetBranch("lep2_trigMatch_isoReq") != 0) {
+		lep2_trigMatch_isoReq_branch = tree->GetBranch("lep2_trigMatch_isoReq");
+		if (lep2_trigMatch_isoReq_branch) {lep2_trigMatch_isoReq_branch->SetAddress(&lep2_trigMatch_isoReq_);}
+	}
 	lep1_isGoodLeg_branch = 0;
 	if (tree->GetBranch("lep1_isGoodLeg") != 0) {
 		lep1_isGoodLeg_branch = tree->GetBranch("lep1_isGoodLeg");
@@ -1097,11 +1212,6 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("lep2_isFakeLeg") != 0) {
 		lep2_isFakeLeg_branch = tree->GetBranch("lep2_isFakeLeg");
 		if (lep2_isFakeLeg_branch) {lep2_isFakeLeg_branch->SetAddress(&lep2_isFakeLeg_);}
-	}
-	truth_inSituFR_branch = 0;
-	if (tree->GetBranch("truth_inSituFR") != 0) {
-		truth_inSituFR_branch = tree->GetBranch("truth_inSituFR");
-		if (truth_inSituFR_branch) {truth_inSituFR_branch->SetAddress(&truth_inSituFR_);}
 	}
 	lep1_multiIso_branch = 0;
 	if (tree->GetBranch("lep1_multiIso") != 0) {
@@ -1133,6 +1243,16 @@ void Init(TTree *tree) {
 		passed_id_inSituFR_lep2_branch = tree->GetBranch("passed_id_inSituFR_lep2");
 		if (passed_id_inSituFR_lep2_branch) {passed_id_inSituFR_lep2_branch->SetAddress(&passed_id_inSituFR_lep2_);}
 	}
+	fired_trigger_branch = 0;
+	if (tree->GetBranch("fired_trigger") != 0) {
+		fired_trigger_branch = tree->GetBranch("fired_trigger");
+		if (fired_trigger_branch) {fired_trigger_branch->SetAddress(&fired_trigger_);}
+	}
+	triggers_branch = 0;
+	if (tree->GetBranch("triggers") != 0) {
+		triggers_branch = tree->GetBranch("triggers");
+		if (triggers_branch) {triggers_branch->SetAddress(&triggers_);}
+	}
   tree->SetMakeClass(0);
 }
 void GetEntry(unsigned int idx) 
@@ -1141,6 +1261,8 @@ void GetEntry(unsigned int idx)
 		index = idx;
 		met_isLoaded = false;
 		metPhi_isLoaded = false;
+		corrMET_isLoaded = false;
+		corrMETphi_isLoaded = false;
 		event_isLoaded = false;
 		lumi_isLoaded = false;
 		run_isLoaded = false;
@@ -1174,6 +1296,10 @@ void GetEntry(unsigned int idx)
 		jets_isLoaded = false;
 		btags_disc_isLoaded = false;
 		jets_disc_isLoaded = false;
+		jets_JEC_isLoaded = false;
+		btags_JEC_isLoaded = false;
+		jets_undoJEC_isLoaded = false;
+		btags_undoJEC_isLoaded = false;
 		btags_isLoaded = false;
 		nbtags_isLoaded = false;
 		sf_dilepTrig_hpt_isLoaded = false;
@@ -1207,6 +1333,10 @@ void GetEntry(unsigned int idx)
 		genps_id_grandma_isLoaded = false;
 		lep1_passes_id_isLoaded = false;
 		lep2_passes_id_isLoaded = false;
+		lep3_passes_id_isLoaded = false;
+		lep3_tight_isLoaded = false;
+		lep3_veto_isLoaded = false;
+		lep3_fo_isLoaded = false;
 		lep1_dxyPV_isLoaded = false;
 		lep2_dxyPV_isLoaded = false;
 		lep1_dZ_isLoaded = false;
@@ -1265,11 +1395,14 @@ void GetEntry(unsigned int idx)
 		trueNumInt_isLoaded = false;
 		nPUvertices_isLoaded = false;
 		nGoodVertices_isLoaded = false;
+		lep1_trigMatch_noIsoReq_isLoaded = false;
+		lep1_trigMatch_isoReq_isLoaded = false;
+		lep2_trigMatch_noIsoReq_isLoaded = false;
+		lep2_trigMatch_isoReq_isLoaded = false;
 		lep1_isGoodLeg_isLoaded = false;
 		lep2_isGoodLeg_isLoaded = false;
 		lep1_isFakeLeg_isLoaded = false;
 		lep2_isFakeLeg_isLoaded = false;
-		truth_inSituFR_isLoaded = false;
 		lep1_multiIso_isLoaded = false;
 		lep2_multiIso_isLoaded = false;
 		lep1_sip_isLoaded = false;
@@ -1278,6 +1411,8 @@ void GetEntry(unsigned int idx)
 		lep2_closeJet_isLoaded = false;
 		passed_id_inSituFR_lep1_isLoaded = false;
 		passed_id_inSituFR_lep2_isLoaded = false;
+		fired_trigger_isLoaded = false;
+		triggers_isLoaded = false;
 	}
 
 void LoadAllBranches() 
@@ -1285,6 +1420,8 @@ void LoadAllBranches()
 {
 	if (met_branch != 0) met();
 	if (metPhi_branch != 0) metPhi();
+	if (corrMET_branch != 0) corrMET();
+	if (corrMETphi_branch != 0) corrMETphi();
 	if (event_branch != 0) event();
 	if (lumi_branch != 0) lumi();
 	if (run_branch != 0) run();
@@ -1318,6 +1455,10 @@ void LoadAllBranches()
 	if (jets_branch != 0) jets();
 	if (btags_disc_branch != 0) btags_disc();
 	if (jets_disc_branch != 0) jets_disc();
+	if (jets_JEC_branch != 0) jets_JEC();
+	if (btags_JEC_branch != 0) btags_JEC();
+	if (jets_undoJEC_branch != 0) jets_undoJEC();
+	if (btags_undoJEC_branch != 0) btags_undoJEC();
 	if (btags_branch != 0) btags();
 	if (nbtags_branch != 0) nbtags();
 	if (sf_dilepTrig_hpt_branch != 0) sf_dilepTrig_hpt();
@@ -1351,6 +1492,10 @@ void LoadAllBranches()
 	if (genps_id_grandma_branch != 0) genps_id_grandma();
 	if (lep1_passes_id_branch != 0) lep1_passes_id();
 	if (lep2_passes_id_branch != 0) lep2_passes_id();
+	if (lep3_passes_id_branch != 0) lep3_passes_id();
+	if (lep3_tight_branch != 0) lep3_tight();
+	if (lep3_veto_branch != 0) lep3_veto();
+	if (lep3_fo_branch != 0) lep3_fo();
 	if (lep1_dxyPV_branch != 0) lep1_dxyPV();
 	if (lep2_dxyPV_branch != 0) lep2_dxyPV();
 	if (lep1_dZ_branch != 0) lep1_dZ();
@@ -1409,11 +1554,14 @@ void LoadAllBranches()
 	if (trueNumInt_branch != 0) trueNumInt();
 	if (nPUvertices_branch != 0) nPUvertices();
 	if (nGoodVertices_branch != 0) nGoodVertices();
+	if (lep1_trigMatch_noIsoReq_branch != 0) lep1_trigMatch_noIsoReq();
+	if (lep1_trigMatch_isoReq_branch != 0) lep1_trigMatch_isoReq();
+	if (lep2_trigMatch_noIsoReq_branch != 0) lep2_trigMatch_noIsoReq();
+	if (lep2_trigMatch_isoReq_branch != 0) lep2_trigMatch_isoReq();
 	if (lep1_isGoodLeg_branch != 0) lep1_isGoodLeg();
 	if (lep2_isGoodLeg_branch != 0) lep2_isGoodLeg();
 	if (lep1_isFakeLeg_branch != 0) lep1_isFakeLeg();
 	if (lep2_isFakeLeg_branch != 0) lep2_isFakeLeg();
-	if (truth_inSituFR_branch != 0) truth_inSituFR();
 	if (lep1_multiIso_branch != 0) lep1_multiIso();
 	if (lep2_multiIso_branch != 0) lep2_multiIso();
 	if (lep1_sip_branch != 0) lep1_sip();
@@ -1422,6 +1570,8 @@ void LoadAllBranches()
 	if (lep2_closeJet_branch != 0) lep2_closeJet();
 	if (passed_id_inSituFR_lep1_branch != 0) passed_id_inSituFR_lep1();
 	if (passed_id_inSituFR_lep2_branch != 0) passed_id_inSituFR_lep2();
+	if (fired_trigger_branch != 0) fired_trigger();
+	if (triggers_branch != 0) triggers();
 }
 
 	float &met()
@@ -1449,6 +1599,32 @@ void LoadAllBranches()
 			metPhi_isLoaded = true;
 		}
 		return metPhi_;
+	}
+	float &corrMET()
+	{
+		if (not corrMET_isLoaded) {
+			if (corrMET_branch != 0) {
+				corrMET_branch->GetEntry(index);
+			} else { 
+				printf("branch corrMET_branch does not exist!\n");
+				exit(1);
+			}
+			corrMET_isLoaded = true;
+		}
+		return corrMET_;
+	}
+	float &corrMETphi()
+	{
+		if (not corrMETphi_isLoaded) {
+			if (corrMETphi_branch != 0) {
+				corrMETphi_branch->GetEntry(index);
+			} else { 
+				printf("branch corrMETphi_branch does not exist!\n");
+				exit(1);
+			}
+			corrMETphi_isLoaded = true;
+		}
+		return corrMETphi_;
 	}
 	int &event()
 	{
@@ -1879,6 +2055,58 @@ void LoadAllBranches()
 		}
 		return *jets_disc_;
 	}
+	const vector<float> &jets_JEC()
+	{
+		if (not jets_JEC_isLoaded) {
+			if (jets_JEC_branch != 0) {
+				jets_JEC_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_JEC_branch does not exist!\n");
+				exit(1);
+			}
+			jets_JEC_isLoaded = true;
+		}
+		return *jets_JEC_;
+	}
+	const vector<float> &btags_JEC()
+	{
+		if (not btags_JEC_isLoaded) {
+			if (btags_JEC_branch != 0) {
+				btags_JEC_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_JEC_branch does not exist!\n");
+				exit(1);
+			}
+			btags_JEC_isLoaded = true;
+		}
+		return *btags_JEC_;
+	}
+	const vector<float> &jets_undoJEC()
+	{
+		if (not jets_undoJEC_isLoaded) {
+			if (jets_undoJEC_branch != 0) {
+				jets_undoJEC_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_undoJEC_branch does not exist!\n");
+				exit(1);
+			}
+			jets_undoJEC_isLoaded = true;
+		}
+		return *jets_undoJEC_;
+	}
+	const vector<float> &btags_undoJEC()
+	{
+		if (not btags_undoJEC_isLoaded) {
+			if (btags_undoJEC_branch != 0) {
+				btags_undoJEC_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_undoJEC_branch does not exist!\n");
+				exit(1);
+			}
+			btags_undoJEC_isLoaded = true;
+		}
+		return *btags_undoJEC_;
+	}
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags()
 	{
 		if (not btags_isLoaded) {
@@ -2307,6 +2535,58 @@ void LoadAllBranches()
 			lep2_passes_id_isLoaded = true;
 		}
 		return lep2_passes_id_;
+	}
+	bool &	lep3_passes_id()
+	{
+		if (not lep3_passes_id_isLoaded) {
+			if (lep3_passes_id_branch != 0) {
+				lep3_passes_id_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_passes_id_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_passes_id_isLoaded = true;
+		}
+		return lep3_passes_id_;
+	}
+	bool &	lep3_tight()
+	{
+		if (not lep3_tight_isLoaded) {
+			if (lep3_tight_branch != 0) {
+				lep3_tight_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_tight_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_tight_isLoaded = true;
+		}
+		return lep3_tight_;
+	}
+	bool &	lep3_veto()
+	{
+		if (not lep3_veto_isLoaded) {
+			if (lep3_veto_branch != 0) {
+				lep3_veto_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_veto_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_veto_isLoaded = true;
+		}
+		return lep3_veto_;
+	}
+	bool &	lep3_fo()
+	{
+		if (not lep3_fo_isLoaded) {
+			if (lep3_fo_branch != 0) {
+				lep3_fo_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_fo_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_fo_isLoaded = true;
+		}
+		return lep3_fo_;
 	}
 	float &lep1_dxyPV()
 	{
@@ -3062,6 +3342,58 @@ void LoadAllBranches()
 		}
 		return nGoodVertices_;
 	}
+	bool &	lep1_trigMatch_noIsoReq()
+	{
+		if (not lep1_trigMatch_noIsoReq_isLoaded) {
+			if (lep1_trigMatch_noIsoReq_branch != 0) {
+				lep1_trigMatch_noIsoReq_branch->GetEntry(index);
+			} else { 
+				printf("branch lep1_trigMatch_noIsoReq_branch does not exist!\n");
+				exit(1);
+			}
+			lep1_trigMatch_noIsoReq_isLoaded = true;
+		}
+		return lep1_trigMatch_noIsoReq_;
+	}
+	bool &	lep1_trigMatch_isoReq()
+	{
+		if (not lep1_trigMatch_isoReq_isLoaded) {
+			if (lep1_trigMatch_isoReq_branch != 0) {
+				lep1_trigMatch_isoReq_branch->GetEntry(index);
+			} else { 
+				printf("branch lep1_trigMatch_isoReq_branch does not exist!\n");
+				exit(1);
+			}
+			lep1_trigMatch_isoReq_isLoaded = true;
+		}
+		return lep1_trigMatch_isoReq_;
+	}
+	bool &	lep2_trigMatch_noIsoReq()
+	{
+		if (not lep2_trigMatch_noIsoReq_isLoaded) {
+			if (lep2_trigMatch_noIsoReq_branch != 0) {
+				lep2_trigMatch_noIsoReq_branch->GetEntry(index);
+			} else { 
+				printf("branch lep2_trigMatch_noIsoReq_branch does not exist!\n");
+				exit(1);
+			}
+			lep2_trigMatch_noIsoReq_isLoaded = true;
+		}
+		return lep2_trigMatch_noIsoReq_;
+	}
+	bool &	lep2_trigMatch_isoReq()
+	{
+		if (not lep2_trigMatch_isoReq_isLoaded) {
+			if (lep2_trigMatch_isoReq_branch != 0) {
+				lep2_trigMatch_isoReq_branch->GetEntry(index);
+			} else { 
+				printf("branch lep2_trigMatch_isoReq_branch does not exist!\n");
+				exit(1);
+			}
+			lep2_trigMatch_isoReq_isLoaded = true;
+		}
+		return lep2_trigMatch_isoReq_;
+	}
 	bool &	lep1_isGoodLeg()
 	{
 		if (not lep1_isGoodLeg_isLoaded) {
@@ -3113,19 +3445,6 @@ void LoadAllBranches()
 			lep2_isFakeLeg_isLoaded = true;
 		}
 		return lep2_isFakeLeg_;
-	}
-	bool &	truth_inSituFR()
-	{
-		if (not truth_inSituFR_isLoaded) {
-			if (truth_inSituFR_branch != 0) {
-				truth_inSituFR_branch->GetEntry(index);
-			} else { 
-				printf("branch truth_inSituFR_branch does not exist!\n");
-				exit(1);
-			}
-			truth_inSituFR_isLoaded = true;
-		}
-		return truth_inSituFR_;
 	}
 	bool &	lep1_multiIso()
 	{
@@ -3231,6 +3550,32 @@ void LoadAllBranches()
 		}
 		return passed_id_inSituFR_lep2_;
 	}
+	bool &	fired_trigger()
+	{
+		if (not fired_trigger_isLoaded) {
+			if (fired_trigger_branch != 0) {
+				fired_trigger_branch->GetEntry(index);
+			} else { 
+				printf("branch fired_trigger_branch does not exist!\n");
+				exit(1);
+			}
+			fired_trigger_isLoaded = true;
+		}
+		return fired_trigger_;
+	}
+	unsigned int &triggers()
+	{
+		if (not triggers_isLoaded) {
+			if (triggers_branch != 0) {
+				triggers_branch->GetEntry(index);
+			} else { 
+				printf("branch triggers_branch does not exist!\n");
+				exit(1);
+			}
+			triggers_isLoaded = true;
+		}
+		return triggers_;
+	}
 
   static void progress( int nEventsTotal, int nEventsChain ){
     int period = 1000;
@@ -3261,6 +3606,8 @@ extern SSAG samesign;
 namespace ss {
 	const float &met();
 	const float &metPhi();
+	const float &corrMET();
+	const float &corrMETphi();
 	const int &event();
 	const int &lumi();
 	const int &run();
@@ -3294,6 +3641,10 @@ namespace ss {
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets();
 	const vector<float> &btags_disc();
 	const vector<float> &jets_disc();
+	const vector<float> &jets_JEC();
+	const vector<float> &btags_JEC();
+	const vector<float> &jets_undoJEC();
+	const vector<float> &btags_undoJEC();
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags();
 	const int &nbtags();
 	const float &sf_dilepTrig_hpt();
@@ -3327,6 +3678,10 @@ namespace ss {
 	const vector<int> &genps_id_grandma();
 	const bool &lep1_passes_id();
 	const bool &lep2_passes_id();
+	const bool &lep3_passes_id();
+	const bool &lep3_tight();
+	const bool &lep3_veto();
+	const bool &lep3_fo();
 	const float &lep1_dxyPV();
 	const float &lep2_dxyPV();
 	const float &lep1_dZ();
@@ -3385,11 +3740,14 @@ namespace ss {
 	const vector<float> &trueNumInt();
 	const vector<int> &nPUvertices();
 	const int &nGoodVertices();
+	const bool &lep1_trigMatch_noIsoReq();
+	const bool &lep1_trigMatch_isoReq();
+	const bool &lep2_trigMatch_noIsoReq();
+	const bool &lep2_trigMatch_isoReq();
 	const bool &lep1_isGoodLeg();
 	const bool &lep2_isGoodLeg();
 	const bool &lep1_isFakeLeg();
 	const bool &lep2_isFakeLeg();
-	const bool &truth_inSituFR();
 	const bool &lep1_multiIso();
 	const bool &lep2_multiIso();
 	const float &lep1_sip();
@@ -3398,5 +3756,7 @@ namespace ss {
 	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_closeJet();
 	const bool &passed_id_inSituFR_lep1();
 	const bool &passed_id_inSituFR_lep2();
+	const bool &fired_trigger();
+	const unsigned int &triggers();
 }
 #endif
