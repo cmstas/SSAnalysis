@@ -38,10 +38,49 @@ int main(int argc, char *argv[]){
   const char* filename = Form("merged_ntuple_%i.root", file);
   const char* suffix = file < 0 ? "" : Form("_%i", file);
   string tag = "V07-04-03";
-  
 
   //Info for each sample
   switch (which){
+    case TTBAR_25:
+      name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/"; 
+      shortname = "ttbar_25";
+    case WZ_25:
+      name="WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/"; 
+      shortname = "wz_25";
+    case DY_low_25:
+      name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/"; 
+      shortname = "dy_low_25";
+    case DY_high_25:
+      name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/"; 
+      shortname = "dy_high_25";
+    case WJets_25:
+      name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/"; 
+      shortname = "wjets_25";
+    case SINGLETOP1_25:
+      name="ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/"; 
+      shortname = "singletop1_25";
+    case SINGLETOP2_25:
+      name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/"; 
+      shortname = "singletop2_25";
+    case SINGLETOP3_25:
+      name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/"; 
+      shortname = "singletop3_25";
+    case SINGLETOP4_25:
+      name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/"; 
+      shortname = "singletop4_25";
+    case SINGLETOP5_25:
+      name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      shortname = "singletop5_25";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/"; 
     case TTBAR:
       name = "TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
       shortname = "ttbar";

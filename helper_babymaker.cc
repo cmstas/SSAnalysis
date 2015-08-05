@@ -153,7 +153,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep2_trigMatch_isoReq"   , &lep2_trigMatch_isoReq   );
   BabyTree->Branch("met3p0"                  , &met3p0                  );
   BabyTree->Branch("metphi3p0"               , &metphi3p0               );
-  BabyTree->Branch("passes_met_filters"      , &passes_met_filters      );
+  BabyTree->Branch("passes_hbhe_filters"     , &passes_hbhe_filters     );
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -334,7 +334,7 @@ void babyMaker::InitBabyNtuple(){
     triggers = 0;
     met3p0 = 0;
     metphi3p0 = 0;
-    passes_met_filters = 0;
+    passes_hbhe_filters = 0;
 } 
 
 //Main function
@@ -643,7 +643,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   metphi3p0 = MET3p0_.second;
 
   //MET filters
-  passes_met_filters = hbheNoiseFilter();
+  passes_hbhe_filters = hbheNoiseFilter();
 
   //Fill Baby
   BabyTree->Fill();

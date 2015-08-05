@@ -275,7 +275,7 @@ class babyMaker {
     float metphi3p0;
 
     //MET Filters
-    bool passes_met_filters;
+    bool passes_hbhe_filters;
  
 };
 

@@ -15,7 +15,7 @@ export SCRAM_ARCH=slc6_amd64_gcc491
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
 #Set CMSSW environment
-pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_1/src/
+pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_6/src/
 eval `scramv1 runtime -sh`
 popd
 
@@ -38,7 +38,8 @@ if [ "$WHICH" == "12" ]; then WHICH_SMALL="singletop1"; fi
 if [ "$WHICH" == "13" ]; then WHICH_SMALL="singletop2"; fi
 if [ "$WHICH" == "14" ]; then WHICH_SMALL="singletop3"; fi
 if [ "$WHICH" == "15" ]; then WHICH_SMALL="singletop4"; fi
-if [ "$WHICH" == "16" ]; then WHICH_SMALL="datamueg"; fi
+if [ "$WHICH" == "16" ]; then WHICH_SMALL="datamuoneg"; fi
+if [ "$WHICH" == "17" ]; then WHICH_SMALL="singletop5"; fi
 
 if [ "$PTREL" == "4" ] 
 then
