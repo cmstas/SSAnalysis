@@ -7,18 +7,18 @@
 #include "../CORE/Tools/dorky/dorky.h"
 
 int mode = 1;  // 0-nominal, 1-upstream, 2-upstream+2jets
-bool corrected = true;
+bool corrected = false;
 
-struct doublePlotHolder{ TH1F* OS[8][4][4][5]; TH1F* SS[8][4][4][5]; };
+struct doublePlotHolder{ TH1F* OS[10][4][4][5]; TH1F* SS[10][4][4][5]; };
 
 doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
 
-  int      max[8] = { 700, 800, 10, 5, 300, 200, 400, 300 };
-  int nBins_OS[8] = { 50, 25, 10, 5, 30, 50, 40, 50 };
-  int nBins_SS[8] = { 50, 20, 10, 5, 30, 25, 40, 25 };
+  int      max[10] = { 700, 800, 10, 5, 300, 200, 400, 300, 700, 700 };
+  int nBins_OS[10] = { 50, 25, 10, 5, 30, 50, 40, 50, 50, 50 };
+  int nBins_SS[10] = { 50, 20, 10, 5, 30, 25, 40, 25, 50, 50 };
 
   doublePlotHolder plots;
-  for (int m = 0; m < 8; m++){       //m - which plots
+  for (int m = 0; m < 10; m++){       //m - which plots
     for (int i = 0; i < 4; i++){     //i - b-tag region
       for (int j = 0; j < 4; j++){   //j - HH, HL, LL, all
         for (int k = 0; k < 5; k++){ //k - ee, em, mm, ee+mm, total
@@ -80,6 +80,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
 
       //Determine MET
       float metAG = (corrected && !isPhys14) ? ss::corrMET() : ss::met();
+      float met30 = isPhys14 ? ss::met() : ss::met3p0(); 
 
       //Determine analysis category
       int AC = -1;
@@ -115,6 +116,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
         plots.OS[5][BR][AC][type]->Fill(ss::mtmin()                         , weight); 
         plots.OS[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M() , weight);
         plots.OS[7][BR][AC][type]->Fill(mht.pt()                            , weight);
+        plots.OS[8][BR][AC][type]->Fill(met30                               , weight);
       }
       else { 
         plots.SS[0][BR][AC][type]->Fill(metAG                              , weight); 
@@ -126,13 +128,14 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
         plots.SS[5][BR][AC][type]->Fill(ss::mtmin()                        , weight); 
         plots.SS[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), weight);
         plots.SS[7][BR][AC][type]->Fill(mht.pt()                           , weight);
+        plots.SS[8][BR][AC][type]->Fill(met30                              , weight);
       }
 
     }//event loop
   }//file loop
 
   //Fill ee+mm, ee+em+mm plots
-  for (int m = 0; m < 8; m++){
+  for (int m = 0; m < 10; m++){
     for (int i = 0; i < 4; i++){     
       for (int j = 0; j < 3; j++){   
         plots.SS[m][i][j][3]->Add( plots.SS[m][i][j][0], plots.SS[m][i][j][2] );
@@ -144,7 +147,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
   }
 
   //Fill HH+HL+LL plots
-  for (int m = 0; m < 8; m++){
+  for (int m = 0; m < 10; m++){
     for (int i = 0; i < 4; i++){     
       for (int j = 0; j < 5; j++){   
         plots.SS[m][i][3][j]->Add( plots.SS[m][i][0][j], plots.SS[m][i][1][j]);
@@ -156,7 +159,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
   }
 
   //Fill ee+mm, ee+em+mm plots for HH+HL+LL
-  for (int m = 0; m < 8; m++){
+  for (int m = 0; m < 10; m++){
     for (int i = 0; i < 4; i++){     
         plots.SS[m][i][3][3]->Add( plots.SS[m][i][3][0], plots.SS[m][i][3][2] );
         plots.OS[m][i][3][3]->Add( plots.OS[m][i][3][0], plots.OS[m][i][3][2] );
@@ -175,9 +178,9 @@ void plots(){
 
   //Set up chains
   TChain *chain_data = new TChain("t");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/v2.08/DataDoubleEG_0.root");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/v2.08/DataDoubleMuon_0.root");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/v2.08/DataMuonEG_0.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/v2.09/DataDoubleEG_0.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/v2.09/DataDoubleMuon_0.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/v2.09/DataMuonEG_0.root");
 
   TChain *chain_ttW = new TChain("t"); 
   chain_ttW->Add("/nfs-7/userdata/ss2015/ssBabies/v1.27/TTW_0.root");
@@ -186,17 +189,17 @@ void plots(){
   chain_ttZ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.27/TTZ_0.root");
 
   TChain *chain_ttbar = new TChain("t"); 
-  chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/v2.08/TTBAR_0.root");
+  chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/v2.09/TTBAR_0.root");
 
   TChain *chain_WZ = new TChain("t"); 
-  chain_WZ->Add("/nfs-7/userdata/ss2015/ssBabies/v2.08/WZ_0.root");
+  chain_WZ->Add("/nfs-7/userdata/ss2015/ssBabies/v2.09/WZ_0.root");
 
   TChain *chain_DY = new TChain("t"); 
-  chain_DY->Add("/nfs-7/userdata/ss2015/ssBabies/v2.08/DY_high_0.root");
-  chain_DY->Add("/nfs-7/userdata/ss2015/ssBabies/v2.08/DY_low_0.root");
+  chain_DY->Add("/nfs-7/userdata/ss2015/ssBabies/v2.09/DY_high_0.root");
+  chain_DY->Add("/nfs-7/userdata/ss2015/ssBabies/v2.09/DY_low_0.root");
 
   TChain *chain_WJets = new TChain("t"); 
-  chain_WJets->Add("/nfs-7/userdata/ss2015/ssBabies/v2.08/WJets_0.root");
+  chain_WJets->Add("/nfs-7/userdata/ss2015/ssBabies/v2.09/WJets_0.root");
 
   //Make individual plots
   doublePlotHolder data = plotMaker(chain_data, 1, 0);   
@@ -209,7 +212,7 @@ void plots(){
 
   //Make vectors for plots
   vector < vector < TH1F*> > OS_plots_em; 
-  for (int i = 0; i < 8; i++){
+  for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
     temp.push_back(ttw.OS[i][0][3][1]);
     temp.push_back(ttz.OS[i][0][3][1]);
@@ -222,7 +225,7 @@ void plots(){
   }
 
   vector < vector < TH1F*> > SS_plots_em; 
-  for (int i = 0; i < 8; i++){
+  for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
     temp.push_back(ttw.SS[i][0][3][1]);
     temp.push_back(ttz.SS[i][0][3][1]);
@@ -235,7 +238,7 @@ void plots(){
   }
 
   vector < vector < TH1F*> > OS_plots_eemm; 
-  for (int i = 0; i < 8; i++){
+  for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
     temp.push_back(  ttw.OS[i][0][3][3]);
     temp.push_back(  ttz.OS[i][0][3][3]);
@@ -248,7 +251,7 @@ void plots(){
   }
 
   vector < vector < TH1F*> > SS_plots_eemm; 
-  for (int i = 0; i < 8; i++){
+  for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
     temp.push_back(  ttw.SS[i][0][3][3]);
     temp.push_back(  ttz.SS[i][0][3][3]);
@@ -261,7 +264,7 @@ void plots(){
   }
 
   vector < vector < TH1F*> > OS_plots; 
-  for (int i = 0; i < 8; i++){
+  for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
     temp.push_back(ttw.OS[i][0][3][4]);
     temp.push_back(ttz.OS[i][0][3][4]);
@@ -274,7 +277,7 @@ void plots(){
   }
 
   vector < vector < TH1F*> > SS_plots; 
-  for (int i = 0; i < 8; i++){
+  for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
     temp.push_back(ttw.SS[i][0][3][4]);
     temp.push_back(ttz.SS[i][0][3][4]);
@@ -305,6 +308,7 @@ void plots(){
   names.push_back("mt min");
   names.push_back("m_{ll}");
   names.push_back("mht");
+  names.push_back("MET3p0");
 
   //Titles for output
   vector <string> out;
@@ -316,14 +320,15 @@ void plots(){
   out.push_back("mtmin");
   out.push_back("mll");
   out.push_back("mht");
+  out.push_back("MET3p0");
 
-  vector <double> max_upstream   = { 5e5, 5e5, 5e6, 1e6, 1e6, 1e6, 1e6, 1e5 };
-  vector <double> max_downstream = { 5e4, 5e4, 5e5, 1e5, 1e5, 1e5, 1e5, 1e4 }; 
+  vector <double> max_upstream   = { 5e5, 5e5, 5e6, 1e6, 1e6, 1e6, 1e6, 1e5, 5e5, 5e5 };
+  vector <double> max_downstream = { 5e4, 5e4, 5e5, 1e5, 1e5, 1e5, 1e5, 1e4, 5e4, 5e4 }; 
   vector <double> max;
   if (mode == 0) max = max_downstream;
   if (mode == 1) max = max_upstream; 
   if (mode == 2) max = max_upstream;
-  double min[8] = {1e-3, 1e-3, 1e-2, 1e-1, 1e-3, 1e-3, 1e-3, 1e-3 };
+  double min[10] = {1e-3, 1e-3, 1e-2, 1e-1, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3 };
 
   std::string title;
   if (mode == 0) title = Form("Run2, HH,HL,LL, BR0-3 %s"   , corrected ? "corr" : "" );
@@ -331,7 +336,7 @@ void plots(){
   if (mode == 2) title = Form("Run2, HH,HL,LL, MET > 30 %s", corrected ? "corr" : "" );
 
   //Make plots
-  for (int i = 0; i < 8; i++){
+  for (int i = 0; i < 10; i++){
     //ee+mm
     dataMCplotMaker(data.OS[i][0][3][3], OS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(OS ee+#mu#mu)"), title.c_str(), Form("--lumi 40.03 --lumiUnit pb --outputName %s_eemm_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i])); 
     dataMCplotMaker(data.SS[i][0][3][3], SS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(SS ee+#mu#mu)"), title.c_str(), Form("--lumi 40.03 --lumiUnit pb --outputName %s_eemm.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 

@@ -438,6 +438,15 @@ protected:
 	bool	lep2_trigMatch_isoReq_;
 	TBranch *lep2_trigMatch_isoReq_branch;
 	bool lep2_trigMatch_isoReq_isLoaded;
+	float	met3p0_;
+	TBranch *met3p0_branch;
+	bool met3p0_isLoaded;
+	float	metphi3p0_;
+	TBranch *metphi3p0_branch;
+	bool metphi3p0_isLoaded;
+	bool	passes_met_filters_;
+	TBranch *passes_met_filters_branch;
+	bool passes_met_filters_isLoaded;
 	bool	lep1_isGoodLeg_;
 	TBranch *lep1_isGoodLeg_branch;
 	bool lep1_isGoodLeg_isLoaded;
@@ -1193,6 +1202,21 @@ void Init(TTree *tree) {
 		lep2_trigMatch_isoReq_branch = tree->GetBranch("lep2_trigMatch_isoReq");
 		if (lep2_trigMatch_isoReq_branch) {lep2_trigMatch_isoReq_branch->SetAddress(&lep2_trigMatch_isoReq_);}
 	}
+	met3p0_branch = 0;
+	if (tree->GetBranch("met3p0") != 0) {
+		met3p0_branch = tree->GetBranch("met3p0");
+		if (met3p0_branch) {met3p0_branch->SetAddress(&met3p0_);}
+	}
+	metphi3p0_branch = 0;
+	if (tree->GetBranch("metphi3p0") != 0) {
+		metphi3p0_branch = tree->GetBranch("metphi3p0");
+		if (metphi3p0_branch) {metphi3p0_branch->SetAddress(&metphi3p0_);}
+	}
+	passes_met_filters_branch = 0;
+	if (tree->GetBranch("passes_met_filters") != 0) {
+		passes_met_filters_branch = tree->GetBranch("passes_met_filters");
+		if (passes_met_filters_branch) {passes_met_filters_branch->SetAddress(&passes_met_filters_);}
+	}
 	lep1_isGoodLeg_branch = 0;
 	if (tree->GetBranch("lep1_isGoodLeg") != 0) {
 		lep1_isGoodLeg_branch = tree->GetBranch("lep1_isGoodLeg");
@@ -1399,6 +1423,9 @@ void GetEntry(unsigned int idx)
 		lep1_trigMatch_isoReq_isLoaded = false;
 		lep2_trigMatch_noIsoReq_isLoaded = false;
 		lep2_trigMatch_isoReq_isLoaded = false;
+		met3p0_isLoaded = false;
+		metphi3p0_isLoaded = false;
+		passes_met_filters_isLoaded = false;
 		lep1_isGoodLeg_isLoaded = false;
 		lep2_isGoodLeg_isLoaded = false;
 		lep1_isFakeLeg_isLoaded = false;
@@ -1558,6 +1585,9 @@ void LoadAllBranches()
 	if (lep1_trigMatch_isoReq_branch != 0) lep1_trigMatch_isoReq();
 	if (lep2_trigMatch_noIsoReq_branch != 0) lep2_trigMatch_noIsoReq();
 	if (lep2_trigMatch_isoReq_branch != 0) lep2_trigMatch_isoReq();
+	if (met3p0_branch != 0) met3p0();
+	if (metphi3p0_branch != 0) metphi3p0();
+	if (passes_met_filters_branch != 0) passes_met_filters();
 	if (lep1_isGoodLeg_branch != 0) lep1_isGoodLeg();
 	if (lep2_isGoodLeg_branch != 0) lep2_isGoodLeg();
 	if (lep1_isFakeLeg_branch != 0) lep1_isFakeLeg();
@@ -3394,6 +3424,45 @@ void LoadAllBranches()
 		}
 		return lep2_trigMatch_isoReq_;
 	}
+	float &met3p0()
+	{
+		if (not met3p0_isLoaded) {
+			if (met3p0_branch != 0) {
+				met3p0_branch->GetEntry(index);
+			} else { 
+				printf("branch met3p0_branch does not exist!\n");
+				exit(1);
+			}
+			met3p0_isLoaded = true;
+		}
+		return met3p0_;
+	}
+	float &metphi3p0()
+	{
+		if (not metphi3p0_isLoaded) {
+			if (metphi3p0_branch != 0) {
+				metphi3p0_branch->GetEntry(index);
+			} else { 
+				printf("branch metphi3p0_branch does not exist!\n");
+				exit(1);
+			}
+			metphi3p0_isLoaded = true;
+		}
+		return metphi3p0_;
+	}
+	bool &	passes_met_filters()
+	{
+		if (not passes_met_filters_isLoaded) {
+			if (passes_met_filters_branch != 0) {
+				passes_met_filters_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_met_filters_branch does not exist!\n");
+				exit(1);
+			}
+			passes_met_filters_isLoaded = true;
+		}
+		return passes_met_filters_;
+	}
 	bool &	lep1_isGoodLeg()
 	{
 		if (not lep1_isGoodLeg_isLoaded) {
@@ -3744,6 +3813,9 @@ namespace ss {
 	const bool &lep1_trigMatch_isoReq();
 	const bool &lep2_trigMatch_noIsoReq();
 	const bool &lep2_trigMatch_isoReq();
+	const float &met3p0();
+	const float &metphi3p0();
+	const bool &passes_met_filters();
 	const bool &lep1_isGoodLeg();
 	const bool &lep2_isGoodLeg();
 	const bool &lep1_isFakeLeg();

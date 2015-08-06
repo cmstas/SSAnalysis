@@ -154,6 +154,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("met3p0"                  , &met3p0                  );
   BabyTree->Branch("metphi3p0"               , &metphi3p0               );
   BabyTree->Branch("passes_hbhe_filters"     , &passes_hbhe_filters     );
+  BabyTree->Branch("mostJets"                , &mostJets                );
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -311,6 +312,7 @@ void babyMaker::InitBabyNtuple(){
     muID_ptSig.clear();     
     muID_ip3dSig.clear();
     muID_medMuonPOG.clear();
+    mostJets.clear(); 
     muID_pt.clear();        
     muID_eta.clear();
     lep1_isGoodLeg = 0; 
@@ -535,6 +537,11 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   ht = 0;
   for (unsigned int i = 0; i < jets.size(); i++) ht += jets.at(i).pt(); 
   if (verbose) for (unsigned int i = 0; i < btags.size(); i++) cout << "btag: " << btags.at(i).pt() << endl;
+  for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++){
+    if (tas::pfjets_p4().at(i).pt() < 5.) continue;
+    if (fabs(tas::pfjets_p4().at(i).eta()) > 2.4) continue;
+    mostJets.push_back(pfjets_p4().at(i));
+  }
   
   //Verbose for jets
   if (verbose){
