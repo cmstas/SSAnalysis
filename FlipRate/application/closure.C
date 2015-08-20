@@ -4,18 +4,10 @@
 #include "SS.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../../CORE/SSSelections.h"
-
-//truth-matching
-bool truthMatching = false;
-
-//cutting
-bool cutting = false;
+#include "../../CORE/Tools/dorky/dorky.h"
 
 //underflow/overflow
 bool overflow = false;
-
-//lumi
-float theLumi = 0.04003;
 
 using namespace ss;
 
@@ -72,7 +64,8 @@ void closure(){
 
   //Set up chains
   TChain *chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v2.08/DataDoubleEG_0.root");
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v2.11/DataDoubleEG2_0.root");
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v2.11/DataDoubleEG_0.root");
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -104,8 +97,14 @@ void closure(){
       //Reject not triggered
       if (!fired_trigger()) continue;
 
-      //Not in int lumi
-      if (run() == 251864) continue;
+      //Reject duplicates
+	  if (ss::is_real_data()){
+        duplicate_removal::DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
+        if (duplicate_removal::is_duplicate(id)) continue; 
+      }
+
+      //MET filters
+      if (!ss::passes_met_filters()) continue;
 
       //Throw away unneeded events
       if (hyp_class() != 3 && hyp_class() != 4 && hyp_class() != 6) continue;
@@ -116,21 +115,9 @@ void closure(){
       //Keep only electron-electron events
       if (abs(lep1_id()) != 11 || abs(lep2_id()) != 11) continue;
 
-      //Cutting
-      if (cutting){
-        if (met() > 100) continue; 
-        if (mt() > 100) continue; 
-      }
-
       //Figure out if SS
       bool isSS = false;
       if (sgn(lep1_id()) == sgn(lep2_id())) isSS = true;
-
-      //Truth-Matching
-      if (truthMatching){
-        if (!isSS &&  (lep1_motherID() != 1 || lep2_motherID() != 1)) continue;
-        if ( isSS && !((lep1_motherID() == 1 && lep2_motherID() == 2) || (lep1_motherID() == 2 && lep2_motherID() == 1))) continue;
-      }
 
       //Weight
       float weight = 1.0; //scale1fb()*theLumi;
@@ -180,12 +167,16 @@ void closure(){
   cout << "pred: " << nPred << " pm " << sqrt(stat2 + fr_err2) << endl;
   cout << " obs: " << nObs << " pm " << sqrt(nObs) << endl;
 
-
   //Make plot
+  TH1F* null = new TH1F("","",1,0,1);
   vector <TH1F*> bkgd;
   bkgd.push_back(clos_MC); 
   vector <string> titles;
-  titles.push_back("pred"); 
-  dataMCplotMaker(clos_data, bkgd, titles, "flip closure", "", Form("--lumi 40.03 --lumiUnit pb --outputName flip_closure%s.pdf --xAxisLabel M_{ll} --dataName obs --topYaxisTitle obs/pred --isLinear --noFill --histoErrors %s", truthMatching ? "_TM" : "", "--noOverflow")); 
+  vector <TH1F*> signals;
+  signals.push_back(clos_data); 
+  vector <string> sigTit; 
+  sigTit.push_back("Observed Same-Sign Events");
+  titles.push_back("Predicted Same-Sign Events"); 
+  dataMCplotMaker(null, bkgd, titles, "", "", "--lumi 42 --lumiUnit pb --outputName flip_closure.pdf --xAxisLabel M_{ll} --blackSignals  --isLinear --noOverflow --setMaximum 20 --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2", signals, sigTit); 
 
 }

@@ -141,6 +141,10 @@ namespace ss {
 	const bool &lep1_trigMatch_isoReq() { return samesign.lep1_trigMatch_isoReq(); }
 	const bool &lep2_trigMatch_noIsoReq() { return samesign.lep2_trigMatch_noIsoReq(); }
 	const bool &lep2_trigMatch_isoReq() { return samesign.lep2_trigMatch_isoReq(); }
+	const float &met3p0() { return samesign.met3p0(); }
+	const float &metphi3p0() { return samesign.metphi3p0(); }
+	const bool &passes_met_filters() { return samesign.passes_met_filters(); }
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &mostJets() { return samesign.mostJets(); }
 	const bool &lep1_isGoodLeg() { return samesign.lep1_isGoodLeg(); }
 	const bool &lep2_isGoodLeg() { return samesign.lep2_isGoodLeg(); }
 	const bool &lep1_isFakeLeg() { return samesign.lep1_isFakeLeg(); }
