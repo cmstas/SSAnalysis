@@ -151,7 +151,7 @@ void closure(){
   float theerror[9] = { 0 } ;
   for (int k = 0; k < 9; k++){
     float error = 0; 
-    for (int i = 1; i <= errors[0]->GetNbinsX()+1; i++){
+    for (int i = 1; i <= errors[0]->GetNbinsX(); i++){
       for (int j = 1; j <= errors[0]->GetNbinsY(); j++){
         float FR_val = rate->GetBinContent(i, j);
         float FR_err = rate->GetBinError(i, j);
@@ -166,6 +166,10 @@ void closure(){
 
   cout << "pred: " << nPred << " pm " << sqrt(stat2 + fr_err2) << endl;
   cout << " obs: " << nObs << " pm " << sqrt(nObs) << endl;
+
+  //Split it
+  cout << "pred stat: " << sqrt(stat2) << endl;
+  cout << "pred syst: " << sqrt(fr_err2) << endl;
 
   //Make plot
   TH1F* null = new TH1F("","",1,0,1);
