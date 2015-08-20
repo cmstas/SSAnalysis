@@ -48,6 +48,9 @@ void closure(){
   TH1F* clos_MC   = new TH1F("clos_plot_MC"  , "clos_plot_MC"  , 9, 70, 115); 
   TH1F* clos_data = new TH1F("clos_plot_data", "clos_plot_data", 9, 70, 115); 
 
+  //Sumw2
+  clos_MC->Sumw2();
+
   //Errors -- keep track of number of events in each FR bin so we can get the error 
   int nBinsX = 5; 
   int nBinsY = 3; 
@@ -70,12 +73,6 @@ void closure(){
   //Set up chains
   TChain *chain = new TChain("t");
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/v2.08/DataDoubleEG_0.root");
-
-  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/dy_0.root"); 
-  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY1_0.root"); 
-  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY2_0.root"); 
-  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY3_0.root"); 
-  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY4_0.root"); 
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -140,8 +137,9 @@ void closure(){
 
       //Observation
       if (isSS){
-        nObs += weight; 
-        clos_data->Fill( (lep1_p4() + lep2_p4()).M(), weight); 
+        float mll = (lep1_p4() + lep2_p4()).M();
+        if (mll > 70 && mll < 115) nObs += weight; 
+        clos_data->Fill(mll, weight); 
       }
 
       //Prediction
@@ -155,11 +153,12 @@ void closure(){
         if (bin_in_errors < 0) overflow ? bin_in_errors = 0 : bin_in_errors = 999;
         if (bin_in_errors != 999) errors[bin_in_errors]->Fill(lep1_p4().pt(), fabs(lep1_p4().eta()), weight);
         if (bin_in_errors != 999) errors[bin_in_errors]->Fill(lep2_p4().pt(), fabs(lep2_p4().eta()), weight);
-        stat2 += pow(ff*weight, 2); 
       }
 
     }//event loop
   }//file loop
+
+  for (int i = 1; i <= 9; i++) stat2 += pow(clos_MC->GetBinError(i), 2);  
 
   //Figure out error from "errors" plot:
   float theerror[9] = { 0 } ;
