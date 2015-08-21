@@ -3,8 +3,6 @@
 pathPublic="/hadoop/cms/store/group/snt/run2_25ns"
 pathPrivate="/hadoop/cms/store/user/cgeorge/privateSusySignalsSS"
 pathData="/hadoop/cms/store/group/snt/run2_data"
-tag_data="V07-04-06"
-tag_MC="V07-04-03"
 
 nSubmitted=0
 
@@ -21,56 +19,94 @@ pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 
 #Then submit jobs
 ptrel="4"
-for expt in "0" "1"
+for expt in "0" # "1"
 do
   nIter=0
-  for sname in "DY_high_25" "TTBAR_25"  "WZ_25" "DY_low_25" "WJets_25" "SINGLETOP1_25" "SINGLETOP2_25" "SINGLETOP3_25" "SINGLETOP4_25" # "DataDoubleEG" "DataDoubleMuon" "DATAMUEG" 
+  for sname in "DY_high" # "TTBAR"  "WZ" "DY_low" "WJets" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "DataDoubleEG" "DataDoubleMuon" "DATAMUEG" 
   do
     #Iter
     nIter=$(( $nIter + 1 ))
 
     #Get Name
-    if   [ $sname == "TTBAR_25"           ]
+    if   [ $sname == "TTBAR"           ]
     then 
       name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2"
-      nameNu=20
-    elif [ $sname == "WZ_25"              ]
+      tag=V07-04-03
+      nameNu=0
+    elif [ $sname == "WZ"              ]
     then 
       name="WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      nameNu=21
-    elif [ $sname == "DY_low_25"          ]; 
+      tag=V07-04-03
+      nameNu=3
+    elif [ $sname == "DY_low"          ]; 
       then name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      nameNu=22
-    elif [ $sname == "DY_high_25"         ]; 
+      tag=V07-04-03
+      nameNu=6
+    elif [ $sname == "DY_high"         ]; 
       then name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3"
-      nameNu=23
-    elif [ $sname == "WJets_25"           ]; 
+      tag=V07-04-06
+      nameNu=7
+    elif [ $sname == "WJets"           ]; 
       then name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      nameNu=24
-    elif [ $sname == "SINGLETOP1_25"    ]; 
+      tag=V07-04-03
+      nameNu=8
+    elif [ $sname == "SINGLETOP1"    ]; 
       then name="ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      tag=V07-04-03
       nameNu=12
-    elif [ $sname == "SINGLETOP2_25"    ]; 
+    elif [ $sname == "SINGLETOP2"    ]; 
       then name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      tag=V07-04-03
       nameNu=13
-    elif [ $sname == "SINGLETOP3_25"    ]; 
+    elif [ $sname == "SINGLETOP3"    ]; 
       then name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      tag=V07-04-03
       nameNu=14
-    elif [ $sname == "SINGLETOP4_25"    ]; 
+    elif [ $sname == "SINGLETOP4"    ]; 
       then name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      tag=V07-04-03
       nameNu=15
-    elif [ $sname == "SINGLETOP5_25"    ]; 
+    elif [ $sname == "SINGLETOP5"    ]; 
       then name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      tag=V07-04-03
       nameNu=17
+    elif [ $sname == "DataDoubleMuon"  ]; 
+      then name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1";
+      tag=V07-04-07
+      nameNu=9
+    elif [ $sname == "DataDoubleEG"    ]; 
+      then name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1";
+      tag=V07-04-07
+      nameNu=10
+    elif [ $sname == "DATAMUONEG"    ]; 
+      then name="Run2015B_MuonEG_MINIAOD_PromptReco-v1";
+      tag=V07-04-07
+      nameNu=16
+    elif [ $sname == "TTW" ]
+    then
+      name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1" 
+      tag=V07-04-07
+      nameNu=2
+    elif [ $sname == "TTZL" ]
+    then
+      name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      tag=V07-04-07
+      nameNu=3
+    elif [ $sname == "TTZQ" ]
+    then
+      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      tag=V07-04-07
+      nameNu=12
     else 
       name=$sname 
+      tag=V07-04-07
       nameNu=9999
     fi
 
     #Get pTRel suffix
     if [ "$ptrel" == "4" ] 
     then
-      ptrelsuf="_25"
+      ptrelsuf=""
     fi
   
     #Data vs. MC variables
@@ -79,12 +115,10 @@ do
       infix="merged/"
       path=$pathData
       isData="1"
-      tag=$tag_data
     else 
       infix="" 
       isData="0"
       path=$pathPublic
-      tag=$tag_MC
     fi
 
     #Get number of files
