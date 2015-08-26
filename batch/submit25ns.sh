@@ -22,7 +22,7 @@ ptrel="4"
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "DY_high" # "TTBAR"  "WZ" "DY_low" "WJets" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "DataDoubleEG" "DataDoubleMuon" "DATAMUEG" 
+  for sname in "DY_high" "TTBAR"  "WZ" "DY_low" "WJets" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "DataDoubleEG" "DataDoubleMuon" "DATAMUONEG" "SINGLETOP5"
   do
     #Iter
     nIter=$(( $nIter + 1 ))
@@ -55,19 +55,19 @@ do
       tag=V07-04-03
       nameNu=12
     elif [ $sname == "SINGLETOP2"    ]; 
-      then name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      then name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-03
       nameNu=13
     elif [ $sname == "SINGLETOP3"    ]; 
-      then name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      then name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-03
       nameNu=14
     elif [ $sname == "SINGLETOP4"    ]; 
-      then name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      then name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-03
       nameNu=15
     elif [ $sname == "SINGLETOP5"    ]; 
-      then name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      then name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-03
       nameNu=17
     elif [ $sname == "DataDoubleMuon"  ]; 
@@ -96,7 +96,7 @@ do
     then
       name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-07
-      nameNu=12
+      nameNu=18
     else 
       name=$sname 
       tag=V07-04-07
@@ -136,6 +136,8 @@ do
       if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}${ptrelsuf}_$expt.root ] 
       then 
         continue
+      else
+        "Redoing, this does not exist: /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}${ptrelsuf}_$expt.root"
       fi
 
       echo "-------------"

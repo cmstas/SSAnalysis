@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
       break;
     case DY_high:
       name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3";
-      tag = "V07-04-07";
+      tag = "V07-04-06";
       shortname="dy_high";
       path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
@@ -84,19 +84,19 @@ int main(int argc, char *argv[]){
       path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
     case DataDoubleMuon:
-      name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1";
+      name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1/merged";
       tag = "V07-04-07";
       shortname="datadoublemuon";
       path = "/hadoop/cms/store/group/snt/run2_data/"; 
       break;
     case DataDoubleEG:
-      name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1";
+      name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1/merged";
       tag = "V07-04-07";
       shortname="datadoubleeg";
       path = "/hadoop/cms/store/group/snt/run2_data/"; 
       break;
     case TTZQ:
-      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/merged";
       tag = "V07-04-03";
       shortname="ttzq";
       path = "/hadoop/cms/store/group/snt/run2_25ns/";
@@ -114,25 +114,25 @@ int main(int argc, char *argv[]){
       path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
     case SINGLETOP2:
-      name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag = "V07-04-03";
       shortname="singletop2";
       path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
     case SINGLETOP3:
-      name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag = "V07-04-03";
       shortname="singletop3";
       path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
     case SINGLETOP4:
-      name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag = "V07-04-03";
       shortname="singletop4";
       path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
     case SINGLETOP5:
-      name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag = "V07-04-03";
       shortname="singletop5";
       path = "/hadoop/cms/store/group/snt/run2_25ns/";
