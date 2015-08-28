@@ -21,13 +21,15 @@ void make1DplotFR(){
   // var="_jet_highpt";
   // var="_jet_lowpt";
 
+  bool doPt = true;
+
   //scale factors from MT control region plot
-  float muSF = 0.54;
-  float elSF = 0.42;
+  float muSF = 1.02;
+  float elSF = 0.71;
 
   //scale factors from Z peak
-  float muSF_zp = 0.93;
-  float elSF_zp = 0.44;
+  float muSF_zp = 0.94;
+  float elSF_zp = 0.42;
 
   TFile* f_qcd_mu = TFile::Open("rate_histos_qcd_mu"+postfix+".root");
   TFile* f_qcd_el = TFile::Open("rate_histos_qcd_el"+postfix+".root");
@@ -35,8 +37,8 @@ void make1DplotFR(){
   TH2F* mud_qcd = (TH2F*) f_qcd_mu->Get("Nl"+var+"_histo_mu");  
   TH2F* eld_qcd = (TH2F*) f_qcd_el->Get("Nl"+var+"_histo_e");
 
-  TH1D* mud1d_qcd = mud_qcd->ProjectionX();
-  TH1D* eld1d_qcd = eld_qcd->ProjectionX();
+  TH1D* mud1d_qcd = (doPt ? mud_qcd->ProjectionX() : mud_qcd->ProjectionY());
+  TH1D* eld1d_qcd = (doPt ? eld_qcd->ProjectionX() : eld_qcd->ProjectionY());
 
   TH2F* mun_qcd = 0;
   TH2F* eln_qcd = 0;
@@ -48,8 +50,8 @@ void make1DplotFR(){
     eln_qcd = (TH2F*) f_qcd_el->Get("Nt_histo_e");
   }
 
-  TH1D* mun1d_qcd = mun_qcd->ProjectionX();
-  TH1D* eln1d_qcd = eln_qcd->ProjectionX();
+  TH1D* mun1d_qcd = (doPt ? mun_qcd->ProjectionX() : mun_qcd->ProjectionY());
+  TH1D* eln1d_qcd = (doPt ? eln_qcd->ProjectionX() : eln_qcd->ProjectionY());
 
   TH1D *muf_qcd = (TH1D*) mun1d_qcd->Clone("rate_histo_mu");
   muf_qcd->Divide(mun1d_qcd,mud1d_qcd,1,1,"B");
@@ -72,8 +74,8 @@ void make1DplotFR(){
   eld_data->Add(eld_wj,-1.*elSF);
   eld_data->Add(eld_dy,-1.*elSF);
 
-  TH1D* mud1d_data = mud_data->ProjectionX();
-  TH1D* eld1d_data = eld_data->ProjectionX();
+  TH1D* mud1d_data = (doPt ? mud_data->ProjectionX() : mud_data->ProjectionY());
+  TH1D* eld1d_data = (doPt ? eld_data->ProjectionX() : eld_data->ProjectionY());
 
   TH2F* mud_data_zp = (TH2F*) mud_data->Clone("mud_data_zp");
   TH2F* mud_wj_zp   = (TH2F*) mud_wj->Clone("mud_wj_zp");
@@ -87,8 +89,8 @@ void make1DplotFR(){
   eld_data_zp->Add(eld_wj_zp,-1.*elSF_zp);
   eld_data_zp->Add(eld_dy_zp,-1.*elSF_zp);
 
-  TH1D* mud1d_data_zp = mud_data_zp->ProjectionX();
-  TH1D* eld1d_data_zp = eld_data_zp->ProjectionX();
+  TH1D* mud1d_data_zp = (doPt ? mud_data_zp->ProjectionX() : mud_data_zp->ProjectionY());
+  TH1D* eld1d_data_zp = (doPt ? eld_data_zp->ProjectionX() : eld_data_zp->ProjectionY());
 
   TH2F* mun_data = 0;
   TH2F* mun_wj   = 0;
@@ -117,8 +119,8 @@ void make1DplotFR(){
   eln_data->Add(eln_wj,-1.*elSF);
   eln_data->Add(eln_dy,-1.*elSF);
 
-  TH1D* mun1d_data = mun_data->ProjectionX();
-  TH1D* eln1d_data = eln_data->ProjectionX();
+  TH1D* mun1d_data = (doPt ? mun_data->ProjectionX() : mun_data->ProjectionY());
+  TH1D* eln1d_data = (doPt ? eln_data->ProjectionX() : eln_data->ProjectionY());
 
   TH2F* mun_data_zp = (TH2F*) mun_data->Clone("mun_data_zp");
   TH2F* mun_wj_zp   = (TH2F*) mun_wj->Clone("mun_wj_zp");
@@ -132,15 +134,19 @@ void make1DplotFR(){
   eln_data_zp->Add(eln_wj_zp,-1.*elSF_zp);
   eln_data_zp->Add(eln_dy_zp,-1.*elSF_zp);
 
-  TH1D* mun1d_data_zp = mun_data_zp->ProjectionX();
-  TH1D* eln1d_data_zp = eln_data_zp->ProjectionX();
+  TH1D* mun1d_data_zp = (doPt ? mun_data_zp->ProjectionX() : mun_data_zp->ProjectionY());
+  TH1D* eln1d_data_zp = (doPt ? eln_data_zp->ProjectionX() : eln_data_zp->ProjectionY());
 
   TH1D *muf_data = (TH1D*) mun1d_data->Clone("rate_histo_mu");
   muf_data->Divide(mun1d_data,mud1d_data,1,1,"B");
   muf_data->SetMarkerStyle(20);
+  muf_data->SetMarkerSize(1.5);
+  muf_data->SetLineColor(kBlack);
   TH1D *elf_data = (TH1D*) eln1d_data->Clone("rate_histo_el");
   elf_data->Divide(eln1d_data,eld1d_data,1,1,"B");
   elf_data->SetMarkerStyle(20);
+  elf_data->SetMarkerSize(1.5);
+  elf_data->SetLineColor(kBlack);
 
   TH1D *muf_data_zp = (TH1D*) mun1d_data_zp->Clone("rate_histo_mu_zp");
   muf_data_zp->Divide(mun1d_data_zp,mud1d_data_zp,1,1,"B");
@@ -186,16 +192,27 @@ void make1DplotFR(){
   dataMCplotMaker(elf_data_copy, el_qcd_vec, Titles, "", "", Form("--outputName el_1dfr%s%s --png --noStack --isLinear --drawDots --lumi 0.040 --xAxisLabel electron p_{T}^{corr.} --xAxisUnit GeV --setMaximum 0.5 --errHistAtBottom",var.Data(),postfix.Data()));//, std::vector<TH1F*>(), std::vector<string>(), std::vector<Color_t>()
   */
 
+  TString xname = (doPt ? "p_{T} [GeV]" : "|#eta|");
+  if (var=="_cone"&&doPt) xname = "p_{T}^{corr.} [GeV]";
+
   muf_qcd->SetTitle("");
-  muf_qcd->GetYaxis()->SetTitleOffset(1.25);
-  muf_qcd->GetXaxis()->SetTitleOffset(1.1);
-  muf_qcd->GetYaxis()->SetTitle("muon fake rate");
-  muf_qcd->GetXaxis()->SetTitle("muon p_{T} [GeV]");
-  if (var=="_cone") muf_qcd->GetXaxis()->SetTitle("muon p_{T}^{corr.} [GeV]");
-  if (var=="_jet") muf_qcd->GetXaxis()->SetTitle("jet p_{T} [GeV]");
+  muf_qcd->GetXaxis()->SetTitleSize(1.2*0.035);
+  muf_qcd->GetXaxis()->SetTitleFont(42);
+  muf_qcd->GetYaxis()->SetTitleSize(1.2*0.035);
+  muf_qcd->GetYaxis()->SetTitleFont(42);
+  muf_qcd->GetXaxis()->SetLabelSize(1.2*0.035);
+  muf_qcd->GetXaxis()->SetLabelFont(42);
+  muf_qcd->GetYaxis()->SetLabelSize(1.2*0.035);
+  muf_qcd->GetYaxis()->SetLabelFont(42);
+  muf_qcd->GetYaxis()->SetTitleOffset(1.20);
+  muf_qcd->GetXaxis()->SetTitleOffset(1.10);
+  muf_qcd->GetYaxis()->SetTitle("Muon Fake Rate");
+  muf_qcd->GetXaxis()->SetTitle("Muon "+xname);
+  if (var=="_jet"&&doPt) muf_qcd->GetXaxis()->SetTitle("jet "+xname);
   TCanvas c1("c1","c1",600,600);
   muf_qcd->GetYaxis()->SetRangeUser(0,0.7);
   muf_qcd->SetMarkerStyle(21);
+  muf_qcd->SetMarkerSize(1.5);
   muf_qcd->SetMarkerColor(kRed);
   muf_qcd->SetLineColor(kRed);
   muf_qcd->Draw("PE");
@@ -203,34 +220,57 @@ void make1DplotFR(){
   muf_data->Draw("PEsame");
   c1.RedrawAxis();
 
-  TLegend* leg = new TLegend(0.12,0.78,0.4,0.89);
+  TLegend* leg = new TLegend(0.62,0.78,0.89,0.89);
   leg->SetFillColor(kWhite);
   leg->SetLineColor(kWhite);
+  leg->SetTextFont(42);
+  leg->SetTextSize(1.2*0.035);
+  leg->SetTextAlign(12);
+  leg->AddEntry(muf_data,"Data","ple");
   leg->AddEntry(muf_qcd,"QCD MC","ple");
-  leg->AddEntry(muf_data,"data","ple");
   leg->Draw();
 
-  TPaveText* labelcms  = new TPaveText(0.52,0.78,0.89,0.89,"NDCBR");
-  labelcms->SetTextAlign(12);
-  labelcms->SetTextSize(0.035);
-  labelcms->SetFillColor(kWhite);
-  labelcms->AddText("CMS Preliminary");
-  labelcms->AddText("#sqrt{s} = 13 TeV, L = 40 pb^{-1}");
-  labelcms->SetBorderSize(0);
+  TPaveText* labelcms  = new TPaveText(0.75,0.90,0.89,0.99,"NDCNB");
+  labelcms->SetTextAlign(33);
+  labelcms->SetTextSize(1.2*0.035);
   labelcms->SetTextFont(42);
+  labelcms->SetFillColor(kWhite);
+  labelcms->AddText("42 pb^{-1} (13 TeV)");
+  labelcms->SetBorderSize(0);
   labelcms->SetLineWidth(2);
   labelcms->Draw();
 
+  TLatex latex;
+  latex.SetNDC();
+  latex.SetTextAngle(0);
+  latex.SetTextColor(kBlack);    
+  latex.SetTextFont(61);
+  latex.SetTextSize(1.2*0.044);
+  latex.SetTextAlign(11);
+  latex.DrawLatex(0.14, 0.84, "CMS");
+  latex.SetTextFont(52);
+  latex.SetTextAlign(11);
+  latex.SetTextSize(1.2*0.044*0.75);
+  latex.DrawLatex(0.14, 0.84 - 1.2*0.040, "Preliminary");
+
   elf_qcd->SetTitle("");
-  elf_qcd->GetYaxis()->SetTitleOffset(1.25);
-  elf_qcd->GetXaxis()->SetTitleOffset(1.1);
-  elf_qcd->GetYaxis()->SetTitle("electron fake rate");
-  elf_qcd->GetXaxis()->SetTitle("electron p_{T} [GeV]");
-  if (var=="_cone") elf_qcd->GetXaxis()->SetTitle("electron p_{T}^{corr.} [GeV]");
-  if (var=="_jet") elf_qcd->GetXaxis()->SetTitle("jet p_{T} [GeV]");
+  elf_qcd->GetXaxis()->SetTitleSize(1.2*0.035);
+  elf_qcd->GetXaxis()->SetTitleFont(42);
+  elf_qcd->GetYaxis()->SetTitleSize(1.2*0.035);
+  elf_qcd->GetYaxis()->SetTitleFont(42);
+  elf_qcd->GetXaxis()->SetLabelSize(1.2*0.035);
+  elf_qcd->GetXaxis()->SetLabelFont(42);
+  elf_qcd->GetYaxis()->SetLabelSize(1.2*0.035);
+  elf_qcd->GetYaxis()->SetLabelFont(42);
+  elf_qcd->GetYaxis()->SetTitleOffset(1.20);
+  elf_qcd->GetXaxis()->SetTitleOffset(1.10);
+  elf_qcd->GetYaxis()->SetTitle("Electron Fake Rate");
+  elf_qcd->GetXaxis()->SetTitle("Electron "+xname);
+  if (var=="_jet"&&doPt) elf_qcd->GetXaxis()->SetTitle("jet "+xname);
   TCanvas c2("c2","c2",600,600);
   elf_qcd->GetYaxis()->SetRangeUser(0,0.7);
   elf_qcd->SetMarkerStyle(21);
+  elf_qcd->SetMarkerSize(1.5);
   elf_qcd->SetMarkerColor(kRed);
   elf_qcd->SetLineColor(kRed);
   elf_qcd->Draw("PE");
@@ -239,6 +279,14 @@ void make1DplotFR(){
   c2.RedrawAxis();
   leg->Draw();
   labelcms->Draw();
+  latex.SetTextFont(61);
+  latex.SetTextSize(1.2*0.044);
+  latex.SetTextAlign(11);
+  latex.DrawLatex(0.14, 0.84, "CMS");
+  latex.SetTextFont(52);
+  latex.SetTextAlign(11);
+  latex.SetTextSize(1.2*0.044*0.75);
+  latex.DrawLatex(0.14, 0.84 - 1.2*0.040, "Preliminary");
 
   c1.SaveAs("mu_1dfr"+var+postfix+".png");
   c2.SaveAs("el_1dfr"+var+postfix+".png");
