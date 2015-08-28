@@ -38,75 +38,108 @@ int main(int argc, char *argv[]){
   const char* filename = Form("merged_ntuple_%i.root", file);
   const char* suffix = file < 0 ? "" : Form("_%i", file);
   string tag = "V07-04-03";
-  
 
   //Info for each sample
   switch (which){
     case TTBAR:
-      name = "TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
-      shortname = "ttbar";
-      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
+      name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2";
+      shortname="ttbar";
+      tag = "V07-04-03";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
     case TTW:
-      cout << "TTW NOT SUPPORTED!!" << endl;
-      name = "";
-      shortname = "ttw";
-      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
+      name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      tag = "V07-04-03";
+      shortname="ttw";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
-    case TTZ:
-      cout << "TTZ NOT SUPPORTED!!" << endl;
-      name = "TTZJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-      shortname = "ttz";
-      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
+    case TTZL:
+      name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      tag = "V07-04-03";
+      shortname="ttzl";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
     case WZ:
-      name = "WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
-      shortname = "wz";
-      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
-      break;
-    case T1TTTT_1500:
-      cout << "T1TTTT NOT SUPPORTED!!" << endl;
-      name = "SMS-T1tttt_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1";
-      shortname = "t1tttt_1500";
-      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
-      break;
-    case T1TTTT_1200:
-      cout << "T1TTTT NOT SUPPORTED!!" << endl;
-      name = "SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1";
-      shortname = "t1tttt_1200";
-      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
-      break;
-    case DY_high:
-      name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
-      shortname = "dy_high";
-      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
+      name="WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      tag = "V07-04-03";
+      shortname="wz";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
     case DY_low:
-      name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
-      shortname = "dy_low";
-      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
+      name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      tag = "V07-04-03";
+      shortname="dy_low";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
+      break;
+    case DY_high:
+      name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3";
+      tag = "V07-04-06";
+      shortname="dy_high";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
     case WJets:
-      name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
-      shortname = "wjets";
-      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
-      break;
-    case TTPOWHEG:
-      name = "TT_TuneZ2star_13TeV-powheg-pythia6-tauola_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v3";
-      shortname = "ttpowheg";
-      path = "/hadoop/cms/store/group/snt/run2_50ns/"; 
+      name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      tag = "V07-04-03";
+      shortname="wjets";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
     case DataDoubleMuon:
-      name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1/merged/";
-      shortname = "datadoublemuon";
+      name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1/merged";
+      tag = "V07-04-07";
+      shortname="datadoublemuon";
       path = "/hadoop/cms/store/group/snt/run2_data/"; 
-      tag = "V07-04-06";
       break;
     case DataDoubleEG:
-      name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1/merged/";
-      shortname = "datadoubleeg";
+      name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1/merged";
+      tag = "V07-04-07";
+      shortname="datadoubleeg";
       path = "/hadoop/cms/store/group/snt/run2_data/"; 
-      tag = "V07-04-06";
+      break;
+    case TTZQ:
+      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/merged";
+      tag = "V07-04-03";
+      shortname="ttzq";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
+      break;
+    case DATAMUONEG:
+      name="Run2015B_MuonEG_MINIAOD_PromptReco-v1";
+      tag = "V07-04-07";
+      shortname="datamuoneg";
+      path = "/hadoop/cms/store/group/snt/run2_data/"; 
+      break;
+    case SINGLETOP1:
+      name="ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      shortname="singletop1";
+      tag = "V07-04-03";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
+      break;
+    case SINGLETOP2:
+      name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      tag = "V07-04-03";
+      shortname="singletop2";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
+      break;
+    case SINGLETOP3:
+      name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      tag = "V07-04-03";
+      shortname="singletop3";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
+      break;
+    case SINGLETOP4:
+      name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      tag = "V07-04-03";
+      shortname="singletop4";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
+      break;
+    case SINGLETOP5:
+      name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      tag = "V07-04-03";
+      shortname="singletop5";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
+      break;
+    default:
+      name="dummy";
+      path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
   }
   
@@ -124,7 +157,7 @@ int main(int argc, char *argv[]){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  set_goodrun_file("final_golden_50ns_40p24pb.txt");
+  set_goodrun_file("final_golden_50ns_40p03pb.txt");
 
   //Init MVA
   createAndInitMVA("./CORE");
@@ -132,9 +165,9 @@ int main(int argc, char *argv[]){
   //JECs
   std::vector<std::string> filenames;
   FactorizedJetCorrector *jetCorrAG;
-  std::string blah1 = "Summer15_50nsV2_MC_L1FastJet_AK4PFchs.txt";
-  std::string blah2 = "Summer15_50nsV2_MC_L2Relative_AK4PFchs.txt";
-  std::string blah3 = "Summer15_50nsV2_MC_L3Absolute_AK4PFchs.txt";
+  std::string blah1 = "CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L1FastJet_AK4PFchs.txt";
+  std::string blah2 = "CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L2Relative_AK4PFchs.txt";
+  std::string blah3 = "CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L3Absolute_AK4PFchs.txt";
   filenames.push_back(blah1);
   filenames.push_back(blah2);
   filenames.push_back(blah3);

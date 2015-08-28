@@ -4,6 +4,6 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD:$PWD/batch
 
 git update-index --assume-unchanged main.cc
 
-cd CMSSW_7_1_6/
+cd CMSSW_7_4_1_patch1/
 eval `scram ru -sh`
 cd -

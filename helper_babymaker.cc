@@ -13,6 +13,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   //Define Branches
   BabyTree->Branch("met"                     , &met                     );
   BabyTree->Branch("metPhi"                  , &metPhi                  );
+  BabyTree->Branch("corrMET"                 , &corrMET                 );
+  BabyTree->Branch("corrMETphi"              , &corrMETphi              );
   BabyTree->Branch("event"                   , &event                   );
   BabyTree->Branch("lumi"                    , &lumi                    );
   BabyTree->Branch("run"                     , &run                     );
@@ -48,8 +50,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("jets_disc"               , &jets_disc               );
   BabyTree->Branch("jets_JEC"                , &jets_JEC                );
   BabyTree->Branch("btags_JEC"               , &btags_JEC               );
-  BabyTree->Branch("jets_undoJEC"                , &jets_undoJEC                );
-  BabyTree->Branch("btags_undoJEC"               , &btags_undoJEC               );
+  BabyTree->Branch("jets_undoJEC"            , &jets_undoJEC            );
+  BabyTree->Branch("btags_undoJEC"           , &btags_undoJEC           );
   BabyTree->Branch("btags"                   , &btags                   );
   BabyTree->Branch("nbtags"                  , &nbtags                  );
   BabyTree->Branch("sf_dilepTrig_hpt"        , &sf_dilepTrig_hpt        );
@@ -149,6 +151,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep1_trigMatch_isoReq"   , &lep1_trigMatch_isoReq   );
   BabyTree->Branch("lep2_trigMatch_noIsoReq" , &lep2_trigMatch_noIsoReq );
   BabyTree->Branch("lep2_trigMatch_isoReq"   , &lep2_trigMatch_isoReq   );
+  BabyTree->Branch("met3p0"                  , &met3p0                  );
+  BabyTree->Branch("metphi3p0"               , &metphi3p0               );
+  BabyTree->Branch("passes_hbhe_filters"     , &passes_hbhe_filters     );
+  BabyTree->Branch("mostJets"                , &mostJets                );
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -175,6 +181,8 @@ void babyMaker::InitBabyNtuple(){
 
     met = -1;
     metPhi = -1;
+    corrMET = -1;
+    corrMETphi = -1;
     event = -1;
     lumi = -1;
     run = -1;
@@ -304,6 +312,7 @@ void babyMaker::InitBabyNtuple(){
     muID_ptSig.clear();     
     muID_ip3dSig.clear();
     muID_medMuonPOG.clear();
+    mostJets.clear(); 
     muID_pt.clear();        
     muID_eta.clear();
     lep1_isGoodLeg = 0; 
@@ -325,6 +334,9 @@ void babyMaker::InitBabyNtuple(){
     lep2_trigMatch_isoReq = 0; 
     fired_trigger = 0;
     triggers = 0;
+    met3p0 = 0;
+    metphi3p0 = 0;
+    passes_hbhe_filters = 0;
 } 
 
 //Main function
@@ -525,6 +537,11 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   ht = 0;
   for (unsigned int i = 0; i < jets.size(); i++) ht += jets.at(i).pt(); 
   if (verbose) for (unsigned int i = 0; i < btags.size(); i++) cout << "btag: " << btags.at(i).pt() << endl;
+  for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++){
+    if (tas::pfjets_p4().at(i).pt() < 5.) continue;
+    if (fabs(tas::pfjets_p4().at(i).eta()) > 2.4) continue;
+    mostJets.push_back(pfjets_p4().at(i));
+  }
   
   //Verbose for jets
   if (verbose){
@@ -623,9 +640,20 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
     nGoodVertices++;
   }
 
+  //Correct the met
+  corrMET = correctedMET(jetCorr).pt();
+  corrMETphi = correctedMET(jetCorr).phi();
+
+  //MET3p0 (aka FKW MET)
+  pair<float,float> MET3p0_ = MET3p0();
+  met3p0 = MET3p0_.first;
+  metphi3p0 = MET3p0_.second;
+
+  //MET filters
+  passes_hbhe_filters = hbheNoiseFilter();
+
   //Fill Baby
   BabyTree->Fill();
-
 
   return 0;  
 

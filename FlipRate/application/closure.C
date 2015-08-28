@@ -4,18 +4,10 @@
 #include "SS.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../../CORE/SSSelections.h"
-
-//truth-matching
-bool truthMatching = false;
-
-//cutting
-bool cutting = false;
+#include "../../CORE/Tools/dorky/dorky.h"
 
 //underflow/overflow
 bool overflow = false;
-
-//lumi
-float theLumi = 1.0;
 
 using namespace ss;
 
@@ -48,6 +40,9 @@ void closure(){
   TH1F* clos_MC   = new TH1F("clos_plot_MC"  , "clos_plot_MC"  , 9, 70, 115); 
   TH1F* clos_data = new TH1F("clos_plot_data", "clos_plot_data", 9, 70, 115); 
 
+  //Sumw2
+  clos_MC->Sumw2();
+
   //Errors -- keep track of number of events in each FR bin so we can get the error 
   int nBinsX = 5; 
   int nBinsY = 3; 
@@ -69,11 +64,8 @@ void closure(){
 
   //Set up chains
   TChain *chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/dy_0.root"); 
-  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY1_0.root"); 
-  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY2_0.root"); 
-  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY3_0.root"); 
-  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/DY4_0.root"); 
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v2.11/DataDoubleEG2_0.root");
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v2.11/DataDoubleEG_0.root");
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -102,6 +94,18 @@ void closure(){
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
 
+      //Reject not triggered
+      if (!fired_trigger()) continue;
+
+      //Reject duplicates
+	  if (ss::is_real_data()){
+        duplicate_removal::DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
+        if (duplicate_removal::is_duplicate(id)) continue; 
+      }
+
+      //MET filters
+      if (!ss::passes_met_filters()) continue;
+
       //Throw away unneeded events
       if (hyp_class() != 3 && hyp_class() != 4 && hyp_class() != 6) continue;
 
@@ -111,29 +115,18 @@ void closure(){
       //Keep only electron-electron events
       if (abs(lep1_id()) != 11 || abs(lep2_id()) != 11) continue;
 
-      //Cutting
-      if (cutting){
-        if (met() > 100) continue; 
-        if (mt() > 100) continue; 
-      }
-
       //Figure out if SS
       bool isSS = false;
       if (sgn(lep1_id()) == sgn(lep2_id())) isSS = true;
 
-      //Truth-Matching
-      if (truthMatching){
-        if (!isSS &&  (lep1_motherID() != 1 || lep2_motherID() != 1)) continue;
-        if ( isSS && !((lep1_motherID() == 1 && lep2_motherID() == 2) || (lep1_motherID() == 2 && lep2_motherID() == 1))) continue;
-      }
-
       //Weight
-      float weight = scale1fb()*theLumi;
+      float weight = 1.0; //scale1fb()*theLumi;
 
       //Observation
       if (isSS){
-        nObs += weight; 
-        clos_data->Fill( (lep1_p4() + lep2_p4()).M(), weight); 
+        float mll = (lep1_p4() + lep2_p4()).M();
+        if (mll > 70 && mll < 115) nObs += weight; 
+        clos_data->Fill(mll, weight); 
       }
 
       //Prediction
@@ -147,17 +140,18 @@ void closure(){
         if (bin_in_errors < 0) overflow ? bin_in_errors = 0 : bin_in_errors = 999;
         if (bin_in_errors != 999) errors[bin_in_errors]->Fill(lep1_p4().pt(), fabs(lep1_p4().eta()), weight);
         if (bin_in_errors != 999) errors[bin_in_errors]->Fill(lep2_p4().pt(), fabs(lep2_p4().eta()), weight);
-        stat2 += pow(ff*weight, 2); 
       }
 
     }//event loop
   }//file loop
 
+  for (int i = 1; i <= 9; i++) stat2 += pow(clos_MC->GetBinError(i), 2);  
+
   //Figure out error from "errors" plot:
   float theerror[9] = { 0 } ;
   for (int k = 0; k < 9; k++){
     float error = 0; 
-    for (int i = 1; i <= errors[0]->GetNbinsX()+1; i++){
+    for (int i = 1; i <= errors[0]->GetNbinsX(); i++){
       for (int j = 1; j <= errors[0]->GetNbinsY(); j++){
         float FR_val = rate->GetBinContent(i, j);
         float FR_err = rate->GetBinError(i, j);
@@ -173,12 +167,20 @@ void closure(){
   cout << "pred: " << nPred << " pm " << sqrt(stat2 + fr_err2) << endl;
   cout << " obs: " << nObs << " pm " << sqrt(nObs) << endl;
 
+  //Split it
+  cout << "pred stat: " << sqrt(stat2) << endl;
+  cout << "pred syst: " << sqrt(fr_err2) << endl;
 
   //Make plot
+  TH1F* null = new TH1F("","",1,0,1);
   vector <TH1F*> bkgd;
   bkgd.push_back(clos_MC); 
   vector <string> titles;
-  titles.push_back("pred"); 
-  dataMCplotMaker(clos_data, bkgd, titles, "flip closure", "", Form("--outputName flip_closure%s.pdf --xAxisLabel M_{ll} --lumi 1 --dataName obs --topYaxisTitle obs/pred --isLinear --noFill --histoErrors %s", truthMatching ? "_TM" : "", "--noOverflow")); 
+  vector <TH1F*> signals;
+  signals.push_back(clos_data); 
+  vector <string> sigTit; 
+  sigTit.push_back("Observed Same-Sign Events");
+  titles.push_back("Predicted Same-Sign Events"); 
+  dataMCplotMaker(null, bkgd, titles, "", "", "--lumi 42 --lumiUnit pb --outputName flip_closure.pdf --xAxisLabel M_{ll} --blackSignals  --isLinear --noOverflow --setMaximum 20 --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2", signals, sigTit); 
 
 }

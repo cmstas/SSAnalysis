@@ -17,14 +17,6 @@
 #include "CORE/Tools/goodrun.h"
 #include "TROOT.h"
 #include <vector>
-#include "Math/Vector4D.h" 
-#include "Math/LorentzVector.h" 
-
-#ifdef __MAKECINT__
-#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+;
-#pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
-#pragma link C++ typedef ROOT::Math::XYZTVectorF;
-#endif
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef vector<pair<const LorentzVector *, double> > jets_with_corr_t;
@@ -59,6 +51,8 @@ class babyMaker {
     //MET
     float met;
     float metPhi;
+    float corrMET;
+    float corrMETphi;
  
     //Meta Variables
     int event;
@@ -94,6 +88,7 @@ class babyMaker {
     vector <float> jets_disc;
     vector <float> jets_JEC; 
     vector <float> jets_undoJEC; 
+    vector <LorentzVector> mostJets; //this is all jets with pT > 5, |eta| < 2.4
 
     //Hyp Class -- in this order
        //3 for num-num SS leptons
@@ -275,6 +270,13 @@ class babyMaker {
     bool lep1_trigMatch_isoReq; 
     bool lep2_trigMatch_noIsoReq;
     bool lep2_trigMatch_isoReq; 
+
+    //FKW MET
+    float met3p0;
+    float metphi3p0;
+
+    //MET Filters
+    bool passes_hbhe_filters;
  
 };
 

@@ -24,6 +24,12 @@ protected:
 	float	metPhi_;
 	TBranch *metPhi_branch;
 	bool metPhi_isLoaded;
+	float	corrMET_;
+	TBranch *corrMET_branch;
+	bool corrMET_isLoaded;
+	float	corrMETphi_;
+	TBranch *corrMETphi_branch;
+	bool corrMETphi_isLoaded;
 	int	event_;
 	TBranch *event_branch;
 	bool event_isLoaded;
@@ -123,6 +129,18 @@ protected:
 	vector<float> *jets_disc_;
 	TBranch *jets_disc_branch;
 	bool jets_disc_isLoaded;
+	vector<float> *jets_JEC_;
+	TBranch *jets_JEC_branch;
+	bool jets_JEC_isLoaded;
+	vector<float> *btags_JEC_;
+	TBranch *btags_JEC_branch;
+	bool btags_JEC_isLoaded;
+	vector<float> *jets_undoJEC_;
+	TBranch *jets_undoJEC_branch;
+	bool jets_undoJEC_isLoaded;
+	vector<float> *btags_undoJEC_;
+	TBranch *btags_undoJEC_branch;
+	bool btags_undoJEC_isLoaded;
 	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > *btags_;
 	TBranch *btags_branch;
 	bool btags_isLoaded;
@@ -420,6 +438,15 @@ protected:
 	bool	lep2_trigMatch_isoReq_;
 	TBranch *lep2_trigMatch_isoReq_branch;
 	bool lep2_trigMatch_isoReq_isLoaded;
+	float	met3p0_;
+	TBranch *met3p0_branch;
+	bool met3p0_isLoaded;
+	float	metphi3p0_;
+	TBranch *metphi3p0_branch;
+	bool metphi3p0_isLoaded;
+	bool	passes_met_filters_;
+	TBranch *passes_met_filters_branch;
+	bool passes_met_filters_isLoaded;
 	bool	lep1_isGoodLeg_;
 	TBranch *lep1_isGoodLeg_branch;
 	bool lep1_isGoodLeg_isLoaded;
@@ -539,6 +566,16 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("metPhi") != 0) {
 		metPhi_branch = tree->GetBranch("metPhi");
 		if (metPhi_branch) {metPhi_branch->SetAddress(&metPhi_);}
+	}
+	corrMET_branch = 0;
+	if (tree->GetBranch("corrMET") != 0) {
+		corrMET_branch = tree->GetBranch("corrMET");
+		if (corrMET_branch) {corrMET_branch->SetAddress(&corrMET_);}
+	}
+	corrMETphi_branch = 0;
+	if (tree->GetBranch("corrMETphi") != 0) {
+		corrMETphi_branch = tree->GetBranch("corrMETphi");
+		if (corrMETphi_branch) {corrMETphi_branch->SetAddress(&corrMETphi_);}
 	}
 	event_branch = 0;
 	if (tree->GetBranch("event") != 0) {
@@ -689,6 +726,26 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("jets_disc") != 0) {
 		jets_disc_branch = tree->GetBranch("jets_disc");
 		if (jets_disc_branch) {jets_disc_branch->SetAddress(&jets_disc_);}
+	}
+	jets_JEC_branch = 0;
+	if (tree->GetBranch("jets_JEC") != 0) {
+		jets_JEC_branch = tree->GetBranch("jets_JEC");
+		if (jets_JEC_branch) {jets_JEC_branch->SetAddress(&jets_JEC_);}
+	}
+	btags_JEC_branch = 0;
+	if (tree->GetBranch("btags_JEC") != 0) {
+		btags_JEC_branch = tree->GetBranch("btags_JEC");
+		if (btags_JEC_branch) {btags_JEC_branch->SetAddress(&btags_JEC_);}
+	}
+	jets_undoJEC_branch = 0;
+	if (tree->GetBranch("jets_undoJEC") != 0) {
+		jets_undoJEC_branch = tree->GetBranch("jets_undoJEC");
+		if (jets_undoJEC_branch) {jets_undoJEC_branch->SetAddress(&jets_undoJEC_);}
+	}
+	btags_undoJEC_branch = 0;
+	if (tree->GetBranch("btags_undoJEC") != 0) {
+		btags_undoJEC_branch = tree->GetBranch("btags_undoJEC");
+		if (btags_undoJEC_branch) {btags_undoJEC_branch->SetAddress(&btags_undoJEC_);}
 	}
 	nbtags_branch = 0;
 	if (tree->GetBranch("nbtags") != 0) {
@@ -1145,6 +1202,21 @@ void Init(TTree *tree) {
 		lep2_trigMatch_isoReq_branch = tree->GetBranch("lep2_trigMatch_isoReq");
 		if (lep2_trigMatch_isoReq_branch) {lep2_trigMatch_isoReq_branch->SetAddress(&lep2_trigMatch_isoReq_);}
 	}
+	met3p0_branch = 0;
+	if (tree->GetBranch("met3p0") != 0) {
+		met3p0_branch = tree->GetBranch("met3p0");
+		if (met3p0_branch) {met3p0_branch->SetAddress(&met3p0_);}
+	}
+	metphi3p0_branch = 0;
+	if (tree->GetBranch("metphi3p0") != 0) {
+		metphi3p0_branch = tree->GetBranch("metphi3p0");
+		if (metphi3p0_branch) {metphi3p0_branch->SetAddress(&metphi3p0_);}
+	}
+	passes_met_filters_branch = 0;
+	if (tree->GetBranch("passes_met_filters") != 0) {
+		passes_met_filters_branch = tree->GetBranch("passes_met_filters");
+		if (passes_met_filters_branch) {passes_met_filters_branch->SetAddress(&passes_met_filters_);}
+	}
 	lep1_isGoodLeg_branch = 0;
 	if (tree->GetBranch("lep1_isGoodLeg") != 0) {
 		lep1_isGoodLeg_branch = tree->GetBranch("lep1_isGoodLeg");
@@ -1213,6 +1285,8 @@ void GetEntry(unsigned int idx)
 		index = idx;
 		met_isLoaded = false;
 		metPhi_isLoaded = false;
+		corrMET_isLoaded = false;
+		corrMETphi_isLoaded = false;
 		event_isLoaded = false;
 		lumi_isLoaded = false;
 		run_isLoaded = false;
@@ -1246,6 +1320,10 @@ void GetEntry(unsigned int idx)
 		jets_isLoaded = false;
 		btags_disc_isLoaded = false;
 		jets_disc_isLoaded = false;
+		jets_JEC_isLoaded = false;
+		btags_JEC_isLoaded = false;
+		jets_undoJEC_isLoaded = false;
+		btags_undoJEC_isLoaded = false;
 		btags_isLoaded = false;
 		nbtags_isLoaded = false;
 		sf_dilepTrig_hpt_isLoaded = false;
@@ -1345,6 +1423,9 @@ void GetEntry(unsigned int idx)
 		lep1_trigMatch_isoReq_isLoaded = false;
 		lep2_trigMatch_noIsoReq_isLoaded = false;
 		lep2_trigMatch_isoReq_isLoaded = false;
+		met3p0_isLoaded = false;
+		metphi3p0_isLoaded = false;
+		passes_met_filters_isLoaded = false;
 		lep1_isGoodLeg_isLoaded = false;
 		lep2_isGoodLeg_isLoaded = false;
 		lep1_isFakeLeg_isLoaded = false;
@@ -1366,6 +1447,8 @@ void LoadAllBranches()
 {
 	if (met_branch != 0) met();
 	if (metPhi_branch != 0) metPhi();
+	if (corrMET_branch != 0) corrMET();
+	if (corrMETphi_branch != 0) corrMETphi();
 	if (event_branch != 0) event();
 	if (lumi_branch != 0) lumi();
 	if (run_branch != 0) run();
@@ -1399,6 +1482,10 @@ void LoadAllBranches()
 	if (jets_branch != 0) jets();
 	if (btags_disc_branch != 0) btags_disc();
 	if (jets_disc_branch != 0) jets_disc();
+	if (jets_JEC_branch != 0) jets_JEC();
+	if (btags_JEC_branch != 0) btags_JEC();
+	if (jets_undoJEC_branch != 0) jets_undoJEC();
+	if (btags_undoJEC_branch != 0) btags_undoJEC();
 	if (btags_branch != 0) btags();
 	if (nbtags_branch != 0) nbtags();
 	if (sf_dilepTrig_hpt_branch != 0) sf_dilepTrig_hpt();
@@ -1498,6 +1585,9 @@ void LoadAllBranches()
 	if (lep1_trigMatch_isoReq_branch != 0) lep1_trigMatch_isoReq();
 	if (lep2_trigMatch_noIsoReq_branch != 0) lep2_trigMatch_noIsoReq();
 	if (lep2_trigMatch_isoReq_branch != 0) lep2_trigMatch_isoReq();
+	if (met3p0_branch != 0) met3p0();
+	if (metphi3p0_branch != 0) metphi3p0();
+	if (passes_met_filters_branch != 0) passes_met_filters();
 	if (lep1_isGoodLeg_branch != 0) lep1_isGoodLeg();
 	if (lep2_isGoodLeg_branch != 0) lep2_isGoodLeg();
 	if (lep1_isFakeLeg_branch != 0) lep1_isFakeLeg();
@@ -1539,6 +1629,32 @@ void LoadAllBranches()
 			metPhi_isLoaded = true;
 		}
 		return metPhi_;
+	}
+	float &corrMET()
+	{
+		if (not corrMET_isLoaded) {
+			if (corrMET_branch != 0) {
+				corrMET_branch->GetEntry(index);
+			} else { 
+				printf("branch corrMET_branch does not exist!\n");
+				exit(1);
+			}
+			corrMET_isLoaded = true;
+		}
+		return corrMET_;
+	}
+	float &corrMETphi()
+	{
+		if (not corrMETphi_isLoaded) {
+			if (corrMETphi_branch != 0) {
+				corrMETphi_branch->GetEntry(index);
+			} else { 
+				printf("branch corrMETphi_branch does not exist!\n");
+				exit(1);
+			}
+			corrMETphi_isLoaded = true;
+		}
+		return corrMETphi_;
 	}
 	int &event()
 	{
@@ -1968,6 +2084,58 @@ void LoadAllBranches()
 			jets_disc_isLoaded = true;
 		}
 		return *jets_disc_;
+	}
+	const vector<float> &jets_JEC()
+	{
+		if (not jets_JEC_isLoaded) {
+			if (jets_JEC_branch != 0) {
+				jets_JEC_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_JEC_branch does not exist!\n");
+				exit(1);
+			}
+			jets_JEC_isLoaded = true;
+		}
+		return *jets_JEC_;
+	}
+	const vector<float> &btags_JEC()
+	{
+		if (not btags_JEC_isLoaded) {
+			if (btags_JEC_branch != 0) {
+				btags_JEC_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_JEC_branch does not exist!\n");
+				exit(1);
+			}
+			btags_JEC_isLoaded = true;
+		}
+		return *btags_JEC_;
+	}
+	const vector<float> &jets_undoJEC()
+	{
+		if (not jets_undoJEC_isLoaded) {
+			if (jets_undoJEC_branch != 0) {
+				jets_undoJEC_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_undoJEC_branch does not exist!\n");
+				exit(1);
+			}
+			jets_undoJEC_isLoaded = true;
+		}
+		return *jets_undoJEC_;
+	}
+	const vector<float> &btags_undoJEC()
+	{
+		if (not btags_undoJEC_isLoaded) {
+			if (btags_undoJEC_branch != 0) {
+				btags_undoJEC_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_undoJEC_branch does not exist!\n");
+				exit(1);
+			}
+			btags_undoJEC_isLoaded = true;
+		}
+		return *btags_undoJEC_;
 	}
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags()
 	{
@@ -3256,6 +3424,45 @@ void LoadAllBranches()
 		}
 		return lep2_trigMatch_isoReq_;
 	}
+	float &met3p0()
+	{
+		if (not met3p0_isLoaded) {
+			if (met3p0_branch != 0) {
+				met3p0_branch->GetEntry(index);
+			} else { 
+				printf("branch met3p0_branch does not exist!\n");
+				exit(1);
+			}
+			met3p0_isLoaded = true;
+		}
+		return met3p0_;
+	}
+	float &metphi3p0()
+	{
+		if (not metphi3p0_isLoaded) {
+			if (metphi3p0_branch != 0) {
+				metphi3p0_branch->GetEntry(index);
+			} else { 
+				printf("branch metphi3p0_branch does not exist!\n");
+				exit(1);
+			}
+			metphi3p0_isLoaded = true;
+		}
+		return metphi3p0_;
+	}
+	bool &	passes_met_filters()
+	{
+		if (not passes_met_filters_isLoaded) {
+			if (passes_met_filters_branch != 0) {
+				passes_met_filters_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_met_filters_branch does not exist!\n");
+				exit(1);
+			}
+			passes_met_filters_isLoaded = true;
+		}
+		return passes_met_filters_;
+	}
 	bool &	lep1_isGoodLeg()
 	{
 		if (not lep1_isGoodLeg_isLoaded) {
@@ -3468,6 +3675,8 @@ extern SSAG samesign;
 namespace ss {
 	const float &met();
 	const float &metPhi();
+	const float &corrMET();
+	const float &corrMETphi();
 	const int &event();
 	const int &lumi();
 	const int &run();
@@ -3501,6 +3710,10 @@ namespace ss {
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets();
 	const vector<float> &btags_disc();
 	const vector<float> &jets_disc();
+	const vector<float> &jets_JEC();
+	const vector<float> &btags_JEC();
+	const vector<float> &jets_undoJEC();
+	const vector<float> &btags_undoJEC();
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags();
 	const int &nbtags();
 	const float &sf_dilepTrig_hpt();
@@ -3600,6 +3813,9 @@ namespace ss {
 	const bool &lep1_trigMatch_isoReq();
 	const bool &lep2_trigMatch_noIsoReq();
 	const bool &lep2_trigMatch_isoReq();
+	const float &met3p0();
+	const float &metphi3p0();
+	const bool &passes_met_filters();
 	const bool &lep1_isGoodLeg();
 	const bool &lep2_isGoodLeg();
 	const bool &lep1_isFakeLeg();
