@@ -55,6 +55,14 @@ float getEta(float eta, float ht, bool extrPtRel = false) {
   return fabs(eta);
 }
 
+double calculateMt(const LorentzVector p4, double met, double met_phi){
+  float phi1 = p4.Phi();
+  float phi2 = met_phi;
+  float Et1  = p4.Et();
+  float Et2  = met;
+  return sqrt(2*Et1*Et2*(1.0 - cos(phi1-phi2)));
+}
+
 int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = true, int nEvents = -1) {//, string skimFilePrefix = "test") {
 
   // Benchmark
@@ -593,42 +601,45 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v3();
       }
 
+      float evt_met = evt_met3p0();
+      float evt_metPhi = evt_pfmetPhi();
+      float evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
 
       if (passId) {
 	//mt control region
-	if (evt_pfmet() > 30. && p4().pt()>30) {
-	  histo_mt_all->Fill( std::min(mt(),float(200.)), weight );
-	  if (abs(id()==11)) histo_mt_all_el->Fill( std::min(mt(),float(200.)), weight );
-	  if (abs(id()==13)) histo_mt_all_mu->Fill( std::min(mt(),float(200.)), weight );
+	if (evt_met > 30. && p4().pt()>30) {
+	  histo_mt_all->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id()==11)) histo_mt_all_el->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id()==13)) histo_mt_all_mu->Fill( std::min(evt_mt,float(200.)), weight );
 	}
-	if (evt_pfmet() < 20.) {
-	  histo_mt_lm->Fill( std::min(mt(),float(200.)), weight );
-	  if (abs(id()==11)) histo_mt_lm_el->Fill( std::min(mt(),float(200.)), weight );
-	  if (abs(id()==13)) histo_mt_lm_mu->Fill( std::min(mt(),float(200.)), weight );
+	if (evt_met < 20.) {
+	  histo_mt_lm->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id()==11)) histo_mt_lm_el->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id()==13)) histo_mt_lm_mu->Fill( std::min(evt_mt,float(200.)), weight );
 	}
-	if (evt_pfmet() > 30.) {
-	  histo_mt_cr->Fill( std::min(mt(),float(200.)), weight );
-	  if (abs(id()==11)) histo_mt_cr_el->Fill( std::min(mt(),float(200.)), weight );
-	  if (abs(id()==13)) histo_mt_cr_mu->Fill( std::min(mt(),float(200.)), weight );
+	if (evt_met > 30.) {
+	  histo_mt_cr->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id()==11)) histo_mt_cr_el->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id()==13)) histo_mt_cr_mu->Fill( std::min(evt_mt,float(200.)), weight );
 	}
 	//test if bad data/MC ratio in mt control region is due to met
 	if (p4().pt()>30) {
-	  histo_met_all->Fill( std::min(evt_pfmet(),float(200.)), weight );
-	  if (abs(id()==11)) histo_met_all_el->Fill( std::min(evt_pfmet(),float(200.)), weight );
-	  if (abs(id()==13)) histo_met_all_mu->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	  histo_met_all->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id()==11)) histo_met_all_el->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id()==13)) histo_met_all_mu->Fill( std::min(evt_met,float(200.)), weight );
 	}
-	if (mt() < 20.) {
-	  histo_met_lm->Fill( std::min(evt_pfmet(),float(200.)), weight );
-	  if (abs(id()==11)) histo_met_lm_el->Fill( std::min(evt_pfmet(),float(200.)), weight );
-	  if (abs(id()==13)) histo_met_lm_mu->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	if (evt_mt < 20.) {
+	  histo_met_lm->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id()==11)) histo_met_lm_el->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id()==13)) histo_met_lm_mu->Fill( std::min(evt_met,float(200.)), weight );
 	}
-	if (mt() > 30.) {
-	  histo_met_cr->Fill( std::min(evt_pfmet(),float(200.)), weight );
-	  if (abs(id()==11)) histo_met_cr_el->Fill( std::min(evt_pfmet(),float(200.)), weight );
-	  if (abs(id()==13)) histo_met_cr_mu->Fill( std::min(evt_pfmet(),float(200.)), weight );
+	if (evt_mt > 30.) {
+	  histo_met_cr->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id()==11)) histo_met_cr_el->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id()==13)) histo_met_cr_mu->Fill( std::min(evt_met,float(200.)), weight );
 	}
       }
-      if( !(evt_pfmet() < 20. && mt() < 20) ) {
+      if( !(evt_met < 20. && evt_mt < 20) ) {
 	continue;
       }
 
@@ -740,8 +751,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 	  if (passFO) {
 	    histo_ht->Fill( std::min(ht,float(1000.)) );
-	    histo_met->Fill( std::min(evt_pfmet(),float(1000.)) );
-	    histo_mt->Fill( std::min(mt(),float(1000.)) );
+	    histo_met->Fill( std::min(evt_met,float(1000.)) );
+	    histo_mt->Fill( std::min(evt_mt,float(1000.)) );
 
 	    if( abs( id() ) == 11 ) pTrelvsIso_histo_el->Fill( std::min(RelIso03EA(),float(0.99)), std::min(ptrel,float(29.9)) );
 	    if( abs( id() ) == 13 ) pTrelvsIso_histo_mu->Fill( std::min(RelIso03EA(),float(0.99)), std::min(ptrel,float(29.9)) );
