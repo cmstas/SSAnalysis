@@ -49,13 +49,13 @@ int main(int argc, char *argv[]){
       break;
     case TTW:
       name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
-      tag = "V07-04-03";
+      tag = "V07-04-07";
       shortname="ttw";
       path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
     case TTZL:
       name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
-      tag = "V07-04-03";
+      tag = "V07-04-07";
       shortname="ttzl";
       path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
       break;
     case TTZQ:
       name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/merged";
-      tag = "V07-04-03";
+      tag = "V07-04-07";
       shortname="ttzq";
       path = "/hadoop/cms/store/group/snt/run2_25ns/";
       break;

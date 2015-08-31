@@ -22,7 +22,7 @@ ptrel="4"
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "DY_high" "TTBAR"  "WZ" "DY_low" "WJets" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "DataDoubleEG" "DataDoubleMuon" "DATAMUONEG" "SINGLETOP5"
+  for sname in "TTW" "TTZQ" "TTZL" "WZ" # "DY_high" "TTBAR"  "DY_low" "WJets" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "DataDoubleEG" "DataDoubleMuon" "DATAMUONEG" "SINGLETOP5"
   do
     #Iter
     nIter=$(( $nIter + 1 ))
@@ -86,12 +86,12 @@ do
     then
       name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1" 
       tag=V07-04-07
-      nameNu=2
+      nameNu=1
     elif [ $sname == "TTZL" ]
     then
       name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-07
-      nameNu=3
+      nameNu=2
     elif [ $sname == "TTZQ" ]
     then
       name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"

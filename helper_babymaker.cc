@@ -342,6 +342,11 @@ void babyMaker::InitBabyNtuple(){
 //Main function
 int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, FactorizedJetCorrector* jetCorr, bool expt){
 
+  //Figure out if this is a 25ns or 50ns sample
+  bool is25 = true;
+  if (filename_in.find("50ns") < filename_in.size()) is25 = false;
+  if (filename_in.find("Run2015B") < filename_in.size()) is25 = false;
+
   //Initialize variables
   InitBabyNtuple();
   
@@ -360,14 +365,14 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   lumi = tas::evt_lumiBlock();
   run = tas::evt_run();
   is_real_data = tas::evt_isRealData();
-  xsec = tas::evt_xsec_incl();
-  kfactor = tas::evt_kfactor();
-  gen_met = tas::gen_met();
-  gen_met_phi = tas::gen_metPhi();
 
   if (!is_real_data){
     trueNumInt = tas::puInfo_trueNumInteractions();
     nPUvertices = puInfo_nPUvertices();
+    xsec = tas::evt_xsec_incl();
+    kfactor = tas::evt_kfactor();
+    gen_met = tas::gen_met();
+    gen_met_phi = tas::gen_metPhi();
   }
 
   //Fill data vs. mc variables
@@ -379,13 +384,13 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   filt_eebadsc = is_real_data ? tas::filt_eeBadSc() : 1;
 
   //Make sure one of our triggers fired (for data)
-  if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))      (triggers |= 1<<0);
-  if (passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")))  (triggers |= 1<<1); 
-  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
-  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")))              (triggers |= 1<<3); 
-  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))            (triggers |= 1<<4); 
-  if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))    (triggers |= 1<<5); 
-  if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")))        (triggers |= 1<<6); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v2")))      (triggers |= 1<<0);
+  if (passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2")))  (triggers |= 1<<1); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v2")))   (triggers |= 1<<2); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2")))              (triggers |= 1<<3); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2")))            (triggers |= 1<<4); 
+  if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v2")))    (triggers |= 1<<5); 
+  if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2")))       (triggers |= 1<<6); 
   if (triggers != 0) fired_trigger = true;
 
   //Scale1fb
@@ -456,7 +461,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
     if (abs(lep1_id) == 11){
       //Double electron triggers
       if (lep1_idx >= 0 && tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
-      if (passHLTTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", lep1_p4) > 0)                             lep1_trigMatch_isoReq   = true;
+      if (passHLTTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2", lep1_p4) > 0)                             lep1_trigMatch_isoReq   = true;
       //Mu-El triggers
       if (lep1_idx >= 0 && tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0    ) lep1_trigMatch_noIsoReq = true;
       if (lep1_idx >= 0 && tas::els_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_isoReq   = true;
@@ -465,7 +470,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
     if (abs(lep2_id) == 11){
       //Double electron triggers
       if (lep2_idx >= 0 && tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
-      if (passHLTTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", lep2_p4) > 0)                             lep2_trigMatch_isoReq   = true;
+      if (passHLTTrigger("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2", lep2_p4) > 0)                             lep2_trigMatch_isoReq   = true;
       //Mu-El triggers
       if (lep2_idx >= 0 && tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0    ) lep2_trigMatch_noIsoReq = true;
       if (lep2_idx >= 0 && tas::els_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_isoReq   = true;
@@ -476,8 +481,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
     if (abs(lep1_id) == 13){
       //Double muon triggers
       if (lep1_idx >= 0 && tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
-      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", lep1_p4) > 0)             lep1_trigMatch_isoReq = true;
-      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", lep1_p4) > 0)           lep1_trigMatch_isoReq = true;
+      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2", lep1_p4) > 0)             lep1_trigMatch_isoReq = true;
+      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2", lep1_p4) > 0)           lep1_trigMatch_isoReq = true;
       //Mu-El triggers
       if (lep1_idx >= 0 && tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0    ) lep1_trigMatch_noIsoReq = true;
       if (lep1_idx >= 0 && tas::mus_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_isoReq   = true;
@@ -486,8 +491,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
     if (abs(lep2_id) == 13){
       //Double muon triggers
       if (lep2_idx >= 0 && tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
-      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v", lep2_p4) > 0)             lep2_trigMatch_isoReq = true;
-      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v", lep2_p4) > 0)           lep2_trigMatch_isoReq = true;
+      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2", lep2_p4) > 0)             lep2_trigMatch_isoReq = true;
+      if (passHLTTrigger("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2", lep2_p4) > 0)           lep2_trigMatch_isoReq = true;
       //Mu-El triggers
       if (lep2_idx >= 0 && tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0    ) lep2_trigMatch_noIsoReq = true;
       if (lep2_idx >= 0 && tas::mus_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_isoReq   = true;
@@ -650,7 +655,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   metphi3p0 = MET3p0_.second;
 
   //MET filters
-  passes_hbhe_filters = hbheNoiseFilter();
+  passes_hbhe_filters = hbheNoiseFilter(is25);
 
   //Fill Baby
   BabyTree->Fill();

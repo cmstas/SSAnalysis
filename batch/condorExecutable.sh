@@ -24,7 +24,7 @@ export DIRNAME=ss_13_babies
 export WHICH_SMALL=`echo ${WHICH,,}`
 if [ "$WHICH" == "0" ]; then WHICH_SMALL="ttbar"; fi
 if [ "$WHICH" == "1" ]; then WHICH_SMALL="ttw"; fi
-if [ "$WHICH" == "2" ]; then WHICH_SMALL="ttz"; fi
+if [ "$WHICH" == "2" ]; then WHICH_SMALL="ttzl"; fi
 if [ "$WHICH" == "3" ]; then WHICH_SMALL="wz"; fi
 if [ "$WHICH" == "4" ]; then WHICH_SMALL="t1tttt_1500"; fi
 if [ "$WHICH" == "5" ]; then WHICH_SMALL="t1tttt_1200"; fi
@@ -40,6 +40,7 @@ if [ "$WHICH" == "14" ]; then WHICH_SMALL="singletop3"; fi
 if [ "$WHICH" == "15" ]; then WHICH_SMALL="singletop4"; fi
 if [ "$WHICH" == "16" ]; then WHICH_SMALL="datamuoneg"; fi
 if [ "$WHICH" == "17" ]; then WHICH_SMALL="singletop5"; fi
+if [ "$WHICH" == "18" ]; then WHICH_SMALL="ttzq"; fi
 
 if [ "$PTREL" == "4" ] 
 then

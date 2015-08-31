@@ -77,6 +77,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   TChain *chain_T6ttWW_650_150_50_v2                                            = new TChain("Events");
   TChain *chain_data_doubleEG                                                   = new TChain("Events"); 
   TChain *chain_test                                                            = new TChain("Events");
+  TChain *chain_05Aug                                                           = new TChain("Events");
 
   TChain *chain_TTJets_50ns = new TChain("Events");
   chain_TTJets_50ns->Add("/hadoop/cms/store/group/snt/run2_50ns/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/V07-04-03/merged_ntuple_*.root");
@@ -178,6 +179,10 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     chain_T6ttWW_600_425_50_v2                                  ->Add(private_dir + "T6ttWW_600_425_50_v2/*.root");
     chain_T6ttWW_650_150_50_v2                                  ->Add(private_dir + "T6ttWW_650_150_50_v2/*.root");
 
+    //05 Aug
+    chain_05Aug->Add("/hadoop/cms/store/user/jgran/dataTuple/Run2015B_DoubleEG_MINIAOD_05Aug2015-v1/V07-05-00/*.root"); 
+    chain_05Aug->Add("/hadoop/cms/store/user/jgran/dataTuple/Run2015B_DoubleMuon_MINIAOD_05Aug2015-v1/V07-05-00/*.root"); 
+
   }
 
   if (skimAll){
@@ -261,6 +266,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     if (babiesToMake[33] == 1) l->ScanChain(chain_test                                                  , "test"                , "baby", 0, "MakeBaby", -1, isoCase);
     if (babiesToMake[34] == 1) l->ScanChain(chain_data_doubleEG                                         , "data_doubleEG"     , "baby", 0, "MakeBaby", -1, isoCase); 
     if (babiesToMake[35] == 1) l->ScanChain(chain_TTJets_50ns                                           , "TTJets_50ns"       , "baby", 0, "MakeBaby", -1, isoCase); 
+    if (babiesToMake[36] == 1) l->ScanChain(chain_05Aug                                                 , "data05Aug"         , "baby", 0, "MakeBaby", -1, isoCase); 
 
 
   }
