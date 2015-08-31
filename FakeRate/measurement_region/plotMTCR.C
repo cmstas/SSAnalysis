@@ -7,10 +7,10 @@
 
   TCanvas c1("c1","c1",600,600);
 
-  bool doMu = 1;
-  TString plot = "met_all";
-  bool applyInputSF  = 1;
-  bool applyOutputSF = 0;
+  bool doMu = 0;
+  TString plot = "mt_cr";
+  bool applyInputSF  = 0;
+  bool applyOutputSF = 1;
 
   if (doMu) plot = "histo_"+plot+"_mu";
   else plot = "histo_"+plot+"_el";
@@ -24,8 +24,8 @@
   TH1F* h_wj = (TH1F*) _file_wj->Get(plot);
   TH1F* h_dy = (TH1F*) _file_dy->Get(plot);
 
-  float inputSF_mu = 0.93;
-  float inputSF_el = 0.44;
+  float inputSF_mu = 0.94;
+  float inputSF_el = 0.42;
 
   if (applyInputSF) {
     if (doMu) {
