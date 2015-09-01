@@ -41,7 +41,7 @@ void compare_74x_75x(){
 TH1F* makeInvtMassPlot(TChain* chain, string name){
 
   //Make plot
-  TH1F* plot = new TH1F(Form("plot_%s", name.c_str()), "plot", 10, 0, 250); 
+  TH1F* plot = new TH1F(Form("plot_%s", name.c_str()), "plot", 25, 0, 250); 
 
   //nEvents in chain
   unsigned int nEventsTotal = 0;
@@ -94,9 +94,11 @@ TH1F* makeInvtMassPlot(TChain* chain, string name){
 
       //Throw away unneeded events
       if (ss::hyp_class() != 3 && ss::hyp_class() != 2 && ss::hyp_class() != 6) continue;
+      //if (ss::hyp_class() != 3) continue;
 
       //Keep only electron-electron and muon-muon events
       if (ss::hyp_type() != 0 && ss::hyp_type() != 3) continue;
+      //if (ss::hyp_type() != 3) continue;
 
       //calculate and plot invariant mass
       float mll = (ss::lep1_p4() + ss::lep2_p4()).M();
