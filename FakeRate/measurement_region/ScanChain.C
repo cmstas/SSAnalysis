@@ -407,7 +407,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (TString(currentFile->GetTitle()).Contains("WJets") || TString(currentFile->GetTitle()).Contains("DY")) isEWK = true;
 
       // Analysis Code
-      float lumi = 0.040;//in /fb
+      float lumi = 0.009;//in /fb
       float weight = scale1fb()*lumi;
       if (isData) weight = 1.;
 
@@ -499,7 +499,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	    HLT_Ele23_CaloIdM_TrackIdM_PFJet30()==0 && 
 	    HLT_Ele33_CaloIdM_TrackIdM_PFJet30()==0 ) continue;
 	
-	if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()==0) continue;//fixme temp
+    // ele12 for 2015c 25ns 
+	if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()==0 ) continue;
 
       }
       if (abs(id())==13) {
@@ -508,7 +509,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	    HLT_Mu24()<=0 && 
 	    HLT_Mu34()<=0 ) continue;
 
-	if (HLT_Mu8()<=0 && HLT_Mu17()<=0) continue;//fixme temp
+    // mu17 for 2015c 25ns 
+	if (HLT_Mu17()<=0) continue;
 
       }	
       //check prescales for data
@@ -524,19 +526,19 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // if (prescale>0) weight *= prescale;
 	  // else continue;
 
-	  if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
+	  // if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
+	  // if (HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();
 
-	  if (p4().pt()>25 && prescale!=1) continue;
+	  // if (p4().pt()>25 && prescale!=1) continue;
 
 	  // if (p4().pt()>25) continue;
-	  // int prescale = INT_MAX;
+	  // int prescale = 999999;
 	  // if (HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele33_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele33_CaloIdM_TrackIdM_PFJet30();
 	  // if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
-	  // if (HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();
-	  // if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
+	  if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
 	  // if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
-	  // if (prescale>0 && prescale<1500) weight *= prescale;
-	  // else continue;
+	  if (p4().pt() > 25 && prescale>0 && prescale<1500) weight *= prescale;
+	  else continue;
 	  
 	  // if ((HLT_Ele23_CaloIdM_TrackIdM_PFJet30() || HLT_Ele33_CaloIdM_TrackIdM_PFJet30()) && minPrescale>1000) {
 	    // cout << evt_run() << " " << 
@@ -556,7 +558,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // else if (p4().pt()<=38 && p4().pt()>28 && HLT_Mu24()>0) prescale = HLT_Mu24();
 	  // else if (p4().pt()<=28 && p4().pt()>20 && HLT_Mu17()>0) prescale = HLT_Mu17();
 	  if (p4().pt()>20 && HLT_Mu17()>0) prescale = HLT_Mu17();
-	  else if (p4().pt()<=20 && p4().pt()>10 && HLT_Mu8() >0) prescale = HLT_Mu8();
+	  // else if (p4().pt()<=20 && p4().pt()>10 && HLT_Mu8() >0) prescale = HLT_Mu8();
 	  if (prescale>0) weight *= prescale;
 	  else continue;
 	  
@@ -609,34 +611,34 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	//mt control region
 	if (evt_met > 30. && p4().pt()>30) {
 	  histo_mt_all->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id()==11)) histo_mt_all_el->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id()==13)) histo_mt_all_mu->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id())==11) histo_mt_all_el->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id())==13) histo_mt_all_mu->Fill( std::min(evt_mt,float(200.)), weight );
 	}
 	if (evt_met < 20.) {
 	  histo_mt_lm->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id()==11)) histo_mt_lm_el->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id()==13)) histo_mt_lm_mu->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id())==11) histo_mt_lm_el->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id())==13) histo_mt_lm_mu->Fill( std::min(evt_mt,float(200.)), weight );
 	}
 	if (evt_met > 30.) {
 	  histo_mt_cr->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id()==11)) histo_mt_cr_el->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id()==13)) histo_mt_cr_mu->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id())==11) histo_mt_cr_el->Fill( std::min(evt_mt,float(200.)), weight );
+	  if (abs(id())==13) histo_mt_cr_mu->Fill( std::min(evt_mt,float(200.)), weight );
 	}
 	//test if bad data/MC ratio in mt control region is due to met
 	if (p4().pt()>30) {
 	  histo_met_all->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id()==11)) histo_met_all_el->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id()==13)) histo_met_all_mu->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id())==11) histo_met_all_el->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id())==13) histo_met_all_mu->Fill( std::min(evt_met,float(200.)), weight );
 	}
 	if (evt_mt < 20.) {
 	  histo_met_lm->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id()==11)) histo_met_lm_el->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id()==13)) histo_met_lm_mu->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id())==11) histo_met_lm_el->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id())==13) histo_met_lm_mu->Fill( std::min(evt_met,float(200.)), weight );
 	}
 	if (evt_mt > 30.) {
 	  histo_met_cr->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id()==11)) histo_met_cr_el->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id()==13)) histo_met_cr_mu->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id())==11) histo_met_cr_el->Fill( std::min(evt_met,float(200.)), weight );
+	  if (abs(id())==13) histo_met_cr_mu->Fill( std::min(evt_met,float(200.)), weight );
 	}
       }
       if( !(evt_met < 20. && evt_mt < 20) ) {
