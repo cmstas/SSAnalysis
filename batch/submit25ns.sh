@@ -14,7 +14,7 @@ pushd ..
 popd
 
 #Copy main.C to main.cc
-cp main.C main.cc
+cp main.cc.norun main.cc
 if [ "$xrootdbroken" == "1" ]
 then
   sed -i 's/T2_US_UCSD,T2_US_WISCONSIN,T2_US_FLORIDA,T2_US_PURDUE,T2_US_NEBRASKA,T2_US_MIT,T2_US_CALTECH/T2_US_UCSD/' condorFile
