@@ -24,18 +24,31 @@ if [ ! -d CORE/Tools ]
 then
   mkdir CORE/Tools
 fi
-cp ../Tools/utils.h CORE/Tools/
-cp ../Tools/utils.cc CORE/Tools/
+cp ../CORE/Tools/utils.h CORE/Tools/
+cp ../CORE/Tools/utils.cc CORE/Tools/
+cp ../CORE/Tools/JetCorrector.h CORE/Tools/
+if [ ! -d CORE/Tools/jetcorr ] 
+then
+  mkdir CORE/Tools/jetcorr
+fi
+cp ../CORE/Tools/jetcorr/FactorizedJetCorrector.h CORE/Tools/jetcorr/
+
+#And data directory inside jetcorr
+if [ ! -d CORE/Tools/jetcorr/data ] 
+then
+  mkdir -p CORE/Tools/jetcorr/data
+fi
+cp ../CORE/Tools/jetcorr/data/*.txt CORE/Tools/jetcorr/data/
 
 #And MT2 directory inside CORE
 if [ ! -d CORE/Tools/MT2 ] 
 then
   mkdir CORE/Tools/MT2
 fi
-cp ../Tools/MT2/MT2.h CORE/Tools/MT2
-cp ../Tools/MT2/MT2.cc CORE/Tools/MT2
-cp ../Tools/MT2/MT2Utility.h CORE/Tools/MT2
-cp ../Tools/MT2/MT2Utility.cc CORE/Tools/MT2
+cp ../CORE/Tools/MT2/MT2.h CORE/Tools/MT2
+cp ../CORE/Tools/MT2/MT2.cc CORE/Tools/MT2
+cp ../CORE/Tools/MT2/MT2Utility.h CORE/Tools/MT2
+cp ../CORE/Tools/MT2/MT2Utility.cc CORE/Tools/MT2
 
 #Make log dir
 if [ ! -d logs ] 

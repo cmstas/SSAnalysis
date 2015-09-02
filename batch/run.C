@@ -22,92 +22,92 @@ void run(sample_t which, int file, IsolationMethods ptrel, bool expt){
     case TTBAR:
       name = "TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "ttbar";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case TTW:
       name = "TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "ttw";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case TTZ:
       name = "TTZJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "ttz";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case WZ:
       name = "WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "wz";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case T1TTTT_1500:
       name = "SMS-T1tttt_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1";
       shortname = "t1tttt_1500";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case T1TTTT_1200:
       name = "SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1";
       shortname = "t1tttt_1200";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case DY1:
       name = "DYJetsToLL_M-50_HT-100to200_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/";
       shortname = "dy1";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case DY2:
       name = "DYJetsToLL_M-50_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/";
       shortname = "dy2";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case DY3:
       name = "DYJetsToLL_M-50_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/";
       shortname = "dy3";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case DY4: 
       name = "DYJetsToLL_M-50_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/";
       shortname = "dy4";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case WJets1:
       name = "WJetsToLNu_HT-100to200_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "wjets1";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case WJets2:
       name = "WJetsToLNu_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "wjets2";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case WJets3:
       name = "WJetsToLNu_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "wjets3";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case WJets4:
       name = "WJetsToLNu_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "wjets4";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case DY:
       name="DYJetsToLL_M-50_13TeV-madgraph-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "dy";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case WJets:
       name="WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
       shortname = "wjets";
-      path = "/hadoop/cms/store/group/snt/phys14/"; 
+      path = "/store/group/snt/phys14/"; 
       break;
     case  T5qqqqWW_1200_1000_800:
       name = "T5qqqqWW_1200_1000_800";
       shortname = "t5qqqqww_1200_1000_800";
-      path = "/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/"; 
+      path = "/store/user/cgeorge/privateSusySignalsSS/"; 
       break;
     case T5qqqqWW_deg_1000_315_300:
       name = "T5qqqqWW_deg_1000_315_300";
       shortname = "t5qqqqww_deg_1000_315_300";
-      path = "/hadoop/cms/store/user/cgeorge/privateSusySignalsSS/"; 
+      path = "/store/user/cgeorge/privateSusySignalsSS/"; 
       break;
   }
   
@@ -117,10 +117,18 @@ void run(sample_t which, int file, IsolationMethods ptrel, bool expt){
   //Set up file and tree
   cout << "Using xrootd " << endl;
   mylooper->MakeBabyNtuple(Form("%s%s", shortname.c_str(), suffix), expt);
-  TFile *f = TFile::Open(Form("%s/%s/%s/%s", path.c_str(), name.c_str(), tag.c_str(), filename)); 
+  TFile *f = TFile::Open(Form("root://cmsxrootd.fnal.gov//%s/%s/%s/%s", path.c_str(), name.c_str(), tag.c_str(), filename)); 
   cout << "File opened...." << endl;
   TTree *tree = (TTree*)f->Get("Events");
   cms3.Init(tree);
+
+  //JEC files -- PHYS14 MC
+  std::vector<std::string> jetcorr_filenames_PHYS14_MC_pfL1L2L3;
+  jetcorr_filenames_PHYS14_MC_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_PHYS14_MC_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_PHYS14_MC_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
+  FactorizedJetCorrector *jetCorrAG;
+  jetCorrAG = makeJetCorrector(jetcorr_filenames_PHYS14_MC_pfL1L2L3);
 
   //Event Counting
   unsigned int nEvents = tree->GetEntries();
@@ -140,7 +148,7 @@ void run(sample_t which, int file, IsolationMethods ptrel, bool expt){
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
 
-    mylooper->ProcessBaby(ptrel, f->GetTitle(), expt); 
+    mylooper->ProcessBaby(ptrel, f->GetTitle(), jetCorrAG, expt); 
 
   }//event loop 
 

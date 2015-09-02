@@ -19,10 +19,10 @@ pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 
 #Then submit jobs
 ptrel="4"
-for expt in "0" "1"
+for expt in "0" # "1"
 do
   nIter=0
-  for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200" "DY1" "DY2" "DY3" "DY4" "WJets1" "WJets2" "WJets3" "WJets4" "WJets" "DY" "T5qqqqWW_1200_1000_800" "T5qqqqWW_deg_1000_315_300"
+  for sname in  "TTZ" "TTBAR" "WZ" "WJets" "DY" # "TTW" 
   do
     #Iter
     nIter=$(( $nIter + 1 ))
@@ -66,7 +66,7 @@ do
       number=$(( $i + 1 ))
 
       #Except they've finished
-      if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}${ptrelsuf}_$expt.root ] 
+      if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/phys14/${sname_lower}_${number}${ptrelsuf}_$expt.root ] 
       then 
         continue
       fi

@@ -9,13 +9,7 @@ Every time, do
 . setup.sh
 
 ###how to make babies
-edit main.cc -- at the top, "runBaby" should be true, "usePtRel" should be true if you want to use pTRel for the definitions (normally run it both ways), everything else false.  
-
-The "if (runBaby)" part at the very end specifies which babies will be made, uncomment the ones you need.  To run on a new sample, add a line here referencing a new chain, then declare and fill the new chain analogously to the other chains.  
-
-make
-
-./main.exe
+This PHYS14 branch is deprecated.  You may not be able to run interactively (out of date, and I didn't put in the JECs).  It's easiest to run this in the batch directory (root do.C\(TTBAR, 17, 4, 0\) for example); batch still works.  Yell at Alex if you actually need to run this interactively for some reason.
 
 ###how to make cards 
 

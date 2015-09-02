@@ -30,7 +30,7 @@ class babyMaker {
     void MakeBabyNtuple(const char* output_name, bool expt);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
-    int ProcessBaby(IsolationMethods isoCase, string filename_in, bool expt);
+    int ProcessBaby(IsolationMethods isoCase, string filename_in, FactorizedJetCorrector* jetCorr, bool expt);
 
   protected:
     TFile* BabyFile;
@@ -79,6 +79,7 @@ class babyMaker {
     float ht;
     vector <LorentzVector> jets;
     vector <float> jets_disc;
+    vector <float> jets_JEC;
 
     //Hyp Class -- in this order
        //3 for num-num SS leptons
@@ -114,6 +115,7 @@ class babyMaker {
     //b-tags
     vector <LorentzVector> btags;
     vector <float> btags_disc;
+    vector <float> btags_JEC;
     int nbtags;
 
     //Scale factors (from 8 TeV, outdated)
@@ -250,5 +252,11 @@ class babyMaker {
     LorentzVector lep2_closeJet;
     bool passed_id_inSituFR_lep1;
     bool passed_id_inSituFR_lep2;
+    float corrMET;
+    float corrMETphi;
+    float met3p0;
+    float metphi3p0;
+    bool fired_trigger;
+    int triggers;
 
 };

@@ -1,6 +1,6 @@
 universe=grid
 Grid_Resource=condor cmssubmit-r1.t2.ucsd.edu glidein-collector.t2.ucsd.edu
-+DESIRED_Sites="T2_US_UCSD"
++DESIRED_Sites="T2_US_UCSD,T2_US_WISCONSIN,T2_US_FLORIDA,T2_US_PURDUE,T2_US_NEBRASKA,T2_US_MIT,T2_US_CALTECH"
 Should_Transfer_Files = YES
 WhenToTransferOutput = ON_EXIT
 Transfer_Input_Files = do.C,CORE.tar.gz,run.C,helper_babymaker.cc,helper_babymaker.h

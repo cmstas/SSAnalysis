@@ -46,6 +46,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("jets"                  , &jets                  );
   BabyTree->Branch("btags_disc"            , &btags_disc            );
   BabyTree->Branch("jets_disc"             , &jets_disc             );
+  BabyTree->Branch("jets_JEC"              , &jets_JEC              );
+  BabyTree->Branch("btags_JEC"             , &btags_JEC             );
   BabyTree->Branch("btags"                 , &btags                 );
   BabyTree->Branch("nbtags"                , &nbtags                );
   BabyTree->Branch("sf_dilepTrig_hpt"      , &sf_dilepTrig_hpt      );
@@ -141,6 +143,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("trueNumInt"            , &trueNumInt            );
   BabyTree->Branch("nPUvertices"           , &nPUvertices           ); 
   BabyTree->Branch("nGoodVertices"         , &nGoodVertices         ); 
+  BabyTree->Branch("corrMET"               , &corrMET               );
+  BabyTree->Branch("corrMETphi"            , &corrMETphi            );
+  BabyTree->Branch("met3p0"                , &met3p0                );
+  BabyTree->Branch("metphi3p0"             , &metphi3p0             );
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -155,6 +161,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep2_closeJet"          , &lep2_closeJet          );
   BabyTree->Branch("passed_id_inSituFR_lep1", &passed_id_inSituFR_lep1); 
   BabyTree->Branch("passed_id_inSituFR_lep2", &passed_id_inSituFR_lep2); 
+
+  //Triggers
+  BabyTree->Branch("fired_trigger"          , &fired_trigger          ); 
+  BabyTree->Branch("triggers"               , &triggers               );
 
   //Print warning!
   cout << "Careful!! Path is " << path << endl;
@@ -196,6 +206,8 @@ void babyMaker::InitBabyNtuple(){
     jets.clear();
     btags_disc.clear();
     jets_disc.clear();
+    jets_JEC.clear();
+    btags_JEC.clear();
     btags.clear();
     nbtags = -1;
     sf_dilepTrig_hpt = -1;
@@ -305,27 +317,23 @@ void babyMaker::InitBabyNtuple(){
     trueNumInt.clear();
     nPUvertices.clear(); 
     nGoodVertices = 0; 
+    corrMET    = -9999;          
+    corrMETphi = -9999;          
+    met3p0     = -9999;          
+    metphi3p0  = -9999;  
+    fired_trigger = 0;
+    triggers = 0;
 
-} 
+}
 
 //Main function
-int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool expt){
+int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, FactorizedJetCorrector* jetCorr, bool expt){
 
   //Initialize variables
   InitBabyNtuple();
   
   //Local variables
   bool isData = tas::evt_isRealData();
-
-  //Sync stuff
-  //if (tas::evt_event() != 852218) return -1;
-  //cout << "FOUND THE EVENT" << endl;
-  //verbose = true;
-  //cout << "MVA VALUE: " << globalEleMVAreader->MVA(0) << endl;
-  //globalEleMVAreader->DumpValues();
-  //cout << " " << endl;
-  //cout << isGoodLeptonNoIso(11,0) << endl;
-  //cout << isNewMiniIsolatedLepton(11,0,1) << endl;
 
   //Debug mode
   if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return -1;
@@ -359,6 +367,16 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   filt_ecaltp = is_real_data ? tas::filt_ecalTP() : 1;
   filt_trkfail = is_real_data ? tas::filt_trackingFailure() : 1;
   filt_eebadsc = is_real_data ? tas::filt_eeBadSc() : 1;
+
+  //Make sure one of our triggers fired 
+  //if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v1")))      (triggers |= 1<<0);
+  //if (passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1")))  (triggers |= 1<<1); 
+  //if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v1")))   (triggers |= 1<<2); 
+  //if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1")))              (triggers |= 1<<3); 
+  //if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1")))            (triggers |= 1<<4); 
+  //if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v1")))    (triggers |= 1<<5); 
+  //if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1")))        (triggers |= 1<<6); 
+  //if (triggers != 0) fired_trigger = true;
 
   //Scale1fb
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
@@ -451,11 +469,13 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
   }
   
   //Determine and save jet and b-tag variables
-  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator();
+  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr);
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets.push_back(jet_results.first.at(i).p4());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags.push_back(jet_results.second.at(i).p4());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_disc.push_back(jet_results.first.at(i).csv());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc.push_back(jet_results.second.at(i).csv());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_JEC.push_back(jet_results.first.at(i).jec());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_JEC.push_back(jet_results.second.at(i).jec());
   njets = jets.size();
   nbtags = btags.size();
   ht = 0;
@@ -558,6 +578,15 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, bool ex
     if (!isGoodVertex(i)) continue;
     nGoodVertices++;
   }
+
+  //Correct the met
+  corrMET = correctedMET(jetCorr).pt();
+  corrMETphi = correctedMET(jetCorr).phi();
+
+  //MET3p0 (aka FKW MET)
+  pair<float,float> MET3p0_ = MET3p0();
+  met3p0 = MET3p0_.first;
+  metphi3p0 = MET3p0_.second;
 
   //Fill Baby
   BabyTree->Fill();
