@@ -1,10 +1,26 @@
 #!/bin/bash
 
+xrootdbroken="0"
+
 pathPublic="/hadoop/cms/store/group/snt/run2_25ns"
 pathPrivate="/hadoop/cms/store/user/cgeorge/privateSusySignalsSS"
 pathData="/hadoop/cms/store/group/snt/run2_data"
 
 nSubmitted=0
+
+#Source this stupid thing
+pushd ..
+. setup.sh
+popd
+
+#Copy main.C to main.cc
+cp main.C main.cc
+if [ "$xrootdbroken" == "1" ]
+then
+  sed -i 's/T2_US_UCSD,T2_US_WISCONSIN,T2_US_FLORIDA,T2_US_PURDUE,T2_US_NEBRASKA,T2_US_MIT,T2_US_CALTECH/T2_US_UCSD/' condorFile
+  sed -i 's,Open(Form("root://cmsxrootd.fnal.gov//%s/%s/%s/%s,Open(Form("/hadoop/cms/%s/%s/%s/%s",' main.cc
+fi
+make -j 10
 
 #Start by checking proxy, get path to proxy file
 voms-proxy-info --all &> voms_status.txt
@@ -17,12 +33,15 @@ fi
 lineWithPath=`sed -n /path/= voms_status.txt`
 pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 
+#Change the username
+sed -i "s/cgeorge/$USER/" condorExecutable.sh
+
 #Then submit jobs
 ptrel="4"
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "TTW" "TTZQ" "TTZL" "WZ" # "DY_high" "TTBAR"  "DY_low" "WJets" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "DataDoubleEG" "DataDoubleMuon" "DATAMUONEG" "SINGLETOP5"
+  for sname in "DATAMUONEG" #  "DataDoubleEG"  "DataDoubleMuon" # "TTZL"  "TTW" "TTZQ" "WZ"  "DY_high" "TTBAR"  "DY_low" "WJets" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5"
   do
     #Iter
     nIter=$(( $nIter + 1 ))
@@ -72,15 +91,15 @@ do
       nameNu=17
     elif [ $sname == "DataDoubleMuon"  ]; 
       then name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1";
-      tag=V07-04-07
+      tag=V07-04-08
       nameNu=9
     elif [ $sname == "DataDoubleEG"    ]; 
       then name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1";
-      tag=V07-04-07
+      tag=V07-04-08
       nameNu=10
     elif [ $sname == "DATAMUONEG"    ]; 
       then name="Run2015B_MuonEG_MINIAOD_PromptReco-v1";
-      tag=V07-04-07
+      tag=V07-04-08
       nameNu=16
     elif [ $sname == "TTW" ]
     then
@@ -122,7 +141,7 @@ do
     fi
 
     #Get number of files
-    numberOfFiles=$((`ls -l $path/$name/$infix$tag | wc -l` - 1))
+    numberOfFiles=$((`ls -l $path/$name/$infix$tag/merged_ntuple_*.root | wc -l`))
     echo "number of files: $numberOfFiles"
     echo "dir: $path/$name/$infix$tag"
   
@@ -168,9 +187,11 @@ do
       fi
       echo "submitting..."
       let "nSubmitted=$nSubmitted+1"
+
+      #Make condor file
+      cp condorFileTemplate condorFile
   
       #submit it
-      cp condorFileTemplate condorFile
       sed -i s/ARG1/$nameNu/g condorFile
       sed -i s/ARG2/$number/g condorFile
       sed -i s/ARG3/$ptrel/g condorFile
@@ -188,3 +209,4 @@ then
 else 
   return 0
 fi
+

@@ -3,7 +3,7 @@
 WHICH=$1
 FILE=$2
 PTREL=$3
-cgeorge=$4
+USER=$4
 EXPT=$5
 
 #Show where you are
@@ -49,7 +49,7 @@ fi
 export OUTPUT=${WHICH_SMALL}_${FILE}${PT}_$EXPT
 
 #This stuff to get output back
-export COPYDIR=/hadoop/cms/store/user/$cgeorge/condor/${DIRNAME}
+export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}
 
 #Untar the zip dir
 tar xzvf CORE.tar.gz

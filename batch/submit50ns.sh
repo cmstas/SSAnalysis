@@ -1,5 +1,7 @@
 #!/bin/bash
 
+xrootdBroken=0
+
 pathPublic="/hadoop/cms/store/group/snt/run2_50ns"
 pathPrivate="/hadoop/cms/store/user/cgeorge/privateSusySignalsSS"
 pathData="/hadoop/cms/store/group/snt/run2_data"
