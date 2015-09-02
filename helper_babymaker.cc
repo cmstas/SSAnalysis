@@ -169,6 +169,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep2_closeJet"          , &lep2_closeJet          );
   BabyTree->Branch("passed_id_inSituFR_lep1", &passed_id_inSituFR_lep1); 
   BabyTree->Branch("passed_id_inSituFR_lep2", &passed_id_inSituFR_lep2); 
+  
+  //Triggers
   BabyTree->Branch("fired_trigger"          , &fired_trigger          ); 
   BabyTree->Branch("triggers"               , &triggers               ); 
 
@@ -383,14 +385,14 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   filt_trkfail = is_real_data ? tas::filt_trackingFailure() : 1;
   filt_eebadsc = is_real_data ? tas::filt_eeBadSc() : 1;
 
-  //Make sure one of our triggers fired (for data)
+  //Make sure one of our triggers fired
   if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v2")))      (triggers |= 1<<0);
   if (passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v2")))  (triggers |= 1<<1); 
   if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v2")))   (triggers |= 1<<2); 
   if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v2")))              (triggers |= 1<<3); 
   if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2")))            (triggers |= 1<<4); 
   if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v2")))    (triggers |= 1<<5); 
-  if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2")))       (triggers |= 1<<6); 
+  if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2")))        (triggers |= 1<<6); 
   if (triggers != 0) fired_trigger = true;
 
   //Scale1fb
