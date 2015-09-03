@@ -125,8 +125,8 @@ void run(sample_t which, int file, IsolationMethods ptrel, bool expt){
   //JEC files -- PHYS14 MC
   std::vector<std::string> jetcorr_filenames_PHYS14_MC_pfL1L2L3;
   jetcorr_filenames_PHYS14_MC_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_PHYS14_MC_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_PHYS14_MC_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_PHYS14_MC_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L2Relative_AK4PFchs.txt");
+  jetcorr_filenames_PHYS14_MC_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/PHYS14_V1_MC_L3Absolute_AK4PFchs.txt");
   FactorizedJetCorrector *jetCorrAG;
   jetCorrAG = makeJetCorrector(jetcorr_filenames_PHYS14_MC_pfL1L2L3);
 
