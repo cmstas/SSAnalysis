@@ -4,11 +4,11 @@ path1="/hadoop/cms/store/group/snt/phys14"
 path2="/hadoop/cms/store/user/cgeorge/privateSusySignalsSS"
 tag="V07-02-08"
 
-pathCondor="/hadoop/cms/store/user/$USER/condor/ss_13_babies"
+pathCondor="/hadoop/cms/store/user/$USER/condor/ss_13_babies/phys14"
 
-for i in "0" "1"
+for i in "0"  # "1"
 do
-for sname in "TTW" "TTZ" "TTBAR" "WZ" "T1TTTT_1500" "T1TTTT_1200" "T5qqqqWW_1200_1000_800" "T5qqqqWW_deg_1000_315_300" "DY1" "DY2" "DY3" "DY4" "WJets1" "WJets2" "WJets3" "WJets4"
+for sname in "WJets" # "TTBAR" "WZ" "DY" ""TTW" "TTZ"   # "T1TTTT_1500" "T1TTTT_1200" "T5qqqqWW_1200_1000_800" "T5qqqqWW_deg_1000_315_300" "DY1" "DY2" "DY3" "DY4" "WJets1" "WJets2" "WJets3" "WJets4"
 do
 
   for (( counter=0; counter<=500; counter++ )); do file1[$counter]=""; done
@@ -35,6 +35,7 @@ do
   elif [ $sname == "WJets2"      ]; then name="WJetsToLNu_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
   elif [ $sname == "WJets3"      ]; then name="WJetsToLNu_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
   elif [ $sname == "WJets4"      ]; then name="WJetsToLNu_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
+  elif [ $sname == "WJets"       ]; then name="WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
 
   else name=$sname; path=$path2
   fi
