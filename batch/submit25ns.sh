@@ -1,6 +1,6 @@
 #!/bin/bash
 
-xrootdbroken="0"
+xrootdbroken="1"
 
 pathPublic="/hadoop/cms/store/group/snt/run2_25ns"
 pathPrivate="/hadoop/cms/store/user/cgeorge/privateSusySignalsSS"
@@ -18,7 +18,7 @@ cp main.cc.norun main.cc
 if [ "$xrootdbroken" == "1" ]
 then
   sed -i 's/T2_US_UCSD,T2_US_WISCONSIN,T2_US_FLORIDA,T2_US_PURDUE,T2_US_NEBRASKA,T2_US_MIT,T2_US_CALTECH/T2_US_UCSD/' condorFile
-  sed -i 's,Open(Form("root://cmsxrootd.fnal.gov//%s/%s/%s/%s,Open(Form("/hadoop/cms/%s/%s/%s/%s",' main.cc
+  sed -i 's,Open(Form("root://cmsxrootd.fnal.gov//%s/%s/%s/%s,Open(Form("/hadoop/cms/%s/%s/%s/%s,' main.cc
 fi
 make -j 10
 
@@ -41,7 +41,7 @@ ptrel="4"
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "DATAMUONEG" #  "DataDoubleEG"  "DataDoubleMuon" # "TTZL"  "TTW" "TTZQ" "WZ"  "DY_high" "TTBAR"  "DY_low" "WJets" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5"
+  for sname in "WJets"  "TTBAR"  "TTZL" "TTW" "TTZQ" "WZ" "DY_high" #  "DY_low" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" # "DATAMUONEG"  "DataDoubleEG"  "DataDoubleMuon" 
   do
     #Iter
     nIter=$(( $nIter + 1 ))
@@ -50,12 +50,12 @@ do
     if   [ $sname == "TTBAR"           ]
     then 
       name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2"
-      tag=V07-04-03
+      tag=V07-04-08
       nameNu=0
     elif [ $sname == "WZ"              ]
     then 
       name="WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-03
+      tag=V07-04-08
       nameNu=3
     elif [ $sname == "DY_low"          ]; 
       then name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
@@ -104,17 +104,17 @@ do
     elif [ $sname == "TTW" ]
     then
       name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1" 
-      tag=V07-04-07
+      tag=V07-04-08
       nameNu=1
     elif [ $sname == "TTZL" ]
     then
       name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-07
+      tag=V07-04-08
       nameNu=2
     elif [ $sname == "TTZQ" ]
     then
       name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-07
+      tag=V07-04-08
       nameNu=18
     else 
       name=$sname 
