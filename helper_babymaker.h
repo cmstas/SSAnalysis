@@ -5,13 +5,21 @@
 #include "TF1.h"
 #include "Math/VectorUtil.h" 
 #include "CORE/CMS3.h"
-#include "Tools/utils.h"
-#include "Tools/MT2/MT2.h"
+#include "CORE/Tools/utils.h"
+#include "CORE/Tools/MT2/MT2.h"
 #include "CORE/SSSelections.h"
 #include "CORE/ElectronSelections.h"
 #include "CORE/IsolationTools.h"
 #include "TROOT.h"
 #include <vector>
+#include "Math/Vector4D.h" 
+#include "Math/LorentzVector.h" 
+
+#ifdef __MAKECINT__
+#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+;
+#pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
+#pragma link C++ typedef ROOT::Math::XYZTVectorF;
+#endif
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef vector<pair<const LorentzVector *, double> > jets_with_corr_t;
@@ -80,6 +88,7 @@ class babyMaker {
     vector <LorentzVector> jets;
     vector <float> jets_disc;
     vector <float> jets_JEC;
+    vector <float> jets_undoJEC; 
 
     //Hyp Class -- in this order
        //3 for num-num SS leptons
@@ -116,6 +125,7 @@ class babyMaker {
     vector <LorentzVector> btags;
     vector <float> btags_disc;
     vector <float> btags_JEC;
+    vector <float> btags_undoJEC; 
     int nbtags;
 
     //Scale factors (from 8 TeV, outdated)

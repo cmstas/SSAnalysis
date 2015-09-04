@@ -51,6 +51,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("btags"                 , &btags                 );
   BabyTree->Branch("nbtags"                , &nbtags                );
   BabyTree->Branch("sf_dilepTrig_hpt"      , &sf_dilepTrig_hpt      );
+  BabyTree->Branch("jets_undoJEC"          , &jets_undoJEC          );
+  BabyTree->Branch("btags_undoJEC"         , &btags_undoJEC         );
   BabyTree->Branch("sf_dilepTrig_lpt"      , &sf_dilepTrig_lpt      );
   BabyTree->Branch("sf_dilepTrig_vlpt"     , &sf_dilepTrig_vlpt     );
   BabyTree->Branch("hyp_type"              , &hyp_type              );
@@ -217,6 +219,8 @@ void babyMaker::InitBabyNtuple(){
     sf_dilep_eff = -1;
     mt = -1;
     mt_l2 = -1;
+    jets_undoJEC.clear();
+    btags_undoJEC.clear();
     mt2 = -1;
     mtmin = -1;
     mGluino = -1;
@@ -476,6 +480,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc.push_back(jet_results.second.at(i).csv());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_JEC.push_back(jet_results.first.at(i).jec());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_JEC.push_back(jet_results.second.at(i).jec());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_undoJEC.push_back(jet_results.first.at(i).undo_jec());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_undoJEC.push_back(jet_results.second.at(i).undo_jec());
   njets = jets.size();
   nbtags = btags.size();
   ht = 0;
