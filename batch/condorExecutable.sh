@@ -41,6 +41,10 @@ if [ "$WHICH" == "15" ]; then WHICH_SMALL="singletop4"; fi
 if [ "$WHICH" == "16" ]; then WHICH_SMALL="datamuoneg"; fi
 if [ "$WHICH" == "17" ]; then WHICH_SMALL="singletop5"; fi
 if [ "$WHICH" == "18" ]; then WHICH_SMALL="ttzq"; fi
+if [ "$WHICH" == "19" ]; then WHICH_SMALL="datamuonegc"; fi
+if [ "$WHICH" == "20" ]; then WHICH_SMALL="datadoublemuonc"; fi
+if [ "$WHICH" == "21" ]; then WHICH_SMALL="datadoubleegc"; fi
+if [ "$WHICH" == "22" ]; then WHICH_SMALL="wz3lnu"; fi
 
 if [ "$PTREL" == "4" ] 
 then

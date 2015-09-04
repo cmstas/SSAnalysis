@@ -41,7 +41,7 @@ ptrel="4"
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "WJets"  "TTBAR"  "TTZL" "TTW" "TTZQ" "WZ" "DY_high" #  "DY_low" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" # "DATAMUONEG"  "DataDoubleEG"  "DataDoubleMuon" 
+  for sname in "WJets"  "TTBAR"  "TTZL" "TTW" "TTZQ" "WZ" "DY_high"   "DY_low" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" # "DATAMUONEG"  "DataDoubleEG"  "DataDoubleMuon" "DATAMUONEGC" "DataDoubleEGC" "DataDoubleMuonC" "WZ3LNu"  
   do
     #Iter
     nIter=$(( $nIter + 1 ))
@@ -52,6 +52,11 @@ do
       name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2"
       tag=V07-04-08
       nameNu=0
+    elif   [ $sname == "WZ3LNu"          ]
+    then
+      name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      tag=V07-04-08
+      nameNu=22
     elif [ $sname == "WZ"              ]
     then 
       name="WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
@@ -59,35 +64,35 @@ do
       nameNu=3
     elif [ $sname == "DY_low"          ]; 
       then name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-03
+      tag=V07-04-08
       nameNu=6
     elif [ $sname == "DY_high"         ]; 
       then name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3"
-      tag=V07-04-06
+      tag=V07-04-08
       nameNu=7
     elif [ $sname == "WJets"           ]; 
       then name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-03
+      tag=V07-04-08
       nameNu=8
     elif [ $sname == "SINGLETOP1"    ]; 
       then name="ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-03
+      tag=V07-04-08
       nameNu=12
     elif [ $sname == "SINGLETOP2"    ]; 
       then name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-03
+      tag=V07-04-08
       nameNu=13
     elif [ $sname == "SINGLETOP3"    ]; 
       then name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-03
+      tag=V07-04-08
       nameNu=14
     elif [ $sname == "SINGLETOP4"    ]; 
       then name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-03
+      tag=V07-04-08
       nameNu=15
     elif [ $sname == "SINGLETOP5"    ]; 
       then name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-03
+      tag=V07-04-08
       nameNu=17
     elif [ $sname == "DataDoubleMuon"  ]; 
       then name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1";
@@ -101,6 +106,18 @@ do
       then name="Run2015B_MuonEG_MINIAOD_PromptReco-v1";
       tag=V07-04-08
       nameNu=16
+    elif [ $sname == "DataDoubleMuonC"  ]; 
+      then name="Run2015C_DoubleMuon_MINIAOD_PromptReco-v1";
+      tag=V07-04-08
+      nameNu=20
+    elif [ $sname == "DataDoubleEGC"    ]; 
+      then name="Run2015C_DoubleEG_MINIAOD_PromptReco-v1";
+      tag=V07-04-08
+      nameNu=21
+    elif [ $sname == "DATAMUONEGC"    ]; 
+      then name="Run2015C_MuonEG_MINIAOD_PromptReco-v1";
+      tag=V07-04-08
+      nameNu=19
     elif [ $sname == "TTW" ]
     then
       name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1" 

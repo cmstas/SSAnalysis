@@ -50,6 +50,12 @@ int main(int argc, char *argv[]){
       tag = "V07-04-08";
       path = "/store/group/snt/run2_25ns/";
       break;
+    case WZ3LNu:
+      name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      shortname="wz3lnu";
+      tag="V07-04-08";
+      path="/store/group/snt/run2_25ns/";
+      break;
     case TTW:
       name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag = "V07-04-08";
@@ -102,12 +108,6 @@ int main(int argc, char *argv[]){
       isData = true;
       is25 = false;
       break;
-    case TTZQ:
-      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/merged";
-      tag = "V07-04-08";
-      shortname="ttzq";
-      path = "/store/group/snt/run2_25ns/";
-      break;
     case DATAMUONEG:
       name="Run2015B_MuonEG_MINIAOD_PromptReco-v1";
       tag = "V07-04-08";
@@ -115,6 +115,36 @@ int main(int argc, char *argv[]){
       path = "/store/group/snt/run2_data/"; 
       is25 = false;
       isData = true;
+      break;
+    case DataDoubleMuonC:
+      name="Run2015C_DoubleMuon_MINIAOD_PromptReco-v1/merged";
+      tag = "V07-04-08";
+      shortname="datadoublemuonc";
+      path = "/store/group/snt/run2_data/"; 
+      isData = true;
+      is25 = true;
+      break;
+    case DataDoubleEGC:
+      name="Run2015C_DoubleEG_MINIAOD_PromptReco-v1/merged";
+      tag = "V07-04-08";
+      shortname="datadoubleegc";
+      path = "/store/group/snt/run2_data/"; 
+      isData = true;
+      is25 = true;
+      break;
+    case DATAMUONEGC:
+      name="Run2015C_MuonEG_MINIAOD_PromptReco-v1";
+      tag = "V07-04-08";
+      shortname="datamuonegc";
+      path = "/store/group/snt/run2_data/"; 
+      is25 = true;
+      isData = true;
+      break;
+    case TTZQ:
+      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/merged";
+      tag = "V07-04-08";
+      shortname="ttzq";
+      path = "/store/group/snt/run2_25ns/";
       break;
     case SINGLETOP1:
       name="ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
