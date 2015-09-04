@@ -22,7 +22,7 @@ ptrel="4"
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in  "TTZ" "TTBAR" "WZ" "WJets" "DY" # "TTW" 
+  for sname in  "TTZ" "TTBAR" "WZ" "WJets" "DY"  "TTW" 
   do
     #Iter
     nIter=$(( $nIter + 1 ))
