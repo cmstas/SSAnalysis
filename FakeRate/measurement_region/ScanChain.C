@@ -535,9 +535,18 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // int prescale = 999999;
 	  // if (HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele33_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele33_CaloIdM_TrackIdM_PFJet30();
 	  // if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
-	  if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
 	  // if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
-	  if (p4().pt() > 25 && prescale>0 && prescale<1500) weight *= prescale;
+
+        // use ele12 FIXME
+	  if (p4().pt() > 10 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
+
+        // // use non-(ele12 or ele18) FIXME
+	  // if (p4().pt()>35 && HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele33_CaloIdM_TrackIdM_PFJet30();
+	  // else if (p4().pt()<=35 && p4().pt()>25 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
+	  // else if (p4().pt()<=25 && p4().pt()>10 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 ) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30() ;
+
+
+	  if (prescale>0) weight *= prescale;
 	  else continue;
 	  
 	  // if ((HLT_Ele23_CaloIdM_TrackIdM_PFJet30() || HLT_Ele33_CaloIdM_TrackIdM_PFJet30()) && minPrescale>1000) {
@@ -557,8 +566,16 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // if (p4().pt()>38 && HLT_Mu34()>0) prescale = HLT_Mu34();
 	  // else if (p4().pt()<=38 && p4().pt()>28 && HLT_Mu24()>0) prescale = HLT_Mu24();
 	  // else if (p4().pt()<=28 && p4().pt()>20 && HLT_Mu17()>0) prescale = HLT_Mu17();
-	  if (p4().pt()>20 && HLT_Mu17()>0) prescale = HLT_Mu17();
 	  // else if (p4().pt()<=20 && p4().pt()>10 && HLT_Mu8() >0) prescale = HLT_Mu8();
+
+        // use mu17 FIXME
+	  if (p4().pt()>10 && HLT_Mu17()>0) prescale = HLT_Mu17();
+      
+        // // use non-mu17 FIXME
+	  // if (p4().pt()>38 && HLT_Mu34()>0) prescale = HLT_Mu34();
+	  // else if (p4().pt()<=38 && p4().pt()>28 && HLT_Mu24()>0) prescale = HLT_Mu24();
+	  // else if (p4().pt()<=28 && p4().pt()>10 && HLT_Mu8() >0) prescale = HLT_Mu8();
+
 	  if (prescale>0) weight *= prescale;
 	  else continue;
 	  
@@ -604,7 +621,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       }
 
       float evt_met = evt_met3p0();
-      float evt_metPhi = evt_pfmetPhi();
+      float evt_metPhi = evt_met3p0Phi();
       float evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
 
       if (passId) {

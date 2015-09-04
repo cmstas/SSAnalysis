@@ -7,9 +7,11 @@
 
   TCanvas c1("c1","c1",600,600);
 
-  bool doMu = 0;
   TString plot = "mt_cr";
-  bool applyInputSF  = 0;
+  bool doMu = true;
+  float inputSF_mu = 0.967;
+  float inputSF_el = 0.827;
+  bool applyInputSF  = 1;
   bool applyOutputSF = 1;
 
   if (doMu) plot = "histo_"+plot+"_mu";
@@ -24,8 +26,6 @@
   TH1F* h_wj = (TH1F*) _file_wj->Get(plot);
   TH1F* h_dy = (TH1F*) _file_dy->Get(plot);
 
-  float inputSF_mu = 0.94;
-  float inputSF_el = 0.42;
 
   if (applyInputSF) {
     if (doMu) {
@@ -67,12 +67,12 @@
   TLegend* leg = new TLegend(0.7,0.7,0.89,0.89);
   leg->SetFillColor(kWhite);
   leg->SetLineColor(kWhite);
-  leg->SetHeader("L=40/pb");
+  leg->SetHeader("L=8.4/pb");
   leg->AddEntry(h_data,"data","pe");
   leg->AddEntry(h_wj  ,"W+jets","f");
   leg->AddEntry(h_dy  ,"DY","f");
   leg->Draw();
 
-  c1.SaveAs(plot+".png");
+  c1.SaveAs("pdfs/"+plot+(doMu ? "_mu" : "_el")+".pdf");
 
 }

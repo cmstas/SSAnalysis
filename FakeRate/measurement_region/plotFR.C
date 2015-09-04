@@ -40,7 +40,7 @@
     if (postfix!="_extrPtRel") muf->GetXaxis()->SetNdivisions(6,0);
     muf->Draw("texte,colz");
     c1.RedrawAxis();
-    c1.SaveAs("mu_fr"+var+"_"+sample+postfix+".png");
+    c1.SaveAs("pdfs/mu_fr"+var+"_"+sample+postfix+".pdf");
   }
 
   if (sample.Contains("_mu")==0) {
@@ -59,7 +59,7 @@
     if (postfix!="_extrPtRel") elf->GetXaxis()->SetNdivisions(6,0);
     elf->Draw("texte,colz");
     c2.RedrawAxis();
-    c2.SaveAs("el_fr"+var+"_"+sample+postfix+".png");
+    c2.SaveAs("pdfs/el_fr"+var+"_"+sample+postfix+".pdf");
   }
 
   if (saveDen) {
@@ -78,10 +78,10 @@
       if (postfix!="_extrPtRel") mud->GetXaxis()->SetNdivisions(6,0);
       mud->Draw("texte");
       c3.RedrawAxis();
-      c3.SaveAs("mu_den_fr"+var+"_"+sample+postfix+".png");
+      c3.SaveAs("pdfs/mu_den_fr"+var+"_"+sample+postfix+".pdf");
       TH1D* mud1d_data = mud->ProjectionX();
       mud1d_data->DrawNormalized();
-      c3.SaveAs("mu_den_fr"+var+"_"+sample+postfix+"_1d.png");
+      c3.SaveAs("pdfs/mu_den_fr"+var+"_"+sample+postfix+"_1d.pdf");
     }      
 
     if (sample.Contains("_mu")==0) {
@@ -98,10 +98,10 @@
       if (postfix!="_extrPtRel") eld->GetXaxis()->SetNdivisions(6,0);
       eld->Draw("texte");
       c4.RedrawAxis();    
-      c4.SaveAs("el_den_fr"+var+"_"+sample+postfix+".png");
+      c4.SaveAs("pdfs/el_den_fr"+var+"_"+sample+postfix+".pdf");
       TH1D* eld1d_data = eld->ProjectionX();
       eld1d_data->DrawNormalized();
-      c4.SaveAs("el_den_fr"+var+"_"+sample+postfix+"_1d.png");
+      c4.SaveAs("pdfs/el_den_fr"+var+"_"+sample+postfix+"_1d.pdf");
     }
 
   }

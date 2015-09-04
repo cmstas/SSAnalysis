@@ -3,7 +3,7 @@
   gROOT->Reset();
   gStyle->SetOptStat(0);
 
-  TString dataf = "/nfs-7/userdata/leptonTree/v0.08/2015DoubleEG.root";
+  TString dataf = "/home/users/namin/2015/fr/CMSSW_7_4_1_patch1/src/LeptonBabyMaker/bck/2015CDoubleEG.root";
 
   TFile *_file = TFile::Open(dataf);
 
@@ -69,27 +69,29 @@
   c1.SetLogy();
 
   TH1F* paths_total = new TH1F("paths_total","paths_total",5,0,5);
-  paths_total->Fill(0,total_pt_Ele8->GetEntries());
-  paths_total->Fill(1,total_pt_Ele12->GetEntries());
-  paths_total->Fill(2,total_pt_Ele18->GetEntries());
-  paths_total->Fill(3,total_pt_Ele23->GetEntries());
-  paths_total->Fill(4,total_pt_Ele33->GetEntries());
+  paths_total->Fill(0.0,total_pt_Ele8->GetEntries());
+  paths_total->Fill(1.0,total_pt_Ele12->GetEntries());
+  paths_total->Fill(2.0,total_pt_Ele18->GetEntries());
+  paths_total->Fill(3.0,total_pt_Ele23->GetEntries());
+  paths_total->Fill(4.0,total_pt_Ele33->GetEntries());
 
   TH1F* paths_fo = new TH1F("paths_fo","paths_fo",40,0,40);
-  paths_fo->Fill(0,fo_pt_Ele8->GetEntries());
-  paths_fo->Fill(1,fo_pt_Ele12->GetEntries());
-  paths_fo->Fill(2,fo_pt_Ele18->GetEntries());
-  paths_fo->Fill(3,fo_pt_Ele23->GetEntries());
-  paths_fo->Fill(4,fo_pt_Ele33->GetEntries());
+  paths_fo->Fill(0.0,fo_pt_Ele8->GetEntries());
+  paths_fo->Fill(1.0,fo_pt_Ele12->GetEntries());
+  paths_fo->Fill(2.0,fo_pt_Ele18->GetEntries());
+  paths_fo->Fill(3.0,fo_pt_Ele23->GetEntries());
+  paths_fo->Fill(4.0,fo_pt_Ele33->GetEntries());
   paths_fo->SetLineColor(kMagenta);
 
   TH1F* paths_tight = new TH1F("paths_tight","paths_tight",40,0,40);
-  paths_tight->Fill(0,tight_pt_Ele8->GetEntries());
-  paths_tight->Fill(1,tight_pt_Ele12->GetEntries());
-  paths_tight->Fill(2,tight_pt_Ele18->GetEntries());
-  paths_tight->Fill(3,tight_pt_Ele23->GetEntries());
-  paths_tight->Fill(4,tight_pt_Ele33->GetEntries());
+  paths_tight->Fill(0.0,tight_pt_Ele8->GetEntries());
+  paths_tight->Fill(1.0,tight_pt_Ele12->GetEntries());
+  paths_tight->Fill(2.0,tight_pt_Ele18->GetEntries());
+  paths_tight->Fill(3.0,tight_pt_Ele23->GetEntries());
+  paths_tight->Fill(4.0,tight_pt_Ele33->GetEntries());
   paths_tight->SetLineColor(kRed);
+
+  TLatex *label = new TLatex();
 
   paths_total->GetXaxis()->SetBinLabel(1,"Ele8");
   paths_total->GetXaxis()->SetBinLabel(2,"Ele12");
@@ -100,7 +102,12 @@
   paths_total->Draw("hist,text0");
   paths_fo->Draw("hist,text0,same");
   paths_tight->Draw("hist,text0,same");
-  c1->SaveAs( "paths_el.png" );
+
+  label->SetTextColor(kMagenta); label->DrawLatexNDC(0.7,0.85, "pass FO");
+  label->SetTextColor(kRed); label->DrawLatexNDC(0.7,0.80, "pass Tight");
+  label->SetTextColor(kBlue); label->DrawLatexNDC(0.7,0.75, "all");
+
+  c1.SaveAs( "pdfs/paths_el.pdf" );
 
   TCanvas c2;
   c2.SetLogy();
@@ -115,7 +122,14 @@
   unw_fo_pt_Ele18->Draw("hist,same");
   unw_fo_pt_Ele23->Draw("hist,same");
   unw_fo_pt_Ele33->Draw("hist,same");
-  c2.SaveAs( "unw_pt_el.png" );
+
+  label->SetTextColor(kMagenta); label->DrawLatexNDC(0.8,0.85, "Ele33");
+  label->SetTextColor(kRed); label->DrawLatexNDC(0.8,0.80, "Ele23");
+  label->SetTextColor(kBlue); label->DrawLatexNDC(0.8,0.75, "Ele18");
+  label->SetTextColor(kGreen); label->DrawLatexNDC(0.8,0.70, "Ele12");
+  label->SetTextColor(kBlack); label->DrawLatexNDC(0.8,0.65, "Ele8");
+
+  c2.SaveAs( "pdfs/unw_pt_el.pdf" );
 
   TCanvas c3;
   c3.SetLogy();
@@ -130,6 +144,13 @@
   fo_pt_Ele18->Draw("hist,same");
   fo_pt_Ele23->Draw("hist,same");
   fo_pt_Ele33->Draw("hist,same");
-  c3.SaveAs( "pt_el.png" );
+
+  label->SetTextColor(kMagenta); label->DrawLatexNDC(0.8,0.85, "Ele33");
+  label->SetTextColor(kRed); label->DrawLatexNDC(0.8,0.80, "Ele23");
+  label->SetTextColor(kBlue); label->DrawLatexNDC(0.8,0.75, "Ele18");
+  label->SetTextColor(kGreen); label->DrawLatexNDC(0.8,0.70, "Ele12");
+  label->SetTextColor(kBlack); label->DrawLatexNDC(0.8,0.65, "Ele8");
+
+  c3.SaveAs( "pdfs/pt_el.pdf" );
 
 }

@@ -3,7 +3,7 @@
   gROOT->Reset();
   gStyle->SetOptStat(0);
 
-  TString dataf = "/nfs-7/userdata/leptonTree/v0.08/2015DoubleMuon.root";
+  TString dataf = "/home/users/namin/2015/fr/CMSSW_7_4_1_patch1/src/LeptonBabyMaker/bck/2015CDoubleMuon.root";
 
   TFile *_file = TFile::Open(dataf);
 
@@ -57,24 +57,26 @@
   c1.SetLogy();
 
   TH1F* paths_total = new TH1F("paths_total","paths_total",4,0,4);
-  paths_total->Fill(0,total_pt_Mu8->GetEntries());
-  paths_total->Fill(1,total_pt_Mu17->GetEntries());
-  paths_total->Fill(2,total_pt_Mu24->GetEntries());
-  paths_total->Fill(3,total_pt_Mu34->GetEntries());
+  paths_total->Fill(0.0,total_pt_Mu8->GetEntries());
+  paths_total->Fill(1.0,total_pt_Mu17->GetEntries());
+  paths_total->Fill(2.0,total_pt_Mu24->GetEntries());
+  paths_total->Fill(3.0,total_pt_Mu34->GetEntries());
 
   TH1F* paths_fo = new TH1F("paths_fo","paths_fo",40,0,40);
-  paths_fo->Fill(0,fo_pt_Mu8->GetEntries());
-  paths_fo->Fill(1,fo_pt_Mu17->GetEntries());
-  paths_fo->Fill(2,fo_pt_Mu24->GetEntries());
-  paths_fo->Fill(3,fo_pt_Mu34->GetEntries());
+  paths_fo->Fill(0.0,fo_pt_Mu8->GetEntries());
+  paths_fo->Fill(1.0,fo_pt_Mu17->GetEntries());
+  paths_fo->Fill(2.0,fo_pt_Mu24->GetEntries());
+  paths_fo->Fill(3.0,fo_pt_Mu34->GetEntries());
   paths_fo->SetLineColor(kMagenta);
 
   TH1F* paths_tight = new TH1F("paths_tight","paths_tight",40,0,40);
-  paths_tight->Fill(0,tight_pt_Mu8->GetEntries());
-  paths_tight->Fill(1,tight_pt_Mu17->GetEntries());
-  paths_tight->Fill(2,tight_pt_Mu24->GetEntries());
-  paths_tight->Fill(3,tight_pt_Mu34->GetEntries());
+  paths_tight->Fill(0.0,tight_pt_Mu8->GetEntries());
+  paths_tight->Fill(1.0,tight_pt_Mu17->GetEntries());
+  paths_tight->Fill(2.0,tight_pt_Mu24->GetEntries());
+  paths_tight->Fill(3.0,tight_pt_Mu34->GetEntries());
   paths_tight->SetLineColor(kRed);
+
+  TLatex *label = new TLatex();
 
   paths_total->GetXaxis()->SetBinLabel(1,"Mu8");
   paths_total->GetXaxis()->SetBinLabel(2,"Mu17");
@@ -84,7 +86,12 @@
   paths_total->Draw("hist,text0");
   paths_fo->Draw("hist,text0,same");
   paths_tight->Draw("hist,text0,same");
-  c1->SaveAs( "paths_mu.png" );
+
+  label->SetTextColor(kMagenta); label->DrawLatexNDC(0.7,0.85, "pass FO");
+  label->SetTextColor(kRed); label->DrawLatexNDC(0.7,0.80, "pass Tight");
+  label->SetTextColor(kBlue); label->DrawLatexNDC(0.7,0.75, "all");
+
+  c1.SaveAs( "pdfs/paths_mu.pdf" );
 
   TCanvas c2;
   c2.SetLogy();
@@ -97,6 +104,12 @@
   unw_fo_pt_Mu17->Draw("hist,same");
   unw_fo_pt_Mu24->Draw("hist,same");
   unw_fo_pt_Mu34->Draw("hist,same");
-  c2.SaveAs( "unw_pt_mu.png" );
+
+  label->SetTextColor(kMagenta); label->DrawLatexNDC(0.8,0.85, "Mu34");
+  label->SetTextColor(kRed); label->DrawLatexNDC(0.8,0.80, "Mu24");
+  label->SetTextColor(kBlue); label->DrawLatexNDC(0.8,0.75, "Mu17");
+  label->SetTextColor(kBlack); label->DrawLatexNDC(0.8,0.70, "Mu8");
+
+  c2.SaveAs( "pdfs/unw_pt_mu.pdf" );
 
 }
