@@ -45,6 +45,7 @@ if [ "$WHICH" == "19" ]; then WHICH_SMALL="datamuonegc"; fi
 if [ "$WHICH" == "20" ]; then WHICH_SMALL="datadoublemuonc"; fi
 if [ "$WHICH" == "21" ]; then WHICH_SMALL="datadoubleegc"; fi
 if [ "$WHICH" == "22" ]; then WHICH_SMALL="wz3lnu"; fi
+if [ "$WHICH" == "23" ]; then WHICH_SMALL="ttwqq"; fi
 
 if [ "$PTREL" == "4" ] 
 then
@@ -66,4 +67,10 @@ ls -l `pwd`/${OUTPUT}.root
 echo "copying.  LS is: "
 ls
 
-lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/${OUTPUT}.root srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${COPYDIR}/${OUTPUT}.root
+deleteMe=`find -name "$OUTPUT.root" -size -1` 
+if [ "$deleteMe" != "" ];
+then 
+  rm $deleteMe 
+else
+  lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/${OUTPUT}.root srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${COPYDIR}/${OUTPUT}.root
+fi
