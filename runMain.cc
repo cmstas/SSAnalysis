@@ -114,7 +114,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     TString dir = "/hadoop/cms/store/group/snt/phys14/";
     TString dataDir = "/hadoop/cms/store/group/snt/run2_data/";
     TString tag = "V07-02-08/merged_ntuple_*.root";
-    TString dataTag = "V07-04-04/merged_ntuple_*.root";
+    TString dataTag = "V07-04-08/merged_ntuple_*.root";
 
     //SMS
     chain_T1ttttG1200 ->Add(dir + "SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/" + tag);

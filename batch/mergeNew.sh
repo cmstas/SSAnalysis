@@ -11,9 +11,9 @@ do
   #hadd DY_low_$which.root          $path/dy_low_*_$which.root           
   #hadd TTBAR_$which.root           $path/ttbar_*_$which.root            
   #hadd TTPOWHEG_$which.root        $path/ttpowheg_*_$which.root         
-  #hadd WJets_$which.root           $path/wjets_*_$which.root            
-  hadd -f WZ_$which.root              $path/wz_*_$which.root               
-  hadd -f TTZL_$which.root            $path/ttzl_*_$which.root
-  hadd -f TTZQ_$which.root            $path/ttzq_*_$which.root
-  hadd -f TTW_$which.root             $path/ttw_*_$which.root
+  hadd WJets_$which.root           $path/wjets_*_$which.root            
+  #hadd -f WZ_$which.root              $path/wz_*_$which.root               
+  #hadd -f TTZL_$which.root            $path/ttzl_*_$which.root
+  #hadd -f TTZQ_$which.root            $path/ttzq_*_$which.root
+  #hadd -f TTW_$which.root             $path/ttw_*_$which.root
 done
