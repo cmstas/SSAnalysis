@@ -71,6 +71,7 @@ deleteMe=`find -name "$OUTPUT.root" -size -1`
 if [ "$deleteMe" != "" ];
 then 
   rm $deleteMe 
+  echo "THIS BITCH IS EMPTY, DELETING IT!!"
 else
   lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/${OUTPUT}.root srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${COPYDIR}/${OUTPUT}.root
 fi
