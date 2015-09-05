@@ -41,7 +41,7 @@ ptrel="4"
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "WJets"  "TTBAR"  "TTZL" "TTW" "TTZQ" "WZ" "DY_high"   "DY_low" "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" # "DATAMUONEG"  "DataDoubleEG"  "DataDoubleMuon" "DATAMUONEGC" "DataDoubleEGC" "DataDoubleMuonC" "WZ3LNu"  
+  for sname in "DATAMUONEG2" "DATAMUONEG" "DataDoubleEG2" "DataDoubleMuon2" "DY_low"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "WJets"  "TTBAR"  "TTZL" "TTW" "TTZQ" "WZ" "DY_high"   "DataDoubleEG"  "DataDoubleMuon" "DATAMUONEGC" "DataDoubleEGC" "DataDoubleMuonC" "WZ3LNu"  
   do
     #Iter
     nIter=$(( $nIter + 1 ))
@@ -52,6 +52,11 @@ do
       name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2"
       tag=V07-04-08
       nameNu=0
+    elif   [ $sname == "TTWQQ"           ]
+    then 
+      name="TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
+      tag=V07-04-08 
+      nameNu=23
     elif   [ $sname == "WZ3LNu"          ]
     then
       name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
@@ -106,6 +111,18 @@ do
       then name="Run2015B_MuonEG_MINIAOD_PromptReco-v1";
       tag=V07-04-08
       nameNu=16
+    elif [ $sname == "DataDoubleMuon2"  ]; 
+      then name="Run2015B_DoubleMuon_MINIAOD_17Jul2015-v1";
+      tag=V07-04-08
+      nameNu=25
+    elif [ $sname == "DataDoubleEG2"    ]; 
+      then name="Run2015B_DoubleEG_MINIAOD_17Jul2015-v1";
+      tag=V07-04-08
+      nameNu=26
+    elif [ $sname == "DATAMUONEG2"    ]; 
+      then name="Run2015B_MuonEG_MINIAOD_17Jul2015-v1";
+      tag=V07-04-08
+      nameNu=24
     elif [ $sname == "DataDoubleMuonC"  ]; 
       then name="Run2015C_DoubleMuon_MINIAOD_PromptReco-v1";
       tag=V07-04-08

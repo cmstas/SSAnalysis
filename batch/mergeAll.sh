@@ -1,53 +1,27 @@
 #!/bin/bash
 
-path1="/hadoop/cms/store/group/snt/phys14"
-path2="/hadoop/cms/store/user/cgeorge/privateSusySignalsSS"
-tag="V07-04-03"
+path=/hadoop/cms/store/user/cgeorge/condor/ss_13_babies
 
-pathCondor="/hadoop/cms/store/user/$USER/condor/ss_13_babies"
-
-for i in "0" "1"
+for which in 0 # 1
 do
-for sname in "TTBAR" "WZ" "DY_low" "DY_high" "WJets"
-do
-
-  for (( counter=0; counter<=500; counter++ )); do file1[$counter]=""; done
-  for (( counter=0; counter<=500; counter++ )); do file2[$counter]=""; done
-  for (( counter=0; counter<=500; counter++ )); do file3[$counter]=""; done
-  for (( counter=0; counter<=500; counter++ )); do file4[$counter]=""; done
-  for (( counter=0; counter<=500; counter++ )); do file5[$counter]=""; done
-  for (( counter=0; counter<=500; counter++ )); do file6[$counter]=""; done
-  for (( counter=0; counter<=500; counter++ )); do file7[$counter]=""; done
-
-  #Get Name, path
-  path=$path1 
- #if   [ $sname == "TTW"         ]; then name="TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
- #elif [ $sname == "TTZ"         ]; then name="TTZJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1";
-  if   [ $sname == "TTBAR"       ]; then name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
-  elif [ $sname == "WZ"          ]; then name="WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
-  elif [ $sname == "DY_low"      ]; then name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
-  elif [ $sname == "DY_high"     ]; then name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v2";
-  elif [ $sname == "WJets"       ]; then name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1";
-  elif [ $sname == "TTPOWHEG"    ]; then name="TT_TuneZ2star_13TeV-powheg-pythia6-tauola_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v3"; 
-  else name=$sname; path=$path2
-  fi
-  
-  sname_lower=`echo ${sname,,}`
-
-  #Get number of files
-  numberOfFiles=$((`ls -l $path/$name/$tag | wc -l` - 1))
-  echo $sname $numberOfFiles
-
-  #If only one, done
-  if [ "$numberOfFiles" == "1" ]; then cp "$pathCondor/${sname_lower}_1" "${sname_lower}" ; continue; fi 
-  
-  #Write array with file names
-  for (( counter=1; counter<=$numberOfFiles; counter++ ))
-  do
-    file5[$(( $counter - 1 )) ]="$pathCondor/${sname_lower}_${counter}_$i.root"
-  done
-
-  hadd ${sname}_$i.root ${file5[*]}
-
- done 
+  hadd DataDoubleEG_$which.root    $path/datadoubleeg_*_$which.root     
+  hadd DataDoubleMuon_$which.root  $path/datadoublemuon_*_$which.root   
+  hadd DataMuonEG_$which.root      $path/datamuoneg_*_$which.root   
+  hadd DataDoubleEG2_$which.root   $path/datadoubleeg2_*_$which.root     
+  hadd DataDoubleMuon2_$which.root $path/datadoublemuon2_*_$which.root   
+  hadd DataMuonEG2_$which.root     $path/datamuoneg2_*_$which.root   
+  hadd DataDoubleEGC_$which.root   $path/datadoubleegc_*_$which.root     
+  hadd DataDoubleMuonC_$which.root $path/datadoublemuonc_*_$which.root   
+  hadd DataMuonEGC_$which.root     $path/datamuonegc_*_$which.root   
+  hadd DY_high_$which.root         $path/dy_high_*_$which.root          
+  hadd DY_low_$which.root          $path/dy_low_*_$which.root           
+  hadd TTBAR_$which.root           $path/ttbar_*_$which.root            
+  hadd TTPOWHEG_$which.root        $path/ttpowheg_*_$which.root         
+  hadd WJets_$which.root           $path/wjets_*_$which.root            
+  hadd -f WZ_$which.root           $path/wz_*_$which.root               
+  hadd -f TTZL_$which.root         $path/ttzl_*_$which.root
+  hadd -f TTZQ_$which.root         $path/ttzq_*_$which.root
+  hadd -f TTW_$which.root          $path/ttw_*_$which.root
+  hadd -f TTWQQ_$which.root          $path/ttwqq_*_$which.root
+  hadd -f WZ3LNU_$which.root       $path/wz3lnu_*_$which.root
 done

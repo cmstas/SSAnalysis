@@ -46,6 +46,9 @@ if [ "$WHICH" == "20" ]; then WHICH_SMALL="datadoublemuonc"; fi
 if [ "$WHICH" == "21" ]; then WHICH_SMALL="datadoubleegc"; fi
 if [ "$WHICH" == "22" ]; then WHICH_SMALL="wz3lnu"; fi
 if [ "$WHICH" == "23" ]; then WHICH_SMALL="ttwqq"; fi
+if [ "$WHICH" == "24" ]; then WHICH_SMALL="datamuoneg2"; fi
+if [ "$WHICH" == "25" ]; then WHICH_SMALL="datadoublemuon2"; fi
+if [ "$WHICH" == "26" ]; then WHICH_SMALL="datadoubleeg2"; fi
 
 if [ "$PTREL" == "4" ] 
 then
@@ -67,7 +70,7 @@ ls -l `pwd`/${OUTPUT}.root
 echo "copying.  LS is: "
 ls
 
-deleteMe=`find -name "$OUTPUT.root" -size -1` 
+deleteMe=`find -name "$OUTPUT.root" -size -delete -1` 
 if [ "$deleteMe" != "" ];
 then 
   rm $deleteMe 
