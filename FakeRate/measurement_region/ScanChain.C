@@ -620,8 +620,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v3();
       }
 
-      float evt_met = evt_met3p0();
-      float evt_metPhi = evt_met3p0Phi();
+      float evt_met = evt_pfmet();
+      float evt_metPhi = evt_pfmetPhi();
+      // float evt_met = evt_met3p0();
+      // float evt_metPhi = evt_met3p0Phi();
       float evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
 
       if (passId) {

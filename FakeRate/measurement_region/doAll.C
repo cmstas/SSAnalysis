@@ -16,13 +16,13 @@
   wj->Add( "/hadoop/cms/store/user/namin/condor/forCommissioning/merged_files/WJets.root" );
   ScanChain(wj,"./rate_histos_wj_LooseEMVA.root","useLooseEMVA"); 
 
-  // TChain *qcd_mu = new TChain("t"); 
-  // qcd_mu->Add( "/nfs-7/userdata/leptonTree/v0.08/QCD_Mu_Enriched.root" );
-  // canChain(qcd_mu,"./rate_histos_qcd_mu_LooseEMVA.root","useLooseEMVA"); 
+  TChain *qcd_mu = new TChain("t"); 
+  qcd_mu->Add( "/nfs-7/userdata/leptonTree/v0.08/QCD_Mu_Enriched.root" );
+  ScanChain(qcd_mu,"./rate_histos_qcd_mu_LooseEMVA.root","useLooseEMVA"); 
 
-  // TChain *qcd_el = new TChain("t"); 
-  // qcd_el->Add( "/nfs-7/userdata/leptonTree/v0.08/QCD_EM_Enriched.root" );
-  // ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA.root","useLooseEMVA"); 
+  TChain *qcd_el = new TChain("t"); 
+  qcd_el->Add( "/nfs-7/userdata/leptonTree/v0.08/QCD_EM_Enriched.root" );
+  ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA.root","useLooseEMVA"); 
 
   /*
   //default
