@@ -157,7 +157,7 @@ int main(int argc, char *argv[]){
       is25 = true;
       break;
     case DATAMUONEGC:
-      name="Run2015C_MuonEG_MINIAOD_PromptReco-v1";
+      name="Run2015C_MuonEG_MINIAOD_PromptReco-v1/merged";
       tag = "V07-04-08";
       shortname="datamuonegc";
       path = "/store/group/snt/run2_data/"; 
@@ -165,7 +165,7 @@ int main(int argc, char *argv[]){
       isData = true;
       break;
     case TTZQ:
-      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/merged";
+      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag = "V07-04-08";
       shortname="ttzq";
       path = "/store/group/snt/run2_25ns/";
@@ -227,7 +227,8 @@ int main(int argc, char *argv[]){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  set_goodrun_file("final_golden_50ns_40p03pb.txt");
+  if (!is25) set_goodrun_file("final_golden_50ns_40p03pb.txt");
+  if ( is25) set_goodrun_file("goldenJson25ns_9pb.txt");
 
   //Init MVA
   createAndInitMVA("./CORE");

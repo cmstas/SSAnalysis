@@ -393,6 +393,13 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v2")))            (triggers |= 1<<4); 
   if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v2")))    (triggers |= 1<<5); 
   if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v2")))        (triggers |= 1<<6); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v1")))      (triggers |= 1<<7);
+  if (passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v1")))  (triggers |= 1<<8); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v1")))   (triggers |= 1<<9); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1")))              (triggers |= 1<<10); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v1")))            (triggers |= 1<<11); 
+  if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v1")))    (triggers |= 1<<12); 
+  if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v1")))        (triggers |= 1<<13); 
   if (triggers != 0) fired_trigger = true;
 
   //Scale1fb
