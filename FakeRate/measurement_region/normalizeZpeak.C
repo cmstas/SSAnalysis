@@ -65,6 +65,7 @@
   leg->SetHeader("L=8.4/pb");
   leg->AddEntry(mll_data,"data","pe");
   leg->AddEntry(mll_dy  ,"DY","f");
+  leg->AddEntry((TObject*)0  ,Form( "SF: %.2f", data_zpeak/mc_zpeak ),"");
   leg->Draw();
 
   c1.SaveAs( (doMu ? "pdfs/zpeak_mu.pdf" : "pdfs/zpeak_el.pdf") );

@@ -8,11 +8,14 @@
   TCanvas c1("c1","c1",600,600);
 
   TString plot = "mt_cr";
-  bool doMu = true;
-  float inputSF_mu = 0.967;
-  float inputSF_el = 0.827;
-  bool applyInputSF  = 1;
+  bool doMu = false;
+  float inputSF_mu = 0.962355;
+  float inputSF_el = 0.828902;
+  bool applyInputSF  = 0;
   bool applyOutputSF = 1;
+
+  float lowerMt = 70.; // qcd contaminates cr, so bumped this up
+  float upperMt = 120.;
 
   if (doMu) plot = "histo_"+plot+"_mu";
   else plot = "histo_"+plot+"_el";
@@ -37,12 +40,14 @@
     }
   }
 
+  float sf = -1;
   if (applyOutputSF) {
-    float ewk60mt100 = h_wj->Integral(h_wj->FindBin(60),h_wj->FindBin(100)) + h_dy->Integral(h_dy->FindBin(60),h_dy->FindBin(100));
-    float data60mt100 = h_data->Integral(h_data->FindBin(60),h_data->FindBin(100));
-    cout << "ewk=" << ewk60mt100 << " data=" << data60mt100 << " sf=" << data60mt100/ewk60mt100 << endl;
-    h_wj->Scale(data60mt100/ewk60mt100);
-    h_dy->Scale(data60mt100/ewk60mt100);
+    float ewkMtwindow = h_wj->Integral(h_wj->FindBin(lowerMt),h_wj->FindBin(upperMt)) + h_dy->Integral(h_dy->FindBin(lowerMt),h_dy->FindBin(upperMt));
+    float dataMtwindow = h_data->Integral(h_data->FindBin(lowerMt),h_data->FindBin(upperMt));
+    sf = dataMtwindow/ewkMtwindow;
+    cout << "ewk=" << ewkMtwindow << " data=" << dataMtwindow << " sf=" << sf << endl;
+    h_wj->Scale(dataMtwindow/ewkMtwindow);
+    h_dy->Scale(dataMtwindow/ewkMtwindow);
   }
 
   h_wj->SetFillColor(kRed+2);
@@ -54,7 +59,9 @@
 
   h_data->SetMarkerStyle(kFullCircle);
 
-  h_data->SetTitle("");
+  if(doMu) h_data->SetTitle("M_{T} (#mu)");
+  else h_data->SetTitle("M_{T} (e)");
+
   h_data->GetXaxis()->SetTitle("MT [GeV]");
   if (plot.Contains("met")) h_data->GetXaxis()->SetTitle("MET [GeV]");
   h_data->GetYaxis()->SetTitle("events/bin");
@@ -71,6 +78,7 @@
   leg->AddEntry(h_data,"data","pe");
   leg->AddEntry(h_wj  ,"W+jets","f");
   leg->AddEntry(h_dy  ,"DY","f");
+  leg->AddEntry((TObject*)0  ,Form( "SF: %.2f", sf ),"");
   leg->Draw();
 
   c1.SaveAs("pdfs/"+plot+(doMu ? "_mu" : "_el")+".pdf");

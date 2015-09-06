@@ -1,4 +1,4 @@
-#include "../../software/dataMCplotMaker/dataMCplotMaker.cc"
+// #include "../../software/dataMCplotMaker/dataMCplotMaker.cc"
 #include "TFile.h"
 #include "TH2.h"
 #include "TPaveText.h"
@@ -24,12 +24,12 @@ void make1DplotFR(){
   bool doPt = true;
 
   //scale factors from MT control region plot
-  float muSF = 1.02;
-  float elSF = 0.71;
+  float muSF = 0.970991;
+  float elSF = 1.13867;
 
   //scale factors from Z peak
-  float muSF_zp = 0.94;
-  float elSF_zp = 0.42;
+  float muSF_zp = 0.962355;
+  float elSF_zp = 0.828902;
 
   TFile* f_qcd_mu = TFile::Open("rate_histos_qcd_mu"+postfix+".root");
   TFile* f_qcd_el = TFile::Open("rate_histos_qcd_el"+postfix+".root");
@@ -235,7 +235,7 @@ void make1DplotFR(){
   labelcms->SetTextSize(1.2*0.035);
   labelcms->SetTextFont(42);
   labelcms->SetFillColor(kWhite);
-  labelcms->AddText("42 pb^{-1} (13 TeV)");
+  labelcms->AddText("8.4 pb^{-1} (13 TeV)");
   labelcms->SetBorderSize(0);
   labelcms->SetLineWidth(2);
   labelcms->Draw();
@@ -288,7 +288,7 @@ void make1DplotFR(){
   latex.SetTextSize(1.2*0.044*0.75);
   latex.DrawLatex(0.14, 0.84 - 1.2*0.040, "Preliminary");
 
-  c1.SaveAs("mu_1dfr"+var+postfix+".png");
-  c2.SaveAs("el_1dfr"+var+postfix+".png");
+  c1.SaveAs("pdfs/mu_1dfr"+var+postfix+".pdf");
+  c2.SaveAs("pdfs/el_1dfr"+var+postfix+".pdf");
 
 }

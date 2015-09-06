@@ -4,7 +4,7 @@
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("4.2f");
 
-  bool doMu = true;
+  bool doMu = false;
 
   TString suffix = (doMu ? "_mu" : "_e");
   TString lepname = (doMu ? "muon" : "electron");
@@ -20,8 +20,8 @@
   TH2F* den_dy = (TH2F*) _file_dy->Get("Nl_cone_histo"+suffix);
 
   //scale factors from MT control region plot
-  float muSF = 1.056;
-  float elSF = 1.390;
+  float muSF = 0.879125;
+  float elSF = 0.987502;
   float ewkSF = (doMu ? muSF : elSF);
 
   den_data->Add(den_wj,-1.*ewkSF);
