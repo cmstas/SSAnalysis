@@ -29,10 +29,12 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("gen_met"               , &gen_met               );
   BabyTree->Branch("gen_met_phi"           , &gen_met_phi           );
   BabyTree->Branch("njets"                 , &njets                 );
+  BabyTree->Branch("njets_corr"            , &njets_corr            );
   BabyTree->Branch("hyp_class"             , &hyp_class             );
   BabyTree->Branch("lep1_p4"               , &lep1_p4               );
   BabyTree->Branch("lep2_p4"               , &lep2_p4               );
   BabyTree->Branch("ht"                    , &ht                    );
+  BabyTree->Branch("ht_corr"               , &ht_corr               );
   BabyTree->Branch("lep1_motherID"         , &lep1_motherID         );
   BabyTree->Branch("lep2_motherID"         , &lep2_motherID         );
   BabyTree->Branch("lep1_mc_id"            , &lep1_mc_id            );
@@ -50,9 +52,18 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("btags_JEC"             , &btags_JEC             );
   BabyTree->Branch("btags"                 , &btags                 );
   BabyTree->Branch("nbtags"                , &nbtags                );
+  BabyTree->Branch("jets_corr"             , &jets_corr             );
+  BabyTree->Branch("btags_corr_disc"       , &btags_corr_disc       );
+  BabyTree->Branch("jets_corr_disc"        , &jets_corr_disc        );
+  BabyTree->Branch("jets_corr_JEC"         , &jets_corr_JEC         );
+  BabyTree->Branch("btags_corr_JEC"        , &btags_corr_JEC        );
+  BabyTree->Branch("btags_corr"            , &btags_corr            );
+  BabyTree->Branch("nbtags_corr"           , &nbtags_corr           );
   BabyTree->Branch("sf_dilepTrig_hpt"      , &sf_dilepTrig_hpt      );
   BabyTree->Branch("jets_undoJEC"          , &jets_undoJEC          );
   BabyTree->Branch("btags_undoJEC"         , &btags_undoJEC         );
+  BabyTree->Branch("jets_corr_undoJEC"     , &jets_corr_undoJEC     );
+  BabyTree->Branch("btags_corr_undoJEC"    , &btags_corr_undoJEC    );
   BabyTree->Branch("sf_dilepTrig_lpt"      , &sf_dilepTrig_lpt      );
   BabyTree->Branch("sf_dilepTrig_vlpt"     , &sf_dilepTrig_vlpt     );
   BabyTree->Branch("hyp_type"              , &hyp_type              );
@@ -487,6 +498,21 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   ht = 0;
   for (unsigned int i = 0; i < jets.size(); i++) ht += jets.at(i).pt(); 
   if (verbose) for (unsigned int i = 0; i < btags.size(); i++) cout << "btag: " << btags.at(i).pt() << endl;
+
+  //Determine and save jet and b-tag variables, corrected
+  jet_results = SSJetsCalculator(jetCorr, 1);
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_corr.push_back(jet_results.first.at(i).p4());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_corr.push_back(jet_results.second.at(i).p4());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_corr_disc.push_back(jet_results.first.at(i).csv());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_corr_disc.push_back(jet_results.second.at(i).csv());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_corr_JEC.push_back(jet_results.first.at(i).jec());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_corr_JEC.push_back(jet_results.second.at(i).jec());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_corr_undoJEC.push_back(jet_results.first.at(i).undo_jec());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_corr_undoJEC.push_back(jet_results.second.at(i).undo_jec());
+  njets_corr = jets_corr.size();
+  nbtags_corr = btags_corr.size();
+  ht_corr = 0;
+  for (unsigned int i = 0; i < jets_corr.size(); i++) ht_corr += jets_corr.at(i).pt(); 
   
   //Verbose for jets
   if (verbose){
