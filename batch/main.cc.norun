@@ -228,7 +228,7 @@ int main(int argc, char *argv[]){
 
   //Add good run list
   if (!is25) set_goodrun_file("final_golden_50ns_40p03pb.txt");
-  if ( is25) set_goodrun_file("goldenJson25ns_9pb.txt");
+  if ( is25) set_goodrun_file("golden_25ns_20pb.txt");
 
   //Init MVA
   createAndInitMVA("./CORE");
@@ -248,12 +248,13 @@ int main(int argc, char *argv[]){
 
   //JEC files -- 25 ns MC
   std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1L2L3;
-  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/Summer15_V5_MC_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/Summer15_V5_MC_L2Relative_AK4PFchs.txt");
-  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/Summer15_V5_MC_L3Absolute_AK4PFchs.txt");
+  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt");
+  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt");
 
   //JECs
   std::vector<std::string> filenames;
+  if ( is25 &&  isData) filenames = jetcorr_filenames_25ns_MC_pfL1L2L3; //leaving this in just to be stupid
   if ( is25 && !isData) filenames = jetcorr_filenames_25ns_MC_pfL1L2L3;
   if (!is25 && !isData) filenames = jetcorr_filenames_50ns_MC_pfL1L2L3;
   if (!is25 &&  isData) filenames = jetcorr_filenames_50ns_DATA_pfL1L2L3;

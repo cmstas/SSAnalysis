@@ -17,7 +17,6 @@ popd
 cp main.cc.norun main.cc
 if [ "$xrootdbroken" == "1" ]
 then
-  sed -i 's/T2_US_UCSD,T2_US_WISCONSIN,T2_US_FLORIDA,T2_US_PURDUE,T2_US_NEBRASKA,T2_US_MIT,T2_US_CALTECH/T2_US_UCSD/' condorFile
   sed -i 's,Open(Form("root://cmsxrootd.fnal.gov//%s/%s/%s/%s,Open(Form("/hadoop/cms/%s/%s/%s/%s,' main.cc
 fi
 make -j 10
@@ -224,6 +223,10 @@ do
 
       #Make condor file
       cp condorFileTemplate condorFile
+      if [ "$xrootdbroken" == "1" ]
+      then
+        sed -i 's/T2_US_UCSD,T2_US_WISCONSIN,T2_US_FLORIDA,T2_US_PURDUE,T2_US_NEBRASKA,T2_US_CALTECH/T2_US_UCSD/' condorFile
+      fi
   
       #submit it
       sed -i s/ARG1/$nameNu/g condorFile

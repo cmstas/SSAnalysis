@@ -88,6 +88,12 @@ class babyMaker {
     vector <float> jets_disc;
     vector <float> jets_JEC; 
     vector <float> jets_undoJEC; 
+    int njets_corr;
+    float ht_corr;
+    vector <LorentzVector> jets_corr;
+    vector <float> jets_corr_disc;
+    vector <float> jets_corr_JEC; 
+    vector <float> jets_corr_undoJEC; 
     vector <LorentzVector> mostJets; //this is all jets with pT > 5, |eta| < 2.4
 
     //Hyp Class -- in this order
@@ -127,6 +133,11 @@ class babyMaker {
     vector <float> btags_JEC; 
     vector <float> btags_undoJEC; 
     int nbtags;
+    vector <LorentzVector> btags_corr;
+    vector <float> btags_corr_disc;
+    vector <float> btags_corr_JEC; 
+    vector <float> btags_corr_undoJEC; 
+    int nbtags_corr;
 
     //Scale factors (from 8 TeV, outdated)
     float sf_dilepTrig_hpt; 
