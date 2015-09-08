@@ -484,7 +484,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   }
   
   //Determine and save jet and b-tag variables
-  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr);
+  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 0);
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets.push_back(jet_results.first.at(i).p4());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags.push_back(jet_results.second.at(i).p4());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_disc.push_back(jet_results.first.at(i).csv());
