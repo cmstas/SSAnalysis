@@ -2,9 +2,7 @@
 
 xrootdbroken="1"
 
-pathPublic="/hadoop/cms/store/group/snt/run2_25ns"
-pathPrivate="/hadoop/cms/store/user/cgeorge/privateSusySignalsSS"
-pathData="/hadoop/cms/store/group/snt/run2_data"
+path="/hadoop/cms/store/group/snt/run2_25ns"
 
 nSubmitted=0
 
@@ -100,38 +98,47 @@ do
       nameNu=17
     elif [ $sname == "DataDoubleMuon"  ]; 
       then name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=9
     elif [ $sname == "DataDoubleEG"    ]; 
       then name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=10
     elif [ $sname == "DATAMUONEG"    ]; 
       then name="Run2015B_MuonEG_MINIAOD_PromptReco-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=16
     elif [ $sname == "DataDoubleMuon2"  ]; 
       then name="Run2015B_DoubleMuon_MINIAOD_17Jul2015-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=25
     elif [ $sname == "DataDoubleEG2"    ]; 
       then name="Run2015B_DoubleEG_MINIAOD_17Jul2015-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=26
     elif [ $sname == "DATAMUONEG2"    ]; 
       then name="Run2015B_MuonEG_MINIAOD_17Jul2015-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=24
     elif [ $sname == "DataDoubleMuonC"  ]; 
       then name="Run2015C_DoubleMuon_MINIAOD_PromptReco-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=20
     elif [ $sname == "DataDoubleEGC"    ]; 
       then name="Run2015C_DoubleEG_MINIAOD_PromptReco-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=21
     elif [ $sname == "DATAMUONEGC"    ]; 
       then name="Run2015C_MuonEG_MINIAOD_PromptReco-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=19
     elif [ $sname == "TTW" ]
@@ -199,9 +206,49 @@ do
       name=SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
       tag=V07-04-08
       nameNu=5
+    elif [ $sname == "T5QQQQWZ_1200_100_800" ] 
+      name=T5qqqqWZ_mGo1200_mCh1000_mChi800_lep  
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+      tag=""
+    elif [ $sname == "T5QQQQDeg_1000_300_285_280" ] 
+      name=T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+      tag=""
+    elif [ $sname == "T5QQQQWZ_1500_800_100" ] 
+      name=T5qqqqWZ_mGo1500_mCh800_mChi100_lep   
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+      tag=""
+    elif [ $sname == "T5ttttDeg_1000_300_280" ] 
+      name=T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+      tag=""
+    elif [ $sname == "T2ttDeg_350_330" ] 
+      name=T2ttDeg_mStop350_mChi330_4bodydec  
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+      tag=""
+    elif [ $sname == "T5QQQQZZ_1200_1000_800" ] 
+      name=T5qqqqZZ_mGo1200_mCh1000_mChi800_lep  
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+      tag=""
+    elif [ $sname == "T6TTWW_600_425_50" ] 
+      name=T6ttWW_600_425_50
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+      tag=""
+    elif [ $sname == "T2TT_ARXIV" ] 
+      name=T2tt_arxiv1507_01601               
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+      tag=""
+    elif [ $sname == "T5QQQQZZ_1500_800_100" ] 
+      name=T5qqqqZZ_mGo1500_mCh800_mChi100_lep   
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+      tag=""
+    elif [ $sname == "T6TTWW_650_150_50" ] 
+      name=T6ttWW_650_150_50
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+      tag=""
     else 
       name=$sname 
-      tag=V07-04-07
+      tag=V07-04-08
       nameNu=9999
     fi
 
@@ -215,12 +262,10 @@ do
     if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]
     then 
       infix="merged/"
-      path=$pathData
       isData="1"
     else 
       infix="" 
       isData="0"
-      path=$pathPublic
     fi
 
     #Get number of files
