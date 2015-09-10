@@ -1,13 +1,13 @@
 #include "../software/dataMCplotMaker/dataMCplotMaker.h"
-#include "../software/tableMaker/CTable.h"
+//include "../software/tableMaker/CTable.h"
 #include "../CORE/SSSelections.h"
 #include "SS.h"
 
 //Tables on/off
-bool makeTables = 1;
+bool makeTables = 0;
 
 //Lumi
-float lumi = 10.0;
+float lumiAG = 2.5;
 
 struct results_t { TH1F* hh; TH1F* hl; TH1F* ll; }; 
 
@@ -66,9 +66,9 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
       //Figure out region, fill plot
       anal_type_t categ = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());  
       int SR = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_p4().pt(), ss::lep2_p4().pt());
-      if (SR > 0 && categ == HighHigh) HighHighPlot->Fill(SR, ss::scale1fb()*lumi);
-      if (SR > 0 && categ == HighLow)  HighLowPlot ->Fill(SR, ss::scale1fb()*lumi);
-      if (SR > 0 && categ == LowLow)   LowLowPlot  ->Fill(SR, ss::scale1fb()*lumi);
+      if (SR > 0 && categ == HighHigh) HighHighPlot->Fill(SR, ss::scale1fb()*lumiAG);
+      if (SR > 0 && categ == HighLow)  HighLowPlot ->Fill(SR, ss::scale1fb()*lumiAG);
+      if (SR > 0 && categ == LowLow)   LowLowPlot  ->Fill(SR, ss::scale1fb()*lumiAG);
 
     }//event loop
   }//file loop
@@ -95,14 +95,16 @@ void yields(){
   TChain* t5qqww_deg  = new TChain("t");
  
   //Fill chains
-  ttbar      ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/TTBAR_multiIso.root"                                 );
-  ttw        ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/TTW_multiIso.root"                                   );
-  ttz        ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/TTZ_multiIso.root"                                   );
-  wz         ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/WZ_multiIso.root"                                    );
-  t1tttt_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/T1TTTT_1200_multiIso.root"                           );
-  t1tttt_1500->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/T1TTTT_1500_multiIso.root"                           );
-  t5qqww_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/private/t5qqqqWW_1200_1000_800_baby_multiIso.root"   );
-  t5qqww_deg ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/private/t5qqqqWW_deg_1000_315_300_baby_multiIso.root");
+  ttbar      ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.03/TTBAR_0.root"                                 );
+  ttw        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.03/TTW_0.root"                                   );
+  ttw        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.03/TTWQQ_0.root"                                   );
+  ttz        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.03/TTZL_0.root"                                   );
+  ttz        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.03/TTZQ_0.root"                                   );
+  wz         ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.03/WZ_0.root"                                    );
+  //t1tttt_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/T1TTTT_1200_multiIso.root"                           );
+  //t1tttt_1500->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/T1TTTT_1500_multiIso.root"                           );
+  //t5qqww_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/private/t5qqqqWW_1200_1000_800_baby_multiIso.root"   );
+  //t5qqww_deg ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/private/t5qqqqWW_deg_1000_315_300_baby_multiIso.root");
 
   //Chains for type
   TChain* all_bkgd = new TChain("t");
@@ -198,38 +200,38 @@ void yields(){
   signal_titles.push_back("t5qqww (1.0, 0.315, 0.3)");
 
   //Make plots -- sample
-  dataMCplotMaker(null, background_high, titles, "H-H", "", "--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear"); 
-  dataMCplotMaker(null, background_hl  , titles, "H-L", "multiIso", "--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName   hl_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear"); 
-  dataMCplotMaker(null, signal_high, signal_titles, "H-H", "", "--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.0325 --noStack --nDivisions 210 --isLinear"); 
-  dataMCplotMaker(null, signal_hl  , signal_titles, "H-L", "", "--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName   hl_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.03 --noStack  --nDivisions 210 --isLinear"); 
+  dataMCplotMaker(null, background_high, titles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots/high_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear", lumiAG)); 
+  dataMCplotMaker(null, background_hl  , titles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots/hl_yields --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear", lumiAG)); 
+  dataMCplotMaker(null, signal_high, signal_titles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots/high_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.0325 --noStack --nDivisions 210 --isLinear", lumiAG)); 
+  dataMCplotMaker(null, signal_hl  , signal_titles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots/hl_yields_s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.03 --noStack  --nDivisions 210 --isLinear", lumiAG)); 
 
-  //Make plots -- type
-  dataMCplotMaker(null, background_type_high, typetitles, "H-H", "multiIso", "--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName high_yields_t --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear"); 
-  dataMCplotMaker(null, background_type_hl  , typetitles, "H-L", "multiIso", "--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName hl_yields_t --noDivisionLabel --xAxisLabel SR --energy 13 --lumi 10 --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear"); 
+  //Make plots -- background
+  dataMCplotMaker(null, background_type_high, typetitles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots/high_yields_t --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear", lumiAG)); 
+  dataMCplotMaker(null, background_type_hl  , typetitles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots/hl_yields_t --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.1f --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear", lumiAG)); 
 
-  //Make tables
-  if (!makeTables) return; 
-  int nSRs[3] = { 32, 26, 8 }; 
-  for (int j = 0; j < 3; j++){
-    CTable table;
-    table.setTable() (      "",    "",    "",   "",     "t1tttt",     "t1tttt",          "t5qqww",            "t5qqww" ) 
-                     ("  ", "ttbar", "ttw", "ttz", "wz", "(1.2, 0.8)", "(1.5, 0.1)", "(1.2, 1.0, 0.8)", "(1.0, 0.315, 0.3)" ); 
-    table.setPrecision(3); 
-    if (j == 0) table.setTitle("H-H Yields");
-    if (j == 1) table.setTitle("H-L Yields");
-    if (j == 2) table.setTitle("L-L Yields");
-    table.useTitle(); 
-    for (int i = 1; i <= nSRs[j]; i++){
-      table.setRowLabel(Form("SR%i", i), i);
-      table.setCell(getYield(ttbar_graphs, i, j), i, 0); 
-      table.setCell(getYield(ttw_graphs, i, j), i, 1); 
-      table.setCell(getYield(ttz_graphs, i, j), i, 2); 
-      table.setCell(getYield(wz_graphs, i, j), i, 3); 
-      table.setCell(getYield(t1tttt_1200_graphs, i, j), i, 4); 
-      table.setCell(getYield(t1tttt_1500_graphs, i, j), i, 5); 
-      table.setCell(getYield(t5qqww_1200_graphs, i, j), i, 6); 
-      table.setCell(getYield(t5qqww_deg_graphs, i, j), i, 7); 
-    }
-    table.print();
-  }
+//  //Make tables
+//  if (!makeTables) return; 
+//  int nSRs[3] = { 32, 26, 8 }; 
+//  for (int j = 0; j < 3; j++){
+//    CTable table;
+//    table.setTable() (      "",    "",    "",   "",     "t1tttt",     "t1tttt",          "t5qqww",            "t5qqww" ) 
+//                     ("  ", "ttbar", "ttw", "ttz", "wz", "(1.2, 0.8)", "(1.5, 0.1)", "(1.2, 1.0, 0.8)", "(1.0, 0.315, 0.3)" ); 
+//    table.setPrecision(3); 
+//    if (j == 0) table.setTitle("H-H Yields");
+//    if (j == 1) table.setTitle("H-L Yields");
+//    if (j == 2) table.setTitle("L-L Yields");
+//    table.useTitle(); 
+//    for (int i = 1; i <= nSRs[j]; i++){
+//      table.setRowLabel(Form("SR%i", i), i);
+//      table.setCell(getYield(ttbar_graphs, i, j), i, 0); 
+//      table.setCell(getYield(ttw_graphs, i, j), i, 1); 
+//      table.setCell(getYield(ttz_graphs, i, j), i, 2); 
+//      table.setCell(getYield(wz_graphs, i, j), i, 3); 
+//      table.setCell(getYield(t1tttt_1200_graphs, i, j), i, 4); 
+//      table.setCell(getYield(t1tttt_1500_graphs, i, j), i, 5); 
+//      table.setCell(getYield(t5qqww_1200_graphs, i, j), i, 6); 
+//      table.setCell(getYield(t5qqww_deg_graphs, i, j), i, 7); 
+//    }
+//    table.print();
+//  }
 }
