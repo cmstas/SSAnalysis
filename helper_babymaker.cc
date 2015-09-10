@@ -204,8 +204,10 @@ void babyMaker::InitBabyNtuple(){
     gen_met = -1;
     gen_met_phi = -1;
     njets = -1;
+    njets_corr = -1;
     hyp_class = -1;
     ht = -1;
+    ht_corr = -1;
     lep1_motherID = 0;
     lep2_motherID = 0;
     lep1_mc_id = -1;
@@ -222,7 +224,14 @@ void babyMaker::InitBabyNtuple(){
     jets_JEC.clear();
     btags_JEC.clear();
     btags.clear();
+    jets_corr.clear();
+    btags_corr_disc.clear();
+    jets_corr_disc.clear();
+    jets_corr_JEC.clear();
+    btags_corr_JEC.clear();
+    btags_corr.clear();
     nbtags = -1;
+    nbtags_corr = -1;
     sf_dilepTrig_hpt = -1;
     sf_dilepTrig_lpt = -1;
     sf_dilepTrig_vlpt = -1;
@@ -512,7 +521,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   njets_corr = jets_corr.size();
   nbtags_corr = btags_corr.size();
   ht_corr = 0;
-  for (unsigned int i = 0; i < jets_corr.size(); i++) ht_corr += jets_corr.at(i).pt(); 
+  for (unsigned int i = 0; i < jets_corr.size(); i++) ht_corr += jets_corr.at(i).pt()*jets_corr_JEC.at(i)*jets_corr_undoJEC.at(i); 
   
   //Verbose for jets
   if (verbose){
