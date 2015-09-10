@@ -310,7 +310,9 @@ int main(int argc, char *argv[]){
   //Set up file and tree
   cout << "Using xrootd " << endl;
   mylooper->MakeBabyNtuple(Form("%s%s", shortname.c_str(), suffix), expt);
-  TFile *f = TFile::Open(Form("root://cmsxrootd.fnal.gov//%s/%s/%s/%s", path.c_str(), name.c_str(), tag.c_str(), filename)); 
+  TFile *f;
+  if (path.find("nfs") < path.length()) f = TFile::Open(Form("%s/%s/%s/%s", path.c_str(), name.c_str(), tag.c_str(), filename)); 
+  else f = TFile::Open(Form("root://cmsxrootd.fnal.gov//%s/%s/%s/%s", path.c_str(), name.c_str(), tag.c_str(), filename)); 
   cout << Form("/hadoop/cms/%s/%s/%s/%s", path.c_str(), name.c_str(), tag.c_str(), filename) << endl;
   cout << "File opened...." << endl;
   TTree *tree = (TTree*)f->Get("Events");
