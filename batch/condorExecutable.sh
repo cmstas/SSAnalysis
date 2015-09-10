@@ -49,6 +49,24 @@ if [ "$WHICH" == "23" ]; then WHICH_SMALL="ttwqq"; fi
 if [ "$WHICH" == "24" ]; then WHICH_SMALL="datamuoneg2"; fi
 if [ "$WHICH" == "25" ]; then WHICH_SMALL="datadoublemuon2"; fi
 if [ "$WHICH" == "26" ]; then WHICH_SMALL="datadoubleeg2"; fi
+if [ "$WHICH" == "27" ]; then WHICH_SMALL="wgtolnug"; fi
+if [ "$WHICH" == "28" ]; then WHICH_SMALL="ttg"; fi
+if [ "$WHICH" == "29" ]; then WHICH_SMALL="tthtononbb"; fi
+if [ "$WHICH" == "30" ]; then WHICH_SMALL="vhtononbb"; fi
+if [ "$WHICH" == "31" ]; then WHICH_SMALL="tzq"; fi
+if [ "$WHICH" == "32" ]; then WHICH_SMALL="tttt"; fi
+if [ "$WHICH" == "33" ]; then WHICH_SMALL="wwdps"; fi
+if [ "$WHICH" == "34" ]; then WHICH_SMALL="wzz"; fi
+if [ "$WHICH" == "35" ]; then WHICH_SMALL="t5qqqqwz_1200_1000_800"; fi
+if [ "$WHICH" == "36" ]; then WHICH_SMALL="t5qqqqdeg_1000_300_285_280"; fi
+if [ "$WHICH" == "37" ]; then WHICH_SMALL="t5qqqqwz_1500_800_100"; fi
+if [ "$WHICH" == "38" ]; then WHICH_SMALL="t5ttttdeg_1000_300_280"; fi
+if [ "$WHICH" == "39" ]; then WHICH_SMALL="t2ttdeg_350_330"; fi
+if [ "$WHICH" == "40" ]; then WHICH_SMALL="t5qqqqzz_1200_1000_800" ; fi
+if [ "$WHICH" == "41" ]; then WHICH_SMALL="t6ttww_600_425_50"; fi
+if [ "$WHICH" == "42" ]; then WHICH_SMALL="t2tt_arxiv"; fi
+if [ "$WHICH" == "43" ]; then WHICH_SMALL="t5qqqqzz_1500_800_100"; fi
+if [ "$WHICH" == "44" ]; then WHICH_SMALL="t6ttww_650_150_50"; fi
 
 if [ "$PTREL" == "4" ] 
 then

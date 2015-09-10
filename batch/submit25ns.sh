@@ -2,8 +2,6 @@
 
 xrootdbroken="1"
 
-path="/hadoop/cms/store/group/snt/run2_25ns"
-
 nSubmitted=0
 
 #Source this stupid thing
@@ -38,8 +36,9 @@ ptrel="4"
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in  "DATAMUONEG2" "DATAMUONEG" "DataDoubleEG2" "DataDoubleMuon2" "DY_low"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "WJets"  "TTBAR"  "TTZL" "TTW" "TTZQ" "WZ" "DY_high"   "DataDoubleEG"  "DataDoubleMuon" "WZ3LNu"  "DATAMUONEGC" "DataDoubleEGC" "DataDoubleMuonC"
+  for sname in  "DATAMUONEG2" "DATAMUONEG" "DataDoubleEG2" "DataDoubleMuon2" "DY_low"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "WJets"  "TTBAR"  "TTZL" "TTW" "TTZQ" "WZ" "DY_high"   "DataDoubleEG"  "DataDoubleMuon" "DATAMUONEGC" "DataDoubleEGC" "DataDoubleMuonC" "WZ3LNu" "TTWQQ" "DATAMUONEG2" "DataDoubleMuon2" "DataDoubleEG2" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS"  "WZZ"  # "T5QQQQWZ_1200_1000_800" "T5QQQQDeg_1000_300_285_280" "T5QQQQWZ_1500_800_100" "T5ttttDeg_1000_300_280" "T2ttDeg_350_330" "T5QQQQZZ_1200_1000_800" "T6TTWW_600_425_50" "T2TT_ARXIV" "T5QQQQZZ_1500_800_100" "T6TTWW_650_150_50"
   do
+    path="/hadoop/cms/store/group/snt/run2_25ns"
     #Iter
     nIter=$(( $nIter + 1 ))
 
@@ -158,12 +157,12 @@ do
       nameNu=18
     elif [ $sname == "WGToLNuG" ] 
     then
-      name=WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      name="WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-08
       nameNu=27
     elif [ $sname == "TTG" ] 
     then
-      name=TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      name="TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-08
       nameNu=28
     elif [ $sname == "TTHtoNonBB" ] 
@@ -206,46 +205,66 @@ do
       name=SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
       tag=V07-04-08
       nameNu=5
-    elif [ $sname == "T5QQQQWZ_1200_100_800" ] 
+    elif [ $sname == "T5QQQQWZ_1200_1000_800" ] 
+    then
       name=T5qqqqWZ_mGo1200_mCh1000_mChi800_lep  
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
+      nameNu=35
     elif [ $sname == "T5QQQQDeg_1000_300_285_280" ] 
+    then
       name=T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
+      nameNu=36
     elif [ $sname == "T5QQQQWZ_1500_800_100" ] 
+    then
       name=T5qqqqWZ_mGo1500_mCh800_mChi100_lep   
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
+      nameNu=37
     elif [ $sname == "T5ttttDeg_1000_300_280" ] 
+    then
       name=T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
+      nameNu=38
     elif [ $sname == "T2ttDeg_350_330" ] 
+    then
       name=T2ttDeg_mStop350_mChi330_4bodydec  
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
+      nameNu=39
     elif [ $sname == "T5QQQQZZ_1200_1000_800" ] 
+    then
       name=T5qqqqZZ_mGo1200_mCh1000_mChi800_lep  
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
+      nameNu=40
     elif [ $sname == "T6TTWW_600_425_50" ] 
+    then
       name=T6ttWW_600_425_50
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
+      nameNu=41
     elif [ $sname == "T2TT_ARXIV" ] 
+    then
       name=T2tt_arxiv1507_01601               
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
+      nameNu=42
     elif [ $sname == "T5QQQQZZ_1500_800_100" ] 
+    then
       name=T5qqqqZZ_mGo1500_mCh800_mChi100_lep   
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
+      nameNu=43
     elif [ $sname == "T6TTWW_650_150_50" ] 
+    then
       name=T6ttWW_650_150_50
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
+      nameNu=44
     else 
       name=$sname 
       tag=V07-04-08

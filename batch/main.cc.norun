@@ -196,50 +196,110 @@ int main(int argc, char *argv[]){
       shortname="wgtolnug";
       tag="V07-04-08";
       break;
-    case "TTG": 
-      name=TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+    case TTG: 
+      name="TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       shortname="ttg";
       tag="V07-04-08";
       break;
-    case "TTHtoNonBB": 
-      name=ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+    case TTHtoNonBB:
+      name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag="V07-04-08";
       shortname="tthtononbb";
       break;
-    case "VHtoNonBB":
-      name=VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+    case VHtoNonBB:
+      name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag="V07-04-08";
       shortname="vhtononbb";
       break;
-    case TZQ: 
-      name=tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2";
+    case TZQ:
+      name="tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2";
       tag="V07-04-08";
       shortname="tzq";
       break;
-    case TTTT: 
+    case TTTT:
       name="TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag="V07-04-08";
       shortname="tttt";
       break;
-    case WWDPS: 
+    case WWDPS:
       name="WW_DoubleScattering_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag="V07-04-08";
       shortname="wwdps";
       break;
-    case WZZ: 
+    case WZZ:
       name="WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag="V07-04-08";
       shortname="wzz";
       break;
-    case T1TTTT_1500: 
+    case T1TTTT_1500:
       name="SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       shortname="t1tttt_1500";
       tag="V07-04-08";
       break;
-    case T1TTTT_1200: 
+    case T1TTTT_1200:
       name="SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag="V07-04-08";
       shortname="t1tttt_1200";
+      break;
+    case T5QQQQWZ_1200_1000_800:
+      name="T5qqqqWZ_mGo1200_mCh1000_mChi800_lep";       
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
+      tag="";
+      shortname="t5qqqqwz_1200_100_800";
+      break;
+    case T5QQQQDeg_1000_300_285_280:
+      name="T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec";
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
+      tag="";
+      shortname="t5qqqqdeg_1000_300_285_280";
+      break;
+    case T5QQQQWZ_1500_800_100:
+      name="T5qqqqWZ_mGo1500_mCh800_mChi100_lep";
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
+      shortname="t5qqqqwz_1500_800_180";
+      tag="";
+      break;
+    case T5ttttDeg_1000_300_280:
+      name="T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec";
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
+      shortname="t5ttttdeg_1000_300_280";
+      tag="";
+      break;
+    case T2ttDeg_350_330:
+      name="T2ttDeg_mStop350_mChi330_4bodydec";
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
+      shortname="t2ttdeg_350_330";
+      tag="";
+      break;
+    case T5QQQQZZ_1200_1000_800:
+      name="T5qqqqZZ_mGo1200_mCh1000_mChi800_lep";
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
+      shortname="t5qqqqzz_1200_1000_800";
+      tag="";
+      break;
+    case T6TTWW_600_425_50:
+      name="T6ttWW_600_425_50";
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
+      tag="";
+      shortname="t6ttww_600_425_50";
+      break;
+    case T2TT_ARXIV:
+      name="T2tt_arxiv1507_01601";
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
+      tag="";
+      shortname="t2tt_arxiv";
+      break;
+    case T5QQQQZZ_1500_800_100:
+      name="T5qqqqZZ_mGo1500_mCh800_mChi100_lep";
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
+      shortname="t5qqqqzz_1500_800_100";
+      tag="";
+      break;
+    case T6TTWW_650_150_50:
+      name="T6ttWW_650_150_50";
+      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
+      shortname="t6ttww_650_150_50";
+      tag="";
       break;
     default:
       name="dummy";
