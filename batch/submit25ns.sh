@@ -149,6 +149,56 @@ do
       name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-08
       nameNu=18
+    elif [ $sname == "WGToLNuG" ] 
+    then
+      name=WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      tag=V07-04-08
+      nameNu=27
+    elif [ $sname == "TTG" ] 
+    then
+      name=TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      tag=V07-04-08
+      nameNu=28
+    elif [ $sname == "TTHtoNonBB" ] 
+    then
+      name=ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      tag=V07-04-08
+      nameNu=29
+    elif [ $sname == "VHtoNonBB" ] 
+    then
+      name=VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      tag=V07-04-08
+      nameNu=30
+    elif [ $sname == "TZQ" ] 
+    then
+      name=tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2
+      tag=V07-04-08
+      nameNu=31
+    elif [ $sname == "TTTT" ] 
+    then
+      name=TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      tag=V07-04-08
+      nameNu=32
+    elif [ $sname == "WWDPS" ] 
+    then
+      name=WW_DoubleScattering_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      tag=V07-04-08
+      nameNu=33
+    elif [ $sname == "WZZ" ] 
+    then
+      name=WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      tag=V07-04-08
+      nameNu=34
+    elif [ $sname == "T1TTTT_1500" ] 
+    then
+      name=SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      tag=V07-04-08
+      nameNu=4
+    elif [ $sname == "T1TTTT_1200" ] 
+    then
+      name=SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      tag=V07-04-08
+      nameNu=5
     else 
       name=$sname 
       tag=V07-04-07
