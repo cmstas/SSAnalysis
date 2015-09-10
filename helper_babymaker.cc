@@ -241,6 +241,8 @@ void babyMaker::InitBabyNtuple(){
     mt_l2 = -1;
     jets_undoJEC.clear();
     btags_undoJEC.clear();
+    jets_corr_undoJEC.clear();
+    btags_corr_undoJEC.clear();
     mt2 = -1;
     mtmin = -1;
     mGluino = -1;
