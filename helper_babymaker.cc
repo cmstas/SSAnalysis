@@ -163,6 +163,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep2_trigMatch_noIsoReq" , &lep2_trigMatch_noIsoReq );
   BabyTree->Branch("lep2_trigMatch_isoReq"   , &lep2_trigMatch_isoReq   );
   BabyTree->Branch("met3p0"                  , &met3p0                  );
+  BabyTree->Branch("jet_corr_pt"             , &jet_corr_pt             );
   BabyTree->Branch("metphi3p0"               , &metphi3p0               );
   BabyTree->Branch("passes_met_filters"      , &passes_met_filters     );
   BabyTree->Branch("mostJets"                , &mostJets                );
@@ -228,6 +229,8 @@ void babyMaker::InitBabyNtuple(){
     lep2_idx = -1;
     jets.clear();
     btags_disc.clear();
+    jet_corr_pt.clear(); 
+    ht_corr = -1;
     jets_disc.clear();
     jets_JEC.clear();
     btags_JEC.clear();
@@ -580,7 +583,10 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   njets_corr = jets_corr.size();
   nbtags_corr = btags_corr.size();
   ht_corr = 0;
-  for (unsigned int i = 0; i < jets_corr.size(); i++) ht_corr += jets_corr.at(i).pt(); 
+  for (unsigned int i = 0; i < jets_corr.size(); i++){
+     jet_corr_pt.push_back(jets_corr.at(i).pt()*jets_corr_undoJEC.at(i)*jets_corr_JEC.at(i)); 
+     ht_corr += jets_corr.at(i).pt()*jets_corr_undoJEC.at(i)*jets_corr_JEC.at(i); 
+  }
 
   //Save Most jets 
   for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++){

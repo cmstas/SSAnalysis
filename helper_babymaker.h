@@ -95,6 +95,7 @@ class babyMaker {
     vector <float> jets_corr_JEC; 
     vector <float> jets_corr_undoJEC; 
     vector <LorentzVector> mostJets; //this is all jets with pT > 5, |eta| < 2.4
+    vector <float> jet_corr_pt;
 
     //Hyp Class -- in this order
        //3 for num-num SS leptons
