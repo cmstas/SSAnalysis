@@ -245,7 +245,7 @@ int main(int argc, char *argv[]){
       name="T5qqqqWZ_mGo1200_mCh1000_mChi800_lep";       
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
       tag="";
-      shortname="t5qqqqwz_1200_100_800";
+      shortname="t5qqqqwz_1200_1000_800";
       break;
     case T5QQQQDeg_1000_300_285_280:
       name="T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec";
@@ -256,7 +256,7 @@ int main(int argc, char *argv[]){
     case T5QQQQWZ_1500_800_100:
       name="T5qqqqWZ_mGo1500_mCh800_mChi100_lep";
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
-      shortname="t5qqqqwz_1500_800_180";
+      shortname="t5qqqqwz_1500_800_100";
       tag="";
       break;
     case T5ttttDeg_1000_300_280:
