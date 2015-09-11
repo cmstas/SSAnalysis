@@ -2,7 +2,6 @@
 #include "TH1F.h"
 #include "TFile.h"
 #include "TTree.h"
-
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "SS.h"
 
@@ -190,19 +189,19 @@ vector <vector <TH1F*> >  makeAllPlots(vector <TChain*> chains, bool isOS){
         }
 
         //Fill the plots
-        plot_leppt        ->Fill(ss::lep1_p4().pt()                                              , ss::scale1fb()*lumiAG);
-        plot_leppt        ->Fill(ss::lep2_p4().pt()                                              , ss::scale1fb()*lumiAG);
-        plot_mll          ->Fill(mll                                                             , ss::scale1fb()*lumiAG);
-        plot_met          ->Fill(ss::corrMET()                                                   , ss::scale1fb()*lumiAG);
-        plot_metuncorr    ->Fill(ss::met()                                                       , ss::scale1fb()*lumiAG);
-        plot_ht           ->Fill(ht                                                              , ss::scale1fb()*lumiAG);
-        plot_htuncorr     ->Fill(ss::ht()                                                        , ss::scale1fb()*lumiAG);
-        plot_mtmin        ->Fill(mt_min                                                          , ss::scale1fb()*lumiAG);
-        plot_njets        ->Fill(ss::njets_corr()                                                , ss::scale1fb()*lumiAG);
-        plot_njetsuncorr  ->Fill(ss::njets()                                                     , ss::scale1fb()*lumiAG);
-        plot_nbtags       ->Fill(ss::nbtags_corr()                                               , ss::scale1fb()*lumiAG);
-        plot_nbtagsuncorr ->Fill(ss::nbtags()                                                    , ss::scale1fb()*lumiAG);
-        plot_met3p0       ->Fill(ss::met3p0()                                                    , ss::scale1fb()*lumiAG);
+        plot_leppt        ->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumiAG);
+        plot_leppt        ->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumiAG);
+        plot_mll          ->Fill(mll               , ss::scale1fb()*lumiAG);
+        plot_met          ->Fill(ss::corrMET()     , ss::scale1fb()*lumiAG);
+        plot_metuncorr    ->Fill(ss::met()         , ss::scale1fb()*lumiAG);
+        plot_ht           ->Fill(ht                , ss::scale1fb()*lumiAG);
+        plot_htuncorr     ->Fill(ss::ht()          , ss::scale1fb()*lumiAG);
+        plot_mtmin        ->Fill(mt_min            , ss::scale1fb()*lumiAG);
+        plot_njets        ->Fill(ss::njets_corr()  , ss::scale1fb()*lumiAG);
+        plot_njetsuncorr  ->Fill(ss::njets()       , ss::scale1fb()*lumiAG);
+        plot_nbtags       ->Fill(ss::nbtags_corr() , ss::scale1fb()*lumiAG);
+        plot_nbtagsuncorr ->Fill(ss::nbtags()      , ss::scale1fb()*lumiAG);
+        plot_met3p0       ->Fill(ss::met3p0()      , ss::scale1fb()*lumiAG);
 
       }//event loop
     }//file loop
