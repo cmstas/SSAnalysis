@@ -1,12 +1,13 @@
 {
   gSystem->Load("../../CORE/CMS3_CORE.so");
-  gSystem->Load("../../Tools/libTools.so");
   gSystem->Load("../../software/tableMaker/libSimpleTable.so");
 
   gROOT->ProcessLine(".L SS.cc+");
   gROOT->ProcessLine(".L ScanChain.C++");
 
-  bool doInSitu = 1;
+  bool doData = true;
+
+  bool doInSitu = 0;
 
   bool highhigh   = 1;
   bool highlow    = 0;
@@ -67,8 +68,15 @@
   else if (doJetCorr) option+="_jetCorr";  //option only for ScanChain
 
   TChain *ch = new TChain("t"); 
-  if (doLooseEMVA) ch->Add("../../babies/v1.26/TTBAR_1.root");
-  else ch->Add("../../babies/v1.26/TTBAR_0.root");
+  if(doData) {
+    option += "_data";
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/DataDoubleMuonC.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/DataDoubleEGC.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/DataMuonEGC.root");
+  } else {
+    if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTBAR.root");
+    else ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTBAR.root"); // FIXME
+  }
   ScanChain(ch, fakeratefile, option, ptRegion); 
 
   //TChain *ch_wjets = new TChain("t"); 
