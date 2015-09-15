@@ -4,24 +4,24 @@
   gROOT->ProcessLine(".L ScanChain.C+");
 
   TChain *data = new TChain("t"); 
-  data->Add( "/hadoop/cms/store/user/namin/condor/forCommissioning/merged_files/2015CDoubleEG.root" );
-  data->Add( "/hadoop/cms/store/user/namin/condor/forCommissioning/merged_files/2015CDoubleMuon.root" );
+  data->Add( "/nfs-7/userdata/leptonTree/v0.14-16p1pb/2015CDoubleEG.root" );
+  data->Add( "/nfs-7/userdata/leptonTree/v0.14-16p1pb/2015CDoubleMuon.root" );
   ScanChain(data,"./rate_histos_data_LooseEMVA.root","useLooseEMVA"); 
 
   TChain *dy = new TChain("t"); 
-  dy->Add( "/hadoop/cms/store/user/namin/condor/forCommissioning/merged_files/DY_madgraph.root" );
+  dy->Add( "/nfs-7/userdata/leptonTree/v0.14-16p1pb/DY_madgraph.root" );
   ScanChain(dy,"./rate_histos_dy_LooseEMVA.root","useLooseEMVA"); 
 
   TChain *wj = new TChain("t"); 
-  wj->Add( "/hadoop/cms/store/user/namin/condor/forCommissioning/merged_files/WJets.root" );
+  wj->Add( "/nfs-7/userdata/leptonTree/v0.14-16p1pb/WJets.root" );
   ScanChain(wj,"./rate_histos_wj_LooseEMVA.root","useLooseEMVA"); 
 
   TChain *qcd_mu = new TChain("t"); 
-  qcd_mu->Add( "/nfs-7/userdata/leptonTree/v0.08/QCD_Mu_Enriched.root" );
+  qcd_mu->Add( "/nfs-7/userdata/leptonTree/v0.14-16p1pb/QCD_Mu_Enriched.root" );
   ScanChain(qcd_mu,"./rate_histos_qcd_mu_LooseEMVA.root","useLooseEMVA"); 
 
   TChain *qcd_el = new TChain("t"); 
-  qcd_el->Add( "/nfs-7/userdata/leptonTree/v0.08/QCD_EM_Enriched.root" );
+  qcd_el->Add( "/nfs-7/userdata/leptonTree/v0.14-16p1pb/QCD_EM_Enriched.root" );
   ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA.root","useLooseEMVA"); 
 
   /*

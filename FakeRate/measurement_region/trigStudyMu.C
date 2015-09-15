@@ -3,7 +3,7 @@
   gROOT->Reset();
   gStyle->SetOptStat(0);
 
-  TString dataf = "/home/users/namin/2015/fr/CMSSW_7_4_1_patch1/src/LeptonBabyMaker/bck/2015CDoubleMuon.root";
+  TString dataf = "/nfs-7/userdata/leptonTree/v0.14-16p1pb/2015CDoubleMuon.root";
 
   TFile *_file = TFile::Open(dataf);
 

@@ -407,7 +407,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (TString(currentFile->GetTitle()).Contains("WJets") || TString(currentFile->GetTitle()).Contains("DY")) isEWK = true;
 
       // Analysis Code
-      float lumi = 0.009;//in /fb
+      float lumi = 0.0161;//in /fb
       float weight = scale1fb()*lumi;
       if (isData) weight = 1.;
 
@@ -620,10 +620,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v3();
       }
 
-      float evt_met = evt_pfmet();
-      float evt_metPhi = evt_pfmetPhi();
-      // float evt_met = evt_met3p0();
-      // float evt_metPhi = evt_met3p0Phi();
+      // float evt_met = evt_pfmet();
+      // float evt_metPhi = evt_pfmetPhi();
+      float evt_met = evt_met3p0();
+      float evt_metPhi = evt_met3p0Phi();
       float evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
 
       if (passId) {
