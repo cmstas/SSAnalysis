@@ -1,10 +1,11 @@
 {
 
+  for(int doMu = 0; doMu < 2; doMu++) {
+
   gROOT->Reset();
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("4.2f");
 
-  bool doMu = false;
 
   TString suffix = (doMu ? "_mu" : "_e");
   TString lepname = (doMu ? "muon" : "electron");
@@ -20,8 +21,8 @@
   TH2F* den_dy = (TH2F*) _file_dy->Get("Nl_cone_histo"+suffix);
 
   //scale factors from MT control region plot
-  float muSF = 0.879125;
-  float elSF = 0.987502;
+  float muSF = 1.0216;
+  float elSF = 1.26538;
   float ewkSF = (doMu ? muSF : elSF);
 
   den_data->Add(den_wj,-1.*ewkSF);
@@ -49,5 +50,7 @@
   num_data->Draw("textecolz");
 
   c1.SaveAs("pdfs/ewkCorFR_"+lepname+".pdf");
+
+  }
 
 }
