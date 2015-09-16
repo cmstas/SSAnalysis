@@ -50,3 +50,6 @@ kinem/presentation.*
 *.snm
 *.toc
 *.pdf
+batch/*golden*.txt
+pres
+batch/main.cc
