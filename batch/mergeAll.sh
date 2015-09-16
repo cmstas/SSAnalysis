@@ -2,26 +2,41 @@
 
 path=/hadoop/cms/store/user/cgeorge/condor/ss_13_babies
 
-for which in 0 # 1
-do
-  hadd DataDoubleEG_$which.root    $path/datadoubleeg_*_$which.root     
-  hadd DataDoubleMuon_$which.root  $path/datadoublemuon_*_$which.root   
-  hadd DataMuonEG_$which.root      $path/datamuoneg_*_$which.root   
-  hadd DataDoubleEG2_$which.root   $path/datadoubleeg2_*_$which.root     
-  hadd DataDoubleMuon2_$which.root $path/datadoublemuon2_*_$which.root   
-  hadd DataMuonEG2_$which.root     $path/datamuoneg2_*_$which.root   
-  hadd DataDoubleEGC_$which.root   $path/datadoubleegc_*_$which.root     
-  hadd DataDoubleMuonC_$which.root $path/datadoublemuonc_*_$which.root   
-  hadd DataMuonEGC_$which.root     $path/datamuonegc_*_$which.root   
-  hadd DY_high_$which.root         $path/dy_high_*_$which.root          
-  hadd DY_low_$which.root          $path/dy_low_*_$which.root           
-  hadd TTBAR_$which.root           $path/ttbar_*_$which.root            
-  hadd TTPOWHEG_$which.root        $path/ttpowheg_*_$which.root         
-  hadd WJets_$which.root           $path/wjets_*_$which.root            
-  hadd -f WZ_$which.root           $path/wz_*_$which.root               
-  hadd -f TTZL_$which.root         $path/ttzl_*_$which.root
-  hadd -f TTZQ_$which.root         $path/ttzq_*_$which.root
-  hadd -f TTW_$which.root          $path/ttw_*_$which.root
-  hadd -f TTWQQ_$which.root          $path/ttwqq_*_$which.root
-  hadd -f WZ3LNU_$which.root       $path/wz3lnu_*_$which.root
-done
+#hadd DataDoubleEG.root                $path/datadoubleeg_*_0.root     
+#hadd DataDoubleMuon.root              $path/datadoublemuon_*_0.root   
+#hadd DataMuonEG.root                  $path/datamuoneg_*_0.root   
+#hadd DataDoubleEG2.root               $path/datadoubleeg2_*_0.root     
+#hadd DataDoubleMuon2.root             $path/datadoublemuon2_*_0.root   
+#hadd DataMuonEG2.root                 $path/datamuoneg2_*_0.root   
+#hadd DataDoubleEGC.root               $path/datadoubleegc_*_0.root     
+#hadd DataDoubleMuonC.root             $path/datadoublemuonc_*_0.root   
+#hadd DataMuonEGC.root                 $path/datamuonegc_*_0.root   
+#hadd DY_high.root                     $path/dy_high_*_0.root          
+#hadd DY_low.root                      $path/dy_low_*_0.root           
+#hadd TTBAR.root                       $path/ttbar_*_0.root            
+#hadd TTPOWHEG.root                    $path/ttpowheg_*_0.root         
+#hadd WJets.root                       $path/wjets_*_0.root            
+#hadd WZ.root                          $path/wz_*_0.root               
+#hadd TTZL.root                        $path/ttzl_*_0.root
+#hadd TTZQ.root                        $path/ttzq_*_0.root
+#hadd TTW.root                         $path/ttw_*_0.root
+#hadd TTWQQ.root                       $path/ttwqq_*_0.root
+#hadd WZ3LNU.root                      $path/wz3lnu_*_0.root
+#hadd WGToLNuG.root                    $path/wgtolnug_*_0.root                        
+#hadd TTG.root                         $path/ttg_*_0.root 
+#hadd TTHtoNonBB.root                  $path/tthtononbb_*_0.root 
+#hadd VHtoNonBB.root                   $path/vhtononbb_*_0.root 
+#hadd TZQ.root                         $path/tzq_*_0.root 
+#hadd TTTT.root                        $path/tttt_*_0.root 
+#hadd WWDPS.root                       $path/wwdps_*_0.root 
+#hadd WZZ.root                         $path/wzz_*_0.root 
+#hadd T5QQQQWZ_1200_1000_800.root      $path/t5qqqqwz_1200_1000_800_*_0.root
+#hadd T5QQQQDeg_1000_300_285_280.root  $path/t5qqqqdeg_1000_300_285_280 _*_0.root
+#hadd T5QQQQWZ_1500_800_100.root       $path/t5qqqqwz_1500_800_100_*_0.root 
+#hadd T5ttttDeg_1000_300_280.root      $path/t5ttttdeg_1000_300_280_*_0.root 
+#hadd T2ttDeg_350_330.root             $path/t2ttdeg_350_330_*_0.root 
+#hadd T6TTWW_600_425_50.root           $path/t6ttww_600_425_50_*_0.root 
+#hadd T2TT_ARXIV.root                  $path/t2tt_arxiv_*_0.root 
+#hadd T6TTWW_650_150_50.root           $path/t6ttww_650_150_50_*_0.root 
+hadd T1TTTT_1200.root                 $path/t1tttt_1200_*_0.root
+hadd T1TTTT_1500.root                 $path/t1tttt_1500_*_0.root

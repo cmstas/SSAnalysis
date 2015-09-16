@@ -45,3 +45,8 @@ FlipRate/application/*.pdf
 LinkDef.h
 kinem/*.pdf
 kinem/presentation.*
+*.nav
+*.out
+*.snm
+*.toc
+*.pdf
