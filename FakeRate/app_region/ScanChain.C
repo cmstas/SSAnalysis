@@ -214,7 +214,7 @@ int getHist(string name){
   return -1;
 }
 
-int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", int nEvents = -1){
+int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", TChain* chain2 = NULL, int nEvents = -1){
 
   //Make tables
   electrons.setTable() ("Pred", "Obs", "Pred/Obs");
@@ -448,6 +448,137 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   float notBs_e = 0;
   float Bs_mu = 0;
   float notBs_mu = 0;
+
+  // NJA -- scan over MC chain to get prompt contamination in class2, then scan over data
+  // probably a smarter way to do this
+  float goodLep1Class2El = 0; // weighted evt counts for prompt class2 leptons failing ID
+  float goodLep2Class2El = 0;
+  float goodLep1Class2Mu = 0;
+  float goodLep2Class2Mu = 0;
+  float subtraction = 0;
+
+  { // begin stupid block
+
+  unsigned int nEventsTotal = 0;
+  unsigned int nEventsChain = chain2->GetEntries();
+  if( nEvents >= 0 ) nEventsChain = nEvents;
+  TObjArray *listOfFiles = chain2->GetListOfFiles();
+  TIter fileIter(listOfFiles);
+  TFile *currentFile = 0;
+  while ( (currentFile = (TFile*)fileIter.Next()) ) {
+
+    TFile *file = new TFile( currentFile->GetTitle() );
+    TTree *tree = (TTree*)file->Get("t");
+    samesign.Init(tree);
+
+    if (nEventsTotal >= nEventsChain) continue;
+    unsigned int nEventsTree = tree->GetEntriesFast();
+    for(unsigned int eventAG = 0; eventAG < nEventsTree; ++eventAG){
+
+      if(nEventsTotal >= nEventsChain) continue;
+      samesign.GetEntry(eventAG);
+      ++nEventsTotal;
+
+      SSAG::progress(nEventsTotal, nEventsChain);
+
+      float weight = ss::is_real_data() ? 1 : ss::scale1fb()*luminosity;
+      
+      //Determine lep pT
+      float lep1_pT = ss::lep1_p4().pt();
+      float lep2_pT = ss::lep2_p4().pt();
+      float lep1_ptrel_v1 = ss::lep1_ptrel_v1();
+      float lep2_ptrel_v1 = ss::lep2_ptrel_v1();
+      float ptrel_cut_1 = (abs(ss::lep1_id()) == 11 ? 7.0 : 6.7); 
+      float ptrel_cut_2 = (abs(ss::lep2_id()) == 11 ? 7.0 : 6.7); 
+      float ptratio_cut_1 = (abs(ss::lep1_id()) == 11 ? 0.7 : 0.68); 
+      float ptratio_cut_2 = (abs(ss::lep2_id()) == 11 ? 0.7 : 0.68); 
+      bool lep1_denom_iso = ((ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1/ptratio_cut_1 + ss::lep1_miniIso())))); 
+      bool lep2_denom_iso = ((ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1/ptratio_cut_2 + ss::lep2_miniIso())))); 
+      if (coneCorr){
+        if (abs(ss::lep1_id())==11){
+          if (lep1_ptrel_v1>7.0) lep1_pT = ss::lep1_p4().pt()*(1+std::max(0.,ss::lep1_miniIso()-0.10));
+          else lep1_pT = std::max(ss::lep1_p4().pt(),ss::jet_close_lep1().pt()*float(0.70));
+        } 
+        else {
+          if (lep1_ptrel_v1>6.7) lep1_pT = ss::lep1_p4().pt()*(1+std::max(0.,ss::lep1_miniIso()-0.14));
+          else lep1_pT = std::max(ss::lep1_p4().pt(),ss::jet_close_lep1().pt()*float(0.68));
+        }
+        if (abs(ss::lep2_id())==11) {
+          if (lep2_ptrel_v1>7.0) lep2_pT = ss::lep2_p4().pt()*(1+std::max(0.,ss::lep2_miniIso()-0.10));
+          else lep2_pT = std::max(ss::lep2_p4().pt(),ss::jet_close_lep2().pt()*float(0.70));
+        } 
+        else {
+          if (lep2_ptrel_v1>6.7) lep2_pT = ss::lep2_p4().pt()*(1+std::max(0.,ss::lep2_miniIso()-0.14));
+          else lep2_pT = std::max(ss::lep2_p4().pt(),ss::jet_close_lep2().pt()*float(0.68));
+        }
+      }
+      if (jetCorr){
+        lep1_pT = ss::jet_close_lep1().pt();
+        lep2_pT = ss::jet_close_lep2().pt();
+      }
+
+      //Determine passes ID
+      bool lep1_passes_id = ss::lep1_passes_id();
+      bool lep2_passes_id = ss::lep2_passes_id();
+
+      //Determine mtMin
+      float mtmin = ss::mt() > ss::mt_l2() ? ss::mt_l2() : ss::mt();
+      if (coneCorr){
+        float mtl1 = MT(lep1_pT, ss::lep1_p4().phi(), ss::met(), ss::metPhi());
+        float mtl2 = MT(lep2_pT, ss::lep2_p4().phi(), ss::met(), ss::metPhi());
+        mtmin = mtl1 > mtl2 ? mtl2 : mtl1;
+      }
+
+
+      if( !(ss::njets() >= 2 && (ss::ht() > 500 ? 1 : ss::met() > 30) ) ) continue;
+      if (fabs(ss::lep1_ip3d()/ss::lep1_ip3d_err())>4.) continue;
+      if (fabs(ss::lep2_ip3d()/ss::lep2_ip3d_err())>4.) continue;
+      //Determine SR and BR
+      anal_type_t ac_base = analysisCategory(lep1_pT, lep2_pT);
+      int br = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), lep1_pT, lep2_pT); 
+      if (br<0) continue;
+      int sr = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, lep1_pT, lep2_pT);
+
+      //lepton pT selection
+      if(highhigh && ac_base!=HighHigh) continue;
+      if(highlow  && ac_base!=HighLow ) continue;
+      if(lowlow   && ac_base!=LowLow  ) continue;
+
+      if (lep1_passes_id && !lep2_passes_id){  
+        //Baseline selections
+        if (!inSitu && ss::hyp_class() != 2) continue;
+        if (inSitu && (ss::lep2_multiIso() || !isFakeLeg(2) || !isGoodLeg(1) || !lep2_denom_iso)) continue;
+        if (inSitu && (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2())) continue;
+
+        // check for MC lepton failing ID but indeed having a prompt lepton
+        if(isGoodLeg(2)) {
+          if(abs(ss::lep1_id())==11) goodLep2Class2El += weight;
+          else if(abs(ss::lep1_id())==13) goodLep2Class2Mu += weight;
+        }
+      }
+      if (!lep1_passes_id && lep2_passes_id){  
+        //Baseline selections
+        if (!inSitu && ss::hyp_class() != 2) continue;
+        if (inSitu && (ss::lep1_multiIso() || !isFakeLeg(1) || !isGoodLeg(2) || !lep1_denom_iso)) continue;
+        if (inSitu && (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2())) continue;
+
+        // check for MC lepton failing ID but indeed having a prompt lepton
+        if(isGoodLeg(1)) {
+          if(abs(ss::lep1_id())==11) goodLep1Class2El += weight;
+          else if(abs(ss::lep1_id())==13) goodLep1Class2Mu += weight;
+        }
+      }
+
+    }
+  }
+
+  } // end stupid block
+
+
+
+
+
+
 
   // Loop over events to Analyze
   unsigned int nEventsTotal = 0;
@@ -754,7 +885,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           //if (abs(ss::lep2_id()) == 11 && fabs(ss::lep2_p4().eta()) < 0.8 && ss::lep2_MVA() < 0.73) continue;
           //if (abs(ss::lep2_id()) == 11 && fabs(ss::lep2_p4().eta()) >= 0.8 && fabs(ss::lep2_p4().eta()) <= 1.479 && ss::lep2_MVA() < 0.57) continue;
           //if (abs(ss::lep2_id()) == 11 && fabs(ss::lep2_p4().eta()) > 1.479 && ss::lep2_MVA() < 0.05) continue; 
-        
+
  
           if (usePtRatioCor){
             //this is a tighter FO than default, so skip if it does not pass
@@ -779,57 +910,60 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           }
 
           if (abs(ss::lep2_id()) == 11){  
+            if(ss::is_real_data()) subtraction = goodLep2Class2El;
             e2 = getFakeRate( rate_histo_e, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht(), false );
-            hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht(), (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_MET_pred_el")]  ->Fill(ss::met(), (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_MTMIN_pred_el")]->Fill(mtmin, (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_L1PT_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e2/(1-e2))*weight);
-            if (sr>=0) Npn_histo_sr_err2_pred_el[sr]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_br_err2_pred_el[br]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_HT_err2_pred_el[hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_MET_err2_pred_el[hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::met())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_MTMIN_err2_pred_el[hists[getHist("Npn_histo_MTMIN_pred_el")]->FindBin(mtmin)-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_L1PT_err2_pred_el[hists[getHist("Npn_histo_L1PT_pred_el")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_L2PT_err2_pred_el[hists[getHist("Npn_histo_L2PT_pred_el")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
+            hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht(), (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_MET_pred_el")]  ->Fill(ss::met(), (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_MTMIN_pred_el")]->Fill(mtmin, (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_L1PT_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e2/(1-e2))*weight-subtraction);
+            if (sr>=0) Npn_histo_sr_err2_pred_el[sr]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_br_err2_pred_el[br]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_HT_err2_pred_el[hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_MET_err2_pred_el[hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::met())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_MTMIN_err2_pred_el[hists[getHist("Npn_histo_MTMIN_pred_el")]->FindBin(mtmin)-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_L1PT_err2_pred_el[hists[getHist("Npn_histo_L1PT_pred_el")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_L2PT_err2_pred_el[hists[getHist("Npn_histo_L2PT_pred_el")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
             // fill el abundance histos here w/ nbtags
-            if(ss::lep2_motherID() == -1) hists[getHist("NBs_BR_histo_e")]->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
-            if(ss::lep2_motherID() == -2 || ss::lep2_motherID() == 0) hists[getHist("NnotBs_BR_histo_e")]->Fill(nbjets, weight);
-            if(ss::lep2_motherID() == -1) Bs_e = Bs_e + weight;
-            if(ss::lep2_motherID() == -2 || ss::lep2_motherID() == 0) notBs_e = notBs_e + weight;
+            if(ss::lep2_motherID() == -1) hists[getHist("NBs_BR_histo_e")]->Fill(nbjets, weight-subtraction); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
+            if(ss::lep2_motherID() == -2 || ss::lep2_motherID() == 0) hists[getHist("NnotBs_BR_histo_e")]->Fill(nbjets, weight-subtraction);
+            if(ss::lep2_motherID() == -1) Bs_e = Bs_e + weight-subtraction;
+            if(ss::lep2_motherID() == -2 || ss::lep2_motherID() == 0) notBs_e = notBs_e + weight-subtraction;
           }
           else if (abs(ss::lep2_id()) == 13){ 
+            if(ss::is_real_data()) subtraction = goodLep2Class2Mu;
             e2 = getFakeRate( rate_histo_mu, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht(), false );
-            hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht(), (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_MET_pred_mu")]->Fill(ss::met(), (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_MTMIN_pred_mu")]->Fill(mtmin, (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_L1PT_pred_mu")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e2/(1-e2))*weight);
-            hists[getHist("Npn_histo_L2PT_pred_mu")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e2/(1-e2))*weight);
-            if (sr>=0) Npn_histo_sr_err2_pred_mu[sr]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_br_err2_pred_mu[br]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_HT_err2_pred_mu[hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_MET_err2_pred_mu[hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::met())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_MTMIN_err2_pred_mu[hists[getHist("Npn_histo_MTMIN_pred_mu")]->FindBin(mtmin)-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_L1PT_err2_pred_mu[hists[getHist("Npn_histo_L1PT_pred_mu")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            Npn_histo_L2PT_err2_pred_mu[hists[getHist("Npn_histo_L2PT_pred_mu")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight);
-            if(ss::lep2_motherID() == -1) hists[getHist("NBs_BR_histo_mu")]->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
-            if(ss::lep2_motherID() == -2 || ss::lep2_motherID() == 0) hists[getHist("NnotBs_BR_histo_mu")]->Fill(nbjets, weight);
-            if(ss::lep2_motherID() == -1) Bs_mu = Bs_mu + weight;
-            if(ss::lep2_motherID() == -2 || ss::lep2_motherID() == 0) notBs_mu = notBs_mu + weight;
+            hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht(), (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_MET_pred_mu")]->Fill(ss::met(), (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_MTMIN_pred_mu")]->Fill(mtmin, (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_L1PT_pred_mu")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e2/(1-e2))*weight-subtraction);
+            hists[getHist("Npn_histo_L2PT_pred_mu")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e2/(1-e2))*weight-subtraction);
+            if (sr>=0) Npn_histo_sr_err2_pred_mu[sr]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_br_err2_pred_mu[br]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_HT_err2_pred_mu[hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_MET_err2_pred_mu[hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::met())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_MTMIN_err2_pred_mu[hists[getHist("Npn_histo_MTMIN_pred_mu")]->FindBin(mtmin)-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_L1PT_err2_pred_mu[hists[getHist("Npn_histo_L1PT_pred_mu")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            Npn_histo_L2PT_err2_pred_mu[hists[getHist("Npn_histo_L2PT_pred_mu")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), weight-subtraction);
+            if(ss::lep2_motherID() == -1) hists[getHist("NBs_BR_histo_mu")]->Fill(nbjets, weight-subtraction); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
+            if(ss::lep2_motherID() == -2 || ss::lep2_motherID() == 0) hists[getHist("NnotBs_BR_histo_mu")]->Fill(nbjets, weight-subtraction);
+            if(ss::lep2_motherID() == -1) Bs_mu = Bs_mu + weight-subtraction;
+            if(ss::lep2_motherID() == -2 || ss::lep2_motherID() == 0) notBs_mu = notBs_mu + weight-subtraction;
           }
-          Npn = Npn + (e2/(1-e2))*weight;
-          if (ss::lep2_motherID()==1) Npn_s = Npn_s + (e2/(1-e2))*weight;
-          hists[getHist("Npn_histo_sr_pred")]->Fill(sr, (e2/(1-e2))*weight);
-          hists[getHist("Npn_histo_br_pred")]->Fill(br, (e2/(1-e2))*weight);
-          hists[getHist("Npn_histo_HT_pred")]->Fill(ss::ht(), (e2/(1-e2))*weight);
-          hists[getHist("Npn_histo_MET_pred")]->Fill(ss::met(), (e2/(1-e2))*weight);
-          hists[getHist("Npn_histo_MTMIN_pred")]->Fill(mtmin, (e2/(1-e2))*weight);
-          hists[getHist("Npn_histo_L1PT_pred")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e2/(1-e2))*weight);
-          hists[getHist("Npn_histo_L2PT_pred")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e2/(1-e2))*weight);
+          if(ss::is_real_data()) subtraction = goodLep2Class2Mu+goodLep2Class2El;
+          Npn = Npn + (e2/(1-e2))*weight-subtraction;
+          if (ss::lep2_motherID()==1) Npn_s = Npn_s + (e2/(1-e2))*weight-subtraction;
+          hists[getHist("Npn_histo_sr_pred")]->Fill(sr, (e2/(1-e2))*weight-subtraction);
+          hists[getHist("Npn_histo_br_pred")]->Fill(br, (e2/(1-e2))*weight-subtraction);
+          hists[getHist("Npn_histo_HT_pred")]->Fill(ss::ht(), (e2/(1-e2))*weight-subtraction);
+          hists[getHist("Npn_histo_MET_pred")]->Fill(ss::met(), (e2/(1-e2))*weight-subtraction);
+          hists[getHist("Npn_histo_MTMIN_pred")]->Fill(mtmin, (e2/(1-e2))*weight-subtraction);
+          hists[getHist("Npn_histo_L1PT_pred")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e2/(1-e2))*weight-subtraction);
+          hists[getHist("Npn_histo_L2PT_pred")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e2/(1-e2))*weight-subtraction);
         }
 
         //2) Lep1 is loose!tight, lep2 is tight
@@ -839,6 +973,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           if (!inSitu && ss::hyp_class() != 2) continue;
           if (inSitu && (ss::lep1_multiIso() || !isFakeLeg(1) || !isGoodLeg(2) || !lep1_denom_iso)) continue;
           if (inSitu && (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2())) continue;
+          
 
           if (usePtRatioCor){
             if ( abs(ss::lep1_id())==11 ){
@@ -861,61 +996,63 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
             }
           }
           if( abs(ss::lep1_id()) == 11 ){	//if el, use el rate.  FILL WITH NONPROMPT			  
+            if(ss::is_real_data()) subtraction = goodLep1Class2El;
             e1 = getFakeRate(rate_histo_e, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false );
+            hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht(), (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_MET_pred_el")]  ->Fill(ss::met(), (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_MTMIN_pred_el")]->Fill(mtmin, (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_L1PT_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e1/(1-e1))*weight-subtraction);
 
-            hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht(), (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_MET_pred_el")]  ->Fill(ss::met(), (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_MTMIN_pred_el")]->Fill(mtmin, (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_L1PT_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e1/(1-e1))*weight);
-
-            if (sr>=0) Npn_histo_sr_err2_pred_el[sr]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_br_err2_pred_el[br]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_HT_err2_pred_el[hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_MET_err2_pred_el[hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::met())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_MTMIN_err2_pred_el[hists[getHist("Npn_histo_MTMIN_pred_el")]->FindBin(mtmin)-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_L1PT_err2_pred_el[hists[getHist("Npn_histo_L1PT_pred_el")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_L2PT_err2_pred_el[hists[getHist("Npn_histo_L2PT_pred_el")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
+            if (sr>=0) Npn_histo_sr_err2_pred_el[sr]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_br_err2_pred_el[br]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_HT_err2_pred_el[hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_MET_err2_pred_el[hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::met())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_MTMIN_err2_pred_el[hists[getHist("Npn_histo_MTMIN_pred_el")]->FindBin(mtmin)-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_L1PT_err2_pred_el[hists[getHist("Npn_histo_L1PT_pred_el")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_L2PT_err2_pred_el[hists[getHist("Npn_histo_L2PT_pred_el")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
             // fill el abundance histos here w/ nbtags
-            if(ss::lep1_motherID() == -1) hists[getHist("NBs_BR_histo_e")]->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
-            if(ss::lep1_motherID() == -2 || ss::lep1_motherID() == 0) hists[getHist("NnotBs_BR_histo_e")]->Fill(nbjets, weight);
-            if(ss::lep1_motherID() == -1) Bs_e = Bs_e + weight;
-            if(ss::lep1_motherID() == -2 || ss::lep1_motherID() == 0) notBs_e = notBs_e + weight;
+            if(ss::lep1_motherID() == -1) hists[getHist("NBs_BR_histo_e")]->Fill(nbjets, weight-subtraction); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
+            if(ss::lep1_motherID() == -2 || ss::lep1_motherID() == 0) hists[getHist("NnotBs_BR_histo_e")]->Fill(nbjets, weight-subtraction);
+            if(ss::lep1_motherID() == -1) Bs_e = Bs_e + weight-subtraction;
+            if(ss::lep1_motherID() == -2 || ss::lep1_motherID() == 0) notBs_e = notBs_e + weight-subtraction;
           }
           else if( abs(ss::lep1_id()) == 13 ){ //if mu, use mu rate.  FILL WITH NONPROMPT				  
+            if(ss::is_real_data()) subtraction = goodLep1Class2Mu;
             e1 = getFakeRate(rate_histo_mu, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false );
-            hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht(), (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_MET_pred_mu")]->Fill(ss::met(), (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_MTMIN_pred_mu")]->Fill(mtmin, (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_L1PT_pred_mu")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e1/(1-e1))*weight);
-            hists[getHist("Npn_histo_L2PT_pred_mu")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e1/(1-e1))*weight);
+            hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht(), (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_MET_pred_mu")]->Fill(ss::met(), (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_MTMIN_pred_mu")]->Fill(mtmin, (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_L1PT_pred_mu")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e1/(1-e1))*weight-subtraction);
+            hists[getHist("Npn_histo_L2PT_pred_mu")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e1/(1-e1))*weight-subtraction);
 
-            if (sr>=0) Npn_histo_sr_err2_pred_mu[sr]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_br_err2_pred_mu[br]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_HT_err2_pred_mu[hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_MET_err2_pred_mu[hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::met())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_MTMIN_err2_pred_mu[hists[getHist("Npn_histo_MTMIN_pred_mu")]->FindBin(mtmin)-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_L1PT_err2_pred_mu[hists[getHist("Npn_histo_L1PT_pred_mu")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
-            Npn_histo_L2PT_err2_pred_mu[hists[getHist("Npn_histo_L2PT_pred_mu")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight);
+            if (sr>=0) Npn_histo_sr_err2_pred_mu[sr]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_br_err2_pred_mu[br]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_HT_err2_pred_mu[hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_MET_err2_pred_mu[hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::met())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_MTMIN_err2_pred_mu[hists[getHist("Npn_histo_MTMIN_pred_mu")]->FindBin(mtmin)-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_L1PT_err2_pred_mu[hists[getHist("Npn_histo_L1PT_pred_mu")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
+            Npn_histo_L2PT_err2_pred_mu[hists[getHist("Npn_histo_L2PT_pred_mu")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), weight-subtraction);
             // fill el abundance histos here w/ nbtags
-            if(ss::lep1_motherID() == -1) hists[getHist("NBs_BR_histo_mu")]->Fill(nbjets, weight); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
-            if(ss::lep1_motherID() == -2 || ss::lep1_motherID() == 0) hists[getHist("NnotBs_BR_histo_mu")]->Fill(nbjets, weight);
-            if(ss::lep1_motherID() == -1) Bs_mu = Bs_mu + weight;
-            if(ss::lep1_motherID() == -2 || ss::lep1_motherID() == 0) notBs_mu = notBs_mu + weight;
+            if(ss::lep1_motherID() == -1) hists[getHist("NBs_BR_histo_mu")]->Fill(nbjets, weight-subtraction); //LOOSE!TIGHT, not LOOSE LIKE IN MEAS REGION
+            if(ss::lep1_motherID() == -2 || ss::lep1_motherID() == 0) hists[getHist("NnotBs_BR_histo_mu")]->Fill(nbjets, weight-subtraction);
+            if(ss::lep1_motherID() == -1) Bs_mu = Bs_mu + weight-subtraction;
+            if(ss::lep1_motherID() == -2 || ss::lep1_motherID() == 0) notBs_mu = notBs_mu + weight-subtraction;
           }
-          Npn = Npn + (e1/(1-e1))*weight;
-          if (ss::lep1_motherID()==1) Npn_s = Npn_s + (e1/(1-e1))*weight;
-          hists[getHist("Npn_histo_sr_pred")]->Fill(sr, (e1/(1-e1))*weight);
-          hists[getHist("Npn_histo_br_pred")]->Fill(br, (e1/(1-e1))*weight);
-          hists[getHist("Npn_histo_HT_pred")]->Fill(ss::ht(), (e1/(1-e1))*weight);
-          hists[getHist("Npn_histo_MET_pred")]->Fill(ss::met(), (e1/(1-e1))*weight);
-          hists[getHist("Npn_histo_MTMIN_pred")]->Fill(mtmin, (e1/(1-e1))*weight);
-          hists[getHist("Npn_histo_L1PT_pred")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e1/(1-e1))*weight);
-          hists[getHist("Npn_histo_L2PT_pred")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e1/(1-e1))*weight);
+          if(ss::is_real_data()) subtraction = goodLep1Class2Mu+goodLep1Class2El;
+          Npn = Npn + (e1/(1-e1))*weight-subtraction;
+          if (ss::lep1_motherID()==1) Npn_s = Npn_s + (e1/(1-e1))*weight-subtraction;
+          hists[getHist("Npn_histo_sr_pred")]->Fill(sr, (e1/(1-e1))*weight-subtraction);
+          hists[getHist("Npn_histo_br_pred")]->Fill(br, (e1/(1-e1))*weight-subtraction);
+          hists[getHist("Npn_histo_HT_pred")]->Fill(ss::ht(), (e1/(1-e1))*weight-subtraction);
+          hists[getHist("Npn_histo_MET_pred")]->Fill(ss::met(), (e1/(1-e1))*weight-subtraction);
+          hists[getHist("Npn_histo_MTMIN_pred")]->Fill(mtmin, (e1/(1-e1))*weight-subtraction);
+          hists[getHist("Npn_histo_L1PT_pred")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), (e1/(1-e1))*weight-subtraction);
+          hists[getHist("Npn_histo_L2PT_pred")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e1/(1-e1))*weight-subtraction);
         }
       } //end hyp = 2 if statement
 
@@ -938,6 +1075,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
     delete file;
 
   }//file loop
+
+  // NJA
+  // goodLep1Class2El goodLep1Class2Mu goodLep2Class2El goodLep2Class2Mu
+  std::cout << " goodLep1Class2El: " << goodLep1Class2El << " goodLep1Class2Mu: " << goodLep1Class2Mu << " goodLep2Class2El: " << goodLep2Class2El << " goodLep2Class2Mu: " << goodLep2Class2Mu << std::endl;
 
   cout<<"\n"<<"Hyp_type = 3 (Both leptons pass tight selection)"<<endl;
   cout<<"---------------------------------------------"<<endl;

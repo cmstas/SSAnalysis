@@ -68,16 +68,37 @@
   else if (doJetCorr) option+="_jetCorr";  //option only for ScanChain
 
   TChain *ch = new TChain("t"); 
+  TChain *chMC = new TChain("t"); 
   if(doData) {
     option += "_data";
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/DataDoubleMuonC.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/DataDoubleEGC.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/DataMuonEGC.root");
+
+    chMC->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/WJets.root");
+    chMC->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTBAR.root");
+    chMC->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTW.root");
+    chMC->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/WZ3LNU.root");
+
+    ScanChain(ch, fakeratefile, option, ptRegion, chMC); 
   } else {
-    if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTBAR.root");
+    if (doLooseEMVA) {
+        ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTBAR.root");
+    }
     else ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTBAR.root"); // FIXME
+    ScanChain(ch, fakeratefile, option, ptRegion); 
   }
-  ScanChain(ch, fakeratefile, option, ptRegion); 
+
+
+  // TChain *ch;
+  // std::vector<TString> samples = { "TTBAR","DY_high","TTG","TTW","TTWQQ","TTZL","TTZQ","TZQ","WJets","WWDPS","WZ","WZ3LNU","WZZ" };
+  // for(int i = 0; i < samples.size(); i++) {
+  //   ch = new TChain("t");
+  //   cout << "############## " << samples[i] << " ##############" << endl;
+  //   ch->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/"+samples[i]+".root");
+  //   ScanChain(ch, fakeratefile, option, ptRegion); 
+  // }
+
 
   //TChain *ch_wjets = new TChain("t"); 
   //ch_wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v1.04/Wjets_baby.root"); //this one!
