@@ -214,7 +214,7 @@ int getHist(string name){
   return -1;
 }
 
-int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", int nEvents = -1){
+int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", bool doData = false, int nEvents = -1){
 
   //Make tables
   electrons.setTable() ("Pred", "Obs", "Pred/Obs");
@@ -489,6 +489,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       // Analysis Code
       float weight = ss::is_real_data() ? 1 : ss::scale1fb()*luminosity;
 
+      // ignore MC part of chain when looking at data, except for contamination subtraction
+      if(doData && !ss::is_real_data()) weight = 0; 
+
 
       if( !(ss::njets() >= 2 && (ss::ht() > 500 ? 1 : ss::met() > 30) ) ) continue;
 
@@ -621,7 +624,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           }
 
         //Counters
-        counter++;
+        counter += (doData && ss::is_real_data()) || (!doData);
         Nss_reco = Nss_reco + weight;
         if( isLep1Prompt && isLep2Prompt ){
           prompt2_reco = prompt2_reco + weight;
@@ -755,6 +758,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           //if (abs(ss::lep2_id()) == 11 && fabs(ss::lep2_p4().eta()) >= 0.8 && fabs(ss::lep2_p4().eta()) <= 1.479 && ss::lep2_MVA() < 0.57) continue;
           //if (abs(ss::lep2_id()) == 11 && fabs(ss::lep2_p4().eta()) > 1.479 && ss::lep2_MVA() < 0.05) continue; 
         
+          if(doData && !ss::is_real_data() && isGoodLeg(2)) weight = -ss::scale1fb(); 
+          else weight = 0;
  
           if (usePtRatioCor){
             //this is a tighter FO than default, so skip if it does not pass
@@ -840,6 +845,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           if (inSitu && (ss::lep1_multiIso() || !isFakeLeg(1) || !isGoodLeg(2) || !lep1_denom_iso)) continue;
           if (inSitu && (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2())) continue;
 
+          if(doData && !ss::is_real_data() && isGoodLeg(1)) weight = -ss::scale1fb(); 
+          else weight = 0;
+
           if (usePtRatioCor){
             if ( abs(ss::lep1_id())==11 ){
               float ptratiocor = lep1_closejetpt>0. ? ss::lep1_p4().pt()*(1+std::max(0.,ss::lep1_miniIso()-0.10))/lep1_closejetpt : 1.;
@@ -860,6 +868,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
               rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_mu");
             }
           }
+
           if( abs(ss::lep1_id()) == 11 ){	//if el, use el rate.  FILL WITH NONPROMPT			  
             e1 = getFakeRate(rate_histo_e, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false );
 
@@ -918,6 +927,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           hists[getHist("Npn_histo_L2PT_pred")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e1/(1-e1))*weight);
         }
       } //end hyp = 2 if statement
+      
+      // resume ignoring MC part of chain when looking at data, except for contamination subtraction
+      if(doData && !ss::is_real_data()) weight = 0; 
 
       //nonprompt-nonprompt background
       else if(ss::hyp_class() == 1){
