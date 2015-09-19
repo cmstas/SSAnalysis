@@ -1,7 +1,14 @@
 {
   //string tag = "leptree-v01";
 
+  gSystem->Load("../../CORE/CMS3_CORE.so");
+
   gROOT->ProcessLine(".L ScanChain.C+");
+
+  // test with updated branches
+  TChain *test = new TChain("t");
+  test->Add("default.root");
+  ScanChain(test,"./test.root","useLooseEMVA");
 
   TChain *data = new TChain("t"); 
   data->Add( "/nfs-7/userdata/leptonTree/v0.14-16p1pb/2015CDoubleEG.root" );
