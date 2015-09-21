@@ -92,6 +92,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("genps_p4"                , &genps_p4                );
   BabyTree->Branch("genps_id"                , &genps_id                );
   BabyTree->Branch("genps_id_mother"         , &genps_id_mother         );
+  BabyTree->Branch("genps_idx_mother"        , &genps_idx_mother        );
   BabyTree->Branch("genps_status"            , &genps_status            );
   BabyTree->Branch("genps_id_grandma"        , &genps_id_grandma        );
   BabyTree->Branch("lep1_passes_id"          , &lep1_passes_id          );
@@ -270,6 +271,7 @@ void babyMaker::InitBabyNtuple(){
     genps_p4.clear();
     genps_id.clear();
     genps_id_mother.clear();
+    genps_idx_mother.clear();
     genps_status.clear();
     genps_id_grandma.clear();
     lep1_passes_id = false;
@@ -550,6 +552,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
     genps_p4 = tas::genps_p4();
     genps_id = tas::genps_id();
     genps_id_mother = tas::genps_id_mother();
+    genps_idx_mother = tas::genps_idx_mother();
     genps_status = tas::genps_status(); 
     genps_id_grandma = tas::genps_id_simplegrandma(); 
   }
