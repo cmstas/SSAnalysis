@@ -38,5 +38,10 @@ path=/hadoop/cms/store/user/cgeorge/condor/ss_13_babies
 #hadd T6TTWW_600_425_50.root           $path/t6ttww_600_425_50_*_0.root 
 #hadd T2TT_ARXIV.root                  $path/t2tt_arxiv_*_0.root 
 #hadd T6TTWW_650_150_50.root           $path/t6ttww_650_150_50_*_0.root 
-hadd T1TTTT_1200.root                 $path/t1tttt_1200_*_0.root
-hadd T1TTTT_1500.root                 $path/t1tttt_1500_*_0.root
+#hadd T1TTTT_1200.root                 $path/t1tttt_1200_*_0.root
+#hadd T1TTTT_1500.root                 $path/t1tttt_1500_*_0.root
+hadd SINGLETOP1.root                  $path/singletop1_*_0.root
+hadd SINGLETOP2.root                  $path/singletop2_*_0.root
+hadd SINGLETOP3.root                  $path/singletop3_*_0.root
+hadd SINGLETOP4.root                  $path/singletop4_*_0.root
+hadd SINGLETOP5.root                  $path/singletop5_*_0.root

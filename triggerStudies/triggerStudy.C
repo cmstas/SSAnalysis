@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int whichFile = 2; //0-data, 1-DY, 2-DY truth
+int whichFile = 1; //0-data, 1-DY, 2-DY truth
 
 void triggerStudy(){
 
@@ -21,8 +21,9 @@ void triggerStudy(){
   TH1F *denom = new TH1F("denom", "denom", 50, 0, 100); 
   TH1F *numer_leading = new TH1F("numer_leading", "numer_leading", 50, 0, 100); 
   TH1F *numer_trailing = new TH1F("numer_trailing", "numer_trailing", 50, 0, 100); 
-  TH1F *numer_truth = new TH1F("numer_truth", "numer_truth", 50, 0, 100); 
-  TH1F *denom_truth = new TH1F("denom_truth", "denom_truth", 50, 0, 100); 
+  TH1F *numer_truth  = new TH1F("numer_truth", "numer_truth", 50, 0, 100); 
+  TH1F *numer_truth2 = new TH1F("numer_truth2", "numer_truth2", 50, 0, 100); 
+  TH1F *denom_truth  = new TH1F("denom_truth", "denom_truth", 50, 0, 100); 
   
   //Set sumw2
   denom->Sumw2();
@@ -30,6 +31,7 @@ void triggerStudy(){
   numer_leading->Sumw2();
   numer_trailing->Sumw2();
   numer_truth->Sumw2();
+  numer_truth2->Sumw2();
 
   //Number of events
   int nEvents = tree->GetEntries();
@@ -83,14 +85,16 @@ void triggerStudy(){
     denom_truth->Fill(sl::p4().pt()); 
 
     //Now if probe passes the trigger, put it in numer
-    if (sl::HLT_IsoMu20() > 0) numer_truth->Fill(sl::p4().pt()); 
+    if (sl::HLT_Mu17_TrkIsoVVL() > 0) numer_truth ->Fill(sl::p4().pt()); 
+    if (sl::HLT_Mu8_TrkIsoVVL() > 0)  numer_truth2->Fill(sl::p4().pt()); 
 
   }
 
   //Now divide numerator and denom
   numer_trailing->Divide(denom);
   numer_leading->Divide(denom);
-  numer_truth->Divide(denom_truth);
+  numer_truth  ->Divide(denom_truth);
+  numer_truth2 ->Divide(denom_truth);
 
   //The result is a plot that we can plot 
   TH1F* null = new TH1F("","",1,0,1); 
@@ -100,11 +104,13 @@ void triggerStudy(){
   if (whichFile == 2) name = "DYMC_truth"; 
   if (whichFile != 2) ratios.push_back(numer_leading);
   if (whichFile != 2) ratios.push_back(numer_trailing);
-  if (whichFile == 2) ratios.push_back(numer_truth);
+                      ratios.push_back(numer_truth);
+                      ratios.push_back(numer_truth2);
   vector <string> titles; 
   if (whichFile != 2) titles.push_back("leading leg"); 
   if (whichFile != 2) titles.push_back("trailing leg"); 
-  if (whichFile == 2) titles.push_back("truth"); 
+                      titles.push_back("truth17"); 
+                      titles.push_back("truth8"); 
   if (whichFile != 2) dataMCplotMaker(null, ratios, titles, Form("trigger eff in %s, SS numer id", name.c_str()), "Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ", Form("--outputName diMuonTriggEff_%s --xAxisLabel probe p_{T} --isLinear --drawDots --noStack --noOverflow --setMaximum 1.7 --lumi 16.1 --lumiUnit pb", name.c_str()));
   if (whichFile == 2) dataMCplotMaker(null, ratios, titles, Form("trigger eff in %s, SS numer id", name.c_str()), "IsoMu20", Form("--outputName diMuonTriggEff_%s --xAxisLabel probe p_{T} --isLinear --drawDots --noStack --noOverflow --setMaximum 1.7 --lumi 16.1 --lumiUnit pb", name.c_str()));
 
