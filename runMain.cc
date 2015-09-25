@@ -111,33 +111,33 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     chain_DY           ->Add(dir + "/DYJetsLL"            + dir2); 
   } 
   else {
-    TString dir = "/hadoop/cms/store/group/snt/phys14/";
+    TString dir = "/hadoop/cms/store/group/snt/run2_25ns/";
     TString dataDir = "/hadoop/cms/store/group/snt/run2_data/";
-    TString tag = "V07-02-08/merged_ntuple_*.root";
+    TString tag = "V07-04-08/merged_ntuple_*.root";
     TString dataTag = "V07-04-08/merged_ntuple_*.root";
 
     //SMS
-    chain_T1ttttG1200 ->Add(dir + "SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/" + tag);
-    chain_T1ttttG1500 ->Add(dir + "SMS-T1tttt_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/" + tag);
+    chain_T1ttttG1200 ->Add(dir + "SMS-T1tttt_2J_mGl-1200_mLSP-800_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/"    + tag);
+    chain_T1ttttG1500 ->Add(dir + "SMS-T1tttt_2J_mGl-1500_mLSP-100_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v1/"    + tag);
 
     //Main SM
-    chain_TTJets  ->Add(dir + "TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
-    chain_TTWJets ->Add(dir + "TTWJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"                    + tag);
-    chain_TTZJets ->Add(dir + "TTZJets_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"                    + tag);
+    chain_TTJets  ->Add(dir + "TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/"                + tag);
+    chain_TTWJets ->Add(dir + "TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/" + tag);
+    chain_TTZJets ->Add(dir + "TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/"         + tag);
+    chain_WZJets  ->Add(dir + "WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/"                                + tag); 
+    chain_DY      ->Add(dir + "DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/"  + tag); 
+    chain_DY      ->Add(dir + "DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3/"      + tag);
     chain_WHZH    ->Add(dir + "WH_ZH_HToWW_M-125_13TeV_pythia6/"                                                           + tag);
     chain_WW      ->Add(dir + "WWTo2L2Nu_CT10_13TeV-powheg-pythia8-tauola/"                                                + tag);
-    chain_WZJets  ->Add(dir + "WZJetsTo3LNu_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"               + tag); 
-    chain_DY      ->Add(dir + "DYJetsToLL_M-50_13TeV-madgraph-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"                  + tag); 
     chain_TTbarH  ->Add(dir + "TTbarH_M-125_13TeV_amcatnlo-pythia8-tauola_Phys14DR-PU20bx25_tsg_PHYS14_25_V1-v2/"          + tag);
     chain_ZZTo4L  ->Add(dir + "ZZTo4L_Tune4C_13TeV-powheg-pythia8_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"                      + tag);
 
     //W + Jets
-    chain_WJets    ->Add(dir+"WJetsToLNu_13TeV-madgraph-pythia8-tauola/"                                              + tag);
-    chain_Wjets    ->Add(dir+"WJetsToLNu_13TeV-madgraph-pythia8-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"            + tag);
-    chain_Wjets_ht ->Add(dir+"WJetsToLNu_HT-100to200_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
-    chain_Wjets_ht ->Add(dir+"WJetsToLNu_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
-    chain_Wjets_ht ->Add(dir+"WJetsToLNu_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
-    chain_Wjets_ht ->Add(dir+"WJetsToLNu_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
+    chain_Wjets   ->Add(dir + "WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/"           + tag);
+    chain_Wjets_ht->Add(dir + "WJetsToLNu_HT-100to200_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
+    chain_Wjets_ht->Add(dir + "WJetsToLNu_HT-200to400_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
+    chain_Wjets_ht->Add(dir + "WJetsToLNu_HT-400to600_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
+    chain_Wjets_ht->Add(dir + "WJetsToLNu_HT-600toInf_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
 
     //TW
     chain_TW ->Add(dir + "T_tW-channel-DR_Tune4C_13TeV-CSA14-powheg-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/"           + tag);
