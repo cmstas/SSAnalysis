@@ -424,7 +424,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
 
   //Scale1fb
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
-  
+
   //Fill lepton variables
   hyp_result_t best_hyp_info = chooseBestHyp(isoCase, expt, verbose);
   hyp_class = best_hyp_info.hyp_class;
@@ -572,6 +572,12 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   ht = 0;
   for (unsigned int i = 0; i < jets.size(); i++) ht += jets.at(i).pt(); 
   if (verbose) for (unsigned int i = 0; i < btags.size(); i++) cout << "btag: " << btags.at(i).pt() << endl;
+
+  //Reject events that fail trigger matching
+  if (ht < 300 && hyp_type != 0){
+    if (abs(lep1_id) == 11 && !isTriggerSafe_v1(lep1_idx)) continue;
+    if (abs(lep2_id) == 11 && !isTriggerSafe_v1(lep2_idx)) continue;
+  }
 
   //Determine and save jet and b-tag variables, corrected
   jet_results = SSJetsCalculator(jetCorr, 1);
