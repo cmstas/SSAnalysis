@@ -369,7 +369,7 @@ void babyMaker::InitBabyNtuple(){
 } 
 
 //Main function
-int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, FactorizedJetCorrector* jetCorr, bool expt){
+int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, bool expt){
 
   //Figure out if this is a 25ns or 50ns sample
   bool is25 = true;
@@ -426,7 +426,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
 
   //Fill lepton variables
-  hyp_result_t best_hyp_info = chooseBestHyp(isoCase, expt, verbose);
+  hyp_result_t best_hyp_info = chooseBestHyp(expt, verbose);
   hyp_class = best_hyp_info.hyp_class;
   int best_hyp = best_hyp_info.best_hyp;
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
@@ -464,14 +464,14 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   lep1_sip = abs(lep1_id) == 11 ? fabs(els_ip3d().at(lep1_idx))/els_ip3derr().at(lep1_idx) : fabs(mus_ip3d().at(lep1_idx))/mus_ip3derr().at(lep1_idx); 
   lep2_sip = abs(lep2_id) == 11 ? fabs(els_ip3d().at(lep2_idx))/els_ip3derr().at(lep2_idx) : fabs(mus_ip3d().at(lep2_idx))/mus_ip3derr().at(lep2_idx); 
   dilep_p4 = lep1_p4 + lep2_p4; 
-  lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, isoCase);
-  lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, isoCase);
+  lep1_passes_id = isGoodLepton(lep1_id, lep1_idx);
+  lep2_passes_id = isGoodLepton(lep2_id, lep2_idx);
   lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
   lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
 
   //More Third lepton stuff
   if (abs(lep3_id) == 11 || abs(lep3_id) == 13){
-    lep3_passes_id = isGoodLepton(lep3_id, lep3_idx, isoCase);
+    lep3_passes_id = isGoodLepton(lep3_id, lep3_idx);
     lep3_tight = abs(lep3_id) == 11 ? isGoodElectron(lep3_idx) : isGoodMuon(lep3_idx);
     lep3_veto = abs(lep3_id) == 11 ? isGoodVetoElectron(lep3_idx) : isGoodVetoMuon(lep3_idx);
     lep3_fo = abs(lep3_id) == 11 ? isFakableElectron(lep3_idx) : isFakableMuon(lep3_idx);

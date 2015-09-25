@@ -26,7 +26,7 @@
 using namespace tas;
 using namespace std;
 
-int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData, TString whatTest, int nEvents, IsolationMethods isoCase, vector<int> evtToDebug, bool expt_){
+int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData, TString whatTest, int nEvents, vector<int> evtToDebug, bool expt_){
 
   //Don't change these parameters by hand, please set them from main.cc
   makebaby       = 0;
@@ -186,7 +186,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //If making baby, fill it
       if (makebaby){	
-	bm->ProcessBaby(isoCase, currentFile->GetTitle(), jetCorr, expt);
+	bm->ProcessBaby(currentFile->GetTitle(), jetCorr, expt);
 	continue;
       }
 
@@ -273,7 +273,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (debug) cout << "vetoleps" << endl;
       vector<Lep> vetoleps;
       for (unsigned int vl=0; vl<vetoleps_noiso.size(); vl++){
-        if (!isVetoLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx(),Standard)) continue; //fixme: no ptrel in veto leptons for now
+        if (!isVetoLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx())) continue; //fixme: no ptrel in veto leptons for now
       	if (debug) cout << "veto lep id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt() 
 			            << " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
       	vetoleps.push_back(vetoleps_noiso[vl]);
@@ -291,7 +291,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (debug) cout << "fobs" << endl;
       vector<Lep> fobs;
       for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl) {
-        if (isDenominatorLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx(),isoCase)==0) continue; 
+        if (isDenominatorLepton(vetoleps_noiso[vl].pdgId(),vetoleps_noiso[vl].idx())==0) continue; 
       	if (debug) cout << "fob id=" << vetoleps_noiso[vl].pdgId() << " pt=" << vetoleps_noiso[vl].pt() 
 			            << " eta=" << vetoleps_noiso[vl].eta() << " phi=" << vetoleps_noiso[vl].p4().phi() << " q=" << vetoleps_noiso[vl].charge()<< endl;
       	fobs.push_back(vetoleps_noiso[vl]);
@@ -301,7 +301,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       if (debug) cout << "goodleps" << endl;
       vector<Lep> goodleps;
       for (unsigned int fo=0; fo<fobs.size(); fo++){
-        if (isGoodLepton(fobs[fo].pdgId(),fobs[fo].idx(),isoCase)==0) continue; 
+        if (isGoodLepton(fobs[fo].pdgId(),fobs[fo].idx())==0) continue; 
       	if (debug) cout << "good lep id=" << fobs[fo].pdgId() << " idx=" << fobs[fo].idx() << " pt=" << fobs[fo].pt() 
                         << " eta= " << fobs[fo].eta() << " phi=" << fobs[fo].p4().phi() << " q=" << fobs[fo].charge()<< endl;
       	goodleps.push_back(fobs[fo]);
@@ -377,7 +377,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       if (makeDYtest) {
 	if (debug) cout << "dytest" << endl;
-	tests::runDYtest(this, weight_, vetoleps_noiso, fobs, goodleps, njets, met, ht, isoCase);
+	tests::runDYtest(this, weight_, vetoleps_noiso, fobs, goodleps, njets, met, ht);
 	continue;
       }
       
@@ -388,7 +388,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       }
 
       //Choose hypothesis of good leps (the actual hyp)
-      hyp_result_t best_hyp_info = chooseBestHyp(isoCase, false); //2nd argument is whether to use FO2 + FO4, this is only supported in babymaking mode
+      hyp_result_t best_hyp_info = chooseBestHyp(false); //2nd argument is whether to use FO2 + FO4, this is only supported in babymaking mode
       int hyp_class = best_hyp_info.hyp_class;
       int best_hyp = best_hyp_info.best_hyp;
       if (hyp_class != 3) continue;

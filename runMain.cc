@@ -26,12 +26,10 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
 
   looper *l = new looper();
 
-  IsolationMethods isoCase = MultiIso;
-
   if (runSync) { 
     TChain *chain_synctest = new TChain("Events");
     chain_synctest->Add("./phys14_sync_CMS3.root");
-    l->ScanChain(chain_synctest,"synctest","",0,"SyncTest",-1,isoCase, eventsToDebug, expt);
+    l->ScanChain(chain_synctest,"synctest","",0,"SyncTest",-1, eventsToDebug, expt);
     return 0;
   }
 
@@ -81,18 +79,18 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
 
   TChain *chain_TTJets_50ns = new TChain("Events");
   chain_TTJets_50ns->Add("/hadoop/cms/store/group/snt/run2_50ns/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/V07-04-03/merged_ntuple_*.root");
-  //l->ScanChain(chain_TTJets_50ns, "ttbar_50ns", "baby", 0, "MakeBaby", -1, isoCase);
-  //l->ScanChain(chain_TTJets,      "ttbar"       , "", 0, "", -1, isoCase);
+  //l->ScanChain(chain_TTJets_50ns, "ttbar_50ns", "baby", 0, "MakeBaby", -1);
+  //l->ScanChain(chain_TTJets,      "ttbar"       , "", 0, "", -1);
 
   TChain *chain_TTJets_25ns = new TChain("Events");
   //chain_TTJets_25ns->Add("/hadoop/cms/store/group/snt/run2_25ns/TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/V07-04-03/merged_ntuple_*.root");
   chain_TTJets_25ns->Add("/hadoop/cms/store/group/snt/run2_25ns/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/V07-04-03/merged_ntuple_*.root");
-  // l->ScanChain(chain_TTJets_25ns, "ttbar_25ns", "baby", 0, "MakeBaby", -1, isoCase);
+  // l->ScanChain(chain_TTJets_25ns, "ttbar_25ns", "baby", 0, "MakeBaby", -1);
 
   TChain *chain_WZJets_25ns = new TChain("Events");
   chain_WZJets_25ns->Add("/hadoop/cms/store/group/snt/run2_25ns/WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1/V07-04-03/merged_ntuple_*.root"); 
-  //l->ScanChain(chain_WZJets_25ns, "wz_25ns", "baby", 0, "MakeBaby", -1, isoCase);
-  //l->ScanChain(chain_WZJets,      "WZJets"      , "", 0, "", -1, isoCase);
+  //l->ScanChain(chain_WZJets_25ns, "wz_25ns", "baby", 0, "MakeBaby", -1);
+  //l->ScanChain(chain_WZJets,      "WZJets"      , "", 0, "", -1);
 
   if (useSkim) {
     TString dir  = "PHYS14_v2_new";
@@ -188,85 +186,85 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   if (skimAll){
 
     //SMS
-    l->ScanChain(chain_T1ttttG1200 , "T1ttttG1200",  "", 0, "SSskim",-1,isoCase);
-    l->ScanChain(chain_T1ttttG1500 , "T1ttttG1500",  "", 0, "SSskim",-1,isoCase);
-    l->ScanChain(chain_T5qqqqWW1200, "T5qqqqWW1200", "", 0, "SSskim",-1,isoCase);
-    l->ScanChain(chain_T5qqqqWW1500, "T5qqqqWW1500", "", 0, "SSskim",-1,isoCase);
+    l->ScanChain(chain_T1ttttG1200 , "T1ttttG1200",  "", 0, "SSskim",-1);
+    l->ScanChain(chain_T1ttttG1500 , "T1ttttG1500",  "", 0, "SSskim",-1);
+    l->ScanChain(chain_T5qqqqWW1200, "T5qqqqWW1200", "", 0, "SSskim",-1);
+    l->ScanChain(chain_T5qqqqWW1500, "T5qqqqWW1500", "", 0, "SSskim",-1);
 
     //SM
-    l->ScanChain(chain_TTWJets, "TTWJets", "", 0, "SSskim", -1, isoCase);
-    l->ScanChain(chain_TTZJets, "TTZJets", "", 0, "SSskim", -1, isoCase);
-    l->ScanChain(chain_WHZH   , "WHZH"   , "", 0, "SSskim", -1, isoCase);
-    l->ScanChain(chain_WW     , "WW"     , "", 0, "SSskim", -1, isoCase);
-    l->ScanChain(chain_WZJets , "WZJets" , "", 0, "SSskim", -1, isoCase);
-    l->ScanChain(chain_TTbarH , "TTbarH" , "", 0, "SSskim", -1, isoCase);
-    l->ScanChain(chain_WJets  , "WJets"  , "", 0, "SSskim", -1, isoCase);
-    l->ScanChain(chain_ZZTo4L , "ZZTo4L" , "", 0, "SSskim", -1, isoCase);
-    l->ScanChain(chain_TTJets , "TTJets" , "", 0, "SSskim", -1, isoCase);
-    l->ScanChain(chain_TW     , "TW"     , "", 0, "SSskim", -1, isoCase);
+    l->ScanChain(chain_TTWJets, "TTWJets", "", 0, "SSskim", -1);
+    l->ScanChain(chain_TTZJets, "TTZJets", "", 0, "SSskim", -1);
+    l->ScanChain(chain_WHZH   , "WHZH"   , "", 0, "SSskim", -1);
+    l->ScanChain(chain_WW     , "WW"     , "", 0, "SSskim", -1);
+    l->ScanChain(chain_WZJets , "WZJets" , "", 0, "SSskim", -1);
+    l->ScanChain(chain_TTbarH , "TTbarH" , "", 0, "SSskim", -1);
+    l->ScanChain(chain_WJets  , "WJets"  , "", 0, "SSskim", -1);
+    l->ScanChain(chain_ZZTo4L , "ZZTo4L" , "", 0, "SSskim", -1);
+    l->ScanChain(chain_TTJets , "TTJets" , "", 0, "SSskim", -1);
+    l->ScanChain(chain_TW     , "TW"     , "", 0, "SSskim", -1);
 
   }
 
   if (runAll){
-    l->ScanChain(chain_TTJets,      "ttbar"       , "", 0, "", -1, isoCase);
-    l->ScanChain(chain_TTWJets,     "TTWJets"     , "", 0, "", -1, isoCase);
-    l->ScanChain(chain_TTZJets,     "TTZJets"     , "", 0, "", -1, isoCase);
-    l->ScanChain(chain_WHZH,        "WHZH"        , "", 0, "", -1, isoCase);
-    l->ScanChain(chain_WW,          "WW"          , "", 0, "", -1, isoCase);
-    l->ScanChain(chain_WZJets,      "WZJets"      , "", 0, "", -1, isoCase);
-    l->ScanChain(chain_T1ttttG1200, "T1ttttG1200" , "", 0, "", -1, isoCase);
-    l->ScanChain(chain_T1ttttG1500, "T1ttttG1500" , "", 0, "", -1, isoCase);
-    l->ScanChain(chain_T5qqqqWW1200,"T5qqqqWW1200", "", 0, "", -1, isoCase);
-    l->ScanChain(chain_T5qqqqWW1500,"T5qqqqWW1500", "", 0, "", -1, isoCase);
+    l->ScanChain(chain_TTJets,      "ttbar"       , "", 0, "", -1);
+    l->ScanChain(chain_TTWJets,     "TTWJets"     , "", 0, "", -1);
+    l->ScanChain(chain_TTZJets,     "TTZJets"     , "", 0, "", -1);
+    l->ScanChain(chain_WHZH,        "WHZH"        , "", 0, "", -1);
+    l->ScanChain(chain_WW,          "WW"          , "", 0, "", -1);
+    l->ScanChain(chain_WZJets,      "WZJets"      , "", 0, "", -1);
+    l->ScanChain(chain_T1ttttG1200, "T1ttttG1200" , "", 0, "", -1);
+    l->ScanChain(chain_T1ttttG1500, "T1ttttG1500" , "", 0, "", -1);
+    l->ScanChain(chain_T5qqqqWW1200,"T5qqqqWW1200", "", 0, "", -1);
+    l->ScanChain(chain_T5qqqqWW1500,"T5qqqqWW1500", "", 0, "", -1);
   }
   
   if (runLepEff){
-    l->ScanChain(chain_DY          , "dy"           , "effic", 0, "DYtest", -1, isoCase);
-    l->ScanChain(chain_T1ttttG1200 , "T1ttttG1200"  , "effic", 0, "DYtest", -1, isoCase);
-    l->ScanChain(chain_T1ttttG1500 , "T1ttttG1500"  , "effic", 0, "DYtest", -1, isoCase);
-    l->ScanChain(chain_T5qqqqWW1200, "T5qqqqWW1200" , "effic", 0, "DYtest", -1, isoCase);
-    l->ScanChain(chain_T5qqqqWW1500, "T5qqqqWW1500" , "effic", 0, "DYtest", -1, isoCase);
-    l->ScanChain(chain_TTWJets     , "TTWJets"      , "effic", 0, "DYtest", -1, isoCase);
+    l->ScanChain(chain_DY          , "dy"           , "effic", 0, "DYtest", -1);
+    l->ScanChain(chain_T1ttttG1200 , "T1ttttG1200"  , "effic", 0, "DYtest", -1);
+    l->ScanChain(chain_T1ttttG1500 , "T1ttttG1500"  , "effic", 0, "DYtest", -1);
+    l->ScanChain(chain_T5qqqqWW1200, "T5qqqqWW1200" , "effic", 0, "DYtest", -1);
+    l->ScanChain(chain_T5qqqqWW1500, "T5qqqqWW1500" , "effic", 0, "DYtest", -1);
+    l->ScanChain(chain_TTWJets     , "TTWJets"      , "effic", 0, "DYtest", -1);
   }
 
   if (runBaby){
-    if (babiesToMake[0]  == 1) l->ScanChain(chain_TTZJets                  , "ttz"                      , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[1]  == 1) l->ScanChain(chain_WZJets                   , "wz"                       , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[2]  == 1) l->ScanChain(chain_T1ttttG1200              , "t1tttt_1200_800"          , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[3]  == 1) l->ScanChain(chain_T1ttttG1500              , "t1tttt_1500_100"          , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[4]  == 1) l->ScanChain(chain_TTJets                   , "ttbar"                    , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[5]  == 1) l->ScanChain(chain_TTWJets                  , "ttw"                      , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[6]  == 1) l->ScanChain(chain_T5qqqqWW1200             , "t5qqqqWW1200"             , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[7]  == 1) l->ScanChain(chain_T5qqqqWW1500             , "t5qqqqWW1500"             , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[8]  == 1) l->ScanChain(chain_T6ttWW600_150            , "t6ttWW600_150"            , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[9]  == 1) l->ScanChain(chain_T6ttWW600_425            , "t6ttWW600_425"            , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[10] == 1) l->ScanChain(chain_Wjets                    , "Wjets"                    , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[11] == 1) l->ScanChain(chain_Wjets_ht                 , "Wjets_ht"                 , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[12] == 1) l->ScanChain(chain_sync                     , "sync"                     , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[13] == 1) l->ScanChain(chain_T1ttbb_2J_mGo1500_mChi100_3bodydec_asymmDecOnly       , "T1ttbb_2J_mGo1500_mChi100_3bodydec_asymmDecOnly", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[14] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1000_mCh725_mChi715_3bodydec_v2        , "T1ttbbWW_2J_mGo1000_mCh725_mChi715_3bodydec_v2" , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[15] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2        , "T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2" , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[16] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2        , "T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2" , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[17] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1300_mCh300_mChi295_3bodydec_v2        , "T1ttbbWW_2J_mGo1300_mCh300_mChi295_3bodydec_v2" , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[18] == 1) l->ScanChain(chain_T5Full_Gl1500_Chi800_LSP100                           , "T5Full_Gl1500_Chi800_LSP100", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[19] == 1) l->ScanChain(chain_T5qqqqWW_1200_1000_800                                , "T5qqqqWW_1200_1000_800", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[20] == 1) l->ScanChain(chain_T5qqqqWW_deg_1000_315_300                             , "T5qqqqWW_deg_1000_315_300", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[21] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo1000_mCh310_mChi300                    , "T5qqqqWWDeg_mGo1000_mCh310_mChi300", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[22] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo1000_mCh315_mChi300                    , "T5qqqqWWDeg_mGo1000_mCh315_mChi300", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[23] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo1000_mCh325_mChi300                    , "T5qqqqWWDeg_mGo1000_mCh325_mChi300", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[24] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo800_mCh305_mChi300                     , "T5qqqqWWDeg_mGo800_mCh305_mChi300", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[25] == 1) l->ScanChain(chain_T5qqqqWW_mGo1000_mCh800_mChi700                       , "T5qqqqWW_mGo1000_mCh800_mChi700", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[26] == 1) l->ScanChain(chain_T5qqqqWW_mGo1200_mCh1000_mChi800                      , "T5qqqqWW_mGo1200_mCh1000_mChi800", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[27] == 1) l->ScanChain(chain_T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2, "T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[28] == 1) l->ScanChain(chain_T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec_v2        , "T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec_v2", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[29] == 1) l->ScanChain(chain_T5ttttDeg_mGo1300_mStop300_mCh285_mChi280_23bodydec_v2, "T5ttttDeg_mGo1300_mStop300_mCh285_mChi280_23bodydec_v2", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[30] == 1) l->ScanChain(chain_T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2        , "T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[31] == 1) l->ScanChain(chain_T6ttWW_600_425_50_v2                                  , "T6ttWW_600_425_50_v2", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[32] == 1) l->ScanChain(chain_T6ttWW_650_150_50_v2                                  , "T6ttWW_650_150_50_v2", "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[33] == 1) l->ScanChain(chain_test                                                  , "test"                , "baby", 0, "MakeBaby", -1, isoCase);
-    if (babiesToMake[34] == 1) l->ScanChain(chain_data_doubleEG                                         , "data_doubleEG"     , "baby", 0, "MakeBaby", -1, isoCase); 
-    if (babiesToMake[35] == 1) l->ScanChain(chain_TTJets_50ns                                           , "TTJets_50ns"       , "baby", 0, "MakeBaby", -1, isoCase); 
-    if (babiesToMake[36] == 1) l->ScanChain(chain_05Aug                                                 , "data05Aug"         , "baby", 0, "MakeBaby", -1, isoCase); 
+    if (babiesToMake[0]  == 1) l->ScanChain(chain_TTZJets                  , "ttz"                      , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[1]  == 1) l->ScanChain(chain_WZJets                   , "wz"                       , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[2]  == 1) l->ScanChain(chain_T1ttttG1200              , "t1tttt_1200_800"          , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[3]  == 1) l->ScanChain(chain_T1ttttG1500              , "t1tttt_1500_100"          , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[4]  == 1) l->ScanChain(chain_TTJets                   , "ttbar"                    , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[5]  == 1) l->ScanChain(chain_TTWJets                  , "ttw"                      , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[6]  == 1) l->ScanChain(chain_T5qqqqWW1200             , "t5qqqqWW1200"             , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[7]  == 1) l->ScanChain(chain_T5qqqqWW1500             , "t5qqqqWW1500"             , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[8]  == 1) l->ScanChain(chain_T6ttWW600_150            , "t6ttWW600_150"            , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[9]  == 1) l->ScanChain(chain_T6ttWW600_425            , "t6ttWW600_425"            , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[10] == 1) l->ScanChain(chain_Wjets                    , "Wjets"                    , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[11] == 1) l->ScanChain(chain_Wjets_ht                 , "Wjets_ht"                 , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[12] == 1) l->ScanChain(chain_sync                     , "sync"                     , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[13] == 1) l->ScanChain(chain_T1ttbb_2J_mGo1500_mChi100_3bodydec_asymmDecOnly       , "T1ttbb_2J_mGo1500_mChi100_3bodydec_asymmDecOnly", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[14] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1000_mCh725_mChi715_3bodydec_v2        , "T1ttbbWW_2J_mGo1000_mCh725_mChi715_3bodydec_v2" , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[15] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2        , "T1ttbbWW_2J_mGo1000_mCh725_mChi720_3bodydec_v2" , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[16] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2        , "T1ttbbWW_2J_mGo1300_mCh300_mChi290_3bodydec_v2" , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[17] == 1) l->ScanChain(chain_T1ttbbWW_2J_mGo1300_mCh300_mChi295_3bodydec_v2        , "T1ttbbWW_2J_mGo1300_mCh300_mChi295_3bodydec_v2" , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[18] == 1) l->ScanChain(chain_T5Full_Gl1500_Chi800_LSP100                           , "T5Full_Gl1500_Chi800_LSP100", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[19] == 1) l->ScanChain(chain_T5qqqqWW_1200_1000_800                                , "T5qqqqWW_1200_1000_800", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[20] == 1) l->ScanChain(chain_T5qqqqWW_deg_1000_315_300                             , "T5qqqqWW_deg_1000_315_300", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[21] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo1000_mCh310_mChi300                    , "T5qqqqWWDeg_mGo1000_mCh310_mChi300", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[22] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo1000_mCh315_mChi300                    , "T5qqqqWWDeg_mGo1000_mCh315_mChi300", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[23] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo1000_mCh325_mChi300                    , "T5qqqqWWDeg_mGo1000_mCh325_mChi300", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[24] == 1) l->ScanChain(chain_T5qqqqWWDeg_mGo800_mCh305_mChi300                     , "T5qqqqWWDeg_mGo800_mCh305_mChi300", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[25] == 1) l->ScanChain(chain_T5qqqqWW_mGo1000_mCh800_mChi700                       , "T5qqqqWW_mGo1000_mCh800_mChi700", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[26] == 1) l->ScanChain(chain_T5qqqqWW_mGo1200_mCh1000_mChi800                      , "T5qqqqWW_mGo1200_mCh1000_mChi800", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[27] == 1) l->ScanChain(chain_T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2, "T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec_v2", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[28] == 1) l->ScanChain(chain_T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec_v2        , "T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec_v2", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[29] == 1) l->ScanChain(chain_T5ttttDeg_mGo1300_mStop300_mCh285_mChi280_23bodydec_v2, "T5ttttDeg_mGo1300_mStop300_mCh285_mChi280_23bodydec_v2", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[30] == 1) l->ScanChain(chain_T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2        , "T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[31] == 1) l->ScanChain(chain_T6ttWW_600_425_50_v2                                  , "T6ttWW_600_425_50_v2", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[32] == 1) l->ScanChain(chain_T6ttWW_650_150_50_v2                                  , "T6ttWW_650_150_50_v2", "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[33] == 1) l->ScanChain(chain_test                                                  , "test"                , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[34] == 1) l->ScanChain(chain_data_doubleEG                                         , "data_doubleEG"     , "baby", 0, "MakeBaby", -1); 
+    if (babiesToMake[35] == 1) l->ScanChain(chain_TTJets_50ns                                           , "TTJets_50ns"       , "baby", 0, "MakeBaby", -1); 
+    if (babiesToMake[36] == 1) l->ScanChain(chain_05Aug                                                 , "data05Aug"         , "baby", 0, "MakeBaby", -1); 
 
 
   }
