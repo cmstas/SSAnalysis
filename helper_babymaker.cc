@@ -575,8 +575,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
 
   //Reject events that fail trigger matching
   if (ht < 300 && hyp_type != 0){
-    if (abs(lep1_id) == 11 && !isTriggerSafe_v1(lep1_idx)) continue;
-    if (abs(lep2_id) == 11 && !isTriggerSafe_v1(lep2_idx)) continue;
+    if (abs(lep1_id) == 11 && !isTriggerSafe_v1(lep1_idx)) return -1;
+    if (abs(lep2_id) == 11 && !isTriggerSafe_v1(lep2_idx)) return -1;
   }
 
   //Determine and save jet and b-tag variables, corrected
