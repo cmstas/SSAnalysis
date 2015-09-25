@@ -290,6 +290,10 @@ class babyMaker {
 
     //MET Filters
     bool passes_met_filters;
+
+    //Passes 3rd Z/G vetos
+    bool madeExtraZ;
+    bool madeExtraG;
  
 };
 

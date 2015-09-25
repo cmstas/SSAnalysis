@@ -166,8 +166,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("met3p0"                  , &met3p0                  );
   BabyTree->Branch("jet_corr_pt"             , &jet_corr_pt             );
   BabyTree->Branch("metphi3p0"               , &metphi3p0               );
-  BabyTree->Branch("passes_met_filters"      , &passes_met_filters     );
+  BabyTree->Branch("passes_met_filters"      , &passes_met_filters      );
   BabyTree->Branch("mostJets"                , &mostJets                );
+  BabyTree->Branch("madeExtraZ"             , &madeExtraZ             );
+  BabyTree->Branch("madeExtraG"             , &madeExtraG             );
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -366,6 +368,8 @@ void babyMaker::InitBabyNtuple(){
     met3p0 = 0;
     metphi3p0 = 0;
     passes_met_filters = 0;
+    madeExtraZ = 0;  
+    madeExtraG = 0;  
 } 
 
 //Main function
@@ -429,6 +433,10 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   hyp_result_t best_hyp_info = chooseBestHyp(expt, verbose);
   hyp_class = best_hyp_info.hyp_class;
   int best_hyp = best_hyp_info.best_hyp;
+  if (hyp_class == 6){
+    madeExtraZ = makesExtraZ(best_hyp).result;
+    madeExtraG = makesExtraGammaStar(best_hyp);
+  }
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
   if (hyp_class == 0 || hyp_class == -1) return -1;
   lep1_p4 = (tas::hyp_ll_p4().at(best_hyp).pt() > tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_p4().at(best_hyp) : tas::hyp_lt_p4().at(best_hyp);
