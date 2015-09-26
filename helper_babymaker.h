@@ -63,6 +63,8 @@ class babyMaker {
     float xsec;         
     float kfactor;      
     TString filename;
+    vector <float> genweights;
+    vector <string> genweightsID;
 
     //Pileup
     vector <float> trueNumInt;

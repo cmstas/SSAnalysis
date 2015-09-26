@@ -17,7 +17,7 @@ path=/hadoop/cms/store/user/cgeorge/condor/ss_13_babies
 #hadd TTPOWHEG.root                    $path/ttpowheg_*_0.root         
 #hadd WJets.root                       $path/wjets_*_0.root            
 #hadd WZ.root                          $path/wz_*_0.root               
-#hadd TTZL.root                        $path/ttzl_*_0.root
+hadd TTZL.root                        $path/ttzl_*_0.root
 #hadd TTZQ.root                        $path/ttzq_*_0.root
 #hadd TTW.root                         $path/ttw_*_0.root
 #hadd TTWQQ.root                       $path/ttwqq_*_0.root
@@ -40,8 +40,8 @@ path=/hadoop/cms/store/user/cgeorge/condor/ss_13_babies
 #hadd T6TTWW_650_150_50.root           $path/t6ttww_650_150_50_*_0.root 
 #hadd T1TTTT_1200.root                 $path/t1tttt_1200_*_0.root
 #hadd T1TTTT_1500.root                 $path/t1tttt_1500_*_0.root
-hadd SINGLETOP1.root                  $path/singletop1_*_0.root
-hadd SINGLETOP2.root                  $path/singletop2_*_0.root
-hadd SINGLETOP3.root                  $path/singletop3_*_0.root
-hadd SINGLETOP4.root                  $path/singletop4_*_0.root
-hadd SINGLETOP5.root                  $path/singletop5_*_0.root
+#hadd SINGLETOP1.root                  $path/singletop1_*_0.root
+#hadd SINGLETOP2.root                  $path/singletop2_*_0.root
+#hadd SINGLETOP3.root                  $path/singletop3_*_0.root
+#hadd SINGLETOP4.root                  $path/singletop4_*_0.root
+#hadd SINGLETOP5.root                  $path/singletop5_*_0.root

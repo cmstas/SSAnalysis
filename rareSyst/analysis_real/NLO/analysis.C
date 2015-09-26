@@ -4,7 +4,7 @@
 #include "TChain.h"
 #include "TCut.h"
 #include "TFile.h"
-#include "SYST.h"
+#include "SS.h"
 #include "../../../CORE/Tools/utils.h"
 #include "../../../CORE/SSSelections.h"
 #include "../../../software/tableMaker/CTable.h"
@@ -20,7 +20,7 @@ result_t run(TChain* chain){
 
   //Constants
   float lumi = 10.0;
-  float scale1fb = 1000.0/1000000.0; //weight provided must be provided by nEvents (denom).  Numer is to convert to fb.
+  float scale1fb = 1000.0/1000000.0; 
 
   //Histograms for cross-section calculation
   TH1F* cs = new TH1F("cs","cs", 1, 0, 1);
@@ -48,8 +48,8 @@ result_t run(TChain* chain){
   TFile *currentFile = 0;
 
   //PDF floats for nTotal
-  float cs_pdf[40] = { 0 }; 
-  float nTotalPDF[40] = { 0 }; 
+  float cs_pdf[102] = { 0 }; 
+  float nTotalPDF[102] = { 0 }; 
 
   //SR Histos
   TH1F* SR[3][32];
@@ -65,8 +65,8 @@ result_t run(TChain* chain){
   float SR_scale_dn[3][32];
  
   //PDF errors for SR
-  float sr_pdf[3][32][40];
-  for (int n = 0; n < 3; n++) { for (int i = 0; i < 32; i++){ for (int j = 0; j < 40; j++) sr_pdf[n][i][j] = 0; } } 
+  float sr_pdf[3][32][102];
+  for (int n = 0; n < 3; n++) { for (int i = 0; i < 32; i++){ for (int j = 0; j < 102; j++) sr_pdf[n][i][j] = 0; } } 
 
   //Initialize arrays
   for (int j = 0; j < 3; j++) { for (int i = 0; i < 32; i++) SR_scale_up[j][i] = 0; }; 
@@ -77,64 +77,60 @@ result_t run(TChain* chain){
 
     // Get File Content
     TFile *file = new TFile(currentFile->GetTitle());
-    TTree *tree = (TTree*)file->Get("Events");
-    systematics.Init(tree);
+    TTree *tree = (TTree*)file->Get("t");
+    samesign.Init(tree);
 
     // Loop over Events in current file
     for(unsigned int event = 0; event < tree->GetEntriesFast(); event++){
     
       //Get Event Content
-      systematics.GetEntry(event);
+      samesign.GetEntry(event);
       nEventsTotal++;
     
       //Progress
-      SYST::progress(nEventsTotal, nEventsChain);
+      SS::progress(nEventsTotal, nEventsChain);
 
       //Fill c-s histo
-      cs->Fill(0.5, syst::weight());  
+      cs->Fill(0.5, ss::genweights().at(0));  
  
       //Fill c-s scale error floats
-      cs_scale_up += syst::weights().at(4);
-      cs_scale_dn += syst::weights().at(8);
+      cs_scale_up += ss::genweights().at(4);
+      cs_scale_dn += ss::genweights().at(8);
   
       //Get c-s PDF errors
-      for (int i = 0; i < 40; i++) cs_pdf[i] += syst::weights().at(i+9);  
+      for (int i = 0; i < 102; i++) cs_pdf[i] += ss::genweights().at(i+9);  
 
       //Fill total nEvents histos
-      total->Fill(0.5, syst::weight()*scale1fb*lumi);
-      nTotal_scale_up += syst::weights().at(4)*scale1fb*lumi;
-      nTotal_scale_dn += syst::weights().at(8)*scale1fb*lumi;
-      for (int i = 0; i < 40; i++) nTotalPDF[i] += syst::weights().at(i+9)*scale1fb*lumi;  
+      total->Fill(0.5, ss::genweights().at(0)*scale1fb*lumi);
+      nTotal_scale_up += ss::genweights().at(4)*scale1fb*lumi;
+      nTotal_scale_dn += ss::genweights().at(8)*scale1fb*lumi;
+      for (int i = 0; i < 102; i++) nTotalPDF[i] += ss::genweights().at(i+9)*scale1fb*lumi;  
 
-      //Reject all events that are not "true SS"
-      if (!syst::keep()) continue;
-      if (syst::id1()*syst::id2() <= 0) continue;
+      //Reject all events that are hyp_class == 3
+      if (ss::hyp_class() != 3) continue;
     
       //Determine SR for the event
-      float mt_l1 = MT(syst::lep1().pt(), syst::lep1().phi(), syst::met(), syst::metphi());
-      float mt_l2 = MT(syst::lep2().pt(), syst::lep2().phi(), syst::met(), syst::metphi());
-      float mt_min = (mt_l1 > mt_l2 ? mt_l2 : mt_l1); 
-      int SR_ = signalRegion(syst::nJets40(), syst::nBtags(), syst::met(), syst::ht(), mt_min, syst::lep1().pt(), syst::lep2().pt());
+      int SR_ = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
       if (SR_ <= 0) continue;
-      anal_type_t hyp_type = analysisCategory(syst::lep1().pt(), syst::lep2().pt());
+      anal_type_t hyp_type = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());
 
       //Fill SR histograms -- yields
-      if (hyp_type == HighHigh) SR[0][SR_-1]->Fill(0.5, syst::weight()*scale1fb*lumi);
-      if (hyp_type == HighLow)  SR[1][SR_-1]->Fill(0.5, syst::weight()*scale1fb*lumi);
-      if (hyp_type == LowLow)   SR[2][SR_-1]->Fill(0.5, syst::weight()*scale1fb*lumi);
+      if (hyp_type == HighHigh) SR[0][SR_-1]->Fill(0.5, ss::genweights().at(0)*scale1fb*lumi);
+      if (hyp_type == HighLow)  SR[1][SR_-1]->Fill(0.5, ss::genweights().at(0)*scale1fb*lumi);
+      if (hyp_type == LowLow)   SR[2][SR_-1]->Fill(0.5, ss::genweights().at(0)*scale1fb*lumi);
 
       //Determine SR -- scale errors
-      if (hyp_type == HighHigh) SR_scale_up[0][SR_-1] += syst::weights().at(4)*scale1fb*lumi;
-      if (hyp_type == HighLow)  SR_scale_up[1][SR_-1] += syst::weights().at(4)*scale1fb*lumi;
-      if (hyp_type == LowLow)   SR_scale_up[2][SR_-1] += syst::weights().at(4)*scale1fb*lumi;
-      if (hyp_type == HighHigh) SR_scale_dn[0][SR_-1] += syst::weights().at(8)*scale1fb*lumi;
-      if (hyp_type == HighLow)  SR_scale_dn[1][SR_-1] += syst::weights().at(8)*scale1fb*lumi;
-      if (hyp_type == LowLow)   SR_scale_dn[2][SR_-1] += syst::weights().at(8)*scale1fb*lumi;
+      if (hyp_type == HighHigh) SR_scale_up[0][SR_-1] += ss::genweights().at(4)*scale1fb*lumi;
+      if (hyp_type == HighLow)  SR_scale_up[1][SR_-1] += ss::genweights().at(4)*scale1fb*lumi;
+      if (hyp_type == LowLow)   SR_scale_up[2][SR_-1] += ss::genweights().at(4)*scale1fb*lumi;
+      if (hyp_type == HighHigh) SR_scale_dn[0][SR_-1] += ss::genweights().at(8)*scale1fb*lumi;
+      if (hyp_type == HighLow)  SR_scale_dn[1][SR_-1] += ss::genweights().at(8)*scale1fb*lumi;
+      if (hyp_type == LowLow)   SR_scale_dn[2][SR_-1] += ss::genweights().at(8)*scale1fb*lumi;
 
       //Fill nEvents PDF error floats
-      if (hyp_type == HighHigh) for (int i = 0; i < 40; i++) sr_pdf[0][SR_-1][i] += syst::weights().at(i+9)*scale1fb*lumi;  
-      if (hyp_type == HighLow)  for (int i = 0; i < 40; i++) sr_pdf[1][SR_-1][i] += syst::weights().at(i+9)*scale1fb*lumi;  
-      if (hyp_type == LowLow)   for (int i = 0; i < 40; i++) sr_pdf[2][SR_-1][i] += syst::weights().at(i+9)*scale1fb*lumi;  
+      if (hyp_type == HighHigh) for (int i = 0; i < 102; i++) sr_pdf[0][SR_-1][i] += ss::genweights().at(i+9)*scale1fb*lumi;  
+      if (hyp_type == HighLow)  for (int i = 0; i < 102; i++) sr_pdf[1][SR_-1][i] += ss::genweights().at(i+9)*scale1fb*lumi;  
+      if (hyp_type == LowLow)   for (int i = 0; i < 102; i++) sr_pdf[2][SR_-1][i] += ss::genweights().at(i+9)*scale1fb*lumi;  
 
     }//event loop
   }//file loop
@@ -142,7 +138,7 @@ result_t run(TChain* chain){
   //Calculate c-s PDF errors
   float cs_pdf_up = 0;
   float cs_pdf_dn = 0;
-  for (int i = 1; i <= 20; i++){
+  for (int i = 1; i <= 51; i++){
     float pdf_up_temp = max(cs_pdf[2*i-2]- cs->Integral(), cs_pdf[2*i-1] - cs->Integral());
     float pdf_dn_temp = max(cs->Integral() - cs_pdf[2*i-2], cs->Integral() - cs_pdf[2*i-1]);
     cs_pdf_up += (pdf_up_temp > 0) ? pow(pdf_up_temp, 2) : 0;
@@ -178,7 +174,7 @@ result_t run(TChain* chain){
   //Calculate nTotal PDF errors
   float nTotal_pdf_up = 0;
   float nTotal_pdf_dn = 0;
-  for (int i = 1; i <= 20; i++){
+  for (int i = 1; i <= 51; i++){
     float pdf_up_temp = max(nTotalPDF[2*i-2] - nTotal, nTotalPDF[2*i-1] - nTotal);
     float pdf_dn_temp = max(nTotal - nTotalPDF[2*i-2], nTotal - nTotalPDF[2*i-1]);
     nTotal_pdf_up += (pdf_up_temp > 0) ? pow(pdf_up_temp, 2) : 0;
@@ -202,7 +198,7 @@ result_t run(TChain* chain){
     for (unsigned int k = 0; k < 32; k++) sr_pdf_dn[n][k] = 0; 
     for (unsigned int i = 0; i < (n == 0 ? 32 : (n == 1 ? 26 : 8)); i++){
       float value = SR[n][i]->Integral();
-      for (int j = 1; j <= 20; j++){
+      for (int j = 1; j <= 51; j++){
         float pdf_up_temp = max(sr_pdf[n][i][2*j-2] - value, sr_pdf[n][i][2*j-1] - value);
         float pdf_dn_temp = max(value - sr_pdf[n][i][2*j-2], value - sr_pdf[n][i][2*j-1]);
         sr_pdf_up[n][i] += (pdf_up_temp > 0) ? pow(pdf_up_temp, 2) : 0;
@@ -265,15 +261,14 @@ result_t run(TChain* chain){
 int analysis(){
 
   //Declare Chains
-  TChain *fixed_chain = new TChain("Events");
+  TChain *chain = new TChain("t");
 
   //Fill Chains
-  string infix = "fall2014";
-  string suffix = "_noFilt";
-  fixed_chain->Add(Form("/hadoop/cms/store/user/cgeorge/SS_Syst_Study/ttW/Babies/myTTW_fixed%s.root", suffix.c_str()));
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v3.07/TTZL.root");
+  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v3.07/TTZQ.root");
 
   //Do everything
-  result_t fixed = run(fixed_chain);
+  result_t fixed = run(chain);
 
   //Make Tables
   vector <CTable> tables; 

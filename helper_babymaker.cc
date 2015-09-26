@@ -29,6 +29,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("xsec"                    , &xsec                    );
   BabyTree->Branch("kfactor"                 , &kfactor                 );
   BabyTree->Branch("gen_met"                 , &gen_met                 );
+  BabyTree->Branch("genweights"              , &genweights              );
+  BabyTree->Branch("genweightsID"            , &genweightsID            );
   BabyTree->Branch("gen_met_phi"             , &gen_met_phi             );
   BabyTree->Branch("njets"                   , &njets                   );
   BabyTree->Branch("njets_corr"              , &njets_corr              );
@@ -214,6 +216,8 @@ void babyMaker::InitBabyNtuple(){
     xsec = -1;
     kfactor = -1;
     gen_met = -1;
+    genweights.clear();
+    genweightsID.clear();
     gen_met_phi = -1;
     njets = -1;
     njets_corr = -1;
@@ -406,6 +410,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     kfactor = tas::evt_kfactor();
     gen_met = tas::gen_met();
     gen_met_phi = tas::gen_metPhi();
+    genweights = tas::genweights(); 
+    genweightsID = tas::genweightsID(); 
   }
 
   //Fill data vs. mc variables

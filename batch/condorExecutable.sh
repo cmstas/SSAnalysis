@@ -2,9 +2,8 @@
 
 WHICH=$1
 FILE=$2
-PTREL=$3
-USER=$4
-EXPT=$5
+USER=$3
+EXPT=$4
 
 #Show where you are
 hostname
@@ -68,11 +67,7 @@ if [ "$WHICH" == "42" ]; then WHICH_SMALL="t2tt_arxiv"; fi
 if [ "$WHICH" == "43" ]; then WHICH_SMALL="t5qqqqzz_1500_800_100"; fi
 if [ "$WHICH" == "44" ]; then WHICH_SMALL="t6ttww_650_150_50"; fi
 
-if [ "$PTREL" == "4" ] 
-then
-  PT=""
-fi
-export OUTPUT=${WHICH_SMALL}_${FILE}${PT}_$EXPT
+export OUTPUT=${WHICH_SMALL}_${FILE}_$EXPT
 
 #This stuff to get output back
 export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}
@@ -81,8 +76,8 @@ export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}
 tar xzvf CORE.tar.gz
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
-echo "running: ./main.exe $WHICH $FILE $PTREL $EXPT"
-./main.exe $WHICH $FILE $PTREL $EXPT
+echo "running: ./main.exe $WHICH $FILE $EXPT"
+./main.exe $WHICH $FILE $EXPT
 ls -l `pwd`/${OUTPUT}.root
 
 echo "copying.  LS is: "
