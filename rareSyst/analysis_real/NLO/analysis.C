@@ -20,7 +20,9 @@ result_t run(TChain* chain){
 
   //Constants
   float lumi = 10.0;
-  float scale1fb = 1000.0/1000000.0; 
+  int nEvents = 400000; //V. IMPT!!  The bottom needs to be the number of events IN THE LHE FILE (not the GEN-SIM/MINIAOD/CMS3).  This converts the multiplicative weights to an additive weight.  
+  float kfact = 1.0; //k-factor; will adjust resulting cross-section
+  float scale1fb = 1000.0/nEvents; 
 
   //Histograms for cross-section calculation
   TH1F* cs = new TH1F("cs","cs", 1, 0, 1);
@@ -110,7 +112,8 @@ result_t run(TChain* chain){
       if (ss::hyp_class() != 3) continue;
     
       //Determine SR for the event
-      int SR_ = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      //int SR_ = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      int SR_ = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), ss::mtmin(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
       if (SR_ <= 0) continue;
       anal_type_t hyp_type = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());
 
@@ -298,8 +301,8 @@ int analysis(){
     tables[i].setTitle(Form("TTW: Predicted %s -- %s", i < 3 ? "Yields" : "Efficiencies", i%3==0 ? "HH" : (i%3==1 ? "HL" : "LL")));
     tables[i].useTitle(); 
     if (i < 6) tables[i].printHLine(1);
-    if (i < 6) tables[i].multiColumn(-1, 0, 3); 
-    if (i < 6) tables[i].multiColumn(-1, 4, 7); 
+    //if (i < 6) tables[i].multiColumn(-1, 0, 3); 
+    //if (i < 6) tables[i].multiColumn(-1, 4, 7); 
     tables[i].setColLine(3); 
     tables[i].setColLine(0); 
     tables[i].setColLine(7); 
@@ -308,8 +311,7 @@ int analysis(){
 
   //Fill yields tables
   for (int j = 0; j < 3; j++){
-    tables[j].setTable() ("fixed", "", "", "")
-                         ("yield", "stat", "scale up/dn", "pdf up/dn")
+    tables[j].setTable() ("yield", "stat", "scale up/dn", "pdf up/dn")
                          ("c-s", fixed.c_s.value, fixed.c_s.stat, Form("%.2f/%.2f", fixed.c_s.scale_up, fixed.c_s.scale_dn), Form("%.2f/%.2f", fixed.c_s.pdf_up, fixed.c_s.pdf_dn));
     for (int i = 0; i < (j == 0 ? 32 : (j == 1 ? 26 : 8)); i++){
       int row = i+1; 
@@ -320,14 +322,13 @@ int analysis(){
       tables[j].setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.pdf_up, fixed.sr[j][i].yield.pdf_dn), row, 3); 
     }
     //tables[j].print(); 
-    //tables[j].saveTex(Form("yields_%i.tex", j));
+    tables[j].saveTex(Form("tables/yields_%i.tex", j));
   }
 
   //Fill eff tables
   for (int j = 0; j < 3; j++){
     int tablenumber = j + 3;
-    tables[tablenumber].setTable() ("fixed", "", "", "")
-                                   ("", "1000*eff", "stat", "scale up/dn", "pdf up/dn");
+    tables[tablenumber].setTable() ("", "1000*eff", "stat", "scale up/dn", "pdf up/dn");
     for (int i = 0; i < (j == 0 ? 32 : (j == 1 ? 26 : 8)); i++){
       int row = i+1; 
       tables[tablenumber].setRowLabel(Form("%s SR%i", (j == 0 ? "HH" : (j == 1 ? "HL" : "LL")), i+1), row); 
@@ -337,7 +338,7 @@ int analysis(){
       tables[tablenumber].setCell(Form("%.2f/%.2f", fixed.sr[j][i].eff.pdf_up, fixed.sr[j][i].eff.pdf_dn), row, 3); 
     }
     //tables[tablenumber].print(); 
-    //tables[tablenumber].saveTex(Form("eff_%i.tex", j));
+    tables[tablenumber].saveTex(Form("tables/eff_%i.tex", j));
   }
 
   return 0;

@@ -7,7 +7,7 @@
 bool makeTables = 0;
 
 //Lumi
-float lumiAG = 2.5;
+float lumiAG = 10.0;
 
 struct results_t { TH1F* hh; TH1F* hl; TH1F* ll; }; 
 
@@ -96,15 +96,15 @@ void yields(){
   TChain* t5qqww_deg  = new TChain("t");
  
   //Fill chains
-  ttbar      ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTBAR.root"                                 );
-  ttw        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTW.root"                                   );
-  ttw        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTWQQ.root"                                 );
-  ttz        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTZL.root"                                  );
-  ttz        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTZQ.root"                                  );
-  wz         ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/WZ.root"                                    );
-  wjets      ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/WJets.root"                                 );
-  t1tttt_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/T1TTTT_1200.root"                           );
-  t1tttt_1500->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/T1TTTT_1500.root"                           );
+  //ttbar      ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTBAR.root"                                 );
+  //ttw        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTW.root"                                   );
+  //ttw        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTWQQ.root"                                 );
+  ttz        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.07/TTZL.root"                                  );
+  //ttz        ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/TTZQ.root"                                  );
+  //wz         ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/WZ.root"                                    );
+  //wjets      ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/WJets.root"                                 );
+  //t1tttt_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/T1TTTT_1200.root"                           );
+  //t1tttt_1500->Add("/nfs-7/userdata/ss2015/ssBabies/v3.06/T1TTTT_1500.root"                           );
   //t5qqww_1200->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/private/t5qqqqWW_1200_1000_800_baby_multiIso.root"   );
   //t5qqww_deg ->Add("/nfs-7/userdata/ss2015/ssBabies/v1.12/private/t5qqqqWW_deg_1000_315_300_baby_multiIso.root");
 
