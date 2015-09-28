@@ -35,7 +35,7 @@ sed -i "s/cgeorge/$USER/" condorExecutable.sh
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "TTZL" "TTZQ" "TTW" "TTWQQ" "DY_high" "DY_low" # "T1TTTT_1200" "TTW" "TTBAR" # "T1TTTT_1500" "T1TTTT_1200" # "DATAMUONEG2" "DATAMUONEG" "DataDoubleEG2" "DataDoubleMuon2" "DY_low"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "WJets"  "TTBAR"  "TTZL" "TTW" "WZ" "DY_high"   "DataDoubleEG"  "DataDoubleMuon" "DATAMUONEGC" "DataDoubleEGC" "DataDoubleMuonC" "WZ3LNu" "TTWQQ" "DATAMUONEG2" "DataDoubleMuon2" "DataDoubleEG2" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS"  "WZZ" "T5QQQQWZ_1200_1000_800" "T5QQQQDeg_1000_300_285_280" "T5QQQQWZ_1500_800_100" "T5ttttDeg_1000_300_280" "T2ttDeg_350_330" "T5QQQQZZ_1200_1000_800" "T6TTWW_600_425_50" "T2TT_ARXIV" "T5QQQQZZ_1500_800_100" "T6TTWW_650_150_50"
+  for sname in "TTZL" "TTZQ" "TTW" "DY_high" "DY_low" "T1TTTT_1200" "T1TTTT_1500" "DATAMUONEG2" "DATAMUONEG" "DataDoubleEG2" "DataDoubleMuon2" "DY_low"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "WJets"  "TTBAR"  "TTZL" "WZ" "DY_high"   "DataDoubleEG"  "DataDoubleMuon" "DATAMUONEGC" "DataDoubleEGC" "DataDoubleMuonC" "WZ3LNu" "DATAMUONEG2" "DataDoubleMuon2" "DataDoubleEG2" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS"  "WZZ" "T5QQQQWZ_1200_1000_800" "T5QQQQDeg_1000_300_285_280" "T5QQQQWZ_1500_800_100" "T5ttttDeg_1000_300_280" "T2ttDeg_350_330" "T5QQQQZZ_1200_1000_800" "T6TTWW_600_425_50" "T2TT_ARXIV" "T5QQQQZZ_1500_800_100" "T6TTWW_650_150_50" "DataDoubleMuonD" "DataDoubleEGD" "DATAMUONEGD"
   do
     path="/hadoop/cms/store/group/snt/run2_25ns"
     #Iter
@@ -139,6 +139,21 @@ do
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=19
+    elif [ $sname == "DataDoubleMuonD"  ]; 
+      then name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v3";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-09
+      nameNu=46
+    elif [ $sname == "DataDoubleEGD"    ]; 
+      then name="Run2015D_DoubleEG_MINIAOD_PromptReco-v3";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-09
+      nameNu=45
+    elif [ $sname == "DATAMUONEGD"    ]; 
+      then name="Run2015D_MuonEG_MINIAOD_PromptReco-v3";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-09
+      nameNu=47
     elif [ $sname == "TTW" ]
     then
       name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1" 
