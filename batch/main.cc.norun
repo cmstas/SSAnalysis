@@ -299,20 +299,20 @@ int main(int argc, char *argv[]){
       name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v3/merged";
       shortname="datadoublemuond";
       isData = true;
-      path="/hadoop/cms/store/group/snt/run2_data"
+      path="/hadoop/cms/store/group/snt/run2_data";
       tag="V07-04-09";
       break;
     case DataDoubleEGD:
       shortname="datadoubleegd";
       name="Run2015D_DoubleEG_MINIAOD_PromptReco-v3/merged";
       isData = true;
-      path="/hadoop/cms/store/group/snt/run2_data"
+      path="/hadoop/cms/store/group/snt/run2_data";
       tag="V07-04-09";
       break;
     case DATAMUONEGD:
       shortname="datamuonegd";
       name="Run2015D_MuonEG_MINIAOD_PromptReco-v3/merged";
-      path="/hadoop/cms/store/group/snt/run2_data"
+      path="/hadoop/cms/store/group/snt/run2_data";
       isData = true;
       tag="V07-04-09";
       break;
