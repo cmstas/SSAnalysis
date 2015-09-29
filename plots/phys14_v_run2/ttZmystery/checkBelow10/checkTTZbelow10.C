@@ -65,16 +65,29 @@ void run(TTree* tree, float arg1, float arg2){
     //Load event  
     samesign.GetEntry(event); 
 
+    //Only class 3
+    if (ss::hyp_class() != 3) continue;
+
     //Apply control region
     if (ss::nbtags() < 2) continue;
     if (ss::ht() < 500 && ss::met() < 30) continue;
 
-    //Find number of events that pass all selections between 10 and 20
-    float genMass = getGenMass(); 
-    if (genMass > arg1 && genMass < arg2){
-      if (ss::hyp_class() != 3) denom++; 
-      if (ss::hyp_class() == 3) numer++; 
-    }
+    //If we're here, will be in denom or numer.  
+
+    //If no third lepton, denom
+    if (ss::lep3_idx() < 0) denom++; 
+ 
+    //If 3rd lep is SS to the selected leptons, denom
+    if (sgn(ss::lep1_id()) == sgn(ss::lep3_id())) denom++;
+
+    //Check if 3rd lepton is SF to either selected lepton
+    bool sf13 = 0;
+    bool sf12 = 0;
+    if (ss::lep1_id() == -ss::lep3_id()) sf13 = 1;
+    if (ss::lep2_id() == -ss::lep3_id()) sf23 = 1;
+
+    //If no SF pairs, denom
+    if (ss::lep3_id() == 
 
   }//event loop
 

@@ -239,19 +239,19 @@ result_t run(TChain* chain, int nEvents, string name){
       result.sr[n][i].eff.pdf_up   =  100*max(eff_pdf_1, eff_pdf_2)/eff;
       result.sr[n][i].eff.pdf_dn   = -100*min(eff_pdf_1, eff_pdf_2)/eff;
 
-      cout << " " << endl;
-      cout << name << " SR " << i+1 << ": "       << Form("% 9.5f",  result.sr[n][i].yield.value   ) << endl;
-      cout << "  --> Stat err (%):     " << Form("% 9.5f",  result.sr[n][i].yield.stat    ) << endl;
-      cout << "  --> Scale up (%):     " << Form("% 9.5f",  result.sr[n][i].yield.scale_up) << endl;
-      cout << "  --> Scale dn (%):     " << Form("% 9.5f",  result.sr[n][i].yield.scale_dn) << endl;
-      cout << "  --> PDF up (%):       " << Form("% 9.5f",  result.sr[n][i].yield.pdf_up  ) << endl;
-      cout << "  --> PDF dn (%):       " << Form("% 9.5f",  result.sr[n][i].yield.pdf_dn  ) << endl;
-      cout << "  --> Efficiency:       " << Form("% 9.5f",  result.sr[n][i].eff.value     ) << endl;
-      cout << "  --> Eff stat (%):     " << Form("% 9.5f",  result.sr[n][i].eff.stat      ) << endl;
-      cout << "  --> Eff scale up (%): " << Form("% 9.5f",  result.sr[n][i].eff.scale_up  ) << endl;
-      cout << "  --> Eff scale dn (%): " << Form("% 9.5f",  result.sr[n][i].eff.scale_dn  ) << endl;
-      cout << "  --> Eff PDF up (%):   " << Form("% 9.5f",  result.sr[n][i].eff.pdf_up    ) << endl;
-      cout << "  --> Eff PDF dn (%):   " << Form("% 9.5f",  result.sr[n][i].eff.pdf_dn    ) << endl;
+      //cout << " " << endl;
+      //cout << name << " SR " << i+1 << ": "       << Form("% 9.5f",  result.sr[n][i].yield.value   ) << endl;
+      //cout << "  --> Stat err (%):     " << Form("% 9.5f",  result.sr[n][i].yield.stat    ) << endl;
+      //cout << "  --> Scale up (%):     " << Form("% 9.5f",  result.sr[n][i].yield.scale_up) << endl;
+      //cout << "  --> Scale dn (%):     " << Form("% 9.5f",  result.sr[n][i].yield.scale_dn) << endl;
+      //cout << "  --> PDF up (%):       " << Form("% 9.5f",  result.sr[n][i].yield.pdf_up  ) << endl;
+      //cout << "  --> PDF dn (%):       " << Form("% 9.5f",  result.sr[n][i].yield.pdf_dn  ) << endl;
+      //cout << "  --> Efficiency:       " << Form("% 9.5f",  result.sr[n][i].eff.value     ) << endl;
+      //cout << "  --> Eff stat (%):     " << Form("% 9.5f",  result.sr[n][i].eff.stat      ) << endl;
+      //cout << "  --> Eff scale up (%): " << Form("% 9.5f",  result.sr[n][i].eff.scale_up  ) << endl;
+      //cout << "  --> Eff scale dn (%): " << Form("% 9.5f",  result.sr[n][i].eff.scale_dn  ) << endl;
+      //cout << "  --> Eff PDF up (%):   " << Form("% 9.5f",  result.sr[n][i].eff.pdf_up    ) << endl;
+      //cout << "  --> Eff PDF dn (%):   " << Form("% 9.5f",  result.sr[n][i].eff.pdf_dn    ) << endl;
 
     }//SR loop
   }
@@ -263,42 +263,27 @@ result_t run(TChain* chain, int nEvents, string name){
 void makeTables(result_t fixed, string name){
 
   //Make Tables
-  vector <CTable> tables; 
-  CTable table1;
-  CTable table2;
-  CTable table3; 
-  CTable table4; 
-  CTable table5; 
-  CTable table6; 
-  CTable table7; 
-  CTable table8; 
-  CTable table9; 
-  tables.push_back(table1);
-  tables.push_back(table2);
-  tables.push_back(table3);
-  tables.push_back(table4);
-  tables.push_back(table5);
-  tables.push_back(table6);
-  tables.push_back(table7);
-  tables.push_back(table8);
-  tables.push_back(table9);
+  CTable table1, table2, table3, table4, table5, table6, table7, table8, table9;
+  vector <CTable> tables = { table1, table2, table3, table4, table5, table6, table7, table8, table9 }; 
 
   //Format Tables
   for (unsigned int i = 0; i < tables.size(); i++){
     tables[i].setPrecision(2); 
-    tables[i].setTitle(Form("TTZ: Predicted %s -- %s", i < 3 ? "Yields" : "Efficiencies", i%3 == 0 ? "HH" : (i%3==1 ? "HL" : "LL")));
+    tables[i].setTitle(Form("%s: Predicted %s -- %s", name.c_str(), i < 3 ? "Yields" : "Efficiencies", i%3 == 0 ? "HH" : (i%3==1 ? "HL" : "LL")));
     tables[i].useTitle(); 
     if (i < 6) tables[i].printHLine(1);
     tables[i].setColLine(3); 
+    tables[i].setColLine(4); 
     tables[i].setColLine(0); 
     tables[i].setColLine(7); 
-    if (i >= 6) tables[i].setColLine(8); 
+    tables[i].setColLine(8); 
+    if (i >= 6) tables[i].setColLine(9); 
   }
 
   //Fill yields tables
   for (int j = 0; j < 3; j++){
-    tables[j].setTable() ("yield", "stat", "scale up/dn", "pdf up/dn")
-                         ("c-s", fixed.c_s.value, fixed.c_s.stat, Form("%.2f/%.2f", fixed.c_s.scale_up, fixed.c_s.scale_dn), Form("%.2f/%.2f", fixed.c_s.pdf_up, fixed.c_s.pdf_dn));
+    tables[j].setTable() ("yield", "stat", "scale up/dn", "pdf up/dn", "total")
+                         ("c-s", fixed.c_s.value, fixed.c_s.stat, Form("%.2f/%.2f", fixed.c_s.scale_up, fixed.c_s.scale_dn), Form("%.2f/%.2f", fixed.c_s.pdf_up, fixed.c_s.pdf_dn), sqrt( pow(max(fixed.c_s.pdf_up, fixed.c_s.pdf_dn), 2) + pow(max(fixed.c_s.scale_up, fixed.c_s.scale_dn), 2)));
     for (int i = 0; i < (j == 0 ? 32 : (j == 1 ? 26 : 8)); i++){
       int row = i+1; 
       tables[j].setRowLabel(Form("%s SR%i", (j == 0 ? "HH" : (j == 1 ? "HL" : "LL")), i+1), row); 
@@ -306,8 +291,9 @@ void makeTables(result_t fixed, string name){
       tables[j].setCell(fixed.sr[j][i].yield.stat, row, 1); 
       tables[j].setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.scale_up, fixed.sr[j][i].yield.scale_dn), row, 2); 
       tables[j].setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.pdf_up, fixed.sr[j][i].yield.pdf_dn), row, 3); 
+      tables[j].setCell(Form("%.2f", sqrt( pow(max(fixed.sr[j][i].yield.pdf_up, fixed.sr[j][i].yield.pdf_dn), 2) + pow(max(fixed.sr[j][i].yield.scale_up, fixed.sr[j][i].yield.scale_dn), 2))), row, 4); 
     }
-    //tables[j].print(); 
+    tables[j].print(); 
     tables[j].saveTex(Form("tables/yields_%s_%i.tex", name.c_str(), j));
   }
 
