@@ -5,9 +5,9 @@
 #include "TCut.h"
 #include "TFile.h"
 #include "SS.h"
-#include "../../../CORE/Tools/utils.h"
-#include "../../../CORE/SSSelections.h"
-#include "../../../software/tableMaker/CTable.h"
+#include "../../../../CORE/Tools/utils.h"
+#include "../../../../CORE/SSSelections.h"
+#include "../../../../software/tableMaker/CTable.h"
 
 using namespace std;
 
@@ -16,11 +16,11 @@ struct yield_t { float value; float stat; float scale_up; float scale_dn; float 
 struct sr_t    { yield_t yield; yield_t eff; }; 
 struct result_t { yield_t c_s; sr_t sr[3][34]; }; 
 
-result_t run(TChain* chain){
+//V. IMPT!!  The nEvents needs to be the number of events IN THE LHE FILE (not the GEN-SIM/MINIAOD/CMS3).  This converts the multiplicative weights to an additive weight.  
+result_t run(TChain* chain, int nEvents, string name){
 
   //Constants
   float lumi = 10.0;
-  int nEvents = 400000; //V. IMPT!!  The bottom needs to be the number of events IN THE LHE FILE (not the GEN-SIM/MINIAOD/CMS3).  This converts the multiplicative weights to an additive weight.  
   float kfact = 1.0; //k-factor; will adjust resulting cross-section
   float scale1fb = 1000.0/nEvents; 
 
@@ -108,11 +108,10 @@ result_t run(TChain* chain){
       nTotal_scale_dn += ss::genweights().at(8)*scale1fb*lumi;
       for (int i = 0; i < 102; i++) nTotalPDF[i] += ss::genweights().at(i+9)*scale1fb*lumi;  
 
-      //Reject all events that are hyp_class == 3
+      //Require SS
       if (ss::hyp_class() != 3) continue;
     
       //Determine SR for the event
-      //int SR_ = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
       int SR_ = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), ss::mtmin(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
       if (SR_ <= 0) continue;
       anal_type_t hyp_type = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());
@@ -160,7 +159,7 @@ result_t run(TChain* chain){
   result.c_s.pdf_dn   =  100*sqrt(cs_pdf_dn)/cs->Integral();
 
   //Print results 
-  cout << "Cross-Section: "      << result.c_s.value    << endl;
+  cout << "Cross-Section (" << name << "): " << result.c_s.value << endl;
   cout << "  --> Stat err (%): " << result.c_s.stat     << endl;
   cout << "  --> Scale up (%): " << result.c_s.scale_up << endl;
   cout << "  --> Scale dn (%): " << result.c_s.scale_dn << endl;
@@ -186,7 +185,7 @@ result_t run(TChain* chain){
 
   //Print results
   cout << " " << endl;
-  cout << "nTotal: " << nTotal << endl;
+  cout << "nTotal (" << name << "): " << nTotal << endl;
   cout << "  --> Stat err (%): " <<  100*nTotal_stat                       << endl;
   cout << "  --> Scale up (%): " <<  100*(nTotal_scale_dn - nTotal)/nTotal << endl;
   cout << "  --> Scale dn (%): " << -100*(nTotal_scale_up - nTotal)/nTotal << endl;
@@ -241,7 +240,7 @@ result_t run(TChain* chain){
       result.sr[n][i].eff.pdf_dn   = -100*min(eff_pdf_1, eff_pdf_2)/eff;
 
       cout << " " << endl;
-      cout << "SR " << i+1 << ": "       << Form("% 9.5f",  result.sr[n][i].yield.value   ) << endl;
+      cout << name << " SR " << i+1 << ": "       << Form("% 9.5f",  result.sr[n][i].yield.value   ) << endl;
       cout << "  --> Stat err (%):     " << Form("% 9.5f",  result.sr[n][i].yield.stat    ) << endl;
       cout << "  --> Scale up (%):     " << Form("% 9.5f",  result.sr[n][i].yield.scale_up) << endl;
       cout << "  --> Scale dn (%):     " << Form("% 9.5f",  result.sr[n][i].yield.scale_dn) << endl;
@@ -261,17 +260,7 @@ result_t run(TChain* chain){
 
 }
 
-int analysis(){
-
-  //Declare Chains
-  TChain *chain = new TChain("t");
-
-  //Fill Chains
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v3.07/TTZL.root");
-  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v3.07/TTZQ.root");
-
-  //Do everything
-  result_t fixed = run(chain);
+void makeTables(result_t fixed, string name){
 
   //Make Tables
   vector <CTable> tables; 
@@ -296,13 +285,10 @@ int analysis(){
 
   //Format Tables
   for (unsigned int i = 0; i < tables.size(); i++){
-    cout << " " << endl;
     tables[i].setPrecision(2); 
-    tables[i].setTitle(Form("TTW: Predicted %s -- %s", i < 3 ? "Yields" : "Efficiencies", i%3==0 ? "HH" : (i%3==1 ? "HL" : "LL")));
+    tables[i].setTitle(Form("TTZ: Predicted %s -- %s", i < 3 ? "Yields" : "Efficiencies", i%3 == 0 ? "HH" : (i%3==1 ? "HL" : "LL")));
     tables[i].useTitle(); 
     if (i < 6) tables[i].printHLine(1);
-    //if (i < 6) tables[i].multiColumn(-1, 0, 3); 
-    //if (i < 6) tables[i].multiColumn(-1, 4, 7); 
     tables[i].setColLine(3); 
     tables[i].setColLine(0); 
     tables[i].setColLine(7); 
@@ -322,7 +308,7 @@ int analysis(){
       tables[j].setCell(Form("%.2f/%.2f", fixed.sr[j][i].yield.pdf_up, fixed.sr[j][i].yield.pdf_dn), row, 3); 
     }
     //tables[j].print(); 
-    tables[j].saveTex(Form("tables/yields_%i.tex", j));
+    tables[j].saveTex(Form("tables/yields_%s_%i.tex", name.c_str(), j));
   }
 
   //Fill eff tables
@@ -337,9 +323,28 @@ int analysis(){
       tables[tablenumber].setCell(Form("%.2f/%.2f", fixed.sr[j][i].eff.scale_up, fixed.sr[j][i].eff.scale_dn), row, 2); 
       tables[tablenumber].setCell(Form("%.2f/%.2f", fixed.sr[j][i].eff.pdf_up, fixed.sr[j][i].eff.pdf_dn), row, 3); 
     }
-    //tables[tablenumber].print(); 
-    tables[tablenumber].saveTex(Form("tables/eff_%i.tex", j));
+    tables[tablenumber].saveTex(Form("tables/eff_%s_%i.tex", name.c_str(), j));
   }
+
+}
+
+int analysis(){
+
+  //Declare Chains
+  TChain *ttz_chain = new TChain("t");
+  TChain *ttw_chain = new TChain("t");
+
+  //Fill Chains
+  ttz_chain->Add("/nfs-7/userdata/ss2015/ssBabies/v3.07/TTZL.root");
+  ttw_chain->Add("/nfs-7/userdata/ss2015/ssBabies/v3.07/TTW.root");
+
+  //Do everything
+  result_t ttz = run(ttz_chain, 400000, "ttz");
+  result_t ttw = run(ttw_chain, 425000, "ttw");
+
+  //Make tables
+  makeTables(ttz, "ttz"); 
+  makeTables(ttw, "ttw"); 
 
   return 0;
 
