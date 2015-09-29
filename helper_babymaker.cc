@@ -88,6 +88,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep3_idx"                , &lep3_idx                );
   BabyTree->Branch("lep3_p4"                 , &lep3_p4                 );
   BabyTree->Branch("lep3_quality"            , &lep3_quality            );
+  BabyTree->Branch("lep4_id"                 , &lep4_id                 );
+  BabyTree->Branch("lep4_idx"                , &lep4_idx                );
+  BabyTree->Branch("lep4_p4"                 , &lep4_p4                 );
+  BabyTree->Branch("lep4_quality"            , &lep4_quality            );
   BabyTree->Branch("lep1_iso"                , &lep1_iso                );
   BabyTree->Branch("lep2_iso"                , &lep2_iso                );
   BabyTree->Branch("dilep_p4"                , &dilep_p4                );
@@ -100,9 +104,13 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep1_passes_id"          , &lep1_passes_id          );
   BabyTree->Branch("lep2_passes_id"          , &lep2_passes_id          );
   BabyTree->Branch("lep3_passes_id"          , &lep3_passes_id          );
+  BabyTree->Branch("lep4_passes_id"          , &lep4_passes_id          );
   BabyTree->Branch("lep3_tight"              , &lep3_tight              );
   BabyTree->Branch("lep3_veto"               , &lep3_veto               );
   BabyTree->Branch("lep3_fo"                 , &lep3_fo                 );
+  BabyTree->Branch("lep4_tight"              , &lep4_tight              );
+  BabyTree->Branch("lep4_veto"               , &lep4_veto               );
+  BabyTree->Branch("lep4_fo"                 , &lep4_fo                 );
   BabyTree->Branch("lep1_dxyPV"              , &lep1_dxyPV              );
   BabyTree->Branch("lep2_dxyPV"              , &lep2_dxyPV              );
   BabyTree->Branch("lep1_dZ"                 , &lep1_dZ                 );
@@ -170,8 +178,12 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("metphi3p0"               , &metphi3p0               );
   BabyTree->Branch("passes_met_filters"      , &passes_met_filters      );
   BabyTree->Branch("mostJets"                , &mostJets                );
-  BabyTree->Branch("madeExtraZ"             , &madeExtraZ             );
-  BabyTree->Branch("madeExtraG"             , &madeExtraG             );
+  BabyTree->Branch("madeExtraZ"              , &madeExtraZ               );
+  BabyTree->Branch("madeExtraG"              , &madeExtraG               );
+  BabyTree->Branch("lep3_mcid"               , &lep3_mcid                );
+  BabyTree->Branch("lep3_mcidx"              , &lep3_mcidx               );
+  BabyTree->Branch("lep4_mcid"               , &lep4_mcid                );
+  BabyTree->Branch("lep4_mcidx"              , &lep4_mcidx               );
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -271,7 +283,14 @@ void babyMaker::InitBabyNtuple(){
     lep2_id_gen = -1;
     lep3_id = -1;
     lep3_idx = -1;
+    lep4_id = -1;
+    lep4_idx = -1;
     lep3_quality = -1;
+    lep3_mcid = -1; 
+    lep3_mcidx = -1;
+    lep4_quality = -1;
+    lep4_mcid = -1; 
+    lep4_mcidx = -1;
     lep1_iso = -1;
     lep2_iso = -1;
     genps_p4.clear();
@@ -283,9 +302,13 @@ void babyMaker::InitBabyNtuple(){
     lep1_passes_id = false;
     lep2_passes_id = false;
     lep3_passes_id = false;
+    lep4_passes_id = false;
     lep3_tight = false;
     lep3_veto = false;
     lep3_fo = false;
+    lep4_tight = false;
+    lep4_veto = false;
+    lep4_fo = false;
     lep1_dxyPV = -999998;
     lep2_dxyPV = -999998;
     lep1_dZ = -999998;
@@ -316,6 +339,7 @@ void babyMaker::InitBabyNtuple(){
     lep1_p4 = LorentzVector(0,0,0,0);
     lep2_p4 = LorentzVector(0,0,0,0);
     lep3_p4 = LorentzVector(0,0,0,0);
+    //lep4_p4 = LorentzVector(0,0,0,0);
     lep1_p4_gen = LorentzVector(0,0,0,0);
     lep2_p4_gen = LorentzVector(0,0,0,0);
     lep1_closeJet = LorentzVector(0,0,0,0);
@@ -466,11 +490,24 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   lep1_ip3d_err = lep1.ip3dErr();
   lep2_ip3d_err = lep2.ip3dErr();
   hyp_type = tas::hyp_type().at(best_hyp);
-  pair <particle_t, int> thirdLepton = getThirdLepton(best_hyp);
-  lep3_id = thirdLepton.first.id;
-  lep3_idx = thirdLepton.first.idx;
-  lep3_p4 = thirdLepton.first.p4;
+  pair <Lep, int> thirdLepton = getThirdLepton(best_hyp);
+  lep3_id = thirdLepton.first.pdgId();
+  lep3_idx = thirdLepton.first.idx();
+  if (lep3_idx >= 0 && (abs(lep3_id) == 11 || abs(lep3_id) == 13)){
+    lep3_p4 = thirdLepton.first.p4();
+    lep3_mcid = thirdLepton.first.mc_id();
+    lep3_mcidx = thirdLepton.first.mcidx();
+  }
   lep3_quality = thirdLepton.second;
+  pair <Lep, int> fourthLepton = getThirdLepton(best_hyp, lep3_id, lep3_idx);
+  lep4_id = fourthLepton.first.pdgId();
+  lep4_idx = fourthLepton.first.idx();
+  if (lep4_idx >= 0 && (abs(lep4_id) == 11 || abs(lep4_id) == 13)){
+    lep4_p4 = fourthLepton.first.p4();
+    lep4_mcid = fourthLepton.first.mc_id();
+    lep4_mcidx = fourthLepton.first.mcidx();
+  }
+  lep4_quality = fourthLepton.second;
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
   lep1_multiIso = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.10, 0.7, 7.0) : passMultiIso(13, lep1_idx, 0.14, 0.68, 6.7);
@@ -489,6 +526,14 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     lep3_tight = abs(lep3_id) == 11 ? isGoodElectron(lep3_idx) : isGoodMuon(lep3_idx);
     lep3_veto = abs(lep3_id) == 11 ? isGoodVetoElectron(lep3_idx) : isGoodVetoMuon(lep3_idx);
     lep3_fo = abs(lep3_id) == 11 ? isFakableElectron(lep3_idx) : isFakableMuon(lep3_idx);
+  }
+
+  //More Fourth lepton stuff
+  if (abs(lep4_id) == 11 || abs(lep4_id) == 13){
+    lep4_passes_id = isGoodLepton(lep4_id, lep4_idx);
+    lep4_tight = abs(lep4_id) == 11 ? isGoodElectron(lep4_idx) : isGoodMuon(lep4_idx);
+    lep4_veto = abs(lep4_id) == 11 ? isGoodVetoElectron(lep4_idx) : isGoodVetoMuon(lep4_idx);
+    lep4_fo = abs(lep4_id) == 11 ? isFakableElectron(lep4_idx) : isFakableMuon(lep4_idx);
   }
 
   //Lepton MC variables

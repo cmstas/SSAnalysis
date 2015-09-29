@@ -170,8 +170,18 @@ class babyMaker {
     //Third lepton -- quality is 2 for good, 1 for fakeable, 0 for veto
     int lep3_id;
     int lep3_idx;
+    int lep3_mcid;
+    int lep3_mcidx;
     int lep3_quality;
     LorentzVector lep3_p4;
+
+    ////Fourth lepton -- quality is 2 for good, 1 for fakeable, 0 for veto
+    int lep4_id;
+    int lep4_idx;
+    int lep4_mcid;
+    int lep4_mcidx;
+    int lep4_quality;
+    LorentzVector lep4_p4;
 
     //Isolation
     float lep1_iso;
@@ -189,11 +199,17 @@ class babyMaker {
     bool lep1_passes_id;
     bool lep2_passes_id;
     bool lep3_passes_id;
+    bool lep4_passes_id;
 
     //Lep3 IDISO
     bool lep3_tight;
     bool lep3_veto;
     bool lep3_fo;
+
+    //Lep4 IDISO
+    bool lep4_tight;
+    bool lep4_veto;
+    bool lep4_fo;
 
     //Imparct parameter
     float lep1_dxyPV;
