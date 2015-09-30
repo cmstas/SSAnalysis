@@ -82,7 +82,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   createAndInitMVA("./CORE");
 
   //Add good run list
-  set_goodrun_file("goodRunList/final_golden_50ns_40p03pb.txt");
+  set_goodrun_file("goodRunList/goldenJson166p37pb.txt");
 
   //Set up jet corrs
   vector <std::string> files;
