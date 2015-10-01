@@ -91,7 +91,6 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep4_id"                 , &lep4_id                 );
   BabyTree->Branch("lep4_idx"                , &lep4_idx                );
   BabyTree->Branch("lep4_p4"                 , &lep4_p4                 );
-  BabyTree->Branch("lep4_quality"            , &lep4_quality            );
   BabyTree->Branch("lep1_iso"                , &lep1_iso                );
   BabyTree->Branch("lep2_iso"                , &lep2_iso                );
   BabyTree->Branch("dilep_p4"                , &dilep_p4                );
@@ -288,7 +287,6 @@ void babyMaker::InitBabyNtuple(){
     lep3_quality = -1;
     lep3_mcid = -1; 
     lep3_mcidx = -1;
-    lep4_quality = -1;
     lep4_mcid = -1; 
     lep4_mcidx = -1;
     lep1_iso = -1;
@@ -499,15 +497,14 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     lep3_mcidx = thirdLepton.first.mcidx();
   }
   lep3_quality = thirdLepton.second;
-  pair <Lep, int> fourthLepton = getThirdLepton(best_hyp, lep3_id, lep3_idx);
-  lep4_id = fourthLepton.first.pdgId();
-  lep4_idx = fourthLepton.first.idx();
+  Lep fourthLepton = getFourthLepton(best_hyp);
+  lep4_id = fourthLepton.pdgId();
+  lep4_idx = fourthLepton.idx();
   if (lep4_idx >= 0 && (abs(lep4_id) == 11 || abs(lep4_id) == 13)){
-    lep4_p4 = fourthLepton.first.p4();
-    lep4_mcid = fourthLepton.first.mc_id();
-    lep4_mcidx = fourthLepton.first.mcidx();
+    lep4_p4 = fourthLepton.p4();
+    lep4_mcid = fourthLepton.mc_id();
+    lep4_mcidx = fourthLepton.mcidx();
   }
-  lep4_quality = fourthLepton.second;
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
   lep1_multiIso = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.10, 0.7, 7.0) : passMultiIso(13, lep1_idx, 0.14, 0.68, 6.7);

@@ -4,6 +4,8 @@ xrootdbroken="1"
 
 nSubmitted=0
 
+SPPATH="v5"
+
 #Source this stupid thing
 pushd ..
 . setup.sh
@@ -35,7 +37,7 @@ sed -i "s/cgeorge/$USER/" condorExecutable.sh
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "TTZL" "TTZQ" "TTW" "DY_high" "DY_low" "T1TTTT_1200" "T1TTTT_1500" "DATAMUONEG2" "DATAMUONEG" "DataDoubleEG2" "DataDoubleMuon2" "DY_low"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "WJets"  "TTBAR"  "TTZL" "WZ" "DY_high"   "DataDoubleEG"  "DataDoubleMuon" "DATAMUONEGC" "DataDoubleEGC" "DataDoubleMuonC" "WZ3LNu" "DATAMUONEG2" "DataDoubleMuon2" "DataDoubleEG2" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS"  "WZZ" "T5QQQQWZ_1200_1000_800" "T5QQQQDeg_1000_300_285_280" "T5QQQQWZ_1500_800_100" "T5ttttDeg_1000_300_280" "T2ttDeg_350_330" "T5QQQQZZ_1200_1000_800" "T6TTWW_600_425_50" "T2TT_ARXIV" "T5QQQQZZ_1500_800_100" "T6TTWW_650_150_50" "DataDoubleMuonD" "DataDoubleEGD" "DATAMUONEGD"
+  for sname in "WZ3LNu"  "TTZQ"  "TTZL" "TTBAR" "TTW" "DY_high" "DY_low" "T1TTTT_1200" "T1TTTT_1500" # "DATAMUONEG2" "DATAMUONEG" "DataDoubleEG2" "DataDoubleMuon2" "DY_low"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "WJets"  "TTBAR"  "TTZL" "WZ" "DY_high"   "DataDoubleEG"  "DataDoubleMuon" "DATAMUONEGC" "DataDoubleEGC" "DataDoubleMuonC" "WZ3LNu" "DATAMUONEG2" "DataDoubleMuon2" "DataDoubleEG2" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS"  "WZZ" "T5QQQQWZ_1200_1000_800" "T5QQQQDeg_1000_300_285_280" "T5QQQQWZ_1500_800_100" "T5ttttDeg_1000_300_280" "T2ttDeg_350_330" "T5QQQQZZ_1200_1000_800" "T6TTWW_600_425_50" "T2TT_ARXIV" "T5QQQQZZ_1500_800_100" "T6TTWW_650_150_50" "DataDoubleMuonD" "DataDoubleEGD" "DATAMUONEGD"
   do
     path="/hadoop/cms/store/group/snt/run2_25ns"
     #Iter
@@ -307,11 +309,11 @@ do
       number=$(( $i + 1 ))
 
       #Except they've finished
-      if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}_$expt.root ] 
+      if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/$SPPATH/${sname_lower}_${number}_$expt.root ] 
       then 
         continue
       else
-        "Redoing, this does not exist: /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}_$expt.root"
+        "Redoing, this does not exist: /hadoop/cms/store/user/$USER/condor/ss_13_babies/$SPPATH/${sname_lower}_${number}_$expt.root"
       fi
 
       echo "-------------"
