@@ -79,7 +79,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   if (!makeDYtest&&!makeQCDtest&&!makeSSskim&&!makeQCDskim&&!makebaby) fr_file=TFile::Open("fakeRates_qcd_pt-50to170.root");
 
   //Instantiate MVA for electron ID
-  createAndInitMVA("./CORE");
+  createAndInitMVA("./CORE", true);
 
   //Add good run list
   set_goodrun_file("goodRunList/goldenJson166p37pb.txt");
