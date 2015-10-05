@@ -86,12 +86,15 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
   //Set up jet corrs
   vector <std::string> files;
-  std::string L1file = "CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L1FastJet_AK4PFchs.txt";
-  std::string L2file = "CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L2Relative_AK4PFchs.txt";
-  std::string L3file = "CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV2_MC_L3Absolute_AK4PFchs.txt";
+  //fixme switch to MC when it's not data
+  std::string L1file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt";
+  std::string L2file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2Relative_AK4PFchs.txt";
+  std::string L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt";
+  std::string L2L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt";
   files.push_back(L1file);
   files.push_back(L2file);
   files.push_back(L3file);
+  files.push_back(L2L3file);
   const vector <std::string> files2 = files;
   FactorizedJetCorrector *jetCorr = makeJetCorrector(files2); 
 
