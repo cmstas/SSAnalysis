@@ -493,8 +493,10 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   lep3_idx = thirdLepton.first.idx();
   if (lep3_idx >= 0 && (abs(lep3_id) == 11 || abs(lep3_id) == 13)){
     lep3_p4 = thirdLepton.first.p4();
-    lep3_mcid = thirdLepton.first.mc_id();
-    lep3_mcidx = thirdLepton.first.mcidx();
+    if (!is_real_data){
+      lep3_mcid = thirdLepton.first.mc_id();
+      lep3_mcidx = thirdLepton.first.mcidx();
+    }
   }
   lep3_quality = thirdLepton.second;
   Lep fourthLepton = getFourthLepton(best_hyp);
@@ -502,8 +504,10 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   lep4_idx = fourthLepton.idx();
   if (lep4_idx >= 0 && (abs(lep4_id) == 11 || abs(lep4_id) == 13)){
     lep4_p4 = fourthLepton.p4();
-    lep4_mcid = fourthLepton.mc_id();
-    lep4_mcidx = fourthLepton.mcidx();
+    if (!is_real_data){
+      lep4_mcid = fourthLepton.mc_id();
+      lep4_mcidx = fourthLepton.mcidx();
+    }
   }
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);

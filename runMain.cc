@@ -73,7 +73,9 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   TChain *chain_T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2                  = new TChain("Events");
   TChain *chain_T6ttWW_600_425_50_v2                                            = new TChain("Events");
   TChain *chain_T6ttWW_650_150_50_v2                                            = new TChain("Events");
-  TChain *chain_data_doubleEG                                                   = new TChain("Events"); 
+  TChain *chain_data_DoubleEG                                                   = new TChain("Events"); 
+  TChain *chain_data_DoubleMuon                                                 = new TChain("Events"); 
+  TChain *chain_data_MuonEG                                                     = new TChain("Events"); 
   TChain *chain_test                                                            = new TChain("Events");
   TChain *chain_05Aug                                                           = new TChain("Events");
 
@@ -146,7 +148,12 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     chain_TW ->Add(dir + "TBarToLeptons_t-channel_Tune4C_CSA14_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
 
     //data
-    chain_data_doubleEG ->Add(dataDir + "Run2015B_DoubleEG_MINIAOD_PromptReco-v1/merged/" + dataTag); 
+    chain_data_DoubleEG   ->Add(dataDir + "Run2015C_DoubleEG_MINIAOD_PromptReco-v1/merged/V07-04-08/*.root"); 
+    chain_data_DoubleEG   ->Add(dataDir + "Run2015D_DoubleEG_MINIAOD_PromptReco-v3/merged/V07-04-09/*.root"); 
+    chain_data_DoubleMuon ->Add(dataDir + "Run2015C_DoubleMuon_MINIAOD_PromptReco-v1/merged/V07-04-08/*.root"); 
+    chain_data_DoubleMuon ->Add(dataDir + "Run2015D_DoubleMuon_MINIAOD_PromptReco-v3/merged/V07-04-09/*.root"); 
+    chain_data_MuonEG     ->Add(dataDir + "Run2015C_MuonEG_MINIAOD_PromptReco-v1/merged/V07-04-08/*.root"); 
+    chain_data_MuonEG     ->Add(dataDir + "Run2015D_MuonEG_MINIAOD_PromptReco-v3/merged/V07-04-09/*.root"); 
 
     //test
     chain_test->Add(dir + "TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-08/merged_ntuple_1.root"); 
@@ -262,9 +269,11 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     if (babiesToMake[31] == 1) l->ScanChain(chain_T6ttWW_600_425_50_v2                                  , "T6ttWW_600_425_50_v2", "baby", 0, "MakeBaby", -1);
     if (babiesToMake[32] == 1) l->ScanChain(chain_T6ttWW_650_150_50_v2                                  , "T6ttWW_650_150_50_v2", "baby", 0, "MakeBaby", -1);
     if (babiesToMake[33] == 1) l->ScanChain(chain_test                                                  , "test"                , "baby", 0, "MakeBaby", -1);
-    if (babiesToMake[34] == 1) l->ScanChain(chain_data_doubleEG                                         , "data_doubleEG"     , "baby", 0, "MakeBaby", -1); 
+    if (babiesToMake[34] == 1) l->ScanChain(chain_data_DoubleEG                                         , "data_DoubleEG"     , "baby", 0, "MakeBaby", -1); 
     if (babiesToMake[35] == 1) l->ScanChain(chain_TTJets_50ns                                           , "TTJets_50ns"       , "baby", 0, "MakeBaby", -1); 
     if (babiesToMake[36] == 1) l->ScanChain(chain_05Aug                                                 , "data05Aug"         , "baby", 0, "MakeBaby", -1); 
+    if (babiesToMake[37] == 1) l->ScanChain(chain_data_DoubleMuon                                       , "data_DoubleMuon"   , "baby", 0, "MakeBaby", -1); 
+    if (babiesToMake[38] == 1) l->ScanChain(chain_data_MuonEG                                           , "data_MuonEG"       , "baby", 0, "MakeBaby", -1); 
 
 
   }
