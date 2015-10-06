@@ -29,6 +29,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("xsec"                    , &xsec                    );
   BabyTree->Branch("kfactor"                 , &kfactor                 );
   BabyTree->Branch("gen_met"                 , &gen_met                 );
+  BabyTree->Branch("genweights"              , &genweights              );
+  BabyTree->Branch("genweightsID"            , &genweightsID            );
   BabyTree->Branch("gen_met_phi"             , &gen_met_phi             );
   BabyTree->Branch("njets"                   , &njets                   );
   BabyTree->Branch("njets_corr"              , &njets_corr              );
@@ -86,20 +88,28 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep3_idx"                , &lep3_idx                );
   BabyTree->Branch("lep3_p4"                 , &lep3_p4                 );
   BabyTree->Branch("lep3_quality"            , &lep3_quality            );
+  BabyTree->Branch("lep4_id"                 , &lep4_id                 );
+  BabyTree->Branch("lep4_idx"                , &lep4_idx                );
+  BabyTree->Branch("lep4_p4"                 , &lep4_p4                 );
   BabyTree->Branch("lep1_iso"                , &lep1_iso                );
   BabyTree->Branch("lep2_iso"                , &lep2_iso                );
   BabyTree->Branch("dilep_p4"                , &dilep_p4                );
   BabyTree->Branch("genps_p4"                , &genps_p4                );
   BabyTree->Branch("genps_id"                , &genps_id                );
   BabyTree->Branch("genps_id_mother"         , &genps_id_mother         );
+  BabyTree->Branch("genps_idx_mother"        , &genps_idx_mother        );
   BabyTree->Branch("genps_status"            , &genps_status            );
   BabyTree->Branch("genps_id_grandma"        , &genps_id_grandma        );
   BabyTree->Branch("lep1_passes_id"          , &lep1_passes_id          );
   BabyTree->Branch("lep2_passes_id"          , &lep2_passes_id          );
   BabyTree->Branch("lep3_passes_id"          , &lep3_passes_id          );
+  BabyTree->Branch("lep4_passes_id"          , &lep4_passes_id          );
   BabyTree->Branch("lep3_tight"              , &lep3_tight              );
   BabyTree->Branch("lep3_veto"               , &lep3_veto               );
   BabyTree->Branch("lep3_fo"                 , &lep3_fo                 );
+  BabyTree->Branch("lep4_tight"              , &lep4_tight              );
+  BabyTree->Branch("lep4_veto"               , &lep4_veto               );
+  BabyTree->Branch("lep4_fo"                 , &lep4_fo                 );
   BabyTree->Branch("lep1_dxyPV"              , &lep1_dxyPV              );
   BabyTree->Branch("lep2_dxyPV"              , &lep2_dxyPV              );
   BabyTree->Branch("lep1_dZ"                 , &lep1_dZ                 );
@@ -165,8 +175,14 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("met3p0"                  , &met3p0                  );
   BabyTree->Branch("jet_corr_pt"             , &jet_corr_pt             );
   BabyTree->Branch("metphi3p0"               , &metphi3p0               );
-  BabyTree->Branch("passes_met_filters"      , &passes_met_filters     );
+  BabyTree->Branch("passes_met_filters"      , &passes_met_filters      );
   BabyTree->Branch("mostJets"                , &mostJets                );
+  BabyTree->Branch("madeExtraZ"              , &madeExtraZ               );
+  BabyTree->Branch("madeExtraG"              , &madeExtraG               );
+  BabyTree->Branch("lep3_mcid"               , &lep3_mcid                );
+  BabyTree->Branch("lep3_mcidx"              , &lep3_mcidx               );
+  BabyTree->Branch("lep4_mcid"               , &lep4_mcid                );
+  BabyTree->Branch("lep4_mcidx"              , &lep4_mcidx               );
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -211,6 +227,8 @@ void babyMaker::InitBabyNtuple(){
     xsec = -1;
     kfactor = -1;
     gen_met = -1;
+    genweights.clear();
+    genweightsID.clear();
     gen_met_phi = -1;
     njets = -1;
     njets_corr = -1;
@@ -264,20 +282,31 @@ void babyMaker::InitBabyNtuple(){
     lep2_id_gen = -1;
     lep3_id = -1;
     lep3_idx = -1;
+    lep4_id = -1;
+    lep4_idx = -1;
     lep3_quality = -1;
+    lep3_mcid = -1; 
+    lep3_mcidx = -1;
+    lep4_mcid = -1; 
+    lep4_mcidx = -1;
     lep1_iso = -1;
     lep2_iso = -1;
     genps_p4.clear();
     genps_id.clear();
     genps_id_mother.clear();
+    genps_idx_mother.clear();
     genps_status.clear();
     genps_id_grandma.clear();
     lep1_passes_id = false;
     lep2_passes_id = false;
     lep3_passes_id = false;
+    lep4_passes_id = false;
     lep3_tight = false;
     lep3_veto = false;
     lep3_fo = false;
+    lep4_tight = false;
+    lep4_veto = false;
+    lep4_fo = false;
     lep1_dxyPV = -999998;
     lep2_dxyPV = -999998;
     lep1_dZ = -999998;
@@ -308,6 +337,7 @@ void babyMaker::InitBabyNtuple(){
     lep1_p4 = LorentzVector(0,0,0,0);
     lep2_p4 = LorentzVector(0,0,0,0);
     lep3_p4 = LorentzVector(0,0,0,0);
+    //lep4_p4 = LorentzVector(0,0,0,0);
     lep1_p4_gen = LorentzVector(0,0,0,0);
     lep2_p4_gen = LorentzVector(0,0,0,0);
     lep1_closeJet = LorentzVector(0,0,0,0);
@@ -364,10 +394,12 @@ void babyMaker::InitBabyNtuple(){
     met3p0 = 0;
     metphi3p0 = 0;
     passes_met_filters = 0;
+    madeExtraZ = 0;  
+    madeExtraG = 0;  
 } 
 
 //Main function
-int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, FactorizedJetCorrector* jetCorr, bool expt){
+int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, bool expt){
 
   //Figure out if this is a 25ns or 50ns sample
   bool is25 = true;
@@ -400,6 +432,8 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
     kfactor = tas::evt_kfactor();
     gen_met = tas::gen_met();
     gen_met_phi = tas::gen_metPhi();
+    genweights = tas::genweights(); 
+    genweightsID = tas::genweightsID(); 
   }
 
   //Fill data vs. mc variables
@@ -422,11 +456,15 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
 
   //Scale1fb
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
-  
+
   //Fill lepton variables
-  hyp_result_t best_hyp_info = chooseBestHyp(isoCase, expt, verbose);
+  hyp_result_t best_hyp_info = chooseBestHyp(expt, verbose);
   hyp_class = best_hyp_info.hyp_class;
   int best_hyp = best_hyp_info.best_hyp;
+  if (hyp_class == 6){
+    madeExtraZ = makesExtraZ(best_hyp).result;
+    madeExtraG = makesExtraGammaStar(best_hyp);
+  }
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
   if (hyp_class == 0 || hyp_class == -1) return -1;
   lep1_p4 = (tas::hyp_ll_p4().at(best_hyp).pt() > tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_p4().at(best_hyp) : tas::hyp_lt_p4().at(best_hyp);
@@ -450,11 +488,27 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   lep1_ip3d_err = lep1.ip3dErr();
   lep2_ip3d_err = lep2.ip3dErr();
   hyp_type = tas::hyp_type().at(best_hyp);
-  pair <particle_t, int> thirdLepton = getThirdLepton(best_hyp);
-  lep3_id = thirdLepton.first.id;
-  lep3_idx = thirdLepton.first.idx;
-  lep3_p4 = thirdLepton.first.p4;
+  pair <Lep, int> thirdLepton = getThirdLepton(best_hyp);
+  lep3_id = thirdLepton.first.pdgId();
+  lep3_idx = thirdLepton.first.idx();
+  if (lep3_idx >= 0 && (abs(lep3_id) == 11 || abs(lep3_id) == 13)){
+    lep3_p4 = thirdLepton.first.p4();
+    if (!is_real_data){
+      lep3_mcid = thirdLepton.first.mc_id();
+      lep3_mcidx = thirdLepton.first.mcidx();
+    }
+  }
   lep3_quality = thirdLepton.second;
+  Lep fourthLepton = getFourthLepton(best_hyp);
+  lep4_id = fourthLepton.pdgId();
+  lep4_idx = fourthLepton.idx();
+  if (lep4_idx >= 0 && (abs(lep4_id) == 11 || abs(lep4_id) == 13)){
+    lep4_p4 = fourthLepton.p4();
+    if (!is_real_data){
+      lep4_mcid = fourthLepton.mc_id();
+      lep4_mcidx = fourthLepton.mcidx();
+    }
+  }
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
   lep1_multiIso = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.10, 0.7, 7.0) : passMultiIso(13, lep1_idx, 0.14, 0.68, 6.7);
@@ -462,17 +516,25 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   lep1_sip = abs(lep1_id) == 11 ? fabs(els_ip3d().at(lep1_idx))/els_ip3derr().at(lep1_idx) : fabs(mus_ip3d().at(lep1_idx))/mus_ip3derr().at(lep1_idx); 
   lep2_sip = abs(lep2_id) == 11 ? fabs(els_ip3d().at(lep2_idx))/els_ip3derr().at(lep2_idx) : fabs(mus_ip3d().at(lep2_idx))/mus_ip3derr().at(lep2_idx); 
   dilep_p4 = lep1_p4 + lep2_p4; 
-  lep1_passes_id = isGoodLepton(lep1_id, lep1_idx, isoCase);
-  lep2_passes_id = isGoodLepton(lep2_id, lep2_idx, isoCase);
+  lep1_passes_id = isGoodLepton(lep1_id, lep1_idx);
+  lep2_passes_id = isGoodLepton(lep2_id, lep2_idx);
   lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
   lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
 
   //More Third lepton stuff
   if (abs(lep3_id) == 11 || abs(lep3_id) == 13){
-    lep3_passes_id = isGoodLepton(lep3_id, lep3_idx, isoCase);
+    lep3_passes_id = isGoodLepton(lep3_id, lep3_idx);
     lep3_tight = abs(lep3_id) == 11 ? isGoodElectron(lep3_idx) : isGoodMuon(lep3_idx);
     lep3_veto = abs(lep3_id) == 11 ? isGoodVetoElectron(lep3_idx) : isGoodVetoMuon(lep3_idx);
     lep3_fo = abs(lep3_id) == 11 ? isFakableElectron(lep3_idx) : isFakableMuon(lep3_idx);
+  }
+
+  //More Fourth lepton stuff
+  if (abs(lep4_id) == 11 || abs(lep4_id) == 13){
+    lep4_passes_id = isGoodLepton(lep4_id, lep4_idx);
+    lep4_tight = abs(lep4_id) == 11 ? isGoodElectron(lep4_idx) : isGoodMuon(lep4_idx);
+    lep4_veto = abs(lep4_id) == 11 ? isGoodVetoElectron(lep4_idx) : isGoodVetoMuon(lep4_idx);
+    lep4_fo = abs(lep4_id) == 11 ? isFakableElectron(lep4_idx) : isFakableMuon(lep4_idx);
   }
 
   //Lepton MC variables
@@ -550,6 +612,7 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
     genps_p4 = tas::genps_p4();
     genps_id = tas::genps_id();
     genps_id_mother = tas::genps_id_mother();
+    genps_idx_mother = tas::genps_idx_mother();
     genps_status = tas::genps_status(); 
     genps_id_grandma = tas::genps_id_simplegrandma(); 
   }
@@ -569,6 +632,12 @@ int babyMaker::ProcessBaby(IsolationMethods isoCase, string filename_in, Factori
   ht = 0;
   for (unsigned int i = 0; i < jets.size(); i++) ht += jets.at(i).pt(); 
   if (verbose) for (unsigned int i = 0; i < btags.size(); i++) cout << "btag: " << btags.at(i).pt() << endl;
+
+  //Reject events that fail trigger matching
+  if (ht < 300 && hyp_type != 0){
+    if (abs(lep1_id) == 11 && !isTriggerSafe_v1(lep1_idx)) return -1;
+    if (abs(lep2_id) == 11 && !isTriggerSafe_v1(lep2_idx)) return -1;
+  }
 
   //Determine and save jet and b-tag variables, corrected
   jet_results = SSJetsCalculator(jetCorr, 1);

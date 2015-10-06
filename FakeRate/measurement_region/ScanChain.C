@@ -22,6 +22,8 @@
 // lepfilter
 #include "LeptonTree.cc"
 
+#include "../../CORE/Tools/JetCorrector.cc"
+
 using namespace std;
 using namespace lepton_tree;
 
@@ -364,6 +366,48 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   float Bs_mu = 0.;
   float notBs_mu = 0.;
 
+  //-------- JEC application
+
+
+  //JEC files -- 25 ns MC
+  std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1;
+  std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1L2L3;
+  jetcorr_filenames_25ns_MC_pfL1.push_back      ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_V5_MC_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_V5_MC_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_V5_MC_L2Relative_AK4PFchs.txt");
+  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_V5_MC_L3Absolute_AK4PFchs.txt");
+  
+  //JEC files -- 25 ns DATA
+  std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1;
+  std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1L2L3;
+  jetcorr_filenames_25ns_DATA_pfL1.push_back    ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L2Relative_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L3Absolute_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L2L3Residual_AK4PFchs.txt");
+
+  FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1; 
+  FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1L2L3; 
+  FactorizedJetCorrector *jet_corrector_25ns_DATA_pfL1; 
+  FactorizedJetCorrector *jet_corrector_25ns_DATA_pfL1L2L3; 
+  
+  //Fill the JEC
+  jet_corrector_25ns_MC_pfL1 = makeJetCorrector(jetcorr_filenames_25ns_MC_pfL1); 
+  jet_corrector_25ns_MC_pfL1L2L3 = makeJetCorrector(jetcorr_filenames_25ns_MC_pfL1L2L3); 
+  jet_corrector_25ns_DATA_pfL1 = makeJetCorrector(jetcorr_filenames_25ns_DATA_pfL1); 
+  jet_corrector_25ns_DATA_pfL1L2L3 = makeJetCorrector(jetcorr_filenames_25ns_DATA_pfL1L2L3); 
+
+  //JECs
+  FactorizedJetCorrector *jet_corrector_pfL1 = 0;
+  FactorizedJetCorrector *jet_corrector_pfL1MC = 0;
+  FactorizedJetCorrector *jet_corrector_pfL1L2L3 = 0;
+
+  //Record filenames
+  std::vector <string> jetcorr_filenames_pfL1L2L3;
+
+
+  //-------- JEC application
+
   // Loop over events to Analyze
   unsigned int nEventsTotal = 0;
   unsigned int nEventsChain = chain->GetEntries();
@@ -381,6 +425,28 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
     if(fast) TTreeCache::SetLearnEntries(10);
     if(fast) tree->SetCacheSize(128*1024*1024);
     lepton_tree_obj.Init(tree);
+
+
+    // Apply JEC
+    bool isDataFromFileName = TString(currentFile->GetTitle()).Contains("2015C") || TString(currentFile->GetTitle()).Contains("2015D");
+
+    if (isDataFromFileName){
+      jet_corrector_pfL1 = jet_corrector_25ns_DATA_pfL1;
+      jet_corrector_pfL1MC = jet_corrector_25ns_MC_pfL1;
+      jet_corrector_pfL1L2L3 = jet_corrector_25ns_DATA_pfL1L2L3;
+      jetcorr_filenames_pfL1L2L3 = jetcorr_filenames_25ns_DATA_pfL1L2L3;
+    } else {
+      jet_corrector_pfL1 = jet_corrector_25ns_MC_pfL1;
+      jet_corrector_pfL1MC = jet_corrector_25ns_MC_pfL1;
+      jet_corrector_pfL1L2L3 = jet_corrector_25ns_MC_pfL1L2L3;
+      jetcorr_filenames_pfL1L2L3 = jetcorr_filenames_25ns_MC_pfL1L2L3;
+    }
+
+    cout << " => File: " << TString(currentFile->GetTitle()) << endl;
+    cout << "applying JEC from the following files:" << endl;
+    for (unsigned int ifile = 0; ifile < jetcorr_filenames_pfL1L2L3.size(); ++ifile) {
+      cout << (isDataFromFileName ? "DATA: " : "MC: ") << jetcorr_filenames_pfL1L2L3.at(ifile) << endl;
+    }
     
     // Loop over Events in current file   //ACTUALLY A LEPTON "EVENT" LOOP
     if( nEventsTotal >= nEventsChain ) continue;
@@ -399,6 +465,39 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //cout << "pt=" << p4().pt() << " iso=" << RelIso03EA() << endl;
       //cout << "lepp4=" << p4() << " jetp4=" << jet_close_lep() << endl;
 
+      vector<LorentzVector> jets_recorr;
+      for(unsigned int i=0; i<jets().size(); i++)  {
+        float jetcorrection = 1.0;
+        float jetarea = jets_area().at(i);
+        float undoJEC = jets_undoJEC().at(i);
+
+        if (jetcorr_filenames_pfL1L2L3.size()>0) { 
+          jet_corrector_pfL1->setJetEta(jets()[i].eta());
+          jet_corrector_pfL1->setJetPt(jets()[i].pt());
+          jet_corrector_pfL1->setJetA(jetarea);
+          jet_corrector_pfL1->setRho(rho());
+          jetcorrection = jet_corrector_pfL1->getCorrection();
+        }
+
+        if(undoJEC > 0) jetcorrection /= undoJEC; // if we have undoJEC from miniAOD->CMS3, divide it out
+
+        jets_recorr.push_back(jets()[i]*jetcorrection); // add our own JEC
+      }
+
+      
+      LorentzVector jet_close_lep_p4 = jet_close_lep();
+      if(jet_close_lep_idx() >= 0 && jetcorr_filenames_pfL1L2L3.size()>0) { 
+        jet_corrector_pfL1->setJetEta(jet_close_lep().eta());
+        jet_corrector_pfL1->setJetPt(jet_close_lep().pt());
+        jet_corrector_pfL1->setJetA(jet_close_lep_area());
+        jet_corrector_pfL1->setRho(rho());
+
+        jet_close_lep_p4 /= jet_close_lep_undoJEC(); // undoJEC from miniAOD->CMS3
+        jet_close_lep_p4 *= jet_corrector_pfL1->getCorrection();
+      }
+
+
+
       bool isData = evt_isRealData();
       bool noMCMatch = false;
       if (isData) noMCMatch = true;
@@ -407,7 +506,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (TString(currentFile->GetTitle()).Contains("WJets") || TString(currentFile->GetTitle()).Contains("DY")) isEWK = true;
 
       // Analysis Code
-      float lumi = 0.009;//in /fb
+      float lumi = 0.0161;//in /fb
       float weight = scale1fb()*lumi;
       if (isData) weight = 1.;
 
@@ -470,11 +569,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       float ht = 0.;
       int njets40 = 0;
       int nbtags = 0;
-      for(unsigned int i=0; i<jets().size(); i++)  {
-	if(ROOT::Math::VectorUtil::DeltaR(jets()[i], p4()) < 1.) continue; //0.4 in babymaker
+      for(unsigned int i=0; i<jets_recorr.size(); i++)  {
+	if(ROOT::Math::VectorUtil::DeltaR(jets_recorr[i], p4()) < 1.) continue; //0.4 in babymaker
 	if(jets_disc()[i] > 0.814) nbtags++;
-	if(jets()[i].pt() > 40.) {
-	  ht += jets()[i].pt();
+	if(jets_recorr[i].pt() > 40.) {
+	  ht += jets_recorr[i].pt();
 	  njets40++;
 	}
       }
@@ -482,8 +581,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       
       float ptrel = ptrelv1();
       //cout << ptrel << " " << computePtRel(p4(),jet_close_lep(),true) << endl;
-      assert(ptrel<0 || fabs(ptrel - computePtRel(p4(),jet_close_lep(),true))<0.0001);
-      float closejetpt = jet_close_lep().pt();
+      assert(ptrel<0 || fabs(ptrel - computePtRel(p4(),jet_close_lep_p4,true))<0.0001);
+      float closejetpt = jet_close_lep_p4.pt();
       //float miniIso = miniiso();
       float relIso = RelIso03EA();
 
@@ -620,10 +719,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v3();
       }
 
-      float evt_met = evt_pfmet();
-      float evt_metPhi = evt_pfmetPhi();
-      // float evt_met = evt_met3p0();
-      // float evt_metPhi = evt_met3p0Phi();
+      // float evt_met = evt_pfmet();
+      // float evt_metPhi = evt_pfmetPhi();
+      float evt_met = evt_met3p0();
+      float evt_metPhi = evt_met3p0Phi();
       float evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
 
       if (passId) {
@@ -697,13 +796,13 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	if (ptrel>7.0) {
 	  coneptcorr = std::max(0.,miniiso()-0.10);
 	} else {
-	  coneptcorr = max(double(0.),(jet_close_lep().pt()*0.70/p4().pt()-1.));
+	  coneptcorr = max(double(0.),(jet_close_lep_p4.pt()*0.70/p4().pt()-1.));
 	}
       } else {
 	if (ptrel>6.7) {
 	  coneptcorr = std::max(0.,miniiso()-0.14);
 	} else {
-	  coneptcorr = max(double(0.),(jet_close_lep().pt()*0.68/p4().pt()-1.));
+	  coneptcorr = max(double(0.),(jet_close_lep_p4.pt()*0.68/p4().pt()-1.));
 	}
       }
       if (useRelIso) {

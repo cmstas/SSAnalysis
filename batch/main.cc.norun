@@ -11,14 +11,12 @@ int main(int argc, char *argv[]){
 
   int which_in = 0;
   int file = 2;
-  int ptrel_in = 4;
   int expt = 0;
 
   if (argc > 3) {
      which_in = atoi(argv[1]);
      file     = atoi(argv[2]);
-     ptrel_in = atoi(argv[3]);
-     expt     = atoi(argv[4]);
+     expt     = atoi(argv[3]);
   } 
   else { 
     cout << "not enough arguments!" << endl;  
@@ -27,7 +25,6 @@ int main(int argc, char *argv[]){
 
 
   sample_t which = static_cast<sample_t>(which_in);
-  IsolationMethods ptrel = static_cast<IsolationMethods>(ptrel_in); 
 
   babyMaker *mylooper = new babyMaker();
 
@@ -138,7 +135,6 @@ int main(int argc, char *argv[]){
       shortname="datadoublemuonc";
       path = "/store/group/snt/run2_data/"; 
       isData = true;
-      is25 = true;
       break;
     case DataDoubleEGC:
       name="Run2015C_DoubleEG_MINIAOD_PromptReco-v1/merged";
@@ -146,14 +142,12 @@ int main(int argc, char *argv[]){
       shortname="datadoubleegc";
       path = "/store/group/snt/run2_data/"; 
       isData = true;
-      is25 = true;
       break;
     case DATAMUONEGC:
       name="Run2015C_MuonEG_MINIAOD_PromptReco-v1/merged";
       tag = "V07-04-08";
       shortname="datamuonegc";
       path = "/store/group/snt/run2_data/"; 
-      is25 = true;
       isData = true;
       break;
     case TTZQ:
@@ -301,6 +295,27 @@ int main(int argc, char *argv[]){
       shortname="t6ttww_650_150_50";
       tag="";
       break;
+    case DataDoubleMuonD:
+      name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v3/merged";
+      shortname="datadoublemuond";
+      isData = true;
+      path="/store/group/snt/run2_data";
+      tag="V07-04-09";
+      break;
+    case DataDoubleEGD:
+      shortname="datadoubleegd";
+      name="Run2015D_DoubleEG_MINIAOD_PromptReco-v3/merged";
+      isData = true;
+      path="/store/group/snt/run2_data";
+      tag="V07-04-09";
+      break;
+    case DATAMUONEGD:
+      shortname="datamuonegd";
+      name="Run2015D_MuonEG_MINIAOD_PromptReco-v3/merged";
+      path="/store/group/snt/run2_data";
+      isData = true;
+      tag="V07-04-09";
+      break;
     default:
       name="dummy";
       path = "/store/group/snt/run2_25ns/";
@@ -325,7 +340,7 @@ int main(int argc, char *argv[]){
 
   //Add good run list
   if (!is25) set_goodrun_file("final_golden_50ns_40p03pb.txt");
-  if ( is25) set_goodrun_file("golden_25ns_20pb.txt");
+  if ( is25) set_goodrun_file("goldenJson225p57pb.txt");
 
   //Init MVA
   createAndInitMVA("./CORE");
@@ -351,10 +366,10 @@ int main(int argc, char *argv[]){
 
   //JEC files -- 25 ns DATA
   std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1L2L3;
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L2L3Residual_AK4PFchs.txt");
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L2Relative_AK4PFchs.txt");
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L3Absolute_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2Relative_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt");
 
   //JECs
   std::vector<std::string> filenames;
@@ -378,7 +393,7 @@ int main(int argc, char *argv[]){
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
 
-    mylooper->ProcessBaby(ptrel, name, jetCorrAG, expt); 
+    mylooper->ProcessBaby(name, jetCorrAG, expt); 
 
   }//event loop 
 

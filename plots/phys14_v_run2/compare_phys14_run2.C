@@ -9,20 +9,6 @@ vector <vector <TH1F*> >  makeAllPlots(vector <TChain*> chains, bool isOS = 0);
 
 float lumiAG = 10.0;
 
-vector <vector <TH1F*> > flipVectors(vector <vector <TH1F*> > vin){
-  int nVectors = vin.size(); 
-  int nInEachVector = 0;
-  if (nVectors > 0) nInEachVector = vin[0].size(); 
-  vector <vector <TH1F*> > vout; 
-  for (int i = 0; i < nInEachVector; i++){
-    vector <TH1F*> temp;    
-    for (int j = 0; j < nVectors; j++){
-      temp.push_back(vin[j][i]);  
-    }
-    vout.push_back(temp); 
-  }
-  return vout;
-}
 
 void compare_phys14_run2(){
 

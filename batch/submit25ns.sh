@@ -4,6 +4,8 @@ xrootdbroken="1"
 
 nSubmitted=0
 
+SPPATH="v5"
+
 #Source this stupid thing
 pushd ..
 . setup.sh
@@ -32,11 +34,10 @@ pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 sed -i "s/cgeorge/$USER/" condorExecutable.sh
 
 #Then submit jobs
-ptrel="4"
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in  "DATAMUONEG2" "DATAMUONEG" "DataDoubleEG2" "DataDoubleMuon2" "DY_low"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "WJets"  "TTBAR"  "TTZL" "TTW" "TTZQ" "WZ" "DY_high"   "DataDoubleEG"  "DataDoubleMuon" "DATAMUONEGC" "DataDoubleEGC" "DataDoubleMuonC" "WZ3LNu" "TTWQQ" "DATAMUONEG2" "DataDoubleMuon2" "DataDoubleEG2" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS"  "WZZ" "T5QQQQWZ_1200_1000_800" "T5QQQQDeg_1000_300_285_280" "T5QQQQWZ_1500_800_100" "T5ttttDeg_1000_300_280" "T2ttDeg_350_330" "T5QQQQZZ_1200_1000_800" "T6TTWW_600_425_50" "T2TT_ARXIV" "T5QQQQZZ_1500_800_100" "T6TTWW_650_150_50"
+  for sname in "WZ3LNu"  "TTZQ"  "TTZL" "TTBAR" "TTW" "DY_high" "DY_low" "T1TTTT_1200" "T1TTTT_1500" # "DATAMUONEG2" "DATAMUONEG" "DataDoubleEG2" "DataDoubleMuon2" "DY_low"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "WJets"  "TTBAR"  "TTZL" "WZ" "DY_high"   "DataDoubleEG"  "DataDoubleMuon" "DATAMUONEGC" "DataDoubleEGC" "DataDoubleMuonC" "WZ3LNu" "DATAMUONEG2" "DataDoubleMuon2" "DataDoubleEG2" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS"  "WZZ" "T5QQQQWZ_1200_1000_800" "T5QQQQDeg_1000_300_285_280" "T5QQQQWZ_1500_800_100" "T5ttttDeg_1000_300_280" "T2ttDeg_350_330" "T5QQQQZZ_1200_1000_800" "T6TTWW_600_425_50" "T2TT_ARXIV" "T5QQQQZZ_1500_800_100" "T6TTWW_650_150_50" "DataDoubleMuonD" "DataDoubleEGD" "DATAMUONEGD"
   do
     path="/hadoop/cms/store/group/snt/run2_25ns"
     #Iter
@@ -140,6 +141,21 @@ do
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=19
+    elif [ $sname == "DataDoubleMuonD"  ]; 
+      then name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v3";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-09
+      nameNu=46
+    elif [ $sname == "DataDoubleEGD"    ]; 
+      then name="Run2015D_DoubleEG_MINIAOD_PromptReco-v3";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-09
+      nameNu=45
+    elif [ $sname == "DATAMUONEGD"    ]; 
+      then name="Run2015D_MuonEG_MINIAOD_PromptReco-v3";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-09
+      nameNu=47
     elif [ $sname == "TTW" ]
     then
       name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1" 
@@ -271,12 +287,6 @@ do
       nameNu=9999
     fi
 
-    #Get pTRel suffix
-    if [ "$ptrel" == "4" ] 
-    then
-      ptrelsuf=""
-    fi
-  
     #Data vs. MC variables
     if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]
     then 
@@ -299,15 +309,15 @@ do
       number=$(( $i + 1 ))
 
       #Except they've finished
-      if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}${ptrelsuf}_$expt.root ] 
+      if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/$SPPATH/${sname_lower}_${number}_$expt.root ] 
       then 
         continue
       else
-        "Redoing, this does not exist: /hadoop/cms/store/user/$USER/condor/ss_13_babies/${sname_lower}_${number}${ptrelsuf}_$expt.root"
+        "Redoing, this does not exist: /hadoop/cms/store/user/$USER/condor/ss_13_babies/$SPPATH/${sname_lower}_${number}_$expt.root"
       fi
 
       echo "-------------"
-      echo "Working on $sname $number $ptrel $expt"
+      echo "Working on $sname $number $expt"
   
       #Or if they're still running
       if [ -e logs/condorLog_${sname}_${number}_$expt.log ] 
@@ -345,7 +355,6 @@ do
       #submit it
       sed -i s/ARG1/$nameNu/g condorFile
       sed -i s/ARG2/$number/g condorFile
-      sed -i s/ARG3/$ptrel/g condorFile
       sed -i s/ARG4/$USER/g condorFile
       sed -i s/ARG5/$expt/g condorFile
       sed -i "s,USER_PROXY,$pathToProxy,g" condorFile

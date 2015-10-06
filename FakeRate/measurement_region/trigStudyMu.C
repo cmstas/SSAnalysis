@@ -3,7 +3,7 @@
   gROOT->Reset();
   gStyle->SetOptStat(0);
 
-  TString dataf = "../fake_rate_output/v0.14-16p1pb/2015CDoubleMuon.root";
+  TString dataf = "/nfs-7/userdata/leptonTree/v0.14-16p1pb/2015CDoubleMuon.root";
 
   TFile *_file = TFile::Open(dataf);
 

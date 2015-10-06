@@ -12,11 +12,13 @@
 #include "TLegend.h"
 #include "TString.h"
 #include "../../CORE/SSSelections.h"
-#include "../../Tools/utils.h"
+#include "../../CORE/Tools/utils.h"
+#include "../../CORE/Tools/dorky/dorky.cc"
 #include "SS.h"
 #include "../../software/tableMaker/CTable.h"
 
 using namespace std;
+using namespace duplicate_removal;
 
 CTable electrons;
 CTable muons;
@@ -75,6 +77,10 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   if (TString(pred->GetName()).Contains("L2PT")) {
     pred->GetXaxis()->SetTitle("L2PT [GeV]"); 
     obs->GetXaxis()->SetTitle("L2PT [GeV]"); 
+  }
+  if (TString(pred->GetName()).Contains("_br_")) {
+    pred->GetXaxis()->SetTitle("Baseline Region"); 
+    obs->GetXaxis()->SetTitle("Baseline Region"); 
   }
 
   pred->SetLineWidth(2);
@@ -208,13 +214,14 @@ int getHist(string name){
   return -1;
 }
 
-int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", int nEvents = -1){
+int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", bool doData = false, int nEvents = -1){
 
   //Make tables
   electrons.setTable() ("Pred", "Obs", "Pred/Obs");
   muons.setTable() ("Pred", "Obs", "Pred/Obs");
   electrons.setPrecision(2);
   muons.setPrecision(2);
+
 
   //Parse options
   bool coneCorr = option.Contains("coneCorr") ? true : false;
@@ -233,6 +240,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   bool highhigh = ptRegion.Contains("HH") ? true : false;
   bool highlow = ptRegion.Contains("HL") ? true : false;
   bool lowlow = ptRegion.Contains("LL") ? true : false;
+
+  float luminosity = 16.1/1000; // ifb
 
   //Dir
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
@@ -287,7 +296,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   hists.push_back( histCreator("pTrel_histo_el"         , "pTrel (Electrons)"                                 , 15, 0,   30) );
   hists.push_back( histCreator("pTrel_histo_mu"         , "pTrel (Muons)"                                     , 15, 0,   30) );
 
-  //Format histogram
   for (unsigned int i = 0; i < hists.size(); i++){
     hists[i]->SetDirectory(rootdir); 
     hists[i]->Sumw2(); 
@@ -471,12 +479,22 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       //if (ss::event() != 48767071) continue;
 
       // Progress
-      SSAG::progress(nEventsTotal, nEventsChain);
+      // SSAG::progress(nEventsTotal, nEventsChain);
+
+      if (ss::is_real_data() ) {
+          DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
+          if(is_duplicate(id)) continue;
+      }
 
       // Analysis Code
-      float weight = ss::scale1fb()*10.0;
+      float weight = ss::is_real_data() ? 1 : ss::scale1fb()*luminosity;
+
+      // ignore MC part of chain when looking at data, except for contamination subtraction
+      if(doData && !ss::is_real_data()) weight = 0; 
+
 
       if( !(ss::njets() >= 2 && (ss::ht() > 500 ? 1 : ss::met() > 30) ) ) continue;
+
 
       if (doBonly) {
         //consider only prompt or bs
@@ -559,7 +577,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       //pTrel plots
       if ( (lep1_pT > 25. && lep2_pT > 25.) ){
         if( ss::lep1_id()*ss::lep2_id() > 0 ) {
-          if (ss::lep1_motherID()<=0 && /*ss::lep1_iso()>0.1 &&*/ fabs(ss::lep1_ip3d()/ss::lep1_ip3d_err())<4. && ss::lep2_motherID()==1){
+          if (  (!ss::is_real_data() && ss::lep1_motherID()<=0 && /*ss::lep1_iso()>0.1 &&*/ fabs(ss::lep1_ip3d()/ss::lep1_ip3d_err())<4. && ss::lep2_motherID()==1)
+             || (ss::is_real_data() && !lep1_passes_id && fabs(ss::lep1_ip3d()/ss::lep1_ip3d_err())<4. && lep2_passes_id ) ) {
             if (abs(ss::lep1_id())==11){
               pTrelvsIso_histo_el->Fill( std::min(ss::lep1_iso(),float(0.99)), std::min(lep1_ptrel_v1,float(29.9)) );
               pTrelvsMiniIso_histo_el->Fill( std::min(ss::lep1_miniIso(),float(0.99)), std::min(lep1_ptrel_v1,float(29.9)) );
@@ -571,7 +590,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
               hists[getHist("pTrel_histo_mu")]->Fill(std::min(lep1_ptrel_v1,float(29.9)) );
             }
           }
-          if (ss::lep2_motherID()<=0 && /*ss::lep2_iso()>0.1 &&*/ fabs(ss::lep2_ip3d()/ss::lep2_ip3d_err())<4. && ss::lep1_motherID()==1) {
+          if (  (!ss::is_real_data() && ss::lep2_motherID()<=0 && /*ss::lep2_iso()>0.1 &&*/ fabs(ss::lep2_ip3d()/ss::lep2_ip3d_err())<4. && ss::lep1_motherID()==1) 
+             || (ss::is_real_data() && lep1_passes_id && fabs(ss::lep2_ip3d()/ss::lep2_ip3d_err())<4. && !lep2_passes_id ) ) {
             if (abs(ss::lep2_id())==11) {
               pTrelvsIso_histo_el->Fill( std::min(ss::lep2_iso(),float(0.99)), std::min(lep2_ptrel_v1,float(29.9)) );
               pTrelvsMiniIso_histo_el->Fill( std::min(ss::lep2_miniIso(),float(0.99)), std::min(lep2_ptrel_v1,float(29.9)) );
@@ -591,10 +611,22 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       //////////////////////////////////////////////////////////////////////////////////////////
       if (ss::hyp_class() == 3){
 
+          bool isLep1Prompt = ss::lep1_motherID()==1;
+          bool isLep2Prompt = ss::lep2_motherID()==1;
+          bool isLep1NonPrompt = ss::lep1_motherID()<=0;
+          bool isLep2NonPrompt = ss::lep2_motherID()<=0;
+
+          if(ss::is_real_data()) {
+              isLep1Prompt = ss::lep1_passes_id() /* && fabs(ss::lep1_ip3d()/ss::lep1_ip3d_err())<=4. */;
+              isLep2Prompt = ss::lep2_passes_id() /* && fabs(ss::lep2_ip3d()/ss::lep2_ip3d_err())<=4. */;
+              isLep1NonPrompt = !isLep1Prompt;
+              isLep2NonPrompt = !isLep2Prompt;
+          }
+
         //Counters
-        counter++;
+        counter += (doData && ss::is_real_data()) || (!doData);
         Nss_reco = Nss_reco + weight;
-        if( ss::lep1_motherID()==1 && ss::lep2_motherID()==1){
+        if( isLep1Prompt && isLep2Prompt ){
           prompt2_reco = prompt2_reco + weight;
           NpromptL1_reco = NpromptL1_reco + weight;
           NpromptL2_reco = NpromptL2_reco + weight;
@@ -602,7 +634,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
         else if ( ss::lep1_motherID()==2 || ss::lep2_motherID()==2 ) sign_misid_reco += weight; 
 
         //1) Lep 2 is non-prompt
-        else if(ss::lep1_motherID()==1 && ss::lep2_motherID()<=0 ){ 
+        else if( isLep1Prompt && isLep2NonPrompt ){ 
           prompt1_reco += weight;  
           NpromptL1_reco += weight;
           hists[getHist("Npn_histo_sr_obs")   ]->Fill(sr, weight);
@@ -634,7 +666,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
         }
 
         //2) Lep 1 is non-prompt
-        else if(ss::lep1_motherID()<=0 && ss::lep2_motherID()==1){ 
+        else if( isLep1NonPrompt && isLep2Prompt ){ 
           prompt1_reco = prompt1_reco + weight; 
           NpromptL2_reco = NpromptL2_reco + weight;				
           hists[getHist("Npn_histo_sr_obs")]   ->Fill(sr, weight);
@@ -666,7 +698,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
         }
 
         //Both are non-prompt
-        else if( (ss::lep1_motherID()<=0 && ss::lep2_motherID()<=0) ) prompt0_reco += weight;
+        else if( isLep1NonPrompt && isLep2NonPrompt ) prompt0_reco += weight;
 
         //check for charge misID on gen level.
         if (ss::lep1_motherID()==2 || ss::lep2_motherID()==2) sign_misid_gen += weight;
@@ -699,6 +731,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
       //prompt-nonprompt background
       if(ss::hyp_class() == 2){ 
+
         int nbjets = ss::nbtags();
         if (nbjets > 3) nbjets = 3; 
 
@@ -709,7 +742,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
         float ptratio_cut_2 = (abs(ss::lep2_id()) == 11 ? 0.7 : 0.68); 
         bool lep1_denom_iso = ((ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1/ptratio_cut_1 + ss::lep1_miniIso())))); 
         bool lep2_denom_iso = ((ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1/ptratio_cut_2 + ss::lep2_miniIso())))); 
-
         //1) Lep1 is tight, lep2 is loose!tight
         if (lep1_passes_id && !lep2_passes_id){  
 
@@ -726,6 +758,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           //if (abs(ss::lep2_id()) == 11 && fabs(ss::lep2_p4().eta()) >= 0.8 && fabs(ss::lep2_p4().eta()) <= 1.479 && ss::lep2_MVA() < 0.57) continue;
           //if (abs(ss::lep2_id()) == 11 && fabs(ss::lep2_p4().eta()) > 1.479 && ss::lep2_MVA() < 0.05) continue; 
         
+          if(doData && !ss::is_real_data() && isGoodLeg(2)) weight = -ss::scale1fb(); 
+          else weight = 0;
  
           if (usePtRatioCor){
             //this is a tighter FO than default, so skip if it does not pass
@@ -811,6 +845,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           if (inSitu && (ss::lep1_multiIso() || !isFakeLeg(1) || !isGoodLeg(2) || !lep1_denom_iso)) continue;
           if (inSitu && (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2())) continue;
 
+          if(doData && !ss::is_real_data() && isGoodLeg(1)) weight = -ss::scale1fb(); 
+          else weight = 0;
+
           if (usePtRatioCor){
             if ( abs(ss::lep1_id())==11 ){
               float ptratiocor = lep1_closejetpt>0. ? ss::lep1_p4().pt()*(1+std::max(0.,ss::lep1_miniIso()-0.10))/lep1_closejetpt : 1.;
@@ -831,6 +868,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
               rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_mu");
             }
           }
+
           if( abs(ss::lep1_id()) == 11 ){	//if el, use el rate.  FILL WITH NONPROMPT			  
             e1 = getFakeRate(rate_histo_e, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false );
 
@@ -889,6 +927,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           hists[getHist("Npn_histo_L2PT_pred")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), (e1/(1-e1))*weight);
         }
       } //end hyp = 2 if statement
+      
+      // resume ignoring MC part of chain when looking at data, except for contamination subtraction
+      if(doData && !ss::is_real_data()) weight = 0; 
 
       //nonprompt-nonprompt background
       else if(ss::hyp_class() == 1){
@@ -946,6 +987,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   //redefine option to save also ptRegion in output files
   option=option+"_"+ptRegion;
 
+  TString plotdir="plots/";
+
   //Signal region plots
   TCanvas *c3=new TCanvas("c3","Predicted and Observed Prompt-NonPrompt Background", 800,800);
   TPad *pad_h3 = new TPad("pad_h3","Histo Pad3",0., 0.2, 1., 1.0);
@@ -975,51 +1018,51 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   TLegend *leg5 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
   cout << "\ndump BR ele" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred_el")], hists[getHist("Npn_histo_br_obs_el")], nullarr, Npn_histo_br_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
-  c3->SaveAs("br_all"+option+".png");
-  c4->SaveAs("br_mu"+option+".png");
-  c5->SaveAs("br_el"+option+".png");
+  c3->SaveAs(plotdir+"br_all"+option+".png");
+  c4->SaveAs(plotdir+"br_mu"+option+".png");
+  c5->SaveAs(plotdir+"br_el"+option+".png");
 
   DrawPlots(hists[getHist("Npn_histo_sr_pred")],    hists[getHist("Npn_histo_sr_obs")], Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
   DrawPlots(hists[getHist("Npn_histo_sr_pred_mu")], hists[getHist("Npn_histo_sr_obs_mu")], Npn_histo_sr_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
   DrawPlots(hists[getHist("Npn_histo_sr_pred_el")], hists[getHist("Npn_histo_sr_obs_el")], nullarr, Npn_histo_sr_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
-  c3->SaveAs("sr_all"+option+".png");
-  c4->SaveAs("sr_mu"+option+".png");
-  c5->SaveAs("sr_el"+option+".png");
+  c3->SaveAs(plotdir+"sr_all"+option+".png");
+  c4->SaveAs(plotdir+"sr_mu"+option+".png");
+  c5->SaveAs(plotdir+"sr_el"+option+".png");
 
   DrawPlots(hists[getHist("Npn_histo_HT_pred")], hists[getHist("Npn_histo_HT_obs")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
   DrawPlots(hists[getHist("Npn_histo_HT_pred_mu")], hists[getHist("Npn_histo_HT_obs_mu")], Npn_histo_HT_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
   DrawPlots(hists[getHist("Npn_histo_HT_pred_el")], hists[getHist("Npn_histo_HT_obs_el")], nullarr, Npn_histo_HT_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
-  c3->SaveAs("HT_all"+option+".png");
-  c4->SaveAs("HT_mu"+option+".png");
-  c5->SaveAs("HT_el"+option+".png");
+  c3->SaveAs(plotdir+"HT_all"+option+".png");
+  c4->SaveAs(plotdir+"HT_mu"+option+".png");
+  c5->SaveAs(plotdir+"HT_el"+option+".png");
 
   DrawPlots(hists[getHist("Npn_histo_MET_pred")], hists[getHist("Npn_histo_MET_obs")], Npn_histo_MET_err2_pred_mu, Npn_histo_MET_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
   DrawPlots(hists[getHist("Npn_histo_MET_pred_mu")], hists[getHist("Npn_histo_MET_obs_mu")], Npn_histo_MET_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
   DrawPlots(hists[getHist("Npn_histo_MET_pred_el")], hists[getHist("Npn_histo_MET_obs_el")], nullarr, Npn_histo_MET_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
-  c3->SaveAs("MET_all"+option+".png");
-  c4->SaveAs("MET_mu"+option+".png");
-  c5->SaveAs("MET_el"+option+".png");
+  c3->SaveAs(plotdir+"MET_all"+option+".png");
+  c4->SaveAs(plotdir+"MET_mu"+option+".png");
+  c5->SaveAs(plotdir+"MET_el"+option+".png");
 
   DrawPlots(hists[getHist("Npn_histo_MTMIN_pred")],    hists[getHist("Npn_histo_MTMIN_obs")], Npn_histo_MTMIN_err2_pred_mu, Npn_histo_MTMIN_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
   DrawPlots(hists[getHist("Npn_histo_MTMIN_pred_mu")], hists[getHist("Npn_histo_MTMIN_obs_mu")], Npn_histo_MTMIN_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
   DrawPlots(hists[getHist("Npn_histo_MTMIN_pred_el")], hists[getHist("Npn_histo_MTMIN_obs_el")], nullarr, Npn_histo_MTMIN_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
-  c3->SaveAs("MTMIN_all"+option+".png");
-  c4->SaveAs("MTMIN_mu"+option+".png");
-  c5->SaveAs("MTMIN_el"+option+".png");
+  c3->SaveAs(plotdir+"MTMIN_all"+option+".png");
+  c4->SaveAs(plotdir+"MTMIN_mu"+option+".png");
+  c5->SaveAs(plotdir+"MTMIN_el"+option+".png");
 
   DrawPlots(hists[getHist("Npn_histo_L1PT_pred")],    hists[getHist("Npn_histo_L1PT_obs")], Npn_histo_L1PT_err2_pred_mu, Npn_histo_L1PT_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
   DrawPlots(hists[getHist("Npn_histo_L1PT_pred_mu")], hists[getHist("Npn_histo_L1PT_obs_mu")], Npn_histo_L1PT_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
   DrawPlots(hists[getHist("Npn_histo_L1PT_pred_el")], hists[getHist("Npn_histo_L1PT_obs_el")], nullarr, Npn_histo_L1PT_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
-  c3->SaveAs("L1PT_all"+option+".png");
-  c4->SaveAs("L1PT_mu"+option+".png");
-  c5->SaveAs("L1PT_el"+option+".png");
+  c3->SaveAs(plotdir+"L1PT_all"+option+".png");
+  c4->SaveAs(plotdir+"L1PT_mu"+option+".png");
+  c5->SaveAs(plotdir+"L1PT_el"+option+".png");
 
   DrawPlots(hists[getHist("Npn_histo_L2PT_pred")],    hists[getHist("Npn_histo_L2PT_obs")], Npn_histo_L2PT_err2_pred_mu, Npn_histo_L2PT_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
   DrawPlots(hists[getHist("Npn_histo_L2PT_pred_mu")], hists[getHist("Npn_histo_L2PT_obs_mu")], Npn_histo_L2PT_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
   DrawPlots(hists[getHist("Npn_histo_L2PT_pred_el")], hists[getHist("Npn_histo_L2PT_obs_el")], nullarr, Npn_histo_L2PT_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
-  c3->SaveAs("L2PT_all"+option+".png");
-  c4->SaveAs("L2PT_mu"+option+".png");
-  c5->SaveAs("L2PT_el"+option+".png");
+  c3->SaveAs(plotdir+"L2PT_all"+option+".png");
+  c4->SaveAs(plotdir+"L2PT_mu"+option+".png");
+  c5->SaveAs(plotdir+"L2PT_el"+option+".png");
 
   TH1F *total_BR_histo_e = (TH1F*)  hists[getHist("NBs_BR_histo_e")]->Clone("total_BR_histo_e");
   TH1F *total_BR_histo_mu = (TH1F*) hists[getHist("NBs_BR_histo_mu")]->Clone("total_BR_histo_mu");
@@ -1045,18 +1088,18 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
   TCanvas c8;
   hists[getHist("pTrel_histo_mu")]->Draw();
-  c8.SaveAs("pTrel_mu"+option+".png");
+  c8.SaveAs(plotdir+"pTrel_mu"+option+".png");
   hists[getHist("pTrel_histo_el")]->Draw();
-  c8.SaveAs("pTrel_el"+option+".png");
+  c8.SaveAs(plotdir+"pTrel_el"+option+".png");
   c8.SetLogz();
   pTrelvsIso_histo_mu->Draw("colz");
-  c8.SaveAs("pTrelvsIso_mu"+option+".png");
+  c8.SaveAs(plotdir+"pTrelvsIso_mu"+option+".png");
   pTrelvsIso_histo_el->Draw("colz");
-  c8.SaveAs("pTrelvsIso_el"+option+".png");
+  c8.SaveAs(plotdir+"pTrelvsIso_el"+option+".png");
   pTrelvsMiniIso_histo_mu->Draw("colz");
-  c8.SaveAs("pTrelvsMiniIso_mu"+option+".png");
+  c8.SaveAs(plotdir+"pTrelvsMiniIso_mu"+option+".png");
   pTrelvsMiniIso_histo_el->Draw("colz");
-  c8.SaveAs("pTrelvsMiniIso_el"+option+".png");
+  c8.SaveAs(plotdir+"pTrelvsMiniIso_el"+option+".png");
 
   //Print tables
   for (int i = 0; i < 4; i++){
