@@ -84,6 +84,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
 
       //Determine MET
       float metAG = (corrected && !isPhys14) ? ss::corrMET() : ss::met();
+      float metPhiAG = (corrected ? ss::corrMETPhi() : ss::metPhi());
       float met30 = isPhys14 ? ss::met() : ss::met3p0(); 
 
       //Determine HT
@@ -94,6 +95,11 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
 
       //Determine nbtags
       float nbtagsAG = (corrected && !isPhys14) ? ss::nbtags_corr() : ss::nbtags();
+
+      //Calculate mtmin
+      float mt1 = MT(ss::lep1_p4.pt(), ss::lep1_p4.phi(), metAG, metPhiAG);
+      float mt2 = MT(ss::lep2_p4.pt(), ss::lep2_p4.phi(), metAG, metPhiAG);
+      float mtmin = mt1 > mt2 ? mt2 : mt1; 
 
       //Determine analysis category
       int AC = -1;
@@ -126,7 +132,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
         plots.OS[3][BR][AC][type]->Fill(nbtagsAG                            , weight); 
         plots.OS[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                  , weight); 
         plots.OS[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                  , weight); 
-        plots.OS[5][BR][AC][type]->Fill(ss::mtmin()                         , weight); 
+        plots.OS[5][BR][AC][type]->Fill(mtmin                         , weight); 
         plots.OS[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M() , weight);
         plots.OS[7][BR][AC][type]->Fill(mht.pt()                            , weight);
         plots.OS[8][BR][AC][type]->Fill(met30                               , weight);
@@ -138,7 +144,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
         plots.SS[3][BR][AC][type]->Fill(nbtagsAG                           , weight); 
         plots.SS[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                 , weight); 
         plots.SS[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                 , weight); 
-        plots.SS[5][BR][AC][type]->Fill(ss::mtmin()                        , weight); 
+        plots.SS[5][BR][AC][type]->Fill(mtmin                              , weight); 
         plots.SS[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), weight);
         plots.SS[7][BR][AC][type]->Fill(mht.pt()                           , weight);
         plots.SS[8][BR][AC][type]->Fill(met30                              , weight);
@@ -150,7 +156,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
         plots.SF[3][BR][AC][type]->Fill(nbtagsAG                           , weight); 
         plots.SF[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                 , weight); 
         plots.SF[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                 , weight); 
-        plots.SF[5][BR][AC][type]->Fill(ss::mtmin()                        , weight); 
+        plots.SF[5][BR][AC][type]->Fill(mtmin                              , weight); 
         plots.SF[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), weight);
         plots.SF[7][BR][AC][type]->Fill(mht.pt()                           , weight);
         plots.SF[8][BR][AC][type]->Fill(met30                              , weight);
@@ -162,7 +168,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData, bool isPhys14){
         plots.EZ[3][BR][AC][type]->Fill(nbtagsAG                           , weight); 
         plots.EZ[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                 , weight); 
         plots.EZ[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                 , weight); 
-        plots.EZ[5][BR][AC][type]->Fill(ss::mtmin()                        , weight); 
+        plots.EZ[5][BR][AC][type]->Fill(mtmin                              , weight); 
         plots.EZ[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), weight);
         plots.EZ[7][BR][AC][type]->Fill(mht.pt()                           , weight);
         plots.EZ[8][BR][AC][type]->Fill(met30                              , weight);
