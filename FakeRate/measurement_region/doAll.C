@@ -5,7 +5,7 @@
 
   gROOT->ProcessLine(".L ScanChain.C+");
 
-  TString tag = "v3.09";
+  TString tag = "v3.10";
 
   TChain *data = new TChain("t"); 
   data->Add( "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root" );

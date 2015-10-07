@@ -3,7 +3,7 @@ void trigStudyEl() {
   gROOT->Reset();
   gStyle->SetOptStat(0);
 
-  TString tag = "v3.09";
+  TString tag = "v3.10";
   TString dataf = "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root";
 
   TFile *_file = TFile::Open(dataf);

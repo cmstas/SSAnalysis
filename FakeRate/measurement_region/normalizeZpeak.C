@@ -9,7 +9,7 @@ pair<float,float> normalizeZpeak() {
   for(int doMu = 0; doMu < 2; doMu++) {
   gROOT->Reset();
 
-  TString tag = "v3.09";
+  TString tag = "v3.10";
   // tag = "v0.12";
   // tag = "v0.08";
 
