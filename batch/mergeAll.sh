@@ -1,6 +1,6 @@
 #!/bin/bash
 
-path=/hadoop/cms/store/user/cgeorge/condor/ss_13_babies
+path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 
 #hadd DataDoubleEG.root                $path/datadoubleeg_*_0.root     
 #hadd DataDoubleMuon.root              $path/datadoublemuon_*_0.root   
@@ -11,17 +11,20 @@ path=/hadoop/cms/store/user/cgeorge/condor/ss_13_babies
 #hadd DataDoubleEGC.root               $path/datadoubleegc_*_0.root     
 #hadd DataDoubleMuonC.root             $path/datadoublemuonc_*_0.root   
 #hadd DataMuonEGC.root                 $path/datamuonegc_*_0.root   
+hadd DataDoubleEGD.root               $path/datadoubleegd_*_0.root     
+hadd DataDoubleMuonD.root             $path/datadoublemuond_*_0.root   
+hadd DataMuonEGD.root                 $path/datamuonegd_*_0.root   
 hadd DY_high.root                     $path/dy_high_*_0.root          
 hadd DY_low.root                      $path/dy_low_*_0.root           
-#hadd TTBAR.root                       $path/ttbar_*_0.root            
+hadd TTBAR.root                       $path/ttbar_*_0.root            
 #hadd TTPOWHEG.root                    $path/ttpowheg_*_0.root         
-#hadd WJets.root                       $path/wjets_*_0.root            
+hadd WJets.root                       $path/wjets_*_0.root            
 #hadd WZ.root                          $path/wz_*_0.root               
 hadd TTZL.root                        $path/ttzl_*_0.root
-hadd TTZQ.root                        $path/ttzq_*_0.root
+#hadd TTZQ.root                        $path/ttzq_*_0.root
 hadd TTW.root                         $path/ttw_*_0.root
-hadd TTWQQ.root                       $path/ttwqq_*_0.root
-#hadd WZ3LNU.root                      $path/wz3lnu_*_0.root
+#hadd TTWQQ.root                       $path/ttwqq_*_0.root
+hadd WZ3LNU.root                      $path/wz3lnu_*_0.root
 #hadd WGToLNuG.root                    $path/wgtolnug_*_0.root                        
 #hadd TTG.root                         $path/ttg_*_0.root 
 #hadd TTHtoNonBB.root                  $path/tthtononbb_*_0.root 
@@ -38,8 +41,8 @@ hadd TTWQQ.root                       $path/ttwqq_*_0.root
 #hadd T6TTWW_600_425_50.root           $path/t6ttww_600_425_50_*_0.root 
 #hadd T2TT_ARXIV.root                  $path/t2tt_arxiv_*_0.root 
 #hadd T6TTWW_650_150_50.root           $path/t6ttww_650_150_50_*_0.root 
-#hadd T1TTTT_1200.root                 $path/t1tttt_1200_*_0.root
-#hadd T1TTTT_1500.root                 $path/t1tttt_1500_*_0.root
+hadd T1TTTT_1200.root                 $path/t1tttt_1200_*_0.root
+hadd T1TTTT_1500.root                 $path/t1tttt_1500_*_0.root
 #hadd SINGLETOP1.root                  $path/singletop1_*_0.root
 #hadd SINGLETOP2.root                  $path/singletop2_*_0.root
 #hadd SINGLETOP3.root                  $path/singletop3_*_0.root
