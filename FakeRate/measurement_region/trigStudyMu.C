@@ -1,9 +1,10 @@
-{
+void trigStudyMu() {
 
   gROOT->Reset();
   gStyle->SetOptStat(0);
 
-  TString dataf = "/nfs-7/userdata/leptonTree/v0.14-16p1pb/2015CDoubleMuon.root";
+  TString tag = "v3.09";
+  TString dataf = "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleMuon.root";
 
   TFile *_file = TFile::Open(dataf);
 
@@ -39,30 +40,30 @@
   TH1F* unw_fo_pt_Mu24 = (TH1F*) unw_fo_pt_Mu8->Clone("unw_fo_pt_Mu24");
   TH1F* unw_fo_pt_Mu34 = (TH1F*) unw_fo_pt_Mu8->Clone("unw_fo_pt_Mu34");
 
-  t->Draw("p4.pt()>>total_pt_Mu8" ,"HLT_Mu8*(HLT_Mu8>0  && abs(id)==13)","goff");// && passes_SS_tight_v3 && HLT_Mu24>0 && tag_p4.pt()>30. && p4.pt()>25.
+  t->Draw("p4.pt()>>total_pt_Mu8" ,"HLT_Mu8*(HLT_Mu8>0  && abs(id)==13)","goff");// && passes_SS_tight_v4 && HLT_Mu24>0 && tag_p4.pt()>30. && p4.pt()>25.
   t->Draw("p4.pt()>>total_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13)","goff");
   t->Draw("p4.pt()>>total_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13)","goff");
   t->Draw("p4.pt()>>total_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13)","goff");
   
-  t->Draw("p4.pt()>>fo_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_fo_v3)","goff");
-  t->Draw("p4.pt()>>fo_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_fo_v3)","goff");
-  t->Draw("p4.pt()>>fo_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_fo_v3)","goff");
-  t->Draw("p4.pt()>>fo_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_fo_v3)","goff");
+  t->Draw("p4.pt()>>fo_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_fo_v4)","goff");
+  t->Draw("p4.pt()>>fo_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_fo_v4)","goff");
+  t->Draw("p4.pt()>>fo_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_fo_v4)","goff");
+  t->Draw("p4.pt()>>fo_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_fo_v4)","goff");
   
-  t->Draw("p4.pt()>>tight_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_tight_v3)","goff");
-  t->Draw("p4.pt()>>tight_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_tight_v3)","goff");
-  t->Draw("p4.pt()>>tight_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_tight_v3)","goff");
-  t->Draw("p4.pt()>>tight_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_tight_v3)","goff");
+  t->Draw("p4.pt()>>tight_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_tight_v4)","goff");
+  t->Draw("p4.pt()>>tight_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_tight_v4)","goff");
+  t->Draw("p4.pt()>>tight_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_tight_v4)","goff");
+  t->Draw("p4.pt()>>tight_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_tight_v4)","goff");
   
-  t->Draw("p4.pt()>>cuts_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_tight_v3 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_tight_v3 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_tight_v3 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_tight_v3 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_tight_v4 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_tight_v4 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_tight_v4 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_tight_v4 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
   
-  t->Draw("p4.pt()>>unw_fo_pt_Mu8" ,"(HLT_Mu8>0  && abs(id)==13 && passes_SS_fo_v3)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Mu17","(HLT_Mu17>0 && abs(id)==13 && passes_SS_fo_v3)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Mu24","(HLT_Mu24>0 && abs(id)==13 && passes_SS_fo_v3)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Mu34","(HLT_Mu34>0 && abs(id)==13 && passes_SS_fo_v3)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Mu8" ,"(HLT_Mu8>0  && abs(id)==13 && passes_SS_fo_v4)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Mu17","(HLT_Mu17>0 && abs(id)==13 && passes_SS_fo_v4)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Mu24","(HLT_Mu24>0 && abs(id)==13 && passes_SS_fo_v4)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Mu34","(HLT_Mu34>0 && abs(id)==13 && passes_SS_fo_v4)","goff");
 
   TCanvas c1;
   c1.SetLogy();

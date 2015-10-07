@@ -91,6 +91,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool doLightonly = false;
   if (option.Contains("doLightonly")) doLightonly = true;
 
+  bool doJEC = false;
+
   int nptbins = 5;
   int netabins = 3;
   float ptbins[6] = {10., 15., 25., 35., 50., 70.};
@@ -471,22 +473,23 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
         float jetarea = jets_area().at(i);
         float undoJEC = jets_undoJEC().at(i);
 
-        if (jetcorr_filenames_pfL1L2L3.size()>0) { 
-          jet_corrector_pfL1->setJetEta(jets()[i].eta());
-          jet_corrector_pfL1->setJetPt(jets()[i].pt());
-          jet_corrector_pfL1->setJetA(jetarea);
-          jet_corrector_pfL1->setRho(rho());
-          jetcorrection = jet_corrector_pfL1->getCorrection();
+        if(doJEC) {
+            if (jetcorr_filenames_pfL1L2L3.size()>0) { 
+              jet_corrector_pfL1->setJetEta(jets()[i].eta());
+              jet_corrector_pfL1->setJetPt(jets()[i].pt());
+              jet_corrector_pfL1->setJetA(jetarea);
+              jet_corrector_pfL1->setRho(rho());
+              jetcorrection = jet_corrector_pfL1->getCorrection();
+            }
+            if(undoJEC > 0) jetcorrection /= undoJEC; // if we have undoJEC from miniAOD->CMS3, divide it out
         }
-
-        if(undoJEC > 0) jetcorrection /= undoJEC; // if we have undoJEC from miniAOD->CMS3, divide it out
 
         jets_recorr.push_back(jets()[i]*jetcorrection); // add our own JEC
       }
 
       
       LorentzVector jet_close_lep_p4 = jet_close_lep();
-      if(jet_close_lep_idx() >= 0 && jetcorr_filenames_pfL1L2L3.size()>0) { 
+      if(doJEC && jet_close_lep_idx() >= 0 && jetcorr_filenames_pfL1L2L3.size()>0) { 
         jet_corrector_pfL1->setJetEta(jet_close_lep().eta());
         jet_corrector_pfL1->setJetPt(jet_close_lep().pt());
         jet_corrector_pfL1->setJetA(jet_close_lep_area());
@@ -506,7 +509,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (TString(currentFile->GetTitle()).Contains("WJets") || TString(currentFile->GetTitle()).Contains("DY")) isEWK = true;
 
       // Analysis Code
-      float lumi = 0.0161;//in /fb
+      float lumi = 0.2256;//in /fb
       float weight = scale1fb()*lumi;
       if (isData) weight = 1.;
 
@@ -582,7 +585,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       float ptrel = ptrelv1();
       //cout << ptrel << " " << computePtRel(p4(),jet_close_lep(),true) << endl;
       assert(ptrel<0 || fabs(ptrel - computePtRel(p4(),jet_close_lep_p4,true))<0.0001);
-      float closejetpt = jet_close_lep_p4.pt();
+      float closejetpt = jet_close_lep_p4.pt()*jet_close_lep_undoJEC()*jet_close_L1ncmc();
       //float miniIso = miniiso();
       float relIso = RelIso03EA();
 
@@ -697,10 +700,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       if (fabs(ip3d()/ip3derr())>4. ) continue;
 
-      bool passId = passes_SS_tight_v3();
-      bool passFO = passes_SS_fo_v3();
-      bool passId_noiso = passes_SS_tight_noiso_v3();
-      bool passFO_noiso = passes_SS_fo_noiso_v3();
+      bool passId = passes_SS_tight_v4();
+      bool passFO = passes_SS_fo_v4();
+      bool passId_noiso = passes_SS_tight_noiso_v4();
+      bool passFO_noiso = passes_SS_fo_noiso_v4();
       if (useLooseEMVA && abs(id())==11) {
 	bool isEB = true;
 	if ( fabs(etaSC())>1.479 ) isEB = false;
@@ -715,14 +718,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	float cut_dphi  = isEB ? 0.04 : 0.08;
 	float cut_invep = 0.01;
 	bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
-	passFO = passHltCuts && passes_SS_fo_looseMVA_v3();
-	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v3();
+	passFO = passHltCuts && passes_SS_fo_looseMVA_v4();
+	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v4();
       }
 
-      // float evt_met = evt_pfmet();
-      // float evt_metPhi = evt_pfmetPhi();
-      float evt_met = evt_met3p0();
-      float evt_metPhi = evt_met3p0Phi();
+      float evt_met = evt_pfmet();
+      float evt_metPhi = evt_pfmetPhi();
+      // float evt_met = evt_met3p0();
+      // float evt_metPhi = evt_met3p0Phi();
       float evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
 
       if (passId) {
@@ -784,25 +787,25 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (usePtRatioCor) {
 	if (abs(id())==11) {
 	  float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.10))/closejetpt : 1.;
-	  passFO = passes_SS_fo_v3() && (ptratiocor > 0.70 || ptrel > 7.0);
+	  passFO = passes_SS_fo_v4() && (ptratiocor > 0.76 || ptrel > 7.6);
 	} else {
 	  float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.14))/closejetpt : 1.;
-	  passFO = passes_SS_fo_v3() && (ptratiocor > 0.68 || ptrel > 6.7);	      
+	  passFO = passes_SS_fo_v4() && (ptratiocor > 0.73 || ptrel > 7.3);	      
 	}
       }
 
       float coneptcorr = 0.;
       if (abs(id())==11) {
-	if (ptrel>7.0) {
+	if (ptrel>7.6) {
 	  coneptcorr = std::max(0.,miniiso()-0.10);
 	} else {
-	  coneptcorr = max(double(0.),(jet_close_lep_p4.pt()*0.70/p4().pt()-1.));
+	  coneptcorr = max(double(0.),(closejetpt*0.76/p4().pt()-1.));
 	}
       } else {
-	if (ptrel>6.7) {
+	if (ptrel>7.3) {
 	  coneptcorr = std::max(0.,miniiso()-0.14);
 	} else {
-	  coneptcorr = max(double(0.),(jet_close_lep_p4.pt()*0.68/p4().pt()-1.));
+	  coneptcorr = max(double(0.),(closejetpt*0.73/p4().pt()-1.));
 	}
       }
       if (useRelIso) {

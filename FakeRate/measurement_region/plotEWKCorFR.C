@@ -1,4 +1,4 @@
-{
+void plotEWKCorFR(float elSF_mt=0.923611, float muSF_mt=0.879643) {
 
   for(int doMu = 0; doMu < 2; doMu++) {
 
@@ -20,10 +20,7 @@
   TH2F* den_wj = (TH2F*) _file_wj->Get("Nl_cone_histo"+suffix);
   TH2F* den_dy = (TH2F*) _file_dy->Get("Nl_cone_histo"+suffix);
 
-  //scale factors from MT control region plot
-  float muSF = 1.0216;
-  float elSF = 1.26538;
-  float ewkSF = (doMu ? muSF : elSF);
+  float ewkSF = (doMu ? muSF_mt : elSF_mt);
 
   den_data->Add(den_wj,-1.*ewkSF);
   den_data->Add(den_dy,-1.*ewkSF);

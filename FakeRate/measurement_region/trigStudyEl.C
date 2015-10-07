@@ -1,9 +1,10 @@
-{
+void trigStudyEl() {
 
   gROOT->Reset();
   gStyle->SetOptStat(0);
 
-  TString dataf = "/nfs-7/userdata/leptonTree/v0.14-16p1pb/2015CDoubleEG.root";
+  TString tag = "v3.09";
+  TString dataf = "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root";
 
   TFile *_file = TFile::Open(dataf);
 
@@ -52,32 +53,32 @@
   t->Draw("p4.pt()>>total_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11)","goff");
   
   //fo fired (matched, weighted)
-  t->Draw("p4.pt()>>fo_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>fo_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>fo_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>fo_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>fo_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
+  t->Draw("p4.pt()>>fo_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_fo_looseMVA_v4)","goff");
+  t->Draw("p4.pt()>>fo_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v4)","goff");
+  t->Draw("p4.pt()>>fo_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v4)","goff");
+  t->Draw("p4.pt()>>fo_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v4)","goff");
+  t->Draw("p4.pt()>>fo_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v4)","goff");
   
   //tight fired (matched, weighted)
-  t->Draw("p4.pt()>>tight_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_tight_v3)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_tight_v4)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v4)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v4)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v4)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v4)","goff");
   
   //cuts fired (matched, weighted)
-  t->Draw("p4.pt()>>cuts_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_tight_v3 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_tight_v4 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v4 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v4 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v4 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v4 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
   
   //fo fired (matched, unweighted)
-  t->Draw("p4.pt()>>unw_fo_pt_Ele8" ,"(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Ele12","(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Ele18","(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Ele23","(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Ele33","(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Ele8" ,"(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_fo_looseMVA_v4)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Ele12","(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v4)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Ele18","(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v4)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Ele23","(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v4)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Ele33","(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v4)","goff");
 
   TCanvas c1;
   c1.SetLogy();
