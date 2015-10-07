@@ -445,13 +445,14 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   filt_eebadsc = is_real_data ? tas::filt_eeBadSc() : 1;
 
   //Make sure one of our triggers fired
-  if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))      (triggers |= 1<<0);
-  if (passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")))  (triggers |= 1<<1); 
-  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")))  (triggers |= 1<<1); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
   if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")))              (triggers |= 1<<3); 
   if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))            (triggers |= 1<<4); 
+  if (passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v")))           (triggers |= 1<<6); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))      (triggers |= 1<<0);
   if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))    (triggers |= 1<<5); 
-  if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")))        (triggers |= 1<<6); 
+  if (passHLTTrigger(triggerName("HLT_DoubleMu8_Mass8_PFHT300_v")))                      (triggers |= 1<<7); 
   if (triggers != 0) fired_trigger = true;
 
   //Scale1fb
@@ -511,8 +512,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   }
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
-  lep1_multiIso = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.10, 0.7, 7.0) : passMultiIso(13, lep1_idx, 0.14, 0.68, 6.7);
-  lep2_multiIso = abs(lep2_id) == 11 ? passMultiIso(11, lep2_idx, 0.10, 0.7, 7.0) : passMultiIso(13, lep2_idx, 0.14, 0.68, 6.7);
+  lep1_multiIso = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.10, 0.7, 7.0, 1, 1) : passMultiIso(13, lep1_idx, 0.14, 0.68, 6.7, 1, 1);
+  lep2_multiIso = abs(lep2_id) == 11 ? passMultiIso(11, lep2_idx, 0.10, 0.7, 7.0, 1, 1) : passMultiIso(13, lep2_idx, 0.14, 0.68, 6.7, 1, 1);
   lep1_sip = abs(lep1_id) == 11 ? fabs(els_ip3d().at(lep1_idx))/els_ip3derr().at(lep1_idx) : fabs(mus_ip3d().at(lep1_idx))/mus_ip3derr().at(lep1_idx); 
   lep2_sip = abs(lep2_id) == 11 ? fabs(els_ip3d().at(lep2_idx))/els_ip3derr().at(lep2_idx) : fabs(mus_ip3d().at(lep2_idx))/mus_ip3derr().at(lep2_idx); 
   dilep_p4 = lep1_p4 + lep2_p4; 
@@ -550,20 +551,20 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     if (abs(lep1_id) == 11){
       //Double electron triggers
       if (lep1_idx >= 0 && tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
-      if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"), lep1_p4) > 0)                             lep1_trigMatch_isoReq   = true;
+      if (passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v"), lep1_p4) > 0)                             lep1_trigMatch_isoReq   = true;
       //Mu-El triggers
       if (lep1_idx >= 0 && tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0    ) lep1_trigMatch_noIsoReq = true;
-      if (lep1_idx >= 0 && tas::els_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_isoReq   = true;
-      if (lep1_idx >= 0 && tas::els_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep1_idx) > 0 ) lep1_trigMatch_isoReq   = true;
+      if (lep1_idx >= 0 && tas::els_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_isoReq   = true;//fixme revert to Mu17
+      if (lep1_idx >= 0 && tas::els_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep1_idx) > 0 ) lep1_trigMatch_isoReq   = true;//fixme revert to Ele17
     }
     if (abs(lep2_id) == 11){
       //Double electron triggers
       if (lep2_idx >= 0 && tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
-      if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"), lep2_p4) > 0)                             lep2_trigMatch_isoReq   = true;
+      if (passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v"), lep2_p4) > 0)                             lep2_trigMatch_isoReq   = true;
       //Mu-El triggers
       if (lep2_idx >= 0 && tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0    ) lep2_trigMatch_noIsoReq = true;
-      if (lep2_idx >= 0 && tas::els_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_isoReq   = true;
-      if (lep2_idx >= 0 && tas::els_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep2_idx) > 0 ) lep2_trigMatch_isoReq   = true;
+      if (lep2_idx >= 0 && tas::els_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_isoReq   = true;//fixme revert to Mu17
+      if (lep2_idx >= 0 && tas::els_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_ElectronLeg().at(lep2_idx) > 0 ) lep2_trigMatch_isoReq   = true;//fixme revert to Ele17
     }
 
     //Muon trigger stuff
@@ -574,8 +575,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
       if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"), lep1_p4) > 0)           lep1_trigMatch_isoReq = true;
       //Mu-El triggers
       if (lep1_idx >= 0 && tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0    ) lep1_trigMatch_noIsoReq = true;
-      if (lep1_idx >= 0 && tas::mus_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_isoReq   = true;
-      if (lep1_idx >= 0 && tas::mus_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep1_idx) > 0 ) lep1_trigMatch_isoReq   = true;
+      if (lep1_idx >= 0 && tas::mus_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_isoReq   = true;//fixme revert to Mu17
+      if (lep1_idx >= 0 && tas::mus_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep1_idx) > 0 ) lep1_trigMatch_isoReq   = true;//fixme revert to Ele17
     }
     if (abs(lep2_id) == 13){
       //Double muon triggers
@@ -584,28 +585,28 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
       if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"), lep2_p4) > 0)           lep2_trigMatch_isoReq = true;
       //Mu-El triggers
       if (lep2_idx >= 0 && tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0    ) lep2_trigMatch_noIsoReq = true;
-      if (lep2_idx >= 0 && tas::mus_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_isoReq   = true;
-      if (lep2_idx >= 0 && tas::mus_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep2_idx) > 0 ) lep2_trigMatch_isoReq   = true;
+      if (lep2_idx >= 0 && tas::mus_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_isoReq   = true;//fixme revert to Mu17
+      if (lep2_idx >= 0 && tas::mus_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_MuonLeg().at(lep2_idx) > 0 ) lep2_trigMatch_isoReq   = true;//fixme revert to Ele17
     }
   }
 
   //PtRel for both leptons
-  lep1_ptrel_v0 = getPtRel(lep1_id, lep1_idx, false);
-  lep2_ptrel_v0 = getPtRel(lep2_id, lep2_idx, false);
-  lep1_ptrel_v1 = getPtRel(lep1_id, lep1_idx, true);
-  lep2_ptrel_v1 = getPtRel(lep2_id, lep2_idx, true);
+  lep1_ptrel_v0 = getPtRel(lep1_id, lep1_idx, false, ssWhichCorr);
+  lep2_ptrel_v0 = getPtRel(lep2_id, lep2_idx, false, ssWhichCorr);
+  lep1_ptrel_v1 = getPtRel(lep1_id, lep1_idx, true, ssWhichCorr);
+  lep2_ptrel_v1 = getPtRel(lep2_id, lep2_idx, true, ssWhichCorr);
 
   //MiniIso
-  lep1_miniIso = abs(lep1_id)==11 ? elMiniRelIsoCMS3_EA(lep1_idx) : muMiniRelIsoCMS3_EA(lep1_idx);
-  lep2_miniIso = abs(lep2_id)==11 ? elMiniRelIsoCMS3_EA(lep2_idx) : muMiniRelIsoCMS3_EA(lep2_idx);
+  lep1_miniIso = abs(lep1_id)==11 ? elMiniRelIsoCMS3_EA(lep1_idx, ssEAversion) : muMiniRelIsoCMS3_EA(lep1_idx, ssEAversion);
+  lep2_miniIso = abs(lep2_id)==11 ? elMiniRelIsoCMS3_EA(lep2_idx, ssEAversion) : muMiniRelIsoCMS3_EA(lep2_idx, ssEAversion);
 
   //For inSituFR, both must pass looser ID (easier than selection ID)
   passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx, expt); 
   passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx, expt); 
 
   //Closest jet for both leptons
-  lep1_closeJet = closestJet(lep1_p4, 0.4, 2.4);
-  lep2_closeJet = closestJet(lep2_p4, 0.4, 2.4);
+  lep1_closeJet = closestJet(lep1_p4, 0.4, 2.4, ssWhichCorr);
+  lep2_closeJet = closestJet(lep2_p4, 0.4, 2.4, ssWhichCorr);
   
   //Fill all generated particles
   if (!is_real_data){
@@ -673,8 +674,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   } 
 
   //Closest Jet
-  jet_close_lep1 = closestJet(lep1_p4);
-  jet_close_lep2 = closestJet(lep2_p4);
+  jet_close_lep1 = closestJet(lep1_p4, 0.4, 2.4, ssWhichCorr);
+  jet_close_lep2 = closestJet(lep2_p4, 0.4, 2.4, ssWhichCorr);
 
   //nVeto Leptons
   if (verbose) cout << " PRINTING RECO ELECTRONS" << endl;
@@ -762,8 +763,9 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   }
 
   //Correct the met
-  corrMET = getT1CHSMET(jetCorr).first;
-  corrMETphi = getT1CHSMET(jetCorr).second;
+  pair <float, float> T1CHSMET = getT1CHSMET_fromMINIAOD(jetCorr);
+  corrMET = T1CHSMET.first;
+  corrMETphi = T1CHSMET.second;
 
   //MET3p0 (aka FKW MET)
   pair<float,float> MET3p0_ = MET3p0();

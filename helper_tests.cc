@@ -144,7 +144,7 @@ void tests::runDYtest(looper* loop, float& weight_, vector<Lep>& vetoleps_noiso,
 	  loop->makeFillHisto2D<TH2F,float>((pdgid==13?"ef_ht_mu_num":"ef_ht_el_num"),(pdgid==13?"ef_ht_mu_num":"ef_ht_el_num"),5,0.,200.,genps_p4()[gp].pt(),6,0.,1200,ht,weight_);
 	}
 	loop->makeFillHisto2D<TH2F,float>((pdgid==13?"ptrel_vs_iso_mu":"ptrel_vs_iso_el"),(pdgid==13?"ptrel_vs_iso_mu":"ptrel_vs_iso_el"),10,0.,1.,goodleps[gl].relIso03(),
-					  15,0.,30,getPtRel(goodleps[gl].pdgId(), goodleps[gl].idx(), true),weight_);
+					  15,0.,30,getPtRel(goodleps[gl].pdgId(), goodleps[gl].idx(), true, ssWhichCorr),weight_);
 	//charge flip
 	loop->makeFillHisto2D<TH2F,float>((pdgid==13?"flip_mu_den":"flip_el_den"),(pdgid==13?"flip_mu_den":"flip_el_den"),5,0.,100.,genps_p4()[gp].pt(),3,0.,3.0,fabs(genps_p4()[gp].eta()),weight_);
 	if (goodleps[gl].pdgId()==-genps_id()[gp]) loop->makeFillHisto2D<TH2F,float>((pdgid==13?"flip_mu_num":"flip_el_num"),(pdgid==13?"flip_mu_num":"flip_el_num"),5,0.,100.,genps_p4()[gp].pt(),3,0.,3.0,fabs(genps_p4()[gp].eta()),weight_);
@@ -733,18 +733,18 @@ void tests::testPtRel( looper* loop, float& weight_, DilepHyp& hyp, std::vector<
       if (isGoodLepton(hyp.leadLep().pdgId(), hyp.leadLep().idx())==0) {
 	if (ll=="mu") {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso03","hyp_ss_foFromWlead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
-	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIsoCMS3_EA(hyp.leadLep().idx()),weight_);
+	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIsoCMS3_EA(hyp.leadLep().idx(), ssEAversion),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02","hyp_ss_foFromWlead_fail_"+ll+"_relIso02",20,0.,1., muRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,false),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB","hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB",20,0.,1., muRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,true),weight_);
 	} else {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso03","hyp_ss_foFromWlead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
-	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., elMiniRelIsoCMS3_EA(hyp.leadLep().idx()),weight_);
+	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso","hyp_ss_foFromWlead_fail_"+ll+"_miniRelIso",20,0.,1., elMiniRelIsoCMS3_EA(hyp.leadLep().idx(), ssEAversion),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02","hyp_ss_foFromWlead_fail_"+ll+"_relIso02",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,false),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB","hyp_ss_foFromWlead_fail_"+ll+"_relIso02DB",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,true),weight_);
 	}
-	float ptrel = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), false);
+	float ptrel = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), false, ssWhichCorr);
 	loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_"+ll+"_ptrel","hyp_ss_foFromWlead_"+ll+"_ptrel",10,0.,20.,ptrel,weight_);
-	float ptrelsub = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), true);
+	float ptrelsub = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), true, ssWhichCorr);
 	loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFromWlead_"+ll+"_ptrelsub","hyp_ss_foFromWlead_"+ll+"_ptrelsub",10,0.,20.,ptrelsub,weight_);
 	if (ptrelsub>14) 
 	  loop->makeFillHisto2D<TH2F,float>("hyp_ss_foFromWlead_"+ll+"_ptrel14_eta_vs_pt","hyp_ss_foFromWlead_"+ll+"_ptrel14_eta_vs_pt",10,0,100,hyp.leadLep().pt(),3,0,3,hyp.leadLep().eta(),weight_);
@@ -784,18 +784,18 @@ void tests::testPtRel( looper* loop, float& weight_, DilepHyp& hyp, std::vector<
       if (isGoodLepton(hyp.leadLep().pdgId(), hyp.leadLep().idx())==0) {
 	if (ll=="mu") {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso03","hyp_ss_foFakelead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
-	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_miniRelIso","hyp_ss_foFakelead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIsoCMS3_EA(hyp.leadLep().idx()),weight_);
+	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_miniRelIso","hyp_ss_foFakelead_fail_"+ll+"_miniRelIso",20,0.,1., muMiniRelIsoCMS3_EA(hyp.leadLep().idx(), ssEAversion),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso02","hyp_ss_foFakelead_fail_"+ll+"_relIso02",20,0.,1., muRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,false),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso02DB","hyp_ss_foFakelead_fail_"+ll+"_relIso02DB",20,0.,1., muRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,true),weight_);
 	} else {
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso03","hyp_ss_foFakelead_fail_"+ll+"_relIso03",20,0.,2.,hyp.leadLep().relIso03(),weight_);
-	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_miniRelIso","hyp_ss_foFakelead_fail_"+ll+"_miniRelIso",20,0.,1., elMiniRelIsoCMS3_EA(hyp.leadLep().idx()),weight_);
+	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_miniRelIso","hyp_ss_foFakelead_fail_"+ll+"_miniRelIso",20,0.,1., elMiniRelIsoCMS3_EA(hyp.leadLep().idx(), ssEAversion),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso02","hyp_ss_foFakelead_fail_"+ll+"_relIso02",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,false),weight_);
 	  loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_fail_"+ll+"_relIso02DB","hyp_ss_foFakelead_fail_"+ll+"_relIso02DB",20,0.,1., elRelIsoCustomCone(hyp.leadLep().idx(),0.2,true,true),weight_);
 	}
-	float ptrel = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), false);
+	float ptrel = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), false, ssWhichCorr);
 	loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_"+ll+"_ptrel","hyp_ss_foFakelead_"+ll+"_ptrel",10,0.,20.,ptrel,weight_);
-	float ptrelsub = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), true);
+	float ptrelsub = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), true, ssWhichCorr);
 	loop->makeFillHisto1D<TH1F,float>("hyp_ss_foFakelead_"+ll+"_ptrelsub","hyp_ss_foFakelead_"+ll+"_ptrelsub",10,0.,20.,ptrelsub,weight_);
 	if (ptrelsub>14) 
 	  loop->makeFillHisto2D<TH2F,float>("hyp_ss_foFakelead_"+ll+"_ptrel14_eta_vs_pt","hyp_ss_foFakelead_"+ll+"_ptrel14_eta_vs_pt",10,0,100,hyp.leadLep().pt(),3,0,3,hyp.leadLep().eta(),weight_);
@@ -997,8 +997,8 @@ void tests::makeSRplots( looper* loop, float& weight_, TString label, int& br, i
     //loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_excl_srld5bins","hyp_"+label+"_excl_srld5bins",5*4,0,1.6*4.,std::min(ld,float(1.6))+1.6*btags.size(),weight_);
     //loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_excl_srld10bins","hyp_"+label+"_excl_srld10bins",10*4,0,1.6*4.,std::min(ld,float(1.6))+1.6*btags.size(),weight_);
     //ptrel
-    float ptRelLead = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), true);
-    float ptRelTrai = getPtRel(hyp.traiLep().pdgId(), hyp.traiLep().idx(), true);
+    float ptRelLead = getPtRel(hyp.leadLep().pdgId(), hyp.leadLep().idx(), true, ssWhichCorr);
+    float ptRelTrai = getPtRel(hyp.traiLep().pdgId(), hyp.traiLep().idx(), true, ssWhichCorr);
     loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_ptRellead","hyp_"+label+"_ptRellead",10,0,20,ptRelLead,weight_);
     loop->makeFillHisto1D<TH1F,float>("hyp_"+label+"_ptReltrai","hyp_"+label+"_ptReltrai",10,0,20,ptRelTrai,weight_);
 
