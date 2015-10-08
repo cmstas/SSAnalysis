@@ -599,13 +599,13 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     //Muon trigger stuff
     if (abs(lep1_id) == 13 && lep1_idx >= 0){
       //Double muon triggers
-      if (passHLTTrigger(triggerName("HLT_DoubleMu8_Mass8_PFHT300_v*"))) {
+      if (passHLTTrigger(triggerName("HLT_DoubleMu8_Mass8_PFHT300_v"))) {
 	if (tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
       }
       if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"), lep1_p4) > 0)             lep1_trigMatch_isoReq = true;
       if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"), lep1_p4) > 0)           lep1_trigMatch_isoReq = true;
       //Mu-El triggers
-      if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v*"))) {
+      if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v"))) {
 	if (tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
       }
       if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))) {
@@ -619,13 +619,13 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     }
     if (abs(lep2_id) == 13 && lep2_idx >= 0){
       //Double muon triggers
-      if (passHLTTrigger(triggerName("HLT_DoubleMu8_Mass8_PFHT300_v*"))) {
+      if (passHLTTrigger(triggerName("HLT_DoubleMu8_Mass8_PFHT300_v"))) {
 	if (tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
       }
       if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"), lep2_p4) > 0)             lep2_trigMatch_isoReq = true;
       if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"), lep2_p4) > 0)           lep2_trigMatch_isoReq = true;
       //Mu-El triggers
-      if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v*"))) {
+      if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v"))) {
 	if (tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
       }
       if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))) {
