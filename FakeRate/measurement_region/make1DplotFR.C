@@ -3,8 +3,9 @@
 #include "TH2.h"
 #include "TPaveText.h"
 
-void make1DplotFR(){
+void make1DplotFR(float elSF_zp=1.16182,float muSF_zp=1.11212,float elSF_mt=0.923611, float muSF_mt=0.879643){
 
+  for(int doPt = 0; doPt < 2; doPt++) {
   gROOT->Reset();
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("4.2f");
@@ -21,15 +22,6 @@ void make1DplotFR(){
   // var="_jet_highpt";
   // var="_jet_lowpt";
 
-  bool doPt = true;
-
-  //scale factors from MT control region plot
-  float muSF = 1.0216;
-  float elSF = 1.26538;
-
-  //scale factors from Z peak
-  float muSF_zp = 0.946187;
-  float elSF_zp = 0.868329;
 
   TFile* f_qcd_mu = TFile::Open("rate_histos_qcd_mu"+postfix+".root");
   TFile* f_qcd_el = TFile::Open("rate_histos_qcd_el"+postfix+".root");
@@ -69,10 +61,10 @@ void make1DplotFR(){
   TH2F* eld_wj = (TH2F*) f_wj->Get("Nl"+var+"_histo_e");
   TH2F* eld_dy = (TH2F*) f_dy->Get("Nl"+var+"_histo_e");
 
-  mud_data->Add(mud_wj,-1.*muSF);
-  mud_data->Add(mud_dy,-1.*muSF);
-  eld_data->Add(eld_wj,-1.*elSF);
-  eld_data->Add(eld_dy,-1.*elSF);
+  mud_data->Add(mud_wj,-1.*muSF_mt);
+  mud_data->Add(mud_dy,-1.*muSF_mt);
+  eld_data->Add(eld_wj,-1.*elSF_mt);
+  eld_data->Add(eld_dy,-1.*elSF_mt);
 
   TH1D* mud1d_data = (doPt ? mud_data->ProjectionX() : mud_data->ProjectionY());
   TH1D* eld1d_data = (doPt ? eld_data->ProjectionX() : eld_data->ProjectionY());
@@ -114,10 +106,10 @@ void make1DplotFR(){
     eln_dy   = (TH2F*) f_dy->Get("Nt_histo_e");
   }
 
-  mun_data->Add(mun_wj,-1.*muSF);
-  mun_data->Add(mun_dy,-1.*muSF);
-  eln_data->Add(eln_wj,-1.*elSF);
-  eln_data->Add(eln_dy,-1.*elSF);
+  mun_data->Add(mun_wj,-1.*muSF_mt);
+  mun_data->Add(mun_dy,-1.*muSF_mt);
+  eln_data->Add(eln_wj,-1.*elSF_mt);
+  eln_data->Add(eln_dy,-1.*elSF_mt);
 
   TH1D* mun1d_data = (doPt ? mun_data->ProjectionX() : mun_data->ProjectionY());
   TH1D* eln1d_data = (doPt ? eln_data->ProjectionX() : eln_data->ProjectionY());
@@ -235,7 +227,7 @@ void make1DplotFR(){
   labelcms->SetTextSize(1.2*0.035);
   labelcms->SetTextFont(42);
   labelcms->SetFillColor(kWhite);
-  labelcms->AddText("16.1 pb^{-1} (13 TeV)");
+  labelcms->AddText("225.6 pb^{-1} (13 TeV)");
   labelcms->SetBorderSize(0);
   labelcms->SetLineWidth(2);
   labelcms->Draw();
@@ -290,5 +282,7 @@ void make1DplotFR(){
 
   c1.SaveAs("pdfs/mu_1dfr"+var+postfix+(doPt ? "" : "_eta")+".pdf");
   c2.SaveAs("pdfs/el_1dfr"+var+postfix+(doPt ? "" : "_eta")+".pdf");
+
+  }
 
 }

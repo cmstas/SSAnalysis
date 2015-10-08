@@ -1,4 +1,5 @@
 {
+  for(int i = 0; i < 3; i++) {
 
   gROOT->Reset();
   gStyle->SetOptStat(0);
@@ -6,7 +7,10 @@
 
   bool saveDen = true;
 
-  TString sample = "data";
+  TString sample;
+  if(i == 0) sample = "data";
+  if(i == 1) sample = "qcd_mu";
+  if(i == 2) sample = "qcd_el";
   // sample = "qcd_mu";
   // sample = "qcd_el";
   // sample = "wj";
@@ -106,4 +110,5 @@
 
   }
 
+  }
 }
