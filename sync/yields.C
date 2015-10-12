@@ -72,10 +72,12 @@ void yields(){
       float htAG = (corrected ? ss::ht_corr() : ss::ht());
 
       //Determine njets
-      float njetsAG =  (corrected ? ss::njets_corr() : ss::njets());
+      int njetsAG =  (corrected ? ss::njets_corr() : ss::njets());
 
       //Determine nbtags
-      float nbtagsAG = (corrected ? ss::nbtags_corr() : ss::nbtags());
+      int nbtagsAG = (corrected ? ss::nbtags_corr() : ss::nbtags());
+
+      //cout << nbtagsAG << endl;
 
       //Calculate mtmin
       float mt1 = MT(ss::lep1_p4().pt(), ss::lep1_p4().phi(), metAG, metPhiAG);
@@ -106,9 +108,16 @@ void yields(){
       //Print sync script for 0-0 HH    
       if (categ == HighHigh && BR >=  0) textfile << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), njetsAG, nbtagsAG, metAG, htAG, SR); 
 
+      // if ( ss::event()==40405 ) {
+      // 	for (int j = 0; j<ss::jets_corr().size(); ++j) {
+      // 	  cout << "jet " << j << " pT=" << ss::jets_corr()[j].pt()*ss::jets_corr_undoJEC()[j]*ss::jets_corr_JEC()[j] << " uncorr_pT=" << ss::jets_corr()[j].pt()*ss::jets_corr_undoJEC()[j] 
+      // 	       << ", eta=" << ss::jets_corr()[j].eta() << ", phi=" << ss::jets_corr()[j].phi() << endl;
+      // 	}
+      // }
+      
     }//event loop
   }//file loop
-
+  
   //Close output text file
   textfile.close();
 
