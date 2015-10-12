@@ -374,19 +374,19 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   //JEC files -- 25 ns MC
   std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1;
   std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1L2L3;
-  jetcorr_filenames_25ns_MC_pfL1.push_back      ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_V5_MC_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_V5_MC_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_V5_MC_L2Relative_AK4PFchs.txt");
-  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_V5_MC_L3Absolute_AK4PFchs.txt");
+  jetcorr_filenames_25ns_MC_pfL1.push_back      ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt");
+  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt");
   
   //JEC files -- 25 ns DATA
   std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1;
   std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1L2L3;
-  jetcorr_filenames_25ns_DATA_pfL1.push_back    ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L2Relative_AK4PFchs.txt");
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L3Absolute_AK4PFchs.txt");
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_DATA_L2L3Residual_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1.push_back    ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2Relative_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt");
+  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt");
 
   FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1; 
   FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1L2L3; 
@@ -601,7 +601,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	    HLT_Ele23_CaloIdM_TrackIdM_PFJet30()==0 && 
 	    HLT_Ele33_CaloIdM_TrackIdM_PFJet30()==0 ) continue;
 	
-    // ele12 for 2015c 25ns 
+	// ele12 for 2015c 25ns 
 	if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()==0 ) continue;
 
       }
@@ -611,8 +611,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	    HLT_Mu24()<=0 && 
 	    HLT_Mu34()<=0 ) continue;
 
-    // mu17 for 2015c 25ns 
-	if (HLT_Mu17()<=0) continue;
+	// mu8+mu17 for 2015D 25ns 
+	if (HLT_Mu17()<=0 && HLT_Mu8()<=0) continue;
 
       }	
       //check prescales for data
@@ -639,10 +639,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
 	  // if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
 
-        // use ele12 FIXME
+	  // use ele12 FIXME
 	  if (p4().pt() > 10 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
 
-        // // use non-(ele12 or ele18) FIXME
+	  // // use non-(ele12 or ele18) FIXME
 	  // if (p4().pt()>35 && HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele33_CaloIdM_TrackIdM_PFJet30();
 	  // else if (p4().pt()<=35 && p4().pt()>25 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
 	  // else if (p4().pt()<=25 && p4().pt()>10 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 ) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30() ;
@@ -670,8 +670,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // else if (p4().pt()<=28 && p4().pt()>20 && HLT_Mu17()>0) prescale = HLT_Mu17();
 	  // else if (p4().pt()<=20 && p4().pt()>10 && HLT_Mu8() >0) prescale = HLT_Mu8();
 
-        // use mu17 FIXME
-	  if (p4().pt()>10 && HLT_Mu17()>0) prescale = HLT_Mu17();
+	  // use mu8+mu17 FIXME
+	  if (p4().pt()>10 && p4().pt()<15 && HLT_Mu8()>0) prescale = HLT_Mu8();
+	  else if (p4().pt()>15 && HLT_Mu17()>0) prescale = HLT_Mu17();
       
         // // use non-mu17 FIXME
 	  // if (p4().pt()>38 && HLT_Mu34()>0) prescale = HLT_Mu34();
@@ -700,10 +701,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       if (fabs(ip3d()/ip3derr())>4. ) continue;
 
-      bool passId = passes_SS_tight_v4();
-      bool passFO = passes_SS_fo_v4();
-      bool passId_noiso = passes_SS_tight_noiso_v4();
-      bool passFO_noiso = passes_SS_fo_noiso_v4();
+      bool passId = passes_SS_tight_v5();
+      bool passFO = passes_SS_fo_v5();
+      bool passId_noiso = passes_SS_tight_noiso_v5();
+      bool passFO_noiso = passes_SS_fo_noiso_v5();
       if (useLooseEMVA && abs(id())==11) {
 	bool isEB = true;
 	if ( fabs(etaSC())>1.479 ) isEB = false;
@@ -718,8 +719,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	float cut_dphi  = isEB ? 0.04 : 0.08;
 	float cut_invep = 0.01;
 	bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
-	passFO = passHltCuts && passes_SS_fo_looseMVA_v4();
-	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v4();
+	passFO = passHltCuts && passes_SS_fo_looseMVA_v5();
+	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v5();
       }
 
       float evt_met = evt_pfmet();
@@ -787,25 +788,25 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (usePtRatioCor) {
 	if (abs(id())==11) {
 	  float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.10))/closejetpt : 1.;
-	  passFO = passes_SS_fo_v4() && (ptratiocor > 0.76 || ptrel > 7.6);
+	  passFO = passes_SS_fo_v5() && (ptratiocor > 0.76 || ptrel > 7.6);
 	} else {
 	  float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.14))/closejetpt : 1.;
-	  passFO = passes_SS_fo_v4() && (ptratiocor > 0.73 || ptrel > 7.3);	      
+	  passFO = passes_SS_fo_v5() && (ptratiocor > 0.73 || ptrel > 7.3);	      
 	}
       }
 
       float coneptcorr = 0.;
       if (abs(id())==11) {
-	if (ptrel>7.6) {
-	  coneptcorr = std::max(0.,miniiso()-0.10);
+	if (ptrel>7.2) {
+	  coneptcorr = std::max(0.,miniiso()-0.12);
 	} else {
-	  coneptcorr = max(double(0.),(closejetpt*0.76/p4().pt()-1.));
+	  coneptcorr = max(double(0.),(closejetpt*0.80/p4().pt()-1.));
 	}
       } else {
-	if (ptrel>7.3) {
-	  coneptcorr = std::max(0.,miniiso()-0.14);
+	if (ptrel>7.2) {
+	  coneptcorr = std::max(0.,miniiso()-0.16);
 	} else {
-	  coneptcorr = max(double(0.),(closejetpt*0.73/p4().pt()-1.));
+	  coneptcorr = max(double(0.),(closejetpt*0.76/p4().pt()-1.));
 	}
       }
       if (useRelIso) {
@@ -1226,6 +1227,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   delete histo_pt_el8 ;
   delete histo_pt_el  ;
   delete njets40_histo;
+
+  delete jet_corrector_25ns_MC_pfL1; 
+  delete jet_corrector_25ns_MC_pfL1L2L3; 
+  delete jet_corrector_25ns_DATA_pfL1; 
+  delete jet_corrector_25ns_DATA_pfL1L2L3; 
 
   // return
   bmark->Stop("benchmark");

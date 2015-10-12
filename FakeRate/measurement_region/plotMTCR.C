@@ -79,7 +79,7 @@ pair<float,float> plotMTCR(float inputSF_el=1.16182, float inputSF_mu=1.11212) {
   TLegend* leg = new TLegend(0.7,0.7,0.89,0.89);
   leg->SetFillColor(kWhite);
   leg->SetLineColor(kWhite);
-  leg->SetHeader("L=225.6/pb");
+  leg->SetHeader("L=209.5/pb");
   leg->AddEntry(h_data,"data","pe");
   leg->AddEntry(h_wj  ,"W+jets","f");
   leg->AddEntry(h_dy  ,"DY","f");
