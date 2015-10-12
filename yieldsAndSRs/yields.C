@@ -3,16 +3,13 @@
 #include "../CORE/SSSelections.h"
 #include "../CORE/Tools/dorky/dorky.h"
 #include "../CORE/Tools/utils.h"
+#include "../commonUtils.h"
 #include "SS.h"
 
 //Tables on/off
 bool makeTables = 0;
 bool testClassSF = false;
 bool corrected = true;
-string v5 = ""; 
-
-//Lumi
-float lumiAG = 0.22557;
 
 struct results_t { TH1F* hh; TH1F* hl; TH1F* ll; }; 
 
@@ -69,7 +66,7 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
         if (duplicate_removal::is_duplicate(id)){ reject++; continue; }
       }
 
-      float weight = isData ? 1 : ss::scale1fb()*lumiAG;
+      float weight = isData ? 1 : ss::scale1fb()*getLumi();
 
       //Reject non-SS
       if (ss::hyp_class() != 3 && testClassSF==false) continue;
@@ -82,10 +79,10 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
    
       //Determine MET
       float metAG = (corrected ? ss::corrMET() : ss::met());
-      float metPhiAG = (corrected ? ss::corrMETPhi() : ss::metPhi());
+      float metPhiAG = (corrected ? ss::corrMETphi() : ss::metPhi());
 
       //Determine HT
-      float htAG = (corrected ? ss::corrHT() : ss::ht());
+      float htAG = (corrected ? ss::ht_corr() : ss::ht());
 
       //Determine njets
       float njetsAG = (corrected ? ss::njets_corr() : ss::njets());
@@ -94,13 +91,13 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
       float nbtagsAG = (corrected ? ss::nbtags_corr() : ss::nbtags());
 
       //Calculate mtmin
-      float mt1 = MT(ss::lep1_p4.pt(), ss::lep1_p4.phi(), metAG, metPhiAG);
-      float mt2 = MT(ss::lep2_p4.pt(), ss::lep2_p4.phi(), metAG, metPhiAG);
+      float mt1 = MT(ss::lep1_p4().pt(), ss::lep1_p4().phi(), metAG, metPhiAG);
+      float mt2 = MT(ss::lep2_p4().pt(), ss::lep2_p4().phi(), metAG, metPhiAG);
       float mtmin = mt1 > mt2 ? mt2 : mt1; 
        
       //Figure out region, fill plot
       anal_type_t categ = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());  
-      int SR = signalRegion(njetsAG, nbtagsAG, corrAG, htAG, mtmin, ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      int SR = signalRegion(njetsAG, nbtagsAG, metAG, htAG, mtmin, ss::lep1_p4().pt(), ss::lep2_p4().pt());
       if (SR > 0 && categ == HighHigh) HighHighPlot->Fill(SR, weight);
       if (SR > 0 && categ == HighLow)  HighLowPlot ->Fill(SR, weight);
       if (SR > 0 && categ == LowLow)   LowLowPlot  ->Fill(SR, weight);
@@ -134,23 +131,28 @@ void yields(){
   TChain* t5qqww_1200 = new TChain("t");
   TChain* t5qqww_deg  = new TChain("t");
  
+  TString tag = getTag();
+
   //Fill chains
-  // data       ->Add("/nfs-7/userdata/ss2015/ssBabies/v3.09/Data25ns.root");
-  ttbar      ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/TTBAR.root"       , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  // ttbar      ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/SINGLETOP1.root"       , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  // ttbar      ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/SINGLETOP2.root"       , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  // ttbar      ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/SINGLETOP3.root"       , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  // ttbar      ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/SINGLETOP4.root"       , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  // ttbar      ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/SINGLETOP5.root"       , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  ttw        ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/TTW.root"         , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  //ttw        ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/TTWQQ.root"         , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  ttz        ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/TTZL.root"        , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  //ttz        ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/TTZQ.root"        , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  wz         ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/WZ3LNU.root"      , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  dy         ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/DY_high.root"     , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  dy         ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/DY_low.root"      , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  t1tttt_1200->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/T1TTTT_1200.root" , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
-  t1tttt_1500->Add(Form("/nfs-7/userdata/ss2015/ssBabies/v3.09/%s/T1TTTT_1500.root" , v5.length() > 0 ? v5.substr(1).c_str() : ""                  ));
+  data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGD.root");
+  data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGD.root");
+  data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonD.root");
+
+  ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR.root");
+  ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP.root");
+
+  ttw->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");
+  ttz->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZL.root");
+  wz->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ3LNU.root");
+
+  wjets->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets.root");
+  wjets->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WGToLNuG.root");
+
+  dy->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_high.root");
+  dy->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_low.root");
+
+  t1tttt_1200->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/T1TTTT_1200.root");
+  t1tttt_1500->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/T1TTTT_1500.root");
 
   //Chains for type
   TChain* all_bkgd = new TChain("t");
@@ -258,14 +260,14 @@ void yields(){
 
 
   //Make plots -- sample
-  dataMCplotMaker(data_graphs.hh, background_high, titles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots%s/high_yields%s --noDivisionLabel --xAxisLabel   --energy 13 --lumi 225.57 --lumiUnit pb --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HH,2HH,3HH,4HH,5HH,6HH,7HH,8HH,9HH,10HH,11HH,12HH,13HH,14HH,15HH,16HH,17HH,18HH,19HH,20HH,21HH,22HH,23HH,24HH,25HH,26HH,27HH,28HH,29HH,30HH,31HH,32HH", v5.c_str(), postfix.c_str())); 
-  dataMCplotMaker(data_graphs.hl, background_hl  , titles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots%s//hl_yields%s --noDivisionLabel --xAxisLabel --energy 13 --lumi 225.57 --lumiUnit pb --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HL,2HL,3HL,4HL,5HL,6HL,7HL,8HL,9HL,10HL,11HL,12HL,13HL,14HL,15HL,16HL,17HL,18HL,19HL,20HL,21HL,22HL,23HL,24HL,25HL,26HL", v5.c_str(), postfix.c_str())); 
-  dataMCplotMaker(null, signal_high, signal_titles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots%s//high_yields_s%s --noDivisionLabel --xAxisLabel    --energy 13 --lumi 225.57 --lumiUnit pb --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.0325 --noStack --nDivisions 210 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HH,2HH,3HH,4HH,5HH,6HH,7HH,8HH,9HH,10HH,11HH,12HH,13HH,14HH,15HH,16HH,17HH,18HH,19HH,20HH,21HH,22HH,23HH,24HH,25HH,26HH,27HH,28HH,29HH,30HH,31HH,32HH", v5.c_str(), postfix.c_str())); 
-  dataMCplotMaker(null, signal_hl  , signal_titles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots%s//hl_yields_s%s --noDivisionLabel --xAxisLabel  --energy 13 --lumi 225.57 --lumiUnit pb --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.03 --noStack  --nDivisions 210 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HL,2HL,3HL,4HL,5HL,6HL,7HL,8HL,9HL,10HL,11HL,12HL,13HL,14HL,15HL,16HL,17HL,18HL,19HL,20HL,21HL,22HL,23HL,24HL,25HL,26HL", v5.c_str(), postfix.c_str())); 
+  dataMCplotMaker(data_graphs.hh, background_high, titles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots/high_yields%s --noDivisionLabel --xAxisLabel   --energy 13 --lumi 209.5 --lumiUnit pb --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HH,2HH,3HH,4HH,5HH,6HH,7HH,8HH,9HH,10HH,11HH,12HH,13HH,14HH,15HH,16HH,17HH,18HH,19HH,20HH,21HH,22HH,23HH,24HH,25HH,26HH,27HH,28HH,29HH,30HH,31HH,32HH", postfix.c_str())); 
+  dataMCplotMaker(data_graphs.hl, background_hl  , titles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots//hl_yields%s --noDivisionLabel --xAxisLabel --energy 13 --lumi 209.5 --lumiUnit pb --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HL,2HL,3HL,4HL,5HL,6HL,7HL,8HL,9HL,10HL,11HL,12HL,13HL,14HL,15HL,16HL,17HL,18HL,19HL,20HL,21HL,22HL,23HL,24HL,25HL,26HL", postfix.c_str())); 
+  dataMCplotMaker(null, signal_high, signal_titles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots//high_yields_s%s --noDivisionLabel --xAxisLabel    --energy 13 --lumi 209.5 --lumiUnit pb --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.0325 --noStack --nDivisions 210 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HH,2HH,3HH,4HH,5HH,6HH,7HH,8HH,9HH,10HH,11HH,12HH,13HH,14HH,15HH,16HH,17HH,18HH,19HH,20HH,21HH,22HH,23HH,24HH,25HH,26HH,27HH,28HH,29HH,30HH,31HH,32HH", postfix.c_str())); 
+  dataMCplotMaker(null, signal_hl  , signal_titles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots//hl_yields_s%s --noDivisionLabel --xAxisLabel  --energy 13 --lumi 209.5 --lumiUnit pb --legendRight -0.12 --noXaxisUnit  --legendTextSize 0.03 --noStack  --nDivisions 210 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HL,2HL,3HL,4HL,5HL,6HL,7HL,8HL,9HL,10HL,11HL,12HL,13HL,14HL,15HL,16HL,17HL,18HL,19HL,20HL,21HL,22HL,23HL,24HL,25HL,26HL", postfix.c_str())); 
 
   //Make plots -- background
-  dataMCplotMaker(null, background_type_high, typetitles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots%s//high_yields_t%s --noDivisionLabel --xAxisLabel    --energy 13 --lumi 225.57 --lumiUnit pb --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HH,2HH,3HH,4HH,5HH,6HH,7HH,8HH,9HH,10HH,11HH,12HH,13HH,14HH,15HH,16HH,17HH,18HH,19HH,20HH,21HH,22HH,23HH,24HH,25HH,26HH,27HH,28HH,29HH,30HH,31HH,32HH", v5.c_str(), postfix.c_str())); 
-  dataMCplotMaker(null, background_type_hl  , typetitles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots%s//hl_yields_t%s --noDivisionLabel --xAxisLabel  --energy 13 --lumi 225.57 --lumiUnit pb --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HL,2HL,3HL,4HL,5HL,6HL,7HL,8HL,9HL,10HL,11HL,12HL,13HL,14HL,15HL,16HL,17HL,18HL,19HL,20HL,21HL,22HL,23HL,24HL,25HL,26HL", v5.c_str(), postfix.c_str())); 
+  dataMCplotMaker(null, background_type_high, typetitles, "H-H", "", Form("--vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots//high_yields_t%s --noDivisionLabel --xAxisLabel    --energy 13 --lumi 209.5 --lumiUnit pb --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HH,2HH,3HH,4HH,5HH,6HH,7HH,8HH,9HH,10HH,11HH,12HH,13HH,14HH,15HH,16HH,17HH,18HH,19HH,20HH,21HH,22HH,23HH,24HH,25HH,26HH,27HH,28HH,29HH,30HH,31HH,32HH", postfix.c_str())); 
+  dataMCplotMaker(null, background_type_hl  , typetitles, "H-L", "", Form("--vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots//hl_yields_t%s --noDivisionLabel --xAxisLabel  --energy 13 --lumi 209.5 --lumiUnit pb --nDivisions 210 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear --xAxisVerticalBinLabels --xAxisBinLabels 1HL,2HL,3HL,4HL,5HL,6HL,7HL,8HL,9HL,10HL,11HL,12HL,13HL,14HL,15HL,16HL,17HL,18HL,19HL,20HL,21HL,22HL,23HL,24HL,25HL,26HL", postfix.c_str())); 
 
 //  //Make tables
 //  if (!makeTables) return; 
