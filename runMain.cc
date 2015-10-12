@@ -73,9 +73,15 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   TChain *chain_T5ttttDeg_mGo1300_mStop300_mChi280_4bodydec_v2                  = new TChain("Events");
   TChain *chain_T6ttWW_600_425_50_v2                                            = new TChain("Events");
   TChain *chain_T6ttWW_650_150_50_v2                                            = new TChain("Events");
-  TChain *chain_data_doubleEG                                                   = new TChain("Events"); 
+  TChain *chain_data_DoubleEG                                                   = new TChain("Events"); 
+  TChain *chain_data_DoubleMuon                                                 = new TChain("Events"); 
+  TChain *chain_data_MuonEG                                                     = new TChain("Events"); 
   TChain *chain_test                                                            = new TChain("Events");
   TChain *chain_05Aug                                                           = new TChain("Events");
+  TChain *chain_sync_DoubleMuon                                                 = new TChain("Events");
+  TChain *chain_sync_DoubleEG                                                   = new TChain("Events");
+  TChain *chain_sync_MuonEG                                                     = new TChain("Events");
+  TChain *chain_sync_TTW                                                        = new TChain("Events");
 
   TChain *chain_TTJets_50ns = new TChain("Events");
   chain_TTJets_50ns->Add("/hadoop/cms/store/group/snt/run2_50ns/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/V07-04-03/merged_ntuple_*.root");
@@ -146,13 +152,22 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     chain_TW ->Add(dir + "TBarToLeptons_t-channel_Tune4C_CSA14_13TeV-aMCatNLO-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/" + tag);
 
     //data
-    chain_data_doubleEG ->Add(dataDir + "Run2015B_DoubleEG_MINIAOD_PromptReco-v1/merged/" + dataTag); 
+    //chain_data_DoubleEG   ->Add(dataDir + "Run2015C_DoubleEG_MINIAOD_PromptReco-v1/merged/V07-04-08/*.root"); 
+    chain_data_DoubleEG   ->Add(dataDir + "Run2015D_DoubleEG_MINIAOD_PromptReco-v3/merged/V07-04-09/*.root"); 
+    //chain_data_DoubleMuon ->Add(dataDir + "Run2015C_DoubleMuon_MINIAOD_PromptReco-v1/merged/V07-04-08/*.root"); 
+    chain_data_DoubleMuon ->Add(dataDir + "Run2015D_DoubleMuon_MINIAOD_PromptReco-v3/merged/V07-04-09/*.root"); 
+    //chain_data_MuonEG     ->Add(dataDir + "Run2015C_MuonEG_MINIAOD_PromptReco-v1/merged/V07-04-08/*.root"); 
+    chain_data_MuonEG     ->Add(dataDir + "Run2015D_MuonEG_MINIAOD_PromptReco-v3/merged/V07-04-09/*.root"); 
 
     //test
-    chain_test->Add(dir + "TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola_Phys14DR-PU20bx25_PHYS14_25_V1-v1/V07-02-08/merged_ntuple_1.root"); 
+    chain_test->Add(dir + "TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/V07-04-08/merged_ntuple_1.root"); 
 
     //Sync sample
     chain_sync->Add("/nfs-7/userdata/ss2015/sync_file/V07-02-08/sync_file.root");
+    chain_sync_DoubleMuon->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleMuon_MINIAOD_PromptReco-v3_000_257_531_00000_B26DC190-8166-E511-AE66-02163E0133A7.root");
+    chain_sync_DoubleEG  ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleEG_MINIAOD_PromptReco-v3_000_257_531_00000_2CFA9A0A-0F66-E511-88FF-02163E013484.root");
+    chain_sync_MuonEG    ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/MuonEG_MINIAOD_PromptReco-v3_000_257_531_00000_D62608D5-FB65-E511-B031-02163E0145C1.root");
+    chain_sync_TTW       ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_MINIAODSIM_Asympt25ns_MCRUN2_74_V9-v1_30000_60087A61-9134-E511-B0C6-0025905B855E.root");
 
     //Private samples
     TString private_dir = "/nfs-7/userdata/ss2015/signalSamples/V07-02-08/";
@@ -262,9 +277,16 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     if (babiesToMake[31] == 1) l->ScanChain(chain_T6ttWW_600_425_50_v2                                  , "T6ttWW_600_425_50_v2", "baby", 0, "MakeBaby", -1);
     if (babiesToMake[32] == 1) l->ScanChain(chain_T6ttWW_650_150_50_v2                                  , "T6ttWW_650_150_50_v2", "baby", 0, "MakeBaby", -1);
     if (babiesToMake[33] == 1) l->ScanChain(chain_test                                                  , "test"                , "baby", 0, "MakeBaby", -1);
-    if (babiesToMake[34] == 1) l->ScanChain(chain_data_doubleEG                                         , "data_doubleEG"     , "baby", 0, "MakeBaby", -1); 
+    if (babiesToMake[34] == 1) l->ScanChain(chain_data_DoubleEG                                         , "data_DoubleEG"     , "baby", 1, "MakeBaby", -1); 
     if (babiesToMake[35] == 1) l->ScanChain(chain_TTJets_50ns                                           , "TTJets_50ns"       , "baby", 0, "MakeBaby", -1); 
     if (babiesToMake[36] == 1) l->ScanChain(chain_05Aug                                                 , "data05Aug"         , "baby", 0, "MakeBaby", -1); 
+    if (babiesToMake[37] == 1) l->ScanChain(chain_data_DoubleMuon                                       , "data_DoubleMuon"   , "baby", 1, "MakeBaby", -1); 
+    if (babiesToMake[38] == 1) l->ScanChain(chain_data_MuonEG                                           , "data_MuonEG"       , "baby", 1, "MakeBaby", -1); 
+    if (babiesToMake[39] == 1) l->ScanChain(chain_DY                       , "dy"                       , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[40] == 1) l->ScanChain(chain_sync_DoubleMuon          , "sync_DoubleMuon"          , "baby", 1, "MakeBaby", -1);
+    if (babiesToMake[41] == 1) l->ScanChain(chain_sync_DoubleEG            , "sync_DoubleEG"            , "baby", 1, "MakeBaby", -1);
+    if (babiesToMake[42] == 1) l->ScanChain(chain_sync_MuonEG              , "sync_MuonEG"              , "baby", 1, "MakeBaby", -1);
+    if (babiesToMake[43] == 1) l->ScanChain(chain_sync_TTW                 , "sync_TTW"                 , "baby", 0, "MakeBaby", -1);
 
 
   }

@@ -10,3 +10,11 @@ if [ ! -d $therelease ]; then cmsrel $therelease; fi
 cd $therelease
 eval `scram ru -sh`
 cd -
+
+ARCH="$(root-config --arch)"
+if [ $ARCH == "macosx64" ]
+then
+    echo "gc mac specific fixes"
+    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$PWD:$PWD/CORE/:$PWD/Tools/:$PWD/software/tableMaker/
+    source $ROOTSYS/bin/thisroot.sh
+fi

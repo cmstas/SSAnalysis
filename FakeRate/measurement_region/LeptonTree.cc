@@ -178,6 +178,11 @@ void LeptonTree::Init(TTree *tree) {
 		ht_branch = tree->GetBranch("ht");
 		if (ht_branch) {ht_branch->SetAddress(&ht_);}
 	}
+	ht_SS_branch = 0;
+	if (tree->GetBranch("ht_SS") != 0) {
+		ht_SS_branch = tree->GetBranch("ht_SS");
+		if (ht_SS_branch) {ht_SS_branch->SetAddress(&ht_SS_);}
+	}
 	jets_disc_branch = 0;
 	if (tree->GetBranch("jets_disc") != 0) {
 		jets_disc_branch = tree->GetBranch("jets_disc");
@@ -332,6 +337,96 @@ void LeptonTree::Init(TTree *tree) {
 	if (tree->GetBranch("passes_SS_fo_looseMVA_noiso_v3") != 0) {
 		passes_SS_fo_looseMVA_noiso_v3_branch = tree->GetBranch("passes_SS_fo_looseMVA_noiso_v3");
 		if (passes_SS_fo_looseMVA_noiso_v3_branch) {passes_SS_fo_looseMVA_noiso_v3_branch->SetAddress(&passes_SS_fo_looseMVA_noiso_v3_);}
+	}
+	passes_SS_veto_v3_branch = 0;
+	if (tree->GetBranch("passes_SS_veto_v3") != 0) {
+		passes_SS_veto_v3_branch = tree->GetBranch("passes_SS_veto_v3");
+		if (passes_SS_veto_v3_branch) {passes_SS_veto_v3_branch->SetAddress(&passes_SS_veto_v3_);}
+	}
+	passes_SS_veto_noiso_v3_branch = 0;
+	if (tree->GetBranch("passes_SS_veto_noiso_v3") != 0) {
+		passes_SS_veto_noiso_v3_branch = tree->GetBranch("passes_SS_veto_noiso_v3");
+		if (passes_SS_veto_noiso_v3_branch) {passes_SS_veto_noiso_v3_branch->SetAddress(&passes_SS_veto_noiso_v3_);}
+	}
+	passes_SS_tight_v4_branch = 0;
+	if (tree->GetBranch("passes_SS_tight_v4") != 0) {
+		passes_SS_tight_v4_branch = tree->GetBranch("passes_SS_tight_v4");
+		if (passes_SS_tight_v4_branch) {passes_SS_tight_v4_branch->SetAddress(&passes_SS_tight_v4_);}
+	}
+	passes_SS_tight_noiso_v4_branch = 0;
+	if (tree->GetBranch("passes_SS_tight_noiso_v4") != 0) {
+		passes_SS_tight_noiso_v4_branch = tree->GetBranch("passes_SS_tight_noiso_v4");
+		if (passes_SS_tight_noiso_v4_branch) {passes_SS_tight_noiso_v4_branch->SetAddress(&passes_SS_tight_noiso_v4_);}
+	}
+	passes_SS_fo_v4_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_v4") != 0) {
+		passes_SS_fo_v4_branch = tree->GetBranch("passes_SS_fo_v4");
+		if (passes_SS_fo_v4_branch) {passes_SS_fo_v4_branch->SetAddress(&passes_SS_fo_v4_);}
+	}
+	passes_SS_fo_noiso_v4_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_noiso_v4") != 0) {
+		passes_SS_fo_noiso_v4_branch = tree->GetBranch("passes_SS_fo_noiso_v4");
+		if (passes_SS_fo_noiso_v4_branch) {passes_SS_fo_noiso_v4_branch->SetAddress(&passes_SS_fo_noiso_v4_);}
+	}
+	passes_SS_fo_looseMVA_v4_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_looseMVA_v4") != 0) {
+		passes_SS_fo_looseMVA_v4_branch = tree->GetBranch("passes_SS_fo_looseMVA_v4");
+		if (passes_SS_fo_looseMVA_v4_branch) {passes_SS_fo_looseMVA_v4_branch->SetAddress(&passes_SS_fo_looseMVA_v4_);}
+	}
+	passes_SS_fo_looseMVA_noiso_v4_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_looseMVA_noiso_v4") != 0) {
+		passes_SS_fo_looseMVA_noiso_v4_branch = tree->GetBranch("passes_SS_fo_looseMVA_noiso_v4");
+		if (passes_SS_fo_looseMVA_noiso_v4_branch) {passes_SS_fo_looseMVA_noiso_v4_branch->SetAddress(&passes_SS_fo_looseMVA_noiso_v4_);}
+	}
+	passes_SS_veto_v4_branch = 0;
+	if (tree->GetBranch("passes_SS_veto_v4") != 0) {
+		passes_SS_veto_v4_branch = tree->GetBranch("passes_SS_veto_v4");
+		if (passes_SS_veto_v4_branch) {passes_SS_veto_v4_branch->SetAddress(&passes_SS_veto_v4_);}
+	}
+	passes_SS_veto_noiso_v4_branch = 0;
+	if (tree->GetBranch("passes_SS_veto_noiso_v4") != 0) {
+		passes_SS_veto_noiso_v4_branch = tree->GetBranch("passes_SS_veto_noiso_v4");
+		if (passes_SS_veto_noiso_v4_branch) {passes_SS_veto_noiso_v4_branch->SetAddress(&passes_SS_veto_noiso_v4_);}
+	}
+	passes_SS_tight_v5_branch = 0;
+	if (tree->GetBranch("passes_SS_tight_v5") != 0) {
+		passes_SS_tight_v5_branch = tree->GetBranch("passes_SS_tight_v5");
+		if (passes_SS_tight_v5_branch) {passes_SS_tight_v5_branch->SetAddress(&passes_SS_tight_v5_);}
+	}
+	passes_SS_tight_noiso_v5_branch = 0;
+	if (tree->GetBranch("passes_SS_tight_noiso_v5") != 0) {
+		passes_SS_tight_noiso_v5_branch = tree->GetBranch("passes_SS_tight_noiso_v5");
+		if (passes_SS_tight_noiso_v5_branch) {passes_SS_tight_noiso_v5_branch->SetAddress(&passes_SS_tight_noiso_v5_);}
+	}
+	passes_SS_fo_v5_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_v5") != 0) {
+		passes_SS_fo_v5_branch = tree->GetBranch("passes_SS_fo_v5");
+		if (passes_SS_fo_v5_branch) {passes_SS_fo_v5_branch->SetAddress(&passes_SS_fo_v5_);}
+	}
+	passes_SS_fo_noiso_v5_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_noiso_v5") != 0) {
+		passes_SS_fo_noiso_v5_branch = tree->GetBranch("passes_SS_fo_noiso_v5");
+		if (passes_SS_fo_noiso_v5_branch) {passes_SS_fo_noiso_v5_branch->SetAddress(&passes_SS_fo_noiso_v5_);}
+	}
+	passes_SS_fo_looseMVA_v5_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_looseMVA_v5") != 0) {
+		passes_SS_fo_looseMVA_v5_branch = tree->GetBranch("passes_SS_fo_looseMVA_v5");
+		if (passes_SS_fo_looseMVA_v5_branch) {passes_SS_fo_looseMVA_v5_branch->SetAddress(&passes_SS_fo_looseMVA_v5_);}
+	}
+	passes_SS_fo_looseMVA_noiso_v5_branch = 0;
+	if (tree->GetBranch("passes_SS_fo_looseMVA_noiso_v5") != 0) {
+		passes_SS_fo_looseMVA_noiso_v5_branch = tree->GetBranch("passes_SS_fo_looseMVA_noiso_v5");
+		if (passes_SS_fo_looseMVA_noiso_v5_branch) {passes_SS_fo_looseMVA_noiso_v5_branch->SetAddress(&passes_SS_fo_looseMVA_noiso_v5_);}
+	}
+	passes_SS_veto_v5_branch = 0;
+	if (tree->GetBranch("passes_SS_veto_v5") != 0) {
+		passes_SS_veto_v5_branch = tree->GetBranch("passes_SS_veto_v5");
+		if (passes_SS_veto_v5_branch) {passes_SS_veto_v5_branch->SetAddress(&passes_SS_veto_v5_);}
+	}
+	passes_SS_veto_noiso_v5_branch = 0;
+	if (tree->GetBranch("passes_SS_veto_noiso_v5") != 0) {
+		passes_SS_veto_noiso_v5_branch = tree->GetBranch("passes_SS_veto_noiso_v5");
+		if (passes_SS_veto_noiso_v5_branch) {passes_SS_veto_noiso_v5_branch->SetAddress(&passes_SS_veto_noiso_v5_);}
 	}
 	passes_WW_medium_v1_branch = 0;
 	if (tree->GetBranch("passes_WW_medium_v1") != 0) {
@@ -512,6 +607,11 @@ void LeptonTree::Init(TTree *tree) {
 	if (tree->GetBranch("jet_close_L1L2L3") != 0) {
 		jet_close_L1L2L3_branch = tree->GetBranch("jet_close_L1L2L3");
 		if (jet_close_L1L2L3_branch) {jet_close_L1L2L3_branch->SetAddress(&jet_close_L1L2L3_);}
+	}
+	jet_close_L2L3_branch = 0;
+	if (tree->GetBranch("jet_close_L2L3") != 0) {
+		jet_close_L2L3_branch = tree->GetBranch("jet_close_L2L3");
+		if (jet_close_L2L3_branch) {jet_close_L2L3_branch->SetAddress(&jet_close_L2L3_);}
 	}
 	ptratio_branch = 0;
 	if (tree->GetBranch("ptratio") != 0) {
@@ -1387,6 +1487,7 @@ void LeptonTree::GetEntry(unsigned int idx)
 		gen_metPhi_isLoaded = false;
 		njets_isLoaded = false;
 		ht_isLoaded = false;
+		ht_SS_isLoaded = false;
 		jets_isLoaded = false;
 		jets_disc_isLoaded = false;
 		jets_area_isLoaded = false;
@@ -1424,6 +1525,24 @@ void LeptonTree::GetEntry(unsigned int idx)
 		passes_SS_fo_noiso_v3_isLoaded = false;
 		passes_SS_fo_looseMVA_v3_isLoaded = false;
 		passes_SS_fo_looseMVA_noiso_v3_isLoaded = false;
+		passes_SS_veto_v3_isLoaded = false;
+		passes_SS_veto_noiso_v3_isLoaded = false;
+		passes_SS_tight_v4_isLoaded = false;
+		passes_SS_tight_noiso_v4_isLoaded = false;
+		passes_SS_fo_v4_isLoaded = false;
+		passes_SS_fo_noiso_v4_isLoaded = false;
+		passes_SS_fo_looseMVA_v4_isLoaded = false;
+		passes_SS_fo_looseMVA_noiso_v4_isLoaded = false;
+		passes_SS_veto_v4_isLoaded = false;
+		passes_SS_veto_noiso_v4_isLoaded = false;
+		passes_SS_tight_v5_isLoaded = false;
+		passes_SS_tight_noiso_v5_isLoaded = false;
+		passes_SS_fo_v5_isLoaded = false;
+		passes_SS_fo_noiso_v5_isLoaded = false;
+		passes_SS_fo_looseMVA_v5_isLoaded = false;
+		passes_SS_fo_looseMVA_noiso_v5_isLoaded = false;
+		passes_SS_veto_v5_isLoaded = false;
+		passes_SS_veto_noiso_v5_isLoaded = false;
 		passes_WW_medium_v1_isLoaded = false;
 		passes_WW_medium_noiso_v1_isLoaded = false;
 		passes_WW_fo_v1_isLoaded = false;
@@ -1461,6 +1580,7 @@ void LeptonTree::GetEntry(unsigned int idx)
 		jet_close_L1nc_isLoaded = false;
 		jet_close_L1ncmc_isLoaded = false;
 		jet_close_L1L2L3_isLoaded = false;
+		jet_close_L2L3_isLoaded = false;
 		ptratio_isLoaded = false;
 		tag_charge_isLoaded = false;
 		tag_eSeed_isLoaded = false;
@@ -1662,6 +1782,7 @@ void LeptonTree::LoadAllBranches()
 	if (gen_metPhi_branch != 0) gen_metPhi();
 	if (njets_branch != 0) njets();
 	if (ht_branch != 0) ht();
+	if (ht_SS_branch != 0) ht_SS();
 	if (jets_branch != 0) jets();
 	if (jets_disc_branch != 0) jets_disc();
 	if (jets_area_branch != 0) jets_area();
@@ -1699,6 +1820,24 @@ void LeptonTree::LoadAllBranches()
 	if (passes_SS_fo_noiso_v3_branch != 0) passes_SS_fo_noiso_v3();
 	if (passes_SS_fo_looseMVA_v3_branch != 0) passes_SS_fo_looseMVA_v3();
 	if (passes_SS_fo_looseMVA_noiso_v3_branch != 0) passes_SS_fo_looseMVA_noiso_v3();
+	if (passes_SS_veto_v3_branch != 0) passes_SS_veto_v3();
+	if (passes_SS_veto_noiso_v3_branch != 0) passes_SS_veto_noiso_v3();
+	if (passes_SS_tight_v4_branch != 0) passes_SS_tight_v4();
+	if (passes_SS_tight_noiso_v4_branch != 0) passes_SS_tight_noiso_v4();
+	if (passes_SS_fo_v4_branch != 0) passes_SS_fo_v4();
+	if (passes_SS_fo_noiso_v4_branch != 0) passes_SS_fo_noiso_v4();
+	if (passes_SS_fo_looseMVA_v4_branch != 0) passes_SS_fo_looseMVA_v4();
+	if (passes_SS_fo_looseMVA_noiso_v4_branch != 0) passes_SS_fo_looseMVA_noiso_v4();
+	if (passes_SS_veto_v4_branch != 0) passes_SS_veto_v4();
+	if (passes_SS_veto_noiso_v4_branch != 0) passes_SS_veto_noiso_v4();
+	if (passes_SS_tight_v5_branch != 0) passes_SS_tight_v5();
+	if (passes_SS_tight_noiso_v5_branch != 0) passes_SS_tight_noiso_v5();
+	if (passes_SS_fo_v5_branch != 0) passes_SS_fo_v5();
+	if (passes_SS_fo_noiso_v5_branch != 0) passes_SS_fo_noiso_v5();
+	if (passes_SS_fo_looseMVA_v5_branch != 0) passes_SS_fo_looseMVA_v5();
+	if (passes_SS_fo_looseMVA_noiso_v5_branch != 0) passes_SS_fo_looseMVA_noiso_v5();
+	if (passes_SS_veto_v5_branch != 0) passes_SS_veto_v5();
+	if (passes_SS_veto_noiso_v5_branch != 0) passes_SS_veto_noiso_v5();
 	if (passes_WW_medium_v1_branch != 0) passes_WW_medium_v1();
 	if (passes_WW_medium_noiso_v1_branch != 0) passes_WW_medium_noiso_v1();
 	if (passes_WW_fo_v1_branch != 0) passes_WW_fo_v1();
@@ -1736,6 +1875,7 @@ void LeptonTree::LoadAllBranches()
 	if (jet_close_L1nc_branch != 0) jet_close_L1nc();
 	if (jet_close_L1ncmc_branch != 0) jet_close_L1ncmc();
 	if (jet_close_L1L2L3_branch != 0) jet_close_L1L2L3();
+	if (jet_close_L2L3_branch != 0) jet_close_L2L3();
 	if (ptratio_branch != 0) ptratio();
 	if (tag_charge_branch != 0) tag_charge();
 	if (tag_eSeed_branch != 0) tag_eSeed();
@@ -2270,6 +2410,19 @@ void LeptonTree::LoadAllBranches()
 		}
 		return ht_;
 	}
+	const float &LeptonTree::ht_SS()
+	{
+		if (not ht_SS_isLoaded) {
+			if (ht_SS_branch != 0) {
+				ht_SS_branch->GetEntry(index);
+			} else { 
+				printf("branch ht_SS_branch does not exist!\n");
+				exit(1);
+			}
+			ht_SS_isLoaded = true;
+		}
+		return ht_SS_;
+	}
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &LeptonTree::jets()
 	{
 		if (not jets_isLoaded) {
@@ -2751,6 +2904,240 @@ void LeptonTree::LoadAllBranches()
 		}
 		return passes_SS_fo_looseMVA_noiso_v3_;
 	}
+	const bool &	LeptonTree::passes_SS_veto_v3()
+	{
+		if (not passes_SS_veto_v3_isLoaded) {
+			if (passes_SS_veto_v3_branch != 0) {
+				passes_SS_veto_v3_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_veto_v3_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_veto_v3_isLoaded = true;
+		}
+		return passes_SS_veto_v3_;
+	}
+	const bool &	LeptonTree::passes_SS_veto_noiso_v3()
+	{
+		if (not passes_SS_veto_noiso_v3_isLoaded) {
+			if (passes_SS_veto_noiso_v3_branch != 0) {
+				passes_SS_veto_noiso_v3_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_veto_noiso_v3_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_veto_noiso_v3_isLoaded = true;
+		}
+		return passes_SS_veto_noiso_v3_;
+	}
+	const bool &	LeptonTree::passes_SS_tight_v4()
+	{
+		if (not passes_SS_tight_v4_isLoaded) {
+			if (passes_SS_tight_v4_branch != 0) {
+				passes_SS_tight_v4_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_tight_v4_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_tight_v4_isLoaded = true;
+		}
+		return passes_SS_tight_v4_;
+	}
+	const bool &	LeptonTree::passes_SS_tight_noiso_v4()
+	{
+		if (not passes_SS_tight_noiso_v4_isLoaded) {
+			if (passes_SS_tight_noiso_v4_branch != 0) {
+				passes_SS_tight_noiso_v4_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_tight_noiso_v4_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_tight_noiso_v4_isLoaded = true;
+		}
+		return passes_SS_tight_noiso_v4_;
+	}
+	const bool &	LeptonTree::passes_SS_fo_v4()
+	{
+		if (not passes_SS_fo_v4_isLoaded) {
+			if (passes_SS_fo_v4_branch != 0) {
+				passes_SS_fo_v4_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_fo_v4_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_fo_v4_isLoaded = true;
+		}
+		return passes_SS_fo_v4_;
+	}
+	const bool &	LeptonTree::passes_SS_fo_noiso_v4()
+	{
+		if (not passes_SS_fo_noiso_v4_isLoaded) {
+			if (passes_SS_fo_noiso_v4_branch != 0) {
+				passes_SS_fo_noiso_v4_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_fo_noiso_v4_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_fo_noiso_v4_isLoaded = true;
+		}
+		return passes_SS_fo_noiso_v4_;
+	}
+	const bool &	LeptonTree::passes_SS_fo_looseMVA_v4()
+	{
+		if (not passes_SS_fo_looseMVA_v4_isLoaded) {
+			if (passes_SS_fo_looseMVA_v4_branch != 0) {
+				passes_SS_fo_looseMVA_v4_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_fo_looseMVA_v4_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_fo_looseMVA_v4_isLoaded = true;
+		}
+		return passes_SS_fo_looseMVA_v4_;
+	}
+	const bool &	LeptonTree::passes_SS_fo_looseMVA_noiso_v4()
+	{
+		if (not passes_SS_fo_looseMVA_noiso_v4_isLoaded) {
+			if (passes_SS_fo_looseMVA_noiso_v4_branch != 0) {
+				passes_SS_fo_looseMVA_noiso_v4_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_fo_looseMVA_noiso_v4_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_fo_looseMVA_noiso_v4_isLoaded = true;
+		}
+		return passes_SS_fo_looseMVA_noiso_v4_;
+	}
+	const bool &	LeptonTree::passes_SS_veto_v4()
+	{
+		if (not passes_SS_veto_v4_isLoaded) {
+			if (passes_SS_veto_v4_branch != 0) {
+				passes_SS_veto_v4_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_veto_v4_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_veto_v4_isLoaded = true;
+		}
+		return passes_SS_veto_v4_;
+	}
+	const bool &	LeptonTree::passes_SS_veto_noiso_v4()
+	{
+		if (not passes_SS_veto_noiso_v4_isLoaded) {
+			if (passes_SS_veto_noiso_v4_branch != 0) {
+				passes_SS_veto_noiso_v4_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_veto_noiso_v4_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_veto_noiso_v4_isLoaded = true;
+		}
+		return passes_SS_veto_noiso_v4_;
+	}
+	const bool &	LeptonTree::passes_SS_tight_v5()
+	{
+		if (not passes_SS_tight_v5_isLoaded) {
+			if (passes_SS_tight_v5_branch != 0) {
+				passes_SS_tight_v5_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_tight_v5_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_tight_v5_isLoaded = true;
+		}
+		return passes_SS_tight_v5_;
+	}
+	const bool &	LeptonTree::passes_SS_tight_noiso_v5()
+	{
+		if (not passes_SS_tight_noiso_v5_isLoaded) {
+			if (passes_SS_tight_noiso_v5_branch != 0) {
+				passes_SS_tight_noiso_v5_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_tight_noiso_v5_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_tight_noiso_v5_isLoaded = true;
+		}
+		return passes_SS_tight_noiso_v5_;
+	}
+	const bool &	LeptonTree::passes_SS_fo_v5()
+	{
+		if (not passes_SS_fo_v5_isLoaded) {
+			if (passes_SS_fo_v5_branch != 0) {
+				passes_SS_fo_v5_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_fo_v5_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_fo_v5_isLoaded = true;
+		}
+		return passes_SS_fo_v5_;
+	}
+	const bool &	LeptonTree::passes_SS_fo_noiso_v5()
+	{
+		if (not passes_SS_fo_noiso_v5_isLoaded) {
+			if (passes_SS_fo_noiso_v5_branch != 0) {
+				passes_SS_fo_noiso_v5_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_fo_noiso_v5_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_fo_noiso_v5_isLoaded = true;
+		}
+		return passes_SS_fo_noiso_v5_;
+	}
+	const bool &	LeptonTree::passes_SS_fo_looseMVA_v5()
+	{
+		if (not passes_SS_fo_looseMVA_v5_isLoaded) {
+			if (passes_SS_fo_looseMVA_v5_branch != 0) {
+				passes_SS_fo_looseMVA_v5_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_fo_looseMVA_v5_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_fo_looseMVA_v5_isLoaded = true;
+		}
+		return passes_SS_fo_looseMVA_v5_;
+	}
+	const bool &	LeptonTree::passes_SS_fo_looseMVA_noiso_v5()
+	{
+		if (not passes_SS_fo_looseMVA_noiso_v5_isLoaded) {
+			if (passes_SS_fo_looseMVA_noiso_v5_branch != 0) {
+				passes_SS_fo_looseMVA_noiso_v5_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_fo_looseMVA_noiso_v5_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_fo_looseMVA_noiso_v5_isLoaded = true;
+		}
+		return passes_SS_fo_looseMVA_noiso_v5_;
+	}
+	const bool &	LeptonTree::passes_SS_veto_v5()
+	{
+		if (not passes_SS_veto_v5_isLoaded) {
+			if (passes_SS_veto_v5_branch != 0) {
+				passes_SS_veto_v5_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_veto_v5_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_veto_v5_isLoaded = true;
+		}
+		return passes_SS_veto_v5_;
+	}
+	const bool &	LeptonTree::passes_SS_veto_noiso_v5()
+	{
+		if (not passes_SS_veto_noiso_v5_isLoaded) {
+			if (passes_SS_veto_noiso_v5_branch != 0) {
+				passes_SS_veto_noiso_v5_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_SS_veto_noiso_v5_branch does not exist!\n");
+				exit(1);
+			}
+			passes_SS_veto_noiso_v5_isLoaded = true;
+		}
+		return passes_SS_veto_noiso_v5_;
+	}
 	const bool &	LeptonTree::passes_WW_medium_v1()
 	{
 		if (not passes_WW_medium_v1_isLoaded) {
@@ -3231,6 +3618,19 @@ void LeptonTree::LoadAllBranches()
 			jet_close_L1L2L3_isLoaded = true;
 		}
 		return jet_close_L1L2L3_;
+	}
+	const float &LeptonTree::jet_close_L2L3()
+	{
+		if (not jet_close_L2L3_isLoaded) {
+			if (jet_close_L2L3_branch != 0) {
+				jet_close_L2L3_branch->GetEntry(index);
+			} else { 
+				printf("branch jet_close_L2L3_branch does not exist!\n");
+				exit(1);
+			}
+			jet_close_L2L3_isLoaded = true;
+		}
+		return jet_close_L2L3_;
 	}
 	const float &LeptonTree::ptratio()
 	{
@@ -5466,6 +5866,7 @@ namespace lepton_tree {
 	const float &gen_metPhi() { return lepton_tree_obj.gen_metPhi(); }
 	const float &njets() { return lepton_tree_obj.njets(); }
 	const float &ht() { return lepton_tree_obj.ht(); }
+	const float &ht_SS() { return lepton_tree_obj.ht_SS(); }
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets() { return lepton_tree_obj.jets(); }
 	const vector<float> &jets_disc() { return lepton_tree_obj.jets_disc(); }
 	const vector<float> &jets_area() { return lepton_tree_obj.jets_area(); }
@@ -5503,6 +5904,24 @@ namespace lepton_tree {
 	const bool &passes_SS_fo_noiso_v3() { return lepton_tree_obj.passes_SS_fo_noiso_v3(); }
 	const bool &passes_SS_fo_looseMVA_v3() { return lepton_tree_obj.passes_SS_fo_looseMVA_v3(); }
 	const bool &passes_SS_fo_looseMVA_noiso_v3() { return lepton_tree_obj.passes_SS_fo_looseMVA_noiso_v3(); }
+	const bool &passes_SS_veto_v3() { return lepton_tree_obj.passes_SS_veto_v3(); }
+	const bool &passes_SS_veto_noiso_v3() { return lepton_tree_obj.passes_SS_veto_noiso_v3(); }
+	const bool &passes_SS_tight_v4() { return lepton_tree_obj.passes_SS_tight_v4(); }
+	const bool &passes_SS_tight_noiso_v4() { return lepton_tree_obj.passes_SS_tight_noiso_v4(); }
+	const bool &passes_SS_fo_v4() { return lepton_tree_obj.passes_SS_fo_v4(); }
+	const bool &passes_SS_fo_noiso_v4() { return lepton_tree_obj.passes_SS_fo_noiso_v4(); }
+	const bool &passes_SS_fo_looseMVA_v4() { return lepton_tree_obj.passes_SS_fo_looseMVA_v4(); }
+	const bool &passes_SS_fo_looseMVA_noiso_v4() { return lepton_tree_obj.passes_SS_fo_looseMVA_noiso_v4(); }
+	const bool &passes_SS_veto_v4() { return lepton_tree_obj.passes_SS_veto_v4(); }
+	const bool &passes_SS_veto_noiso_v4() { return lepton_tree_obj.passes_SS_veto_noiso_v4(); }
+	const bool &passes_SS_tight_v5() { return lepton_tree_obj.passes_SS_tight_v5(); }
+	const bool &passes_SS_tight_noiso_v5() { return lepton_tree_obj.passes_SS_tight_noiso_v5(); }
+	const bool &passes_SS_fo_v5() { return lepton_tree_obj.passes_SS_fo_v5(); }
+	const bool &passes_SS_fo_noiso_v5() { return lepton_tree_obj.passes_SS_fo_noiso_v5(); }
+	const bool &passes_SS_fo_looseMVA_v5() { return lepton_tree_obj.passes_SS_fo_looseMVA_v5(); }
+	const bool &passes_SS_fo_looseMVA_noiso_v5() { return lepton_tree_obj.passes_SS_fo_looseMVA_noiso_v5(); }
+	const bool &passes_SS_veto_v5() { return lepton_tree_obj.passes_SS_veto_v5(); }
+	const bool &passes_SS_veto_noiso_v5() { return lepton_tree_obj.passes_SS_veto_noiso_v5(); }
 	const bool &passes_WW_medium_v1() { return lepton_tree_obj.passes_WW_medium_v1(); }
 	const bool &passes_WW_medium_noiso_v1() { return lepton_tree_obj.passes_WW_medium_noiso_v1(); }
 	const bool &passes_WW_fo_v1() { return lepton_tree_obj.passes_WW_fo_v1(); }
@@ -5540,6 +5959,7 @@ namespace lepton_tree {
 	const float &jet_close_L1nc() { return lepton_tree_obj.jet_close_L1nc(); }
 	const float &jet_close_L1ncmc() { return lepton_tree_obj.jet_close_L1ncmc(); }
 	const float &jet_close_L1L2L3() { return lepton_tree_obj.jet_close_L1L2L3(); }
+	const float &jet_close_L2L3() { return lepton_tree_obj.jet_close_L2L3(); }
 	const float &ptratio() { return lepton_tree_obj.ptratio(); }
 	const int &tag_charge() { return lepton_tree_obj.tag_charge(); }
 	const float &tag_eSeed() { return lepton_tree_obj.tag_eSeed(); }

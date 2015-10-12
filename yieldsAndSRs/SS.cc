@@ -47,6 +47,11 @@ void SSAG::Init(TTree *tree) {
 		lep3_p4_branch = tree->GetBranch("lep3_p4");
 		if (lep3_p4_branch) {lep3_p4_branch->SetAddress(&lep3_p4_);}
 	}
+	lep4_p4_branch = 0;
+	if (tree->GetBranch("lep4_p4") != 0) {
+		lep4_p4_branch = tree->GetBranch("lep4_p4");
+		if (lep4_p4_branch) {lep4_p4_branch->SetAddress(&lep4_p4_);}
+	}
 	dilep_p4_branch = 0;
 	if (tree->GetBranch("dilep_p4") != 0) {
 		dilep_p4_branch = tree->GetBranch("dilep_p4");
@@ -172,6 +177,16 @@ void SSAG::Init(TTree *tree) {
 	if (tree->GetBranch("gen_met") != 0) {
 		gen_met_branch = tree->GetBranch("gen_met");
 		if (gen_met_branch) {gen_met_branch->SetAddress(&gen_met_);}
+	}
+	genweights_branch = 0;
+	if (tree->GetBranch("genweights") != 0) {
+		genweights_branch = tree->GetBranch("genweights");
+		if (genweights_branch) {genweights_branch->SetAddress(&genweights_);}
+	}
+	genweightsID_branch = 0;
+	if (tree->GetBranch("genweightsID") != 0) {
+		genweightsID_branch = tree->GetBranch("genweightsID");
+		if (genweightsID_branch) {genweightsID_branch->SetAddress(&genweightsID_);}
 	}
 	gen_met_phi_branch = 0;
 	if (tree->GetBranch("gen_met_phi") != 0) {
@@ -413,6 +428,16 @@ void SSAG::Init(TTree *tree) {
 		lep3_quality_branch = tree->GetBranch("lep3_quality");
 		if (lep3_quality_branch) {lep3_quality_branch->SetAddress(&lep3_quality_);}
 	}
+	lep4_id_branch = 0;
+	if (tree->GetBranch("lep4_id") != 0) {
+		lep4_id_branch = tree->GetBranch("lep4_id");
+		if (lep4_id_branch) {lep4_id_branch->SetAddress(&lep4_id_);}
+	}
+	lep4_idx_branch = 0;
+	if (tree->GetBranch("lep4_idx") != 0) {
+		lep4_idx_branch = tree->GetBranch("lep4_idx");
+		if (lep4_idx_branch) {lep4_idx_branch->SetAddress(&lep4_idx_);}
+	}
 	lep1_iso_branch = 0;
 	if (tree->GetBranch("lep1_iso") != 0) {
 		lep1_iso_branch = tree->GetBranch("lep1_iso");
@@ -432,6 +457,11 @@ void SSAG::Init(TTree *tree) {
 	if (tree->GetBranch("genps_id_mother") != 0) {
 		genps_id_mother_branch = tree->GetBranch("genps_id_mother");
 		if (genps_id_mother_branch) {genps_id_mother_branch->SetAddress(&genps_id_mother_);}
+	}
+	genps_idx_mother_branch = 0;
+	if (tree->GetBranch("genps_idx_mother") != 0) {
+		genps_idx_mother_branch = tree->GetBranch("genps_idx_mother");
+		if (genps_idx_mother_branch) {genps_idx_mother_branch->SetAddress(&genps_idx_mother_);}
 	}
 	genps_status_branch = 0;
 	if (tree->GetBranch("genps_status") != 0) {
@@ -458,6 +488,11 @@ void SSAG::Init(TTree *tree) {
 		lep3_passes_id_branch = tree->GetBranch("lep3_passes_id");
 		if (lep3_passes_id_branch) {lep3_passes_id_branch->SetAddress(&lep3_passes_id_);}
 	}
+	lep4_passes_id_branch = 0;
+	if (tree->GetBranch("lep4_passes_id") != 0) {
+		lep4_passes_id_branch = tree->GetBranch("lep4_passes_id");
+		if (lep4_passes_id_branch) {lep4_passes_id_branch->SetAddress(&lep4_passes_id_);}
+	}
 	lep3_tight_branch = 0;
 	if (tree->GetBranch("lep3_tight") != 0) {
 		lep3_tight_branch = tree->GetBranch("lep3_tight");
@@ -472,6 +507,21 @@ void SSAG::Init(TTree *tree) {
 	if (tree->GetBranch("lep3_fo") != 0) {
 		lep3_fo_branch = tree->GetBranch("lep3_fo");
 		if (lep3_fo_branch) {lep3_fo_branch->SetAddress(&lep3_fo_);}
+	}
+	lep4_tight_branch = 0;
+	if (tree->GetBranch("lep4_tight") != 0) {
+		lep4_tight_branch = tree->GetBranch("lep4_tight");
+		if (lep4_tight_branch) {lep4_tight_branch->SetAddress(&lep4_tight_);}
+	}
+	lep4_veto_branch = 0;
+	if (tree->GetBranch("lep4_veto") != 0) {
+		lep4_veto_branch = tree->GetBranch("lep4_veto");
+		if (lep4_veto_branch) {lep4_veto_branch->SetAddress(&lep4_veto_);}
+	}
+	lep4_fo_branch = 0;
+	if (tree->GetBranch("lep4_fo") != 0) {
+		lep4_fo_branch = tree->GetBranch("lep4_fo");
+		if (lep4_fo_branch) {lep4_fo_branch->SetAddress(&lep4_fo_);}
 	}
 	lep1_dxyPV_branch = 0;
 	if (tree->GetBranch("lep1_dxyPV") != 0) {
@@ -778,6 +828,11 @@ void SSAG::Init(TTree *tree) {
 		met3p0_branch = tree->GetBranch("met3p0");
 		if (met3p0_branch) {met3p0_branch->SetAddress(&met3p0_);}
 	}
+	jet_corr_pt_branch = 0;
+	if (tree->GetBranch("jet_corr_pt") != 0) {
+		jet_corr_pt_branch = tree->GetBranch("jet_corr_pt");
+		if (jet_corr_pt_branch) {jet_corr_pt_branch->SetAddress(&jet_corr_pt_);}
+	}
 	metphi3p0_branch = 0;
 	if (tree->GetBranch("metphi3p0") != 0) {
 		metphi3p0_branch = tree->GetBranch("metphi3p0");
@@ -787,6 +842,36 @@ void SSAG::Init(TTree *tree) {
 	if (tree->GetBranch("passes_met_filters") != 0) {
 		passes_met_filters_branch = tree->GetBranch("passes_met_filters");
 		if (passes_met_filters_branch) {passes_met_filters_branch->SetAddress(&passes_met_filters_);}
+	}
+	madeExtraZ_branch = 0;
+	if (tree->GetBranch("madeExtraZ") != 0) {
+		madeExtraZ_branch = tree->GetBranch("madeExtraZ");
+		if (madeExtraZ_branch) {madeExtraZ_branch->SetAddress(&madeExtraZ_);}
+	}
+	madeExtraG_branch = 0;
+	if (tree->GetBranch("madeExtraG") != 0) {
+		madeExtraG_branch = tree->GetBranch("madeExtraG");
+		if (madeExtraG_branch) {madeExtraG_branch->SetAddress(&madeExtraG_);}
+	}
+	lep3_mcid_branch = 0;
+	if (tree->GetBranch("lep3_mcid") != 0) {
+		lep3_mcid_branch = tree->GetBranch("lep3_mcid");
+		if (lep3_mcid_branch) {lep3_mcid_branch->SetAddress(&lep3_mcid_);}
+	}
+	lep3_mcidx_branch = 0;
+	if (tree->GetBranch("lep3_mcidx") != 0) {
+		lep3_mcidx_branch = tree->GetBranch("lep3_mcidx");
+		if (lep3_mcidx_branch) {lep3_mcidx_branch->SetAddress(&lep3_mcidx_);}
+	}
+	lep4_mcid_branch = 0;
+	if (tree->GetBranch("lep4_mcid") != 0) {
+		lep4_mcid_branch = tree->GetBranch("lep4_mcid");
+		if (lep4_mcid_branch) {lep4_mcid_branch->SetAddress(&lep4_mcid_);}
+	}
+	lep4_mcidx_branch = 0;
+	if (tree->GetBranch("lep4_mcidx") != 0) {
+		lep4_mcidx_branch = tree->GetBranch("lep4_mcidx");
+		if (lep4_mcidx_branch) {lep4_mcidx_branch->SetAddress(&lep4_mcidx_);}
 	}
 	lep1_isGoodLeg_branch = 0;
 	if (tree->GetBranch("lep1_isGoodLeg") != 0) {
@@ -872,6 +957,8 @@ void SSAG::GetEntry(unsigned int idx)
 		xsec_isLoaded = false;
 		kfactor_isLoaded = false;
 		gen_met_isLoaded = false;
+		genweights_isLoaded = false;
+		genweightsID_isLoaded = false;
 		gen_met_phi_isLoaded = false;
 		njets_isLoaded = false;
 		njets_corr_isLoaded = false;
@@ -929,20 +1016,28 @@ void SSAG::GetEntry(unsigned int idx)
 		lep3_idx_isLoaded = false;
 		lep3_p4_isLoaded = false;
 		lep3_quality_isLoaded = false;
+		lep4_id_isLoaded = false;
+		lep4_idx_isLoaded = false;
+		lep4_p4_isLoaded = false;
 		lep1_iso_isLoaded = false;
 		lep2_iso_isLoaded = false;
 		dilep_p4_isLoaded = false;
 		genps_p4_isLoaded = false;
 		genps_id_isLoaded = false;
 		genps_id_mother_isLoaded = false;
+		genps_idx_mother_isLoaded = false;
 		genps_status_isLoaded = false;
 		genps_id_grandma_isLoaded = false;
 		lep1_passes_id_isLoaded = false;
 		lep2_passes_id_isLoaded = false;
 		lep3_passes_id_isLoaded = false;
+		lep4_passes_id_isLoaded = false;
 		lep3_tight_isLoaded = false;
 		lep3_veto_isLoaded = false;
 		lep3_fo_isLoaded = false;
+		lep4_tight_isLoaded = false;
+		lep4_veto_isLoaded = false;
+		lep4_fo_isLoaded = false;
 		lep1_dxyPV_isLoaded = false;
 		lep2_dxyPV_isLoaded = false;
 		lep1_dZ_isLoaded = false;
@@ -1006,9 +1101,16 @@ void SSAG::GetEntry(unsigned int idx)
 		lep2_trigMatch_noIsoReq_isLoaded = false;
 		lep2_trigMatch_isoReq_isLoaded = false;
 		met3p0_isLoaded = false;
+		jet_corr_pt_isLoaded = false;
 		metphi3p0_isLoaded = false;
 		passes_met_filters_isLoaded = false;
 		mostJets_isLoaded = false;
+		madeExtraZ_isLoaded = false;
+		madeExtraG_isLoaded = false;
+		lep3_mcid_isLoaded = false;
+		lep3_mcidx_isLoaded = false;
+		lep4_mcid_isLoaded = false;
+		lep4_mcidx_isLoaded = false;
 		lep1_isGoodLeg_isLoaded = false;
 		lep2_isGoodLeg_isLoaded = false;
 		lep1_isFakeLeg_isLoaded = false;
@@ -1046,6 +1148,8 @@ void SSAG::LoadAllBranches()
 	if (xsec_branch != 0) xsec();
 	if (kfactor_branch != 0) kfactor();
 	if (gen_met_branch != 0) gen_met();
+	if (genweights_branch != 0) genweights();
+	if (genweightsID_branch != 0) genweightsID();
 	if (gen_met_phi_branch != 0) gen_met_phi();
 	if (njets_branch != 0) njets();
 	if (njets_corr_branch != 0) njets_corr();
@@ -1103,20 +1207,28 @@ void SSAG::LoadAllBranches()
 	if (lep3_idx_branch != 0) lep3_idx();
 	if (lep3_p4_branch != 0) lep3_p4();
 	if (lep3_quality_branch != 0) lep3_quality();
+	if (lep4_id_branch != 0) lep4_id();
+	if (lep4_idx_branch != 0) lep4_idx();
+	if (lep4_p4_branch != 0) lep4_p4();
 	if (lep1_iso_branch != 0) lep1_iso();
 	if (lep2_iso_branch != 0) lep2_iso();
 	if (dilep_p4_branch != 0) dilep_p4();
 	if (genps_p4_branch != 0) genps_p4();
 	if (genps_id_branch != 0) genps_id();
 	if (genps_id_mother_branch != 0) genps_id_mother();
+	if (genps_idx_mother_branch != 0) genps_idx_mother();
 	if (genps_status_branch != 0) genps_status();
 	if (genps_id_grandma_branch != 0) genps_id_grandma();
 	if (lep1_passes_id_branch != 0) lep1_passes_id();
 	if (lep2_passes_id_branch != 0) lep2_passes_id();
 	if (lep3_passes_id_branch != 0) lep3_passes_id();
+	if (lep4_passes_id_branch != 0) lep4_passes_id();
 	if (lep3_tight_branch != 0) lep3_tight();
 	if (lep3_veto_branch != 0) lep3_veto();
 	if (lep3_fo_branch != 0) lep3_fo();
+	if (lep4_tight_branch != 0) lep4_tight();
+	if (lep4_veto_branch != 0) lep4_veto();
+	if (lep4_fo_branch != 0) lep4_fo();
 	if (lep1_dxyPV_branch != 0) lep1_dxyPV();
 	if (lep2_dxyPV_branch != 0) lep2_dxyPV();
 	if (lep1_dZ_branch != 0) lep1_dZ();
@@ -1180,9 +1292,16 @@ void SSAG::LoadAllBranches()
 	if (lep2_trigMatch_noIsoReq_branch != 0) lep2_trigMatch_noIsoReq();
 	if (lep2_trigMatch_isoReq_branch != 0) lep2_trigMatch_isoReq();
 	if (met3p0_branch != 0) met3p0();
+	if (jet_corr_pt_branch != 0) jet_corr_pt();
 	if (metphi3p0_branch != 0) metphi3p0();
 	if (passes_met_filters_branch != 0) passes_met_filters();
 	if (mostJets_branch != 0) mostJets();
+	if (madeExtraZ_branch != 0) madeExtraZ();
+	if (madeExtraG_branch != 0) madeExtraG();
+	if (lep3_mcid_branch != 0) lep3_mcid();
+	if (lep3_mcidx_branch != 0) lep3_mcidx();
+	if (lep4_mcid_branch != 0) lep4_mcid();
+	if (lep4_mcidx_branch != 0) lep4_mcidx();
 	if (lep1_isGoodLeg_branch != 0) lep1_isGoodLeg();
 	if (lep2_isGoodLeg_branch != 0) lep2_isGoodLeg();
 	if (lep1_isFakeLeg_branch != 0) lep1_isFakeLeg();
@@ -1432,6 +1551,32 @@ void SSAG::LoadAllBranches()
 			gen_met_isLoaded = true;
 		}
 		return gen_met_;
+	}
+	const vector<float> &SSAG::genweights()
+	{
+		if (not genweights_isLoaded) {
+			if (genweights_branch != 0) {
+				genweights_branch->GetEntry(index);
+			} else { 
+				printf("branch genweights_branch does not exist!\n");
+				exit(1);
+			}
+			genweights_isLoaded = true;
+		}
+		return *genweights_;
+	}
+	const vector<string> &SSAG::genweightsID()
+	{
+		if (not genweightsID_isLoaded) {
+			if (genweightsID_branch != 0) {
+				genweightsID_branch->GetEntry(index);
+			} else { 
+				printf("branch genweightsID_branch does not exist!\n");
+				exit(1);
+			}
+			genweightsID_isLoaded = true;
+		}
+		return *genweightsID_;
 	}
 	const float &SSAG::gen_met_phi()
 	{
@@ -2174,6 +2319,45 @@ void SSAG::LoadAllBranches()
 		}
 		return lep3_quality_;
 	}
+	const int &SSAG::lep4_id()
+	{
+		if (not lep4_id_isLoaded) {
+			if (lep4_id_branch != 0) {
+				lep4_id_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_id_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_id_isLoaded = true;
+		}
+		return lep4_id_;
+	}
+	const int &SSAG::lep4_idx()
+	{
+		if (not lep4_idx_isLoaded) {
+			if (lep4_idx_branch != 0) {
+				lep4_idx_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_idx_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_idx_isLoaded = true;
+		}
+		return lep4_idx_;
+	}
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::lep4_p4()
+	{
+		if (not lep4_p4_isLoaded) {
+			if (lep4_p4_branch != 0) {
+				lep4_p4_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_p4_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_p4_isLoaded = true;
+		}
+		return *lep4_p4_;
+	}
 	const float &SSAG::lep1_iso()
 	{
 		if (not lep1_iso_isLoaded) {
@@ -2252,6 +2436,19 @@ void SSAG::LoadAllBranches()
 		}
 		return *genps_id_mother_;
 	}
+	const vector<int> &SSAG::genps_idx_mother()
+	{
+		if (not genps_idx_mother_isLoaded) {
+			if (genps_idx_mother_branch != 0) {
+				genps_idx_mother_branch->GetEntry(index);
+			} else { 
+				printf("branch genps_idx_mother_branch does not exist!\n");
+				exit(1);
+			}
+			genps_idx_mother_isLoaded = true;
+		}
+		return *genps_idx_mother_;
+	}
 	const vector<int> &SSAG::genps_status()
 	{
 		if (not genps_status_isLoaded) {
@@ -2317,6 +2514,19 @@ void SSAG::LoadAllBranches()
 		}
 		return lep3_passes_id_;
 	}
+	const bool &	SSAG::lep4_passes_id()
+	{
+		if (not lep4_passes_id_isLoaded) {
+			if (lep4_passes_id_branch != 0) {
+				lep4_passes_id_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_passes_id_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_passes_id_isLoaded = true;
+		}
+		return lep4_passes_id_;
+	}
 	const bool &	SSAG::lep3_tight()
 	{
 		if (not lep3_tight_isLoaded) {
@@ -2355,6 +2565,45 @@ void SSAG::LoadAllBranches()
 			lep3_fo_isLoaded = true;
 		}
 		return lep3_fo_;
+	}
+	const bool &	SSAG::lep4_tight()
+	{
+		if (not lep4_tight_isLoaded) {
+			if (lep4_tight_branch != 0) {
+				lep4_tight_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_tight_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_tight_isLoaded = true;
+		}
+		return lep4_tight_;
+	}
+	const bool &	SSAG::lep4_veto()
+	{
+		if (not lep4_veto_isLoaded) {
+			if (lep4_veto_branch != 0) {
+				lep4_veto_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_veto_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_veto_isLoaded = true;
+		}
+		return lep4_veto_;
+	}
+	const bool &	SSAG::lep4_fo()
+	{
+		if (not lep4_fo_isLoaded) {
+			if (lep4_fo_branch != 0) {
+				lep4_fo_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_fo_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_fo_isLoaded = true;
+		}
+		return lep4_fo_;
 	}
 	const float &SSAG::lep1_dxyPV()
 	{
@@ -3175,6 +3424,19 @@ void SSAG::LoadAllBranches()
 		}
 		return met3p0_;
 	}
+	const vector<float> &SSAG::jet_corr_pt()
+	{
+		if (not jet_corr_pt_isLoaded) {
+			if (jet_corr_pt_branch != 0) {
+				jet_corr_pt_branch->GetEntry(index);
+			} else { 
+				printf("branch jet_corr_pt_branch does not exist!\n");
+				exit(1);
+			}
+			jet_corr_pt_isLoaded = true;
+		}
+		return *jet_corr_pt_;
+	}
 	const float &SSAG::metphi3p0()
 	{
 		if (not metphi3p0_isLoaded) {
@@ -3213,6 +3475,84 @@ void SSAG::LoadAllBranches()
 			mostJets_isLoaded = true;
 		}
 		return *mostJets_;
+	}
+	const bool &	SSAG::madeExtraZ()
+	{
+		if (not madeExtraZ_isLoaded) {
+			if (madeExtraZ_branch != 0) {
+				madeExtraZ_branch->GetEntry(index);
+			} else { 
+				printf("branch madeExtraZ_branch does not exist!\n");
+				exit(1);
+			}
+			madeExtraZ_isLoaded = true;
+		}
+		return madeExtraZ_;
+	}
+	const bool &	SSAG::madeExtraG()
+	{
+		if (not madeExtraG_isLoaded) {
+			if (madeExtraG_branch != 0) {
+				madeExtraG_branch->GetEntry(index);
+			} else { 
+				printf("branch madeExtraG_branch does not exist!\n");
+				exit(1);
+			}
+			madeExtraG_isLoaded = true;
+		}
+		return madeExtraG_;
+	}
+	const int &SSAG::lep3_mcid()
+	{
+		if (not lep3_mcid_isLoaded) {
+			if (lep3_mcid_branch != 0) {
+				lep3_mcid_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_mcid_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_mcid_isLoaded = true;
+		}
+		return lep3_mcid_;
+	}
+	const int &SSAG::lep3_mcidx()
+	{
+		if (not lep3_mcidx_isLoaded) {
+			if (lep3_mcidx_branch != 0) {
+				lep3_mcidx_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_mcidx_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_mcidx_isLoaded = true;
+		}
+		return lep3_mcidx_;
+	}
+	const int &SSAG::lep4_mcid()
+	{
+		if (not lep4_mcid_isLoaded) {
+			if (lep4_mcid_branch != 0) {
+				lep4_mcid_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_mcid_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_mcid_isLoaded = true;
+		}
+		return lep4_mcid_;
+	}
+	const int &SSAG::lep4_mcidx()
+	{
+		if (not lep4_mcidx_isLoaded) {
+			if (lep4_mcidx_branch != 0) {
+				lep4_mcidx_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_mcidx_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_mcidx_isLoaded = true;
+		}
+		return lep4_mcidx_;
 	}
 	const bool &	SSAG::lep1_isGoodLeg()
 	{
@@ -3436,6 +3776,8 @@ namespace ss {
 	const float &xsec() { return samesign.xsec(); }
 	const float &kfactor() { return samesign.kfactor(); }
 	const float &gen_met() { return samesign.gen_met(); }
+	const vector<float> &genweights() { return samesign.genweights(); }
+	const vector<string> &genweightsID() { return samesign.genweightsID(); }
 	const float &gen_met_phi() { return samesign.gen_met_phi(); }
 	const int &njets() { return samesign.njets(); }
 	const int &njets_corr() { return samesign.njets_corr(); }
@@ -3493,20 +3835,28 @@ namespace ss {
 	const int &lep3_idx() { return samesign.lep3_idx(); }
 	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep3_p4() { return samesign.lep3_p4(); }
 	const int &lep3_quality() { return samesign.lep3_quality(); }
+	const int &lep4_id() { return samesign.lep4_id(); }
+	const int &lep4_idx() { return samesign.lep4_idx(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep4_p4() { return samesign.lep4_p4(); }
 	const float &lep1_iso() { return samesign.lep1_iso(); }
 	const float &lep2_iso() { return samesign.lep2_iso(); }
 	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &dilep_p4() { return samesign.dilep_p4(); }
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &genps_p4() { return samesign.genps_p4(); }
 	const vector<int> &genps_id() { return samesign.genps_id(); }
 	const vector<int> &genps_id_mother() { return samesign.genps_id_mother(); }
+	const vector<int> &genps_idx_mother() { return samesign.genps_idx_mother(); }
 	const vector<int> &genps_status() { return samesign.genps_status(); }
 	const vector<int> &genps_id_grandma() { return samesign.genps_id_grandma(); }
 	const bool &lep1_passes_id() { return samesign.lep1_passes_id(); }
 	const bool &lep2_passes_id() { return samesign.lep2_passes_id(); }
 	const bool &lep3_passes_id() { return samesign.lep3_passes_id(); }
+	const bool &lep4_passes_id() { return samesign.lep4_passes_id(); }
 	const bool &lep3_tight() { return samesign.lep3_tight(); }
 	const bool &lep3_veto() { return samesign.lep3_veto(); }
 	const bool &lep3_fo() { return samesign.lep3_fo(); }
+	const bool &lep4_tight() { return samesign.lep4_tight(); }
+	const bool &lep4_veto() { return samesign.lep4_veto(); }
+	const bool &lep4_fo() { return samesign.lep4_fo(); }
 	const float &lep1_dxyPV() { return samesign.lep1_dxyPV(); }
 	const float &lep2_dxyPV() { return samesign.lep2_dxyPV(); }
 	const float &lep1_dZ() { return samesign.lep1_dZ(); }
@@ -3570,9 +3920,16 @@ namespace ss {
 	const bool &lep2_trigMatch_noIsoReq() { return samesign.lep2_trigMatch_noIsoReq(); }
 	const bool &lep2_trigMatch_isoReq() { return samesign.lep2_trigMatch_isoReq(); }
 	const float &met3p0() { return samesign.met3p0(); }
+	const vector<float> &jet_corr_pt() { return samesign.jet_corr_pt(); }
 	const float &metphi3p0() { return samesign.metphi3p0(); }
 	const bool &passes_met_filters() { return samesign.passes_met_filters(); }
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &mostJets() { return samesign.mostJets(); }
+	const bool &madeExtraZ() { return samesign.madeExtraZ(); }
+	const bool &madeExtraG() { return samesign.madeExtraG(); }
+	const int &lep3_mcid() { return samesign.lep3_mcid(); }
+	const int &lep3_mcidx() { return samesign.lep3_mcidx(); }
+	const int &lep4_mcid() { return samesign.lep4_mcid(); }
+	const int &lep4_mcidx() { return samesign.lep4_mcidx(); }
 	const bool &lep1_isGoodLeg() { return samesign.lep1_isGoodLeg(); }
 	const bool &lep2_isGoodLeg() { return samesign.lep2_isGoodLeg(); }
 	const bool &lep1_isFakeLeg() { return samesign.lep1_isFakeLeg(); }

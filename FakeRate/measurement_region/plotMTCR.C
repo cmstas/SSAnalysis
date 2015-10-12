@@ -1,4 +1,6 @@
-{
+pair<float,float> plotMTCR(float inputSF_el=1.16182, float inputSF_mu=1.11212) {
+
+  float sfel, sfmu;
 
   for(int doMu = 0; doMu < 2; doMu++) {
 
@@ -10,8 +12,6 @@
   TCanvas c1("c1","c1",600,600);
 
   TString plot = "mt_cr";
-  float inputSF_mu = 0.946187;
-  float inputSF_el = 0.868329;
   bool applyInputSF  = 0;
   bool applyOutputSF = 1;
 
@@ -47,6 +47,10 @@
     float dataMtwindow = h_data->Integral(h_data->FindBin(lowerMt),h_data->FindBin(upperMt));
     sf = dataMtwindow/ewkMtwindow;
     cout << "doMu=" << doMu << " ewk=" << ewkMtwindow << " data=" << dataMtwindow << " sf=" << sf << endl;
+
+    if(doMu) sfmu = sf;
+    else sfel = sf;
+
     h_wj->Scale(dataMtwindow/ewkMtwindow);
     h_dy->Scale(dataMtwindow/ewkMtwindow);
   }
@@ -75,7 +79,7 @@
   TLegend* leg = new TLegend(0.7,0.7,0.89,0.89);
   leg->SetFillColor(kWhite);
   leg->SetLineColor(kWhite);
-  leg->SetHeader("L=16.1/pb");
+  leg->SetHeader("L=225.6/pb");
   leg->AddEntry(h_data,"data","pe");
   leg->AddEntry(h_wj  ,"W+jets","f");
   leg->AddEntry(h_dy  ,"DY","f");
@@ -85,4 +89,5 @@
   c1.SaveAs("pdfs/"+plot+(doMu ? "_mu" : "_el")+".pdf");
   }
 
+  return make_pair(sfel,sfmu);
 }

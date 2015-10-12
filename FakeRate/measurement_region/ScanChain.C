@@ -91,6 +91,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool doLightonly = false;
   if (option.Contains("doLightonly")) doLightonly = true;
 
+  bool doJEC = false;
+
   int nptbins = 5;
   int netabins = 3;
   float ptbins[6] = {10., 15., 25., 35., 50., 70.};
@@ -471,22 +473,23 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
         float jetarea = jets_area().at(i);
         float undoJEC = jets_undoJEC().at(i);
 
-        if (jetcorr_filenames_pfL1L2L3.size()>0) { 
-          jet_corrector_pfL1->setJetEta(jets()[i].eta());
-          jet_corrector_pfL1->setJetPt(jets()[i].pt());
-          jet_corrector_pfL1->setJetA(jetarea);
-          jet_corrector_pfL1->setRho(rho());
-          jetcorrection = jet_corrector_pfL1->getCorrection();
+        if(doJEC) {
+            if (jetcorr_filenames_pfL1L2L3.size()>0) { 
+              jet_corrector_pfL1->setJetEta(jets()[i].eta());
+              jet_corrector_pfL1->setJetPt(jets()[i].pt());
+              jet_corrector_pfL1->setJetA(jetarea);
+              jet_corrector_pfL1->setRho(rho());
+              jetcorrection = jet_corrector_pfL1->getCorrection();
+            }
+            if(undoJEC > 0) jetcorrection /= undoJEC; // if we have undoJEC from miniAOD->CMS3, divide it out
         }
-
-        if(undoJEC > 0) jetcorrection /= undoJEC; // if we have undoJEC from miniAOD->CMS3, divide it out
 
         jets_recorr.push_back(jets()[i]*jetcorrection); // add our own JEC
       }
 
       
       LorentzVector jet_close_lep_p4 = jet_close_lep();
-      if(jet_close_lep_idx() >= 0 && jetcorr_filenames_pfL1L2L3.size()>0) { 
+      if(doJEC && jet_close_lep_idx() >= 0 && jetcorr_filenames_pfL1L2L3.size()>0) { 
         jet_corrector_pfL1->setJetEta(jet_close_lep().eta());
         jet_corrector_pfL1->setJetPt(jet_close_lep().pt());
         jet_corrector_pfL1->setJetA(jet_close_lep_area());
@@ -506,7 +509,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (TString(currentFile->GetTitle()).Contains("WJets") || TString(currentFile->GetTitle()).Contains("DY")) isEWK = true;
 
       // Analysis Code
-      float lumi = 0.0161;//in /fb
+      float lumi = 0.2256;//in /fb
       float weight = scale1fb()*lumi;
       if (isData) weight = 1.;
 
@@ -582,7 +585,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       float ptrel = ptrelv1();
       //cout << ptrel << " " << computePtRel(p4(),jet_close_lep(),true) << endl;
       assert(ptrel<0 || fabs(ptrel - computePtRel(p4(),jet_close_lep_p4,true))<0.0001);
-      float closejetpt = jet_close_lep_p4.pt();
+      // float closejetpt = jet_close_lep_p4.pt()*jet_close_lep_undoJEC()*jet_close_L1ncmc(); // V4
+      float closejetpt = ((jet_close_lep_p4*jet_close_lep_undoJEC()*jet_close_L1ncmc() - p4())*jet_close_L2L3() + p4()).pt(); // V5
       //float miniIso = miniiso();
       float relIso = RelIso03EA();
 
@@ -598,8 +602,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	    HLT_Ele23_CaloIdM_TrackIdM_PFJet30()==0 && 
 	    HLT_Ele33_CaloIdM_TrackIdM_PFJet30()==0 ) continue;
 	
-    // ele12 for 2015c 25ns 
-	if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()==0 ) continue;
+    // ele12 or ele18 for 2015D
+	if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()==0 &&
+	    HLT_Ele18_CaloIdM_TrackIdM_PFJet30()==0 ) continue;
+
+	    // if ( HLT_Ele12_CaloIdM_TrackIdM_PFJet30()==0 ) continue;
 
       }
       if (abs(id())==13) {
@@ -608,8 +615,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	    HLT_Mu24()<=0 && 
 	    HLT_Mu34()<=0 ) continue;
 
-    // mu17 for 2015c 25ns 
-	if (HLT_Mu17()<=0) continue;
+    // mu8 or mu17 for 2015D
+	if (HLT_Mu8()<=0 &&
+	    HLT_Mu17()<=0) continue;
+
+	// if (HLT_Mu17()<=0) continue;
 
       }	
       //check prescales for data
@@ -636,14 +646,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
 	  // if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
 
-        // use ele12 FIXME
-	  if (p4().pt() > 10 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
+	  if (p4().pt() >= 10 && p4().pt() < 18 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
+      else if (p4().pt() >= 18 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();
 
-        // // use non-(ele12 or ele18) FIXME
-	  // if (p4().pt()>35 && HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele33_CaloIdM_TrackIdM_PFJet30();
-	  // else if (p4().pt()<=35 && p4().pt()>25 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
-	  // else if (p4().pt()<=25 && p4().pt()>10 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 ) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30() ;
-
+	  // if (p4().pt() >= 10 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
 
 	  if (prescale>0) weight *= prescale;
 	  else continue;
@@ -667,14 +673,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // else if (p4().pt()<=28 && p4().pt()>20 && HLT_Mu17()>0) prescale = HLT_Mu17();
 	  // else if (p4().pt()<=20 && p4().pt()>10 && HLT_Mu8() >0) prescale = HLT_Mu8();
 
-        // use mu17 FIXME
-	  if (p4().pt()>10 && HLT_Mu17()>0) prescale = HLT_Mu17();
-      
-        // // use non-mu17 FIXME
-	  // if (p4().pt()>38 && HLT_Mu34()>0) prescale = HLT_Mu34();
-	  // else if (p4().pt()<=38 && p4().pt()>28 && HLT_Mu24()>0) prescale = HLT_Mu24();
-	  // else if (p4().pt()<=28 && p4().pt()>10 && HLT_Mu8() >0) prescale = HLT_Mu8();
+	  if (p4().pt()>=10 && p4().pt() < 17 && HLT_Mu8()>0) prescale = HLT_Mu8();
+      else if (p4().pt()>=17 && HLT_Mu17()>0) prescale = HLT_Mu17();
 
+      // if (p4().pt()>=10 && HLT_Mu17()>0) prescale = HLT_Mu17();
+      
 	  if (prescale>0) weight *= prescale;
 	  else continue;
 	  
@@ -697,10 +700,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       if (fabs(ip3d()/ip3derr())>4. ) continue;
 
-      bool passId = passes_SS_tight_v3();
-      bool passFO = passes_SS_fo_v3();
-      bool passId_noiso = passes_SS_tight_noiso_v3();
-      bool passFO_noiso = passes_SS_fo_noiso_v3();
+      bool passId = passes_SS_tight_v5();
+      bool passFO = passes_SS_fo_v5();
+      bool passId_noiso = passes_SS_tight_noiso_v5();
+      bool passFO_noiso = passes_SS_fo_noiso_v5();
       if (useLooseEMVA && abs(id())==11) {
 	bool isEB = true;
 	if ( fabs(etaSC())>1.479 ) isEB = false;
@@ -715,14 +718,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	float cut_dphi  = isEB ? 0.04 : 0.08;
 	float cut_invep = 0.01;
 	bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
-	passFO = passHltCuts && passes_SS_fo_looseMVA_v3();
-	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v3();
+	passFO = passHltCuts && passes_SS_fo_looseMVA_v5();
+	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v5();
       }
 
-      // float evt_met = evt_pfmet();
-      // float evt_metPhi = evt_pfmetPhi();
-      float evt_met = evt_met3p0();
-      float evt_metPhi = evt_met3p0Phi();
+      float evt_met = evt_pfmet();
+      float evt_metPhi = evt_pfmetPhi();
+      // float evt_met = evt_met3p0();
+      // float evt_metPhi = evt_met3p0Phi();
       float evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
 
       if (passId) {
@@ -783,26 +786,26 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       if (usePtRatioCor) {
 	if (abs(id())==11) {
-	  float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.10))/closejetpt : 1.;
-	  passFO = passes_SS_fo_v3() && (ptratiocor > 0.70 || ptrel > 7.0);
+	  float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.12))/closejetpt : 1.;
+	  passFO = passes_SS_fo_v5() && (ptratiocor > 0.76 || ptrel > 7.6);
 	} else {
-	  float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.14))/closejetpt : 1.;
-	  passFO = passes_SS_fo_v3() && (ptratiocor > 0.68 || ptrel > 6.7);	      
+	  float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.16))/closejetpt : 1.;
+	  passFO = passes_SS_fo_v5() && (ptratiocor > 0.73 || ptrel > 7.3);	      
 	}
       }
 
       float coneptcorr = 0.;
       if (abs(id())==11) {
-	if (ptrel>7.0) {
-	  coneptcorr = std::max(0.,miniiso()-0.10);
+	if (ptrel>7.2) {
+	  coneptcorr = std::max(0.,miniiso()-0.12);
 	} else {
-	  coneptcorr = max(double(0.),(jet_close_lep_p4.pt()*0.70/p4().pt()-1.));
+	  coneptcorr = max(double(0.),(closejetpt*0.80/p4().pt()-1.));
 	}
       } else {
-	if (ptrel>6.7) {
-	  coneptcorr = std::max(0.,miniiso()-0.14);
+	if (ptrel>7.2) {
+	  coneptcorr = std::max(0.,miniiso()-0.16);
 	} else {
-	  coneptcorr = max(double(0.),(jet_close_lep_p4.pt()*0.68/p4().pt()-1.));
+	  coneptcorr = max(double(0.),(closejetpt*0.76/p4().pt()-1.));
 	}
       }
       if (useRelIso) {

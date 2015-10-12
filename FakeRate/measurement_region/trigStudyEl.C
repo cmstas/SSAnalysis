@@ -1,9 +1,10 @@
-{
+void trigStudyEl() {
 
   gROOT->Reset();
   gStyle->SetOptStat(0);
 
-  TString dataf = "/nfs-7/userdata/leptonTree/v0.14-16p1pb/2015CDoubleEG.root";
+  TString tag = "v4.00";
+  TString dataf = "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root";
 
   TFile *_file = TFile::Open(dataf);
 
@@ -30,6 +31,13 @@
   TH1F* tight_pt_Ele23 = (TH1F*) tight_pt_Ele8->Clone("tight_pt_Ele23");
   TH1F* tight_pt_Ele33 = (TH1F*) tight_pt_Ele8->Clone("tight_pt_Ele33");
 
+  TH1F* cuts_pt_Ele8 = new TH1F("cuts_pt_Ele8","cuts_pt_Ele8",20,0,100);
+  cuts_pt_Ele8->Sumw2();  
+  TH1F* cuts_pt_Ele12 = (TH1F*) cuts_pt_Ele8->Clone("cuts_pt_Ele12");
+  TH1F* cuts_pt_Ele18 = (TH1F*) cuts_pt_Ele8->Clone("cuts_pt_Ele18");
+  TH1F* cuts_pt_Ele23 = (TH1F*) cuts_pt_Ele8->Clone("cuts_pt_Ele23");
+  TH1F* cuts_pt_Ele33 = (TH1F*) cuts_pt_Ele8->Clone("cuts_pt_Ele33");
+
   TH1F* unw_fo_pt_Ele8 = new TH1F("unw_fo_pt_Ele8","unw_fo_pt_Ele8",20,0,100);
   unw_fo_pt_Ele8->Sumw2();  
   TH1F* unw_fo_pt_Ele12 = (TH1F*) unw_fo_pt_Ele8->Clone("unw_fo_pt_Ele12");
@@ -45,25 +53,32 @@
   t->Draw("p4.pt()>>total_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11)","goff");
   
   //fo fired (matched, weighted)
-  t->Draw("p4.pt()>>fo_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>fo_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>fo_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>fo_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>fo_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
+  t->Draw("p4.pt()>>fo_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
+  t->Draw("p4.pt()>>fo_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
+  t->Draw("p4.pt()>>fo_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
+  t->Draw("p4.pt()>>fo_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
+  t->Draw("p4.pt()>>fo_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
   
   //tight fired (matched, weighted)
-  t->Draw("p4.pt()>>tight_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_tight_v3)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v3)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_tight_v5)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5)","goff");
+  
+  //cuts fired (matched, weighted)
+  t->Draw("p4.pt()>>cuts_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
   
   //fo fired (matched, unweighted)
-  t->Draw("p4.pt()>>unw_fo_pt_Ele8" ,"(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Ele12","(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Ele18","(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Ele23","(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Ele33","(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v3)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Ele8" ,"(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Ele12","(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Ele18","(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Ele23","(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Ele33","(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
 
   TCanvas c1;
   c1.SetLogy();
@@ -91,6 +106,14 @@
   paths_tight->Fill(4.0,tight_pt_Ele33->GetEntries());
   paths_tight->SetLineColor(kRed);
 
+  TH1F* paths_cuts = new TH1F("paths_cuts","paths_cuts",40,0,40);
+  paths_cuts->Fill(0.0,cuts_pt_Ele8->GetEntries());
+  paths_cuts->Fill(1.0,cuts_pt_Ele12->GetEntries());
+  paths_cuts->Fill(2.0,cuts_pt_Ele18->GetEntries());
+  paths_cuts->Fill(3.0,cuts_pt_Ele23->GetEntries());
+  paths_cuts->Fill(4.0,cuts_pt_Ele33->GetEntries());
+  paths_cuts->SetLineColor(kGreen);
+
   TLatex *label = new TLatex();
 
   paths_total->GetXaxis()->SetBinLabel(1,"Ele8");
@@ -102,10 +125,12 @@
   paths_total->Draw("hist,text0");
   paths_fo->Draw("hist,text0,same");
   paths_tight->Draw("hist,text0,same");
+  paths_cuts->Draw("hist,text0,same");
 
-  label->SetTextColor(kMagenta); label->DrawLatexNDC(0.7,0.85, "pass FO");
-  label->SetTextColor(kRed); label->DrawLatexNDC(0.7,0.80, "pass Tight");
-  label->SetTextColor(kBlue); label->DrawLatexNDC(0.7,0.75, "all");
+  label->SetTextColor(kBlue);    label->DrawLatexNDC(0.65,0.85, "all");
+  label->SetTextColor(kMagenta); label->DrawLatexNDC(0.65,0.80, "pass FO");
+  label->SetTextColor(kRed);     label->DrawLatexNDC(0.65,0.75, "pass Tight");
+  label->SetTextColor(kGreen);   label->DrawLatexNDC(0.65,0.70, "pass Tight+cuts");
 
   c1.SaveAs( "pdfs/paths_el.pdf" );
 
