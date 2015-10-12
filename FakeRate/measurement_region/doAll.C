@@ -5,7 +5,7 @@
 
   gROOT->ProcessLine(".L ScanChain.C+");
 
-  TString tag = "v3.10";
+  TString tag = "v4.00";
 
   TChain *data = new TChain("t"); 
   data->Add( "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root" );
@@ -13,7 +13,7 @@
   ScanChain(data,"./rate_histos_data_LooseEMVA.root","useLooseEMVA"); 
 
   TChain *dy = new TChain("t"); 
-  dy->Add( "/nfs-7/userdata/leptonTree/"+tag+"/DY_madgraph.root" );
+  dy->Add( "/nfs-7/userdata/leptonTree/"+tag+"/DY_amcnlo_M50.root" );
   ScanChain(dy,"./rate_histos_dy_LooseEMVA.root","useLooseEMVA"); 
 
   TChain *wj = new TChain("t"); 
@@ -27,6 +27,11 @@
   TChain *qcd_el = new TChain("t"); 
   qcd_el->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_EM_Enriched.root" );
   ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA.root","useLooseEMVA"); 
+
+  TChain *qcd = new TChain("t"); 
+  qcd->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_Mu_Enriched.root" );
+  qcd->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_EM_Enriched.root" );
+  ScanChain(qcd,"./rate_histos_qcd_LooseEMVA.root","useLooseEMVA"); 
 
   /*
   //default

@@ -9,12 +9,12 @@ pair<float,float> normalizeZpeak() {
   for(int doMu = 0; doMu < 2; doMu++) {
   gROOT->Reset();
 
-  TString tag = "v3.10";
+  TString tag = "v4.00";
   // tag = "v0.12";
   // tag = "v0.08";
 
   TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleMuon.root" : "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root");
-  TString dyf = "/nfs-7/userdata/leptonTree/"+tag+"/DY_madgraph.root";
+  TString dyf = "/nfs-7/userdata/leptonTree/"+tag+"/DY_amcnlo_M50.root";
 
   TString intlumi="0.2256"; // fb^-1
   TString leptype = (doMu ? "Mu17" : "Ele12");
@@ -32,12 +32,12 @@ pair<float,float> normalizeZpeak() {
 
   if (doMu) {
     //mm
-    t_data->Draw("dilep_mass>>mll_data","HLT_Mu17*(abs(id)==13 && passes_SS_tight_v4 && HLT_Mu17>0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
-    t_dy->Draw("dilep_mass>>mll_dy",intlumi+"*scale1fb*(abs(id)==13 && passes_SS_tight_v4 && HLT_Mu17>0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
+    t_data->Draw("dilep_mass>>mll_data","HLT_Mu17*(abs(id)==13 && passes_SS_tight_v5 && HLT_Mu17>0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
+    t_dy->Draw("dilep_mass>>mll_dy",intlumi+"*scale1fb*HLT_Mu17*(abs(id)==13 && passes_SS_tight_v5 && HLT_Mu17>0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
   } else {
     //ee
-    t_data->Draw("dilep_mass>>mll_data","HLT_Ele12_CaloIdM_TrackIdM_PFJet30 * (abs(id)==11 && passes_SS_tight_v4 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
-    t_dy->Draw("dilep_mass>>mll_dy",intlumi+"*scale1fb*(abs(id)==11 && passes_SS_tight_v4 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30!=0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
+    t_data->Draw("dilep_mass>>mll_data","HLT_Ele12_CaloIdM_TrackIdM_PFJet30 * (abs(id)==11 && passes_SS_tight_v5 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
+    t_dy->Draw("dilep_mass>>mll_dy",intlumi+"*scale1fb*HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(abs(id)==11 && passes_SS_tight_v5 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
   }
 
   float mc_zpeak   = mll_dy->Integral(mll_dy->FindBin(75),mll_dy->FindBin(105));
