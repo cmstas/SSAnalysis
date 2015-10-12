@@ -2,6 +2,10 @@
 #include "../software/tableMaker/CTable.h"
 #include "../CORE/SSSelections.h"
 #include "SS.h"
+#include "../CORE/Tools/utils.h"
+#include "../commonUtils.h"
+
+bool corrected = true;
 
 struct results_t { TH1F* hh; TH1F* hl; TH1F* ll; }; 
 
@@ -11,7 +15,7 @@ void yields(){
 
   //Make chains, histograms
   TChain* chain = new TChain("t");
-  chain->Add(Form("../babies/%s/sync_baby_0.root", version.c_str()));
+  chain->Add("./babies/sync_TTW_baby_0.root");
 
   //Declare counters
   int y0hh[3] = { 0 }; 
@@ -57,8 +61,26 @@ void yields(){
       //Reject non-SS
       if (ss::hyp_class() != 3) continue;
 
+      //Reject not triggered
+      if (!ss::fired_trigger()) continue;
+
+      //Determine MET
+      float metAG = (corrected ? ss::corrMET() : ss::met() );
+      float metPhiAG = (corrected ? ss::corrMETphi() : ss::metPhi());
+
+      //Determine HT
+      float htAG = (corrected ? ss::ht_corr() : ss::ht());
+
+      //Determine njets
+      float njetsAG =  (corrected ? ss::njets_corr() : ss::njets());
+
+      //Determine nbtags
+      float nbtagsAG = (corrected ? ss::nbtags_corr() : ss::nbtags());
+
       //Calculate mtmin
-      float mtmin = ss::mt() > ss::mt_l2() ? ss::mt_l2() : ss::mt(); 
+      float mt1 = MT(ss::lep1_p4().pt(), ss::lep1_p4().phi(), metAG, metPhiAG);
+      float mt2 = MT(ss::lep2_p4().pt(), ss::lep2_p4().phi(), metAG, metPhiAG);
+      float mtmin = mt1 > mt2 ? mt2 : mt1; 
 
       //Determine type
       int type = -1;
@@ -68,8 +90,8 @@ void yields(){
    
       //Figure out region
       anal_type_t categ = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());  
-      int SR = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_p4().pt(), ss::lep2_p4().pt());
-      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      int SR = signalRegion(njetsAG, nbtagsAG, metAG, htAG, mtmin, ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      int BR = baselineRegion(njetsAG, nbtagsAG, metAG, htAG, ss::lep1_p4().pt(), ss::lep2_p4().pt());
 
       //Counters
       if (categ == HighHigh && BR >=  0) y0hh[type]++; 
@@ -82,7 +104,7 @@ void yields(){
       if (categ == HighLow  && BR == 3) y3hl[type]++; 
 
       //Print sync script for 0-0 HH    
-      if (categ == HighLow && BR >=  0) textfile << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), SR); 
+      if (categ == HighHigh && BR >=  0) textfile << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), njetsAG, nbtagsAG, metAG, htAG, SR); 
 
     }//event loop
   }//file loop
@@ -106,7 +128,7 @@ void yields(){
   table.print(); 
 
   //Sort the file
-  system("sort -n -k1 -k2 -k3 unsorted.txt > ucsx_SR0_HL_yields.txt");
+  system("sort -n -k1 -k2 -k3 unsorted.txt > ucsx_SR0_HH_yields.txt");
   system("rm unsorted.txt"); 
 
 }
