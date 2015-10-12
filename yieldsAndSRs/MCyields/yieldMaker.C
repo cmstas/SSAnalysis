@@ -37,6 +37,7 @@ void getyields(){
   TChain *vhnonbb_chain = new TChain("t");
   TChain *tzq_chain     = new TChain("t");
   TChain *tth_chain     = new TChain("t");
+  TChain *qqww_chain    = new TChain("t");
   TChain *data_chain    = new TChain("t"); 
   TChain *wgamma_chain  = new TChain("t"); 
 
@@ -61,6 +62,7 @@ void getyields(){
   vhnonbb_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
   tzq_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
   tth_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
+  qqww_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
   data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD.root", tag.c_str()));
   data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD.root"  , tag.c_str()));
   data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD.root"    , tag.c_str()));
@@ -81,6 +83,7 @@ void getyields(){
   yields_t tzq     = run(tzq_chain);     
   yields_t tth     = run(tth_chain);     
   yields_t wgamma  = run(wgamma_chain);     
+  yields_t qqww    = run(qqww_chain); 
   yields_t data    = run(data_chain, 1);     
 
   //Make yield table
@@ -102,6 +105,7 @@ void getyields(){
                    ("vhnonbb", vhnonbb.EE, vhnonbb.EM, vhnonbb.MM, vhnonbb.TOTAL) 
                    ("tzq"    , tzq.EE    , tzq.EM    , tzq.MM    , tzq.TOTAL    )
                    ("tth"    , tth.EE    , tth.EM    , tth.MM    , tth.TOTAL    )
+                   ("qqww"   , qqww.EE   , qqww.EM   , qqww.MM   , qqww.TOTAL   )
                    ("wgamma" , wgamma.EE , wgamma.EM , wgamma.MM , wgamma.TOTAL )
                    ("total"  , total.EE  , total.EM  , total.MM  , total.TOTAL  )
                    ("data"   , data.EE   , data.EM   , data.MM   , data.TOTAL   );
