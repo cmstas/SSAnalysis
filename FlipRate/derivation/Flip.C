@@ -2,6 +2,7 @@
 #include "TH2D.h"
 #include "SS.h"
 #include "../../software/dataMCplotMaker/PlotMaker2D.h"
+#include "../../commonUtils.h"
 
 using namespace ss;
 
@@ -14,9 +15,13 @@ bool DYonly = false;
 void flip(){
 
   //Flip Rate Histograms
-  int nBinsX = 5; 
+  // int nBinsX = 5; 
+  // int nBinsY = 3; 
+  // float xbins[] = { 0, 20, 40, 60, 80, 100 }; 
+  // float ybins[] = { 0, 1, 2, 3 }; 
+  int nBinsX = 3; 
   int nBinsY = 3; 
-  float xbins[] = { 0, 20, 40, 60, 80, 100 }; 
+  float xbins[] = { 0, 30, 60, 100 }; 
   float ybins[] = { 0, 1, 2, 3 }; 
   TH2D* numer  = new TH2D("numer" , "numer" , nBinsX, xbins, nBinsY, ybins);
   TH2D* denom  = new TH2D("denom" , "denom" , nBinsX, xbins, nBinsY, ybins);
@@ -25,10 +30,9 @@ void flip(){
 
   //Set up chains
   TChain *chain = new TChain("t");
-  if (!DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/v2.00/TTBAR_0.root"); 
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v2.00/DY_low_0.root"); 
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v2.00/DY_high_0.root"); 
-  //if (DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/v1.26/dy_0.root"); 
+  if (!DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/TTBAR.root"); 
+  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_low.root"); 
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_high.root"); 
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -67,7 +71,7 @@ void flip(){
       if (abs(lep1_id()) == 13 && abs(lep2_id()) == 13) continue;
 
       //Weight
-      float weight = scale1fb()*theLumi; 
+      float weight = 1;//scale1fb()*theLumi; 
 
       //If they make it this far, they are denominator events
       if (abs(lep1_id()) == 11) denom->Fill(lep1_p4().pt(), fabs(lep1_p4().eta()), weight); 
