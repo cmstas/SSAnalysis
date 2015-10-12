@@ -578,7 +578,8 @@ void plots(){
   if (mode == 2) title = Form("Run2, HH,HL,LL, njets > 1 %s", corrected ? "" : "raw" );
 
   //Make plots
-  for (int i = 0; i < 10; i++){
+  for (int i = 0; i < 8; i++){
+    cout << i << endl;
     //mm
     dataMCplotMaker(data.OS[i][0][3][0], OS_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(OS #mu#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_mm_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i])); 
     dataMCplotMaker(data.SS[i][0][3][0], SS_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(SS #mu#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_mm_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
