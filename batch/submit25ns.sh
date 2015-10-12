@@ -211,6 +211,11 @@ do
       name=WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
       tag=V07-04-08
       nameNu=34
+    elif [ $sname == "QQWW" ] 
+    then
+      name=WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      tag=V07-04-08
+      nameNu=48
     elif [ $sname == "T1TTTT_1500" ] 
     then
       name=SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
