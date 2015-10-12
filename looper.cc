@@ -100,8 +100,12 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   files.push_back(L1file);
   files.push_back(L2file);
   files.push_back(L3file);
-  files.push_back(L2L3file);
+  if (isData) files.push_back(L2L3file);
   const vector <std::string> files2 = files;
+  cout << "applying JEC from the following files:" << endl;
+  for (unsigned int ifile = 0; ifile < files2.size(); ++ifile) {
+    cout << "   " << files2.at(ifile) << endl;
+  }
   FactorizedJetCorrector *jetCorr = makeJetCorrector(files2); 
 
   //Set up the file loop
