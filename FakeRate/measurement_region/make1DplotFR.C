@@ -2,6 +2,7 @@
 #include "TFile.h"
 #include "TH2.h"
 #include "TPaveText.h"
+#include "../../commonUtils.h"
 
 void make1DplotFR(float elSF_zp=1.16182,float muSF_zp=1.11212,float elSF_mt=0.923611, float muSF_mt=0.879643){
 
@@ -227,7 +228,7 @@ void make1DplotFR(float elSF_zp=1.16182,float muSF_zp=1.11212,float elSF_mt=0.92
   labelcms->SetTextSize(1.2*0.035);
   labelcms->SetTextFont(42);
   labelcms->SetFillColor(kWhite);
-  labelcms->AddText("225.6 pb^{-1} (13 TeV)");
+  labelcms->AddText(Form("%.1f pb^{-1} (13 TeV)",1000*getLumi()));
   labelcms->SetBorderSize(0);
   labelcms->SetLineWidth(2);
   labelcms->Draw();
