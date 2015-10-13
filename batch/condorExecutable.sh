@@ -69,6 +69,7 @@ if [ "$WHICH" == "44" ]; then WHICH_SMALL="t6ttww_650_150_50"; fi
 if [ "$WHICH" == "45" ]; then WHICH_SMALL="datadoubleegd"; fi
 if [ "$WHICH" == "46" ]; then WHICH_SMALL="datadoublemuond"; fi
 if [ "$WHICH" == "47" ]; then WHICH_SMALL="datamuonegd"; fi
+if [ "$WHICH" == "48" ]; then WHICH_SMALL="qqww"; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}_$EXPT
 
