@@ -9,7 +9,7 @@
 
     TH2D* numer = (TH2D*) f->Get(lep);
     
-    cout << "float "+lep+"FakeRate(float pt, float eta) {" << endl;
+    cout << "float "+lep+"FakeRateInSitu(float pt, float eta) {" << endl;
     for (int xbin=1;xbin<=numer->GetNbinsX();xbin++) {
       for (int ybin=1;ybin<=numer->GetNbinsY();ybin++) {
 	if (xbin!=numer->GetNbinsX()) { 
@@ -26,7 +26,7 @@
     cout << "   return 0.;" << endl;
     cout << "}" << endl;
     
-    cout << "float "+lep+"FakeRateError(float pt, float eta) {" << endl;
+    cout << "float "+lep+"FakeRateInSituError(float pt, float eta) {" << endl;
     for (int xbin=1;xbin<=numer->GetNbinsX();xbin++) {
       for (int ybin=1;ybin<=numer->GetNbinsY();ybin++) {
 	if (xbin!=numer->GetNbinsX()) { 
