@@ -15,7 +15,7 @@ void yields(){
 
   //Make chains, histograms
   TChain* chain = new TChain("t");
-  chain->Add("./babies/sync_TTW_baby_0.root");
+  chain->Add("/nfs-7/userdata/ss2015/sync_files_new/babies/sync_TTW_baby_0.root");
 
   //Declare counters
   int y0hh[3] = { 0 }; 

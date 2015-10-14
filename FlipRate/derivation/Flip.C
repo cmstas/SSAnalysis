@@ -67,7 +67,7 @@ void flip(){
       if (abs(lep1_id()) == 13 && abs(lep2_id()) == 13) continue;
 
       //Weight
-      float weight = 1;//scale1fb()*theLumi; 
+      float weight = getPUw(ss::nGoodVertices());//scale1fb()*theLumi; 
 
       //If they make it this far, they are denominator events
       if (abs(lep1_id()) == 11) denom->Fill(lep1_p4().pt(), fabs(lep1_p4().eta()), weight); 
@@ -95,6 +95,40 @@ void flip(){
   numer->Divide(numer, denom, 1, 1, "b"); 
   if (DYonly) PlotMaker2D(numer, "--outputName flips_rate_dy.pdf --noOverflow --setTitle flip rate DY only --Xaxis elec p_{T} --Yaxis |#eta| --sciNot .2 --color"); 
   else PlotMaker2D(numer, "--outputName flips_rate.pdf --noOverflow --setTitle flip rate --Xaxis elec p_{T} --Yaxis |#eta| --sciNot .2 --color"); 
+
+  cout << "float flipRate(float pt, float eta) {" << endl;
+  for (int xbin=1;xbin<=numer->GetNbinsX();xbin++) {
+    for (int ybin=1;ybin<=numer->GetNbinsY();ybin++) {
+      if (xbin!=numer->GetNbinsX()) { 
+	cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin) << " && pt<" << numer->GetXaxis()->GetBinUpEdge(xbin) 
+	     << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
+	     <<  numer->GetBinContent(xbin,ybin) << ";" << endl;
+      } else {
+	cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin)
+	     << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
+	     <<  numer->GetBinContent(xbin,ybin) << ";" << endl;      
+      }
+    }
+  }
+  cout << "   return 0.;" << endl;
+  cout << "}" << endl;
+
+  cout << "float flipRateError(float pt, float eta) {" << endl;
+  for (int xbin=1;xbin<=numer->GetNbinsX();xbin++) {
+    for (int ybin=1;ybin<=numer->GetNbinsY();ybin++) {
+      if (xbin!=numer->GetNbinsX()) { 
+	cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin) << " && pt<" << numer->GetXaxis()->GetBinUpEdge(xbin) 
+	     << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
+	     <<  numer->GetBinError(xbin,ybin) << ";" << endl;
+      } else {
+	cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin)
+	     << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
+	     <<  numer->GetBinError(xbin,ybin) << ";" << endl;      
+      }
+    }
+  }
+  cout << "   return 0.;" << endl;
+  cout << "}" << endl;
 
   //Save the histogram
   TFile *file = new TFile("flip_rate.root", "RECREATE");
