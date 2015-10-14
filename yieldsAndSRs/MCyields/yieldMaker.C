@@ -3,9 +3,10 @@
 #include "TTree.h"
 
 #include "../../CORE/SSSelections.h"
-#include "../../../software/tableMaker/CTable.h"
+#include "../../software/tableMaker/CTable.h"
 #include "../../commonUtils.h"
 #include "SS.h"
+#include "../../CORE/Tools/dorky/dorky.h"
 
 float lumiAG = getLumi();
 string tag = getTag().Data();  
@@ -16,7 +17,7 @@ struct yields_t { float EE; float EM; float MM; float TOTAL; };
 yields_t total; 
 
 //function declaration
-yields_t run(TChain *chain, bool isData = 0);
+yields_t run(TChain *chain, bool isData = 0, bool doFlips = 0, bool doFakes = 0);
 
 void getyields(){
   
@@ -40,13 +41,13 @@ void getyields(){
   TChain *qqww_chain    = new TChain("t");
   TChain *data_chain    = new TChain("t"); 
   TChain *wgamma_chain  = new TChain("t"); 
+  TChain *flips_chain    = new TChain("t"); 
+  TChain *fakes_chain    = new TChain("t"); 
 
   //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root"          , tag.c_str())); 
   ttw_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
-  ttw_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTWQQ.root"          , tag.c_str())); 
   ttz_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"           , tag.c_str())); 
-  ttz_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZQ.root"           , tag.c_str())); 
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP1.root"     , tag.c_str()));
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP2.root"     , tag.c_str()));
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP3.root"     , tag.c_str()));
@@ -63,11 +64,21 @@ void getyields(){
   tzq_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
   tth_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
   qqww_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
+  wgamma_chain ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"       , tag.c_str()));
   data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD.root", tag.c_str()));
   data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD.root"  , tag.c_str()));
   data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD.root"    , tag.c_str()));
-  wgamma_chain ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"       , tag.c_str()));
-  
+  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD.root"  , tag.c_str()));
+  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD.root"    , tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD.root", tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD.root"  , tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD.root"    , tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"           , tag.c_str())); 
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ3LNU.root"         , tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
+
   //Get yields
   yields_t ttbar   = run(ttbar_chain);   
   yields_t ttw     = run(ttw_chain);     
@@ -85,6 +96,8 @@ void getyields(){
   yields_t wgamma  = run(wgamma_chain);     
   yields_t qqww    = run(qqww_chain); 
   yields_t data    = run(data_chain, 1);     
+  yields_t flips   = run(flips_chain, 1, 1);     
+  yields_t fakes   = run(fakes_chain, 1, 0, 1);     
 
   //Make yield table
   CTable table; 
@@ -107,13 +120,15 @@ void getyields(){
                    ("tth"    , tth.EE    , tth.EM    , tth.MM    , tth.TOTAL    )
                    ("qqww"   , qqww.EE   , qqww.EM   , qqww.MM   , qqww.TOTAL   )
                    ("wgamma" , wgamma.EE , wgamma.EM , wgamma.MM , wgamma.TOTAL )
+                   ("flips"  , flips.EE  , flips.EM  , flips.MM  , flips.TOTAL  )
+                   ("fakes"  , fakes.EE  , fakes.EM  , fakes.MM  , fakes.TOTAL  )
                    ("total"  , total.EE  , total.EM  , total.MM  , total.TOTAL  )
                    ("data"   , data.EE   , data.EM   , data.MM   , data.TOTAL   );
   table.print();
 
 }
 
-yields_t run(TChain *chain, bool isData){
+yields_t run(TChain *chain, bool isData, bool doFlips, bool doFakes){
 
   yields_t result;
 
@@ -146,12 +161,51 @@ yields_t run(TChain *chain, bool isData){
       //Get Event Content
       samesign.GetEntry(event);
       nEventsTotal++;
-    
+
+      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUw(ss::nGoodVertices());
+
       //Progress
       //SSAG::progress(nEventsTotal, nEventsChain);
 
       //Only keep good events
-      if (ss::hyp_class() != 3) continue;
+      if (!doFlips && !doFakes) {
+	if (ss::hyp_class() != 3) continue;
+	if (!isData && ss::lep1_motherID()!=1) continue;
+	if (!isData && ss::lep2_motherID()!=1) continue;
+      }
+
+      if (doFlips) {
+	if (ss::hyp_class() != 4) continue;
+	float flipFact = 0.;
+	if (abs(ss::lep1_id())==11) {
+	  float flr = flipRate(ss::lep1_p4().pt(), ss::lep1_p4().eta());
+	  flipFact += (flr/(1-flr));
+	}
+	if (abs(ss::lep2_id())==11) {
+	  float flr = flipRate(ss::lep2_p4().pt(), ss::lep2_p4().eta());
+	  flipFact += (flr/(1-flr));
+	}
+	weight *= flipFact;
+      } 
+
+      if (doFakes) {
+	if (ss::hyp_class() != 2) continue;
+	float fr = 0.;
+	if (ss::lep1_passes_id()==0) {
+	  fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
+	}
+	if (ss::lep2_passes_id()==0) {
+	  fr = fakeRate(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
+	}
+	weight *= fr/(1.-fr);
+	if (!ss::is_real_data()) weight *= -1.;
+      } 
+
+      //Reject duplicates (after selection otherwise flips are ignored...)
+      if (isData == true){
+        duplicate_removal::DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
+        if (duplicate_removal::is_duplicate(id)){ continue; }
+      }
 
       //Require baseline selections
       int BR = baselineRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
@@ -161,16 +215,21 @@ yields_t run(TChain *chain, bool isData){
       int SR = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), ss::mtmin(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
 
       //Calculate the baseline yield
-      if      (ss::hyp_type() == 3) result.EE    += ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG;
-      else if (ss::hyp_type() == 0) result.MM    += ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG;
-      else                          result.EM    += ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG;
-                                    result.TOTAL += ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG;
+      if      (ss::hyp_type() == 3) result.EE    += weight;
+      else if (ss::hyp_type() == 0) result.MM    += weight;
+      else                          result.EM    += weight;
+                                    result.TOTAL += weight;
 
     }//event loop
   }//file loop
 
+  if (result.EE<0) result.EE=0.;
+  if (result.MM<0) result.MM=0.;
+  if (result.EM<0) result.EM=0.;
+  if (result.TOTAL<0) result.TOTAL=0.;
+
   //Update total
-  if (!isData){
+  if (!isData || doFlips || doFakes){
     total.EE    += result.EE;
     total.EM    += result.EM;
     total.MM    += result.MM;

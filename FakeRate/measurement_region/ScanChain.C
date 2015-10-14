@@ -620,72 +620,37 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	    HLT_Mu17()<=0) continue;
 	
       }	
-      //check prescales for data
+
+      //check prescales, apply cuts on the pT range depending on the trigger
       int prescale = -1;
-      if (isData) {
-	if (abs(id())==11) {
-
-	  // if (p4().pt()>35 && HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele33_CaloIdM_TrackIdM_PFJet30();
-	  // else if (p4().pt()<=35 && p4().pt()>25 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
-	  // else if (p4().pt()<=25 && p4().pt()>20 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();
-	  // else if (p4().pt()<=20 && p4().pt()>15 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
-	  // else if (p4().pt()<=15 && p4().pt()>10 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 ) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30() ;
-	  // if (prescale>0) weight *= prescale;
-	  // else continue;
-
-	  // if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
-	  // if (HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();
-
-	  // if (p4().pt()>25 && prescale!=1) continue;
-
-	  // if (p4().pt()>25) continue;
-	  // int prescale = 999999;
-	  // if (HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele33_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele33_CaloIdM_TrackIdM_PFJet30();
-	  // if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
-	  // if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
-
-	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
-	  else if (p4().pt() >= 25 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();
-
-	  // if (p4().pt() >= 10 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
-
-	  if (prescale>0) weight *= prescale;
-	  else continue;
-	  
-	  // if ((HLT_Ele23_CaloIdM_TrackIdM_PFJet30() || HLT_Ele33_CaloIdM_TrackIdM_PFJet30()) && minPrescale>1000) {
-	    // cout << evt_run() << " " << 
-	    //   minPrescale << " " <<
-	    //   HLT_Ele8_CaloIdM_TrackIdM_PFJet30() << " " << 
-	    //   HLT_Ele12_CaloIdM_TrackIdM_PFJet30() << " " << 
-	    //   HLT_Ele18_CaloIdM_TrackIdM_PFJet30() << " " << 
-	    //   HLT_Ele23_CaloIdM_TrackIdM_PFJet30() << " " << 
-	    //   HLT_Ele33_CaloIdM_TrackIdM_PFJet30() << " " << 
-	    //   endl;
-	  // }
-
-	}
-	if (abs(id())==13) {
-
-	  // if (p4().pt()>38 && HLT_Mu34()>0) prescale = HLT_Mu34();
-	  // else if (p4().pt()<=38 && p4().pt()>28 && HLT_Mu24()>0) prescale = HLT_Mu24();
-	  // else if (p4().pt()<=28 && p4().pt()>20 && HLT_Mu17()>0) prescale = HLT_Mu17();
-	  // else if (p4().pt()<=20 && p4().pt()>10 && HLT_Mu8() >0) prescale = HLT_Mu8();
-
-	  // use mu8+mu17 FIXME
-	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0) prescale = HLT_Mu8();
-	  else if (p4().pt()>=25 && HLT_Mu17()>0) prescale = HLT_Mu17();
-
-	  // if (p4().pt()>=10 && HLT_Mu17()>0) prescale = HLT_Mu17();
+      if (abs(id())==11) {	
+	// use ele128+ele18
+	if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
+	else if (p4().pt() >= 25 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();	
+	if (prescale>0) weight *= prescale;
+	else continue;	  
+	// if ((HLT_Ele23_CaloIdM_TrackIdM_PFJet30() || HLT_Ele33_CaloIdM_TrackIdM_PFJet30()) && minPrescale>1000) {
+	// cout << evt_run() << " " << 
+	//   minPrescale << " " <<
+	//   HLT_Ele8_CaloIdM_TrackIdM_PFJet30() << " " << 
+	//   HLT_Ele12_CaloIdM_TrackIdM_PFJet30() << " " << 
+	//   HLT_Ele18_CaloIdM_TrackIdM_PFJet30() << " " << 
+	//   HLT_Ele23_CaloIdM_TrackIdM_PFJet30() << " " << 
+	//   HLT_Ele33_CaloIdM_TrackIdM_PFJet30() << " " << 
+	//   endl;
+	// }    
+      }
+      if (abs(id())==13) {	
+	// use mu8+mu17
+	if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0) prescale = HLT_Mu8();
+	else if (p4().pt()>=25 && HLT_Mu17()>0) prescale = HLT_Mu17();	
+	if (prescale>0) weight *= prescale;
+	else continue;
+      }
       
-	  if (prescale>0) weight *= prescale;
-	  else continue;
-	  
-	}
-      } 
-
       if(nFOs_SS() > 1) //if more than 1 FO in event
 	{continue;}
-
+      
       // if(nbtags != 1) continue; 
 
       //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???

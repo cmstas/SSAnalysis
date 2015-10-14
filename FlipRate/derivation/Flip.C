@@ -67,7 +67,7 @@ void flip(){
       if (abs(lep1_id()) == 13 && abs(lep2_id()) == 13) continue;
 
       //Weight
-      float weight = 1;//scale1fb()*theLumi; 
+      float weight = getPUw(ss::nGoodVertices());//scale1fb()*theLumi; 
 
       //If they make it this far, they are denominator events
       if (abs(lep1_id()) == 11) denom->Fill(lep1_p4().pt(), fabs(lep1_p4().eta()), weight); 

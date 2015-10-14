@@ -1,3 +1,4 @@
+//fixme add systematics from EWK subtraction
 void plotEWKCorFR(float elSF_mt=0.923611, float muSF_mt=0.879643) {
 
   for(int doMu = 0; doMu < 2; doMu++) {
@@ -47,7 +48,9 @@ void plotEWKCorFR(float elSF_mt=0.923611, float muSF_mt=0.879643) {
   num_data->Draw("textecolz");
 
   c1.SaveAs("pdfs/ewkCorFR_"+lepname+".pdf");
-
+  TFile out("ewkCorFR_"+lepname+".root","RECREATE");
+  num_data->Write();
+  out.Close();
   }
 
 }
