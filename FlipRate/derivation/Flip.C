@@ -96,40 +96,6 @@ void flip(){
   if (DYonly) PlotMaker2D(numer, "--outputName flips_rate_dy.pdf --noOverflow --setTitle flip rate DY only --Xaxis elec p_{T} --Yaxis |#eta| --sciNot .2 --color"); 
   else PlotMaker2D(numer, "--outputName flips_rate.pdf --noOverflow --setTitle flip rate --Xaxis elec p_{T} --Yaxis |#eta| --sciNot .2 --color"); 
 
-  cout << "float flipRate(float pt, float eta) {" << endl;
-  for (int xbin=1;xbin<=numer->GetNbinsX();xbin++) {
-    for (int ybin=1;ybin<=numer->GetNbinsY();ybin++) {
-      if (xbin!=numer->GetNbinsX()) { 
-	cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin) << " && pt<" << numer->GetXaxis()->GetBinUpEdge(xbin) 
-	     << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
-	     <<  numer->GetBinContent(xbin,ybin) << ";" << endl;
-      } else {
-	cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin)
-	     << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
-	     <<  numer->GetBinContent(xbin,ybin) << ";" << endl;      
-      }
-    }
-  }
-  cout << "   return 0.;" << endl;
-  cout << "}" << endl;
-
-  cout << "float flipRateError(float pt, float eta) {" << endl;
-  for (int xbin=1;xbin<=numer->GetNbinsX();xbin++) {
-    for (int ybin=1;ybin<=numer->GetNbinsY();ybin++) {
-      if (xbin!=numer->GetNbinsX()) { 
-	cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin) << " && pt<" << numer->GetXaxis()->GetBinUpEdge(xbin) 
-	     << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
-	     <<  numer->GetBinError(xbin,ybin) << ";" << endl;
-      } else {
-	cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin)
-	     << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
-	     <<  numer->GetBinError(xbin,ybin) << ";" << endl;      
-      }
-    }
-  }
-  cout << "   return 0.;" << endl;
-  cout << "}" << endl;
-
   //Save the histogram
   TFile *file = new TFile("flip_rate.root", "RECREATE");
   file->Write(); 
