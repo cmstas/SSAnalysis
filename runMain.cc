@@ -167,7 +167,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     chain_sync_DoubleMuon->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleMuon_MINIAOD_PromptReco-v3_000_257_531_00000_B26DC190-8166-E511-AE66-02163E0133A7.root");
     chain_sync_DoubleEG  ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleEG_MINIAOD_PromptReco-v3_000_257_531_00000_2CFA9A0A-0F66-E511-88FF-02163E013484.root");
     chain_sync_MuonEG    ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/MuonEG_MINIAOD_PromptReco-v3_000_257_531_00000_D62608D5-FB65-E511-B031-02163E0145C1.root");
-    chain_sync_TTW       ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_MINIAODSIM_Asympt25ns_MCRUN2_74_V9-v1_30000_60087A61-9134-E511-B0C6-0025905B855E.root");
+    chain_sync_TTW       ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-10/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_MINIAODSIM_74X_mcRun2_asymptotic_v2-v1_10000_3A2285C7-CA6D-E511-B68F-0CC47A13D09C.root");
 
     //Private samples
     TString private_dir = "/nfs-7/userdata/ss2015/signalSamples/V07-02-08/";
