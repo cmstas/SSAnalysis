@@ -480,7 +480,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
         for (unsigned int pfjidx=0;pfjidx<pfjets_p4().size();++pfjidx){
           Jet jet(pfjidx);
           if (fabs(jet.eta())>2.4) continue;
-          if (isLoosePFJet(pfjidx)==false) continue;
+          if (isLoosePFJet_50nsV1(pfjidx)==false) continue;
           for (unsigned int vl=0;vl<vetoleps_noiso.size();++vl){
             Lep lep = vetoleps_noiso[vl];
             if (deltaR(jet.p4(),lep.p4())<0.7){

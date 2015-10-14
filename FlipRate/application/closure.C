@@ -48,9 +48,12 @@ void closure(){
   TH2D  *rate = (TH2D*)flip_file->Get("flips"); 
 
   //Closure vs. inv mass plot
-  TH1F* clos_MC   = new TH1F("clos_plot_MC"  , "clos_plot_MC"  , 9, 70, 115); 
-  TH1F* clos_data = new TH1F("clos_plot_data", "clos_plot_data", 9, 70, 115); 
-
+  constexpr int clos_nBinsX = 5;
+  // TH1F* clos_MC   = new TH1F("clos_plot_MC"  , "clos_plot_MC"  , 9, 70, 115); 
+  // TH1F* clos_data = new TH1F("clos_plot_data", "clos_plot_data", 9, 70, 115); 
+  TH1F* clos_MC   = new TH1F("clos_plot_MC"  , "clos_plot_MC"  , clos_nBinsX, 70, 120); 
+  TH1F* clos_data = new TH1F("clos_plot_data", "clos_plot_data", clos_nBinsX, 70, 120); 
+  TH1F* osee_data = new TH1F("osee_plot_data", "osee_plot_data", clos_nBinsX, 70, 120); 
   //Sumw2
   clos_MC->Sumw2();
 
@@ -60,8 +63,8 @@ void closure(){
   const TArrayD* xbins = rate->GetXaxis()->GetXbins();
   const TArrayD* ybins = rate->GetYaxis()->GetXbins();
   //TH2D* errors  = new TH2D("errors" , "errors" , nBinsX, xbins, nBinsY, ybins);
-  TH2D* errors[9] = { 0 };
-  for (unsigned int i = 0; i < 9; i++){
+  TH2D* errors[clos_nBinsX] = { 0 };
+  for (unsigned int i = 0; i < clos_nBinsX; i++){
     errors[i] = new TH2D(Form("errors_%i", i) , "errors" , nBinsX, xbins->GetArray(), nBinsY, ybins->GetArray());
   }
 
@@ -79,6 +82,7 @@ void closure(){
   //Set up chains
   TChain *chain = new TChain("t");
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DataDoubleEGD.root");
+  //chain->Add("./Data_DoubleEG2015D.root");
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -120,13 +124,13 @@ void closure(){
       //if (!ss::passes_met_filters()) continue;
 
       //Throw away unneeded events
-      if (hyp_class() != 3 && hyp_class() != 4 && hyp_class() != 6) continue;
+      if (hyp_class() != 3 && hyp_class() != 4) continue;
 
       //Hyp-6 events don't necessarily pass ID (in v1.26, to be fixed); impose that here
       //if (!lep1_passes_id() || !lep2_passes_id()) continue;
 
       //Keep only electron-electron events
-      if (hyp_class() != 6 && (abs(lep1_id()) != 11 || abs(lep2_id()) != 11)) continue;
+      if (abs(lep1_id()) != 11 || abs(lep2_id()) != 11) continue;
 
       //Figure out if SS
       bool isSS = false;
@@ -139,100 +143,48 @@ void closure(){
       //Observation
       if (isSS){
         float mll = (lep1_p4() + lep2_p4()).M();
-        if (mll > 70 && mll < 115) nObs += weight; 
+        if (mll > 80 && mll < 100) nObs += weight; 
         clos_data->Fill(mll, weight); 
-      } else if (hyp_class() == 6) {
-	  //for class 6 we do the Z with the third lepton, so figure out which one is good between lep1 and lep2
-	  if (abs(lep3_id()) != 11 || !lep3_passes_id()) continue;
-	  float mll13 = (lep1_p4() + lep3_p4()).M();
-	  float mll23 = (lep2_p4() + lep3_p4()).M();
-	  if ( lep1_id()==lep3_id() && lep1_passes_id() && mll13>70 && mll13<115 ) {
-	    if (mll13 > 70 && mll13 < 115) nObs += weight; 
-	    clos_data->Fill(mll13, weight); 
-	  } else if ( lep2_id()==lep3_id() && lep2_passes_id() && mll23>70 && mll23<115 ) {
-	    if (mll23 > 70 && mll23 < 115) nObs += weight; 
-	    clos_data->Fill(mll23, weight); 
-	  }	
-      }
+      } 
 
       //Prediction
       if (!isSS){
-
-	  float pt1  = lep1_p4().pt();  
-	  float eta1 = fabs(lep1_p4().eta()); 
-	  float pt2  = lep2_p4().pt();  
-	  float eta2 = fabs(lep2_p4().eta()); 
-	  if (pt1<rate->GetXaxis()->GetBinCenter(1)) pt1=rate->GetXaxis()->GetBinCenter(1);
-	  if (pt1>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt1=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
-	  if (eta1<rate->GetYaxis()->GetBinCenter(1)) eta1=rate->GetYaxis()->GetBinCenter(1);
-	  if (eta1>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta1=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());	  
-	  if (pt2<rate->GetXaxis()->GetBinCenter(1)) pt2=rate->GetXaxis()->GetBinCenter(1);
-	  if (pt2>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt2=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
-	  if (eta2<rate->GetYaxis()->GetBinCenter(1)) eta2=rate->GetYaxis()->GetBinCenter(1);
-	  if (eta2>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta2=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());
-
-	if (hyp_class() != 6) {
-	  float ff = getFlipFactor(rate);
-	  nPred += ff*weight;
-	  float mll = (lep1_p4() + lep2_p4()).M();
-	  clos_MC->Fill(mll, ff*weight); 
-	  int bin_in_errors = (mll-70)/5.0;
-	  if (bin_in_errors > 8) overflow ? bin_in_errors = 8 : bin_in_errors = 999; 
-	  if (bin_in_errors < 0) overflow ? bin_in_errors = 0 : bin_in_errors = 999;
-	  if (bin_in_errors != 999) errors[bin_in_errors]->Fill(pt1, eta1, weight);
-	  if (bin_in_errors != 999) errors[bin_in_errors]->Fill(pt2, eta2, weight);
-	} else {
-	  //for class 6 we do the Z with the third lepton, so figure out which one is good between lep1 and lep2
-	  if (abs(lep3_id()) != 11 || !lep3_passes_id()) continue;
-	  float mll13 = (lep1_p4() + lep3_p4()).M();
-	  float mll23 = (lep2_p4() + lep3_p4()).M();
-	  float pt3  = lep3_p4().pt();  
-	  float eta3 = fabs(lep3_p4().eta()); 
-	  if (pt3<rate->GetXaxis()->GetBinCenter(1)) pt3=rate->GetXaxis()->GetBinCenter(1);
-	  if (pt3>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt3=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
-	  if (eta3<rate->GetYaxis()->GetBinCenter(1)) eta3=rate->GetYaxis()->GetBinCenter(1);
-	  if (eta3>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta3=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());
-	  if ( lep1_id()==(-lep3_id()) && lep1_passes_id() && mll13>70 && mll13<115 ) {
-	    int bin1 = rate->FindBin(pt1, eta1);
-	    int bin3 = rate->FindBin(pt3, eta3);
-	    float FR1 = rate->GetBinContent(bin1);
-	    float FR3 = rate->GetBinContent(bin3);
-	    float ff = (FR1/(1.-FR1) + FR3/(1.-FR3));
-	    nPred += ff*weight;
-	    clos_MC->Fill(mll13, ff*weight); 
-	    int bin_in_errors = (mll13-70)/5.0;
-	    if (bin_in_errors > 8) overflow ? bin_in_errors = 8 : bin_in_errors = 999; 
-	    if (bin_in_errors < 0) overflow ? bin_in_errors = 0 : bin_in_errors = 999;
-	    if (bin_in_errors != 999) errors[bin_in_errors]->Fill(lep1_p4().pt(), fabs(lep1_p4().eta()), weight);
-	    if (bin_in_errors != 999) errors[bin_in_errors]->Fill(lep3_p4().pt(), fabs(lep3_p4().eta()), weight);
-	  } else if ( lep2_id()==(-lep3_id()) && lep2_passes_id() && mll23>70 && mll23<115 ) {
-	    int bin2 = rate->FindBin(pt2, eta2);
-	    int bin3 = rate->FindBin(pt3, eta3);
-	    float FR2 = rate->GetBinContent(bin2);
-	    float FR3 = rate->GetBinContent(bin3);
-	    float ff = (FR2/(1.-FR2) + FR3/(1.-FR3));
-	    nPred += ff*weight;
-	    clos_MC->Fill(mll23, ff*weight); 
-	    int bin_in_errors = (mll23-70)/5.0;
-	    if (bin_in_errors > 8) overflow ? bin_in_errors = 8 : bin_in_errors = 999; 
-	    if (bin_in_errors < 0) overflow ? bin_in_errors = 0 : bin_in_errors = 999;
-	    if (bin_in_errors != 999) errors[bin_in_errors]->Fill(lep2_p4().pt(), fabs(lep2_p4().eta()), weight);
-	    if (bin_in_errors != 999) errors[bin_in_errors]->Fill(lep3_p4().pt(), fabs(lep3_p4().eta()), weight);
-	  } else continue;
-	}
+	float pt1  = lep1_p4().pt();  
+	float eta1 = fabs(lep1_p4().eta()); 
+	float pt2  = lep2_p4().pt();  
+	float eta2 = fabs(lep2_p4().eta()); 
+	if (pt1<rate->GetXaxis()->GetBinCenter(1)) pt1=rate->GetXaxis()->GetBinCenter(1);
+	if (pt1>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt1=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
+	if (eta1<rate->GetYaxis()->GetBinCenter(1)) eta1=rate->GetYaxis()->GetBinCenter(1);
+	if (eta1>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta1=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());	  
+	if (pt2<rate->GetXaxis()->GetBinCenter(1)) pt2=rate->GetXaxis()->GetBinCenter(1);
+	if (pt2>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt2=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
+	if (eta2<rate->GetYaxis()->GetBinCenter(1)) eta2=rate->GetYaxis()->GetBinCenter(1);
+	if (eta2>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta2=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());
+	
+	float ff = getFlipFactor(rate);
+	float mll = (lep1_p4() + lep2_p4()).M();
+        if (mll > 80 && mll < 100) nPred += ff*weight;
+	clos_MC->Fill(mll, ff*weight); 
+	osee_data->Fill(mll, weight);
+	int bin_in_errors = clos_MC->FindBin(mll);
+	if (bin_in_errors >= clos_nBinsX) overflow ? bin_in_errors = clos_nBinsX-1 : bin_in_errors = 999; 
+	if (bin_in_errors < 0) overflow ? bin_in_errors = 0 : bin_in_errors = 999;
+	if (bin_in_errors != 999) errors[bin_in_errors]->Fill(pt1, eta1, weight);
+	if (bin_in_errors != 999) errors[bin_in_errors]->Fill(pt2, eta2, weight);
       }
-
+      
     }//event loop
   }//file loop
 
   cout << "number of duplicates removed: " << reject << endl;
 
-  for (int i = 1; i <= 9; i++) stat2 += pow(clos_MC->GetBinError(i), 2);  
+  for (int i = 1; i <= clos_nBinsX; i++) stat2 += pow(clos_MC->GetBinError(i), 2);  
 
   //Figure out error from "errors" plot:
-  float theerror[9] = { 0 } ;
-  for (int k = 0; k < 9; k++){
-    cout << endl << clos_MC->GetBinContent(k+1) << endl;
+  float theerror[clos_nBinsX] = { 0 } ;
+  for (int k = 0; k < clos_nBinsX; k++){
+    //cout << endl << clos_MC->GetBinContent(k+1) << endl;
     float yield = 0.;
     float error = 0; 
     for (int i = 1; i <= errors[0]->GetNbinsX(); i++){
@@ -241,15 +193,15 @@ void closure(){
         float FR_err = rate->GetBinError(i, j);
         float nEntries = errors[k]->GetBinContent(i, j); 
         error = FR_err*nEntries/pow(1-FR_val,2);
-	cout << "FR_err[%]=" << 100*FR_err/FR_val << " FR_val=" << FR_val << " nEntries=" << nEntries << endl;
+	//cout << "FR_err[%]=" << 100*FR_err/FR_val << " FR_val=" << FR_val << " nEntries=" << nEntries << endl;
         theerror[k] += pow(error, 2);
-	cout << nEntries*FR_val/(1.-FR_val) << " +/- " << error << endl;
+	//cout << nEntries*FR_val/(1.-FR_val) << " +/- " << error << endl;
 	yield+=(nEntries*FR_val/(1.-FR_val));
         fr_err2 += pow(error, 2); 
       }
     }
-    clos_MC->SetBinError(k+1, sqrt(theerror[k] + pow(clos_MC->GetBinError(k+1),2)));
-    cout << "set error = " <<  sqrt(theerror[k] + pow(clos_MC->GetBinError(k+1),2)) << " yield=" << yield << endl;
+    //clos_MC->SetBinError(k+1, sqrt(theerror[k] + pow(clos_MC->GetBinError(k+1),2)));
+    //cout << "set error = " <<  sqrt(theerror[k] + pow(clos_MC->GetBinError(k+1),2)) << " yield=" << yield << endl;
   }
 
   cout << "pred: " << nPred << " pm " << sqrt(stat2 + fr_err2) << endl;
@@ -270,5 +222,9 @@ void closure(){
   sigTit.push_back("Observed Same-Sign Events");
   titles.push_back("Predicted Same-Sign Events"); 
   dataMCplotMaker(null, bkgd, titles, "", "", "--lumi 209.5 --lumiUnit pb --outputName flip_closure.pdf --xAxisLabel M_{ll} --blackSignals  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2", signals, sigTit); //--setMaximum 10 
+
+  TCanvas cosee;
+  osee_data->Draw("hist,goff");
+  cosee.SaveAs("osee_data.pdf");
 
 }

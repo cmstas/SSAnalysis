@@ -15,13 +15,9 @@ bool DYonly = false;
 void flip(){
 
   //Flip Rate Histograms
-  // int nBinsX = 5; 
-  // int nBinsY = 3; 
-  // float xbins[] = { 0, 20, 40, 60, 80, 100 }; 
-  // float ybins[] = { 0, 1, 2, 3 }; 
-  int nBinsX = 3; 
+  int nBinsX = 5; 
   int nBinsY = 3; 
-  float xbins[] = { 0, 30, 60, 100 }; 
+  float xbins[] = { 0, 20, 40, 60, 80, 100 }; 
   float ybins[] = { 0, 1, 2, 3 }; 
   TH2D* numer  = new TH2D("numer" , "numer" , nBinsX, xbins, nBinsY, ybins);
   TH2D* denom  = new TH2D("denom" , "denom" , nBinsX, xbins, nBinsY, ybins);
@@ -31,7 +27,7 @@ void flip(){
   //Set up chains
   TChain *chain = new TChain("t");
   if (!DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/TTBAR.root"); 
-  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_low.root"); 
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_low.root"); 
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_high.root"); 
 
   //Event Counting
@@ -62,7 +58,7 @@ void flip(){
       SSAG::progress(nEventsTotal, nEventsChain);
 
       //Consider only numerator events of either charge, without extra Z veto
-      if (hyp_class() != 3 && hyp_class() != 4 && hyp_class() != 6) continue;
+      if (hyp_class() != 3 && hyp_class() != 4) continue;// && hyp_class() != 6
 
       //Hyp-6 events don't necessarily pass ID (in v1.26, to be fixed); impose that here
       if (!lep1_passes_id() || !lep2_passes_id()) continue;
@@ -75,7 +71,7 @@ void flip(){
 
       //If they make it this far, they are denominator events
       if (abs(lep1_id()) == 11) denom->Fill(lep1_p4().pt(), fabs(lep1_p4().eta()), weight); 
-      if (abs(lep2_id()) == 11) denom->Fill(lep2_p4().pt(), fabs(lep1_p4().eta()), weight); 
+      if (abs(lep2_id()) == 11) denom->Fill(lep2_p4().pt(), fabs(lep2_p4().eta()), weight); 
 
       //Now require exactly one charge flip
       bool isCF1 = 0;

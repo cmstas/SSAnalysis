@@ -1,10 +1,14 @@
 {
+
+    gROOT->ProcessLine(".L ../../commonUtils.h");
     gROOT->ProcessLine(".L normalizeZpeak.C");
     gROOT->ProcessLine(".L plotMTCR.C");
     gROOT->ProcessLine(".L make1DplotFR.C");
     gROOT->ProcessLine(".L plotEWKCorFR.C");
 
-    pair<float,float> zsfs = normalizeZpeak();
+    float intlumi = getLumi();
+    cout << "intlumi=" << intlumi << "/fb" << endl;
+    pair<float,float> zsfs = normalizeZpeak(intlumi);
     zsfEl = zsfs.first;
     zsfMu = zsfs.second;
     cout << "ZP SF: " << zsfEl << " " << zsfMu << endl;

@@ -444,18 +444,6 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   filt_trkfail = is_real_data ? tas::filt_trackingFailure() : 1;
   filt_eebadsc = is_real_data ? tas::filt_eeBadSc() : 1;
 
-  //Make sure one of our triggers fired
-  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")))  (triggers |= 1<<1); 
-  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
-  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")))              (triggers |= 1<<3); 
-  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))            (triggers |= 1<<4); 
-  if (passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v")) || 
-      passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")))        (triggers |= 1<<6); 
-  if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))      (triggers |= 1<<0);
-  if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))    (triggers |= 1<<5); 
-  if (passHLTTrigger(triggerName("HLT_DoubleMu8_Mass8_PFHT300_v")))                      (triggers |= 1<<7); 
-  if (triggers != 0) fired_trigger = true;
-
   //Scale1fb
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
 
@@ -763,6 +751,29 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //Ht and MET
   if (verbose) cout << "ht: " << ht << endl;
   if (verbose) cout << "met: " << met << endl;
+
+  //Make sure one of our triggers fired
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")))  (triggers |= 1<<1); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")))              (triggers |= 1<<3); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))            (triggers |= 1<<4); 
+  if (passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v")) || 
+      passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")))        (triggers |= 1<<6); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))      (triggers |= 1<<0);
+  if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))    (triggers |= 1<<5); 
+  if (passHLTTrigger(triggerName("HLT_DoubleMu8_Mass8_PFHT300_v")))                      (triggers |= 1<<7); 
+  fired_trigger = false;
+  if (triggers != 0) {
+    if (ht_corr<300) {
+      if ( hyp_type==0 && ((triggers & 1<<3)==(1<<3) || (triggers & 1<<4)==(1<<4)) ) fired_trigger = true;
+      if ( hyp_type==3 && (triggers & 1<<6)==(1<<6) ) fired_trigger = true;
+      if ( (hyp_type==1 || hyp_type==2) && ((triggers & 1<<1)==(1<<1) || (triggers & 1<<2)==(1<<2)) ) fired_trigger = true;
+    } else {
+      if ( hyp_type==0 && (triggers & 1<<7)==(1<<7) ) fired_trigger = true;
+      if ( hyp_type==3 && (triggers & 1<<5)==(1<<5) ) fired_trigger = true;
+      if ( (hyp_type==1 || hyp_type==2) && (triggers & 1<<0)==(1<<0) ) fired_trigger = true;
+    }
+  }
 
   //Electron ID variables
   for (unsigned int index = 0; index < els_fbrem().size(); index++){

@@ -23,6 +23,7 @@
 #include "LeptonTree.cc"
 
 #include "../../CORE/Tools/JetCorrector.cc"
+#include "../../commonUtils.h"
 
 using namespace std;
 using namespace lepton_tree;
@@ -509,8 +510,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (TString(currentFile->GetTitle()).Contains("WJets") || TString(currentFile->GetTitle()).Contains("DY")) isEWK = true;
 
       // Analysis Code
-      float lumi = 0.2256;//in /fb
-      float weight = scale1fb()*lumi;
+      float lumi = getLumi();//in /fb
+      float puw = getPUw(nvtx());
+      float weight = scale1fb()*lumi*puw;
       if (isData) weight = 1.;
 
       if (isData==0 && isEWK==0) {
@@ -642,8 +644,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele23_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele23_CaloIdM_TrackIdM_PFJet30();
 	  // if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<prescale) prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
 
-	  if (p4().pt() >= 10 && p4().pt() < 20 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
-	  else if (p4().pt() >= 20 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();
+	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
+	  else if (p4().pt() >= 25 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();
 
 	  // if (p4().pt() >= 10 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
 
@@ -670,8 +672,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // else if (p4().pt()<=20 && p4().pt()>10 && HLT_Mu8() >0) prescale = HLT_Mu8();
 
 	  // use mu8+mu17 FIXME
-	  if (p4().pt()>=10 && p4().pt()<15 && HLT_Mu8()>0) prescale = HLT_Mu8();
-	  else if (p4().pt()>=15 && HLT_Mu17()>0) prescale = HLT_Mu17();
+	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0) prescale = HLT_Mu8();
+	  else if (p4().pt()>=25 && HLT_Mu17()>0) prescale = HLT_Mu17();
 
 	  // if (p4().pt()>=10 && HLT_Mu17()>0) prescale = HLT_Mu17();
       
