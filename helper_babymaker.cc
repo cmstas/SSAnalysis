@@ -501,8 +501,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   }
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
   lep2_iso = abs(lep2_id) == 11 ? eleRelIso03(lep2_idx, SS) :  muRelIso03(lep2_idx, SS);
-  lep1_multiIso = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.10, 0.7, 7.0, 1, 1) : passMultiIso(13, lep1_idx, 0.14, 0.68, 6.7, 1, 1);
-  lep2_multiIso = abs(lep2_id) == 11 ? passMultiIso(11, lep2_idx, 0.10, 0.7, 7.0, 1, 1) : passMultiIso(13, lep2_idx, 0.14, 0.68, 6.7, 1, 1);
+  lep1_multiIso = abs(lep1_id) == 11 ? passMultiIso(11, lep1_idx, 0.12, 0.80, 7.2, 1, 2) : passMultiIso(13, lep1_idx, 0.16, 0.76, 7.2, 1, 2);
+  lep2_multiIso = abs(lep2_id) == 11 ? passMultiIso(11, lep2_idx, 0.12, 0.80, 7.2, 1, 2) : passMultiIso(13, lep2_idx, 0.16, 0.76, 7.2, 1, 2);
   lep1_sip = abs(lep1_id) == 11 ? fabs(els_ip3d().at(lep1_idx))/els_ip3derr().at(lep1_idx) : fabs(mus_ip3d().at(lep1_idx))/mus_ip3derr().at(lep1_idx); 
   lep2_sip = abs(lep2_id) == 11 ? fabs(els_ip3d().at(lep2_idx))/els_ip3derr().at(lep2_idx) : fabs(mus_ip3d().at(lep2_idx))/mus_ip3derr().at(lep2_idx); 
   dilep_p4 = lep1_p4 + lep2_p4; 
