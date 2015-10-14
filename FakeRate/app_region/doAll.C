@@ -1,6 +1,6 @@
 {
   gSystem->Load("../../CORE/CMS3_CORE.so");
-  gSystem->Load("~/Software/tableMaker/libSimpleTable.so");
+  gSystem->Load("~/software/tableMaker/libSimpleTable.so");
 
   gROOT->ProcessLine(".L SS.cc+");
   gROOT->ProcessLine(".L ScanChain.C++");
@@ -10,7 +10,7 @@
 
   bool doData = true;
 
-  bool doInSitu = 0;
+  bool doInSitu = 1;
 
   bool highhigh   = 1;
   bool highlow    = 0;
