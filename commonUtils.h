@@ -226,5 +226,17 @@ float fakeRateError(int id, float pt, float eta) {
   else if (abs(id)==13) return muonFakeRateError(pt,eta);
   else return 0.;
 }
+
+float fakeRateInSitu(int id, float pt, float eta) { 
+  if (abs(id)==11) return elecFakeRateInSitu(pt,eta);
+  else if (abs(id)==13) return muonFakeRateInSitu(pt,eta);
+  else return 0.;
+}
+
+float fakeRateErrorInSitu(int id, float pt, float eta) { 
+  if (abs(id)==11) return elecFakeRateInSituError(pt,eta);
+  else if (abs(id)==13) return muonFakeRateInSituError(pt,eta);
+  else return 0.;
+}
  
 #endif

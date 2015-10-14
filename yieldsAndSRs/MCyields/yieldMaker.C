@@ -17,7 +17,7 @@ struct yields_t { float EE; float EM; float MM; float TOTAL; };
 yields_t total; 
 
 //function declaration
-yields_t run(TChain *chain, bool isData = 0, bool doFlips = 0, bool doFakes = 0);
+yields_t run(TChain *chain, bool isData = 0, bool doFlips = 0, int doFakes = 0);
 
 void getyields(){
   
@@ -80,55 +80,59 @@ void getyields(){
   fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
 
   //Get yields
-  yields_t ttbar   = run(ttbar_chain);   
-  yields_t ttw     = run(ttw_chain);     
-  yields_t ttz     = run(ttz_chain);     
-  yields_t st      = run(st_chain);      
-  yields_t wz      = run(wz_chain);      
-  yields_t wzz     = run(wzz_chain);     
-  yields_t wjets   = run(wjets_chain);   
-  yields_t wwdps   = run(wwdps_chain);   
-  yields_t ttg     = run(ttg_chain);     
-  yields_t dy      = run(dy_chain);      
-  yields_t vhnonbb = run(vhnonbb_chain); 
-  yields_t tzq     = run(tzq_chain);     
-  yields_t tth     = run(tth_chain);     
-  yields_t wgamma  = run(wgamma_chain);     
-  yields_t qqww    = run(qqww_chain); 
-  yields_t data    = run(data_chain, 1);     
-  yields_t flips   = run(flips_chain, 1, 1);     
-  yields_t fakes   = run(fakes_chain, 1, 0, 1);     
+  yields_t ttbar    = run(ttbar_chain);
+  yields_t ttw      = run(ttw_chain);
+  yields_t ttz      = run(ttz_chain);
+  yields_t st       = run(st_chain);
+  yields_t wz       = run(wz_chain);
+  yields_t wzz      = run(wzz_chain);
+  yields_t wjets    = run(wjets_chain);
+  yields_t wwdps    = run(wwdps_chain);
+  yields_t ttg      = run(ttg_chain);
+  yields_t dy       = run(dy_chain);
+  yields_t vhnonbb  = run(vhnonbb_chain);
+  yields_t tzq      = run(tzq_chain);
+  yields_t tth      = run(tth_chain);
+  yields_t wgamma   = run(wgamma_chain);
+  yields_t qqww     = run(qqww_chain);
+  yields_t data     = run(data_chain, 1);
+  yields_t flips    = run(flips_chain, 1, 1);
+  yields_t fakes    = run(fakes_chain, 1, 0, 1);
+  duplicate_removal::clear_list();
+  yields_t fakes_is = run(fakes_chain, 1, 0, 2);
 
   //Make yield table
   CTable table; 
   table.setPrecision(2); 
   table.setTitle("SS Baseline Yields"); 
   table.useTitle(); 
-  table.setTable() (              "EE"   ,   "EM"    ,   "MM"    ,   "TOTAL"    )
-                   ("ttbar"  , ttbar.EE  , ttbar.EM  , ttbar.MM  , ttbar.TOTAL  ) 
-                   ("ttw"    , ttw.EE    , ttw.EM    , ttw.MM    , ttw.TOTAL    ) 
-                   ("ttz"    , ttz.EE    , ttz.EM    , ttz.MM    , ttz.TOTAL    ) 
-                   ("st"     , st.EE     , st.EM     , st.MM     , st.TOTAL     ) 
-                   ("wz"     , wz.EE     , wz.EM     , wz.MM     , wz.TOTAL     ) 
-                   ("wzz"    , wzz.EE    , wzz.EM    , wzz.MM    , wzz.TOTAL    ) 
-                   ("wjets"  , wjets.EE  , wjets.EM  , wjets.MM  , wjets.TOTAL  ) 
-                   ("wwdps"  , wwdps.EE  , wwdps.EM  , wwdps.MM  , wwdps.TOTAL  ) 
-                   ("ttg"    , ttg.EE    , ttg.EM    , ttg.MM    , ttg.TOTAL    ) 
-                   ("dy"     , dy.EE     , dy.EM     , dy.MM     , dy.TOTAL     ) 
-                   ("vhnonbb", vhnonbb.EE, vhnonbb.EM, vhnonbb.MM, vhnonbb.TOTAL) 
-                   ("tzq"    , tzq.EE    , tzq.EM    , tzq.MM    , tzq.TOTAL    )
-                   ("tth"    , tth.EE    , tth.EM    , tth.MM    , tth.TOTAL    )
-                   ("qqww"   , qqww.EE   , qqww.EM   , qqww.MM   , qqww.TOTAL   )
-                   ("wgamma" , wgamma.EE , wgamma.EM , wgamma.MM , wgamma.TOTAL )
-                   ("flips"  , flips.EE  , flips.EM  , flips.MM  , flips.TOTAL  )
-                   ("fakes"  , fakes.EE  , fakes.EM  , fakes.MM  , fakes.TOTAL  )
-                   ("total"  , total.EE  , total.EM  , total.MM  , total.TOTAL  )
-                   ("data"   , data.EE   , data.EM   , data.MM   , data.TOTAL   );
+  table.setTable() (                  "EE"  , "EM"       , "MM"         , "TOTAL"      )
+                   ("ttbar"    , ttbar.EE    , ttbar.EM    , ttbar.MM    , ttbar.TOTAL  )
+                   ("ttw"      , ttw.EE      , ttw.EM      , ttw.MM      , ttw.TOTAL    )
+                   ("ttz"      , ttz.EE      , ttz.EM      , ttz.MM      , ttz.TOTAL    )
+                   ("st"       , st.EE       , st.EM       , st.MM       , st.TOTAL     )
+                   ("wz"       , wz.EE       , wz.EM       , wz.MM       , wz.TOTAL     )
+                   ("wzz"      , wzz.EE      , wzz.EM      , wzz.MM      , wzz.TOTAL    )
+                   ("wjets"    , wjets.EE    , wjets.EM    , wjets.MM    , wjets.TOTAL  )
+                   ("wwdps"    , wwdps.EE    , wwdps.EM    , wwdps.MM    , wwdps.TOTAL  )
+                   ("ttg"      , ttg.EE      , ttg.EM      , ttg.MM      , ttg.TOTAL    )
+                   ("dy"       , dy.EE       , dy.EM       , dy.MM       , dy.TOTAL     )
+                   ("vhnonbb"  , vhnonbb.EE  , vhnonbb.EM  , vhnonbb.MM  , vhnonbb.TOTAL)
+                   ("tzq"      , tzq.EE      , tzq.EM      , tzq.MM      , tzq.TOTAL    )
+                   ("tth"      , tth.EE      , tth.EM      , tth.MM      , tth.TOTAL    )
+                   ("qqww"     , qqww.EE     , qqww.EM     , qqww.MM     , qqww.TOTAL   )
+                   ("wgamma"   , wgamma.EE   , wgamma.EM   , wgamma.MM   , wgamma.TOTAL )
+                   ("flips"    , flips.EE    , flips.EM    , flips.MM    , flips.TOTAL  )
+                   ("fakes"    , fakes.EE    , fakes.EM    , fakes.MM    , fakes.TOTAL  )
+                   ("fakes_is" , fakes_is.EE , fakes_is.EM , fakes_is.MM , fakes_is.TOTAL  )
+                   ("total"    , total.EE    , total.EM    , total.MM    , total.TOTAL  )
+                   ("data"     , data.EE     , data.EM     , data.MM     , data.TOTAL   );
   table.print();
 
 }
 
-yields_t run(TChain *chain, bool isData, bool doFlips, bool doFakes){
+//doFakes = 1 for QCD, 2 for inSitu
+yields_t run(TChain *chain, bool isData, bool doFlips, int doFakes){
 
   yields_t result;
 
@@ -169,36 +173,38 @@ yields_t run(TChain *chain, bool isData, bool doFlips, bool doFakes){
 
       //Only keep good events
       if (!doFlips && !doFakes) {
-	if (ss::hyp_class() != 3) continue;
-	if (!isData && ss::lep1_motherID()!=1) continue;
-	if (!isData && ss::lep2_motherID()!=1) continue;
+	    if (ss::hyp_class() != 3) continue;
+	    if (!isData && ss::lep1_motherID()!=1) continue;
+	    if (!isData && ss::lep2_motherID()!=1) continue;
       }
 
       if (doFlips) {
-	if (ss::hyp_class() != 4) continue;
-	float flipFact = 0.;
-	if (abs(ss::lep1_id())==11) {
-	  float flr = flipRate(ss::lep1_p4().pt(), ss::lep1_p4().eta());
-	  flipFact += (flr/(1-flr));
-	}
-	if (abs(ss::lep2_id())==11) {
-	  float flr = flipRate(ss::lep2_p4().pt(), ss::lep2_p4().eta());
-	  flipFact += (flr/(1-flr));
-	}
-	weight *= flipFact;
+	    if (ss::hyp_class() != 4) continue;
+	    float flipFact = 0.;
+	    if (abs(ss::lep1_id())==11){
+	      float flr = flipRate(ss::lep1_p4().pt(), ss::lep1_p4().eta());
+	      flipFact += (flr/(1-flr));
+	    }
+	    if (abs(ss::lep2_id())==11){
+	      float flr = flipRate(ss::lep2_p4().pt(), ss::lep2_p4().eta());
+	      flipFact += (flr/(1-flr));
+	    }
+	    weight *= flipFact;
       } 
 
-      if (doFakes) {
-	if (ss::hyp_class() != 2) continue;
-	float fr = 0.;
-	if (ss::lep1_passes_id()==0) {
-	  fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
-	}
-	if (ss::lep2_passes_id()==0) {
-	  fr = fakeRate(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
-	}
-	weight *= fr/(1.-fr);
-	if (!ss::is_real_data()) weight *= -1.;
+      if (doFakes){
+        if (ss::hyp_class() != 2) continue;
+        float fr = 0.;
+        if (ss::lep1_passes_id()==0){
+          if (doFakes == 1) fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
+          if (doFakes == 2) fr = fakeRateInSitu(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
+        }
+        if (ss::lep2_passes_id()==0){
+          if (doFakes == 1) fr = fakeRate(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
+          if (doFakes == 2) fr = fakeRateInSitu(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
+        }
+        weight *= fr/(1.-fr);
+        if (!ss::is_real_data()) weight *= -1.;
       } 
 
       //Reject duplicates (after selection otherwise flips are ignored...)
@@ -219,6 +225,7 @@ yields_t run(TChain *chain, bool isData, bool doFlips, bool doFakes){
       else if (ss::hyp_type() == 0) result.MM    += weight;
       else                          result.EM    += weight;
                                     result.TOTAL += weight;
+      if (ss::hyp_type() == 3) cout << weight << " " << result.EE << endl;
 
     }//event loop
   }//file loop
@@ -229,7 +236,7 @@ yields_t run(TChain *chain, bool isData, bool doFlips, bool doFakes){
   if (result.TOTAL<0) result.TOTAL=0.;
 
   //Update total
-  if (!isData || doFlips || doFakes){
+  if (!isData || doFlips || doFakes == 1){
     total.EE    += result.EE;
     total.EM    += result.EM;
     total.MM    += result.MM;
