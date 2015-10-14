@@ -304,7 +304,7 @@ void FR(){
   if (!others  && !testPC &&  ssZveto) name2 = "ssZ"; 
   if ( others  &&  testPC &&  ssZveto) name2 = "PCssZ"; 
 
-  TFile *file = new TFile(Form("inSituFR_cone_FR_histos_%s.root", name2.c_str()), "RECREATE");
+  TFile *file = new TFile(Form("inSituFR_cone_FR_histos_%s_elec_.root", name2.c_str()), "RECREATE");
   file->Write(); 
   numer->Write("elec");
   numer3->Write("muon");

@@ -25,14 +25,13 @@
   bool doLightonly  = 0;
 
   //For both inSitu and not-in-Situ
-  bool doLooseEMVA  = 1;
+  bool doLooseEMVA  = 0;
 
   //These are only for inSitu (choose only one of these)
   bool soup         = 0;
   bool PC           = 0;   
   bool ssZ          = 0;
   bool PCssZ        = 0;
-  bool notCC        = 0;
 
   TString fakeratefile = "";
   TString option = "";
@@ -51,14 +50,12 @@
     if (PC) option += "_PC";
     if (ssZ) option += "_ssZ";
     if (PCssZ) option += "_PCssZ";
-    if (notCC) option += "_notCC";
     if (soup) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_soup.root";
     else if (PC) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_PC.root";
     else if (ssZ) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_ssZ.root";
     else if (PCssZ) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_PCssZ.root";
-    else if (notCC) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_notCC.root";
     else if (doLooseEMVA) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_FO2pFO4.root";
-    else fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos.root";
+    else fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_normal.root";
     option += "_inSitu"; 
   }
 
@@ -77,10 +74,10 @@
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataDoubleEGD.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataMuonEGD.root");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTW.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WZ3LNU.root");
+    //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets.root");
+    //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
+    //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTW.root");
+    //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WZ3LNU.root");
 
   } else {
     if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
