@@ -416,6 +416,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   if (tas::hyp_type().size() < 1) return -1;
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return -1;
 
+  if (tas::evt_event() != 381733) return -1;
+
   //Fill Easy Variables
   filename = filename_in;
   met = evt_pfmet();
@@ -644,6 +646,11 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //Closest jet for both leptons
   lep1_closeJet = closestJet(lep1_p4, 0.4, 2.4, ssWhichCorr);
   lep2_closeJet = closestJet(lep2_p4, 0.4, 2.4, ssWhichCorr);
+
+  if (verbose){
+    cout << "lep1 ratio: " << lep1_p4.pt()/lep1_closeJet.pt() << endl;
+    cout << "lep2 ratio: " << lep2_p4.pt()/lep2_closeJet.pt() << endl;
+  }
   
   //Fill all generated particles
   if (!is_real_data){
@@ -717,8 +724,6 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //nVeto Leptons
   if (verbose) cout << " PRINTING RECO ELECTRONS" << endl;
   for (unsigned int eidx = 0; eidx < tas::els_p4().size(); eidx++){
-    float miniIso = elMiniRelIso(eidx, true, 0.0, false, true);
-    if (verbose) cout << "pt: " << tas::els_p4().at(eidx).pt() << " miniiso: " << miniIso << endl;
     if (!isGoodVetoElectron(eidx)) continue;
     if (tas::els_p4().at(eidx).pt() < 7) continue;
     nVetoElectrons7++;
@@ -730,8 +735,6 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   }
   if (verbose) cout << " PRINTING RECO MUONS" << endl;
   for (unsigned int muidx = 0; muidx < tas::mus_p4().size(); muidx++){
-    float miniIso = muMiniRelIso(muidx, true, 0.5, false, true);
-    if (verbose) cout << "pt: " << tas::mus_p4().at(muidx).pt() << " miniiso: " << miniIso << endl;
     if (!isGoodVetoMuon(muidx)) continue;
     if (tas::mus_p4().at(muidx).pt() < 5) continue;
     nVetoMuons5++;

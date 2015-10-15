@@ -1,442 +1,7 @@
-// -*- C++ -*-
-#ifndef SSAG_H
-#define SSAG_H
-#include "Math/LorentzVector.h"
-#include "Math/Point3D.h"
-#include "TMath.h"
-#include "TBranch.h"
-#include "TTree.h"
-#include "TH1F.h"
-#include "TFile.h"
-#include "TBits.h"
-#include <vector> 
-#include <unistd.h> 
-typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
+#include "SS.h"
+SSAG samesign;
 
-using namespace std; 
-class SSAG {
-private: 
-protected: 
-	unsigned int index;
-	float	met_;
-	TBranch *met_branch;
-	bool met_isLoaded;
-	float	metPhi_;
-	TBranch *metPhi_branch;
-	bool metPhi_isLoaded;
-	int	event_;
-	TBranch *event_branch;
-	bool event_isLoaded;
-	int	lumi_;
-	TBranch *lumi_branch;
-	bool lumi_isLoaded;
-	int	run_;
-	TBranch *run_branch;
-	bool run_isLoaded;
-	bool	filt_csc_;
-	TBranch *filt_csc_branch;
-	bool filt_csc_isLoaded;
-	bool	filt_hbhe_;
-	TBranch *filt_hbhe_branch;
-	bool filt_hbhe_isLoaded;
-	bool	filt_hcallaser_;
-	TBranch *filt_hcallaser_branch;
-	bool filt_hcallaser_isLoaded;
-	bool	filt_ecaltp_;
-	TBranch *filt_ecaltp_branch;
-	bool filt_ecaltp_isLoaded;
-	bool	filt_trkfail_;
-	TBranch *filt_trkfail_branch;
-	bool filt_trkfail_isLoaded;
-	bool	filt_eebadsc_;
-	TBranch *filt_eebadsc_branch;
-	bool filt_eebadsc_isLoaded;
-	bool	is_real_data_;
-	TBranch *is_real_data_branch;
-	bool is_real_data_isLoaded;
-	float	scale1fb_;
-	TBranch *scale1fb_branch;
-	bool scale1fb_isLoaded;
-	float	xsec_;
-	TBranch *xsec_branch;
-	bool xsec_isLoaded;
-	float	kfactor_;
-	TBranch *kfactor_branch;
-	bool kfactor_isLoaded;
-	float	gen_met_;
-	TBranch *gen_met_branch;
-	bool gen_met_isLoaded;
-	float	gen_met_phi_;
-	TBranch *gen_met_phi_branch;
-	bool gen_met_phi_isLoaded;
-	int	njets_;
-	TBranch *njets_branch;
-	bool njets_isLoaded;
-	int	hyp_class_;
-	TBranch *hyp_class_branch;
-	bool hyp_class_isLoaded;
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *lep1_p4_;
-	TBranch *lep1_p4_branch;
-	bool lep1_p4_isLoaded;
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *lep2_p4_;
-	TBranch *lep2_p4_branch;
-	bool lep2_p4_isLoaded;
-	float	ht_;
-	TBranch *ht_branch;
-	bool ht_isLoaded;
-	int	lep1_motherID_;
-	TBranch *lep1_motherID_branch;
-	bool lep1_motherID_isLoaded;
-	int	lep2_motherID_;
-	TBranch *lep2_motherID_branch;
-	bool lep2_motherID_isLoaded;
-	int	lep1_mc_id_;
-	TBranch *lep1_mc_id_branch;
-	bool lep1_mc_id_isLoaded;
-	int	lep2_mc_id_;
-	TBranch *lep2_mc_id_branch;
-	bool lep2_mc_id_isLoaded;
-	int	lep1_id_;
-	TBranch *lep1_id_branch;
-	bool lep1_id_isLoaded;
-	int	lep2_id_;
-	TBranch *lep2_id_branch;
-	bool lep2_id_isLoaded;
-	float	lep1_coneCorrPt_;
-	TBranch *lep1_coneCorrPt_branch;
-	bool lep1_coneCorrPt_isLoaded;
-	float	lep2_coneCorrPt_;
-	TBranch *lep2_coneCorrPt_branch;
-	bool lep2_coneCorrPt_isLoaded;
-	int	lep1_idx_;
-	TBranch *lep1_idx_branch;
-	bool lep1_idx_isLoaded;
-	int	lep2_idx_;
-	TBranch *lep2_idx_branch;
-	bool lep2_idx_isLoaded;
-	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > *jets_;
-	TBranch *jets_branch;
-	bool jets_isLoaded;
-	vector<float> *btags_disc_;
-	TBranch *btags_disc_branch;
-	bool btags_disc_isLoaded;
-	vector<float> *jets_disc_;
-	TBranch *jets_disc_branch;
-	bool jets_disc_isLoaded;
-	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > *btags_;
-	TBranch *btags_branch;
-	bool btags_isLoaded;
-	int	nbtags_;
-	TBranch *nbtags_branch;
-	bool nbtags_isLoaded;
-	float	sf_dilepTrig_hpt_;
-	TBranch *sf_dilepTrig_hpt_branch;
-	bool sf_dilepTrig_hpt_isLoaded;
-	float	sf_dilepTrig_lpt_;
-	TBranch *sf_dilepTrig_lpt_branch;
-	bool sf_dilepTrig_lpt_isLoaded;
-	float	sf_dilepTrig_vlpt_;
-	TBranch *sf_dilepTrig_vlpt_branch;
-	bool sf_dilepTrig_vlpt_isLoaded;
-	int	hyp_type_;
-	TBranch *hyp_type_branch;
-	bool hyp_type_isLoaded;
-	float	sf_dilep_eff_;
-	TBranch *sf_dilep_eff_branch;
-	bool sf_dilep_eff_isLoaded;
-	float	mt_;
-	TBranch *mt_branch;
-	bool mt_isLoaded;
-	float	mt_l2_;
-	TBranch *mt_l2_branch;
-	bool mt_l2_isLoaded;
-	float	mt2_;
-	TBranch *mt2_branch;
-	bool mt2_isLoaded;
-	float	mtmin_;
-	TBranch *mtmin_branch;
-	bool mtmin_isLoaded;
-	float	mGluino_;
-	TBranch *mGluino_branch;
-	bool mGluino_isLoaded;
-	float	mLSP_;
-	TBranch *mLSP_branch;
-	bool mLSP_isLoaded;
-	float	mSbottom_;
-	TBranch *mSbottom_branch;
-	bool mSbottom_isLoaded;
-	float	mChargino_;
-	TBranch *mChargino_branch;
-	bool mChargino_isLoaded;
-	int	lep1_id_gen_;
-	TBranch *lep1_id_gen_branch;
-	bool lep1_id_gen_isLoaded;
-	int	lep2_id_gen_;
-	TBranch *lep2_id_gen_branch;
-	bool lep2_id_gen_isLoaded;
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *lep1_p4_gen_;
-	TBranch *lep1_p4_gen_branch;
-	bool lep1_p4_gen_isLoaded;
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *lep2_p4_gen_;
-	TBranch *lep2_p4_gen_branch;
-	bool lep2_p4_gen_isLoaded;
-	int	lep3_id_;
-	TBranch *lep3_id_branch;
-	bool lep3_id_isLoaded;
-	int	lep3_idx_;
-	TBranch *lep3_idx_branch;
-	bool lep3_idx_isLoaded;
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *lep3_p4_;
-	TBranch *lep3_p4_branch;
-	bool lep3_p4_isLoaded;
-	int	lep3_quality_;
-	TBranch *lep3_quality_branch;
-	bool lep3_quality_isLoaded;
-	float	lep1_iso_;
-	TBranch *lep1_iso_branch;
-	bool lep1_iso_isLoaded;
-	float	lep2_iso_;
-	TBranch *lep2_iso_branch;
-	bool lep2_iso_isLoaded;
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *dilep_p4_;
-	TBranch *dilep_p4_branch;
-	bool dilep_p4_isLoaded;
-	vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > *genps_p4_;
-	TBranch *genps_p4_branch;
-	bool genps_p4_isLoaded;
-	vector<int> *genps_id_;
-	TBranch *genps_id_branch;
-	bool genps_id_isLoaded;
-	vector<int> *genps_id_mother_;
-	TBranch *genps_id_mother_branch;
-	bool genps_id_mother_isLoaded;
-	vector<int> *genps_status_;
-	TBranch *genps_status_branch;
-	bool genps_status_isLoaded;
-	vector<int> *genps_id_grandma_;
-	TBranch *genps_id_grandma_branch;
-	bool genps_id_grandma_isLoaded;
-	bool	lep1_passes_id_;
-	TBranch *lep1_passes_id_branch;
-	bool lep1_passes_id_isLoaded;
-	bool	lep2_passes_id_;
-	TBranch *lep2_passes_id_branch;
-	bool lep2_passes_id_isLoaded;
-	float	lep1_dxyPV_;
-	TBranch *lep1_dxyPV_branch;
-	bool lep1_dxyPV_isLoaded;
-	float	lep2_dxyPV_;
-	TBranch *lep2_dxyPV_branch;
-	bool lep2_dxyPV_isLoaded;
-	float	lep1_dZ_;
-	TBranch *lep1_dZ_branch;
-	bool lep1_dZ_isLoaded;
-	float	lep2_dZ_;
-	TBranch *lep2_dZ_branch;
-	bool lep2_dZ_isLoaded;
-	float	lep1_d0_err_;
-	TBranch *lep1_d0_err_branch;
-	bool lep1_d0_err_isLoaded;
-	float	lep2_d0_err_;
-	TBranch *lep2_d0_err_branch;
-	bool lep2_d0_err_isLoaded;
-	float	lep1_ip3d_;
-	TBranch *lep1_ip3d_branch;
-	bool lep1_ip3d_isLoaded;
-	float	lep2_ip3d_;
-	TBranch *lep2_ip3d_branch;
-	bool lep2_ip3d_isLoaded;
-	float	lep1_MVA_;
-	TBranch *lep1_MVA_branch;
-	bool lep1_MVA_isLoaded;
-	float	lep2_MVA_;
-	TBranch *lep2_MVA_branch;
-	bool lep2_MVA_isLoaded;
-	float	lep1_ip3d_err_;
-	TBranch *lep1_ip3d_err_branch;
-	bool lep1_ip3d_err_isLoaded;
-	float	lep2_ip3d_err_;
-	TBranch *lep2_ip3d_err_branch;
-	bool lep2_ip3d_err_isLoaded;
-	int	nVetoElectrons7_;
-	TBranch *nVetoElectrons7_branch;
-	bool nVetoElectrons7_isLoaded;
-	int	nVetoElectrons10_;
-	TBranch *nVetoElectrons10_branch;
-	bool nVetoElectrons10_isLoaded;
-	int	nVetoElectrons25_;
-	TBranch *nVetoElectrons25_branch;
-	bool nVetoElectrons25_isLoaded;
-	int	nVetoMuons5_;
-	TBranch *nVetoMuons5_branch;
-	bool nVetoMuons5_isLoaded;
-	int	nVetoMuons10_;
-	TBranch *nVetoMuons10_branch;
-	bool nVetoMuons10_isLoaded;
-	int	nVetoMuons25_;
-	TBranch *nVetoMuons25_branch;
-	bool nVetoMuons25_isLoaded;
-	TString *filename_;
-	TBranch *filename_branch;
-	bool filename_isLoaded;
-	float	lep1_ptrel_v0_;
-	TBranch *lep1_ptrel_v0_branch;
-	bool lep1_ptrel_v0_isLoaded;
-	float	lep1_ptrel_v1_;
-	TBranch *lep1_ptrel_v1_branch;
-	bool lep1_ptrel_v1_isLoaded;
-	float	lep2_ptrel_v0_;
-	TBranch *lep2_ptrel_v0_branch;
-	bool lep2_ptrel_v0_isLoaded;
-	float	lep2_ptrel_v1_;
-	TBranch *lep2_ptrel_v1_branch;
-	bool lep2_ptrel_v1_isLoaded;
-	float	lep1_miniIso_;
-	TBranch *lep1_miniIso_branch;
-	bool lep1_miniIso_isLoaded;
-	float	lep2_miniIso_;
-	TBranch *lep2_miniIso_branch;
-	bool lep2_miniIso_isLoaded;
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *jet_close_lep1_;
-	TBranch *jet_close_lep1_branch;
-	bool jet_close_lep1_isLoaded;
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *jet_close_lep2_;
-	TBranch *jet_close_lep2_branch;
-	bool jet_close_lep2_isLoaded;
-	vector<int> *eleID_kfhits_;
-	TBranch *eleID_kfhits_branch;
-	bool eleID_kfhits_isLoaded;
-	vector<float> *eleID_oldsigmaietaieta_;
-	TBranch *eleID_oldsigmaietaieta_branch;
-	bool eleID_oldsigmaietaieta_isLoaded;
-	vector<float> *eleID_oldsigmaiphiiphi_;
-	TBranch *eleID_oldsigmaiphiiphi_branch;
-	bool eleID_oldsigmaiphiiphi_isLoaded;
-	vector<float> *eleID_oldcircularity_;
-	TBranch *eleID_oldcircularity_branch;
-	bool eleID_oldcircularity_isLoaded;
-	vector<float> *eleID_oldr9_;
-	TBranch *eleID_oldr9_branch;
-	bool eleID_oldr9_isLoaded;
-	vector<float> *eleID_scletawidth_;
-	TBranch *eleID_scletawidth_branch;
-	bool eleID_scletawidth_isLoaded;
-	vector<float> *eleID_sclphiwidth_;
-	TBranch *eleID_sclphiwidth_branch;
-	bool eleID_sclphiwidth_isLoaded;
-	vector<float> *eleID_he_;
-	TBranch *eleID_he_branch;
-	bool eleID_he_isLoaded;
-	vector<float> *eleID_psEoverEraw_;
-	TBranch *eleID_psEoverEraw_branch;
-	bool eleID_psEoverEraw_isLoaded;
-	vector<float> *eleID_kfchi2_;
-	TBranch *eleID_kfchi2_branch;
-	bool eleID_kfchi2_isLoaded;
-	vector<float> *eleID_chi2_hits_;
-	TBranch *eleID_chi2_hits_branch;
-	bool eleID_chi2_hits_isLoaded;
-	vector<float> *eleID_fbrem_;
-	TBranch *eleID_fbrem_branch;
-	bool eleID_fbrem_isLoaded;
-	vector<float> *eleID_ep_;
-	TBranch *eleID_ep_branch;
-	bool eleID_ep_isLoaded;
-	vector<float> *eleID_eelepout_;
-	TBranch *eleID_eelepout_branch;
-	bool eleID_eelepout_isLoaded;
-	vector<float> *eleID_IoEmIop_;
-	TBranch *eleID_IoEmIop_branch;
-	bool eleID_IoEmIop_isLoaded;
-	vector<float> *eleID_deltaetain_;
-	TBranch *eleID_deltaetain_branch;
-	bool eleID_deltaetain_isLoaded;
-	vector<float> *eleID_deltaphiin_;
-	TBranch *eleID_deltaphiin_branch;
-	bool eleID_deltaphiin_isLoaded;
-	vector<float> *eleID_deltaetaseed_;
-	TBranch *eleID_deltaetaseed_branch;
-	bool eleID_deltaetaseed_isLoaded;
-	vector<float> *eleID_pT_;
-	TBranch *eleID_pT_branch;
-	bool eleID_pT_isLoaded;
-	vector<bool> *eleID_isbarrel_;
-	TBranch *eleID_isbarrel_branch;
-	bool eleID_isbarrel_isLoaded;
-	vector<bool> *eleID_isendcap_;
-	TBranch *eleID_isendcap_branch;
-	bool eleID_isendcap_isLoaded;
-	vector<float> *eleID_scl_eta_;
-	TBranch *eleID_scl_eta_branch;
-	bool eleID_scl_eta_isLoaded;
-	vector<float> *muID_dzPV_;
-	TBranch *muID_dzPV_branch;
-	bool muID_dzPV_isLoaded;
-	vector<float> *muID_ptSig_;
-	TBranch *muID_ptSig_branch;
-	bool muID_ptSig_isLoaded;
-	vector<float> *muID_ip3dSig_;
-	TBranch *muID_ip3dSig_branch;
-	bool muID_ip3dSig_isLoaded;
-	vector<float> *muID_medMuonPOG_;
-	TBranch *muID_medMuonPOG_branch;
-	bool muID_medMuonPOG_isLoaded;
-	vector<float> *muID_pt_;
-	TBranch *muID_pt_branch;
-	bool muID_pt_isLoaded;
-	vector<float> *muID_eta_;
-	TBranch *muID_eta_branch;
-	bool muID_eta_isLoaded;
-	vector<float> *trueNumInt_;
-	TBranch *trueNumInt_branch;
-	bool trueNumInt_isLoaded;
-	vector<int> *nPUvertices_;
-	TBranch *nPUvertices_branch;
-	bool nPUvertices_isLoaded;
-	int	nGoodVertices_;
-	TBranch *nGoodVertices_branch;
-	bool nGoodVertices_isLoaded;
-	bool	lep1_isGoodLeg_;
-	TBranch *lep1_isGoodLeg_branch;
-	bool lep1_isGoodLeg_isLoaded;
-	bool	lep2_isGoodLeg_;
-	TBranch *lep2_isGoodLeg_branch;
-	bool lep2_isGoodLeg_isLoaded;
-	bool	lep1_isFakeLeg_;
-	TBranch *lep1_isFakeLeg_branch;
-	bool lep1_isFakeLeg_isLoaded;
-	bool	lep2_isFakeLeg_;
-	TBranch *lep2_isFakeLeg_branch;
-	bool lep2_isFakeLeg_isLoaded;
-	bool	truth_inSituFR_;
-	TBranch *truth_inSituFR_branch;
-	bool truth_inSituFR_isLoaded;
-	bool	lep1_multiIso_;
-	TBranch *lep1_multiIso_branch;
-	bool lep1_multiIso_isLoaded;
-	bool	lep2_multiIso_;
-	TBranch *lep2_multiIso_branch;
-	bool lep2_multiIso_isLoaded;
-	float	lep1_sip_;
-	TBranch *lep1_sip_branch;
-	bool lep1_sip_isLoaded;
-	float	lep2_sip_;
-	TBranch *lep2_sip_branch;
-	bool lep2_sip_isLoaded;
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *lep1_closeJet_;
-	TBranch *lep1_closeJet_branch;
-	bool lep1_closeJet_isLoaded;
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > *lep2_closeJet_;
-	TBranch *lep2_closeJet_branch;
-	bool lep2_closeJet_isLoaded;
-	bool	passed_id_inSituFR_lep1_;
-	TBranch *passed_id_inSituFR_lep1_branch;
-	bool passed_id_inSituFR_lep1_isLoaded;
-	bool	passed_id_inSituFR_lep2_;
-	TBranch *passed_id_inSituFR_lep2_branch;
-	bool passed_id_inSituFR_lep2_isLoaded;
-public: 
-void Init(TTree *tree) {
+void SSAG::Init(TTree *tree) {
 	lep1_p4_branch = 0;
 	if (tree->GetBranch("lep1_p4") != 0) {
 		lep1_p4_branch = tree->GetBranch("lep1_p4");
@@ -452,10 +17,20 @@ void Init(TTree *tree) {
 		jets_branch = tree->GetBranch("jets");
 		if (jets_branch) {jets_branch->SetAddress(&jets_);}
 	}
+	jets_corr_branch = 0;
+	if (tree->GetBranch("jets_corr") != 0) {
+		jets_corr_branch = tree->GetBranch("jets_corr");
+		if (jets_corr_branch) {jets_corr_branch->SetAddress(&jets_corr_);}
+	}
 	btags_branch = 0;
 	if (tree->GetBranch("btags") != 0) {
 		btags_branch = tree->GetBranch("btags");
 		if (btags_branch) {btags_branch->SetAddress(&btags_);}
+	}
+	btags_corr_branch = 0;
+	if (tree->GetBranch("btags_corr") != 0) {
+		btags_corr_branch = tree->GetBranch("btags_corr");
+		if (btags_corr_branch) {btags_corr_branch->SetAddress(&btags_corr_);}
 	}
 	lep1_p4_gen_branch = 0;
 	if (tree->GetBranch("lep1_p4_gen") != 0) {
@@ -471,6 +46,11 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("lep3_p4") != 0) {
 		lep3_p4_branch = tree->GetBranch("lep3_p4");
 		if (lep3_p4_branch) {lep3_p4_branch->SetAddress(&lep3_p4_);}
+	}
+	lep4_p4_branch = 0;
+	if (tree->GetBranch("lep4_p4") != 0) {
+		lep4_p4_branch = tree->GetBranch("lep4_p4");
+		if (lep4_p4_branch) {lep4_p4_branch->SetAddress(&lep4_p4_);}
 	}
 	dilep_p4_branch = 0;
 	if (tree->GetBranch("dilep_p4") != 0) {
@@ -492,6 +72,11 @@ void Init(TTree *tree) {
 		jet_close_lep2_branch = tree->GetBranch("jet_close_lep2");
 		if (jet_close_lep2_branch) {jet_close_lep2_branch->SetAddress(&jet_close_lep2_);}
 	}
+	mostJets_branch = 0;
+	if (tree->GetBranch("mostJets") != 0) {
+		mostJets_branch = tree->GetBranch("mostJets");
+		if (mostJets_branch) {mostJets_branch->SetAddress(&mostJets_);}
+	}
 	lep1_closeJet_branch = 0;
 	if (tree->GetBranch("lep1_closeJet") != 0) {
 		lep1_closeJet_branch = tree->GetBranch("lep1_closeJet");
@@ -512,6 +97,16 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("metPhi") != 0) {
 		metPhi_branch = tree->GetBranch("metPhi");
 		if (metPhi_branch) {metPhi_branch->SetAddress(&metPhi_);}
+	}
+	corrMET_branch = 0;
+	if (tree->GetBranch("corrMET") != 0) {
+		corrMET_branch = tree->GetBranch("corrMET");
+		if (corrMET_branch) {corrMET_branch->SetAddress(&corrMET_);}
+	}
+	corrMETphi_branch = 0;
+	if (tree->GetBranch("corrMETphi") != 0) {
+		corrMETphi_branch = tree->GetBranch("corrMETphi");
+		if (corrMETphi_branch) {corrMETphi_branch->SetAddress(&corrMETphi_);}
 	}
 	event_branch = 0;
 	if (tree->GetBranch("event") != 0) {
@@ -583,6 +178,16 @@ void Init(TTree *tree) {
 		gen_met_branch = tree->GetBranch("gen_met");
 		if (gen_met_branch) {gen_met_branch->SetAddress(&gen_met_);}
 	}
+	genweights_branch = 0;
+	if (tree->GetBranch("genweights") != 0) {
+		genweights_branch = tree->GetBranch("genweights");
+		if (genweights_branch) {genweights_branch->SetAddress(&genweights_);}
+	}
+	genweightsID_branch = 0;
+	if (tree->GetBranch("genweightsID") != 0) {
+		genweightsID_branch = tree->GetBranch("genweightsID");
+		if (genweightsID_branch) {genweightsID_branch->SetAddress(&genweightsID_);}
+	}
 	gen_met_phi_branch = 0;
 	if (tree->GetBranch("gen_met_phi") != 0) {
 		gen_met_phi_branch = tree->GetBranch("gen_met_phi");
@@ -593,10 +198,20 @@ void Init(TTree *tree) {
 		njets_branch = tree->GetBranch("njets");
 		if (njets_branch) {njets_branch->SetAddress(&njets_);}
 	}
+	njets_corr_branch = 0;
+	if (tree->GetBranch("njets_corr") != 0) {
+		njets_corr_branch = tree->GetBranch("njets_corr");
+		if (njets_corr_branch) {njets_corr_branch->SetAddress(&njets_corr_);}
+	}
 	hyp_class_branch = 0;
 	if (tree->GetBranch("hyp_class") != 0) {
 		hyp_class_branch = tree->GetBranch("hyp_class");
 		if (hyp_class_branch) {hyp_class_branch->SetAddress(&hyp_class_);}
+	}
+	ht_corr_branch = 0;
+	if (tree->GetBranch("ht_corr") != 0) {
+		ht_corr_branch = tree->GetBranch("ht_corr");
+		if (ht_corr_branch) {ht_corr_branch->SetAddress(&ht_corr_);}
 	}
 	ht_branch = 0;
 	if (tree->GetBranch("ht") != 0) {
@@ -663,10 +278,65 @@ void Init(TTree *tree) {
 		jets_disc_branch = tree->GetBranch("jets_disc");
 		if (jets_disc_branch) {jets_disc_branch->SetAddress(&jets_disc_);}
 	}
+	jets_JEC_branch = 0;
+	if (tree->GetBranch("jets_JEC") != 0) {
+		jets_JEC_branch = tree->GetBranch("jets_JEC");
+		if (jets_JEC_branch) {jets_JEC_branch->SetAddress(&jets_JEC_);}
+	}
+	btags_JEC_branch = 0;
+	if (tree->GetBranch("btags_JEC") != 0) {
+		btags_JEC_branch = tree->GetBranch("btags_JEC");
+		if (btags_JEC_branch) {btags_JEC_branch->SetAddress(&btags_JEC_);}
+	}
+	jets_undoJEC_branch = 0;
+	if (tree->GetBranch("jets_undoJEC") != 0) {
+		jets_undoJEC_branch = tree->GetBranch("jets_undoJEC");
+		if (jets_undoJEC_branch) {jets_undoJEC_branch->SetAddress(&jets_undoJEC_);}
+	}
+	btags_undoJEC_branch = 0;
+	if (tree->GetBranch("btags_undoJEC") != 0) {
+		btags_undoJEC_branch = tree->GetBranch("btags_undoJEC");
+		if (btags_undoJEC_branch) {btags_undoJEC_branch->SetAddress(&btags_undoJEC_);}
+	}
+	btags_corr_disc_branch = 0;
+	if (tree->GetBranch("btags_corr_disc") != 0) {
+		btags_corr_disc_branch = tree->GetBranch("btags_corr_disc");
+		if (btags_corr_disc_branch) {btags_corr_disc_branch->SetAddress(&btags_corr_disc_);}
+	}
+	jets_corr_disc_branch = 0;
+	if (tree->GetBranch("jets_corr_disc") != 0) {
+		jets_corr_disc_branch = tree->GetBranch("jets_corr_disc");
+		if (jets_corr_disc_branch) {jets_corr_disc_branch->SetAddress(&jets_corr_disc_);}
+	}
+	jets_corr_JEC_branch = 0;
+	if (tree->GetBranch("jets_corr_JEC") != 0) {
+		jets_corr_JEC_branch = tree->GetBranch("jets_corr_JEC");
+		if (jets_corr_JEC_branch) {jets_corr_JEC_branch->SetAddress(&jets_corr_JEC_);}
+	}
+	btags_corr_JEC_branch = 0;
+	if (tree->GetBranch("btags_corr_JEC") != 0) {
+		btags_corr_JEC_branch = tree->GetBranch("btags_corr_JEC");
+		if (btags_corr_JEC_branch) {btags_corr_JEC_branch->SetAddress(&btags_corr_JEC_);}
+	}
+	jets_corr_undoJEC_branch = 0;
+	if (tree->GetBranch("jets_corr_undoJEC") != 0) {
+		jets_corr_undoJEC_branch = tree->GetBranch("jets_corr_undoJEC");
+		if (jets_corr_undoJEC_branch) {jets_corr_undoJEC_branch->SetAddress(&jets_corr_undoJEC_);}
+	}
+	btags_corr_undoJEC_branch = 0;
+	if (tree->GetBranch("btags_corr_undoJEC") != 0) {
+		btags_corr_undoJEC_branch = tree->GetBranch("btags_corr_undoJEC");
+		if (btags_corr_undoJEC_branch) {btags_corr_undoJEC_branch->SetAddress(&btags_corr_undoJEC_);}
+	}
 	nbtags_branch = 0;
 	if (tree->GetBranch("nbtags") != 0) {
 		nbtags_branch = tree->GetBranch("nbtags");
 		if (nbtags_branch) {nbtags_branch->SetAddress(&nbtags_);}
+	}
+	nbtags_corr_branch = 0;
+	if (tree->GetBranch("nbtags_corr") != 0) {
+		nbtags_corr_branch = tree->GetBranch("nbtags_corr");
+		if (nbtags_corr_branch) {nbtags_corr_branch->SetAddress(&nbtags_corr_);}
 	}
 	sf_dilepTrig_hpt_branch = 0;
 	if (tree->GetBranch("sf_dilepTrig_hpt") != 0) {
@@ -758,6 +428,16 @@ void Init(TTree *tree) {
 		lep3_quality_branch = tree->GetBranch("lep3_quality");
 		if (lep3_quality_branch) {lep3_quality_branch->SetAddress(&lep3_quality_);}
 	}
+	lep4_id_branch = 0;
+	if (tree->GetBranch("lep4_id") != 0) {
+		lep4_id_branch = tree->GetBranch("lep4_id");
+		if (lep4_id_branch) {lep4_id_branch->SetAddress(&lep4_id_);}
+	}
+	lep4_idx_branch = 0;
+	if (tree->GetBranch("lep4_idx") != 0) {
+		lep4_idx_branch = tree->GetBranch("lep4_idx");
+		if (lep4_idx_branch) {lep4_idx_branch->SetAddress(&lep4_idx_);}
+	}
 	lep1_iso_branch = 0;
 	if (tree->GetBranch("lep1_iso") != 0) {
 		lep1_iso_branch = tree->GetBranch("lep1_iso");
@@ -778,6 +458,11 @@ void Init(TTree *tree) {
 		genps_id_mother_branch = tree->GetBranch("genps_id_mother");
 		if (genps_id_mother_branch) {genps_id_mother_branch->SetAddress(&genps_id_mother_);}
 	}
+	genps_idx_mother_branch = 0;
+	if (tree->GetBranch("genps_idx_mother") != 0) {
+		genps_idx_mother_branch = tree->GetBranch("genps_idx_mother");
+		if (genps_idx_mother_branch) {genps_idx_mother_branch->SetAddress(&genps_idx_mother_);}
+	}
 	genps_status_branch = 0;
 	if (tree->GetBranch("genps_status") != 0) {
 		genps_status_branch = tree->GetBranch("genps_status");
@@ -797,6 +482,46 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("lep2_passes_id") != 0) {
 		lep2_passes_id_branch = tree->GetBranch("lep2_passes_id");
 		if (lep2_passes_id_branch) {lep2_passes_id_branch->SetAddress(&lep2_passes_id_);}
+	}
+	lep3_passes_id_branch = 0;
+	if (tree->GetBranch("lep3_passes_id") != 0) {
+		lep3_passes_id_branch = tree->GetBranch("lep3_passes_id");
+		if (lep3_passes_id_branch) {lep3_passes_id_branch->SetAddress(&lep3_passes_id_);}
+	}
+	lep4_passes_id_branch = 0;
+	if (tree->GetBranch("lep4_passes_id") != 0) {
+		lep4_passes_id_branch = tree->GetBranch("lep4_passes_id");
+		if (lep4_passes_id_branch) {lep4_passes_id_branch->SetAddress(&lep4_passes_id_);}
+	}
+	lep3_tight_branch = 0;
+	if (tree->GetBranch("lep3_tight") != 0) {
+		lep3_tight_branch = tree->GetBranch("lep3_tight");
+		if (lep3_tight_branch) {lep3_tight_branch->SetAddress(&lep3_tight_);}
+	}
+	lep3_veto_branch = 0;
+	if (tree->GetBranch("lep3_veto") != 0) {
+		lep3_veto_branch = tree->GetBranch("lep3_veto");
+		if (lep3_veto_branch) {lep3_veto_branch->SetAddress(&lep3_veto_);}
+	}
+	lep3_fo_branch = 0;
+	if (tree->GetBranch("lep3_fo") != 0) {
+		lep3_fo_branch = tree->GetBranch("lep3_fo");
+		if (lep3_fo_branch) {lep3_fo_branch->SetAddress(&lep3_fo_);}
+	}
+	lep4_tight_branch = 0;
+	if (tree->GetBranch("lep4_tight") != 0) {
+		lep4_tight_branch = tree->GetBranch("lep4_tight");
+		if (lep4_tight_branch) {lep4_tight_branch->SetAddress(&lep4_tight_);}
+	}
+	lep4_veto_branch = 0;
+	if (tree->GetBranch("lep4_veto") != 0) {
+		lep4_veto_branch = tree->GetBranch("lep4_veto");
+		if (lep4_veto_branch) {lep4_veto_branch->SetAddress(&lep4_veto_);}
+	}
+	lep4_fo_branch = 0;
+	if (tree->GetBranch("lep4_fo") != 0) {
+		lep4_fo_branch = tree->GetBranch("lep4_fo");
+		if (lep4_fo_branch) {lep4_fo_branch->SetAddress(&lep4_fo_);}
 	}
 	lep1_dxyPV_branch = 0;
 	if (tree->GetBranch("lep1_dxyPV") != 0) {
@@ -1078,6 +803,76 @@ void Init(TTree *tree) {
 		nGoodVertices_branch = tree->GetBranch("nGoodVertices");
 		if (nGoodVertices_branch) {nGoodVertices_branch->SetAddress(&nGoodVertices_);}
 	}
+	lep1_trigMatch_noIsoReq_branch = 0;
+	if (tree->GetBranch("lep1_trigMatch_noIsoReq") != 0) {
+		lep1_trigMatch_noIsoReq_branch = tree->GetBranch("lep1_trigMatch_noIsoReq");
+		if (lep1_trigMatch_noIsoReq_branch) {lep1_trigMatch_noIsoReq_branch->SetAddress(&lep1_trigMatch_noIsoReq_);}
+	}
+	lep1_trigMatch_isoReq_branch = 0;
+	if (tree->GetBranch("lep1_trigMatch_isoReq") != 0) {
+		lep1_trigMatch_isoReq_branch = tree->GetBranch("lep1_trigMatch_isoReq");
+		if (lep1_trigMatch_isoReq_branch) {lep1_trigMatch_isoReq_branch->SetAddress(&lep1_trigMatch_isoReq_);}
+	}
+	lep2_trigMatch_noIsoReq_branch = 0;
+	if (tree->GetBranch("lep2_trigMatch_noIsoReq") != 0) {
+		lep2_trigMatch_noIsoReq_branch = tree->GetBranch("lep2_trigMatch_noIsoReq");
+		if (lep2_trigMatch_noIsoReq_branch) {lep2_trigMatch_noIsoReq_branch->SetAddress(&lep2_trigMatch_noIsoReq_);}
+	}
+	lep2_trigMatch_isoReq_branch = 0;
+	if (tree->GetBranch("lep2_trigMatch_isoReq") != 0) {
+		lep2_trigMatch_isoReq_branch = tree->GetBranch("lep2_trigMatch_isoReq");
+		if (lep2_trigMatch_isoReq_branch) {lep2_trigMatch_isoReq_branch->SetAddress(&lep2_trigMatch_isoReq_);}
+	}
+	met3p0_branch = 0;
+	if (tree->GetBranch("met3p0") != 0) {
+		met3p0_branch = tree->GetBranch("met3p0");
+		if (met3p0_branch) {met3p0_branch->SetAddress(&met3p0_);}
+	}
+	jet_corr_pt_branch = 0;
+	if (tree->GetBranch("jet_corr_pt") != 0) {
+		jet_corr_pt_branch = tree->GetBranch("jet_corr_pt");
+		if (jet_corr_pt_branch) {jet_corr_pt_branch->SetAddress(&jet_corr_pt_);}
+	}
+	metphi3p0_branch = 0;
+	if (tree->GetBranch("metphi3p0") != 0) {
+		metphi3p0_branch = tree->GetBranch("metphi3p0");
+		if (metphi3p0_branch) {metphi3p0_branch->SetAddress(&metphi3p0_);}
+	}
+	passes_met_filters_branch = 0;
+	if (tree->GetBranch("passes_met_filters") != 0) {
+		passes_met_filters_branch = tree->GetBranch("passes_met_filters");
+		if (passes_met_filters_branch) {passes_met_filters_branch->SetAddress(&passes_met_filters_);}
+	}
+	madeExtraZ_branch = 0;
+	if (tree->GetBranch("madeExtraZ") != 0) {
+		madeExtraZ_branch = tree->GetBranch("madeExtraZ");
+		if (madeExtraZ_branch) {madeExtraZ_branch->SetAddress(&madeExtraZ_);}
+	}
+	madeExtraG_branch = 0;
+	if (tree->GetBranch("madeExtraG") != 0) {
+		madeExtraG_branch = tree->GetBranch("madeExtraG");
+		if (madeExtraG_branch) {madeExtraG_branch->SetAddress(&madeExtraG_);}
+	}
+	lep3_mcid_branch = 0;
+	if (tree->GetBranch("lep3_mcid") != 0) {
+		lep3_mcid_branch = tree->GetBranch("lep3_mcid");
+		if (lep3_mcid_branch) {lep3_mcid_branch->SetAddress(&lep3_mcid_);}
+	}
+	lep3_mcidx_branch = 0;
+	if (tree->GetBranch("lep3_mcidx") != 0) {
+		lep3_mcidx_branch = tree->GetBranch("lep3_mcidx");
+		if (lep3_mcidx_branch) {lep3_mcidx_branch->SetAddress(&lep3_mcidx_);}
+	}
+	lep4_mcid_branch = 0;
+	if (tree->GetBranch("lep4_mcid") != 0) {
+		lep4_mcid_branch = tree->GetBranch("lep4_mcid");
+		if (lep4_mcid_branch) {lep4_mcid_branch->SetAddress(&lep4_mcid_);}
+	}
+	lep4_mcidx_branch = 0;
+	if (tree->GetBranch("lep4_mcidx") != 0) {
+		lep4_mcidx_branch = tree->GetBranch("lep4_mcidx");
+		if (lep4_mcidx_branch) {lep4_mcidx_branch->SetAddress(&lep4_mcidx_);}
+	}
 	lep1_isGoodLeg_branch = 0;
 	if (tree->GetBranch("lep1_isGoodLeg") != 0) {
 		lep1_isGoodLeg_branch = tree->GetBranch("lep1_isGoodLeg");
@@ -1097,11 +892,6 @@ void Init(TTree *tree) {
 	if (tree->GetBranch("lep2_isFakeLeg") != 0) {
 		lep2_isFakeLeg_branch = tree->GetBranch("lep2_isFakeLeg");
 		if (lep2_isFakeLeg_branch) {lep2_isFakeLeg_branch->SetAddress(&lep2_isFakeLeg_);}
-	}
-	truth_inSituFR_branch = 0;
-	if (tree->GetBranch("truth_inSituFR") != 0) {
-		truth_inSituFR_branch = tree->GetBranch("truth_inSituFR");
-		if (truth_inSituFR_branch) {truth_inSituFR_branch->SetAddress(&truth_inSituFR_);}
 	}
 	lep1_multiIso_branch = 0;
 	if (tree->GetBranch("lep1_multiIso") != 0) {
@@ -1133,14 +923,26 @@ void Init(TTree *tree) {
 		passed_id_inSituFR_lep2_branch = tree->GetBranch("passed_id_inSituFR_lep2");
 		if (passed_id_inSituFR_lep2_branch) {passed_id_inSituFR_lep2_branch->SetAddress(&passed_id_inSituFR_lep2_);}
 	}
+	fired_trigger_branch = 0;
+	if (tree->GetBranch("fired_trigger") != 0) {
+		fired_trigger_branch = tree->GetBranch("fired_trigger");
+		if (fired_trigger_branch) {fired_trigger_branch->SetAddress(&fired_trigger_);}
+	}
+	triggers_branch = 0;
+	if (tree->GetBranch("triggers") != 0) {
+		triggers_branch = tree->GetBranch("triggers");
+		if (triggers_branch) {triggers_branch->SetAddress(&triggers_);}
+	}
   tree->SetMakeClass(0);
 }
-void GetEntry(unsigned int idx) 
+void SSAG::GetEntry(unsigned int idx) 
 	// this only marks branches as not loaded, saving a lot of time
 	{
 		index = idx;
 		met_isLoaded = false;
 		metPhi_isLoaded = false;
+		corrMET_isLoaded = false;
+		corrMETphi_isLoaded = false;
 		event_isLoaded = false;
 		lumi_isLoaded = false;
 		run_isLoaded = false;
@@ -1155,11 +957,15 @@ void GetEntry(unsigned int idx)
 		xsec_isLoaded = false;
 		kfactor_isLoaded = false;
 		gen_met_isLoaded = false;
+		genweights_isLoaded = false;
+		genweightsID_isLoaded = false;
 		gen_met_phi_isLoaded = false;
 		njets_isLoaded = false;
+		njets_corr_isLoaded = false;
 		hyp_class_isLoaded = false;
 		lep1_p4_isLoaded = false;
 		lep2_p4_isLoaded = false;
+		ht_corr_isLoaded = false;
 		ht_isLoaded = false;
 		lep1_motherID_isLoaded = false;
 		lep2_motherID_isLoaded = false;
@@ -1172,10 +978,23 @@ void GetEntry(unsigned int idx)
 		lep1_idx_isLoaded = false;
 		lep2_idx_isLoaded = false;
 		jets_isLoaded = false;
+		jets_corr_isLoaded = false;
 		btags_disc_isLoaded = false;
 		jets_disc_isLoaded = false;
+		jets_JEC_isLoaded = false;
+		btags_JEC_isLoaded = false;
+		jets_undoJEC_isLoaded = false;
+		btags_undoJEC_isLoaded = false;
+		btags_corr_disc_isLoaded = false;
+		jets_corr_disc_isLoaded = false;
+		jets_corr_JEC_isLoaded = false;
+		btags_corr_JEC_isLoaded = false;
+		jets_corr_undoJEC_isLoaded = false;
+		btags_corr_undoJEC_isLoaded = false;
 		btags_isLoaded = false;
 		nbtags_isLoaded = false;
+		btags_corr_isLoaded = false;
+		nbtags_corr_isLoaded = false;
 		sf_dilepTrig_hpt_isLoaded = false;
 		sf_dilepTrig_lpt_isLoaded = false;
 		sf_dilepTrig_vlpt_isLoaded = false;
@@ -1197,16 +1016,28 @@ void GetEntry(unsigned int idx)
 		lep3_idx_isLoaded = false;
 		lep3_p4_isLoaded = false;
 		lep3_quality_isLoaded = false;
+		lep4_id_isLoaded = false;
+		lep4_idx_isLoaded = false;
+		lep4_p4_isLoaded = false;
 		lep1_iso_isLoaded = false;
 		lep2_iso_isLoaded = false;
 		dilep_p4_isLoaded = false;
 		genps_p4_isLoaded = false;
 		genps_id_isLoaded = false;
 		genps_id_mother_isLoaded = false;
+		genps_idx_mother_isLoaded = false;
 		genps_status_isLoaded = false;
 		genps_id_grandma_isLoaded = false;
 		lep1_passes_id_isLoaded = false;
 		lep2_passes_id_isLoaded = false;
+		lep3_passes_id_isLoaded = false;
+		lep4_passes_id_isLoaded = false;
+		lep3_tight_isLoaded = false;
+		lep3_veto_isLoaded = false;
+		lep3_fo_isLoaded = false;
+		lep4_tight_isLoaded = false;
+		lep4_veto_isLoaded = false;
+		lep4_fo_isLoaded = false;
 		lep1_dxyPV_isLoaded = false;
 		lep2_dxyPV_isLoaded = false;
 		lep1_dZ_isLoaded = false;
@@ -1265,11 +1096,25 @@ void GetEntry(unsigned int idx)
 		trueNumInt_isLoaded = false;
 		nPUvertices_isLoaded = false;
 		nGoodVertices_isLoaded = false;
+		lep1_trigMatch_noIsoReq_isLoaded = false;
+		lep1_trigMatch_isoReq_isLoaded = false;
+		lep2_trigMatch_noIsoReq_isLoaded = false;
+		lep2_trigMatch_isoReq_isLoaded = false;
+		met3p0_isLoaded = false;
+		jet_corr_pt_isLoaded = false;
+		metphi3p0_isLoaded = false;
+		passes_met_filters_isLoaded = false;
+		mostJets_isLoaded = false;
+		madeExtraZ_isLoaded = false;
+		madeExtraG_isLoaded = false;
+		lep3_mcid_isLoaded = false;
+		lep3_mcidx_isLoaded = false;
+		lep4_mcid_isLoaded = false;
+		lep4_mcidx_isLoaded = false;
 		lep1_isGoodLeg_isLoaded = false;
 		lep2_isGoodLeg_isLoaded = false;
 		lep1_isFakeLeg_isLoaded = false;
 		lep2_isFakeLeg_isLoaded = false;
-		truth_inSituFR_isLoaded = false;
 		lep1_multiIso_isLoaded = false;
 		lep2_multiIso_isLoaded = false;
 		lep1_sip_isLoaded = false;
@@ -1278,13 +1123,17 @@ void GetEntry(unsigned int idx)
 		lep2_closeJet_isLoaded = false;
 		passed_id_inSituFR_lep1_isLoaded = false;
 		passed_id_inSituFR_lep2_isLoaded = false;
+		fired_trigger_isLoaded = false;
+		triggers_isLoaded = false;
 	}
 
-void LoadAllBranches() 
+void SSAG::LoadAllBranches() 
 	// load all branches
 {
 	if (met_branch != 0) met();
 	if (metPhi_branch != 0) metPhi();
+	if (corrMET_branch != 0) corrMET();
+	if (corrMETphi_branch != 0) corrMETphi();
 	if (event_branch != 0) event();
 	if (lumi_branch != 0) lumi();
 	if (run_branch != 0) run();
@@ -1299,11 +1148,15 @@ void LoadAllBranches()
 	if (xsec_branch != 0) xsec();
 	if (kfactor_branch != 0) kfactor();
 	if (gen_met_branch != 0) gen_met();
+	if (genweights_branch != 0) genweights();
+	if (genweightsID_branch != 0) genweightsID();
 	if (gen_met_phi_branch != 0) gen_met_phi();
 	if (njets_branch != 0) njets();
+	if (njets_corr_branch != 0) njets_corr();
 	if (hyp_class_branch != 0) hyp_class();
 	if (lep1_p4_branch != 0) lep1_p4();
 	if (lep2_p4_branch != 0) lep2_p4();
+	if (ht_corr_branch != 0) ht_corr();
 	if (ht_branch != 0) ht();
 	if (lep1_motherID_branch != 0) lep1_motherID();
 	if (lep2_motherID_branch != 0) lep2_motherID();
@@ -1316,10 +1169,23 @@ void LoadAllBranches()
 	if (lep1_idx_branch != 0) lep1_idx();
 	if (lep2_idx_branch != 0) lep2_idx();
 	if (jets_branch != 0) jets();
+	if (jets_corr_branch != 0) jets_corr();
 	if (btags_disc_branch != 0) btags_disc();
 	if (jets_disc_branch != 0) jets_disc();
+	if (jets_JEC_branch != 0) jets_JEC();
+	if (btags_JEC_branch != 0) btags_JEC();
+	if (jets_undoJEC_branch != 0) jets_undoJEC();
+	if (btags_undoJEC_branch != 0) btags_undoJEC();
+	if (btags_corr_disc_branch != 0) btags_corr_disc();
+	if (jets_corr_disc_branch != 0) jets_corr_disc();
+	if (jets_corr_JEC_branch != 0) jets_corr_JEC();
+	if (btags_corr_JEC_branch != 0) btags_corr_JEC();
+	if (jets_corr_undoJEC_branch != 0) jets_corr_undoJEC();
+	if (btags_corr_undoJEC_branch != 0) btags_corr_undoJEC();
 	if (btags_branch != 0) btags();
 	if (nbtags_branch != 0) nbtags();
+	if (btags_corr_branch != 0) btags_corr();
+	if (nbtags_corr_branch != 0) nbtags_corr();
 	if (sf_dilepTrig_hpt_branch != 0) sf_dilepTrig_hpt();
 	if (sf_dilepTrig_lpt_branch != 0) sf_dilepTrig_lpt();
 	if (sf_dilepTrig_vlpt_branch != 0) sf_dilepTrig_vlpt();
@@ -1341,16 +1207,28 @@ void LoadAllBranches()
 	if (lep3_idx_branch != 0) lep3_idx();
 	if (lep3_p4_branch != 0) lep3_p4();
 	if (lep3_quality_branch != 0) lep3_quality();
+	if (lep4_id_branch != 0) lep4_id();
+	if (lep4_idx_branch != 0) lep4_idx();
+	if (lep4_p4_branch != 0) lep4_p4();
 	if (lep1_iso_branch != 0) lep1_iso();
 	if (lep2_iso_branch != 0) lep2_iso();
 	if (dilep_p4_branch != 0) dilep_p4();
 	if (genps_p4_branch != 0) genps_p4();
 	if (genps_id_branch != 0) genps_id();
 	if (genps_id_mother_branch != 0) genps_id_mother();
+	if (genps_idx_mother_branch != 0) genps_idx_mother();
 	if (genps_status_branch != 0) genps_status();
 	if (genps_id_grandma_branch != 0) genps_id_grandma();
 	if (lep1_passes_id_branch != 0) lep1_passes_id();
 	if (lep2_passes_id_branch != 0) lep2_passes_id();
+	if (lep3_passes_id_branch != 0) lep3_passes_id();
+	if (lep4_passes_id_branch != 0) lep4_passes_id();
+	if (lep3_tight_branch != 0) lep3_tight();
+	if (lep3_veto_branch != 0) lep3_veto();
+	if (lep3_fo_branch != 0) lep3_fo();
+	if (lep4_tight_branch != 0) lep4_tight();
+	if (lep4_veto_branch != 0) lep4_veto();
+	if (lep4_fo_branch != 0) lep4_fo();
 	if (lep1_dxyPV_branch != 0) lep1_dxyPV();
 	if (lep2_dxyPV_branch != 0) lep2_dxyPV();
 	if (lep1_dZ_branch != 0) lep1_dZ();
@@ -1409,11 +1287,25 @@ void LoadAllBranches()
 	if (trueNumInt_branch != 0) trueNumInt();
 	if (nPUvertices_branch != 0) nPUvertices();
 	if (nGoodVertices_branch != 0) nGoodVertices();
+	if (lep1_trigMatch_noIsoReq_branch != 0) lep1_trigMatch_noIsoReq();
+	if (lep1_trigMatch_isoReq_branch != 0) lep1_trigMatch_isoReq();
+	if (lep2_trigMatch_noIsoReq_branch != 0) lep2_trigMatch_noIsoReq();
+	if (lep2_trigMatch_isoReq_branch != 0) lep2_trigMatch_isoReq();
+	if (met3p0_branch != 0) met3p0();
+	if (jet_corr_pt_branch != 0) jet_corr_pt();
+	if (metphi3p0_branch != 0) metphi3p0();
+	if (passes_met_filters_branch != 0) passes_met_filters();
+	if (mostJets_branch != 0) mostJets();
+	if (madeExtraZ_branch != 0) madeExtraZ();
+	if (madeExtraG_branch != 0) madeExtraG();
+	if (lep3_mcid_branch != 0) lep3_mcid();
+	if (lep3_mcidx_branch != 0) lep3_mcidx();
+	if (lep4_mcid_branch != 0) lep4_mcid();
+	if (lep4_mcidx_branch != 0) lep4_mcidx();
 	if (lep1_isGoodLeg_branch != 0) lep1_isGoodLeg();
 	if (lep2_isGoodLeg_branch != 0) lep2_isGoodLeg();
 	if (lep1_isFakeLeg_branch != 0) lep1_isFakeLeg();
 	if (lep2_isFakeLeg_branch != 0) lep2_isFakeLeg();
-	if (truth_inSituFR_branch != 0) truth_inSituFR();
 	if (lep1_multiIso_branch != 0) lep1_multiIso();
 	if (lep2_multiIso_branch != 0) lep2_multiIso();
 	if (lep1_sip_branch != 0) lep1_sip();
@@ -1422,9 +1314,11 @@ void LoadAllBranches()
 	if (lep2_closeJet_branch != 0) lep2_closeJet();
 	if (passed_id_inSituFR_lep1_branch != 0) passed_id_inSituFR_lep1();
 	if (passed_id_inSituFR_lep2_branch != 0) passed_id_inSituFR_lep2();
+	if (fired_trigger_branch != 0) fired_trigger();
+	if (triggers_branch != 0) triggers();
 }
 
-	float &met()
+	const float &SSAG::met()
 	{
 		if (not met_isLoaded) {
 			if (met_branch != 0) {
@@ -1437,7 +1331,7 @@ void LoadAllBranches()
 		}
 		return met_;
 	}
-	float &metPhi()
+	const float &SSAG::metPhi()
 	{
 		if (not metPhi_isLoaded) {
 			if (metPhi_branch != 0) {
@@ -1450,7 +1344,33 @@ void LoadAllBranches()
 		}
 		return metPhi_;
 	}
-	int &event()
+	const float &SSAG::corrMET()
+	{
+		if (not corrMET_isLoaded) {
+			if (corrMET_branch != 0) {
+				corrMET_branch->GetEntry(index);
+			} else { 
+				printf("branch corrMET_branch does not exist!\n");
+				exit(1);
+			}
+			corrMET_isLoaded = true;
+		}
+		return corrMET_;
+	}
+	const float &SSAG::corrMETphi()
+	{
+		if (not corrMETphi_isLoaded) {
+			if (corrMETphi_branch != 0) {
+				corrMETphi_branch->GetEntry(index);
+			} else { 
+				printf("branch corrMETphi_branch does not exist!\n");
+				exit(1);
+			}
+			corrMETphi_isLoaded = true;
+		}
+		return corrMETphi_;
+	}
+	const int &SSAG::event()
 	{
 		if (not event_isLoaded) {
 			if (event_branch != 0) {
@@ -1463,7 +1383,7 @@ void LoadAllBranches()
 		}
 		return event_;
 	}
-	int &lumi()
+	const int &SSAG::lumi()
 	{
 		if (not lumi_isLoaded) {
 			if (lumi_branch != 0) {
@@ -1476,7 +1396,7 @@ void LoadAllBranches()
 		}
 		return lumi_;
 	}
-	int &run()
+	const int &SSAG::run()
 	{
 		if (not run_isLoaded) {
 			if (run_branch != 0) {
@@ -1489,7 +1409,7 @@ void LoadAllBranches()
 		}
 		return run_;
 	}
-	bool &	filt_csc()
+	const bool &	SSAG::filt_csc()
 	{
 		if (not filt_csc_isLoaded) {
 			if (filt_csc_branch != 0) {
@@ -1502,7 +1422,7 @@ void LoadAllBranches()
 		}
 		return filt_csc_;
 	}
-	bool &	filt_hbhe()
+	const bool &	SSAG::filt_hbhe()
 	{
 		if (not filt_hbhe_isLoaded) {
 			if (filt_hbhe_branch != 0) {
@@ -1515,7 +1435,7 @@ void LoadAllBranches()
 		}
 		return filt_hbhe_;
 	}
-	bool &	filt_hcallaser()
+	const bool &	SSAG::filt_hcallaser()
 	{
 		if (not filt_hcallaser_isLoaded) {
 			if (filt_hcallaser_branch != 0) {
@@ -1528,7 +1448,7 @@ void LoadAllBranches()
 		}
 		return filt_hcallaser_;
 	}
-	bool &	filt_ecaltp()
+	const bool &	SSAG::filt_ecaltp()
 	{
 		if (not filt_ecaltp_isLoaded) {
 			if (filt_ecaltp_branch != 0) {
@@ -1541,7 +1461,7 @@ void LoadAllBranches()
 		}
 		return filt_ecaltp_;
 	}
-	bool &	filt_trkfail()
+	const bool &	SSAG::filt_trkfail()
 	{
 		if (not filt_trkfail_isLoaded) {
 			if (filt_trkfail_branch != 0) {
@@ -1554,7 +1474,7 @@ void LoadAllBranches()
 		}
 		return filt_trkfail_;
 	}
-	bool &	filt_eebadsc()
+	const bool &	SSAG::filt_eebadsc()
 	{
 		if (not filt_eebadsc_isLoaded) {
 			if (filt_eebadsc_branch != 0) {
@@ -1567,7 +1487,7 @@ void LoadAllBranches()
 		}
 		return filt_eebadsc_;
 	}
-	bool &	is_real_data()
+	const bool &	SSAG::is_real_data()
 	{
 		if (not is_real_data_isLoaded) {
 			if (is_real_data_branch != 0) {
@@ -1580,7 +1500,7 @@ void LoadAllBranches()
 		}
 		return is_real_data_;
 	}
-	float &scale1fb()
+	const float &SSAG::scale1fb()
 	{
 		if (not scale1fb_isLoaded) {
 			if (scale1fb_branch != 0) {
@@ -1593,7 +1513,7 @@ void LoadAllBranches()
 		}
 		return scale1fb_;
 	}
-	float &xsec()
+	const float &SSAG::xsec()
 	{
 		if (not xsec_isLoaded) {
 			if (xsec_branch != 0) {
@@ -1606,7 +1526,7 @@ void LoadAllBranches()
 		}
 		return xsec_;
 	}
-	float &kfactor()
+	const float &SSAG::kfactor()
 	{
 		if (not kfactor_isLoaded) {
 			if (kfactor_branch != 0) {
@@ -1619,7 +1539,7 @@ void LoadAllBranches()
 		}
 		return kfactor_;
 	}
-	float &gen_met()
+	const float &SSAG::gen_met()
 	{
 		if (not gen_met_isLoaded) {
 			if (gen_met_branch != 0) {
@@ -1632,7 +1552,33 @@ void LoadAllBranches()
 		}
 		return gen_met_;
 	}
-	float &gen_met_phi()
+	const vector<float> &SSAG::genweights()
+	{
+		if (not genweights_isLoaded) {
+			if (genweights_branch != 0) {
+				genweights_branch->GetEntry(index);
+			} else { 
+				printf("branch genweights_branch does not exist!\n");
+				exit(1);
+			}
+			genweights_isLoaded = true;
+		}
+		return *genweights_;
+	}
+	const vector<string> &SSAG::genweightsID()
+	{
+		if (not genweightsID_isLoaded) {
+			if (genweightsID_branch != 0) {
+				genweightsID_branch->GetEntry(index);
+			} else { 
+				printf("branch genweightsID_branch does not exist!\n");
+				exit(1);
+			}
+			genweightsID_isLoaded = true;
+		}
+		return *genweightsID_;
+	}
+	const float &SSAG::gen_met_phi()
 	{
 		if (not gen_met_phi_isLoaded) {
 			if (gen_met_phi_branch != 0) {
@@ -1645,7 +1591,7 @@ void LoadAllBranches()
 		}
 		return gen_met_phi_;
 	}
-	int &njets()
+	const int &SSAG::njets()
 	{
 		if (not njets_isLoaded) {
 			if (njets_branch != 0) {
@@ -1658,7 +1604,20 @@ void LoadAllBranches()
 		}
 		return njets_;
 	}
-	int &hyp_class()
+	const int &SSAG::njets_corr()
+	{
+		if (not njets_corr_isLoaded) {
+			if (njets_corr_branch != 0) {
+				njets_corr_branch->GetEntry(index);
+			} else { 
+				printf("branch njets_corr_branch does not exist!\n");
+				exit(1);
+			}
+			njets_corr_isLoaded = true;
+		}
+		return njets_corr_;
+	}
+	const int &SSAG::hyp_class()
 	{
 		if (not hyp_class_isLoaded) {
 			if (hyp_class_branch != 0) {
@@ -1671,7 +1630,7 @@ void LoadAllBranches()
 		}
 		return hyp_class_;
 	}
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_p4()
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::lep1_p4()
 	{
 		if (not lep1_p4_isLoaded) {
 			if (lep1_p4_branch != 0) {
@@ -1684,7 +1643,7 @@ void LoadAllBranches()
 		}
 		return *lep1_p4_;
 	}
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_p4()
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::lep2_p4()
 	{
 		if (not lep2_p4_isLoaded) {
 			if (lep2_p4_branch != 0) {
@@ -1697,7 +1656,20 @@ void LoadAllBranches()
 		}
 		return *lep2_p4_;
 	}
-	float &ht()
+	const float &SSAG::ht_corr()
+	{
+		if (not ht_corr_isLoaded) {
+			if (ht_corr_branch != 0) {
+				ht_corr_branch->GetEntry(index);
+			} else { 
+				printf("branch ht_corr_branch does not exist!\n");
+				exit(1);
+			}
+			ht_corr_isLoaded = true;
+		}
+		return ht_corr_;
+	}
+	const float &SSAG::ht()
 	{
 		if (not ht_isLoaded) {
 			if (ht_branch != 0) {
@@ -1710,7 +1682,7 @@ void LoadAllBranches()
 		}
 		return ht_;
 	}
-	int &lep1_motherID()
+	const int &SSAG::lep1_motherID()
 	{
 		if (not lep1_motherID_isLoaded) {
 			if (lep1_motherID_branch != 0) {
@@ -1723,7 +1695,7 @@ void LoadAllBranches()
 		}
 		return lep1_motherID_;
 	}
-	int &lep2_motherID()
+	const int &SSAG::lep2_motherID()
 	{
 		if (not lep2_motherID_isLoaded) {
 			if (lep2_motherID_branch != 0) {
@@ -1736,7 +1708,7 @@ void LoadAllBranches()
 		}
 		return lep2_motherID_;
 	}
-	int &lep1_mc_id()
+	const int &SSAG::lep1_mc_id()
 	{
 		if (not lep1_mc_id_isLoaded) {
 			if (lep1_mc_id_branch != 0) {
@@ -1749,7 +1721,7 @@ void LoadAllBranches()
 		}
 		return lep1_mc_id_;
 	}
-	int &lep2_mc_id()
+	const int &SSAG::lep2_mc_id()
 	{
 		if (not lep2_mc_id_isLoaded) {
 			if (lep2_mc_id_branch != 0) {
@@ -1762,7 +1734,7 @@ void LoadAllBranches()
 		}
 		return lep2_mc_id_;
 	}
-	int &lep1_id()
+	const int &SSAG::lep1_id()
 	{
 		if (not lep1_id_isLoaded) {
 			if (lep1_id_branch != 0) {
@@ -1775,7 +1747,7 @@ void LoadAllBranches()
 		}
 		return lep1_id_;
 	}
-	int &lep2_id()
+	const int &SSAG::lep2_id()
 	{
 		if (not lep2_id_isLoaded) {
 			if (lep2_id_branch != 0) {
@@ -1788,7 +1760,7 @@ void LoadAllBranches()
 		}
 		return lep2_id_;
 	}
-	float &lep1_coneCorrPt()
+	const float &SSAG::lep1_coneCorrPt()
 	{
 		if (not lep1_coneCorrPt_isLoaded) {
 			if (lep1_coneCorrPt_branch != 0) {
@@ -1801,7 +1773,7 @@ void LoadAllBranches()
 		}
 		return lep1_coneCorrPt_;
 	}
-	float &lep2_coneCorrPt()
+	const float &SSAG::lep2_coneCorrPt()
 	{
 		if (not lep2_coneCorrPt_isLoaded) {
 			if (lep2_coneCorrPt_branch != 0) {
@@ -1814,7 +1786,7 @@ void LoadAllBranches()
 		}
 		return lep2_coneCorrPt_;
 	}
-	int &lep1_idx()
+	const int &SSAG::lep1_idx()
 	{
 		if (not lep1_idx_isLoaded) {
 			if (lep1_idx_branch != 0) {
@@ -1827,7 +1799,7 @@ void LoadAllBranches()
 		}
 		return lep1_idx_;
 	}
-	int &lep2_idx()
+	const int &SSAG::lep2_idx()
 	{
 		if (not lep2_idx_isLoaded) {
 			if (lep2_idx_branch != 0) {
@@ -1840,7 +1812,7 @@ void LoadAllBranches()
 		}
 		return lep2_idx_;
 	}
-	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets()
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &SSAG::jets()
 	{
 		if (not jets_isLoaded) {
 			if (jets_branch != 0) {
@@ -1853,7 +1825,20 @@ void LoadAllBranches()
 		}
 		return *jets_;
 	}
-	const vector<float> &btags_disc()
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &SSAG::jets_corr()
+	{
+		if (not jets_corr_isLoaded) {
+			if (jets_corr_branch != 0) {
+				jets_corr_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_corr_branch does not exist!\n");
+				exit(1);
+			}
+			jets_corr_isLoaded = true;
+		}
+		return *jets_corr_;
+	}
+	const vector<float> &SSAG::btags_disc()
 	{
 		if (not btags_disc_isLoaded) {
 			if (btags_disc_branch != 0) {
@@ -1866,7 +1851,7 @@ void LoadAllBranches()
 		}
 		return *btags_disc_;
 	}
-	const vector<float> &jets_disc()
+	const vector<float> &SSAG::jets_disc()
 	{
 		if (not jets_disc_isLoaded) {
 			if (jets_disc_branch != 0) {
@@ -1879,7 +1864,137 @@ void LoadAllBranches()
 		}
 		return *jets_disc_;
 	}
-	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags()
+	const vector<float> &SSAG::jets_JEC()
+	{
+		if (not jets_JEC_isLoaded) {
+			if (jets_JEC_branch != 0) {
+				jets_JEC_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_JEC_branch does not exist!\n");
+				exit(1);
+			}
+			jets_JEC_isLoaded = true;
+		}
+		return *jets_JEC_;
+	}
+	const vector<float> &SSAG::btags_JEC()
+	{
+		if (not btags_JEC_isLoaded) {
+			if (btags_JEC_branch != 0) {
+				btags_JEC_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_JEC_branch does not exist!\n");
+				exit(1);
+			}
+			btags_JEC_isLoaded = true;
+		}
+		return *btags_JEC_;
+	}
+	const vector<float> &SSAG::jets_undoJEC()
+	{
+		if (not jets_undoJEC_isLoaded) {
+			if (jets_undoJEC_branch != 0) {
+				jets_undoJEC_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_undoJEC_branch does not exist!\n");
+				exit(1);
+			}
+			jets_undoJEC_isLoaded = true;
+		}
+		return *jets_undoJEC_;
+	}
+	const vector<float> &SSAG::btags_undoJEC()
+	{
+		if (not btags_undoJEC_isLoaded) {
+			if (btags_undoJEC_branch != 0) {
+				btags_undoJEC_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_undoJEC_branch does not exist!\n");
+				exit(1);
+			}
+			btags_undoJEC_isLoaded = true;
+		}
+		return *btags_undoJEC_;
+	}
+	const vector<float> &SSAG::btags_corr_disc()
+	{
+		if (not btags_corr_disc_isLoaded) {
+			if (btags_corr_disc_branch != 0) {
+				btags_corr_disc_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_corr_disc_branch does not exist!\n");
+				exit(1);
+			}
+			btags_corr_disc_isLoaded = true;
+		}
+		return *btags_corr_disc_;
+	}
+	const vector<float> &SSAG::jets_corr_disc()
+	{
+		if (not jets_corr_disc_isLoaded) {
+			if (jets_corr_disc_branch != 0) {
+				jets_corr_disc_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_corr_disc_branch does not exist!\n");
+				exit(1);
+			}
+			jets_corr_disc_isLoaded = true;
+		}
+		return *jets_corr_disc_;
+	}
+	const vector<float> &SSAG::jets_corr_JEC()
+	{
+		if (not jets_corr_JEC_isLoaded) {
+			if (jets_corr_JEC_branch != 0) {
+				jets_corr_JEC_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_corr_JEC_branch does not exist!\n");
+				exit(1);
+			}
+			jets_corr_JEC_isLoaded = true;
+		}
+		return *jets_corr_JEC_;
+	}
+	const vector<float> &SSAG::btags_corr_JEC()
+	{
+		if (not btags_corr_JEC_isLoaded) {
+			if (btags_corr_JEC_branch != 0) {
+				btags_corr_JEC_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_corr_JEC_branch does not exist!\n");
+				exit(1);
+			}
+			btags_corr_JEC_isLoaded = true;
+		}
+		return *btags_corr_JEC_;
+	}
+	const vector<float> &SSAG::jets_corr_undoJEC()
+	{
+		if (not jets_corr_undoJEC_isLoaded) {
+			if (jets_corr_undoJEC_branch != 0) {
+				jets_corr_undoJEC_branch->GetEntry(index);
+			} else { 
+				printf("branch jets_corr_undoJEC_branch does not exist!\n");
+				exit(1);
+			}
+			jets_corr_undoJEC_isLoaded = true;
+		}
+		return *jets_corr_undoJEC_;
+	}
+	const vector<float> &SSAG::btags_corr_undoJEC()
+	{
+		if (not btags_corr_undoJEC_isLoaded) {
+			if (btags_corr_undoJEC_branch != 0) {
+				btags_corr_undoJEC_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_corr_undoJEC_branch does not exist!\n");
+				exit(1);
+			}
+			btags_corr_undoJEC_isLoaded = true;
+		}
+		return *btags_corr_undoJEC_;
+	}
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &SSAG::btags()
 	{
 		if (not btags_isLoaded) {
 			if (btags_branch != 0) {
@@ -1892,7 +2007,7 @@ void LoadAllBranches()
 		}
 		return *btags_;
 	}
-	int &nbtags()
+	const int &SSAG::nbtags()
 	{
 		if (not nbtags_isLoaded) {
 			if (nbtags_branch != 0) {
@@ -1905,7 +2020,33 @@ void LoadAllBranches()
 		}
 		return nbtags_;
 	}
-	float &sf_dilepTrig_hpt()
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &SSAG::btags_corr()
+	{
+		if (not btags_corr_isLoaded) {
+			if (btags_corr_branch != 0) {
+				btags_corr_branch->GetEntry(index);
+			} else { 
+				printf("branch btags_corr_branch does not exist!\n");
+				exit(1);
+			}
+			btags_corr_isLoaded = true;
+		}
+		return *btags_corr_;
+	}
+	const int &SSAG::nbtags_corr()
+	{
+		if (not nbtags_corr_isLoaded) {
+			if (nbtags_corr_branch != 0) {
+				nbtags_corr_branch->GetEntry(index);
+			} else { 
+				printf("branch nbtags_corr_branch does not exist!\n");
+				exit(1);
+			}
+			nbtags_corr_isLoaded = true;
+		}
+		return nbtags_corr_;
+	}
+	const float &SSAG::sf_dilepTrig_hpt()
 	{
 		if (not sf_dilepTrig_hpt_isLoaded) {
 			if (sf_dilepTrig_hpt_branch != 0) {
@@ -1918,7 +2059,7 @@ void LoadAllBranches()
 		}
 		return sf_dilepTrig_hpt_;
 	}
-	float &sf_dilepTrig_lpt()
+	const float &SSAG::sf_dilepTrig_lpt()
 	{
 		if (not sf_dilepTrig_lpt_isLoaded) {
 			if (sf_dilepTrig_lpt_branch != 0) {
@@ -1931,7 +2072,7 @@ void LoadAllBranches()
 		}
 		return sf_dilepTrig_lpt_;
 	}
-	float &sf_dilepTrig_vlpt()
+	const float &SSAG::sf_dilepTrig_vlpt()
 	{
 		if (not sf_dilepTrig_vlpt_isLoaded) {
 			if (sf_dilepTrig_vlpt_branch != 0) {
@@ -1944,7 +2085,7 @@ void LoadAllBranches()
 		}
 		return sf_dilepTrig_vlpt_;
 	}
-	int &hyp_type()
+	const int &SSAG::hyp_type()
 	{
 		if (not hyp_type_isLoaded) {
 			if (hyp_type_branch != 0) {
@@ -1957,7 +2098,7 @@ void LoadAllBranches()
 		}
 		return hyp_type_;
 	}
-	float &sf_dilep_eff()
+	const float &SSAG::sf_dilep_eff()
 	{
 		if (not sf_dilep_eff_isLoaded) {
 			if (sf_dilep_eff_branch != 0) {
@@ -1970,7 +2111,7 @@ void LoadAllBranches()
 		}
 		return sf_dilep_eff_;
 	}
-	float &mt()
+	const float &SSAG::mt()
 	{
 		if (not mt_isLoaded) {
 			if (mt_branch != 0) {
@@ -1983,7 +2124,7 @@ void LoadAllBranches()
 		}
 		return mt_;
 	}
-	float &mt_l2()
+	const float &SSAG::mt_l2()
 	{
 		if (not mt_l2_isLoaded) {
 			if (mt_l2_branch != 0) {
@@ -1996,7 +2137,7 @@ void LoadAllBranches()
 		}
 		return mt_l2_;
 	}
-	float &mt2()
+	const float &SSAG::mt2()
 	{
 		if (not mt2_isLoaded) {
 			if (mt2_branch != 0) {
@@ -2009,7 +2150,7 @@ void LoadAllBranches()
 		}
 		return mt2_;
 	}
-	float &mtmin()
+	const float &SSAG::mtmin()
 	{
 		if (not mtmin_isLoaded) {
 			if (mtmin_branch != 0) {
@@ -2022,7 +2163,7 @@ void LoadAllBranches()
 		}
 		return mtmin_;
 	}
-	float &mGluino()
+	const float &SSAG::mGluino()
 	{
 		if (not mGluino_isLoaded) {
 			if (mGluino_branch != 0) {
@@ -2035,7 +2176,7 @@ void LoadAllBranches()
 		}
 		return mGluino_;
 	}
-	float &mLSP()
+	const float &SSAG::mLSP()
 	{
 		if (not mLSP_isLoaded) {
 			if (mLSP_branch != 0) {
@@ -2048,7 +2189,7 @@ void LoadAllBranches()
 		}
 		return mLSP_;
 	}
-	float &mSbottom()
+	const float &SSAG::mSbottom()
 	{
 		if (not mSbottom_isLoaded) {
 			if (mSbottom_branch != 0) {
@@ -2061,7 +2202,7 @@ void LoadAllBranches()
 		}
 		return mSbottom_;
 	}
-	float &mChargino()
+	const float &SSAG::mChargino()
 	{
 		if (not mChargino_isLoaded) {
 			if (mChargino_branch != 0) {
@@ -2074,7 +2215,7 @@ void LoadAllBranches()
 		}
 		return mChargino_;
 	}
-	int &lep1_id_gen()
+	const int &SSAG::lep1_id_gen()
 	{
 		if (not lep1_id_gen_isLoaded) {
 			if (lep1_id_gen_branch != 0) {
@@ -2087,7 +2228,7 @@ void LoadAllBranches()
 		}
 		return lep1_id_gen_;
 	}
-	int &lep2_id_gen()
+	const int &SSAG::lep2_id_gen()
 	{
 		if (not lep2_id_gen_isLoaded) {
 			if (lep2_id_gen_branch != 0) {
@@ -2100,7 +2241,7 @@ void LoadAllBranches()
 		}
 		return lep2_id_gen_;
 	}
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_p4_gen()
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::lep1_p4_gen()
 	{
 		if (not lep1_p4_gen_isLoaded) {
 			if (lep1_p4_gen_branch != 0) {
@@ -2113,7 +2254,7 @@ void LoadAllBranches()
 		}
 		return *lep1_p4_gen_;
 	}
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_p4_gen()
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::lep2_p4_gen()
 	{
 		if (not lep2_p4_gen_isLoaded) {
 			if (lep2_p4_gen_branch != 0) {
@@ -2126,7 +2267,7 @@ void LoadAllBranches()
 		}
 		return *lep2_p4_gen_;
 	}
-	int &lep3_id()
+	const int &SSAG::lep3_id()
 	{
 		if (not lep3_id_isLoaded) {
 			if (lep3_id_branch != 0) {
@@ -2139,7 +2280,7 @@ void LoadAllBranches()
 		}
 		return lep3_id_;
 	}
-	int &lep3_idx()
+	const int &SSAG::lep3_idx()
 	{
 		if (not lep3_idx_isLoaded) {
 			if (lep3_idx_branch != 0) {
@@ -2152,7 +2293,7 @@ void LoadAllBranches()
 		}
 		return lep3_idx_;
 	}
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep3_p4()
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::lep3_p4()
 	{
 		if (not lep3_p4_isLoaded) {
 			if (lep3_p4_branch != 0) {
@@ -2165,7 +2306,7 @@ void LoadAllBranches()
 		}
 		return *lep3_p4_;
 	}
-	int &lep3_quality()
+	const int &SSAG::lep3_quality()
 	{
 		if (not lep3_quality_isLoaded) {
 			if (lep3_quality_branch != 0) {
@@ -2178,7 +2319,46 @@ void LoadAllBranches()
 		}
 		return lep3_quality_;
 	}
-	float &lep1_iso()
+	const int &SSAG::lep4_id()
+	{
+		if (not lep4_id_isLoaded) {
+			if (lep4_id_branch != 0) {
+				lep4_id_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_id_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_id_isLoaded = true;
+		}
+		return lep4_id_;
+	}
+	const int &SSAG::lep4_idx()
+	{
+		if (not lep4_idx_isLoaded) {
+			if (lep4_idx_branch != 0) {
+				lep4_idx_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_idx_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_idx_isLoaded = true;
+		}
+		return lep4_idx_;
+	}
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::lep4_p4()
+	{
+		if (not lep4_p4_isLoaded) {
+			if (lep4_p4_branch != 0) {
+				lep4_p4_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_p4_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_p4_isLoaded = true;
+		}
+		return *lep4_p4_;
+	}
+	const float &SSAG::lep1_iso()
 	{
 		if (not lep1_iso_isLoaded) {
 			if (lep1_iso_branch != 0) {
@@ -2191,7 +2371,7 @@ void LoadAllBranches()
 		}
 		return lep1_iso_;
 	}
-	float &lep2_iso()
+	const float &SSAG::lep2_iso()
 	{
 		if (not lep2_iso_isLoaded) {
 			if (lep2_iso_branch != 0) {
@@ -2204,7 +2384,7 @@ void LoadAllBranches()
 		}
 		return lep2_iso_;
 	}
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &dilep_p4()
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::dilep_p4()
 	{
 		if (not dilep_p4_isLoaded) {
 			if (dilep_p4_branch != 0) {
@@ -2217,7 +2397,7 @@ void LoadAllBranches()
 		}
 		return *dilep_p4_;
 	}
-	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &genps_p4()
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &SSAG::genps_p4()
 	{
 		if (not genps_p4_isLoaded) {
 			if (genps_p4_branch != 0) {
@@ -2230,7 +2410,7 @@ void LoadAllBranches()
 		}
 		return *genps_p4_;
 	}
-	const vector<int> &genps_id()
+	const vector<int> &SSAG::genps_id()
 	{
 		if (not genps_id_isLoaded) {
 			if (genps_id_branch != 0) {
@@ -2243,7 +2423,7 @@ void LoadAllBranches()
 		}
 		return *genps_id_;
 	}
-	const vector<int> &genps_id_mother()
+	const vector<int> &SSAG::genps_id_mother()
 	{
 		if (not genps_id_mother_isLoaded) {
 			if (genps_id_mother_branch != 0) {
@@ -2256,7 +2436,20 @@ void LoadAllBranches()
 		}
 		return *genps_id_mother_;
 	}
-	const vector<int> &genps_status()
+	const vector<int> &SSAG::genps_idx_mother()
+	{
+		if (not genps_idx_mother_isLoaded) {
+			if (genps_idx_mother_branch != 0) {
+				genps_idx_mother_branch->GetEntry(index);
+			} else { 
+				printf("branch genps_idx_mother_branch does not exist!\n");
+				exit(1);
+			}
+			genps_idx_mother_isLoaded = true;
+		}
+		return *genps_idx_mother_;
+	}
+	const vector<int> &SSAG::genps_status()
 	{
 		if (not genps_status_isLoaded) {
 			if (genps_status_branch != 0) {
@@ -2269,7 +2462,7 @@ void LoadAllBranches()
 		}
 		return *genps_status_;
 	}
-	const vector<int> &genps_id_grandma()
+	const vector<int> &SSAG::genps_id_grandma()
 	{
 		if (not genps_id_grandma_isLoaded) {
 			if (genps_id_grandma_branch != 0) {
@@ -2282,7 +2475,7 @@ void LoadAllBranches()
 		}
 		return *genps_id_grandma_;
 	}
-	bool &	lep1_passes_id()
+	const bool &	SSAG::lep1_passes_id()
 	{
 		if (not lep1_passes_id_isLoaded) {
 			if (lep1_passes_id_branch != 0) {
@@ -2295,7 +2488,7 @@ void LoadAllBranches()
 		}
 		return lep1_passes_id_;
 	}
-	bool &	lep2_passes_id()
+	const bool &	SSAG::lep2_passes_id()
 	{
 		if (not lep2_passes_id_isLoaded) {
 			if (lep2_passes_id_branch != 0) {
@@ -2308,7 +2501,111 @@ void LoadAllBranches()
 		}
 		return lep2_passes_id_;
 	}
-	float &lep1_dxyPV()
+	const bool &	SSAG::lep3_passes_id()
+	{
+		if (not lep3_passes_id_isLoaded) {
+			if (lep3_passes_id_branch != 0) {
+				lep3_passes_id_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_passes_id_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_passes_id_isLoaded = true;
+		}
+		return lep3_passes_id_;
+	}
+	const bool &	SSAG::lep4_passes_id()
+	{
+		if (not lep4_passes_id_isLoaded) {
+			if (lep4_passes_id_branch != 0) {
+				lep4_passes_id_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_passes_id_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_passes_id_isLoaded = true;
+		}
+		return lep4_passes_id_;
+	}
+	const bool &	SSAG::lep3_tight()
+	{
+		if (not lep3_tight_isLoaded) {
+			if (lep3_tight_branch != 0) {
+				lep3_tight_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_tight_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_tight_isLoaded = true;
+		}
+		return lep3_tight_;
+	}
+	const bool &	SSAG::lep3_veto()
+	{
+		if (not lep3_veto_isLoaded) {
+			if (lep3_veto_branch != 0) {
+				lep3_veto_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_veto_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_veto_isLoaded = true;
+		}
+		return lep3_veto_;
+	}
+	const bool &	SSAG::lep3_fo()
+	{
+		if (not lep3_fo_isLoaded) {
+			if (lep3_fo_branch != 0) {
+				lep3_fo_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_fo_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_fo_isLoaded = true;
+		}
+		return lep3_fo_;
+	}
+	const bool &	SSAG::lep4_tight()
+	{
+		if (not lep4_tight_isLoaded) {
+			if (lep4_tight_branch != 0) {
+				lep4_tight_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_tight_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_tight_isLoaded = true;
+		}
+		return lep4_tight_;
+	}
+	const bool &	SSAG::lep4_veto()
+	{
+		if (not lep4_veto_isLoaded) {
+			if (lep4_veto_branch != 0) {
+				lep4_veto_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_veto_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_veto_isLoaded = true;
+		}
+		return lep4_veto_;
+	}
+	const bool &	SSAG::lep4_fo()
+	{
+		if (not lep4_fo_isLoaded) {
+			if (lep4_fo_branch != 0) {
+				lep4_fo_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_fo_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_fo_isLoaded = true;
+		}
+		return lep4_fo_;
+	}
+	const float &SSAG::lep1_dxyPV()
 	{
 		if (not lep1_dxyPV_isLoaded) {
 			if (lep1_dxyPV_branch != 0) {
@@ -2321,7 +2618,7 @@ void LoadAllBranches()
 		}
 		return lep1_dxyPV_;
 	}
-	float &lep2_dxyPV()
+	const float &SSAG::lep2_dxyPV()
 	{
 		if (not lep2_dxyPV_isLoaded) {
 			if (lep2_dxyPV_branch != 0) {
@@ -2334,7 +2631,7 @@ void LoadAllBranches()
 		}
 		return lep2_dxyPV_;
 	}
-	float &lep1_dZ()
+	const float &SSAG::lep1_dZ()
 	{
 		if (not lep1_dZ_isLoaded) {
 			if (lep1_dZ_branch != 0) {
@@ -2347,7 +2644,7 @@ void LoadAllBranches()
 		}
 		return lep1_dZ_;
 	}
-	float &lep2_dZ()
+	const float &SSAG::lep2_dZ()
 	{
 		if (not lep2_dZ_isLoaded) {
 			if (lep2_dZ_branch != 0) {
@@ -2360,7 +2657,7 @@ void LoadAllBranches()
 		}
 		return lep2_dZ_;
 	}
-	float &lep1_d0_err()
+	const float &SSAG::lep1_d0_err()
 	{
 		if (not lep1_d0_err_isLoaded) {
 			if (lep1_d0_err_branch != 0) {
@@ -2373,7 +2670,7 @@ void LoadAllBranches()
 		}
 		return lep1_d0_err_;
 	}
-	float &lep2_d0_err()
+	const float &SSAG::lep2_d0_err()
 	{
 		if (not lep2_d0_err_isLoaded) {
 			if (lep2_d0_err_branch != 0) {
@@ -2386,7 +2683,7 @@ void LoadAllBranches()
 		}
 		return lep2_d0_err_;
 	}
-	float &lep1_ip3d()
+	const float &SSAG::lep1_ip3d()
 	{
 		if (not lep1_ip3d_isLoaded) {
 			if (lep1_ip3d_branch != 0) {
@@ -2399,7 +2696,7 @@ void LoadAllBranches()
 		}
 		return lep1_ip3d_;
 	}
-	float &lep2_ip3d()
+	const float &SSAG::lep2_ip3d()
 	{
 		if (not lep2_ip3d_isLoaded) {
 			if (lep2_ip3d_branch != 0) {
@@ -2412,7 +2709,7 @@ void LoadAllBranches()
 		}
 		return lep2_ip3d_;
 	}
-	float &lep1_MVA()
+	const float &SSAG::lep1_MVA()
 	{
 		if (not lep1_MVA_isLoaded) {
 			if (lep1_MVA_branch != 0) {
@@ -2425,7 +2722,7 @@ void LoadAllBranches()
 		}
 		return lep1_MVA_;
 	}
-	float &lep2_MVA()
+	const float &SSAG::lep2_MVA()
 	{
 		if (not lep2_MVA_isLoaded) {
 			if (lep2_MVA_branch != 0) {
@@ -2438,7 +2735,7 @@ void LoadAllBranches()
 		}
 		return lep2_MVA_;
 	}
-	float &lep1_ip3d_err()
+	const float &SSAG::lep1_ip3d_err()
 	{
 		if (not lep1_ip3d_err_isLoaded) {
 			if (lep1_ip3d_err_branch != 0) {
@@ -2451,7 +2748,7 @@ void LoadAllBranches()
 		}
 		return lep1_ip3d_err_;
 	}
-	float &lep2_ip3d_err()
+	const float &SSAG::lep2_ip3d_err()
 	{
 		if (not lep2_ip3d_err_isLoaded) {
 			if (lep2_ip3d_err_branch != 0) {
@@ -2464,7 +2761,7 @@ void LoadAllBranches()
 		}
 		return lep2_ip3d_err_;
 	}
-	int &nVetoElectrons7()
+	const int &SSAG::nVetoElectrons7()
 	{
 		if (not nVetoElectrons7_isLoaded) {
 			if (nVetoElectrons7_branch != 0) {
@@ -2477,7 +2774,7 @@ void LoadAllBranches()
 		}
 		return nVetoElectrons7_;
 	}
-	int &nVetoElectrons10()
+	const int &SSAG::nVetoElectrons10()
 	{
 		if (not nVetoElectrons10_isLoaded) {
 			if (nVetoElectrons10_branch != 0) {
@@ -2490,7 +2787,7 @@ void LoadAllBranches()
 		}
 		return nVetoElectrons10_;
 	}
-	int &nVetoElectrons25()
+	const int &SSAG::nVetoElectrons25()
 	{
 		if (not nVetoElectrons25_isLoaded) {
 			if (nVetoElectrons25_branch != 0) {
@@ -2503,7 +2800,7 @@ void LoadAllBranches()
 		}
 		return nVetoElectrons25_;
 	}
-	int &nVetoMuons5()
+	const int &SSAG::nVetoMuons5()
 	{
 		if (not nVetoMuons5_isLoaded) {
 			if (nVetoMuons5_branch != 0) {
@@ -2516,7 +2813,7 @@ void LoadAllBranches()
 		}
 		return nVetoMuons5_;
 	}
-	int &nVetoMuons10()
+	const int &SSAG::nVetoMuons10()
 	{
 		if (not nVetoMuons10_isLoaded) {
 			if (nVetoMuons10_branch != 0) {
@@ -2529,7 +2826,7 @@ void LoadAllBranches()
 		}
 		return nVetoMuons10_;
 	}
-	int &nVetoMuons25()
+	const int &SSAG::nVetoMuons25()
 	{
 		if (not nVetoMuons25_isLoaded) {
 			if (nVetoMuons25_branch != 0) {
@@ -2542,7 +2839,7 @@ void LoadAllBranches()
 		}
 		return nVetoMuons25_;
 	}
-	TString &filename()
+	const TString &SSAG::filename()
 	{
 		if (not filename_isLoaded) {
 			if (filename_branch != 0) {
@@ -2555,7 +2852,7 @@ void LoadAllBranches()
 		}
 		return *filename_;
 	}
-	float &lep1_ptrel_v0()
+	const float &SSAG::lep1_ptrel_v0()
 	{
 		if (not lep1_ptrel_v0_isLoaded) {
 			if (lep1_ptrel_v0_branch != 0) {
@@ -2568,7 +2865,7 @@ void LoadAllBranches()
 		}
 		return lep1_ptrel_v0_;
 	}
-	float &lep1_ptrel_v1()
+	const float &SSAG::lep1_ptrel_v1()
 	{
 		if (not lep1_ptrel_v1_isLoaded) {
 			if (lep1_ptrel_v1_branch != 0) {
@@ -2581,7 +2878,7 @@ void LoadAllBranches()
 		}
 		return lep1_ptrel_v1_;
 	}
-	float &lep2_ptrel_v0()
+	const float &SSAG::lep2_ptrel_v0()
 	{
 		if (not lep2_ptrel_v0_isLoaded) {
 			if (lep2_ptrel_v0_branch != 0) {
@@ -2594,7 +2891,7 @@ void LoadAllBranches()
 		}
 		return lep2_ptrel_v0_;
 	}
-	float &lep2_ptrel_v1()
+	const float &SSAG::lep2_ptrel_v1()
 	{
 		if (not lep2_ptrel_v1_isLoaded) {
 			if (lep2_ptrel_v1_branch != 0) {
@@ -2607,7 +2904,7 @@ void LoadAllBranches()
 		}
 		return lep2_ptrel_v1_;
 	}
-	float &lep1_miniIso()
+	const float &SSAG::lep1_miniIso()
 	{
 		if (not lep1_miniIso_isLoaded) {
 			if (lep1_miniIso_branch != 0) {
@@ -2620,7 +2917,7 @@ void LoadAllBranches()
 		}
 		return lep1_miniIso_;
 	}
-	float &lep2_miniIso()
+	const float &SSAG::lep2_miniIso()
 	{
 		if (not lep2_miniIso_isLoaded) {
 			if (lep2_miniIso_branch != 0) {
@@ -2633,7 +2930,7 @@ void LoadAllBranches()
 		}
 		return lep2_miniIso_;
 	}
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep1()
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::jet_close_lep1()
 	{
 		if (not jet_close_lep1_isLoaded) {
 			if (jet_close_lep1_branch != 0) {
@@ -2646,7 +2943,7 @@ void LoadAllBranches()
 		}
 		return *jet_close_lep1_;
 	}
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep2()
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::jet_close_lep2()
 	{
 		if (not jet_close_lep2_isLoaded) {
 			if (jet_close_lep2_branch != 0) {
@@ -2659,7 +2956,7 @@ void LoadAllBranches()
 		}
 		return *jet_close_lep2_;
 	}
-	const vector<int> &eleID_kfhits()
+	const vector<int> &SSAG::eleID_kfhits()
 	{
 		if (not eleID_kfhits_isLoaded) {
 			if (eleID_kfhits_branch != 0) {
@@ -2672,7 +2969,7 @@ void LoadAllBranches()
 		}
 		return *eleID_kfhits_;
 	}
-	const vector<float> &eleID_oldsigmaietaieta()
+	const vector<float> &SSAG::eleID_oldsigmaietaieta()
 	{
 		if (not eleID_oldsigmaietaieta_isLoaded) {
 			if (eleID_oldsigmaietaieta_branch != 0) {
@@ -2685,7 +2982,7 @@ void LoadAllBranches()
 		}
 		return *eleID_oldsigmaietaieta_;
 	}
-	const vector<float> &eleID_oldsigmaiphiiphi()
+	const vector<float> &SSAG::eleID_oldsigmaiphiiphi()
 	{
 		if (not eleID_oldsigmaiphiiphi_isLoaded) {
 			if (eleID_oldsigmaiphiiphi_branch != 0) {
@@ -2698,7 +2995,7 @@ void LoadAllBranches()
 		}
 		return *eleID_oldsigmaiphiiphi_;
 	}
-	const vector<float> &eleID_oldcircularity()
+	const vector<float> &SSAG::eleID_oldcircularity()
 	{
 		if (not eleID_oldcircularity_isLoaded) {
 			if (eleID_oldcircularity_branch != 0) {
@@ -2711,7 +3008,7 @@ void LoadAllBranches()
 		}
 		return *eleID_oldcircularity_;
 	}
-	const vector<float> &eleID_oldr9()
+	const vector<float> &SSAG::eleID_oldr9()
 	{
 		if (not eleID_oldr9_isLoaded) {
 			if (eleID_oldr9_branch != 0) {
@@ -2724,7 +3021,7 @@ void LoadAllBranches()
 		}
 		return *eleID_oldr9_;
 	}
-	const vector<float> &eleID_scletawidth()
+	const vector<float> &SSAG::eleID_scletawidth()
 	{
 		if (not eleID_scletawidth_isLoaded) {
 			if (eleID_scletawidth_branch != 0) {
@@ -2737,7 +3034,7 @@ void LoadAllBranches()
 		}
 		return *eleID_scletawidth_;
 	}
-	const vector<float> &eleID_sclphiwidth()
+	const vector<float> &SSAG::eleID_sclphiwidth()
 	{
 		if (not eleID_sclphiwidth_isLoaded) {
 			if (eleID_sclphiwidth_branch != 0) {
@@ -2750,7 +3047,7 @@ void LoadAllBranches()
 		}
 		return *eleID_sclphiwidth_;
 	}
-	const vector<float> &eleID_he()
+	const vector<float> &SSAG::eleID_he()
 	{
 		if (not eleID_he_isLoaded) {
 			if (eleID_he_branch != 0) {
@@ -2763,7 +3060,7 @@ void LoadAllBranches()
 		}
 		return *eleID_he_;
 	}
-	const vector<float> &eleID_psEoverEraw()
+	const vector<float> &SSAG::eleID_psEoverEraw()
 	{
 		if (not eleID_psEoverEraw_isLoaded) {
 			if (eleID_psEoverEraw_branch != 0) {
@@ -2776,7 +3073,7 @@ void LoadAllBranches()
 		}
 		return *eleID_psEoverEraw_;
 	}
-	const vector<float> &eleID_kfchi2()
+	const vector<float> &SSAG::eleID_kfchi2()
 	{
 		if (not eleID_kfchi2_isLoaded) {
 			if (eleID_kfchi2_branch != 0) {
@@ -2789,7 +3086,7 @@ void LoadAllBranches()
 		}
 		return *eleID_kfchi2_;
 	}
-	const vector<float> &eleID_chi2_hits()
+	const vector<float> &SSAG::eleID_chi2_hits()
 	{
 		if (not eleID_chi2_hits_isLoaded) {
 			if (eleID_chi2_hits_branch != 0) {
@@ -2802,7 +3099,7 @@ void LoadAllBranches()
 		}
 		return *eleID_chi2_hits_;
 	}
-	const vector<float> &eleID_fbrem()
+	const vector<float> &SSAG::eleID_fbrem()
 	{
 		if (not eleID_fbrem_isLoaded) {
 			if (eleID_fbrem_branch != 0) {
@@ -2815,7 +3112,7 @@ void LoadAllBranches()
 		}
 		return *eleID_fbrem_;
 	}
-	const vector<float> &eleID_ep()
+	const vector<float> &SSAG::eleID_ep()
 	{
 		if (not eleID_ep_isLoaded) {
 			if (eleID_ep_branch != 0) {
@@ -2828,7 +3125,7 @@ void LoadAllBranches()
 		}
 		return *eleID_ep_;
 	}
-	const vector<float> &eleID_eelepout()
+	const vector<float> &SSAG::eleID_eelepout()
 	{
 		if (not eleID_eelepout_isLoaded) {
 			if (eleID_eelepout_branch != 0) {
@@ -2841,7 +3138,7 @@ void LoadAllBranches()
 		}
 		return *eleID_eelepout_;
 	}
-	const vector<float> &eleID_IoEmIop()
+	const vector<float> &SSAG::eleID_IoEmIop()
 	{
 		if (not eleID_IoEmIop_isLoaded) {
 			if (eleID_IoEmIop_branch != 0) {
@@ -2854,7 +3151,7 @@ void LoadAllBranches()
 		}
 		return *eleID_IoEmIop_;
 	}
-	const vector<float> &eleID_deltaetain()
+	const vector<float> &SSAG::eleID_deltaetain()
 	{
 		if (not eleID_deltaetain_isLoaded) {
 			if (eleID_deltaetain_branch != 0) {
@@ -2867,7 +3164,7 @@ void LoadAllBranches()
 		}
 		return *eleID_deltaetain_;
 	}
-	const vector<float> &eleID_deltaphiin()
+	const vector<float> &SSAG::eleID_deltaphiin()
 	{
 		if (not eleID_deltaphiin_isLoaded) {
 			if (eleID_deltaphiin_branch != 0) {
@@ -2880,7 +3177,7 @@ void LoadAllBranches()
 		}
 		return *eleID_deltaphiin_;
 	}
-	const vector<float> &eleID_deltaetaseed()
+	const vector<float> &SSAG::eleID_deltaetaseed()
 	{
 		if (not eleID_deltaetaseed_isLoaded) {
 			if (eleID_deltaetaseed_branch != 0) {
@@ -2893,7 +3190,7 @@ void LoadAllBranches()
 		}
 		return *eleID_deltaetaseed_;
 	}
-	const vector<float> &eleID_pT()
+	const vector<float> &SSAG::eleID_pT()
 	{
 		if (not eleID_pT_isLoaded) {
 			if (eleID_pT_branch != 0) {
@@ -2906,7 +3203,7 @@ void LoadAllBranches()
 		}
 		return *eleID_pT_;
 	}
-	const vector<bool> &eleID_isbarrel()
+	const vector<bool> &SSAG::eleID_isbarrel()
 	{
 		if (not eleID_isbarrel_isLoaded) {
 			if (eleID_isbarrel_branch != 0) {
@@ -2919,7 +3216,7 @@ void LoadAllBranches()
 		}
 		return *eleID_isbarrel_;
 	}
-	const vector<bool> &eleID_isendcap()
+	const vector<bool> &SSAG::eleID_isendcap()
 	{
 		if (not eleID_isendcap_isLoaded) {
 			if (eleID_isendcap_branch != 0) {
@@ -2932,7 +3229,7 @@ void LoadAllBranches()
 		}
 		return *eleID_isendcap_;
 	}
-	const vector<float> &eleID_scl_eta()
+	const vector<float> &SSAG::eleID_scl_eta()
 	{
 		if (not eleID_scl_eta_isLoaded) {
 			if (eleID_scl_eta_branch != 0) {
@@ -2945,7 +3242,7 @@ void LoadAllBranches()
 		}
 		return *eleID_scl_eta_;
 	}
-	const vector<float> &muID_dzPV()
+	const vector<float> &SSAG::muID_dzPV()
 	{
 		if (not muID_dzPV_isLoaded) {
 			if (muID_dzPV_branch != 0) {
@@ -2958,7 +3255,7 @@ void LoadAllBranches()
 		}
 		return *muID_dzPV_;
 	}
-	const vector<float> &muID_ptSig()
+	const vector<float> &SSAG::muID_ptSig()
 	{
 		if (not muID_ptSig_isLoaded) {
 			if (muID_ptSig_branch != 0) {
@@ -2971,7 +3268,7 @@ void LoadAllBranches()
 		}
 		return *muID_ptSig_;
 	}
-	const vector<float> &muID_ip3dSig()
+	const vector<float> &SSAG::muID_ip3dSig()
 	{
 		if (not muID_ip3dSig_isLoaded) {
 			if (muID_ip3dSig_branch != 0) {
@@ -2984,7 +3281,7 @@ void LoadAllBranches()
 		}
 		return *muID_ip3dSig_;
 	}
-	const vector<float> &muID_medMuonPOG()
+	const vector<float> &SSAG::muID_medMuonPOG()
 	{
 		if (not muID_medMuonPOG_isLoaded) {
 			if (muID_medMuonPOG_branch != 0) {
@@ -2997,7 +3294,7 @@ void LoadAllBranches()
 		}
 		return *muID_medMuonPOG_;
 	}
-	const vector<float> &muID_pt()
+	const vector<float> &SSAG::muID_pt()
 	{
 		if (not muID_pt_isLoaded) {
 			if (muID_pt_branch != 0) {
@@ -3010,7 +3307,7 @@ void LoadAllBranches()
 		}
 		return *muID_pt_;
 	}
-	const vector<float> &muID_eta()
+	const vector<float> &SSAG::muID_eta()
 	{
 		if (not muID_eta_isLoaded) {
 			if (muID_eta_branch != 0) {
@@ -3023,7 +3320,7 @@ void LoadAllBranches()
 		}
 		return *muID_eta_;
 	}
-	const vector<float> &trueNumInt()
+	const vector<float> &SSAG::trueNumInt()
 	{
 		if (not trueNumInt_isLoaded) {
 			if (trueNumInt_branch != 0) {
@@ -3036,7 +3333,7 @@ void LoadAllBranches()
 		}
 		return *trueNumInt_;
 	}
-	const vector<int> &nPUvertices()
+	const vector<int> &SSAG::nPUvertices()
 	{
 		if (not nPUvertices_isLoaded) {
 			if (nPUvertices_branch != 0) {
@@ -3049,7 +3346,7 @@ void LoadAllBranches()
 		}
 		return *nPUvertices_;
 	}
-	int &nGoodVertices()
+	const int &SSAG::nGoodVertices()
 	{
 		if (not nGoodVertices_isLoaded) {
 			if (nGoodVertices_branch != 0) {
@@ -3062,7 +3359,202 @@ void LoadAllBranches()
 		}
 		return nGoodVertices_;
 	}
-	bool &	lep1_isGoodLeg()
+	const bool &	SSAG::lep1_trigMatch_noIsoReq()
+	{
+		if (not lep1_trigMatch_noIsoReq_isLoaded) {
+			if (lep1_trigMatch_noIsoReq_branch != 0) {
+				lep1_trigMatch_noIsoReq_branch->GetEntry(index);
+			} else { 
+				printf("branch lep1_trigMatch_noIsoReq_branch does not exist!\n");
+				exit(1);
+			}
+			lep1_trigMatch_noIsoReq_isLoaded = true;
+		}
+		return lep1_trigMatch_noIsoReq_;
+	}
+	const bool &	SSAG::lep1_trigMatch_isoReq()
+	{
+		if (not lep1_trigMatch_isoReq_isLoaded) {
+			if (lep1_trigMatch_isoReq_branch != 0) {
+				lep1_trigMatch_isoReq_branch->GetEntry(index);
+			} else { 
+				printf("branch lep1_trigMatch_isoReq_branch does not exist!\n");
+				exit(1);
+			}
+			lep1_trigMatch_isoReq_isLoaded = true;
+		}
+		return lep1_trigMatch_isoReq_;
+	}
+	const bool &	SSAG::lep2_trigMatch_noIsoReq()
+	{
+		if (not lep2_trigMatch_noIsoReq_isLoaded) {
+			if (lep2_trigMatch_noIsoReq_branch != 0) {
+				lep2_trigMatch_noIsoReq_branch->GetEntry(index);
+			} else { 
+				printf("branch lep2_trigMatch_noIsoReq_branch does not exist!\n");
+				exit(1);
+			}
+			lep2_trigMatch_noIsoReq_isLoaded = true;
+		}
+		return lep2_trigMatch_noIsoReq_;
+	}
+	const bool &	SSAG::lep2_trigMatch_isoReq()
+	{
+		if (not lep2_trigMatch_isoReq_isLoaded) {
+			if (lep2_trigMatch_isoReq_branch != 0) {
+				lep2_trigMatch_isoReq_branch->GetEntry(index);
+			} else { 
+				printf("branch lep2_trigMatch_isoReq_branch does not exist!\n");
+				exit(1);
+			}
+			lep2_trigMatch_isoReq_isLoaded = true;
+		}
+		return lep2_trigMatch_isoReq_;
+	}
+	const float &SSAG::met3p0()
+	{
+		if (not met3p0_isLoaded) {
+			if (met3p0_branch != 0) {
+				met3p0_branch->GetEntry(index);
+			} else { 
+				printf("branch met3p0_branch does not exist!\n");
+				exit(1);
+			}
+			met3p0_isLoaded = true;
+		}
+		return met3p0_;
+	}
+	const vector<float> &SSAG::jet_corr_pt()
+	{
+		if (not jet_corr_pt_isLoaded) {
+			if (jet_corr_pt_branch != 0) {
+				jet_corr_pt_branch->GetEntry(index);
+			} else { 
+				printf("branch jet_corr_pt_branch does not exist!\n");
+				exit(1);
+			}
+			jet_corr_pt_isLoaded = true;
+		}
+		return *jet_corr_pt_;
+	}
+	const float &SSAG::metphi3p0()
+	{
+		if (not metphi3p0_isLoaded) {
+			if (metphi3p0_branch != 0) {
+				metphi3p0_branch->GetEntry(index);
+			} else { 
+				printf("branch metphi3p0_branch does not exist!\n");
+				exit(1);
+			}
+			metphi3p0_isLoaded = true;
+		}
+		return metphi3p0_;
+	}
+	const bool &	SSAG::passes_met_filters()
+	{
+		if (not passes_met_filters_isLoaded) {
+			if (passes_met_filters_branch != 0) {
+				passes_met_filters_branch->GetEntry(index);
+			} else { 
+				printf("branch passes_met_filters_branch does not exist!\n");
+				exit(1);
+			}
+			passes_met_filters_isLoaded = true;
+		}
+		return passes_met_filters_;
+	}
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &SSAG::mostJets()
+	{
+		if (not mostJets_isLoaded) {
+			if (mostJets_branch != 0) {
+				mostJets_branch->GetEntry(index);
+			} else { 
+				printf("branch mostJets_branch does not exist!\n");
+				exit(1);
+			}
+			mostJets_isLoaded = true;
+		}
+		return *mostJets_;
+	}
+	const bool &	SSAG::madeExtraZ()
+	{
+		if (not madeExtraZ_isLoaded) {
+			if (madeExtraZ_branch != 0) {
+				madeExtraZ_branch->GetEntry(index);
+			} else { 
+				printf("branch madeExtraZ_branch does not exist!\n");
+				exit(1);
+			}
+			madeExtraZ_isLoaded = true;
+		}
+		return madeExtraZ_;
+	}
+	const bool &	SSAG::madeExtraG()
+	{
+		if (not madeExtraG_isLoaded) {
+			if (madeExtraG_branch != 0) {
+				madeExtraG_branch->GetEntry(index);
+			} else { 
+				printf("branch madeExtraG_branch does not exist!\n");
+				exit(1);
+			}
+			madeExtraG_isLoaded = true;
+		}
+		return madeExtraG_;
+	}
+	const int &SSAG::lep3_mcid()
+	{
+		if (not lep3_mcid_isLoaded) {
+			if (lep3_mcid_branch != 0) {
+				lep3_mcid_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_mcid_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_mcid_isLoaded = true;
+		}
+		return lep3_mcid_;
+	}
+	const int &SSAG::lep3_mcidx()
+	{
+		if (not lep3_mcidx_isLoaded) {
+			if (lep3_mcidx_branch != 0) {
+				lep3_mcidx_branch->GetEntry(index);
+			} else { 
+				printf("branch lep3_mcidx_branch does not exist!\n");
+				exit(1);
+			}
+			lep3_mcidx_isLoaded = true;
+		}
+		return lep3_mcidx_;
+	}
+	const int &SSAG::lep4_mcid()
+	{
+		if (not lep4_mcid_isLoaded) {
+			if (lep4_mcid_branch != 0) {
+				lep4_mcid_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_mcid_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_mcid_isLoaded = true;
+		}
+		return lep4_mcid_;
+	}
+	const int &SSAG::lep4_mcidx()
+	{
+		if (not lep4_mcidx_isLoaded) {
+			if (lep4_mcidx_branch != 0) {
+				lep4_mcidx_branch->GetEntry(index);
+			} else { 
+				printf("branch lep4_mcidx_branch does not exist!\n");
+				exit(1);
+			}
+			lep4_mcidx_isLoaded = true;
+		}
+		return lep4_mcidx_;
+	}
+	const bool &	SSAG::lep1_isGoodLeg()
 	{
 		if (not lep1_isGoodLeg_isLoaded) {
 			if (lep1_isGoodLeg_branch != 0) {
@@ -3075,7 +3567,7 @@ void LoadAllBranches()
 		}
 		return lep1_isGoodLeg_;
 	}
-	bool &	lep2_isGoodLeg()
+	const bool &	SSAG::lep2_isGoodLeg()
 	{
 		if (not lep2_isGoodLeg_isLoaded) {
 			if (lep2_isGoodLeg_branch != 0) {
@@ -3088,7 +3580,7 @@ void LoadAllBranches()
 		}
 		return lep2_isGoodLeg_;
 	}
-	bool &	lep1_isFakeLeg()
+	const bool &	SSAG::lep1_isFakeLeg()
 	{
 		if (not lep1_isFakeLeg_isLoaded) {
 			if (lep1_isFakeLeg_branch != 0) {
@@ -3101,7 +3593,7 @@ void LoadAllBranches()
 		}
 		return lep1_isFakeLeg_;
 	}
-	bool &	lep2_isFakeLeg()
+	const bool &	SSAG::lep2_isFakeLeg()
 	{
 		if (not lep2_isFakeLeg_isLoaded) {
 			if (lep2_isFakeLeg_branch != 0) {
@@ -3114,20 +3606,7 @@ void LoadAllBranches()
 		}
 		return lep2_isFakeLeg_;
 	}
-	bool &	truth_inSituFR()
-	{
-		if (not truth_inSituFR_isLoaded) {
-			if (truth_inSituFR_branch != 0) {
-				truth_inSituFR_branch->GetEntry(index);
-			} else { 
-				printf("branch truth_inSituFR_branch does not exist!\n");
-				exit(1);
-			}
-			truth_inSituFR_isLoaded = true;
-		}
-		return truth_inSituFR_;
-	}
-	bool &	lep1_multiIso()
+	const bool &	SSAG::lep1_multiIso()
 	{
 		if (not lep1_multiIso_isLoaded) {
 			if (lep1_multiIso_branch != 0) {
@@ -3140,7 +3619,7 @@ void LoadAllBranches()
 		}
 		return lep1_multiIso_;
 	}
-	bool &	lep2_multiIso()
+	const bool &	SSAG::lep2_multiIso()
 	{
 		if (not lep2_multiIso_isLoaded) {
 			if (lep2_multiIso_branch != 0) {
@@ -3153,7 +3632,7 @@ void LoadAllBranches()
 		}
 		return lep2_multiIso_;
 	}
-	float &lep1_sip()
+	const float &SSAG::lep1_sip()
 	{
 		if (not lep1_sip_isLoaded) {
 			if (lep1_sip_branch != 0) {
@@ -3166,7 +3645,7 @@ void LoadAllBranches()
 		}
 		return lep1_sip_;
 	}
-	float &lep2_sip()
+	const float &SSAG::lep2_sip()
 	{
 		if (not lep2_sip_isLoaded) {
 			if (lep2_sip_branch != 0) {
@@ -3179,7 +3658,7 @@ void LoadAllBranches()
 		}
 		return lep2_sip_;
 	}
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_closeJet()
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::lep1_closeJet()
 	{
 		if (not lep1_closeJet_isLoaded) {
 			if (lep1_closeJet_branch != 0) {
@@ -3192,7 +3671,7 @@ void LoadAllBranches()
 		}
 		return *lep1_closeJet_;
 	}
-	ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_closeJet()
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &SSAG::lep2_closeJet()
 	{
 		if (not lep2_closeJet_isLoaded) {
 			if (lep2_closeJet_branch != 0) {
@@ -3205,7 +3684,7 @@ void LoadAllBranches()
 		}
 		return *lep2_closeJet_;
 	}
-	bool &	passed_id_inSituFR_lep1()
+	const bool &	SSAG::passed_id_inSituFR_lep1()
 	{
 		if (not passed_id_inSituFR_lep1_isLoaded) {
 			if (passed_id_inSituFR_lep1_branch != 0) {
@@ -3218,7 +3697,7 @@ void LoadAllBranches()
 		}
 		return passed_id_inSituFR_lep1_;
 	}
-	bool &	passed_id_inSituFR_lep2()
+	const bool &	SSAG::passed_id_inSituFR_lep2()
 	{
 		if (not passed_id_inSituFR_lep2_isLoaded) {
 			if (passed_id_inSituFR_lep2_branch != 0) {
@@ -3231,8 +3710,34 @@ void LoadAllBranches()
 		}
 		return passed_id_inSituFR_lep2_;
 	}
+	const bool &	SSAG::fired_trigger()
+	{
+		if (not fired_trigger_isLoaded) {
+			if (fired_trigger_branch != 0) {
+				fired_trigger_branch->GetEntry(index);
+			} else { 
+				printf("branch fired_trigger_branch does not exist!\n");
+				exit(1);
+			}
+			fired_trigger_isLoaded = true;
+		}
+		return fired_trigger_;
+	}
+	const unsigned int &SSAG::triggers()
+	{
+		if (not triggers_isLoaded) {
+			if (triggers_branch != 0) {
+				triggers_branch->GetEntry(index);
+			} else { 
+				printf("branch triggers_branch does not exist!\n");
+				exit(1);
+			}
+			triggers_isLoaded = true;
+		}
+		return triggers_;
+	}
 
-  static void progress( int nEventsTotal, int nEventsChain ){
+  void SSAG::progress( int nEventsTotal, int nEventsChain ){
     int period = 1000;
     if(nEventsTotal%1000 == 0) {
       // xterm magic from L. Vacavant and A. Cerri
@@ -3252,151 +3757,191 @@ void LoadAllBranches()
     }
   }
   
-};
-
-#ifndef __CINT__
-extern SSAG samesign;
-#endif
-
 namespace ss {
-	const float &met();
-	const float &metPhi();
-	const int &event();
-	const int &lumi();
-	const int &run();
-	const bool &filt_csc();
-	const bool &filt_hbhe();
-	const bool &filt_hcallaser();
-	const bool &filt_ecaltp();
-	const bool &filt_trkfail();
-	const bool &filt_eebadsc();
-	const bool &is_real_data();
-	const float &scale1fb();
-	const float &xsec();
-	const float &kfactor();
-	const float &gen_met();
-	const float &gen_met_phi();
-	const int &njets();
-	const int &hyp_class();
-	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_p4();
-	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_p4();
-	const float &ht();
-	const int &lep1_motherID();
-	const int &lep2_motherID();
-	const int &lep1_mc_id();
-	const int &lep2_mc_id();
-	const int &lep1_id();
-	const int &lep2_id();
-	const float &lep1_coneCorrPt();
-	const float &lep2_coneCorrPt();
-	const int &lep1_idx();
-	const int &lep2_idx();
-	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets();
-	const vector<float> &btags_disc();
-	const vector<float> &jets_disc();
-	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags();
-	const int &nbtags();
-	const float &sf_dilepTrig_hpt();
-	const float &sf_dilepTrig_lpt();
-	const float &sf_dilepTrig_vlpt();
-	const int &hyp_type();
-	const float &sf_dilep_eff();
-	const float &mt();
-	const float &mt_l2();
-	const float &mt2();
-	const float &mtmin();
-	const float &mGluino();
-	const float &mLSP();
-	const float &mSbottom();
-	const float &mChargino();
-	const int &lep1_id_gen();
-	const int &lep2_id_gen();
-	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_p4_gen();
-	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_p4_gen();
-	const int &lep3_id();
-	const int &lep3_idx();
-	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep3_p4();
-	const int &lep3_quality();
-	const float &lep1_iso();
-	const float &lep2_iso();
-	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &dilep_p4();
-	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &genps_p4();
-	const vector<int> &genps_id();
-	const vector<int> &genps_id_mother();
-	const vector<int> &genps_status();
-	const vector<int> &genps_id_grandma();
-	const bool &lep1_passes_id();
-	const bool &lep2_passes_id();
-	const float &lep1_dxyPV();
-	const float &lep2_dxyPV();
-	const float &lep1_dZ();
-	const float &lep2_dZ();
-	const float &lep1_d0_err();
-	const float &lep2_d0_err();
-	const float &lep1_ip3d();
-	const float &lep2_ip3d();
-	const float &lep1_MVA();
-	const float &lep2_MVA();
-	const float &lep1_ip3d_err();
-	const float &lep2_ip3d_err();
-	const int &nVetoElectrons7();
-	const int &nVetoElectrons10();
-	const int &nVetoElectrons25();
-	const int &nVetoMuons5();
-	const int &nVetoMuons10();
-	const int &nVetoMuons25();
-	const TString &filename();
-	const float &lep1_ptrel_v0();
-	const float &lep1_ptrel_v1();
-	const float &lep2_ptrel_v0();
-	const float &lep2_ptrel_v1();
-	const float &lep1_miniIso();
-	const float &lep2_miniIso();
-	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep1();
-	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep2();
-	const vector<int> &eleID_kfhits();
-	const vector<float> &eleID_oldsigmaietaieta();
-	const vector<float> &eleID_oldsigmaiphiiphi();
-	const vector<float> &eleID_oldcircularity();
-	const vector<float> &eleID_oldr9();
-	const vector<float> &eleID_scletawidth();
-	const vector<float> &eleID_sclphiwidth();
-	const vector<float> &eleID_he();
-	const vector<float> &eleID_psEoverEraw();
-	const vector<float> &eleID_kfchi2();
-	const vector<float> &eleID_chi2_hits();
-	const vector<float> &eleID_fbrem();
-	const vector<float> &eleID_ep();
-	const vector<float> &eleID_eelepout();
-	const vector<float> &eleID_IoEmIop();
-	const vector<float> &eleID_deltaetain();
-	const vector<float> &eleID_deltaphiin();
-	const vector<float> &eleID_deltaetaseed();
-	const vector<float> &eleID_pT();
-	const vector<bool> &eleID_isbarrel();
-	const vector<bool> &eleID_isendcap();
-	const vector<float> &eleID_scl_eta();
-	const vector<float> &muID_dzPV();
-	const vector<float> &muID_ptSig();
-	const vector<float> &muID_ip3dSig();
-	const vector<float> &muID_medMuonPOG();
-	const vector<float> &muID_pt();
-	const vector<float> &muID_eta();
-	const vector<float> &trueNumInt();
-	const vector<int> &nPUvertices();
-	const int &nGoodVertices();
-	const bool &lep1_isGoodLeg();
-	const bool &lep2_isGoodLeg();
-	const bool &lep1_isFakeLeg();
-	const bool &lep2_isFakeLeg();
-	const bool &truth_inSituFR();
-	const bool &lep1_multiIso();
-	const bool &lep2_multiIso();
-	const float &lep1_sip();
-	const float &lep2_sip();
-	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_closeJet();
-	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_closeJet();
-	const bool &passed_id_inSituFR_lep1();
-	const bool &passed_id_inSituFR_lep2();
+	const float &met() { return samesign.met(); }
+	const float &metPhi() { return samesign.metPhi(); }
+	const float &corrMET() { return samesign.corrMET(); }
+	const float &corrMETphi() { return samesign.corrMETphi(); }
+	const int &event() { return samesign.event(); }
+	const int &lumi() { return samesign.lumi(); }
+	const int &run() { return samesign.run(); }
+	const bool &filt_csc() { return samesign.filt_csc(); }
+	const bool &filt_hbhe() { return samesign.filt_hbhe(); }
+	const bool &filt_hcallaser() { return samesign.filt_hcallaser(); }
+	const bool &filt_ecaltp() { return samesign.filt_ecaltp(); }
+	const bool &filt_trkfail() { return samesign.filt_trkfail(); }
+	const bool &filt_eebadsc() { return samesign.filt_eebadsc(); }
+	const bool &is_real_data() { return samesign.is_real_data(); }
+	const float &scale1fb() { return samesign.scale1fb(); }
+	const float &xsec() { return samesign.xsec(); }
+	const float &kfactor() { return samesign.kfactor(); }
+	const float &gen_met() { return samesign.gen_met(); }
+	const vector<float> &genweights() { return samesign.genweights(); }
+	const vector<string> &genweightsID() { return samesign.genweightsID(); }
+	const float &gen_met_phi() { return samesign.gen_met_phi(); }
+	const int &njets() { return samesign.njets(); }
+	const int &njets_corr() { return samesign.njets_corr(); }
+	const int &hyp_class() { return samesign.hyp_class(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_p4() { return samesign.lep1_p4(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_p4() { return samesign.lep2_p4(); }
+	const float &ht_corr() { return samesign.ht_corr(); }
+	const float &ht() { return samesign.ht(); }
+	const int &lep1_motherID() { return samesign.lep1_motherID(); }
+	const int &lep2_motherID() { return samesign.lep2_motherID(); }
+	const int &lep1_mc_id() { return samesign.lep1_mc_id(); }
+	const int &lep2_mc_id() { return samesign.lep2_mc_id(); }
+	const int &lep1_id() { return samesign.lep1_id(); }
+	const int &lep2_id() { return samesign.lep2_id(); }
+	const float &lep1_coneCorrPt() { return samesign.lep1_coneCorrPt(); }
+	const float &lep2_coneCorrPt() { return samesign.lep2_coneCorrPt(); }
+	const int &lep1_idx() { return samesign.lep1_idx(); }
+	const int &lep2_idx() { return samesign.lep2_idx(); }
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets() { return samesign.jets(); }
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &jets_corr() { return samesign.jets_corr(); }
+	const vector<float> &btags_disc() { return samesign.btags_disc(); }
+	const vector<float> &jets_disc() { return samesign.jets_disc(); }
+	const vector<float> &jets_JEC() { return samesign.jets_JEC(); }
+	const vector<float> &btags_JEC() { return samesign.btags_JEC(); }
+	const vector<float> &jets_undoJEC() { return samesign.jets_undoJEC(); }
+	const vector<float> &btags_undoJEC() { return samesign.btags_undoJEC(); }
+	const vector<float> &btags_corr_disc() { return samesign.btags_corr_disc(); }
+	const vector<float> &jets_corr_disc() { return samesign.jets_corr_disc(); }
+	const vector<float> &jets_corr_JEC() { return samesign.jets_corr_JEC(); }
+	const vector<float> &btags_corr_JEC() { return samesign.btags_corr_JEC(); }
+	const vector<float> &jets_corr_undoJEC() { return samesign.jets_corr_undoJEC(); }
+	const vector<float> &btags_corr_undoJEC() { return samesign.btags_corr_undoJEC(); }
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags() { return samesign.btags(); }
+	const int &nbtags() { return samesign.nbtags(); }
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags_corr() { return samesign.btags_corr(); }
+	const int &nbtags_corr() { return samesign.nbtags_corr(); }
+	const float &sf_dilepTrig_hpt() { return samesign.sf_dilepTrig_hpt(); }
+	const float &sf_dilepTrig_lpt() { return samesign.sf_dilepTrig_lpt(); }
+	const float &sf_dilepTrig_vlpt() { return samesign.sf_dilepTrig_vlpt(); }
+	const int &hyp_type() { return samesign.hyp_type(); }
+	const float &sf_dilep_eff() { return samesign.sf_dilep_eff(); }
+	const float &mt() { return samesign.mt(); }
+	const float &mt_l2() { return samesign.mt_l2(); }
+	const float &mt2() { return samesign.mt2(); }
+	const float &mtmin() { return samesign.mtmin(); }
+	const float &mGluino() { return samesign.mGluino(); }
+	const float &mLSP() { return samesign.mLSP(); }
+	const float &mSbottom() { return samesign.mSbottom(); }
+	const float &mChargino() { return samesign.mChargino(); }
+	const int &lep1_id_gen() { return samesign.lep1_id_gen(); }
+	const int &lep2_id_gen() { return samesign.lep2_id_gen(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_p4_gen() { return samesign.lep1_p4_gen(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_p4_gen() { return samesign.lep2_p4_gen(); }
+	const int &lep3_id() { return samesign.lep3_id(); }
+	const int &lep3_idx() { return samesign.lep3_idx(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep3_p4() { return samesign.lep3_p4(); }
+	const int &lep3_quality() { return samesign.lep3_quality(); }
+	const int &lep4_id() { return samesign.lep4_id(); }
+	const int &lep4_idx() { return samesign.lep4_idx(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep4_p4() { return samesign.lep4_p4(); }
+	const float &lep1_iso() { return samesign.lep1_iso(); }
+	const float &lep2_iso() { return samesign.lep2_iso(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &dilep_p4() { return samesign.dilep_p4(); }
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &genps_p4() { return samesign.genps_p4(); }
+	const vector<int> &genps_id() { return samesign.genps_id(); }
+	const vector<int> &genps_id_mother() { return samesign.genps_id_mother(); }
+	const vector<int> &genps_idx_mother() { return samesign.genps_idx_mother(); }
+	const vector<int> &genps_status() { return samesign.genps_status(); }
+	const vector<int> &genps_id_grandma() { return samesign.genps_id_grandma(); }
+	const bool &lep1_passes_id() { return samesign.lep1_passes_id(); }
+	const bool &lep2_passes_id() { return samesign.lep2_passes_id(); }
+	const bool &lep3_passes_id() { return samesign.lep3_passes_id(); }
+	const bool &lep4_passes_id() { return samesign.lep4_passes_id(); }
+	const bool &lep3_tight() { return samesign.lep3_tight(); }
+	const bool &lep3_veto() { return samesign.lep3_veto(); }
+	const bool &lep3_fo() { return samesign.lep3_fo(); }
+	const bool &lep4_tight() { return samesign.lep4_tight(); }
+	const bool &lep4_veto() { return samesign.lep4_veto(); }
+	const bool &lep4_fo() { return samesign.lep4_fo(); }
+	const float &lep1_dxyPV() { return samesign.lep1_dxyPV(); }
+	const float &lep2_dxyPV() { return samesign.lep2_dxyPV(); }
+	const float &lep1_dZ() { return samesign.lep1_dZ(); }
+	const float &lep2_dZ() { return samesign.lep2_dZ(); }
+	const float &lep1_d0_err() { return samesign.lep1_d0_err(); }
+	const float &lep2_d0_err() { return samesign.lep2_d0_err(); }
+	const float &lep1_ip3d() { return samesign.lep1_ip3d(); }
+	const float &lep2_ip3d() { return samesign.lep2_ip3d(); }
+	const float &lep1_MVA() { return samesign.lep1_MVA(); }
+	const float &lep2_MVA() { return samesign.lep2_MVA(); }
+	const float &lep1_ip3d_err() { return samesign.lep1_ip3d_err(); }
+	const float &lep2_ip3d_err() { return samesign.lep2_ip3d_err(); }
+	const int &nVetoElectrons7() { return samesign.nVetoElectrons7(); }
+	const int &nVetoElectrons10() { return samesign.nVetoElectrons10(); }
+	const int &nVetoElectrons25() { return samesign.nVetoElectrons25(); }
+	const int &nVetoMuons5() { return samesign.nVetoMuons5(); }
+	const int &nVetoMuons10() { return samesign.nVetoMuons10(); }
+	const int &nVetoMuons25() { return samesign.nVetoMuons25(); }
+	const TString &filename() { return samesign.filename(); }
+	const float &lep1_ptrel_v0() { return samesign.lep1_ptrel_v0(); }
+	const float &lep1_ptrel_v1() { return samesign.lep1_ptrel_v1(); }
+	const float &lep2_ptrel_v0() { return samesign.lep2_ptrel_v0(); }
+	const float &lep2_ptrel_v1() { return samesign.lep2_ptrel_v1(); }
+	const float &lep1_miniIso() { return samesign.lep1_miniIso(); }
+	const float &lep2_miniIso() { return samesign.lep2_miniIso(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep1() { return samesign.jet_close_lep1(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &jet_close_lep2() { return samesign.jet_close_lep2(); }
+	const vector<int> &eleID_kfhits() { return samesign.eleID_kfhits(); }
+	const vector<float> &eleID_oldsigmaietaieta() { return samesign.eleID_oldsigmaietaieta(); }
+	const vector<float> &eleID_oldsigmaiphiiphi() { return samesign.eleID_oldsigmaiphiiphi(); }
+	const vector<float> &eleID_oldcircularity() { return samesign.eleID_oldcircularity(); }
+	const vector<float> &eleID_oldr9() { return samesign.eleID_oldr9(); }
+	const vector<float> &eleID_scletawidth() { return samesign.eleID_scletawidth(); }
+	const vector<float> &eleID_sclphiwidth() { return samesign.eleID_sclphiwidth(); }
+	const vector<float> &eleID_he() { return samesign.eleID_he(); }
+	const vector<float> &eleID_psEoverEraw() { return samesign.eleID_psEoverEraw(); }
+	const vector<float> &eleID_kfchi2() { return samesign.eleID_kfchi2(); }
+	const vector<float> &eleID_chi2_hits() { return samesign.eleID_chi2_hits(); }
+	const vector<float> &eleID_fbrem() { return samesign.eleID_fbrem(); }
+	const vector<float> &eleID_ep() { return samesign.eleID_ep(); }
+	const vector<float> &eleID_eelepout() { return samesign.eleID_eelepout(); }
+	const vector<float> &eleID_IoEmIop() { return samesign.eleID_IoEmIop(); }
+	const vector<float> &eleID_deltaetain() { return samesign.eleID_deltaetain(); }
+	const vector<float> &eleID_deltaphiin() { return samesign.eleID_deltaphiin(); }
+	const vector<float> &eleID_deltaetaseed() { return samesign.eleID_deltaetaseed(); }
+	const vector<float> &eleID_pT() { return samesign.eleID_pT(); }
+	const vector<bool> &eleID_isbarrel() { return samesign.eleID_isbarrel(); }
+	const vector<bool> &eleID_isendcap() { return samesign.eleID_isendcap(); }
+	const vector<float> &eleID_scl_eta() { return samesign.eleID_scl_eta(); }
+	const vector<float> &muID_dzPV() { return samesign.muID_dzPV(); }
+	const vector<float> &muID_ptSig() { return samesign.muID_ptSig(); }
+	const vector<float> &muID_ip3dSig() { return samesign.muID_ip3dSig(); }
+	const vector<float> &muID_medMuonPOG() { return samesign.muID_medMuonPOG(); }
+	const vector<float> &muID_pt() { return samesign.muID_pt(); }
+	const vector<float> &muID_eta() { return samesign.muID_eta(); }
+	const vector<float> &trueNumInt() { return samesign.trueNumInt(); }
+	const vector<int> &nPUvertices() { return samesign.nPUvertices(); }
+	const int &nGoodVertices() { return samesign.nGoodVertices(); }
+	const bool &lep1_trigMatch_noIsoReq() { return samesign.lep1_trigMatch_noIsoReq(); }
+	const bool &lep1_trigMatch_isoReq() { return samesign.lep1_trigMatch_isoReq(); }
+	const bool &lep2_trigMatch_noIsoReq() { return samesign.lep2_trigMatch_noIsoReq(); }
+	const bool &lep2_trigMatch_isoReq() { return samesign.lep2_trigMatch_isoReq(); }
+	const float &met3p0() { return samesign.met3p0(); }
+	const vector<float> &jet_corr_pt() { return samesign.jet_corr_pt(); }
+	const float &metphi3p0() { return samesign.metphi3p0(); }
+	const bool &passes_met_filters() { return samesign.passes_met_filters(); }
+	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &mostJets() { return samesign.mostJets(); }
+	const bool &madeExtraZ() { return samesign.madeExtraZ(); }
+	const bool &madeExtraG() { return samesign.madeExtraG(); }
+	const int &lep3_mcid() { return samesign.lep3_mcid(); }
+	const int &lep3_mcidx() { return samesign.lep3_mcidx(); }
+	const int &lep4_mcid() { return samesign.lep4_mcid(); }
+	const int &lep4_mcidx() { return samesign.lep4_mcidx(); }
+	const bool &lep1_isGoodLeg() { return samesign.lep1_isGoodLeg(); }
+	const bool &lep2_isGoodLeg() { return samesign.lep2_isGoodLeg(); }
+	const bool &lep1_isFakeLeg() { return samesign.lep1_isFakeLeg(); }
+	const bool &lep2_isFakeLeg() { return samesign.lep2_isFakeLeg(); }
+	const bool &lep1_multiIso() { return samesign.lep1_multiIso(); }
+	const bool &lep2_multiIso() { return samesign.lep2_multiIso(); }
+	const float &lep1_sip() { return samesign.lep1_sip(); }
+	const float &lep2_sip() { return samesign.lep2_sip(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep1_closeJet() { return samesign.lep1_closeJet(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &lep2_closeJet() { return samesign.lep2_closeJet(); }
+	const bool &passed_id_inSituFR_lep1() { return samesign.passed_id_inSituFR_lep1(); }
+	const bool &passed_id_inSituFR_lep2() { return samesign.passed_id_inSituFR_lep2(); }
+	const bool &fired_trigger() { return samesign.fired_trigger(); }
+	const unsigned int &triggers() { return samesign.triggers(); }
 }
-#endif
