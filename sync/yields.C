@@ -65,8 +65,8 @@ void yields(){
       if (!ss::fired_trigger()) continue;
 
       //Determine MET
-      float metAG = (corrected ? ss::corrMET() : ss::met() );
-      float metPhiAG = (corrected ? ss::corrMETphi() : ss::metPhi());
+      float metAG = ss::met(); 
+      float metPhiAG = ss::metPhi();
 
       //Determine HT
       float htAG = (corrected ? ss::ht_corr() : ss::ht());
