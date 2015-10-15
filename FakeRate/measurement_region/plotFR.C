@@ -78,7 +78,7 @@
       mud->GetYaxis()->SetTitleOffset(1.2);
       if (postfix=="_extrPtRel") mud->GetYaxis()->SetTitle("H_{T} [GeV]");
       TCanvas c3("c3","c3",600,600);
-      mud->SetMarkerSize(1.5);
+      mud->SetMarkerSize(1.);
       if (postfix!="_extrPtRel") mud->GetXaxis()->SetNdivisions(6,0);
       mud->Draw("texte");
       c3.RedrawAxis();
@@ -98,7 +98,7 @@
       eld->GetYaxis()->SetTitleOffset(1.2);
       if (postfix=="_extrPtRel") eld->GetYaxis()->SetTitle("H_{T} [GeV]");
       TCanvas c4("c4","c4",600,600);
-      eld->SetMarkerSize(1.5);
+      eld->SetMarkerSize(1.);
       if (postfix!="_extrPtRel") eld->GetXaxis()->SetNdivisions(6,0);
       eld->Draw("texte");
       c4.RedrawAxis();    

@@ -112,6 +112,13 @@ void make1DplotFR(float elSF_zp=1.16182,float muSF_zp=1.11212,float elSF_mt=0.92
   eln_data->Add(eln_wj,-1.*elSF_mt);
   eln_data->Add(eln_dy,-1.*elSF_mt);
 
+  for (int binx=1;binx<=mun_data->GetNbinsX();++binx) {
+    for (int biny=1;biny<=mun_data->GetNbinsY();++biny) {
+      if (mun_data->GetBinContent(binx,biny)<0) mun_data->SetBinContent(binx,biny,0.);
+      if (eln_data->GetBinContent(binx,biny)<0) eln_data->SetBinContent(binx,biny,0.);
+    }
+  }
+
   TH1D* mun1d_data = (doPt ? mun_data->ProjectionX() : mun_data->ProjectionY());
   TH1D* eln1d_data = (doPt ? eln_data->ProjectionX() : eln_data->ProjectionY());
 
@@ -126,6 +133,13 @@ void make1DplotFR(float elSF_zp=1.16182,float muSF_zp=1.11212,float elSF_mt=0.92
   mun_data_zp->Add(mun_dy_zp,-1.*muSF_zp);
   eln_data_zp->Add(eln_wj_zp,-1.*elSF_zp);
   eln_data_zp->Add(eln_dy_zp,-1.*elSF_zp);
+
+  for (int binx=1;binx<=mun_data_zp->GetNbinsX();++binx) {
+    for (int biny=1;biny<=mun_data_zp->GetNbinsY();++biny) {
+      if (mun_data_zp->GetBinContent(binx,biny)<0) mun_data_zp->SetBinContent(binx,biny,0.);
+      if (eln_data_zp->GetBinContent(binx,biny)<0) eln_data_zp->SetBinContent(binx,biny,0.);
+    }
+  }
 
   TH1D* mun1d_data_zp = (doPt ? mun_data_zp->ProjectionX() : mun_data_zp->ProjectionY());
   TH1D* eln1d_data_zp = (doPt ? eln_data_zp->ProjectionX() : eln_data_zp->ProjectionY());
