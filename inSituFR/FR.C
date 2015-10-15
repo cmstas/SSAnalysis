@@ -10,7 +10,7 @@
 #include "../CORE/Tools/dorky/dorky.h"
 
 //do the data!!
-bool doData = true; 
+bool doData = false; 
 
 //testPC -- test the prompt contamination, ie allow numer-numer events
 bool testPC = false;
@@ -209,7 +209,6 @@ void FR(){
         if (passesNumeratorMVA(1) && lep1_multiIso) numer3->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
         if (ss::lep1_p4().pt() >= 25) test->Fill(miniiso_1, 1.0/ptratio_1);  
         denom3->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);
-        cout << __LINE__ << endl;
 
         counter++; 
       }
@@ -319,13 +318,18 @@ void FR(){
 
   //Save output
   string name2 = "blah";
-  if (!others  && !testPC && !ssZveto) name2 = "normal"; 
-  if ( others  &&  testPC && !ssZveto) name2 = "PC"; 
-  if ( others  && !testPC && !ssZveto) name2 = "soup";
-  if (!others  && !testPC &&  ssZveto) name2 = "ssZ"; 
-  if ( others  &&  testPC &&  ssZveto) name2 = "PCssZ"; 
+  if (!doData && !others  && !testPC && !ssZveto) name2 = "normal"; 
+  if (!doData &&  others  &&  testPC && !ssZveto) name2 = "PC"; 
+  if (!doData &&  others  && !testPC && !ssZveto) name2 = "soup";
+  if (!doData && !others  && !testPC &&  ssZveto) name2 = "ssZ"; 
+  if (!doData &&  others  &&  testPC &&  ssZveto) name2 = "PCssZ"; 
+  if ( doData && !others  && !testPC && !ssZveto) name2 = "data_normal"; 
+  if ( doData &&  others  &&  testPC && !ssZveto) name2 = "data_PC"; 
+  if ( doData &&  others  && !testPC && !ssZveto) name2 = "data_soup";
+  if ( doData && !others  && !testPC &&  ssZveto) name2 = "data_ssZ"; 
+  if ( doData &&  others  &&  testPC &&  ssZveto) name2 = "data_PCssZ"; 
 
-  TFile *file = new TFile(Form("inSituFR_cone_FR_histos_%s_elec_.root", name2.c_str()), "RECREATE");
+  TFile *file = new TFile(Form("inSituFR_cone_FR_histos_%s.root", name2.c_str()), "RECREATE");
   file->Write(); 
   numer->Write("elec");
   numer3->Write("muon");

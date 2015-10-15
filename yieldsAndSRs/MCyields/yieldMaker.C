@@ -225,7 +225,6 @@ yields_t run(TChain *chain, bool isData, bool doFlips, int doFakes){
       else if (ss::hyp_type() == 0) result.MM    += weight;
       else                          result.EM    += weight;
                                     result.TOTAL += weight;
-      if (ss::hyp_type() == 3) cout << weight << " " << result.EE << endl;
 
     }//event loop
   }//file loop

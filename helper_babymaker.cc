@@ -416,6 +416,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   if (tas::hyp_type().size() < 1) return -1;
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return -1;
 
+  if (tas::evt_event() != 381733) return -1;
+
   //Fill Easy Variables
   filename = filename_in;
   met = evt_pfmet();
