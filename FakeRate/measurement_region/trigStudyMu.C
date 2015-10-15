@@ -5,6 +5,7 @@ void trigStudyMu() {
 
   TString tag = "v4.00";
   TString dataf = "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleMuon.root";
+  //dataf = "SyncDoubleMu.root";
 
   TFile *_file = TFile::Open(dataf);
 
@@ -49,16 +50,16 @@ void trigStudyMu() {
   t->Draw("p4.pt()>>fo_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_fo_v5)","goff");
   t->Draw("p4.pt()>>fo_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_fo_v5)","goff");
   t->Draw("p4.pt()>>fo_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_fo_v5)","goff");
-  
-  t->Draw("p4.pt()>>tight_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_tight_v5)","goff");
-  t->Draw("p4.pt()>>tight_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_tight_v5)","goff");
-  t->Draw("p4.pt()>>tight_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_tight_v5)","goff");
-  t->Draw("p4.pt()>>tight_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_tight_v5)","goff");
-  
-  t->Draw("p4.pt()>>cuts_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+    
+  t->Draw("p4.pt()>>cuts_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+
+  t->Draw("p4.pt()>>tight_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>tight_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>tight_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>tight_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
   
   t->Draw("p4.pt()>>unw_fo_pt_Mu8" ,"(HLT_Mu8>0  && abs(id)==13 && passes_SS_fo_v5)","goff");
   t->Draw("p4.pt()>>unw_fo_pt_Mu17","(HLT_Mu17>0 && abs(id)==13 && passes_SS_fo_v5)","goff");
@@ -102,7 +103,7 @@ void trigStudyMu() {
   paths_total->GetXaxis()->SetBinLabel(2,"Mu17");
   paths_total->GetXaxis()->SetBinLabel(3,"Mu24");
   paths_total->GetXaxis()->SetBinLabel(4,"Mu34");
-  paths_total->GetYaxis()->SetRangeUser(1000,1000000);
+  paths_total->GetYaxis()->SetRangeUser(10,100000000);
   paths_total->Draw("hist,text0");
   paths_fo->Draw("hist,text0,same");
   paths_tight->Draw("hist,text0,same");
@@ -111,8 +112,8 @@ void trigStudyMu() {
 
   label->SetTextColor(kBlue);    label->DrawLatexNDC(0.65,0.85, "all");
   label->SetTextColor(kMagenta); label->DrawLatexNDC(0.65,0.80, "pass FO");
-  label->SetTextColor(kRed);     label->DrawLatexNDC(0.65,0.75, "pass Tight");
-  label->SetTextColor(kGreen);   label->DrawLatexNDC(0.65,0.70, "pass Tight+cuts");
+  label->SetTextColor(kGreen);   label->DrawLatexNDC(0.65,0.75, "pass FO+cuts");
+  label->SetTextColor(kRed);     label->DrawLatexNDC(0.65,0.70, "pass Tight+cuts");
 
   c1.SaveAs( "pdfs/paths_mu.pdf" );
 
@@ -122,7 +123,7 @@ void trigStudyMu() {
   unw_fo_pt_Mu17->SetLineColor(kBlue);
   unw_fo_pt_Mu24->SetLineColor(kRed);
   unw_fo_pt_Mu34->SetLineColor(kMagenta);
-  unw_fo_pt_Mu8->GetYaxis()->SetRangeUser(1,100000);
+  unw_fo_pt_Mu8->GetYaxis()->SetRangeUser(1,1000000);
   unw_fo_pt_Mu8->Draw("hist");
   unw_fo_pt_Mu17->Draw("hist,same");
   unw_fo_pt_Mu24->Draw("hist,same");

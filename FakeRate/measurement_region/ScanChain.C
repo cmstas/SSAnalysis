@@ -592,7 +592,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //float miniIso = miniiso();
       float relIso = RelIso03EA();
 
-      if( !jetptcut )
+      if( !jetptcut || ht_SS()<40 )
 	{continue;}
 
       //trigger selection (fixme add also iso triggers)
@@ -744,6 +744,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (HLT_Mu24()>0) histo_pt_mu24->Fill(p4().pt(),HLT_Mu24());
 	  if (HLT_Mu17()>0) histo_pt_mu17->Fill(p4().pt(),HLT_Mu17());
 	  if (HLT_Mu8()>0 ) histo_pt_mu8->Fill(p4().pt() ,HLT_Mu8() );
+	  //if (HLT_Mu8()>0 ) cout << "HLT_Mu8=" << HLT_Mu8() << " abs(id)=" << abs(id()) << " passes_SS_fo_v5=" << passes_SS_fo_v5() << " evt_pfmet=" << evt_pfmet() << " mt=" << mt() << " nFOs_SS=" << nFOs_SS() << " ht_SS=" << ht_SS() << endl;
 	  histo_pt_mu->Fill(p4().pt(), prescale );	  
 	}
       } 
