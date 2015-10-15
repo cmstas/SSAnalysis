@@ -1,18 +1,16 @@
 #include "../software/dataMCplotMaker/PlotMaker2D.h"
 #include "../software/tableMaker/CTable.h"
 #include "../commonUtils.h"
-#include "SS.h"
+#include "../classFiles/v4.00/SS.h"
 #include "TH2D.h"
 #include "TCanvas.h"
 #include "TChain.h"
 #include <fstream>
 #include "../CORE/IsolationTools.h"
+#include "../CORE/Tools/dorky/dorky.h"
 
-//Lumi
-float luminosity = getLumi();
-
-//Errors on MC or data?
-bool dataErrors = true;
+//do the data!!
+bool doData = true; 
 
 //testPC -- test the prompt contamination, ie allow numer-numer events
 bool testPC = false;
@@ -26,6 +24,9 @@ bool ssZveto = false;
 //Path
 string tag = "v4.00";
 
+//Lumi
+float luminosity = doData ? 1.0 : getLumi();
+
 bool passesNumeratorMVA(int which){
   if (abs(ss::lep1_id()) != 11) return true;
   float aeta = (which == 1) ? fabs(ss::lep1_p4().eta()) : fabs(ss::lep2_p4().eta());
@@ -37,12 +38,14 @@ bool passesNumeratorMVA(int which){
 }
 
 bool isFakeLeg(int lep){
+  if (doData) return 1; 
   if (lep == 1) return (ss::lep1_motherID() <= 0); 
   if (lep == 2) return (ss::lep2_motherID() <= 0); 
   return 0;
 }
 
 bool isGoodLeg(int lep){
+  if (doData) return 1; 
   if (lep == 1) return (ss::lep1_motherID() > 0); 
   if (lep == 2) return (ss::lep2_motherID() > 0); 
   return 0;
@@ -66,6 +69,7 @@ void FR(){
   TH2D *numer4; 
   TH2D *denom4; 
 
+  //Reproduce Lesya's plot of 1/ptratio vs. miniiso 
   TH2D *test; 
 
   //Define hists
@@ -81,28 +85,32 @@ void FR(){
   denom3 = new TH2D("denom3", "denom3", nBinsX, xbins, nBinsY, ybins);
   numer4 = new TH2D("numer4", "numer4", nBinsX, xbins, nBinsY, ybins);
   denom4 = new TH2D("denom4", "denom4", nBinsX, xbins, nBinsY, ybins);
-
-  test = new TH2D("test", "test", 40, 0, 0.4, 20, 0, 3.0); 
+  test = new TH2D("test", "test", 40, 0, 0.4, 20, 1.0, 3.0); 
 
   //Set hist errors
-  if (!dataErrors){
-    numer->Sumw2();
-    denom->Sumw2();
-    numer2->Sumw2();
-    denom2->Sumw2();
-    numer3->Sumw2();
-    denom3->Sumw2();
-    numer4->Sumw2();
-    denom4->Sumw2();
-  }
+  numer->Sumw2();
+  denom->Sumw2();
+  numer2->Sumw2();
+  denom2->Sumw2();
+  numer3->Sumw2();
+  denom3->Sumw2();
+  numer4->Sumw2();
+  denom4->Sumw2();
 
   //Declare chain
   TChain *chain = new TChain("t");
   int fo2_suffix = 0;
-  chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root", tag.c_str()));
-  if (others){
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY.root", tag.c_str()));
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root", tag.c_str()));
+  if (doData){
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD.root", tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD.root", tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD.root", tag.c_str()));
+  }
+  else if (!doData){
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root", tag.c_str()));
+    if (others){
+      chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY.root", tag.c_str()));
+      chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root", tag.c_str()));
+    }
   }
 
   //Event Counting
@@ -129,6 +137,12 @@ void FR(){
       samesign.GetEntry(event);
       nEventsTotal++;
 
+      //Data duplicate removal
+      if (doData){
+        duplicate_removal::DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
+        if (duplicate_removal::is_duplicate(id)) continue; 
+      }
+
       //Pt
       float pt1 = ss::lep1_coneCorrPt(); 
       float pt2 = ss::lep2_coneCorrPt(); 
@@ -141,6 +155,7 @@ void FR(){
       if (ss::ht() < 80) continue;
       if (ss::met() < 30 && ss::ht() < 500) continue;
       if (ss::hyp_class() == 4 || ss::hyp_class() == 6) continue;
+      if (!ss::fired_trigger()) continue; 
 
       //SS Z veto
       if (ssZveto && fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15) continue;
@@ -155,8 +170,8 @@ void FR(){
       float ptratio_cut_2  = (abs(ss::lep2_id()) == 11 ? 0.80 : 0.76);
       float mini_cut_1     = (abs(ss::lep1_id()) == 11 ? 0.12 : 0.16);
       float mini_cut_2     = (abs(ss::lep2_id()) == 11 ? 0.12 : 0.16);
-      bool lep1_denom_iso  = true; //(/*(ss::lep1_miniIso() < mini_cut_1) &&*/ ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))));
-      bool lep2_denom_iso  = true; //(/*(ss::lep2_miniIso() < mini_cut_2) &&*/ ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))));
+      bool lep1_denom_iso  = (/*(ss::lep1_miniIso() < mini_cut_1) &&*/ (/*(ss::lep1_ptrel_v1() > ptrel_cut_1) ||*/ ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))));
+      bool lep2_denom_iso  = (/*(ss::lep2_miniIso() < mini_cut_2) &&*/ (/*(ss::lep2_ptrel_v1() > ptrel_cut_2) ||*/ ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))));
 
       //Temporarily recalculate multiIso (this won't be necessary after v4.00)
       float miniiso_1 = ss::lep1_miniIso();
@@ -190,13 +205,15 @@ void FR(){
       }
 
       //histo3 is for muons with SIP > 4 
-      else if (abs(ss::lep1_id()) == 13 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
+      else if (abs(ss::lep1_id()) == 13 && ss::lep1_sip() > 4 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep2_passes_id() && lep1_denom_iso){
         if (passesNumeratorMVA(1) && lep1_multiIso) numer3->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
         if (ss::lep1_p4().pt() >= 25) test->Fill(miniiso_1, 1.0/ptratio_1);  
         denom3->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);
+        cout << __LINE__ << endl;
+
         counter++; 
       }
-      else if (abs(ss::lep2_id()) == 13 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
+      else if (abs(ss::lep2_id()) == 13 && ss::lep2_sip() > 4 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep1_passes_id() && lep2_denom_iso){
         if (passesNumeratorMVA(2) && lep2_multiIso) numer3->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
         if (ss::lep2_p4().pt() >= 25) test->Fill(miniiso_2, 1.0/ptratio_2);  
         denom3->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);
@@ -227,20 +244,7 @@ void FR(){
     numer4->SetBinContent(nBinsX, i, numer4->GetBinContent(nBinsX, i) + numer4->GetBinContent(nBinsX+1, i)); 
   }
 
-  //Set hist errors
-  if (dataErrors){
-    numer->Sumw2();
-    denom->Sumw2();
-    numer2->Sumw2();
-    denom2->Sumw2();
-    numer3->Sumw2();
-    denom3->Sumw2();
-    numer4->Sumw2();
-    denom4->Sumw2();
-  }
-
   //Divide numer/denom
-  cout << numer->GetBinContent(22) << "/" << denom->GetBinContent(22) << " = " << 1.0*numer->GetBinContent(22)/denom->GetBinContent(22)<< endl;
   numer ->Divide(numer , denom , 1, 1, "b"); 
   numer2->Divide(numer2, denom2, 1, 1, "b"); 
   numer3->Divide(numer3, denom3, 1, 1, "b"); 
@@ -331,6 +335,4 @@ void FR(){
   PlotMaker2D(numer , Form("--outputName FR_elec_%s.pdf --noOverflow --setTitle elec %s --Xaxis fake p_{T} --Yaxis |#eta| --text", name2.c_str(), name2.c_str())); 
   PlotMaker2D(numer3, Form("--outputName FR_muon_%s.pdf --noOverflow --setTitle muon %s --Xaxis fake p_{T} --Yaxis |#eta| --text", name2.c_str(), name2.c_str())); 
   PlotMaker2D(test, "--outputName test.pdf --noOverflow --setTitle muons, pT > 25, SIP3D > 4 --Xaxis miniisolation --Yaxis 1/p_{T}^{ratio} --colors"); 
- 
-  cout << counter << endl;
 }
