@@ -6,6 +6,7 @@
 #include "TCanvas.h"
 #include "TChain.h"
 #include <fstream>
+#include "../CORE/IsolationTools.h"
 
 //Lumi
 float luminosity = getLumi();
@@ -65,6 +66,8 @@ void FR(){
   TH2D *numer4; 
   TH2D *denom4; 
 
+  TH2D *test; 
+
   //Define hists
   nBinsX = 5; 
   int nBinsY = 3; 
@@ -78,6 +81,8 @@ void FR(){
   denom3 = new TH2D("denom3", "denom3", nBinsX, xbins, nBinsY, ybins);
   numer4 = new TH2D("numer4", "numer4", nBinsX, xbins, nBinsY, ybins);
   denom4 = new TH2D("denom4", "denom4", nBinsX, xbins, nBinsY, ybins);
+
+  test = new TH2D("test", "test", 40, 0, 0.4, 20, 0, 3.0); 
 
   //Set hist errors
   if (!dataErrors){
@@ -150,48 +155,60 @@ void FR(){
       float ptratio_cut_2  = (abs(ss::lep2_id()) == 11 ? 0.80 : 0.76);
       float mini_cut_1     = (abs(ss::lep1_id()) == 11 ? 0.12 : 0.16);
       float mini_cut_2     = (abs(ss::lep2_id()) == 11 ? 0.12 : 0.16);
-      bool lep1_denom_iso  = ((ss::lep1_miniIso() < mini_cut_1) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))));
-      bool lep2_denom_iso  = ((ss::lep2_miniIso() < mini_cut_2) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))));
+      bool lep1_denom_iso  = true; //(/*(ss::lep1_miniIso() < mini_cut_1) &&*/ ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))));
+      bool lep2_denom_iso  = true; //(/*(ss::lep2_miniIso() < mini_cut_2) &&*/ ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))));
+
+      //Temporarily recalculate multiIso (this won't be necessary after v4.00)
+      float miniiso_1 = ss::lep1_miniIso();
+      float miniiso_2 = ss::lep2_miniIso();
+      float ptrel_1   = ss::lep1_ptrel_v1();
+      float ptrel_2   = ss::lep2_ptrel_v1();
+      float ptratio_1 = ss::lep1_closeJet().pt() > 0 ? ss::lep1_p4().pt()/ss::lep1_closeJet().pt() : 1.0; 
+      float ptratio_2 = ss::lep2_closeJet().pt() > 0 ? ss::lep2_p4().pt()/ss::lep2_closeJet().pt() : 1.0; 
+      bool lep1_multiIso = passMultiIsoCuts(mini_cut_1, ptratio_cut_1, ptrel_cut_1, miniiso_1, ptratio_1, ptrel_1); 
+      bool lep2_multiIso = passMultiIsoCuts(mini_cut_2, ptratio_cut_2, ptrel_cut_2, miniiso_2, ptratio_2, ptrel_2); 
 
       //histo1 is for electrons with SIP > 4 
       if (abs(ss::lep1_id()) == 11 && (testPC || isGoodLeg(2)) && (testPC || isFakeLeg(1)) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (passesNumeratorMVA(1) && ss::lep1_multiIso()) numer->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
+        if (passesNumeratorMVA(1) && lep1_multiIso) numer->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
         denom->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);
         counter++; 
       }
       else if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (passesNumeratorMVA(2) && ss::lep2_multiIso()) numer->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
+        if (passesNumeratorMVA(2) && lep2_multiIso) numer->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
         denom->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);
       }
 
       //histo2 is for electrons with SIP < 4 
       else if (abs(ss::lep1_id()) == 11 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer2->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
+        if (lep1_multiIso) numer2->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
         denom2->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);
       }
       else if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer2->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
+        if (lep2_multiIso) numer2->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
         denom2->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);
       }
 
       //histo3 is for muons with SIP > 4 
       else if (abs(ss::lep1_id()) == 13 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep1_sip() > 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (passesNumeratorMVA(1) && ss::lep1_multiIso()) numer3->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
+        if (passesNumeratorMVA(1) && lep1_multiIso) numer3->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
+        if (ss::lep1_p4().pt() >= 25) test->Fill(miniiso_1, 1.0/ptratio_1);  
         denom3->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);
         counter++; 
       }
       else if (abs(ss::lep2_id()) == 13 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (passesNumeratorMVA(2) && ss::lep2_multiIso()) numer3->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
+        if (passesNumeratorMVA(2) && lep2_multiIso) numer3->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
+        if (ss::lep2_p4().pt() >= 25) test->Fill(miniiso_2, 1.0/ptratio_2);  
         denom3->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);
       }
 
       //histo4 is for muons with SIP < 4 
       else if (abs(ss::lep1_id()) == 13 && (testPC || isGoodLeg(2)) && (testPC || isFakeLeg(1)) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
-        if (ss::lep1_multiIso()) numer4->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
+        if (lep1_multiIso) numer4->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
         denom4->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);
       }
       else if (abs(ss::lep2_id()) == 13 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
-        if (ss::lep2_multiIso()) numer4->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
+        if (lep2_multiIso) numer4->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
         denom4->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);
       }
 
@@ -311,8 +328,9 @@ void FR(){
   file->Close(); 
 
   //Plots
-  PlotMaker2D(numer , Form("--outputName FR_elec_%s.pdf --noOverflow --setTitle elec %s --Xaxis fake p_{T} --Yaxis |#eta|", name2.c_str(), name2.c_str())); 
-  PlotMaker2D(numer3, Form("--outputName FR_muon_%s.pdf --noOverflow --setTitle muon %s --Xaxis fake p_{T} --Yaxis |#eta|", name2.c_str(), name2.c_str())); 
+  PlotMaker2D(numer , Form("--outputName FR_elec_%s.pdf --noOverflow --setTitle elec %s --Xaxis fake p_{T} --Yaxis |#eta| --text", name2.c_str(), name2.c_str())); 
+  PlotMaker2D(numer3, Form("--outputName FR_muon_%s.pdf --noOverflow --setTitle muon %s --Xaxis fake p_{T} --Yaxis |#eta| --text", name2.c_str(), name2.c_str())); 
+  PlotMaker2D(test, "--outputName test.pdf --noOverflow --setTitle muons, pT > 25, SIP3D > 4 --Xaxis miniisolation --Yaxis 1/p_{T}^{ratio} --colors"); 
  
   cout << counter << endl;
 }
