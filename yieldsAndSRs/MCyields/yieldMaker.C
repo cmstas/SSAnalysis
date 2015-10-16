@@ -14,7 +14,8 @@ float lumiAG = getLumi();
 string tag = getTag().Data();  
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
-struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; }; 
+struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
+struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; SR_t SRHH; SR_t SRHL; SR_t SRLL; }; 
 
 //Total
 yields_t total; 
@@ -126,7 +127,7 @@ void getyields(){
   yields_t& flips    = results_flips.first;
   yields_t& fakes    = results_fakes.first;
   yields_t& fakes_is = results_fakes_is.first;
-
+  
   //Make yield table
   CTable table; 
   table.setPrecision(2); 
@@ -183,6 +184,16 @@ void getyields(){
   titles.push_back("WZ"); 
   titles.push_back("Flips"); 
   titles.push_back("Fakes"); 
+
+  //SR plots
+  vector <TH1F*> SRHH_plots;
+  SRHH_plots.push_back(p_ttw.SRHH.TOTAL  );
+  SRHH_plots.push_back(p_ttz.SRHH.TOTAL  );
+  SRHH_plots.push_back(p_qqww.SRHH.TOTAL );
+  SRHH_plots.push_back(p_wz.SRHH.TOTAL   );
+  SRHH_plots.push_back(p_flips.SRHH.TOTAL);
+  SRHH_plots.push_back(p_fakes.SRHH.TOTAL);
+  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "", Form("--lumi %.1f --lumiUnit pb --outputName HHSR.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05", lumiAG*1000)); // --setMinimum 0.1 --setMaximum 100
 
   vector <TH1F* > ht_plots;
   ht_plots.push_back(p_ttw.h_ht);
@@ -252,12 +263,16 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   y_result.MM    = 0;
   y_result.TOTAL = 0;
 
-  p_result.h_ht     = new TH1F(Form("ht_%s"    ,chain->GetTitle()),Form("ht_%s"    ,chain->GetTitle()),25,0,500);
-  p_result.h_met    = new TH1F(Form("met_%s"   ,chain->GetTitle()),Form("met_%s"   ,chain->GetTitle()),25,0,500);
-  p_result.h_mll    = new TH1F(Form("mll_%s"   ,chain->GetTitle()),Form("mll_%s"   ,chain->GetTitle()),25,0,500);
-  p_result.h_mtmin  = new TH1F(Form("mtmin_%s" ,chain->GetTitle()),Form("mtmin_%s" ,chain->GetTitle()),25,0,500);
-  p_result.h_njets  = new TH1F(Form("njets_%s" ,chain->GetTitle()),Form("njets_%s" ,chain->GetTitle()),10,0,10);
-  p_result.h_nbtags = new TH1F(Form("nbtags_%s",chain->GetTitle()),Form("nbtags_%s",chain->GetTitle()),10,0,10);
+  p_result.h_ht       = new TH1F(Form("ht_%s"        , chain->GetTitle()), Form("ht_%s"        , chain->GetTitle()), 25, 0, 500);
+  p_result.h_met      = new TH1F(Form("met_%s"       , chain->GetTitle()), Form("met_%s"       , chain->GetTitle()), 25, 0, 500);
+  p_result.h_mll      = new TH1F(Form("mll_%s"       , chain->GetTitle()), Form("mll_%s"       , chain->GetTitle()), 25, 0, 500);
+  p_result.h_mtmin    = new TH1F(Form("mtmin_%s"     , chain->GetTitle()), Form("mtmin_%s"     , chain->GetTitle()), 25, 0, 500);
+  p_result.h_njets    = new TH1F(Form("njets_%s"     , chain->GetTitle()), Form("njets_%s"     , chain->GetTitle()), 10, 0, 10);
+  p_result.h_nbtags   = new TH1F(Form("nbtags_%s"    , chain->GetTitle()), Form("nbtags_%s"    , chain->GetTitle()), 10, 0, 10);
+  p_result.SRHH.EE    = new TH1F(Form("SRHH_EE_%s"   , chain->GetTitle()), Form("SRHH_EE_%s"   , chain->GetTitle()), 32, 1, 33);
+  p_result.SRHH.EM    = new TH1F(Form("SRHH_EM_%s"   , chain->GetTitle()), Form("SRHH_EM_%s"   , chain->GetTitle()), 32, 1, 33);
+  p_result.SRHH.MM    = new TH1F(Form("SRHH_MM_%s"   , chain->GetTitle()), Form("SRHH_MM_%s"   , chain->GetTitle()), 32, 1, 33);
+  p_result.SRHH.TOTAL = new TH1F(Form("SRHH_TOTAL_%s", chain->GetTitle()), Form("SRHH_TOTAL_%s", chain->GetTitle()), 32, 1, 33);
 
   //nEvents in chain
   unsigned int nEventsTotal = 0;
@@ -336,6 +351,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
    
       //Get the SR
       int SR = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), ss::mtmin(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
+ 
+      //Get the category
+      anal_type_t categ = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());
 
       //Calculate the baseline yield
       if      (ss::hyp_type() == 3) y_result.EE    += weight;
@@ -343,12 +361,22 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       else                          y_result.EM    += weight;
                                     y_result.TOTAL += weight;
 
+      //Fill kinem plots
       p_result.h_ht    ->Fill(ss::ht_corr()    ,weight);
       p_result.h_met   ->Fill(ss::corrMET()    ,weight);
       p_result.h_mll   ->Fill((ss::lep1_p4()+ss::lep2_p4()).M()    ,weight);
       p_result.h_mtmin ->Fill(ss::mtmin()      ,weight);
       p_result.h_njets ->Fill(ss::njets_corr() ,weight);
       p_result.h_nbtags->Fill(ss::nbtags_corr(),weight);
+
+      //Fill SR plots
+      if (categ == HighHigh){
+        if      (ss::hyp_type() == 3) p_result.SRHH.EE->Fill(SR, weight); 
+        else if (ss::hyp_type() == 0) p_result.SRHH.MM->Fill(SR, weight); 
+        else                          p_result.SRHH.EM->Fill(SR, weight); 
+                                      p_result.SRHH.TOTAL->Fill(SR, weight); 
+      }
+
 
     }//event loop
   }//file loop
