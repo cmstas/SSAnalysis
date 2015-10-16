@@ -200,6 +200,15 @@ void getyields(){
   titles.push_back("Flips"); 
   titles.push_back("Fakes"); 
 
+  p_qqww.h_ht->Add(p_wzz.h_ht);
+  p_qqww.h_ht->Add(p_wwdps.h_ht);
+  p_qqww.h_ht->Add(p_ttg.h_ht);
+  p_qqww.h_ht->Add(p_dy.h_ht);
+  p_qqww.h_ht->Add(p_vhnonbb.h_ht);
+  p_qqww.h_ht->Add(p_tth.h_ht);
+  p_qqww.h_ht->Add(p_wgamma.h_ht);
+  p_qqww.h_ht->Add(p_tttt.h_ht);
+
   //SR plots
   vector <TH1F*> SRHH_plots;
   SRHH_plots.push_back(p_ttw.SRHH.TOTAL  );
@@ -209,15 +218,6 @@ void getyields(){
   SRHH_plots.push_back(p_flips.SRHH.TOTAL);
   SRHH_plots.push_back(p_fakes.SRHH.TOTAL);
   dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "", Form("--lumi %.1f --lumiUnit pb --outputName HHSR.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05", lumiAG*1000)); // --setMinimum 0.1 --setMaximum 100
-
-  p_qqww.h_ht->Add(p_wzz.h_ht);
-  p_qqww.h_ht->Add(p_wwdps.h_ht);
-  p_qqww.h_ht->Add(p_ttg.h_ht);
-  p_qqww.h_ht->Add(p_dy.h_ht);
-  p_qqww.h_ht->Add(p_vhnonbb.h_ht);
-  p_qqww.h_ht->Add(p_tth.h_ht);
-  p_qqww.h_ht->Add(p_wgamma.h_ht);
-  p_qqww.h_ht->Add(p_tttt.h_ht);
 
   vector <TH1F* > ht_plots;
   ht_plots.push_back(p_ttw.h_ht);
@@ -304,6 +304,7 @@ void getyields(){
   p_qqww.h_nbtags->Add(p_tth.h_nbtags);
   p_qqww.h_nbtags->Add(p_wgamma.h_nbtags);
   p_qqww.h_nbtags->Add(p_tttt.h_nbtags);
+
   vector <TH1F* > nbtags_plots;
   nbtags_plots.push_back(p_ttw.h_nbtags);
   nbtags_plots.push_back(p_ttz.h_nbtags);
@@ -361,25 +362,18 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   y_result.MM    = 0;
   y_result.TOTAL = 0;
 
-  p_result.h_ht       = new TH1F(Form("ht_%s"        , chain->GetTitle()), Form("ht_%s"        , chain->GetTitle()), 25, 0, 500);
-  p_result.h_met      = new TH1F(Form("met_%s"       , chain->GetTitle()), Form("met_%s"       , chain->GetTitle()), 25, 0, 500);
-  p_result.h_mll      = new TH1F(Form("mll_%s"       , chain->GetTitle()), Form("mll_%s"       , chain->GetTitle()), 25, 0, 500);
-  p_result.h_mtmin    = new TH1F(Form("mtmin_%s"     , chain->GetTitle()), Form("mtmin_%s"     , chain->GetTitle()), 25, 0, 500);
+  p_result.h_ht       = new TH1F(Form("ht_%s"        , chain->GetTitle()), Form("ht_%s"        , chain->GetTitle()), 20, 0, 1000);
+  p_result.h_met      = new TH1F(Form("met_%s"       , chain->GetTitle()), Form("met_%s"       , chain->GetTitle()), 15, 0, 300);
+  p_result.h_mll      = new TH1F(Form("mll_%s"       , chain->GetTitle()), Form("mll_%s"       , chain->GetTitle()), 15, 0, 300);
+  p_result.h_mtmin    = new TH1F(Form("mtmin_%s"     , chain->GetTitle()), Form("mtmin_%s"     , chain->GetTitle()), 10, 0, 200);
   p_result.h_njets    = new TH1F(Form("njets_%s"     , chain->GetTitle()), Form("njets_%s"     , chain->GetTitle()), 10, 0, 10);
-  p_result.h_nbtags   = new TH1F(Form("nbtags_%s"    , chain->GetTitle()), Form("nbtags_%s"    , chain->GetTitle()), 10, 0, 10);
+  p_result.h_nbtags   = new TH1F(Form("nbtags_%s"    , chain->GetTitle()), Form("nbtags_%s"    , chain->GetTitle()), 7 , 0, 7);
+  p_result.h_l1pt     = new TH1F(Form("l1pt_%s"      , chain->GetTitle()), Form("l1pt_%s"      , chain->GetTitle()), 20, 0, 150);
+  p_result.h_l2pt     = new TH1F(Form("l2pt_%s"      , chain->GetTitle()), Form("l2pt_%s"      , chain->GetTitle()), 20, 0, 100);
   p_result.SRHH.EE    = new TH1F(Form("SRHH_EE_%s"   , chain->GetTitle()), Form("SRHH_EE_%s"   , chain->GetTitle()), 32, 1, 33);
   p_result.SRHH.EM    = new TH1F(Form("SRHH_EM_%s"   , chain->GetTitle()), Form("SRHH_EM_%s"   , chain->GetTitle()), 32, 1, 33);
   p_result.SRHH.MM    = new TH1F(Form("SRHH_MM_%s"   , chain->GetTitle()), Form("SRHH_MM_%s"   , chain->GetTitle()), 32, 1, 33);
   p_result.SRHH.TOTAL = new TH1F(Form("SRHH_TOTAL_%s", chain->GetTitle()), Form("SRHH_TOTAL_%s", chain->GetTitle()), 32, 1, 33);
-
-  p_result.h_ht     = new TH1F(Form("ht_%s"    ,chain->GetTitle()),Form("ht_%s"    ,chain->GetTitle()),20,0,1000);
-  p_result.h_met    = new TH1F(Form("met_%s"   ,chain->GetTitle()),Form("met_%s"   ,chain->GetTitle()),15,0,300);
-  p_result.h_mll    = new TH1F(Form("mll_%s"   ,chain->GetTitle()),Form("mll_%s"   ,chain->GetTitle()),15,0,300);
-  p_result.h_mtmin  = new TH1F(Form("mtmin_%s" ,chain->GetTitle()),Form("mtmin_%s" ,chain->GetTitle()),10,0,200);
-  p_result.h_njets  = new TH1F(Form("njets_%s" ,chain->GetTitle()),Form("njets_%s" ,chain->GetTitle()),10,0,10);
-  p_result.h_nbtags = new TH1F(Form("nbtags_%s",chain->GetTitle()),Form("nbtags_%s",chain->GetTitle()),7,0,7);
-  p_result.h_l1pt   = new TH1F(Form("l1pt_%s"  ,chain->GetTitle()),Form("l1pt_%s"  ,chain->GetTitle()),20,0,150);
-  p_result.h_l2pt   = new TH1F(Form("l2pt_%s"  ,chain->GetTitle()),Form("l2pt_%s"  ,chain->GetTitle()),20,0,100);
 
   //nEvents in chain
   unsigned int nEventsTotal = 0;
