@@ -72,7 +72,7 @@
 
   TChain *ch = new TChain("t"); 
   if(doData) {
-    option += "_data";
+    // option += "_data";
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataDoubleMuonD.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataDoubleEGD.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataMuonEGD.root");
@@ -91,6 +91,7 @@
   //TChain *ch_wjets = new TChain("t"); 
   //ch_wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v1.04/Wjets_baby.root"); //this one!
 
-  gSystem->Exec("niceplots plots");
+  // upload plots if you're Nick
+  gSystem->Exec("if [ $USER == namin ]; then niceplots plots; fi");
 
 }
