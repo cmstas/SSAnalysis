@@ -1,9 +1,11 @@
 #include "TChain.h"
+#include "TCanvas.h"
 #include "TFile.h"
 #include "TTree.h"
 
 #include "../../CORE/SSSelections.h"
 #include "../../software/tableMaker/CTable.h"
+#include "../../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../../commonUtils.h"
 #include "SS.h"
 #include "../../CORE/Tools/dorky/dorky.h"
@@ -12,12 +14,13 @@ float lumiAG = getLumi();
 string tag = getTag().Data();  
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
+struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; }; 
 
 //Total
 yields_t total; 
 
 //function declaration
-yields_t run(TChain *chain, bool isData = 0, bool doFlips = 0, int doFakes = 0);
+pair<yields_t, plots_t> run(TChain *chain, bool isData = 0, bool doFlips = 0, int doFakes = 0);
 
 void getyields(){
   
@@ -25,24 +28,24 @@ void getyields(){
   cout << tag << endl;
 
   //Chains
-  TChain *ttbar_chain   = new TChain("t");
-  TChain *ttw_chain     = new TChain("t");
-  TChain *ttz_chain     = new TChain("t");
-  TChain *st_chain      = new TChain("t");
-  TChain *wz_chain      = new TChain("t");
-  TChain *wzz_chain     = new TChain("t");
-  TChain *wjets_chain   = new TChain("t");
-  TChain *wwdps_chain   = new TChain("t");
-  TChain *ttg_chain     = new TChain("t");
-  TChain *dy_chain      = new TChain("t");
-  TChain *vhnonbb_chain = new TChain("t");
-  TChain *tzq_chain     = new TChain("t");
-  TChain *tth_chain     = new TChain("t");
-  TChain *qqww_chain    = new TChain("t");
-  TChain *data_chain    = new TChain("t"); 
-  TChain *wgamma_chain  = new TChain("t"); 
-  TChain *flips_chain    = new TChain("t"); 
-  TChain *fakes_chain    = new TChain("t"); 
+  TChain *ttbar_chain   = new TChain("t","ttbar");
+  TChain *ttw_chain     = new TChain("t","ttw");
+  TChain *ttz_chain     = new TChain("t","ttz");
+  TChain *st_chain      = new TChain("t","st");
+  TChain *wz_chain      = new TChain("t","wz");
+  TChain *wzz_chain     = new TChain("t","wzz");
+  TChain *wjets_chain   = new TChain("t","wjets");
+  TChain *wwdps_chain   = new TChain("t","wwdps");
+  TChain *ttg_chain     = new TChain("t","ttg");
+  TChain *dy_chain      = new TChain("t","dy");
+  TChain *vhnonbb_chain = new TChain("t","vhnonbb");
+  TChain *tzq_chain     = new TChain("t","tzq");
+  TChain *tth_chain     = new TChain("t","tth");
+  TChain *qqww_chain    = new TChain("t","qqww");
+  TChain *data_chain    = new TChain("t","data"); 
+  TChain *wgamma_chain  = new TChain("t","wgamma"); 
+  TChain *flips_chain    = new TChain("t","flips"); 
+  TChain *fakes_chain    = new TChain("t","fakes"); 
 
   //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root"          , tag.c_str())); 
@@ -80,26 +83,49 @@ void getyields(){
   fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
 
   //Get yields
-  yields_t ttbar    = run(ttbar_chain);
-  yields_t ttw      = run(ttw_chain);
-  yields_t ttz      = run(ttz_chain);
-  yields_t st       = run(st_chain);
-  yields_t wz       = run(wz_chain);
-  yields_t wzz      = run(wzz_chain);
-  yields_t wjets    = run(wjets_chain);
-  yields_t wwdps    = run(wwdps_chain);
-  yields_t ttg      = run(ttg_chain);
-  yields_t dy       = run(dy_chain);
-  yields_t vhnonbb  = run(vhnonbb_chain);
-  yields_t tzq      = run(tzq_chain);
-  yields_t tth      = run(tth_chain);
-  yields_t wgamma   = run(wgamma_chain);
-  yields_t qqww     = run(qqww_chain);
-  yields_t data     = run(data_chain, 1);
-  yields_t flips    = run(flips_chain, 1, 1);
-  yields_t fakes    = run(fakes_chain, 1, 0, 1);
+  pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
+  pair<yields_t, plots_t> results_ttw      = run(ttw_chain);
+  pair<yields_t, plots_t> results_ttz      = run(ttz_chain);
+  pair<yields_t, plots_t> results_st       = run(st_chain);
+  pair<yields_t, plots_t> results_wz       = run(wz_chain);
+  pair<yields_t, plots_t> results_wzz      = run(wzz_chain);
+  pair<yields_t, plots_t> results_wjets    = run(wjets_chain);
+  pair<yields_t, plots_t> results_wwdps    = run(wwdps_chain);
+  pair<yields_t, plots_t> results_ttg      = run(ttg_chain);
+  pair<yields_t, plots_t> results_dy       = run(dy_chain);
+  pair<yields_t, plots_t> results_vhnonbb  = run(vhnonbb_chain);
+  pair<yields_t, plots_t> results_tzq      = run(tzq_chain);
+  pair<yields_t, plots_t> results_tth      = run(tth_chain);
+  pair<yields_t, plots_t> results_wgamma   = run(wgamma_chain);
+  pair<yields_t, plots_t> results_qqww     = run(qqww_chain);
+  pair<yields_t, plots_t> results_data     = run(data_chain, 1);
   duplicate_removal::clear_list();
-  yields_t fakes_is = run(fakes_chain, 1, 0, 2);
+  pair<yields_t, plots_t> results_flips    = run(flips_chain, 1, 1);
+  duplicate_removal::clear_list();
+  pair<yields_t, plots_t> results_fakes    = run(fakes_chain, 1, 0, 1);
+  duplicate_removal::clear_list();
+  fakes_chain->SetTitle("fakes_is");
+  pair<yields_t, plots_t> results_fakes_is = run(fakes_chain, 1, 0, 2);
+
+  yields_t& ttbar    = results_ttbar.first;   
+  yields_t& ttw      = results_ttw.first; 
+  yields_t& ttz      = results_ttz.first;
+  yields_t& st       = results_st.first;
+  yields_t& wz       = results_wz.first;
+  yields_t& wzz      = results_wzz.first;
+  yields_t& wjets    = results_wjets.first;
+  yields_t& wwdps    = results_wwdps.first;
+  yields_t& ttg      = results_ttg.first;
+  yields_t& dy       = results_dy.first;
+  yields_t& vhnonbb  = results_vhnonbb.first;
+  yields_t& tzq      = results_tzq.first;
+  yields_t& tth      = results_tth.first;
+  yields_t& wgamma   = results_wgamma.first;
+  yields_t& qqww     = results_qqww.first;
+  yields_t& data     = results_data.first;
+  yields_t& flips    = results_flips.first;
+  yields_t& fakes    = results_fakes.first;
+  yields_t& fakes_is = results_fakes_is.first;
 
   //Make yield table
   CTable table; 
@@ -129,18 +155,109 @@ void getyields(){
                    ("data"     , data.EE     , data.EM     , data.MM     , data.TOTAL   );
   table.print();
 
+  plots_t& p_ttbar    = results_ttbar.second;   
+  plots_t& p_ttw      = results_ttw.second; 
+  plots_t& p_ttz      = results_ttz.second;
+  plots_t& p_st       = results_st.second;
+  plots_t& p_wz       = results_wz.second;
+  plots_t& p_wzz      = results_wzz.second;
+  plots_t& p_wjets    = results_wjets.second;
+  plots_t& p_wwdps    = results_wwdps.second;
+  plots_t& p_ttg      = results_ttg.second;
+  plots_t& p_dy       = results_dy.second;
+  plots_t& p_vhnonbb  = results_vhnonbb.second;
+  plots_t& p_tzq      = results_tzq.second;
+  plots_t& p_tth      = results_tth.second;
+  plots_t& p_wgamma   = results_wgamma.second;
+  plots_t& p_qqww     = results_qqww.second;
+  plots_t& p_data     = results_data.second;
+  plots_t& p_flips    = results_flips.second;
+  plots_t& p_fakes    = results_fakes.second;
+  plots_t& p_fakes_is = results_fakes_is.second;
+
+  //Titles for legend
+  vector <string> titles;
+  titles.push_back("ttW"); 
+  titles.push_back("ttZ"); 
+  titles.push_back("qqWW"); 
+  titles.push_back("WZ"); 
+  titles.push_back("Flips"); 
+  titles.push_back("Fakes"); 
+
+  vector <TH1F* > ht_plots;
+  ht_plots.push_back(p_ttw.h_ht);
+  ht_plots.push_back(p_ttz.h_ht);
+  ht_plots.push_back(p_qqww.h_ht);
+  ht_plots.push_back(p_wz.h_ht);
+  ht_plots.push_back(p_flips.h_ht);
+  ht_plots.push_back(p_fakes.h_ht);
+  dataMCplotMaker(p_data.h_ht, ht_plots, titles, "ht", "test", Form("--lumi %.1f --lumiUnit pb --outputName ht_all_SS.pdf --xAxisLabel HT --percentageInBox --legendUp -.05", lumiAG*1000)); // --setMinimum 0.1 --setMaximum 100
+
+  vector <TH1F* > met_plots;
+  met_plots.push_back(p_ttw.h_met);
+  met_plots.push_back(p_ttz.h_met);
+  met_plots.push_back(p_qqww.h_met);
+  met_plots.push_back(p_wz.h_met);
+  met_plots.push_back(p_flips.h_met);
+  met_plots.push_back(p_fakes.h_met);
+  dataMCplotMaker(p_data.h_met, met_plots, titles, "met", "test", Form("--lumi %.1f --lumiUnit pb --outputName met_all_SS.pdf --xAxisLabel MET --percentageInBox --legendUp -.05", lumiAG*1000)); // --setMinimum 0.1 --setMaximum 100
+
+  vector <TH1F* > mll_plots;
+  mll_plots.push_back(p_ttw.h_mll);
+  mll_plots.push_back(p_ttz.h_mll);
+  mll_plots.push_back(p_qqww.h_mll);
+  mll_plots.push_back(p_wz.h_mll);
+  mll_plots.push_back(p_flips.h_mll);
+  mll_plots.push_back(p_fakes.h_mll);
+  dataMCplotMaker(p_data.h_mll, mll_plots, titles, "mll", "test", Form("--lumi %.1f --lumiUnit pb --outputName mll_all_SS.pdf --xAxisLabel MLL --percentageInBox --legendUp -.05", lumiAG*1000)); // --setMinimum 0.1 --setMaximum 100
+
+  vector <TH1F* > mtmin_plots;
+  mtmin_plots.push_back(p_ttw.h_mtmin);
+  mtmin_plots.push_back(p_ttz.h_mtmin);
+  mtmin_plots.push_back(p_qqww.h_mtmin);
+  mtmin_plots.push_back(p_wz.h_mtmin);
+  mtmin_plots.push_back(p_flips.h_mtmin);
+  mtmin_plots.push_back(p_fakes.h_mtmin);
+  dataMCplotMaker(p_data.h_mtmin, mtmin_plots, titles, "mtmin", "test", Form("--lumi %.1f --lumiUnit pb --outputName mtmin_all_SS.pdf --xAxisLabel MTMIN --percentageInBox --legendUp -.05", lumiAG*1000)); // --setMinimum 0.1 --setMaximum 100
+
+  vector <TH1F* > njets_plots;
+  njets_plots.push_back(p_ttw.h_njets);
+  njets_plots.push_back(p_ttz.h_njets);
+  njets_plots.push_back(p_qqww.h_njets);
+  njets_plots.push_back(p_wz.h_njets);
+  njets_plots.push_back(p_flips.h_njets);
+  njets_plots.push_back(p_fakes.h_njets);
+  dataMCplotMaker(p_data.h_njets, njets_plots, titles, "njets", "test", Form("--lumi %.1f --lumiUnit pb --outputName njets_all_SS.pdf --xAxisLabel NJETS --percentageInBox --legendUp -.05", lumiAG*1000)); // --setMinimum 0.1 --setMaximum 100
+
+  vector <TH1F* > nbtags_plots;
+  nbtags_plots.push_back(p_ttw.h_nbtags);
+  nbtags_plots.push_back(p_ttz.h_nbtags);
+  nbtags_plots.push_back(p_qqww.h_nbtags);
+  nbtags_plots.push_back(p_wz.h_nbtags);
+  nbtags_plots.push_back(p_flips.h_nbtags);
+  nbtags_plots.push_back(p_fakes.h_nbtags);
+  dataMCplotMaker(p_data.h_nbtags, nbtags_plots, titles, "nbtags", "test", Form("--lumi %.1f --lumiUnit pb --outputName nbtags_all_SS.pdf --xAxisLabel NBTAGS --percentageInBox --legendUp -.05", lumiAG*1000)); // --setMinimum 0.1 --setMaximum 100
+
 }
 
 //doFakes = 1 for QCD, 2 for inSitu
-yields_t run(TChain *chain, bool isData, bool doFlips, int doFakes){
+pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFakes){
 
-  yields_t result;
+  yields_t y_result;
+  plots_t  p_result;
 
   //Initialize
-  result.EE    = 0;
-  result.EM    = 0;
-  result.MM    = 0;
-  result.TOTAL = 0;
+  y_result.EE    = 0;
+  y_result.EM    = 0;
+  y_result.MM    = 0;
+  y_result.TOTAL = 0;
+
+  p_result.h_ht     = new TH1F(Form("ht_%s"    ,chain->GetTitle()),Form("ht_%s"    ,chain->GetTitle()),25,0,500);
+  p_result.h_met    = new TH1F(Form("met_%s"   ,chain->GetTitle()),Form("met_%s"   ,chain->GetTitle()),25,0,500);
+  p_result.h_mll    = new TH1F(Form("mll_%s"   ,chain->GetTitle()),Form("mll_%s"   ,chain->GetTitle()),25,0,500);
+  p_result.h_mtmin  = new TH1F(Form("mtmin_%s" ,chain->GetTitle()),Form("mtmin_%s" ,chain->GetTitle()),25,0,500);
+  p_result.h_njets  = new TH1F(Form("njets_%s" ,chain->GetTitle()),Form("njets_%s" ,chain->GetTitle()),10,0,10);
+  p_result.h_nbtags = new TH1F(Form("nbtags_%s",chain->GetTitle()),Form("nbtags_%s",chain->GetTitle()),10,0,10);
 
   //nEvents in chain
   unsigned int nEventsTotal = 0;
@@ -179,7 +296,7 @@ yields_t run(TChain *chain, bool isData, bool doFlips, int doFakes){
       }
 
       if (doFlips) {
-	    if (ss::hyp_class() != 4) continue;
+	if (ss::hyp_class() != 4) continue;
 	    float flipFact = 0.;
 	    if (abs(ss::lep1_id())==11){
 	      float flr = flipRate(ss::lep1_p4().pt(), ss::lep1_p4().eta());
@@ -221,28 +338,35 @@ yields_t run(TChain *chain, bool isData, bool doFlips, int doFakes){
       int SR = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), ss::mtmin(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
 
       //Calculate the baseline yield
-      if      (ss::hyp_type() == 3) result.EE    += weight;
-      else if (ss::hyp_type() == 0) result.MM    += weight;
-      else                          result.EM    += weight;
-                                    result.TOTAL += weight;
+      if      (ss::hyp_type() == 3) y_result.EE    += weight;
+      else if (ss::hyp_type() == 0) y_result.MM    += weight;
+      else                          y_result.EM    += weight;
+                                    y_result.TOTAL += weight;
+
+      p_result.h_ht    ->Fill(ss::ht_corr()    ,weight);
+      p_result.h_met   ->Fill(ss::corrMET()    ,weight);
+      p_result.h_mll   ->Fill((ss::lep1_p4()+ss::lep2_p4()).M()    ,weight);
+      p_result.h_mtmin ->Fill(ss::mtmin()      ,weight);
+      p_result.h_njets ->Fill(ss::njets_corr() ,weight);
+      p_result.h_nbtags->Fill(ss::nbtags_corr(),weight);
 
     }//event loop
   }//file loop
 
-  if (result.EE<0) result.EE=0.;
-  if (result.MM<0) result.MM=0.;
-  if (result.EM<0) result.EM=0.;
-  if (result.TOTAL<0) result.TOTAL=0.;
+  if (y_result.EE<0) y_result.EE=0.;
+  if (y_result.MM<0) y_result.MM=0.;
+  if (y_result.EM<0) y_result.EM=0.;
+  if (y_result.TOTAL<0) y_result.TOTAL=0.;
 
   //Update total
   if (!isData || doFlips || doFakes == 1){
-    total.EE    += result.EE;
-    total.EM    += result.EM;
-    total.MM    += result.MM;
-    total.TOTAL += result.TOTAL;
+    total.EE    += y_result.EE;
+    total.EM    += y_result.EM;
+    total.MM    += y_result.MM;
+    total.TOTAL += y_result.TOTAL;
   }
 
   //Return yield
-  return result; 
+  return pair<yields_t, plots_t>(y_result,p_result); 
 
 }
