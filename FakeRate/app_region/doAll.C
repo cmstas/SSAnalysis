@@ -1,6 +1,6 @@
 {
   gSystem->Load("../../CORE/CMS3_CORE.so");
-  gSystem->Load("~/software/tableMaker/libSimpleTable.so");
+  gSystem->Load("~/Software/tableMaker/libSimpleTable.so");
 
   gROOT->ProcessLine(".L SS.cc+");
   gROOT->ProcessLine(".L ScanChain.C++");
@@ -10,7 +10,7 @@
 
   bool doData = true;
 
-  bool doInSitu = 1;
+  bool doInSitu = 0;
 
   bool highhigh   = 1;
   bool highlow    = 0;
@@ -25,7 +25,7 @@
   bool doLightonly  = 0;
 
   //For both inSitu and not-in-Situ
-  bool doLooseEMVA  = 0;
+  bool doLooseEMVA  = 1;
 
   //These are only for inSitu (choose only one of these)
   bool soup         = 0;
@@ -69,15 +69,15 @@
 
   TChain *ch = new TChain("t"); 
   if(doData) {
-    option += "_data";
+    // option += "_data";
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataDoubleMuonD.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataDoubleEGD.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataMuonEGD.root");
 
-    //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets.root");
-    //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
-    //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTW.root");
-    //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WZ3LNU.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTW.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WZ3LNU.root");
 
   } else {
     if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
@@ -87,4 +87,8 @@
 
   //TChain *ch_wjets = new TChain("t"); 
   //ch_wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v1.04/Wjets_baby.root"); //this one!
+
+  // upload plots if you're Nick
+  gSystem->Exec("if [ $USER == namin ]; then niceplots plots; fi");
+
 }
