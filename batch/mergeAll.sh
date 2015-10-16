@@ -2,24 +2,26 @@
 
 path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 
-#hadd DataDoubleEG.root                $path/datadoubleeg_*_0.root     
-#hadd DataDoubleMuon.root              $path/datadoublemuon_*_0.root   
-#hadd DataMuonEG.root                  $path/datamuoneg_*_0.root   
-#hadd DataDoubleEG2.root               $path/datadoubleeg2_*_0.root     
-#hadd DataDoubleMuon2.root             $path/datadoublemuon2_*_0.root   
-#hadd DataMuonEG2.root                 $path/datamuoneg2_*_0.root   
-#hadd DataDoubleEGC.root               $path/datadoubleegc_*_0.root     
-#hadd DataDoubleMuonC.root             $path/datadoublemuonc_*_0.root   
-#hadd DataMuonEGC.root                 $path/datamuonegc_*_0.root   
+hadd DataDoubleEG.root                $path/datadoubleeg_*_0.root     
+hadd DataDoubleMuon.root              $path/datadoublemuon_*_0.root   
+hadd DataMuonEG.root                  $path/datamuoneg_*_0.root   
+hadd DataDoubleEG2.root               $path/datadoubleeg2_*_0.root     
+hadd DataDoubleMuon2.root             $path/datadoublemuon2_*_0.root   
+hadd DataMuonEG2.root                 $path/datamuoneg2_*_0.root   
+hadd DataDoubleEGC.root               $path/datadoubleegc_*_0.root     
+hadd DataDoubleMuonC.root             $path/datadoublemuonc_*_0.root   
+hadd DataMuonEGC.root                 $path/datamuonegc_*_0.root   
 hadd DataDoubleEGD.root               $path/datadoubleegd_*_0.root     
 hadd DataDoubleMuonD.root             $path/datadoublemuond_*_0.root   
 hadd DataMuonEGD.root                 $path/datamuonegd_*_0.root   
 hadd DY_high.root                     $path/dy_high_*_0.root          
 hadd DY_low.root                      $path/dy_low_*_0.root           
 hadd TTBAR.root                       $path/ttbar_*_0.root            
-#hadd TTPOWHEG.root                    $path/ttpowheg_*_0.root         
+hadd WWZ.root                         $path/wwz_*_0.root            
+hadd ZZ.root                          $path/zz_*_0.root
+hadd TTPOWHEG.root                    $path/ttpowheg_*_0.root         
 hadd WJets.root                       $path/wjets_*_0.root            
-#hadd WZ.root                          $path/wz_*_0.root               
+hadd WZ.root                          $path/wz_*_0.root               
 hadd TTZL.root                        $path/ttzl_*_0.root
 hadd TTZQ.root                        $path/ttzq_*_0.root
 hadd TTW.root                         $path/ttw_*_0.root

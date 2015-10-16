@@ -1,7 +1,7 @@
 #include "TFile.h"
 #include "TChain.h"
 #include "TH2D.h"
-#include "SS.h"
+#include "../../classFiles/v4.00/SS.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../../CORE/SSSelections.h"
 #include "../../CORE/Tools/dorky/dorky.h"
@@ -48,14 +48,32 @@ void closure(){
   TH2D  *rate = (TH2D*)flip_file->Get("flips"); 
 
   //Closure vs. inv mass plot
-  constexpr int clos_nBinsX = 5;
-  // TH1F* clos_MC   = new TH1F("clos_plot_MC"  , "clos_plot_MC"  , 9, 70, 115); 
-  // TH1F* clos_data = new TH1F("clos_plot_data", "clos_plot_data", 9, 70, 115); 
-  TH1F* clos_MC   = new TH1F("clos_plot_MC"  , "clos_plot_MC"  , clos_nBinsX, 70, 120); 
-  TH1F* clos_data = new TH1F("clos_plot_data", "clos_plot_data", clos_nBinsX, 70, 120); 
-  TH1F* osee_data = new TH1F("osee_plot_data", "osee_plot_data", clos_nBinsX, 70, 120); 
+  constexpr int clos_mll_nBinsX = 9;
+  TH1F* clos_mll_MC   = new TH1F("clos_mll_plot_MC"  , "clos_mll_plot_MC"  , clos_mll_nBinsX, 70, 115); 
+  TH1F* clos_mll_MCp  = new TH1F("clos_mll_plot_MCp" , "clos_mll_plot_MCp" , clos_mll_nBinsX, 70, 115); 
+  TH1F* clos_mll_data = new TH1F("clos_mll_plot_data", "clos_mll_plot_data", clos_mll_nBinsX, 70, 115); 
+  TH1F* osee_data = new TH1F("osee_plot_data", "osee_plot_data", clos_mll_nBinsX, 70, 115); 
   //Sumw2
-  clos_MC->Sumw2();
+  clos_mll_MC->Sumw2();
+  clos_mll_MCp->Sumw2();
+
+  TH1F* clos_leppt_MC   = new TH1F("clos_leppt_plot_MC"  , "clos_leppt_plot_MC"  , 30, 0, 150); 
+  TH1F* clos_leppt_MCp  = new TH1F("clos_leppt_plot_MCp" , "clos_leppt_plot_MCp" , 30, 0, 150); 
+  TH1F* clos_leppt_data = new TH1F("clos_leppt_plot_data", "clos_leppt_plot_data", 30, 0, 150); 
+  clos_leppt_MC->Sumw2();
+  clos_leppt_MCp->Sumw2();
+
+  TH1F* clos_lepeta_MC   = new TH1F("clos_lepeta_plot_MC"  , "clos_lepeta_plot_MC"  , 12, -3, 3); 
+  TH1F* clos_lepeta_MCp  = new TH1F("clos_lepeta_plot_MCp" , "clos_lepeta_plot_MCp" , 12, -3, 3); 
+  TH1F* clos_lepeta_data = new TH1F("clos_lepeta_plot_data", "clos_lepeta_plot_data", 12, -3, 3); 
+  clos_lepeta_MC->Sumw2();
+  clos_lepeta_MCp->Sumw2();
+
+  TH1F* clos_ht_MC   = new TH1F("clos_ht_plot_MC"  , "clos_ht_plot_MC"  , 15, 0, 300); 
+  TH1F* clos_ht_MCp  = new TH1F("clos_ht_plot_MCp" , "clos_ht_plot_MCp" , 15, 0, 300); 
+  TH1F* clos_ht_data = new TH1F("clos_ht_plot_data", "clos_ht_plot_data", 15, 0, 300); 
+  clos_ht_MC->Sumw2();
+  clos_ht_MCp->Sumw2();
 
   //Errors -- keep track of number of events in each FR bin so we can get the error 
   int nBinsX = rate->GetNbinsX(); 
@@ -63,8 +81,8 @@ void closure(){
   const TArrayD* xbins = rate->GetXaxis()->GetXbins();
   const TArrayD* ybins = rate->GetYaxis()->GetXbins();
   //TH2D* errors  = new TH2D("errors" , "errors" , nBinsX, xbins, nBinsY, ybins);
-  TH2D* errors[clos_nBinsX] = { 0 };
-  for (unsigned int i = 0; i < clos_nBinsX; i++){
+  TH2D* errors[clos_mll_nBinsX] = { 0 };
+  for (unsigned int i = 0; i < clos_mll_nBinsX; i++){
     errors[i] = new TH2D(Form("errors_%i", i) , "errors" , nBinsX, xbins->GetArray(), nBinsY, ybins->GetArray());
   }
 
@@ -72,8 +90,9 @@ void closure(){
   int reject = 0;
 
   //Results
-  float nObs  = 0;
-  float nPred = 0;
+  float nObs   = 0;
+  float nObsMC = 0;
+  float nPred  = 0;
 
   //Pred err variables
   float stat2 = 0; 
@@ -83,6 +102,7 @@ void closure(){
   TChain *chain = new TChain("t");
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DataDoubleEGD.root");
   //chain->Add("./Data_DoubleEG2015D.root");
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_high.root");
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -121,34 +141,50 @@ void closure(){
       }
 
       //MET filters
-      //if (!ss::passes_met_filters()) continue;
+      // if (!ss::passes_met_filters()) continue;
 
       //Throw away unneeded events
       if (hyp_class() != 3 && hyp_class() != 4) continue;
-
-      //Hyp-6 events don't necessarily pass ID (in v1.26, to be fixed); impose that here
-      //if (!lep1_passes_id() || !lep2_passes_id()) continue;
 
       //Keep only electron-electron events
       if (abs(lep1_id()) != 11 || abs(lep2_id()) != 11) continue;
 
       //Figure out if SS
       bool isSS = false;
-      //if (sgn(lep1_id()) == sgn(lep2_id())) isSS = true;
       if (hyp_class() == 3) isSS = true;
 
       //Weight
-      float weight = 1.0; //scale1fb()*theLumi;
+      float weight = 1.0;
 
       //Observation
       if (isSS){
         float mll = (lep1_p4() + lep2_p4()).M();
-        if (mll > 80 && mll < 100) nObs += weight; 
-        clos_data->Fill(mll, weight); 
+	if (ss::is_real_data()) {
+	  clos_mll_data->Fill(mll, weight); 
+	  if (mll > 80 && mll < 100) {
+	    nObs += weight; 
+	    clos_leppt_data->Fill(lep1_p4().pt(), weight); 
+	    clos_leppt_data->Fill(lep2_p4().pt(), weight); 
+	    clos_lepeta_data->Fill(lep1_p4().eta(), weight); 
+	    clos_lepeta_data->Fill(lep2_p4().eta(), weight); 
+	    clos_ht_data->Fill(ss::ht_corr(), weight); 
+	  }
+	} else {
+	  weight = scale1fb()*getLumi()*getPUw(ss::nGoodVertices());
+	  clos_mll_MCp->Fill(mll, weight); 
+	  if (mll > 80 && mll < 100) {
+	    nObsMC += weight; 
+	    clos_leppt_MCp->Fill(lep1_p4().pt(), weight); 
+	    clos_leppt_MCp->Fill(lep2_p4().pt(), weight); 
+	    clos_lepeta_MCp->Fill(lep1_p4().eta(), weight); 
+	    clos_lepeta_MCp->Fill(lep2_p4().eta(), weight); 
+	    clos_ht_MCp->Fill(ss::ht_corr(), weight); 
+	  }
+	}
       } 
 
       //Prediction
-      if (!isSS){
+      if (!isSS && ss::is_real_data()){
 	float pt1  = lep1_p4().pt();  
 	float eta1 = fabs(lep1_p4().eta()); 
 	float pt2  = lep2_p4().pt();  
@@ -164,14 +200,21 @@ void closure(){
 	
 	float ff = getFlipFactor(rate);
 	float mll = (lep1_p4() + lep2_p4()).M();
-        if (mll > 80 && mll < 100) nPred += ff*weight;
-	clos_MC->Fill(mll, ff*weight); 
+	clos_mll_MC->Fill(mll, ff*weight); 
 	osee_data->Fill(mll, weight);
-	int bin_in_errors = clos_MC->FindBin(mll);
-	if (bin_in_errors >= clos_nBinsX) overflow ? bin_in_errors = clos_nBinsX-1 : bin_in_errors = 999; 
+	int bin_in_errors = clos_mll_MC->FindBin(mll);
+	if (bin_in_errors >= clos_mll_nBinsX) overflow ? bin_in_errors = clos_mll_nBinsX-1 : bin_in_errors = 999; 
 	if (bin_in_errors < 0) overflow ? bin_in_errors = 0 : bin_in_errors = 999;
 	if (bin_in_errors != 999) errors[bin_in_errors]->Fill(pt1, eta1, weight);
 	if (bin_in_errors != 999) errors[bin_in_errors]->Fill(pt2, eta2, weight);
+        if (mll > 80 && mll < 100) {
+	  nPred += ff*weight;
+	  clos_leppt_MC->Fill(lep1_p4().pt(), ff*weight); 
+	  clos_leppt_MC->Fill(lep2_p4().pt(), ff*weight); 
+	  clos_lepeta_MC->Fill(lep1_p4().eta(), ff*weight); 
+	  clos_lepeta_MC->Fill(lep2_p4().eta(), ff*weight); 
+	  clos_ht_MC->Fill(ss::ht_corr(), ff*weight); 
+	}
       }
       
     }//event loop
@@ -179,12 +222,12 @@ void closure(){
 
   cout << "number of duplicates removed: " << reject << endl;
 
-  for (int i = 1; i <= clos_nBinsX; i++) stat2 += pow(clos_MC->GetBinError(i), 2);  
+  for (int i = 1; i <= clos_mll_nBinsX; i++) stat2 += pow(clos_mll_MC->GetBinError(i), 2);  
 
   //Figure out error from "errors" plot:
-  float theerror[clos_nBinsX] = { 0 } ;
-  for (int k = 0; k < clos_nBinsX; k++){
-    //cout << endl << clos_MC->GetBinContent(k+1) << endl;
+  float theerror[clos_mll_nBinsX] = { 0 } ;
+  for (int k = 0; k < clos_mll_nBinsX; k++){
+    //cout << endl << clos_mll_MC->GetBinContent(k+1) << endl;
     float yield = 0.;
     float error = 0; 
     for (int i = 1; i <= errors[0]->GetNbinsX(); i++){
@@ -200,28 +243,46 @@ void closure(){
         fr_err2 += pow(error, 2); 
       }
     }
-    //clos_MC->SetBinError(k+1, sqrt(theerror[k] + pow(clos_MC->GetBinError(k+1),2)));
-    //cout << "set error = " <<  sqrt(theerror[k] + pow(clos_MC->GetBinError(k+1),2)) << " yield=" << yield << endl;
+    //clos_mll_MC->SetBinError(k+1, sqrt(theerror[k] + pow(clos_mll_MC->GetBinError(k+1),2)));
+    //cout << "set error = " <<  sqrt(theerror[k] + pow(clos_mll_MC->GetBinError(k+1),2)) << " yield=" << yield << endl;
   }
 
-  cout << "pred: " << nPred << " pm " << sqrt(stat2 + fr_err2) << endl;
-  cout << " obs: " << nObs << " pm " << sqrt(nObs) << endl;
+  cout << "obsMC: " << nObsMC << endl;
+  cout << " pred: " << nPred  << " pm " << sqrt(stat2 + fr_err2) << endl;
+  cout << "  obs: " << nObs   << " pm " << sqrt(nObs) << endl;
 
   //Split it
   cout << "pred stat: " << sqrt(stat2) << endl;
   cout << "pred syst: " << sqrt(fr_err2) << endl;
 
   //Make plot
-  TH1F* null = new TH1F("","",1,0,1);
   vector <TH1F*> bkgd;
-  bkgd.push_back(clos_MC); 
+  bkgd.push_back(clos_mll_MC); 
   vector <string> titles;
   vector <TH1F*> signals;
-  signals.push_back(clos_data); 
+  signals.push_back(clos_mll_MCp); 
   vector <string> sigTit; 
-  sigTit.push_back("Observed Same-Sign Events");
+  sigTit.push_back("MC Same-Sign Events");
   titles.push_back("Predicted Same-Sign Events"); 
-  dataMCplotMaker(null, bkgd, titles, "", "", "--lumi 209.5 --lumiUnit pb --outputName flip_closure.pdf --xAxisLabel M_{ll} --blackSignals  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2", signals, sigTit); //--setMaximum 10 
+  dataMCplotMaker(clos_mll_data, bkgd, titles, "", "", "--lumi 209.5 --lumiUnit pb --outputName flip_closure.pdf --xAxisLabel M_{ll} --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", signals, sigTit);
+
+  bkgd.clear();
+  bkgd.push_back(clos_leppt_MC); 
+  signals.clear();
+  signals.push_back(clos_leppt_MCp); 
+  dataMCplotMaker(clos_leppt_data, bkgd, titles, "", "", "--lumi 209.5 --lumiUnit pb --outputName flip_closure_leppt.pdf --xAxisLabel Lepton p_{T}  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", signals, sigTit);
+
+  bkgd.clear();
+  bkgd.push_back(clos_lepeta_MC); 
+  signals.clear();
+  signals.push_back(clos_lepeta_MCp); 
+  dataMCplotMaker(clos_lepeta_data, bkgd, titles, "", "", "--lumi 209.5 --lumiUnit pb --outputName flip_closure_lepeta.pdf --xAxisLabel Lepton #eta --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", signals, sigTit);
+
+  bkgd.clear();
+  bkgd.push_back(clos_ht_MC); 
+  signals.clear();
+  signals.push_back(clos_ht_MCp); 
+  dataMCplotMaker(clos_ht_data, bkgd, titles, "", "", "--lumi 209.5 --lumiUnit pb --outputName flip_closure_ht.pdf --xAxisLabel HT  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", signals, sigTit);
 
   TCanvas cosee;
   osee_data->Draw("hist,goff");

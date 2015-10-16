@@ -1,3 +1,4 @@
+//fixme add systematics from EWK subtraction
 void plotEWKCorFR(float elSF_mt=0.923611, float muSF_mt=0.879643) {
 
   for(int doMu = 0; doMu < 2; doMu++) {
@@ -32,6 +33,12 @@ void plotEWKCorFR(float elSF_mt=0.923611, float muSF_mt=0.879643) {
   num_data->Add(num_wj,-1.*ewkSF);
   num_data->Add(num_dy,-1.*ewkSF);
 
+  for (int binx=1;binx<=num_data->GetNbinsX();++binx) {
+    for (int biny=1;biny<=num_data->GetNbinsY();++biny) {
+      if (num_data->GetBinContent(binx,biny)<0) num_data->SetBinContent(binx,biny,0.);
+    }
+  }
+
   num_data->Divide(num_data, den_data, 1, 1, "B");
 
   num_data->SetTitle("EWK-corrected "+lepname+" fake rate");
@@ -47,7 +54,9 @@ void plotEWKCorFR(float elSF_mt=0.923611, float muSF_mt=0.879643) {
   num_data->Draw("textecolz");
 
   c1.SaveAs("pdfs/ewkCorFR_"+lepname+".pdf");
-
+  TFile out("ewkCorFR_"+lepname+".root","RECREATE");
+  num_data->Write();
+  out.Close();
   }
 
 }

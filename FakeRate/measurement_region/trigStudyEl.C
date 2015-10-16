@@ -59,19 +59,19 @@ void trigStudyEl() {
   t->Draw("p4.pt()>>fo_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
   t->Draw("p4.pt()>>fo_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
   
-  //tight fired (matched, weighted)
-  t->Draw("p4.pt()>>tight_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_tight_v5)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5)","goff");
-  t->Draw("p4.pt()>>tight_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5)","goff");
-  
   //cuts fired (matched, weighted)
-  t->Draw("p4.pt()>>cuts_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  
+  //tight fired (matched, weighted)
+  t->Draw("p4.pt()>>tight_pt_Ele8" ,"HLT_Ele8_CaloIdM_TrackIdM_PFJet30 *(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele12","HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele18","HLT_Ele18_CaloIdM_TrackIdM_PFJet30*(HLT_Ele18_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele23","HLT_Ele23_CaloIdM_TrackIdM_PFJet30*(HLT_Ele23_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>tight_pt_Ele33","HLT_Ele33_CaloIdM_TrackIdM_PFJet30*(HLT_Ele33_CaloIdM_TrackIdM_PFJet30>0 && abs(id)==11 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
   
   //fo fired (matched, unweighted)
   t->Draw("p4.pt()>>unw_fo_pt_Ele8" ,"(HLT_Ele8_CaloIdM_TrackIdM_PFJet30>0  && abs(id)==11 && passes_SS_fo_looseMVA_v5)","goff");
@@ -129,8 +129,8 @@ void trigStudyEl() {
 
   label->SetTextColor(kBlue);    label->DrawLatexNDC(0.65,0.85, "all");
   label->SetTextColor(kMagenta); label->DrawLatexNDC(0.65,0.80, "pass FO");
-  label->SetTextColor(kRed);     label->DrawLatexNDC(0.65,0.75, "pass Tight");
-  label->SetTextColor(kGreen);   label->DrawLatexNDC(0.65,0.70, "pass Tight+cuts");
+  label->SetTextColor(kGreen);   label->DrawLatexNDC(0.65,0.75, "pass FO+cuts");
+  label->SetTextColor(kRed);     label->DrawLatexNDC(0.65,0.70, "pass Tight+cuts");
 
   c1.SaveAs( "pdfs/paths_el.pdf" );
 
