@@ -338,10 +338,10 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       int SR = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), ss::mtmin(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
 
       //Calculate the baseline yield
-      if      (ss::hyp_type() == 3) result.EE    += weight;
-      else if (ss::hyp_type() == 0) result.MM    += weight;
-      else                          result.EM    += weight;
-                                    result.TOTAL += weight;
+      if      (ss::hyp_type() == 3) y_result.EE    += weight;
+      else if (ss::hyp_type() == 0) y_result.MM    += weight;
+      else                          y_result.EM    += weight;
+                                    y_result.TOTAL += weight;
 
       p_result.h_ht    ->Fill(ss::ht_corr()    ,weight);
       p_result.h_met   ->Fill(ss::corrMET()    ,weight);
