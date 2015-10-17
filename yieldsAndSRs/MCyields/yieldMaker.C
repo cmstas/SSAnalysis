@@ -601,13 +601,18 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       if (doFakes){
         if (ss::hyp_class() != 2) continue;
+	//electron FO is tighter for iso triggers
+	if (ss::ht_corr()<300.) {
+	  if (!ss::lep1_passes_id() && !passIsolatedFO(ss::lep1_id(), ss::lep1_eta(), ss::lep1_MVA())) continue;
+	  if (!ss::lep2_passes_id() && !passIsolatedFO(ss::lep2_id(), ss::lep2_eta(), ss::lep2_MVA())) continue;
+	}
         float fr = 0.;
         if (ss::lep1_passes_id()==0){
-          if (doFakes == 1) fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
+          if (doFakes == 1) fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht_corr());
           if (doFakes == 2) fr = fakeRateInSitu(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
         }
         if (ss::lep2_passes_id()==0){
-          if (doFakes == 1) fr = fakeRate(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
+          if (doFakes == 1) fr = fakeRate(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::ht_corr());
           if (doFakes == 2) fr = fakeRateInSitu(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
         }
         weight *= fr/(1.-fr);
