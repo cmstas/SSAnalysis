@@ -1,7 +1,9 @@
-pair<float,float> plotMTCR(float inputSF_el=1.16182, float inputSF_mu=1.11212) {
+pair<float,float> plotMTCR(float inputSF_el, float inputSF_mu, bool useIsoTrig) {
 
   float sfel, sfmu;
 
+  TString suffix = (useIsoTrig ? "_IsoTrigs" : "");
+  
   for(int doMu = 0; doMu < 2; doMu++) {
 
   gROOT->Reset();
@@ -21,10 +23,10 @@ pair<float,float> plotMTCR(float inputSF_el=1.16182, float inputSF_mu=1.11212) {
   if (doMu) plot = "histo_"+plot+"_mu";
   else plot = "histo_"+plot+"_el";
 
-  TFile *_file_wj = TFile::Open("rate_histos_wj_LooseEMVA.root");
-  TFile *_file_dy = TFile::Open("rate_histos_dy_LooseEMVA.root");
+  TFile *_file_wj = TFile::Open("rate_histos_wj_LooseEMVA"+suffix+".root");
+  TFile *_file_dy = TFile::Open("rate_histos_dy_LooseEMVA"+suffix+".root");
 
-  TFile *_file_data = TFile::Open("rate_histos_data_LooseEMVA.root");
+  TFile *_file_data = TFile::Open("rate_histos_data_LooseEMVA"+suffix+".root");
 
   TH1F* h_data = (TH1F*) _file_data->Get(plot);
   TH1F* h_wj = (TH1F*) _file_wj->Get(plot);
@@ -86,7 +88,7 @@ pair<float,float> plotMTCR(float inputSF_el=1.16182, float inputSF_mu=1.11212) {
   leg->AddEntry((TObject*)0  ,Form( "SF: %.2f", sf ),"");
   leg->Draw();
 
-  c1.SaveAs("pdfs/"+plot+(doMu ? "_mu" : "_el")+".pdf");
+  c1.SaveAs("pdfs/"+plot+(doMu ? "_mu" : "_el")+suffix+".pdf");
   }
 
   return make_pair(sfel,sfmu);

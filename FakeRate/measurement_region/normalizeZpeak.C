@@ -1,4 +1,4 @@
-pair<float,float> normalizeZpeak(float intlumi) {
+pair<float,float> normalizeZpeak(float intlumi, bool useIsoTrig) {
 
   // we want to output the MTCR SFs so we can lazily chain the macros together
   float sfel, sfmu;
@@ -9,6 +9,13 @@ pair<float,float> normalizeZpeak(float intlumi) {
   gROOT->Reset();
 
   TString tag = "v4.00";
+
+  TString hlt = (doMu ? "HLT_Mu17" : "HLT_Ele12_CaloIdM_TrackIdM_PFJet30");
+  if (useIsoTrig) hlt = (doMu ? "HLT_Mu17_TrkIsoVVL" : "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30");
+
+  TString suffix = (useIsoTrig ? "_IsoTrigs" : "");
+
+  int idlep = (doMu ? 13 : 11); 
 
   TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleMuon.root" : "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root");
   TString dyf = "/nfs-7/userdata/leptonTree/"+tag+"/DY_amcnlo_M50.root";
@@ -26,15 +33,8 @@ pair<float,float> normalizeZpeak(float intlumi) {
   mll_data->Sumw2();  
   mll_dy->Sumw2();
 
-  if (doMu) {
-    //mm
-    t_data->Draw("dilep_mass>>mll_data","HLT_Mu17*(abs(id)==13 && passes_SS_tight_v5 && HLT_Mu17>0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
-    t_dy->Draw("dilep_mass>>mll_dy",Form("%f*scale1fb*HLT_Mu17*(abs(id)==13 && passes_SS_tight_v5 && HLT_Mu17>0 && tag_p4.pt()>30. && p4.pt()>25.)",intlumi),"goff");
-  } else {
-    //ee
-    t_data->Draw("dilep_mass>>mll_data","HLT_Ele12_CaloIdM_TrackIdM_PFJet30 * (abs(id)==11 && passes_SS_tight_v5 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && tag_p4.pt()>30. && p4.pt()>25.)","goff");
-    t_dy->Draw("dilep_mass>>mll_dy",Form("%f*scale1fb*HLT_Ele12_CaloIdM_TrackIdM_PFJet30*(abs(id)==11 && passes_SS_tight_v5 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30>0 && tag_p4.pt()>30. && p4.pt()>25.)",intlumi),"goff");
-  }
+  t_data->Draw("dilep_mass>>mll_data",Form("%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",hlt.Data(),idlep,hlt.Data()),"goff");
+  t_dy->Draw("dilep_mass>>mll_dy",Form("%f*scale1fb*%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",intlumi,hlt.Data(),idlep,hlt.Data()),"goff");
 
   float mc_zpeak   = mll_dy->Integral(mll_dy->FindBin(75),mll_dy->FindBin(105));
   float data_zpeak = mll_data->Integral(mll_data->FindBin(75),mll_data->FindBin(105));
@@ -62,7 +62,7 @@ pair<float,float> normalizeZpeak(float intlumi) {
   leg->AddEntry((TObject*)0  ,Form( "SF: %.2f", data_zpeak/mc_zpeak ),"");
   leg->Draw();
 
-  c1.SaveAs( (doMu ? "pdfs/zpeak_mu.pdf" : "pdfs/zpeak_el.pdf") );
+  c1.SaveAs( (doMu ? "pdfs/zpeak_mu"+suffix+".pdf" : "pdfs/zpeak_el"+suffix+".pdf") );
 
 
   }

@@ -92,7 +92,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool doLightonly = false;
   if (option.Contains("doLightonly")) doLightonly = true;
 
+  bool useIsoTrigs = false;
+  if (option.Contains("IsoTrigs")) useIsoTrigs = true;
+
   bool doJEC = false;
+
+  bool debug = false;
 
   int nptbins = 5;
   int netabins = 3;
@@ -429,9 +434,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
     if(fast) tree->SetCacheSize(128*1024*1024);
     lepton_tree_obj.Init(tree);
 
+    bool isSyncFile = TString(currentFile->GetTitle()).Contains("Sync");
 
     // Apply JEC
-    bool isDataFromFileName = TString(currentFile->GetTitle()).Contains("2015C") || TString(currentFile->GetTitle()).Contains("2015D");
+    bool isDataFromFileName = TString(currentFile->GetTitle()).Contains("2015C") || TString(currentFile->GetTitle()).Contains("2015D") || 
+                              TString(currentFile->GetTitle()).Contains("DoubleMu") || TString(currentFile->GetTitle()).Contains("DoubleEG");
+    bool isDoubleMuon = TString(currentFile->GetTitle()).Contains("DoubleMu");
 
     if (isDataFromFileName){
       jet_corrector_pfL1 = jet_corrector_25ns_DATA_pfL1;
@@ -465,8 +473,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       // Progress
       LeptonTree::progress( nEventsTotal, nEventsChain );
 
+      if (debug && evt_event()!=11619286) continue;
+
       //cout << "pt=" << p4().pt() << " iso=" << RelIso03EA() << endl;
-      //cout << "lepp4=" << p4() << " jetp4=" << jet_close_lep() << endl;
+      if (debug) cout << "lepp4=" << p4() << " jetp4=" << jet_close_lep() << endl;
 
       vector<LorentzVector> jets_recorr;
       for(unsigned int i=0; i<jets().size(); i++)  {
@@ -506,6 +516,13 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       bool noMCMatch = false;
       if (isData) noMCMatch = true;
 
+      //reject electrons from DoubleMu and muons from DoubleEG
+      if (debug) cout << "check dataset" << endl;
+      if (isData) {
+	if ( isDoubleMuon && abs(id())!=13) continue;
+	if (!isDoubleMuon && abs(id())!=11) continue;
+      }
+
       bool isEWK = false;
       if (TString(currentFile->GetTitle()).Contains("WJets") || TString(currentFile->GetTitle()).Contains("DY")) isEWK = true;
 
@@ -534,6 +551,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  /QCD_Pt-1000toInf_MuEnrichedPt5 0.0008180
 	  /QCD_Pt-20toInf_MuEnrichedPt15 22.926769
 	  */
+	  if (debug) cout << "check qcd" << endl;
 	  if (p4().pt()<15. &&  scale1fb() > 22.9 && scale1fb() < 23.0 ) continue;  //take only Mu15 above pT=15
 	  if (p4().pt()>15. && (scale1fb() < 22.9 || scale1fb() > 23.0)) continue;  //take only Mu5 below pT=15
 	  if (scale1fb() < 5.0 || scale1fb() > 600.) continue; //avoid extreme ranges and weights
@@ -558,6 +576,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  /QCD_Pt-300toInf_EMEnriched 0.3651889
 	  */
 	  //if(isData==0 && scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
+	  if (debug) cout << "check qcd" << endl;
 	  if (scale1fb() < 5.0) continue; //avoid extreme ranges and weights
 	  if (scale1fb() > 280 && scale1fb() < 281) continue; 
 	  if (scale1fb() > 1085 && scale1fb() < 1086) continue; 
@@ -584,70 +603,84 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       }
       if(njets40 > 0) jetptcut = true;
       
-      float ptrel = ptrelv1();
-      //cout << ptrel << " " << computePtRel(p4(),jet_close_lep(),true) << endl;
-      assert(ptrel<0 || fabs(ptrel - computePtRel(p4(),jet_close_lep_p4,true))<0.0001);
+      LorentzVector closejet = (jet_close_lep_p4*jet_close_lep_undoJEC()*jet_close_L1() - p4())*jet_close_L2L3() + p4(); // V5
+      float ptrel =  computePtRel(p4(),closejet,true);//ptrelv1();
+      // cout << ptrel << " " << computePtRel(p4(),jet_close_lep(),true) << endl;
       // float closejetpt = jet_close_lep_p4.pt()*jet_close_lep_undoJEC()*jet_close_L1ncmc(); // V4
-      float closejetpt = ((jet_close_lep_p4*jet_close_lep_undoJEC()*jet_close_L1ncmc() - p4())*jet_close_L2L3() + p4()).pt(); // V5
+      float closejetpt = closejet.pt(); // V5
       //float miniIso = miniiso();
       float relIso = RelIso03EA();
+      if (debug) cout << "close jet raw p4=" << jet_close_lep_p4*jet_close_lep_undoJEC()
+		      << " pt=" << (jet_close_lep_p4*jet_close_lep_undoJEC()).pt()
+		      << " corrected p4=" << closejet
+		      << " pt=" << closejet.pt()
+		      << " L1=" << jet_close_L1()
+		      << " L2L3=" << jet_close_L2L3()
+		      << " rho=" << rho()
+		      << " ptrel=" << ptrel
+		      << " ptratio=" << p4().pt()/closejetpt
+		      << endl;
 
+      if (debug) cout << "check jet: njets40=" << njets40 << " ht_SS=" << ht_SS() << endl;
       if( !jetptcut || ht_SS()<40 )
 	{continue;}
 
-      //trigger selection (fixme add also iso triggers)
+      //trigger selection
+      if (debug) cout << "check hlt" << endl;
       if (abs(id())==11) {
-	//fixme
-	if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()==0  && 
-	    HLT_Ele12_CaloIdM_TrackIdM_PFJet30()==0 && 
-	    HLT_Ele18_CaloIdM_TrackIdM_PFJet30()==0 && 
-	    HLT_Ele23_CaloIdM_TrackIdM_PFJet30()==0 && 
-	    HLT_Ele33_CaloIdM_TrackIdM_PFJet30()==0 ) continue;
-	
-	// ele12 or ele18 for 2015D
-	if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()==0 &&
-	    HLT_Ele18_CaloIdM_TrackIdM_PFJet30()==0 ) continue;
-
+	// ele12 for 2015D
+	if (useIsoTrigs) {
+	  if (HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30()<=0) continue;
+	} else {
+	  if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()<=0 //&&
+	      /*HLT_Ele18_CaloIdM_TrackIdM_PFJet30()<=0*/ ) continue;
+	}
       }
       if (abs(id())==13) {
-	if (HLT_Mu8()<=0  && 
-	    HLT_Mu17()<=0 && 
-	    HLT_Mu24()<=0 && 
-	    HLT_Mu34()<=0 ) continue;
-
 	// mu8 or mu17 for 2015D
-	if (HLT_Mu8()<=0 &&
-	    HLT_Mu17()<=0) continue;
+	if (useIsoTrigs) {
+	  if (HLT_Mu8_TrkIsoVVL()<=0 &&
+	      HLT_Mu17_TrkIsoVVL()<=0) continue;
+	} else {
+	  if (HLT_Mu8()<=0 &&
+	      HLT_Mu17()<=0) continue;
+	}
 	
       }	
 
       //check prescales, apply cuts on the pT range depending on the trigger
       int prescale = -1;
       if (abs(id())==11) {	
-	// use ele128+ele18
-	if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
-	else if (p4().pt() >= 25 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();	
-	if (prescale>0) weight *= prescale;
-	else continue;	  
-	// if ((HLT_Ele23_CaloIdM_TrackIdM_PFJet30() || HLT_Ele33_CaloIdM_TrackIdM_PFJet30()) && minPrescale>1000) {
-	// cout << evt_run() << " " << 
-	//   minPrescale << " " <<
-	//   HLT_Ele8_CaloIdM_TrackIdM_PFJet30() << " " << 
-	//   HLT_Ele12_CaloIdM_TrackIdM_PFJet30() << " " << 
-	//   HLT_Ele18_CaloIdM_TrackIdM_PFJet30() << " " << 
-	//   HLT_Ele23_CaloIdM_TrackIdM_PFJet30() << " " << 
-	//   HLT_Ele33_CaloIdM_TrackIdM_PFJet30() << " " << 
-	//   endl;
-	// }    
+	// use ele12+ele18
+	if (useIsoTrigs) {
+	  if (p4().pt() >= 10 && HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) prescale = HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30();
+	  if (prescale>0) weight *= prescale;
+	  else continue;	  
+	} else {
+	  if (p4().pt() >= 10 /*&& p4().pt() < 25*/ && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
+	  //else if (p4().pt() >= 25 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();	
+	  if (prescale>0) weight *= prescale;
+	  else continue;	  
+	}
       }
       if (abs(id())==13) {	
 	// use mu8+mu17
-	if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0) prescale = HLT_Mu8();
-	else if (p4().pt()>=25 && HLT_Mu17()>0) prescale = HLT_Mu17();	
-	if (prescale>0) weight *= prescale;
-	else continue;
+	if (useIsoTrigs) {
+	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) prescale = HLT_Mu8_TrkIsoVVL();
+	  else if (p4().pt()>=25 && HLT_Mu17_TrkIsoVVL()>0) prescale = HLT_Mu17_TrkIsoVVL();	
+	  if (prescale>0) weight *= prescale;
+	  else continue;
+	} else {
+	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0) prescale = HLT_Mu8();
+	  else if (p4().pt()>=25 && HLT_Mu17()>0) prescale = HLT_Mu17();	
+	  if (prescale>0) weight *= prescale;
+	  else continue;
+	}
       }
+
+      if (isSyncFile) weight = 1;
       
+      if (debug) cout << "check nFO_SS" << endl;
       if(nFOs_SS() > 1) //if more than 1 FO in event
 	{continue;}
       
@@ -657,11 +690,13 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
       // |eta|>2.4 will mess up the rate in the highest eta bins (2<|eta|<3)
       //Don't think eta cut is anywhere else
+      if (debug) cout << "check pt/eta" << endl;
       if(p4().pt() < 10. || fabs(p4().eta()) > 2.4) //What do we want here? 
 	{continue;}
 
       if (doLightonly && abs(id())==11 && p4().pt() < 20.) continue;//because EMEnriched does not go below 20 GeV
 
+      if (debug) cout << "check sip" << endl;
       if (fabs(ip3d()/ip3derr())>4. ) continue;
 
       bool passId = passes_SS_tight_v5();
@@ -682,6 +717,16 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	float cut_dphi  = isEB ? 0.04 : 0.08;
 	float cut_invep = 0.01;
 	bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
+	if (useIsoTrigs) {
+	  if (!passIsolatedFO(id(),etaSC(),mva_25ns())) continue;
+	  float ePFIso = ecalPFClusterIso()/p4().pt();
+	  float hPFIso = hcalPFClusterIso()/p4().pt();
+	  float trkIso = tkIso()/p4().pt();
+	  float cut_ePFIso = 0.45;
+	  float cut_hPFIso = 0.25;
+	  float cut_trkIso  = 0.2;
+	  passHltCuts = passHltCuts && ePFIso<cut_ePFIso && hPFIso<cut_hPFIso && trkIso<cut_trkIso;
+	}
 	passFO = passHltCuts && passes_SS_fo_looseMVA_v5();
 	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v5();
       }
@@ -726,6 +771,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (abs(id())==13) histo_met_cr_mu->Fill( std::min(evt_met,float(200.)), weight );
 	}
       }
+      if (debug) cout << "check met/mt" << endl;
       if( !(evt_met < 20. && evt_mt < 20) ) {
 	continue;
       }
@@ -871,7 +917,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		  Nl_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 		  if (p4().pt()>25.) Nl_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 		  else Nl_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
- 
+
+		  if (isSyncFile) {
+		    cout << Form("Electron FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f isNum=%1i event %i",
+				 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns(),passId,evt_event()) << endl;
+		  }
+
 		  njets40_histo->Fill(njets40, weight);
 
 		  if (noMCMatch==0 && doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
@@ -910,6 +961,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		  Nl_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 		  if (p4().pt()>25.) Nl_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 		  else Nl_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+
+		  if (isSyncFile) {
+		    cout << Form("Muon FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f isNum=%1i event %i",
+				 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,evt_event()) << endl;
+		  }
 
 		  njets40_histo->Fill(njets40, weight);
 

@@ -235,5 +235,14 @@ float fakeRateErrorInSitu(int id, float pt, float eta) {
   else if (abs(id)==13) return muonFakeRateInSituError(pt,eta);
   else return 0.;
 }
+
+bool passIsolatedFO(int id, float eta, float mva) {
+  if (abs(id)==13) return true;
+  float aeta = fabs(eta);
+  if (aeta < 0.8) return mva > -0.155;
+  if ((aeta >= 0.8 && aeta <= 1.479)) return mva > -0.56;
+  if (aeta > 1.479) return mva > -0.76;
+  return false;
+}
  
 #endif
