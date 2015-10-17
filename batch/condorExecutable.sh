@@ -70,6 +70,8 @@ if [ "$WHICH" == "45" ]; then WHICH_SMALL="datadoubleegd"; fi
 if [ "$WHICH" == "46" ]; then WHICH_SMALL="datadoublemuond"; fi
 if [ "$WHICH" == "47" ]; then WHICH_SMALL="datamuonegd"; fi
 if [ "$WHICH" == "48" ]; then WHICH_SMALL="qqww"; fi
+if [ "$WHICH" == "49" ]; then WHICH_SMALL="wwz"; fi
+if [ "$WHICH" == "50" ]; then WHICH_SMALL="zz"; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}_$EXPT
 
