@@ -1,5 +1,6 @@
 {
   gSystem->Load("../../CORE/CMS3_CORE.so");
+  gROOT->ProcessLine(".L ../../software/dataMCplotMaker/dataMCplotMaker.cc+");
   gSystem->Load("~/Software/tableMaker/libSimpleTable.so");
 
   gROOT->ProcessLine(".L SS.cc+");
@@ -74,10 +75,13 @@
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataDoubleEGD.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataMuonEGD.root");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTW.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WZ3LNU.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/TTBAR.root");  
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DY*.root");    
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/TTW.root");    
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/TTZ*.root");   
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WJets*.root"); 
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WZ3LNU.root"); 
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WZZ.root");    
 
   } else {
     if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
