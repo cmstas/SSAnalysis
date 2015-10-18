@@ -156,8 +156,8 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       else if (ss::hyp_class() == 2){ 
 	//electron FO is tighter for iso triggers
 	if (htAG<300.) {
-	  if (!ss::lep1_passes_id() && !passIsolatedFO(ss::lep1_id(), ss::lep1_eta(), ss::lep1_MVA())) continue;
-	  if (!ss::lep2_passes_id() && !passIsolatedFO(ss::lep2_id(), ss::lep2_eta(), ss::lep2_MVA())) continue;
+	  if (!ss::lep1_passes_id() && !passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
+	  if (!ss::lep2_passes_id() && !passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
 	}
         plots.SF[0][BR][AC][type]->Fill(metAG                              , weight); 
         plots.SF[1][BR][AC][type]->Fill(htAG                               , weight); 

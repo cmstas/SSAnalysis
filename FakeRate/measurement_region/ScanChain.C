@@ -473,7 +473,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       // Progress
       LeptonTree::progress( nEventsTotal, nEventsChain );
 
-      if (debug && evt_event()!=11619286) continue;
+      if (debug && evt_event()!=7095313) continue;
 
       //cout << "pt=" << p4().pt() << " iso=" << RelIso03EA() << endl;
       if (debug) cout << "lepp4=" << p4() << " jetp4=" << jet_close_lep() << endl;
@@ -696,7 +696,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       if (doLightonly && abs(id())==11 && p4().pt() < 20.) continue;//because EMEnriched does not go below 20 GeV
 
-      if (debug) cout << "check sip" << endl;
+      if (debug) cout << "check sip " << fabs(ip3d()/ip3derr()) << endl;
       if (fabs(ip3d()/ip3derr())>4. ) continue;
 
       bool passId = passes_SS_tight_v5();
@@ -718,6 +718,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	float cut_invep = 0.01;
 	bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
 	if (useIsoTrigs) {
+	  if (debug) cout << "check iso FO" << endl;
 	  if (!passIsolatedFO(id(),etaSC(),mva_25ns())) continue;
 	  float ePFIso = ecalPFClusterIso()/p4().pt();
 	  float hPFIso = hcalPFClusterIso()/p4().pt();
@@ -731,8 +732,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v5();
       }
 
-      float evt_met = evt_pfmet();
-      float evt_metPhi = evt_pfmetPhi();
+      float evt_met = evt_corrMET();
+      float evt_metPhi = evt_corrMETPhi();
       // float evt_met = evt_met3p0();
       // float evt_metPhi = evt_met3p0Phi();
       float evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
@@ -771,7 +772,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (abs(id())==13) histo_met_cr_mu->Fill( std::min(evt_met,float(200.)), weight );
 	}
       }
-      if (debug) cout << "check met/mt" << endl;
+      if (debug) cout << "check met/mt " << evt_met << " / " << evt_mt << endl;
       if( !(evt_met < 20. && evt_mt < 20) ) {
 	continue;
       }
@@ -824,6 +825,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	passFO = passFO_noiso && relIso<0.5;
 	coneptcorr = std::max(0.,relIso-0.1);
       } 
+
+      if (debug) cout << Form("check FO miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f",miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns()) << endl;
+      if (!passFO) continue;
+      if (debug) cout << "passed FO" << endl;
 
       //------------------------------------------------------------------------------------------
       //---------------------------------Find e = f(const)---------------------------------------
@@ -919,8 +924,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		  else Nl_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 
 		  if (isSyncFile) {
-		    cout << Form("Electron FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f isNum=%1i event %i",
-				 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns(),passId,evt_event()) << endl;
+		    cout << Form("Electron FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f isNum=%1i met=%5.2f mt=%5.2f event %i",
+				 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns(),passId,evt_met,evt_mt,evt_event()) << endl;
 		  }
 
 		  njets40_histo->Fill(njets40, weight);
@@ -963,8 +968,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		  else Nl_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 
 		  if (isSyncFile) {
-		    cout << Form("Muon FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f isNum=%1i event %i",
-				 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,evt_event()) << endl;
+		    cout << Form("Muon FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f isNum=%1i met=%5.2f mt=%5.2f event %i",
+				 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,evt_met,evt_mt,evt_event()) << endl;
 		  }
 
 		  njets40_histo->Fill(njets40, weight);
