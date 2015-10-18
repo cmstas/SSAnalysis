@@ -6,12 +6,14 @@
     gROOT->ProcessLine(".L make1DplotFR.C");
     gROOT->ProcessLine(".L plotEWKCorFR.C");
 
+    TString tag = getTag();
+    cout << "using tag=" << tag << endl;
     float intlumi = getLumi();
     cout << "intlumi=" << intlumi << "/fb" << endl;
 
     cout << "non isolated triggers" << endl;
 
-    pair<float,float> zsfs = normalizeZpeak(intlumi, false);
+    pair<float,float> zsfs = normalizeZpeak(intlumi, tag, false);
     float zsfEl = zsfs.first;
     float zsfMu = zsfs.second;
     cout << "ZP SF: " << zsfEl << " " << zsfMu << endl;
@@ -30,7 +32,7 @@
 
     cout << "isolated triggers" << endl;
 
-    pair<float,float> zsfs_i = normalizeZpeak(intlumi, true);
+    pair<float,float> zsfs_i = normalizeZpeak(intlumi, tag, true);
     zsfEl = zsfs_i.first;
     zsfMu = zsfs_i.second;
     cout << "ZP SF: " << zsfEl << " " << zsfMu << endl;

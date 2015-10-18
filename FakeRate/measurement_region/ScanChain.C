@@ -473,7 +473,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       // Progress
       LeptonTree::progress( nEventsTotal, nEventsChain );
 
-      if (debug && evt_event()!=7095313) continue;
+      if (debug && evt_event()!=114016043) continue;
+      if (debug) cout << "event=" << evt_event() << endl;
 
       //cout << "pt=" << p4().pt() << " iso=" << RelIso03EA() << endl;
       if (debug) cout << "lepp4=" << p4() << " jetp4=" << jet_close_lep() << endl;
@@ -626,7 +627,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	{continue;}
 
       //trigger selection
-      if (debug) cout << "check hlt" << endl;
+      if (debug) cout << "check hlt HLT_Mu8=" << HLT_Mu8() << " HLT_Mu17=" << HLT_Mu17() << " HLT_Ele12_CaloIdM_TrackIdM_PFJet30=" << HLT_Ele12_CaloIdM_TrackIdM_PFJet30() << endl;
       if (abs(id())==11) {
 	// ele12 for 2015D
 	if (useIsoTrigs) {

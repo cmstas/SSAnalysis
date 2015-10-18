@@ -1,4 +1,4 @@
-pair<float,float> normalizeZpeak(float intlumi, bool useIsoTrig) {
+pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig) {
 
   // we want to output the MTCR SFs so we can lazily chain the macros together
   float sfel, sfmu;
@@ -7,8 +7,6 @@ pair<float,float> normalizeZpeak(float intlumi, bool useIsoTrig) {
 
   for(int doMu = 0; doMu < 2; doMu++) {
   gROOT->Reset();
-
-  TString tag = "v4.00";
 
   TString hlt = (doMu ? "HLT_Mu17" : "HLT_Ele12_CaloIdM_TrackIdM_PFJet30");
   if (useIsoTrig) hlt = (doMu ? "HLT_Mu17_TrkIsoVVL" : "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30");

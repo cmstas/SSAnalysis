@@ -1,11 +1,11 @@
 {
-  //string tag = "leptree-v01";
 
+  gROOT->ProcessLine(".L ../../commonUtils.h");
   gSystem->Load("../../CORE/CMS3_CORE.so");
 
   gROOT->ProcessLine(".L ScanChain.C+");
 
-  TString tag = "v4.00";
+  TString tag = getTag();
 
   TChain *data = new TChain("t"); 
   data->Add( "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root" );
