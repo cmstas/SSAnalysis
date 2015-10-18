@@ -1,7 +1,10 @@
 #ifndef _commonUtils_h_
 #define _commonUtils_h_
 
-float getLumi() { return 0.8487;/*return 0.2095;*/ }
+float getLumi() { return 0.8487; }
+float getLumiUnblind() { return 0.2095; }
+
+bool isUnblindRun(int run) { return run<=257599; }
 
 TString getTag() { return "v4.01"; }
 
