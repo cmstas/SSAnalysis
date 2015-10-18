@@ -473,11 +473,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       // Progress
       LeptonTree::progress( nEventsTotal, nEventsChain );
 
-      if (debug && evt_event()!=114016043) continue;
+      if (debug && evt_event()!=90556536) continue;
       if (debug) cout << "event=" << evt_event() << endl;
 
       //cout << "pt=" << p4().pt() << " iso=" << RelIso03EA() << endl;
-      if (debug) cout << "lepp4=" << p4() << " jetp4=" << jet_close_lep() << endl;
+      if (debug) cout << "lepp4=" << p4() << " pt=" << p4().pt() << " eta=" << p4().eta() << " phi=" << p4().phi() << " jetp4=" << jet_close_lep() << endl;
 
       vector<LorentzVector> jets_recorr;
       for(unsigned int i=0; i<jets().size(); i++)  {
@@ -773,7 +773,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (abs(id())==13) histo_met_cr_mu->Fill( std::min(evt_met,float(200.)), weight );
 	}
       }
-      if (debug) cout << "check met/mt " << evt_met << " / " << evt_mt << endl;
+      if (debug) cout << "check met/mt " << evt_met << " / " << evt_mt << " metPhi=" << evt_metPhi << endl;
       if( !(evt_met < 20. && evt_mt < 20) ) {
 	continue;
       }
