@@ -100,7 +100,7 @@ void closure(){
 
   //Set up chains
   TChain *chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DataDoubleEGD.root");
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"-data848p7ipb/DataDoubleEGD.root");
   //chain->Add("./Data_DoubleEG2015D.root");
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_high.root");
 
@@ -264,25 +264,25 @@ void closure(){
   vector <string> sigTit; 
   sigTit.push_back("MC Same-Sign Events");
   titles.push_back("Predicted Same-Sign Events"); 
-  dataMCplotMaker(clos_mll_data, bkgd, titles, "", "", "--lumi 209.5 --lumiUnit pb --outputName flip_closure.pdf --xAxisLabel M_{ll} --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", signals, sigTit);
+  dataMCplotMaker(clos_mll_data, bkgd, titles, "", "", Form("--lumi %.1f --lumiUnit pb --outputName flip_closure.pdf --xAxisLabel M_{ll} --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", 1000*getLumi()), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_leppt_MC); 
   signals.clear();
   signals.push_back(clos_leppt_MCp); 
-  dataMCplotMaker(clos_leppt_data, bkgd, titles, "", "", "--lumi 209.5 --lumiUnit pb --outputName flip_closure_leppt.pdf --xAxisLabel Lepton p_{T}  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", signals, sigTit);
+  dataMCplotMaker(clos_leppt_data, bkgd, titles, "", "", Form("--lumi %.1f --lumiUnit pb --outputName flip_closure_leppt.pdf --xAxisLabel Lepton p_{T}  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", 1000*getLumi()), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_lepeta_MC); 
   signals.clear();
   signals.push_back(clos_lepeta_MCp); 
-  dataMCplotMaker(clos_lepeta_data, bkgd, titles, "", "", "--lumi 209.5 --lumiUnit pb --outputName flip_closure_lepeta.pdf --xAxisLabel Lepton #eta --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", signals, sigTit);
+  dataMCplotMaker(clos_lepeta_data, bkgd, titles, "", "", Form("--lumi %.1f --lumiUnit pb --outputName flip_closure_lepeta.pdf --xAxisLabel Lepton #eta --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", 1000*getLumi()), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_ht_MC); 
   signals.clear();
   signals.push_back(clos_ht_MCp); 
-  dataMCplotMaker(clos_ht_data, bkgd, titles, "", "", "--lumi 209.5 --lumiUnit pb --outputName flip_closure_ht.pdf --xAxisLabel HT  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", signals, sigTit);
+  dataMCplotMaker(clos_ht_data, bkgd, titles, "", "", Form("--lumi %.1f --lumiUnit pb --outputName flip_closure_ht.pdf --xAxisLabel HT  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", 1000*getLumi()), signals, sigTit);
 
   TCanvas cosee;
   osee_data->Draw("hist,goff");

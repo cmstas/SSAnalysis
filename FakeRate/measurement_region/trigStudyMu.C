@@ -1,9 +1,10 @@
+#include "../../commonUtils.h"
 void trigStudyMu() {
 
   gROOT->Reset();
   gStyle->SetOptStat(0);
 
-  TString tag = "v4.00";
+  TString tag = getTag();
   TString dataf = "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleMuon.root";
   //dataf = "SyncDoubleMu.root";
 
@@ -103,7 +104,7 @@ void trigStudyMu() {
   paths_total->GetXaxis()->SetBinLabel(2,"Mu17");
   paths_total->GetXaxis()->SetBinLabel(3,"Mu24");
   paths_total->GetXaxis()->SetBinLabel(4,"Mu34");
-  paths_total->GetYaxis()->SetRangeUser(10,100000000);
+  paths_total->GetYaxis()->SetRangeUser(10,10*total_pt_Mu17->GetEntries());
   paths_total->Draw("hist,text0");
   paths_fo->Draw("hist,text0,same");
   paths_tight->Draw("hist,text0,same");
@@ -123,7 +124,7 @@ void trigStudyMu() {
   unw_fo_pt_Mu17->SetLineColor(kBlue);
   unw_fo_pt_Mu24->SetLineColor(kRed);
   unw_fo_pt_Mu34->SetLineColor(kMagenta);
-  unw_fo_pt_Mu8->GetYaxis()->SetRangeUser(1,1000000);
+  unw_fo_pt_Mu8->GetYaxis()->SetRangeUser(1,total_pt_Mu17->GetEntries());
   unw_fo_pt_Mu8->Draw("hist");
   unw_fo_pt_Mu17->Draw("hist,same");
   unw_fo_pt_Mu24->Draw("hist,same");

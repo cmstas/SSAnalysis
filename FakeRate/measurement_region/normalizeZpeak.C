@@ -54,7 +54,7 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig) {
   TLegend* leg = new TLegend(0.7,0.7,0.89,0.89);
   leg->SetFillColor(kWhite);
   leg->SetLineColor(kWhite);
-  leg->SetHeader("L=209.5/pb");
+  leg->SetHeader(Form("L=%.1f/pb",intlumi));
   leg->AddEntry(mll_data,"data","pe");
   leg->AddEntry(mll_dy  ,"DY","f");
   leg->AddEntry((TObject*)0  ,Form( "SF: %.2f", data_zpeak/mc_zpeak ),"");
