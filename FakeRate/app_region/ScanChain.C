@@ -1,6 +1,9 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <stdlib.h>
+#include <map>
+#include <fstream>
 #include "TChain.h"
 #include "TDirectory.h"
 #include "TFile.h"
@@ -16,12 +19,46 @@
 #include "../../CORE/Tools/dorky/dorky.cc"
 #include "SS.h"
 #include "../../software/tableMaker/CTable.h"
+#include "../../software/dataMCplotMaker/dataMCplotMaker.h"
+
 
 using namespace std;
 using namespace duplicate_removal;
 
 CTable electrons;
 CTable muons;
+
+TH1D * evtCounter = new TH1D("","",1000,0,1000); 
+map<TString, int> evtBinMap;
+int evtBin = 0;
+void initCounter() {
+    evtCounter = new TH1D("","",1000,0,1000); 
+    evtCounter->Sumw2();
+    evtBinMap.clear();
+}
+void addToCounter(TString name, double weight=1.0) {
+    if(evtBinMap.find(name) == evtBinMap.end() ) {
+        evtBinMap[name] = evtBin;
+        evtBin++;
+    }
+    evtCounter->Fill(evtBinMap[name], weight);
+}
+void printCounter(bool file = false) {
+    ofstream outfile;
+    if(file) outfile.open("counter.txt");
+    cout << string(30, '-') << endl << "Counter totals: " << endl;
+    for(map<TString,int>::iterator it = evtBinMap.begin(); it != evtBinMap.end(); it++) {
+        int iBin = (it->second)+1;
+        printf("%-15s %6.2f %6.2f\n",
+                (it->first).Data(),
+                evtCounter->GetBinContent(iBin),
+                evtCounter->GetBinError(iBin) );
+        if(file) outfile << (it->first).Data() << "  " << evtCounter->GetBinContent(iBin) << "  " << evtCounter->GetBinError(iBin) << endl;
+    }
+    cout << string(30, '-') << endl;
+    if(file) outfile.close();
+    if(file) cout << "Wrote counter to counter.txt" << endl;
+}
 
 bool isFakeLeg(int lep){
   if (lep == 1) return (ss::lep1_motherID() <= 0);
@@ -216,6 +253,8 @@ int getHist(string name){
 
 int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", bool doData = false, int nEvents = -1){
 
+  initCounter();
+
   //Make tables
   electrons.setTable() ("Pred", "Obs", "Pred/Obs");
   muons.setTable() ("Pred", "Obs", "Pred/Obs");
@@ -306,6 +345,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   TH2D *pTrelvsIso_histo_el = new TH2D("pTrelvsIso_histo_el", "pTrel vs Iso (Electrons)", 10, 0., 1., 15, 0., 30.);
   TH2D *pTrelvsMiniIso_histo_mu = new TH2D("pTrelvsMiniIso_histo_mu", "pTrel vs MiniIso (Muons)", 10, 0., 1., 15, 0., 30.);
   TH2D *pTrelvsMiniIso_histo_el = new TH2D("pTrelvsMiniIso_histo_el", "pTrel vs MiniIso (Electrons)", 10, 0., 1., 15, 0., 30.);
+
 
   //---Load rate histos-----//
   TFile *InputFile = new TFile(fakeratefile,"read");
@@ -460,10 +500,22 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   // File Loop
   while ( (currentFile = (TFile*)fileIter.Next()) ) {
 
+    
+    TString filename(currentFile->GetTitle());
+
     // Get File Content
-    TFile *file = new TFile( currentFile->GetTitle() );
+    TFile *file = new TFile( filename );
     TTree *tree = (TTree*)file->Get("t");
     samesign.Init(tree);
+
+         if(filename.Contains("TTBAR")) { filename = "TTBAR";  }
+    else if(filename.Contains("DY"))    { filename = "DY";     }
+    else if(filename.Contains("TTW"))   { filename = "TTW";    }
+    else if(filename.Contains("TTZ"))   { filename = "TTZ";    }
+    else if(filename.Contains("WJets")) { filename = "WJets";  }
+    else if(filename.Contains("WZZ"))   { filename = "WZZ";    }
+    else if(filename.Contains("WZ3L"))  { filename = "WZ";     }
+    else if(filename.Contains("Data"))  { filename = "Data";   }
 
     // Loop over Events in current file
     if (nEventsTotal >= nEventsChain) continue;
@@ -479,7 +531,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       //if (ss::event() != 48767071) continue;
 
       // Progress
-      // SSAG::progress(nEventsTotal, nEventsChain);
+      SSAG::progress(nEventsTotal, nEventsChain);
 
       if (ss::is_real_data() ) {
           DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
@@ -652,6 +704,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
             hists[getHist("Npn_histo_MTMIN_obs_el")]->Fill(mtmin, weight);
             hists[getHist("Npn_histo_L1PT_obs_el") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
             hists[getHist("Npn_histo_L2PT_obs_el") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+
+            addToCounter(filename+Form("_obs_el_BR%i", br), weight);
           } 
           else if(abs(ss::lep2_id()) == 13){
             hists[getHist("Npn_histo_sr_obs_mu")   ]->Fill(sr, weight);
@@ -661,6 +715,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
             hists[getHist("Npn_histo_MTMIN_obs_mu")]->Fill(mtmin, weight);
             hists[getHist("Npn_histo_L1PT_obs_mu") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
             hists[getHist("Npn_histo_L2PT_obs_mu") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+
+            addToCounter(filename+Form("_obs_mu_BR%i", br), weight);
           }
         }
 
@@ -676,7 +732,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           hists[getHist("Npn_histo_MTMIN_obs")]->Fill(mtmin, weight);
           hists[getHist("Npn_histo_L1PT_obs") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
           hists[getHist("Npn_histo_L2PT_obs") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
-
+          
           if(abs(ss::lep1_id()) == 11){
             hists[getHist("Npn_histo_sr_obs_el")]   ->Fill(sr, weight);
             hists[getHist("Npn_histo_br_obs_el")]   ->Fill(br, weight);
@@ -685,6 +741,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
             hists[getHist("Npn_histo_MTMIN_obs_el")]->Fill(mtmin, weight);
             hists[getHist("Npn_histo_L1PT_obs_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
             hists[getHist("Npn_histo_L2PT_obs_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+            
+            addToCounter(filename+Form("_obs_el_BR%i", br), weight);
+
           } 
           else if(abs(ss::lep1_id()) == 13){
             hists[getHist("Npn_histo_sr_obs_mu")]   ->Fill(sr, weight);
@@ -694,6 +753,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
             hists[getHist("Npn_histo_MTMIN_obs_mu")]->Fill(mtmin, weight);
             hists[getHist("Npn_histo_L1PT_obs_mu")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
             hists[getHist("Npn_histo_L2PT_obs_mu")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+
+            addToCounter(filename+Form("_obs_mu_BR%i", br), weight);
           }
         }
 
@@ -791,6 +852,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
           if (abs(ss::lep2_id()) == 11){  
             e2 = getFakeRate( rate_histo_e, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht(), false );
+
+            addToCounter(filename+Form("_pred_el_BR%i", br), (e2/(1-e2))*weight);
+
             hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, (e2/(1-e2))*weight);
             hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, (e2/(1-e2))*weight);
             hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht(), (e2/(1-e2))*weight);
@@ -813,6 +877,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           }
           else if (abs(ss::lep2_id()) == 13){ 
             e2 = getFakeRate( rate_histo_mu, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht(), false );
+
+            addToCounter(filename+Form("_pred_mu_BR%i", br), (e2/(1-e2))*weight);
+
             hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, (e2/(1-e2))*weight);
             hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, (e2/(1-e2))*weight);
             hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht(), (e2/(1-e2))*weight);
@@ -878,6 +945,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           if( abs(ss::lep1_id()) == 11 ){	//if el, use el rate.  FILL WITH NONPROMPT			  
             e1 = getFakeRate(rate_histo_e, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false );
 
+            addToCounter(filename+Form("_pred_el_BR%i", br), (e1/(1-e1))*weight);
+
             hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, (e1/(1-e1))*weight);
             hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, (e1/(1-e1))*weight);
             hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht(), (e1/(1-e1))*weight);
@@ -901,6 +970,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           }
           else if( abs(ss::lep1_id()) == 13 ){ //if mu, use mu rate.  FILL WITH NONPROMPT				  
             e1 = getFakeRate(rate_histo_mu, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false );
+
+            addToCounter(filename+Form("_pred_mu_BR%i", br), (e1/(1-e1))*weight);
+
             hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, (e1/(1-e1))*weight);
             hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, (e1/(1-e1))*weight);
             hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht(), (e1/(1-e1))*weight);
@@ -993,7 +1065,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   //redefine option to save also ptRegion in output files
   option=option+"_"+ptRegion;
 
-  TString plotdir="plots/";
+  std::string plotdir="plots/";
 
   //Signal region plots
   TCanvas *c3=new TCanvas("c3","Predicted and Observed Prompt-NonPrompt Background", 800,800);
@@ -1147,6 +1219,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
     electrons.forSlideMaker("closure_elec_normal.tex");
     muons.forSlideMaker("closure_muon_normal.tex"); 
   }
+
+  printCounter(true);
 
   return 0;
 }
