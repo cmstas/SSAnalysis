@@ -633,8 +633,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	if (useIsoTrigs) {
 	  if (HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30()<=0) continue;
 	} else {
-	  if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()<=0 //&&
-	      /*HLT_Ele18_CaloIdM_TrackIdM_PFJet30()<=0*/ ) continue;
+	  if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()<=0) continue;
 	}
       }
       if (abs(id())==13) {
@@ -652,14 +651,13 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //check prescales, apply cuts on the pT range depending on the trigger
       int prescale = -1;
       if (abs(id())==11) {	
-	// use ele12+ele18
+	// use ele12
 	if (useIsoTrigs) {
 	  if (p4().pt() >= 10 && HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) prescale = HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30();
 	  if (prescale>0) weight *= prescale;
 	  else continue;	  
 	} else {
-	  if (p4().pt() >= 10 /*&& p4().pt() < 25*/ && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
-	  //else if (p4().pt() >= 25 && HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele18_CaloIdM_TrackIdM_PFJet30();	
+	  if (p4().pt() >= 10 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
 	  if (prescale>0) weight *= prescale;
 	  else continue;	  
 	}
