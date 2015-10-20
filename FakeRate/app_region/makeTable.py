@@ -1,4 +1,5 @@
 import math
+import sys
 # import tableMaker as tm
 
 # ONE LINER to generate tables
@@ -16,7 +17,10 @@ fh = open("content.txt","r")
 content = fh.read()
 fh.close()
 
-for type in ["el", "mu", "tot"]:
+types = ["el", "mu", "tot"]
+if(len(sys.argv) > 1):
+    types = [sys.argv[-1]]
+for t in types:
     dObs = {}
     dPred = {}
 
@@ -27,11 +31,11 @@ for type in ["el", "mu", "tot"]:
         count, err = float(count), float(err)
         sample, obspred, elmu, br = tag.split("_")
 
-        if(type is "el"):
+        if(t == "el"):
             if("el" not in elmu): continue
-        elif(type is "mu"):
+        elif(t == "mu"):
             if("mu" not in elmu): continue
-        elif(type is "tot"):
+        elif(t == "tot"):
             pass
 
         if(obspred == "pred"):
@@ -54,13 +58,13 @@ for type in ["el", "mu", "tot"]:
 
     allSamples = list(set(sum([dObs[k].keys() for k in dObs.keys()],[])))
 
-    if("el" in type):
+    if("el" in t):
         print "mrc 1 5 \\textbf{el} | | | |"
-    elif("mu" in type):
-        print ""
+    elif("mu" in t):
+        if len(types) > 1: print ""
         print "mrc 1 5 \\textbf{mu} | | | |"
-    elif("tot" in type):
-        print ""
+    elif("tot" in t):
+        if len(types) > 1: print ""
         print "mrc 1 5 \\textbf{el+mu} | | | |"
 
     print " | BR0 | BR1 | BR2 | BR3"

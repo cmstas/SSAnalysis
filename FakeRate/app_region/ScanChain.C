@@ -513,7 +513,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
     else if(filename.Contains("TTW"))   { filename = "TTW";    }
     else if(filename.Contains("TTZ"))   { filename = "TTZ";    }
     else if(filename.Contains("WJets")) { filename = "WJets";  }
-    else if(filename.Contains("WZZ"))   { filename = "WZZ";    }
     else if(filename.Contains("WZ3L"))  { filename = "WZ";     }
     else if(filename.Contains("Data"))  { filename = "Data";   }
 
