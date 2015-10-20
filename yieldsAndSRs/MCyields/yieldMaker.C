@@ -749,6 +749,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       //Progress
       //SSAG::progress(nEventsTotal, nEventsChain);
 
+      //electron FO is tighter for iso triggers, make sure it is passed
+      if (ss::ht_corr()<300.) {
+	if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
+	if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+      } 
+
       //Only keep good events
       if (!doFlips && !doFakes && exclude == 0) {
 	    if (ss::hyp_class() != 3) continue;
@@ -784,19 +790,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	    }
 	    weight *= flipFact;
       } 
-
-      // if (ss::ht_corr()<300.) {
-      // 	if (abs(ss::lep1_id())==13 && !ss::lep1_trigMatch_isoReq()) continue;
-      // 	if (abs(ss::lep2_id())==13 && !ss::lep2_trigMatch_isoReq()) continue;
-      // }
       
       if (doFakes){
         if (ss::hyp_class() != 2) continue;
-	//electron FO is tighter for iso triggers
-	if (ss::ht_corr()<300.) {
-	  if (!ss::lep1_passes_id() && !passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
-	  if (!ss::lep2_passes_id() && !passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
-	} 
         float fr = 0.;
         if (ss::lep1_passes_id()==0){
           if (doFakes == 1) fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht_corr());
