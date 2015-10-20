@@ -258,6 +258,7 @@ void plots(){
   TChain *chain_rares = new TChain("t","rares"); 
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZZ.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWZ.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/QQWW.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWDPS.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/VHtoNonBB.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTHtoNonBB.root");
@@ -553,12 +554,12 @@ void plots(){
 
   //Titles for legend
   vector <string> titles;
-  titles.push_back("ttv"); 
-  titles.push_back("rares"); 
+  titles.push_back("ttV"); 
+  titles.push_back("Rares"); 
   titles.push_back("VZ"); 
-  titles.push_back("ttbar"); 
+  titles.push_back("Top"); 
   titles.push_back("DY"); 
-  titles.push_back("WJets"); 
+  titles.push_back("W+X"); 
 
   //Titles for plots
   vector <string> names;
