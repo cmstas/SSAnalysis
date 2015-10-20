@@ -17,10 +17,10 @@
 #include "../../CORE/SSSelections.h"
 #include "../../CORE/Tools/utils.h"
 #include "../../CORE/Tools/dorky/dorky.cc"
-#include "SS.h"
+#include "../../classFiles/v4.00/SS.h"
 #include "../../software/tableMaker/CTable.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
-
+#include "../../commonUtils.h"
 
 using namespace std;
 using namespace duplicate_removal;
@@ -128,8 +128,12 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
 
   //Overlaid histos
   pad_h->cd();
-  pred->Draw("histE");
+  pred->SetMarkerStyle(kFullCircle);
+  obs->SetFillColor(kCyan);
+  pred->Draw("PE");
   obs->Draw("samehistE");
+  obs->Draw("sameE");
+  pred->Draw("samePE");
 
   //legend
   leg->Clear();
@@ -140,8 +144,8 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   leg->SetFillColor(kWhite); 
   TString predname = pred->GetName();
   TString obsname = obs->GetName();
-  leg->AddEntry(predname,"Predicted","l");
-  leg->AddEntry(obsname,"Observed","l");  
+  leg->AddEntry(predname,"Predicted data","p");
+  leg->AddEntry(obsname,"Observed MC","f");  
   leg->Draw();
 
   //ratio histo
@@ -231,9 +235,12 @@ float getEta(float eta, float ht, bool extrPtRel = false){
 }
 
 float getFakeRate(TH2D* histo, float pt, float eta, float ht, bool extrPtRel = false){
-  pt = getPt(pt,extrPtRel);
-  eta = getEta(eta,ht,extrPtRel);
-  return histo->GetBinContent( histo->FindBin(pt, fabs(eta) ));
+  int id = 11;
+  if (TString(histo->GetTitle()).Contains("_mu")) id = 13;
+  return  fakeRate(id, pt, eta, ht); 
+  // pt = getPt(pt,extrPtRel);
+  // eta = getEta(eta,ht,extrPtRel);
+  // return histo->GetBinContent( histo->FindBin(pt, fabs(eta) ));
 }
 
 TH1F* histCreator(string str1, string str2, int n1, int n2, int n3){
@@ -280,7 +287,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   bool highlow = ptRegion.Contains("HL") ? true : false;
   bool lowlow = ptRegion.Contains("LL") ? true : false;
 
-  float luminosity = 209.5/1000.0; // ifb
+  float luminosity = getLumi();
 
   //Dir
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
@@ -538,14 +545,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       }
 
       // Analysis Code
-      float weight = ss::is_real_data() ? 1.0 : ss::scale1fb()*luminosity;
+      float weight = ss::is_real_data() ? 1.0 : ss::scale1fb()*luminosity*getPUw(ss::nGoodVertices());
 
       // // ignore MC part of chain when looking at data, except for contamination subtraction
       // if(doData && !ss::is_real_data()) weight = 0; 
 
-
       if( !(ss::njets() >= 2 && (ss::ht() > 500 ? 1 : ss::met() > 30) ) ) continue;
 
+      //require triggers
+      if (!ss::fired_trigger()) continue;
 
       if (doBonly) {
         //consider only prompt or bs
@@ -605,6 +613,12 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       //Determine passes ID
       bool lep1_passes_id = ss::lep1_passes_id();
       bool lep2_passes_id = ss::lep2_passes_id();
+
+      if (ss::ht_corr()<300.) {
+	//Skip if does not pass FO for isolated triggers
+	if (passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
+	if (passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+      } 
 
       //Determine mtMin
       float mtmin = ss::mt() > ss::mt_l2() ? ss::mt_l2() : ss::mt();
