@@ -10,7 +10,7 @@
 #include "../../commonUtils.h"
 #include "../../CORE/Tools/dorky/dorky.h"
 
-float lumiAG = getLumi();
+float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
@@ -76,14 +76,14 @@ void getyields(){
   qqww_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
   tttt_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
 
-  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD.root", tag.c_str()));
-  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD.root"  , tag.c_str()));
-  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD.root"    , tag.c_str()));
-  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD.root"  , tag.c_str()));
-  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD.root"    , tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD.root", tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD.root"  , tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD.root"    , tag.c_str()));
+  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleMuonD.root", tag.c_str()));
+  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleEGD.root"  , tag.c_str()));
+  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataMuonEGD.root"    , tag.c_str()));
+  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleEGD.root"  , tag.c_str()));
+  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataMuonEGD.root"    , tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleMuonD.root", tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleEGD.root"  , tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataMuonEGD.root"    , tag.c_str()));
   fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
   fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"           , tag.c_str())); 
   fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ3LNU.root"         , tag.c_str()));
@@ -560,6 +560,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUw(ss::nGoodVertices());
 
+      if (!isUnblindRun(ss::run())) continue;
+
+      //Reject not triggered
+      if (!ss::fired_trigger()) continue;
+
       //Progress
       //SSAG::progress(nEventsTotal, nEventsChain);
 
@@ -599,13 +604,18 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	    weight *= flipFact;
       } 
 
+      if (ss::ht_corr()<300.) {
+	if (abs(ss::lep1_id())==13 && !ss::lep1_trigMatch_isoReq()) continue;
+	if (abs(ss::lep2_id())==13 && !ss::lep2_trigMatch_isoReq()) continue;
+      }
+      
       if (doFakes){
         if (ss::hyp_class() != 2) continue;
 	//electron FO is tighter for iso triggers
 	if (ss::ht_corr()<300.) {
 	  if (!ss::lep1_passes_id() && !passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
 	  if (!ss::lep2_passes_id() && !passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
-	}
+	} 
         float fr = 0.;
         if (ss::lep1_passes_id()==0){
           if (doFakes == 1) fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht_corr());
