@@ -6,23 +6,43 @@
     gROOT->ProcessLine(".L make1DplotFR.C");
     gROOT->ProcessLine(".L plotEWKCorFR.C");
 
+    TString tag = getTag();
+    cout << "using tag=" << tag << endl;
     float intlumi = getLumi();
     cout << "intlumi=" << intlumi << "/fb" << endl;
-    pair<float,float> zsfs = normalizeZpeak(intlumi);
-    zsfEl = zsfs.first;
-    zsfMu = zsfs.second;
+
+    cout << "non isolated triggers" << endl;
+
+    pair<float,float> zsfs = normalizeZpeak(intlumi, tag, false);
+    float zsfEl = zsfs.first;
+    float zsfMu = zsfs.second;
     cout << "ZP SF: " << zsfEl << " " << zsfMu << endl;
 
-    pair<float,float> mtsfs = plotMTCR(zsfEl, zsfMu);
-    mtsfEl = mtsfs.first;
-    mtsfMu = mtsfs.second;
+    pair<float,float> mtsfs = plotMTCR(zsfEl, zsfMu, false);
+    float mtsfEl = mtsfs.first;
+    float mtsfMu = mtsfs.second;
     cout << "MT SF: " << mtsfEl << " " << mtsfMu << endl;
 
-    make1DplotFR(zsfEl, zsfMu, mtsfEl, mtsfMu);
-    plotEWKCorFR(mtsfEl, mtsfMu);
+    make1DplotFR(zsfEl, zsfMu, mtsfEl, mtsfMu, false);
+    plotEWKCorFR(mtsfEl, mtsfMu, false);
 
     gROOT->ProcessLine(".x plotFR.C");
     gROOT->ProcessLine(".x trigStudyEl.C");
     gROOT->ProcessLine(".x trigStudyMu.C");
+
+    cout << "isolated triggers" << endl;
+
+    pair<float,float> zsfs_i = normalizeZpeak(intlumi, tag, true);
+    zsfEl = zsfs_i.first;
+    zsfMu = zsfs_i.second;
+    cout << "ZP SF: " << zsfEl << " " << zsfMu << endl;
+
+    pair<float,float> mtsfs_i = plotMTCR(zsfEl, zsfMu, true);
+    mtsfEl = mtsfs_i.first;
+    mtsfMu = mtsfs_i.second;
+    cout << "MT SF: " << mtsfEl << " " << mtsfMu << endl;
+
+    make1DplotFR(zsfEl, zsfMu, mtsfEl, mtsfMu, true);
+    plotEWKCorFR(mtsfEl, mtsfMu, true);
 
 }

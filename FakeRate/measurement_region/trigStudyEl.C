@@ -1,9 +1,10 @@
+#include "../../commonUtils.h"
 void trigStudyEl() {
 
   gROOT->Reset();
   gStyle->SetOptStat(0);
 
-  TString tag = "v4.00";
+  TString tag = getTag();
   TString dataf = "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root";
 
   TFile *_file = TFile::Open(dataf);
@@ -121,7 +122,7 @@ void trigStudyEl() {
   paths_total->GetXaxis()->SetBinLabel(3,"Ele18");
   paths_total->GetXaxis()->SetBinLabel(4,"Ele23");
   paths_total->GetXaxis()->SetBinLabel(5,"Ele33");
-  paths_total->GetYaxis()->SetRangeUser(10,1000000);
+  paths_total->GetYaxis()->SetRangeUser(10,10*total_pt_Ele12->GetEntries());
   paths_total->Draw("hist,text0");
   paths_fo->Draw("hist,text0,same");
   paths_tight->Draw("hist,text0,same");
@@ -141,7 +142,7 @@ void trigStudyEl() {
   unw_fo_pt_Ele18->SetLineColor(kBlue);
   unw_fo_pt_Ele23->SetLineColor(kRed);
   unw_fo_pt_Ele33->SetLineColor(kMagenta);
-  unw_fo_pt_Ele8->GetYaxis()->SetRangeUser(1,100000);
+  unw_fo_pt_Ele8->GetYaxis()->SetRangeUser(1,total_pt_Ele12->GetEntries());
   unw_fo_pt_Ele8->Draw("hist");
   unw_fo_pt_Ele12->Draw("hist,same");
   unw_fo_pt_Ele18->Draw("hist,same");

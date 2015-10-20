@@ -8,7 +8,7 @@
 #include "../CORE/Tools/utils.h"
 #include "../commonUtils.h"
 
-int mode = 1;  // 0-nominal, 1-upstream, 2-upstream+2jets
+int mode = 2;  // 0-nominal, 1-upstream, 2-upstream+2jets
 bool corrected = true;
 
 struct doublePlotHolder{ TH1F* OS[10][4][4][5]; TH1F* SS[10][4][4][5]; TH1F* SF[10][4][4][5]; TH1F* EZ[10][4][4][5]; };
@@ -143,17 +143,26 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
         plots.OS[7][BR][AC][type]->Fill(ss::nGoodVertices()                 , weight);
       }
       else if (ss::hyp_class() == 3){ 
-        plots.SS[0][BR][AC][type]->Fill(metAG                              , weight); 
-        plots.SS[1][BR][AC][type]->Fill(htAG                               , weight); 
-        plots.SS[2][BR][AC][type]->Fill(njetsAG                            , weight); 
-        plots.SS[3][BR][AC][type]->Fill(nbtagsAG                           , weight); 
-        plots.SS[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                 , weight); 
-        plots.SS[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                 , weight); 
-        plots.SS[5][BR][AC][type]->Fill(mtmin                              , weight); 
-        plots.SS[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), weight);
-        plots.SS[7][BR][AC][type]->Fill(ss::nGoodVertices()                , weight);
+	//only unblinded dataset
+	float unblindWeight = isData ? 1 : weight*getLumiUnblind()*getPUwUnblind(ss::nGoodVertices())/(getLumi()*std::max(float(0.00001),getPUw(ss::nGoodVertices())));
+	if (!isData || isUnblindRun(ss::run())) {
+	  plots.SS[0][BR][AC][type]->Fill(metAG                              , unblindWeight); 
+	  plots.SS[1][BR][AC][type]->Fill(htAG                               , unblindWeight); 
+	  plots.SS[2][BR][AC][type]->Fill(njetsAG                            , unblindWeight); 
+	  plots.SS[3][BR][AC][type]->Fill(nbtagsAG                           , unblindWeight); 
+	  plots.SS[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                 , unblindWeight); 
+	  plots.SS[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                 , unblindWeight); 
+	  plots.SS[5][BR][AC][type]->Fill(mtmin                              , unblindWeight); 
+	  plots.SS[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), unblindWeight);
+	  plots.SS[7][BR][AC][type]->Fill(ss::nGoodVertices()                , unblindWeight);
+	}
       }
       else if (ss::hyp_class() == 2){ 
+	//electron FO is tighter for iso triggers
+	if (htAG<300.) {
+	  if (!ss::lep1_passes_id() && !passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
+	  if (!ss::lep2_passes_id() && !passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+	}
         plots.SF[0][BR][AC][type]->Fill(metAG                              , weight); 
         plots.SF[1][BR][AC][type]->Fill(htAG                               , weight); 
         plots.SF[2][BR][AC][type]->Fill(njetsAG                            , weight); 
@@ -226,7 +235,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
   }
 
   if (isData) cout << "number of duplicates removed: " << reject << endl;
-  cout << chain->GetTitle() << " totWeight=" << totWeight << endl;
+  //cout << chain->GetTitle() << " totWeight=" << totWeight << endl;
 
   return plots;
 
@@ -238,22 +247,31 @@ void plots(){
   
   //Set up chains
   TChain *chain_data = new TChain("t","data");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGD.root");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGD.root");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonD.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data848p7ipb/DataMuonEGD.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data848p7ipb/DataDoubleEGD.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data848p7ipb/DataDoubleMuonD.root");
 
-  TChain *chain_ttW = new TChain("t","ttW"); 
-  chain_ttW->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");
+  TChain *chain_ttv = new TChain("t","ttv"); 
+  chain_ttv->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");
+  chain_ttv->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZL.root");
 
-  TChain *chain_ttZ = new TChain("t","ttZ"); 
-  chain_ttZ->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZL.root");
+  TChain *chain_rares = new TChain("t","rares"); 
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZZ.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWZ.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWDPS.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/VHtoNonBB.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTHtoNonBB.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTG.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TZQ.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTTT.root");
 
   TChain *chain_ttbar = new TChain("t","ttbar"); 
   chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR.root");
   chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP.root");
 
-  TChain *chain_WZ = new TChain("t","WZ"); 
-  chain_WZ->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ3LNU.root");
+  TChain *chain_VZ = new TChain("t","VZ"); 
+  chain_VZ->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ3LNU.root");
+  chain_VZ->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");
 
   TChain *chain_DY = new TChain("t","DY"); 
   chain_DY->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_high.root");
@@ -265,9 +283,9 @@ void plots(){
 
   //Make individual plots
   doublePlotHolder data = plotMaker(chain_data, 1);   
-  doublePlotHolder ttw = plotMaker(chain_ttW, 0);   
-  doublePlotHolder ttz = plotMaker(chain_ttZ, 0);   
-  doublePlotHolder wz = plotMaker(chain_WZ, 0);
+  doublePlotHolder ttv = plotMaker(chain_ttv, 0);   
+  doublePlotHolder rares = plotMaker(chain_rares, 0);   
+  doublePlotHolder vz = plotMaker(chain_VZ, 0);
   doublePlotHolder ttbar = plotMaker(chain_ttbar, 0);
   doublePlotHolder dy = plotMaker(chain_DY, 0);
   doublePlotHolder wjets = plotMaker(chain_WJets, 0);
@@ -276,9 +294,9 @@ void plots(){
   vector < vector < TH1F*> > OS_plots_em; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(ttw.OS[i][0][3][1]);
-    temp.push_back(ttz.OS[i][0][3][1]);
-    temp.push_back(wz.OS[i][0][3][1]);
+    temp.push_back(ttv.OS[i][0][3][1]);
+    temp.push_back(rares.OS[i][0][3][1]);
+    temp.push_back(vz.OS[i][0][3][1]);
     temp.push_back(ttbar.OS[i][0][3][1]);
     temp.push_back(dy.OS[i][0][3][1]);
     temp.push_back(wjets.OS[i][0][3][1]);
@@ -289,9 +307,9 @@ void plots(){
   vector < vector < TH1F*> > SS_plots_em; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(ttw.SS[i][0][3][1]);
-    temp.push_back(ttz.SS[i][0][3][1]);
-    temp.push_back(wz.SS[i][0][3][1]);
+    temp.push_back(ttv.SS[i][0][3][1]);
+    temp.push_back(rares.SS[i][0][3][1]);
+    temp.push_back(vz.SS[i][0][3][1]);
     temp.push_back(ttbar.SS[i][0][3][1]);
     temp.push_back(dy.SS[i][0][3][1]);
     temp.push_back(wjets.SS[i][0][3][1]);
@@ -302,9 +320,9 @@ void plots(){
   vector < vector < TH1F*> > SF_plots_em; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(ttw.SF[i][0][3][1]);
-    temp.push_back(ttz.SF[i][0][3][1]);
-    temp.push_back(wz.SF[i][0][3][1]);
+    temp.push_back(ttv.SF[i][0][3][1]);
+    temp.push_back(rares.SF[i][0][3][1]);
+    temp.push_back(vz.SF[i][0][3][1]);
     temp.push_back(ttbar.SF[i][0][3][1]);
     temp.push_back(dy.SF[i][0][3][1]);
     temp.push_back(wjets.SF[i][0][3][1]);
@@ -315,9 +333,9 @@ void plots(){
   vector < vector < TH1F*> > EZ_plots_em; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(ttw.EZ[i][0][3][1]);
-    temp.push_back(ttz.EZ[i][0][3][1]);
-    temp.push_back(wz.EZ[i][0][3][1]);
+    temp.push_back(ttv.EZ[i][0][3][1]);
+    temp.push_back(rares.EZ[i][0][3][1]);
+    temp.push_back(vz.EZ[i][0][3][1]);
     temp.push_back(ttbar.EZ[i][0][3][1]);
     temp.push_back(dy.EZ[i][0][3][1]);
     temp.push_back(wjets.EZ[i][0][3][1]);
@@ -328,9 +346,9 @@ void plots(){
   vector < vector < TH1F*> > OS_plots_mm; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.OS[i][0][3][0]);
-    temp.push_back(  ttz.OS[i][0][3][0]);
-    temp.push_back(   wz.OS[i][0][3][0]);
+    temp.push_back(  ttv.OS[i][0][3][0]);
+    temp.push_back(  rares.OS[i][0][3][0]);
+    temp.push_back(   vz.OS[i][0][3][0]);
     temp.push_back(ttbar.OS[i][0][3][0]);
     temp.push_back(   dy.OS[i][0][3][0]);
     temp.push_back(wjets.OS[i][0][3][0]);
@@ -341,9 +359,9 @@ void plots(){
   vector < vector < TH1F*> > SS_plots_mm; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.SS[i][0][3][0]);
-    temp.push_back(  ttz.SS[i][0][3][0]);
-    temp.push_back(   wz.SS[i][0][3][0]);
+    temp.push_back(  ttv.SS[i][0][3][0]);
+    temp.push_back(  rares.SS[i][0][3][0]);
+    temp.push_back(   vz.SS[i][0][3][0]);
     temp.push_back(ttbar.SS[i][0][3][0]);
     temp.push_back(   dy.SS[i][0][3][0]);
     temp.push_back(wjets.SS[i][0][3][0]);
@@ -354,9 +372,9 @@ void plots(){
   vector < vector < TH1F*> > SF_plots_mm; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.SF[i][0][3][0]);
-    temp.push_back(  ttz.SF[i][0][3][0]);
-    temp.push_back(   wz.SF[i][0][3][0]);
+    temp.push_back(  ttv.SF[i][0][3][0]);
+    temp.push_back(  rares.SF[i][0][3][0]);
+    temp.push_back(   vz.SF[i][0][3][0]);
     temp.push_back(ttbar.SF[i][0][3][0]);
     temp.push_back(   dy.SF[i][0][3][0]);
     temp.push_back(wjets.SF[i][0][3][0]);
@@ -367,9 +385,9 @@ void plots(){
   vector < vector < TH1F*> > EZ_plots_mm; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.EZ[i][0][3][0]);
-    temp.push_back(  ttz.EZ[i][0][3][0]);
-    temp.push_back(   wz.EZ[i][0][3][0]);
+    temp.push_back(  ttv.EZ[i][0][3][0]);
+    temp.push_back(  rares.EZ[i][0][3][0]);
+    temp.push_back(   vz.EZ[i][0][3][0]);
     temp.push_back(ttbar.EZ[i][0][3][0]);
     temp.push_back(   dy.EZ[i][0][3][0]);
     temp.push_back(wjets.EZ[i][0][3][0]);
@@ -380,9 +398,9 @@ void plots(){
   vector < vector < TH1F*> > OS_plots_ee; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.OS[i][0][3][2]);
-    temp.push_back(  ttz.OS[i][0][3][2]);
-    temp.push_back(   wz.OS[i][0][3][2]);
+    temp.push_back(  ttv.OS[i][0][3][2]);
+    temp.push_back(  rares.OS[i][0][3][2]);
+    temp.push_back(   vz.OS[i][0][3][2]);
     temp.push_back(ttbar.OS[i][0][3][2]);
     temp.push_back(   dy.OS[i][0][3][2]);
     temp.push_back(wjets.OS[i][0][3][2]);
@@ -393,9 +411,9 @@ void plots(){
   vector < vector < TH1F*> > SS_plots_ee; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.SS[i][0][3][2]);
-    temp.push_back(  ttz.SS[i][0][3][2]);
-    temp.push_back(   wz.SS[i][0][3][2]);
+    temp.push_back(  ttv.SS[i][0][3][2]);
+    temp.push_back(  rares.SS[i][0][3][2]);
+    temp.push_back(   vz.SS[i][0][3][2]);
     temp.push_back(ttbar.SS[i][0][3][2]);
     temp.push_back(   dy.SS[i][0][3][2]);
     temp.push_back(wjets.SS[i][0][3][2]);
@@ -406,9 +424,9 @@ void plots(){
   vector < vector < TH1F*> > SF_plots_ee; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.SF[i][0][3][2]);
-    temp.push_back(  ttz.SF[i][0][3][2]);
-    temp.push_back(   wz.SF[i][0][3][2]);
+    temp.push_back(  ttv.SF[i][0][3][2]);
+    temp.push_back(  rares.SF[i][0][3][2]);
+    temp.push_back(   vz.SF[i][0][3][2]);
     temp.push_back(ttbar.SF[i][0][3][2]);
     temp.push_back(   dy.SF[i][0][3][2]);
     temp.push_back(wjets.SF[i][0][3][2]);
@@ -419,9 +437,9 @@ void plots(){
   vector < vector < TH1F*> > EZ_plots_ee; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.EZ[i][0][3][2]);
-    temp.push_back(  ttz.EZ[i][0][3][2]);
-    temp.push_back(   wz.EZ[i][0][3][2]);
+    temp.push_back(  ttv.EZ[i][0][3][2]);
+    temp.push_back(  rares.EZ[i][0][3][2]);
+    temp.push_back(   vz.EZ[i][0][3][2]);
     temp.push_back(ttbar.EZ[i][0][3][2]);
     temp.push_back(   dy.EZ[i][0][3][2]);
     temp.push_back(wjets.EZ[i][0][3][2]);
@@ -432,9 +450,9 @@ void plots(){
   vector < vector < TH1F*> > OS_plots_eemm; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.OS[i][0][3][3]);
-    temp.push_back(  ttz.OS[i][0][3][3]);
-    temp.push_back(   wz.OS[i][0][3][3]);
+    temp.push_back(  ttv.OS[i][0][3][3]);
+    temp.push_back(  rares.OS[i][0][3][3]);
+    temp.push_back(   vz.OS[i][0][3][3]);
     temp.push_back(ttbar.OS[i][0][3][3]);
     temp.push_back(   dy.OS[i][0][3][3]);
     temp.push_back(wjets.OS[i][0][3][3]);
@@ -445,9 +463,9 @@ void plots(){
   vector < vector < TH1F*> > SS_plots_eemm; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.SS[i][0][3][3]);
-    temp.push_back(  ttz.SS[i][0][3][3]);
-    temp.push_back(   wz.SS[i][0][3][3]);
+    temp.push_back(  ttv.SS[i][0][3][3]);
+    temp.push_back(  rares.SS[i][0][3][3]);
+    temp.push_back(   vz.SS[i][0][3][3]);
     temp.push_back(ttbar.SS[i][0][3][3]);
     temp.push_back(   dy.SS[i][0][3][3]);
     temp.push_back(wjets.SS[i][0][3][3]);
@@ -458,9 +476,9 @@ void plots(){
   vector < vector < TH1F*> > SF_plots_eemm; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.SF[i][0][3][3]);
-    temp.push_back(  ttz.SF[i][0][3][3]);
-    temp.push_back(   wz.SF[i][0][3][3]);
+    temp.push_back(  ttv.SF[i][0][3][3]);
+    temp.push_back(  rares.SF[i][0][3][3]);
+    temp.push_back(   vz.SF[i][0][3][3]);
     temp.push_back(ttbar.SF[i][0][3][3]);
     temp.push_back(   dy.SF[i][0][3][3]);
     temp.push_back(wjets.SF[i][0][3][3]);
@@ -471,9 +489,9 @@ void plots(){
   vector < vector < TH1F*> > EZ_plots_eemm; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(  ttw.EZ[i][0][3][3]);
-    temp.push_back(  ttz.EZ[i][0][3][3]);
-    temp.push_back(   wz.EZ[i][0][3][3]);
+    temp.push_back(  ttv.EZ[i][0][3][3]);
+    temp.push_back(  rares.EZ[i][0][3][3]);
+    temp.push_back(   vz.EZ[i][0][3][3]);
     temp.push_back(ttbar.EZ[i][0][3][3]);
     temp.push_back(   dy.EZ[i][0][3][3]);
     temp.push_back(wjets.EZ[i][0][3][3]);
@@ -484,9 +502,9 @@ void plots(){
   vector < vector < TH1F*> > OS_plots; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(ttw.OS[i][0][3][4]);
-    temp.push_back(ttz.OS[i][0][3][4]);
-    temp.push_back(wz.OS[i][0][3][4]);
+    temp.push_back(ttv.OS[i][0][3][4]);
+    temp.push_back(rares.OS[i][0][3][4]);
+    temp.push_back(vz.OS[i][0][3][4]);
     temp.push_back(ttbar.OS[i][0][3][4]);
     temp.push_back(dy.OS[i][0][3][4]);
     temp.push_back(wjets.OS[i][0][3][4]);
@@ -497,9 +515,9 @@ void plots(){
   vector < vector < TH1F*> > SS_plots; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(ttw.SS[i][0][3][4]);
-    temp.push_back(ttz.SS[i][0][3][4]);
-    temp.push_back(wz.SS[i][0][3][4]);
+    temp.push_back(ttv.SS[i][0][3][4]);
+    temp.push_back(rares.SS[i][0][3][4]);
+    temp.push_back(vz.SS[i][0][3][4]);
     temp.push_back(ttbar.SS[i][0][3][4]);
     temp.push_back(dy.SS[i][0][3][4]);
     temp.push_back(wjets.SS[i][0][3][4]);
@@ -510,9 +528,9 @@ void plots(){
   vector < vector < TH1F*> > SF_plots; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(ttw.SF[i][0][3][4]);
-    temp.push_back(ttz.SF[i][0][3][4]);
-    temp.push_back(wz.SF[i][0][3][4]);
+    temp.push_back(ttv.SF[i][0][3][4]);
+    temp.push_back(rares.SF[i][0][3][4]);
+    temp.push_back(vz.SF[i][0][3][4]);
     temp.push_back(ttbar.SF[i][0][3][4]);
     temp.push_back(dy.SF[i][0][3][4]);
     temp.push_back(wjets.SF[i][0][3][4]);
@@ -523,9 +541,9 @@ void plots(){
   vector < vector < TH1F*> > EZ_plots; 
   for (int i = 0; i < 10; i++){
     vector <TH1F*> temp; 
-    temp.push_back(ttw.EZ[i][0][3][4]);
-    temp.push_back(ttz.EZ[i][0][3][4]);
-    temp.push_back(wz.EZ[i][0][3][4]);
+    temp.push_back(ttv.EZ[i][0][3][4]);
+    temp.push_back(rares.EZ[i][0][3][4]);
+    temp.push_back(vz.EZ[i][0][3][4]);
     temp.push_back(ttbar.EZ[i][0][3][4]);
     temp.push_back(dy.EZ[i][0][3][4]);
     temp.push_back(wjets.EZ[i][0][3][4]);
@@ -535,9 +553,9 @@ void plots(){
 
   //Titles for legend
   vector <string> titles;
-  titles.push_back("ttW"); 
-  titles.push_back("ttZ"); 
-  titles.push_back("WZ"); 
+  titles.push_back("ttv"); 
+  titles.push_back("rares"); 
+  titles.push_back("VZ"); 
   titles.push_back("ttbar"); 
   titles.push_back("DY"); 
   titles.push_back("WJets"); 
@@ -581,32 +599,32 @@ void plots(){
   for (int i = 0; i < 8; i++){
     cout << i << endl;
     //mm
-    dataMCplotMaker(data.OS[i][0][3][0], OS_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(OS #mu#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_mm_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i])); 
-    dataMCplotMaker(data.SS[i][0][3][0], SS_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(SS #mu#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_mm_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.SF[i][0][3][0], SF_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(SF #mu#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_mm_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.EZ[i][0][3][0], EZ_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(EZ #mu#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_mm_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.OS[i][0][3][0], OS_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(OS #mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_mm_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][3][0], SS_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(SS #mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_mm_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.SF[i][0][3][0], SF_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(SF #mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_mm_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.EZ[i][0][3][0], EZ_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(EZ #mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_mm_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
 
     //ee
-    dataMCplotMaker(data.OS[i][0][3][2], OS_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(OS ee)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_ee_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i])); 
-    dataMCplotMaker(data.SS[i][0][3][2], SS_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(SS ee)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_ee_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.SF[i][0][3][2], SF_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(SF ee)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_ee_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.EZ[i][0][3][2], EZ_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(EZ ee)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_ee_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.OS[i][0][3][2], OS_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(OS ee)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_ee_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][3][2], SS_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(SS ee)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_ee_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.SF[i][0][3][2], SF_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(SF ee)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_ee_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.EZ[i][0][3][2], EZ_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(EZ ee)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_ee_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
 
     //ee+mm
-    dataMCplotMaker(data.OS[i][0][3][3], OS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(OS ee+#mu#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_eemm_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i])); 
-    dataMCplotMaker(data.SS[i][0][3][3], SS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(SS ee+#mu#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_eemm_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.SF[i][0][3][3], SF_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(SF ee+#mu#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_eemm_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.EZ[i][0][3][3], EZ_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(EZ ee+#mu#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_eemm_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.OS[i][0][3][3], OS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(OS ee+#mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_eemm_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][3][3], SS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(SS ee+#mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_eemm_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.SF[i][0][3][3], SF_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(SF ee+#mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_eemm_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.EZ[i][0][3][3], EZ_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(EZ ee+#mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_eemm_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
    //emu
-    dataMCplotMaker(data.OS[i][0][3][1], OS_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(OS e#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_em_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i])); 
-    dataMCplotMaker(data.SS[i][0][3][1], SS_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(SS e#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_em_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.SF[i][0][3][1], SF_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(SF e#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_em_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.EZ[i][0][3][1], EZ_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(EZ e#mu)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_em_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.OS[i][0][3][1], OS_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(OS e#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_em_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][3][1], SS_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(SS e#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_em_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.SF[i][0][3][1], SF_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(SF e#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_em_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.EZ[i][0][3][1], EZ_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(EZ e#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_em_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
    //all
-    dataMCplotMaker(data.OS[i][0][3][4], OS_plots[i], titles, Form("%s %s", names[i].c_str(), "(OS)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_all_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i])); 
-    dataMCplotMaker(data.SS[i][0][3][4], SS_plots[i], titles, Form("%s %s", names[i].c_str(), "(SS)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_all_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.SF[i][0][3][4], SF_plots[i], titles, Form("%s %s", names[i].c_str(), "(SF)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_all_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.EZ[i][0][3][4], EZ_plots[i], titles, Form("%s %s", names[i].c_str(), "(EZ)"), title.c_str(), Form("--lumi 209.5 --lumiUnit pb --outputName %s_all_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.OS[i][0][3][4], OS_plots[i], titles, Form("%s %s", names[i].c_str(), "(OS)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_all_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][3][4], SS_plots[i], titles, Form("%s %s", names[i].c_str(), "(SS)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_all_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.SF[i][0][3][4], SF_plots[i], titles, Form("%s %s", names[i].c_str(), "(SF)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_all_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.EZ[i][0][3][4], EZ_plots[i], titles, Form("%s %s", names[i].c_str(), "(EZ)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_all_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
   }
 
 }

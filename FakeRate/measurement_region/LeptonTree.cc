@@ -58,6 +58,16 @@ void LeptonTree::Init(TTree *tree) {
 		evt_trackmetPhi_branch = tree->GetBranch("evt_trackmetPhi");
 		if (evt_trackmetPhi_branch) {evt_trackmetPhi_branch->SetAddress(&evt_trackmetPhi_);}
 	}
+	evt_corrMET_branch = 0;
+	if (tree->GetBranch("evt_corrMET") != 0) {
+		evt_corrMET_branch = tree->GetBranch("evt_corrMET");
+		if (evt_corrMET_branch) {evt_corrMET_branch->SetAddress(&evt_corrMET_);}
+	}
+	evt_corrMETPhi_branch = 0;
+	if (tree->GetBranch("evt_corrMETPhi") != 0) {
+		evt_corrMETPhi_branch = tree->GetBranch("evt_corrMETPhi");
+		if (evt_corrMETPhi_branch) {evt_corrMETPhi_branch->SetAddress(&evt_corrMETPhi_);}
+	}
 	evt_met3p0_branch = 0;
 	if (tree->GetBranch("evt_met3p0") != 0) {
 		evt_met3p0_branch = tree->GetBranch("evt_met3p0");
@@ -1463,6 +1473,8 @@ void LeptonTree::GetEntry(unsigned int idx)
 		evt_pfmetPhi_isLoaded = false;
 		evt_trackmet_isLoaded = false;
 		evt_trackmetPhi_isLoaded = false;
+		evt_corrMET_isLoaded = false;
+		evt_corrMETPhi_isLoaded = false;
 		evt_met3p0_isLoaded = false;
 		evt_met3p0Phi_isLoaded = false;
 		evt_t1met3p0_isLoaded = false;
@@ -1758,6 +1770,8 @@ void LeptonTree::LoadAllBranches()
 	if (evt_pfmetPhi_branch != 0) evt_pfmetPhi();
 	if (evt_trackmet_branch != 0) evt_trackmet();
 	if (evt_trackmetPhi_branch != 0) evt_trackmetPhi();
+	if (evt_corrMET_branch != 0) evt_corrMET();
+	if (evt_corrMETPhi_branch != 0) evt_corrMETPhi();
 	if (evt_met3p0_branch != 0) evt_met3p0();
 	if (evt_met3p0Phi_branch != 0) evt_met3p0Phi();
 	if (evt_t1met3p0_branch != 0) evt_t1met3p0();
@@ -2097,6 +2111,32 @@ void LeptonTree::LoadAllBranches()
 			evt_trackmetPhi_isLoaded = true;
 		}
 		return evt_trackmetPhi_;
+	}
+	const float &LeptonTree::evt_corrMET()
+	{
+		if (not evt_corrMET_isLoaded) {
+			if (evt_corrMET_branch != 0) {
+				evt_corrMET_branch->GetEntry(index);
+			} else { 
+				printf("branch evt_corrMET_branch does not exist!\n");
+				exit(1);
+			}
+			evt_corrMET_isLoaded = true;
+		}
+		return evt_corrMET_;
+	}
+	const float &LeptonTree::evt_corrMETPhi()
+	{
+		if (not evt_corrMETPhi_isLoaded) {
+			if (evt_corrMETPhi_branch != 0) {
+				evt_corrMETPhi_branch->GetEntry(index);
+			} else { 
+				printf("branch evt_corrMETPhi_branch does not exist!\n");
+				exit(1);
+			}
+			evt_corrMETPhi_isLoaded = true;
+		}
+		return evt_corrMETPhi_;
 	}
 	const float &LeptonTree::evt_met3p0()
 	{
@@ -5842,6 +5882,8 @@ namespace lepton_tree {
 	const float &evt_pfmetPhi() { return lepton_tree_obj.evt_pfmetPhi(); }
 	const float &evt_trackmet() { return lepton_tree_obj.evt_trackmet(); }
 	const float &evt_trackmetPhi() { return lepton_tree_obj.evt_trackmetPhi(); }
+	const float &evt_corrMET() { return lepton_tree_obj.evt_corrMET(); }
+	const float &evt_corrMETPhi() { return lepton_tree_obj.evt_corrMETPhi(); }
 	const float &evt_met3p0() { return lepton_tree_obj.evt_met3p0(); }
 	const float &evt_met3p0Phi() { return lepton_tree_obj.evt_met3p0Phi(); }
 	const float &evt_t1met3p0() { return lepton_tree_obj.evt_t1met3p0(); }

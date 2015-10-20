@@ -1,9 +1,11 @@
 {
 
+  gROOT->ProcessLine(".L ../../commonUtils.h");
+
   bool doMu = 1;
 
-  TString tag = "v4.00";
-  TString ilumi = "0.2095";
+  TString tag = getTag();
+  TString ilumi = Form("%f",getLumi());
 
   TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleMuon.root" : "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root");
 

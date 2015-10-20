@@ -1,48 +1,53 @@
 {
 
-  for (int doMu=0;doMu<2;doMu++) {
+  for (int doIso=0;doIso<2;doIso++) {
 
-    TString lep = doMu ? "muon" : "electron";
-    TString l = doMu ? "mu" : "e";
+    for (int doMu=0;doMu<2;doMu++) {
 
-    TFile* f = TFile::Open("ewkCorFR_"+lep+".root");
+      TString suffix = (doIso ? "_IsoTrigs" : "" );
 
-    TH2D* numer = (TH2D*) f->Get("Nt_histo_"+l);
+      TString lep = doMu ? "muon" : "electron";
+      TString l = doMu ? "mu" : "e";
+
+      TFile* f = TFile::Open("ewkCorFR_"+lep+suffix+".root");
+
+      TH2D* numer = (TH2D*) f->Get("Nt_histo_"+l);
     
-    cout << "float "+lep+"FakeRate(float pt, float eta) {" << endl;
-    for (int xbin=1;xbin<=numer->GetNbinsX();xbin++) {
-      for (int ybin=1;ybin<=numer->GetNbinsY();ybin++) {
-	if (xbin!=numer->GetNbinsX()) { 
-	  cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin) << " && pt<" << numer->GetXaxis()->GetBinUpEdge(xbin) 
-	       << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
-	       <<  numer->GetBinContent(xbin,ybin) << ";" << endl;
-	} else {
-	  cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin)
-	       << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
-	       <<  numer->GetBinContent(xbin,ybin) << ";" << endl;      
+      cout << "float "+lep+"FakeRate"+suffix+"(float pt, float eta) {" << endl;
+      for (int xbin=1;xbin<=numer->GetNbinsX();xbin++) {
+	for (int ybin=1;ybin<=numer->GetNbinsY();ybin++) {
+	  if (xbin!=numer->GetNbinsX()) { 
+	    cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin) << " && pt<" << numer->GetXaxis()->GetBinUpEdge(xbin) 
+		 << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
+		 <<  numer->GetBinContent(xbin,ybin) << ";" << endl;
+	  } else {
+	    cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin)
+		 << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
+		 <<  numer->GetBinContent(xbin,ybin) << ";" << endl;      
+	  }
 	}
       }
-    }
-    cout << "   return 0.;" << endl;
-    cout << "}" << endl;
+      cout << "   return 0.;" << endl;
+      cout << "}" << endl;
     
-    cout << "float "+lep+"FakeRateError(float pt, float eta) {" << endl;
-    for (int xbin=1;xbin<=numer->GetNbinsX();xbin++) {
-      for (int ybin=1;ybin<=numer->GetNbinsY();ybin++) {
-	if (xbin!=numer->GetNbinsX()) { 
-	  cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin) << " && pt<" << numer->GetXaxis()->GetBinUpEdge(xbin) 
-	       << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
-	       <<  numer->GetBinError(xbin,ybin) << ";" << endl;
-	} else {
-	  cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin)
-	       << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
-	       <<  numer->GetBinError(xbin,ybin) << ";" << endl;      
+      cout << "float "+lep+"FakeRateError"+suffix+"(float pt, float eta) {" << endl;
+      for (int xbin=1;xbin<=numer->GetNbinsX();xbin++) {
+	for (int ybin=1;ybin<=numer->GetNbinsY();ybin++) {
+	  if (xbin!=numer->GetNbinsX()) { 
+	    cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin) << " && pt<" << numer->GetXaxis()->GetBinUpEdge(xbin) 
+		 << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
+		 <<  numer->GetBinError(xbin,ybin) << ";" << endl;
+	  } else {
+	    cout << "   if (pt>=" << numer->GetXaxis()->GetBinLowEdge(xbin)
+		 << " && fabs(eta)>=" << numer->GetYaxis()->GetBinLowEdge(ybin) << " && fabs(eta)<" << numer->GetYaxis()->GetBinUpEdge(ybin) << " ) return " 
+		 <<  numer->GetBinError(xbin,ybin) << ";" << endl;      
+	  }
 	}
       }
-    }
-    cout << "   return 0.;" << endl;
-    cout << "}" << endl;
+      cout << "   return 0.;" << endl;
+      cout << "}" << endl;
 
+    }
   }
 
 }

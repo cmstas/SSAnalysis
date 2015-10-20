@@ -4,7 +4,7 @@
 #include "TPaveText.h"
 #include "../../commonUtils.h"
 
-void make1DplotFR(float elSF_zp=1.16182,float muSF_zp=1.11212,float elSF_mt=0.923611, float muSF_mt=0.879643){
+void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool useIsoTrig){
 
   for(int doPt = 0; doPt < 2; doPt++) {
   gROOT->Reset();
@@ -23,6 +23,8 @@ void make1DplotFR(float elSF_zp=1.16182,float muSF_zp=1.11212,float elSF_mt=0.92
   // var="_jet_highpt";
   // var="_jet_lowpt";
 
+  TString suffix = (useIsoTrig ? "_IsoTrigs" : "");
+  postfix+=suffix;
 
   TFile* f_qcd_mu = TFile::Open("rate_histos_qcd_mu"+postfix+".root");
   TFile* f_qcd_el = TFile::Open("rate_histos_qcd_el"+postfix+".root");
