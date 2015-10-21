@@ -91,7 +91,7 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   pred->GetYaxis()->SetTitle("Events");
   obs->GetXaxis()->SetTitle("Signal Region"); 
   obs->GetYaxis()->SetTitle("Events");
-  obs->SetLineColor(kRed);
+  obs->SetLineColor(kGray);
 
   pred->GetYaxis()->SetRangeUser(0,1.1*std::max(pred->GetMaximum(),obs->GetMaximum()));
 
@@ -129,7 +129,7 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   //Overlaid histos
   pad_h->cd();
   pred->SetMarkerStyle(kFullCircle);
-  obs->SetFillColor(kCyan);
+  obs->SetFillColor(kYellow);
   pred->Draw("PE");
   obs->Draw("samehistE");
   obs->Draw("sameE");

@@ -10,7 +10,7 @@
 #include "../CORE/Tools/dorky/dorky.h"
 
 //do the data!!
-bool doData = false; 
+bool doData = true; 
 
 //testPC -- test the prompt contamination, ie allow numer-numer events
 bool testPC = false;
@@ -22,7 +22,7 @@ bool others = false;
 bool ssZveto = false;
 
 //Path
-string tag = "v4.00";
+string tag = getTag().Data();
 
 //Lumi
 float luminosity = doData ? 1.0 : getLumi();
@@ -101,9 +101,9 @@ void FR(){
   TChain *chain = new TChain("t");
   int fo2_suffix = 0;
   if (doData){
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD.root", tag.c_str()));
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD.root", tag.c_str()));
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD.root", tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleEGD.root",   tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleMuonD.root", tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataMuonEGD.root",     tag.c_str()));
   }
   else if (!doData){
     chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root", tag.c_str()));
@@ -336,7 +336,7 @@ void FR(){
   file->Close(); 
 
   //Plots
-  PlotMaker2D(numer , Form("--outputName FR_elec_%s.pdf --noOverflow --setTitle elec %s --Xaxis fake p_{T} --Yaxis |#eta| --text", name2.c_str(), name2.c_str())); 
-  PlotMaker2D(numer3, Form("--outputName FR_muon_%s.pdf --noOverflow --setTitle muon %s --Xaxis fake p_{T} --Yaxis |#eta| --text", name2.c_str(), name2.c_str())); 
+  PlotMaker2D(numer , Form("--outputName FR_elec_%s.pdf --noOverflow --setTitle elec %s --Xaxis fake p_{T} --Yaxis |#eta| --text --colors", name2.c_str(), name2.c_str())); 
+  PlotMaker2D(numer3, Form("--outputName FR_muon_%s.pdf --noOverflow --setTitle muon %s --Xaxis fake p_{T} --Yaxis |#eta| --text --colors", name2.c_str(), name2.c_str())); 
   PlotMaker2D(test, "--outputName test.pdf --noOverflow --setTitle muons, pT > 25, SIP3D > 4 --Xaxis miniisolation --Yaxis 1/p_{T}^{ratio} --colors"); 
 }

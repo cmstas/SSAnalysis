@@ -15,11 +15,11 @@ struct doublePlotHolder{ TH1F* OS[10][4][4][5]; TH1F* SS[10][4][4][5]; TH1F* SF[
 
 doublePlotHolder plotMaker(TChain *chain, bool isData){
 
-  int      max[10] = { 700, 800, 10, 5, 300, 200, 400, 50, 700, 700 };
-  int nBins_OS[10] = { 50, 25, 10, 5, 30, 50, 40, 50, 50, 50 };
-  int nBins_SS[10] = { 50, 20, 10, 5, 30, 25, 40, 25, 50, 50 };
-  int nBins_SF[10] = { 50, 20, 10, 5, 30, 25, 40, 25, 50, 50 };
-  int nBins_EZ[10] = { 50, 20, 10, 5, 30, 25, 40, 25, 50, 50 };
+  int      max[10] = { 700, 800, 10, 5, 300, 200, 400, 24, 700, 700 };
+  int nBins_OS[10] = { 50, 25, 10, 5, 30, 50, 40, 24, 50, 50 };
+  int nBins_SS[10] = { 50, 20, 10, 5, 30, 25, 40, 24, 50, 50 };
+  int nBins_SF[10] = { 50, 20, 10, 5, 30, 25, 40, 24, 50, 50 };
+  int nBins_EZ[10] = { 50, 20, 10, 5, 30, 25, 40, 24, 50, 50 };
 
   doublePlotHolder plots;
   for (int m = 0; m < 10; m++){       //m - which plots
@@ -93,11 +93,12 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       //Reject not triggered
       if (!ss::fired_trigger()) continue;
 
-      // unsigned int triggerBits = ss::triggers();
       // //select non iso triggers
-      // if ( (triggerBits & (1<<0))!=(1<<0) && (triggerBits & (1<<5))!=(1<<5) && (triggerBits & (1<<0))!=(1<<0) ) continue;
+      // unsigned int triggerBits = ss::triggers();
+      // if ( (triggerBits & (1<<0))!=(1<<0) && (triggerBits & (1<<5))!=(1<<5) && (triggerBits & (1<<7))!=(1<<7) ) continue;
       // //select iso triggers
-      //if ( (triggerBits & (1<<1))!=(1<<1) && (triggerBits & (1<<2))!=(1<<2) && (triggerBits & (1<<3))!=(1<<3) && (triggerBits & (1<<4))!=(1<<4) && (triggerBits & (1<<6))!=(1<<6) ) continue;
+      // unsigned int triggerBits = ss::triggers();
+      // if ( (triggerBits & (1<<1))!=(1<<1) && (triggerBits & (1<<2))!=(1<<2) && (triggerBits & (1<<3))!=(1<<3) && (triggerBits & (1<<4))!=(1<<4) && (triggerBits & (1<<6))!=(1<<6) ) continue;
 
       //Determine MET
       float metAG = (corrected ? ss::corrMET() : ss::met() );

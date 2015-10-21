@@ -57,22 +57,25 @@ float getPUwUnblind(int nvtx) {
 }
 
 float flipRate(float pt, float eta) {
-   if (pt>=0 && pt<20 && fabs(eta)>=0 && fabs(eta)<1 ) return 5.70541e-06;
-   if (pt>=0 && pt<20 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.000286472;
-   if (pt>=0 && pt<20 && fabs(eta)>=2 && fabs(eta)<3 ) return 0.000748955;
-   if (pt>=20 && pt<40 && fabs(eta)>=0 && fabs(eta)<1 ) return 2.10834e-05;
-   if (pt>=20 && pt<40 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.000531631;
-   if (pt>=20 && pt<40 && fabs(eta)>=2 && fabs(eta)<3 ) return 0.00126557;
-   if (pt>=40 && pt<60 && fabs(eta)>=0 && fabs(eta)<1 ) return 2.48083e-05;
-   if (pt>=40 && pt<60 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.000650525;
-   if (pt>=40 && pt<60 && fabs(eta)>=2 && fabs(eta)<3 ) return 0.0016674;
-   if (pt>=60 && pt<80 && fabs(eta)>=0 && fabs(eta)<1 ) return 4.09732e-05;
-   if (pt>=60 && pt<80 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.00101227;
-   if (pt>=60 && pt<80 && fabs(eta)>=2 && fabs(eta)<3 ) return 0.00230621;
-   if (pt>=80 && fabs(eta)>=0 && fabs(eta)<1 ) return 7.17436e-05;
-   if (pt>=80 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.00101483;
-   if (pt>=80 && fabs(eta)>=2 && fabs(eta)<3 ) return 0.00512076;
-   return 0.;
+   float scale = 1.15;
+   if (eta<-1.5 && eta>-2) scale = 3.60;
+   //scale = 1.;
+   if (pt>=0 && pt<20 && fabs(eta)>=0 && fabs(eta)<1 ) return scale*5.70541e-06;
+   if (pt>=0 && pt<20 && fabs(eta)>=1 && fabs(eta)<2 ) return scale*0.000286472;
+   if (pt>=0 && pt<20 && fabs(eta)>=2 && fabs(eta)<3 ) return scale*0.000748955;
+   if (pt>=20 && pt<40 && fabs(eta)>=0 && fabs(eta)<1 ) return scale*2.10834e-05;
+   if (pt>=20 && pt<40 && fabs(eta)>=1 && fabs(eta)<2 ) return scale*0.000531631;
+   if (pt>=20 && pt<40 && fabs(eta)>=2 && fabs(eta)<3 ) return scale*0.00126557;
+   if (pt>=40 && pt<60 && fabs(eta)>=0 && fabs(eta)<1 ) return scale*2.48083e-05;
+   if (pt>=40 && pt<60 && fabs(eta)>=1 && fabs(eta)<2 ) return scale*0.000650525;
+   if (pt>=40 && pt<60 && fabs(eta)>=2 && fabs(eta)<3 ) return scale*0.0016674;
+   if (pt>=60 && pt<80 && fabs(eta)>=0 && fabs(eta)<1 ) return scale*4.09732e-05;
+   if (pt>=60 && pt<80 && fabs(eta)>=1 && fabs(eta)<2 ) return scale*0.00101227;
+   if (pt>=60 && pt<80 && fabs(eta)>=2 && fabs(eta)<3 ) return scale*0.00230621;
+   if (pt>=80 && fabs(eta)>=0 && fabs(eta)<1 ) return scale*7.17436e-05;
+   if (pt>=80 && fabs(eta)>=1 && fabs(eta)<2 ) return scale*0.00101483;
+   if (pt>=80 && fabs(eta)>=2 && fabs(eta)<3 ) return scale*0.00512076;
+   return scale*0.;
 }
 float flipRateError(float pt, float eta) {
    if (pt>=0 && pt<20 && fabs(eta)>=0 && fabs(eta)<1 ) return 5.51727e-06;

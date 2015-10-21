@@ -13,6 +13,8 @@
 float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
 
+bool doNoData = false;
+
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
 struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_type; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; }; 
@@ -24,7 +26,9 @@ yields_t total;
 pair<yields_t, plots_t> run(TChain *chain, bool isData = 0, bool doFlips = 0, int doFakes = 0, int exclude = 0);
 
 void getyields(){
-  
+
+  if (doNoData) lumiAG = getLumi();
+
   cout << lumiAG << endl;
   cout << tag << endl;
 
@@ -245,7 +249,7 @@ void getyields(){
   SRHH_plots.push_back(p_wz.SRHH.TOTAL   );
   SRHH_plots.push_back(p_flips.SRHH.TOTAL   );
   SRHH_plots.push_back(p_fakes.SRHH.TOTAL   );
-  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "data-driven", Form("--lumi %.1f --lumiUnit pb --outputName HHSR.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow", lumiAG*1000));
+  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "data-driven", Form("--lumi %.1f --lumiUnit pb --outputName HHSR.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow ", lumiAG*1000));
 
   p_qqww.SRHL.TOTAL->Add(p_wzz.SRHL.TOTAL);
   p_qqww.SRHL.TOTAL->Add(p_wwdps.SRHL.TOTAL);
@@ -741,7 +745,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUw(ss::nGoodVertices());
 
-      if (!isUnblindRun(ss::run())) continue;
+      if (doNoData) {
+	if (ss::is_real_data() && !doFlips && !doFakes) continue;
+      } else if (ss::is_real_data() && !isUnblindRun(ss::run())) continue;
 
       //Reject not triggered
       if (!ss::fired_trigger()) continue;
@@ -811,7 +817,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       float ptratio_2 = ss::lep2_closeJet().pt() > 0 ? ss::lep2_p4().pt()/ss::lep2_closeJet().pt() : 1.0; 
 
       //Reject duplicates (after selection otherwise flips are ignored...)
-      if (isData == true){
+      if (isData && ss::is_real_data()){
         duplicate_removal::DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
         if (duplicate_removal::is_duplicate(id)){ continue; }
       }

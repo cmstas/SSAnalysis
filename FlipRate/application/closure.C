@@ -14,27 +14,30 @@ using namespace ss;
 
 float getFlipFactor(TH2D* rate){
 
-  //Figure out pt and eta
-  float pt1  = lep1_p4().pt();  
-  float eta1 = fabs(lep1_p4().eta()); 
-  float pt2  = lep2_p4().pt();  
-  float eta2 = fabs(lep2_p4().eta()); 
+  // //Figure out pt and eta
+  // float pt1  = lep1_p4().pt();  
+  // float eta1 = fabs(lep1_p4().eta()); 
+  // float pt2  = lep2_p4().pt();  
+  // float eta2 = fabs(lep2_p4().eta()); 
 
-  if (pt1<rate->GetXaxis()->GetBinCenter(1)) pt1=rate->GetXaxis()->GetBinCenter(1);
-  if (pt1>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt1=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
-  if (eta1<rate->GetYaxis()->GetBinCenter(1)) eta1=rate->GetYaxis()->GetBinCenter(1);
-  if (eta1>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta1=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());
+  // if (pt1<rate->GetXaxis()->GetBinCenter(1)) pt1=rate->GetXaxis()->GetBinCenter(1);
+  // if (pt1>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt1=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
+  // if (eta1<rate->GetYaxis()->GetBinCenter(1)) eta1=rate->GetYaxis()->GetBinCenter(1);
+  // if (eta1>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta1=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());
 
-  if (pt2<rate->GetXaxis()->GetBinCenter(1)) pt2=rate->GetXaxis()->GetBinCenter(1);
-  if (pt2>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt2=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
-  if (eta2<rate->GetYaxis()->GetBinCenter(1)) eta2=rate->GetYaxis()->GetBinCenter(1);
-  if (eta2>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta2=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());
+  // if (pt2<rate->GetXaxis()->GetBinCenter(1)) pt2=rate->GetXaxis()->GetBinCenter(1);
+  // if (pt2>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt2=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
+  // if (eta2<rate->GetYaxis()->GetBinCenter(1)) eta2=rate->GetYaxis()->GetBinCenter(1);
+  // if (eta2>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta2=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());
 
-  //Figure out flip rates
-  int bin1 = rate->FindBin(pt1, eta1);
-  int bin2 = rate->FindBin(pt2, eta2);
-  float FR1 = rate->GetBinContent(bin1);
-  float FR2 = rate->GetBinContent(bin2);
+  // //Figure out flip rates
+  // int bin1 = rate->FindBin(pt1, eta1);
+  // int bin2 = rate->FindBin(pt2, eta2);
+  // float FR1 = rate->GetBinContent(bin1);
+  // float FR2 = rate->GetBinContent(bin2);
+
+  float FR1 = flipRate(lep1_p4().pt(), lep1_p4().eta());
+  float FR2 = flipRate(lep2_p4().pt(), lep2_p4().eta());
 
   //Return factor
   return (FR1/(1.-FR1) + FR2/(1.-FR2)); 
