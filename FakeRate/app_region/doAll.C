@@ -1,13 +1,15 @@
 {
   gSystem->Load("../../CORE/CMS3_CORE.so");
   gROOT->ProcessLine(".L ../../software/dataMCplotMaker/dataMCplotMaker.cc+");
-  gSystem->Load("~/Software/tableMaker/libSimpleTable.so");
+  gSystem->Load("../../software/tableMaker/libSimpleTable.so");
 
-  gROOT->ProcessLine(".L SS.cc+");
+  gROOT->ProcessLine(".L ../../classFiles/v4.00/SS.cc+");
   gROOT->ProcessLine(".L ScanChain.C++");
 
-  TString tag1 = "v4.00";
-  TString tag2 = "v4.00";
+  gROOT->ProcessLine(".L ../../commonUtils.h");
+
+  TString tag1 = getTag();
+  TString tag2 = getTag();
 
   bool doData = true;
 
@@ -71,18 +73,12 @@
   TChain *ch = new TChain("t"); 
   if(doData) {
     // option += "_data";
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataDoubleMuonD.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataDoubleEGD.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DataMuonEGD.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data848p7ipb/DataDoubleMuonD.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data848p7ipb/DataDoubleEGD.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data848p7ipb/DataMuonEGD.root");
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/TTBAR.root");  
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/DY*.root");    
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/TTW.root");    
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/TTZ*.root");   
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WJets*.root"); 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WZ3LNU.root"); 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WZZ.root");    
-
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WJets.root"); 
   } else {
     if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
     else ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root"); // FIXME

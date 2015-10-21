@@ -69,6 +69,12 @@ void closure(){
   clos_lepeta_MC->Sumw2();
   clos_lepeta_MCp->Sumw2();
 
+  TH1F* clos_lepphi_MC   = new TH1F("clos_lepphi_plot_MC"  , "clos_lepphi_plot_MC"  , 14, -4, 4); 
+  TH1F* clos_lepphi_MCp  = new TH1F("clos_lepphi_plot_MCp" , "clos_lepphi_plot_MCp" , 14, -4, 4); 
+  TH1F* clos_lepphi_data = new TH1F("clos_lepphi_plot_data", "clos_lepphi_plot_data", 14, -4, 4); 
+  clos_lepphi_MC->Sumw2();
+  clos_lepphi_MCp->Sumw2();
+
   TH1F* clos_ht_MC   = new TH1F("clos_ht_plot_MC"  , "clos_ht_plot_MC"  , 15, 0, 300); 
   TH1F* clos_ht_MCp  = new TH1F("clos_ht_plot_MCp" , "clos_ht_plot_MCp" , 15, 0, 300); 
   TH1F* clos_ht_data = new TH1F("clos_ht_plot_data", "clos_ht_plot_data", 15, 0, 300); 
@@ -167,6 +173,8 @@ void closure(){
 	    clos_leppt_data->Fill(lep2_p4().pt(), weight); 
 	    clos_lepeta_data->Fill(lep1_p4().eta(), weight); 
 	    clos_lepeta_data->Fill(lep2_p4().eta(), weight); 
+	    if (lep1_p4().eta()<-1.5) clos_lepphi_data->Fill(lep1_p4().phi(), weight); 
+	    if (lep2_p4().eta()<-1.5) clos_lepphi_data->Fill(lep2_p4().phi(), weight); 
 	    clos_ht_data->Fill(ss::ht_corr(), weight); 
 	  }
 	} else {
@@ -178,6 +186,8 @@ void closure(){
 	    clos_leppt_MCp->Fill(lep2_p4().pt(), weight); 
 	    clos_lepeta_MCp->Fill(lep1_p4().eta(), weight); 
 	    clos_lepeta_MCp->Fill(lep2_p4().eta(), weight); 
+	    if (lep1_p4().eta()<-1.5) clos_lepphi_MCp->Fill(lep1_p4().phi(), weight); 
+	    if (lep2_p4().eta()<-1.5) clos_lepphi_MCp->Fill(lep2_p4().phi(), weight); 
 	    clos_ht_MCp->Fill(ss::ht_corr(), weight); 
 	  }
 	}
@@ -213,6 +223,8 @@ void closure(){
 	  clos_leppt_MC->Fill(lep2_p4().pt(), ff*weight); 
 	  clos_lepeta_MC->Fill(lep1_p4().eta(), ff*weight); 
 	  clos_lepeta_MC->Fill(lep2_p4().eta(), ff*weight); 
+	  if (lep1_p4().eta()<-1.5) clos_lepphi_MC->Fill(lep1_p4().phi(), ff*weight); 
+	  if (lep2_p4().eta()<-1.5) clos_lepphi_MC->Fill(lep2_p4().phi(), ff*weight); 
 	  clos_ht_MC->Fill(ss::ht_corr(), ff*weight); 
 	}
       }
@@ -277,6 +289,12 @@ void closure(){
   signals.clear();
   signals.push_back(clos_lepeta_MCp); 
   dataMCplotMaker(clos_lepeta_data, bkgd, titles, "", "", Form("--lumi %.1f --lumiUnit pb --outputName flip_closure_lepeta.pdf --xAxisLabel Lepton #eta --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", 1000*getLumi()), signals, sigTit);
+
+  bkgd.clear();
+  bkgd.push_back(clos_lepphi_MC); 
+  signals.clear();
+  signals.push_back(clos_lepphi_MCp); 
+  dataMCplotMaker(clos_lepphi_data, bkgd, titles, "", "", Form("--lumi %.1f --lumiUnit pb --outputName flip_closure_lepphi.pdf --xAxisLabel Lepton #phi --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --sigError --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", 1000*getLumi()), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_ht_MC); 

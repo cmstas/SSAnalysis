@@ -8,7 +8,7 @@
 #include "../CORE/Tools/utils.h"
 #include "../commonUtils.h"
 
-int mode = 2;  // 0-nominal, 1-upstream, 2-upstream+2jets
+int mode = 1;  // 0-nominal, 1-upstream, 2-upstream+2jets
 bool corrected = true;
 
 struct doublePlotHolder{ TH1F* OS[10][4][4][5]; TH1F* SS[10][4][4][5]; TH1F* SF[10][4][4][5]; TH1F* EZ[10][4][4][5]; };
@@ -93,6 +93,12 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       //Reject not triggered
       if (!ss::fired_trigger()) continue;
 
+      // unsigned int triggerBits = ss::triggers();
+      // //select non iso triggers
+      // if ( (triggerBits & (1<<0))!=(1<<0) && (triggerBits & (1<<5))!=(1<<5) && (triggerBits & (1<<0))!=(1<<0) ) continue;
+      // //select iso triggers
+      //if ( (triggerBits & (1<<1))!=(1<<1) && (triggerBits & (1<<2))!=(1<<2) && (triggerBits & (1<<3))!=(1<<3) && (triggerBits & (1<<4))!=(1<<4) && (triggerBits & (1<<6))!=(1<<6) ) continue;
+
       //Determine MET
       float metAG = (corrected ? ss::corrMET() : ss::met() );
       float metPhiAG = (corrected ? ss::corrMETphi() : ss::metPhi());
@@ -110,6 +116,12 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       float mt1 = MT(ss::lep1_p4().pt(), ss::lep1_p4().phi(), metAG, metPhiAG);
       float mt2 = MT(ss::lep2_p4().pt(), ss::lep2_p4().phi(), metAG, metPhiAG);
       float mtmin = mt1 > mt2 ? mt2 : mt1; 
+
+      //electron FO is tighter for iso triggers, make sure it is passed
+      if (ss::ht_corr()<300.) {
+	if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
+	if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+      } 
 
       //Determine analysis category
       int AC = -1;
@@ -158,11 +170,6 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
 	}
       }
       else if (ss::hyp_class() == 2){ 
-	//electron FO is tighter for iso triggers
-	if (htAG<300.) {
-	  if (!ss::lep1_passes_id() && !passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
-	  if (!ss::lep2_passes_id() && !passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
-	}
         plots.SF[0][BR][AC][type]->Fill(metAG                              , weight); 
         plots.SF[1][BR][AC][type]->Fill(htAG                               , weight); 
         plots.SF[2][BR][AC][type]->Fill(njetsAG                            , weight); 
@@ -258,6 +265,7 @@ void plots(){
   TChain *chain_rares = new TChain("t","rares"); 
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZZ.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWZ.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/QQWW.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWDPS.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/VHtoNonBB.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTHtoNonBB.root");
@@ -553,12 +561,12 @@ void plots(){
 
   //Titles for legend
   vector <string> titles;
-  titles.push_back("ttv"); 
-  titles.push_back("rares"); 
+  titles.push_back("ttV"); 
+  titles.push_back("Rares"); 
   titles.push_back("VZ"); 
-  titles.push_back("ttbar"); 
+  titles.push_back("Top"); 
   titles.push_back("DY"); 
-  titles.push_back("WJets"); 
+  titles.push_back("W+X"); 
 
   //Titles for plots
   vector <string> names;
