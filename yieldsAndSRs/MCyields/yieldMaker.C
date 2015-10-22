@@ -13,7 +13,7 @@
 float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
 
-bool doNoData = false;
+bool doNoData = true;
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
@@ -33,24 +33,17 @@ void getyields(){
   cout << tag << endl;
 
   //Chains
-  //fakes
+  //fakes&flips in mc
   TChain *ttbar_chain   = new TChain("t","ttbar");
   TChain *st_chain      = new TChain("t","st");
   TChain *wjets_chain   = new TChain("t","wjets");
+  TChain *dy_chain      = new TChain("t","dy");
   //rares
   TChain *ttw_chain     = new TChain("t","ttw");
-  TChain *ttz_chain     = new TChain("t","ttz");
+  TChain *ttzh_chain    = new TChain("t","ttzh");
   TChain *wz_chain      = new TChain("t","wz");
-  TChain *wzz_chain     = new TChain("t","wzz");
-  TChain *wwdps_chain   = new TChain("t","wwdps");
-  TChain *ttg_chain     = new TChain("t","ttg");
-  TChain *dy_chain      = new TChain("t","dy");
-  TChain *vhnonbb_chain = new TChain("t","vhnonbb");
-  TChain *tzq_chain     = new TChain("t","tzq");
-  TChain *tth_chain     = new TChain("t","tth");
-  TChain *qqww_chain    = new TChain("t","qqww");
-  TChain *wgamma_chain  = new TChain("t","wgamma"); 
-  TChain *tttt_chain    = new TChain("t","tttt"); 
+  TChain *ww_chain      = new TChain("t","ww");
+  TChain *rares_chain   = new TChain("t","rares");
   //data
   TChain *data_chain    = new TChain("t","data"); 
   TChain *flips_chain   = new TChain("t","flips"); 
@@ -64,30 +57,32 @@ void getyields(){
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP4.root"     , tag.c_str()));
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP5.root"     , tag.c_str()));
   wjets_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root"          , tag.c_str()));
-
-  ttw_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
-  ttz_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"           , tag.c_str())); 
-  wz_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ3LNU.root"         , tag.c_str()));
-  wzz_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"            , tag.c_str()));
-  wwdps_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWDPS.root"          , tag.c_str()));
-  ttg_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTG.root"            , tag.c_str()));
   dy_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_high.root"        , tag.c_str()));
   dy_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_low.root"         , tag.c_str()));
-  vhnonbb_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
-  tzq_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
-  tth_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
-  wgamma_chain ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"       , tag.c_str()));
-  qqww_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
-  tttt_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
 
-  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleMuonD.root", tag.c_str()));
-  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleEGD.root"  , tag.c_str()));
-  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataMuonEGD.root"    , tag.c_str()));
-  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleEGD.root"  , tag.c_str()));
-  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataMuonEGD.root"    , tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleMuonD.root", tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleEGD.root"  , tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataMuonEGD.root"    , tag.c_str()));
+  ttw_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
+  ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"           , tag.c_str())); 
+  ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
+  wz_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ3LNU.root"         , tag.c_str()));
+  ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWDPS.root"          , tag.c_str()));
+  ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZZ.root"             , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"            , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"            , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTG.root"            , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"       , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
+
+  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleMuonD.root", tag.c_str()));
+  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleEGD.root"  , tag.c_str()));
+  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataMuonEGD.root"    , tag.c_str()));
+  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleEGD.root"  , tag.c_str()));
+  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataMuonEGD.root"    , tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleMuonD.root", tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleEGD.root"  , tag.c_str()));
+  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataMuonEGD.root"    , tag.c_str()));
   fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
   fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"           , tag.c_str())); 
   fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ3LNU.root"         , tag.c_str()));
@@ -104,22 +99,14 @@ void getyields(){
   pair<yields_t, plots_t> results_dy_ff    = run(dy_chain, 0, 0, 0, 3);
   pair<yields_t, plots_t> results_st       = run(st_chain);
   pair<yields_t, plots_t> results_wjets    = run(wjets_chain);
+  pair<yields_t, plots_t> results_dy       = run(dy_chain);
 
   pair<yields_t, plots_t> results_ttw      = run(ttw_chain);
-  pair<yields_t, plots_t> results_ttz      = run(ttz_chain);
+  pair<yields_t, plots_t> results_ttzh     = run(ttzh_chain);
   pair<yields_t, plots_t> results_wz       = run(wz_chain);
-  //missing: ZZ4l
-  pair<yields_t, plots_t> results_wzz      = run(wzz_chain);
-  //missing: WWZ
-  pair<yields_t, plots_t> results_wwdps    = run(wwdps_chain);
-  pair<yields_t, plots_t> results_ttg      = run(ttg_chain);
-  pair<yields_t, plots_t> results_dy       = run(dy_chain);
-  pair<yields_t, plots_t> results_vhnonbb  = run(vhnonbb_chain);
-  pair<yields_t, plots_t> results_tzq      = run(tzq_chain);
-  pair<yields_t, plots_t> results_tth      = run(tth_chain);
-  pair<yields_t, plots_t> results_wgamma   = run(wgamma_chain);
-  pair<yields_t, plots_t> results_qqww     = run(qqww_chain);
-  pair<yields_t, plots_t> results_tttt     = run(tttt_chain);
+  pair<yields_t, plots_t> results_ww       = run(ww_chain);
+
+  pair<yields_t, plots_t> results_rares    = run(rares_chain);
 
   pair<yields_t, plots_t> results_data     = run(data_chain, 1);
   duplicate_removal::clear_list();
@@ -139,19 +126,14 @@ void getyields(){
   yields_t& ttbar_fl = results_ttbar_fl.first;
   yields_t& st       = results_st.first;
   yields_t& wjets    = results_wjets.first;
-  yields_t& ttw      = results_ttw.first;
-  yields_t& ttz      = results_ttz.first;
-  yields_t& wz       = results_wz.first;
-  yields_t& wzz      = results_wzz.first;
-  yields_t& wwdps    = results_wwdps.first;
-  yields_t& ttg      = results_ttg.first;
   yields_t& dy       = results_dy.first;
-  yields_t& vhnonbb  = results_vhnonbb.first;
-  yields_t& tzq      = results_tzq.first;
-  yields_t& tth      = results_tth.first;
-  yields_t& wgamma   = results_wgamma.first;
-  yields_t& qqww     = results_qqww.first;
-  yields_t& tttt     = results_tttt.first;
+
+  yields_t& ttw      = results_ttw.first;
+  yields_t& ttzh     = results_ttzh.first;
+  yields_t& wz       = results_wz.first;
+  yields_t& ww       = results_ww.first;
+  yields_t& rares    = results_rares.first;
+
   yields_t& data     = results_data.first;
   yields_t& flips    = results_flips.first;
   yields_t& fakes    = results_fakes.first;
@@ -163,51 +145,41 @@ void getyields(){
   table.setTitle("SS Baseline Yields"); 
   table.useTitle(); 
   table.setTable() (                  "EE"  , "EM"       , "MM"         , "TOTAL"      )
+                   ("ttw"      , ttw.EE      , ttw.EM      , ttw.MM      , ttw.TOTAL    )
+                   ("ttzh"     , ttzh.EE     , ttzh.EM     , ttzh.MM     , ttzh.TOTAL   )
+                   ("wz"       , wz.EE       , wz.EM       , wz.MM       , wz.TOTAL     )
+                   ("ww"       , ww.EE       , ww.EM       , ww.MM       , ww.TOTAL     )
+                   ("rares"    , rares.EE    , rares.EM    , rares.MM    , rares.TOTAL  )
+                   ("flips"    , flips.EE    , flips.EM    , flips.MM    , flips.TOTAL  )
+                   ("fakes"    , fakes.EE    , fakes.EM    , fakes.MM    , fakes.TOTAL  )
+                   ("total"    , total.EE    , total.EM    , total.MM    , total.TOTAL  )
+                   ("data"     , data.EE     , data.EM     , data.MM     , data.TOTAL   )
+                   ("fakes_is" , fakes_is.EE , fakes_is.EM , fakes_is.MM , fakes_is.TOTAL  )
                    ("ttbar"    , ttbar.EE    , ttbar.EM    , ttbar.MM    , ttbar.TOTAL  )
                    ("ttbar_fa" , ttbar_fa.EE , ttbar_fa.EM , ttbar_fa.MM , ttbar_fa.TOTAL)
                    ("ttbar_fl" , ttbar_fl.EE , ttbar_fl.EM , ttbar_fl.MM , ttbar_fl.TOTAL)
-                   ("ttw"      , ttw.EE      , ttw.EM      , ttw.MM      , ttw.TOTAL    )
-                   ("ttz"      , ttz.EE      , ttz.EM      , ttz.MM      , ttz.TOTAL    )
                    ("st"       , st.EE       , st.EM       , st.MM       , st.TOTAL     )
-                   ("wz"       , wz.EE       , wz.EM       , wz.MM       , wz.TOTAL     )
-                   ("wzz"      , wzz.EE      , wzz.EM      , wzz.MM      , wzz.TOTAL    )
                    ("wjets"    , wjets.EE    , wjets.EM    , wjets.MM    , wjets.TOTAL  )
-                   ("wwdps"    , wwdps.EE    , wwdps.EM    , wwdps.MM    , wwdps.TOTAL  )
-                   ("ttg"      , ttg.EE      , ttg.EM      , ttg.MM      , ttg.TOTAL    )
-                   ("dy"       , dy.EE       , dy.EM       , dy.MM       , dy.TOTAL     )
-                   ("vhnonbb"  , vhnonbb.EE  , vhnonbb.EM  , vhnonbb.MM  , vhnonbb.TOTAL)
-                   ("tzq"      , tzq.EE      , tzq.EM      , tzq.MM      , tzq.TOTAL    )
-                   ("tth"      , tth.EE      , tth.EM      , tth.MM      , tth.TOTAL    )
-                   ("qqww"     , qqww.EE     , qqww.EM     , qqww.MM     , qqww.TOTAL   )
-                   ("tttt"     , tttt.EE     , tttt.EM     , tttt.MM     , tttt.TOTAL   )
-                   ("wgamma"   , wgamma.EE   , wgamma.EM   , wgamma.MM   , wgamma.TOTAL )
-                   ("flips"    , flips.EE    , flips.EM    , flips.MM    , flips.TOTAL  )
-                   ("fakes"    , fakes.EE    , fakes.EM    , fakes.MM    , fakes.TOTAL  )
-                   ("fakes_is" , fakes_is.EE , fakes_is.EM , fakes_is.MM , fakes_is.TOTAL  )
-                   ("total"    , total.EE    , total.EM    , total.MM    , total.TOTAL  )
-                   ("data"     , data.EE     , data.EM     , data.MM     , data.TOTAL   );
+                   ("dy"       , dy.EE       , dy.EM       , dy.MM       , dy.TOTAL     );
   table.print();
 
-  plots_t& p_ttbar    = results_ttbar.second;   
-  plots_t& p_ttbar_ff = results_ttbar_ff.second;   
-  plots_t& p_wjets_ff = results_wjets_ff.second;   
-  plots_t& p_dy_ff    = results_dy_ff.second;   
-  plots_t& p_st_ff    = results_st_ff.second;   
-  plots_t& p_ttw      = results_ttw.second; 
-  plots_t& p_ttz      = results_ttz.second;
+  plots_t& p_ttbar    = results_ttbar.second;
+  plots_t& p_ttbar_ff = results_ttbar_ff.second;
+  plots_t& p_wjets_ff = results_wjets_ff.second;
+  plots_t& p_dy_ff    = results_dy_ff.second;
+  plots_t& p_st_ff    = results_st_ff.second;
+  plots_t& p_ttbar_fa = results_ttbar_fa.second;
+  plots_t& p_ttbar_fl = results_ttbar_fl.second;
   plots_t& p_st       = results_st.second;
-  plots_t& p_wz       = results_wz.second;
-  plots_t& p_wzz      = results_wzz.second;
   plots_t& p_wjets    = results_wjets.second;
-  plots_t& p_wwdps    = results_wwdps.second;
-  plots_t& p_ttg      = results_ttg.second;
   plots_t& p_dy       = results_dy.second;
-  plots_t& p_vhnonbb  = results_vhnonbb.second;
-  plots_t& p_tzq      = results_tzq.second;
-  plots_t& p_tth      = results_tth.second;
-  plots_t& p_wgamma   = results_wgamma.second;
-  plots_t& p_qqww     = results_qqww.second;
-  plots_t& p_tttt     = results_tttt.second;
+
+  plots_t& p_ttw      = results_ttw.second;
+  plots_t& p_ttzh     = results_ttzh.second;
+  plots_t& p_wz       = results_wz.second;
+  plots_t& p_ww       = results_ww.second;
+  plots_t& p_rares    = results_rares.second;
+
   plots_t& p_data     = results_data.second;
   plots_t& p_flips    = results_flips.second;
   plots_t& p_fakes    = results_fakes.second;
@@ -216,467 +188,383 @@ void getyields(){
   //Titles for legend
   vector <string> titles;
   titles.push_back("ttW"); 
-  titles.push_back("ttZ"); 
-  titles.push_back("Rares"); 
+  titles.push_back("ttZ/H"); 
   titles.push_back("WZ"); 
+  titles.push_back("WW"); 
+  titles.push_back("Rares"); 
   titles.push_back("Flips"); 
   titles.push_back("Fakes"); 
 
   //Titles for MC-only plots
   vector <string> titles2;
   titles2.push_back("ttW"); 
-  titles2.push_back("ttZ"); 
-  titles2.push_back("rares"); 
+  titles2.push_back("ttZ/H"); 
   titles2.push_back("WZ"); 
+  titles2.push_back("WW"); 
+  titles2.push_back("Rares"); 
   titles2.push_back("ttbar"); 
   titles2.push_back("dy"); 
   titles2.push_back("wjets"); 
   titles2.push_back("st"); 
 
+  cout << endl;
+  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s | %5s","TTW","TTZ/H","WZ","WW","RARES","FLIPS","FAKES","TOTAL") << endl;
+  for (int bin=1;bin<=p_ttw.SRHH.TOTAL->GetNbinsX(); ++bin) {
+    cout << Form("HH SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f",bin,
+		 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin),
+		 p_wz.SRHH.TOTAL->GetBinContent(bin),p_ww.SRHH.TOTAL->GetBinContent(bin),p_rares.SRHH.TOTAL->GetBinContent(bin),
+		 p_flips.SRHH.TOTAL->GetBinContent(bin),p_fakes.SRHH.TOTAL->GetBinContent(bin),
+		 (p_ttw.SRHH.TOTAL->GetBinContent(bin)+p_ttzh.SRHH.TOTAL->GetBinContent(bin)+
+		  p_wz.SRHH.TOTAL->GetBinContent(bin)+p_ww.SRHH.TOTAL->GetBinContent(bin)+p_rares.SRHH.TOTAL->GetBinContent(bin)+
+		  p_flips.SRHH.TOTAL->GetBinContent(bin)+p_fakes.SRHH.TOTAL->GetBinContent(bin))
+		 )
+	 << endl;
+  }
+
+  cout << endl;
+  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s | %5s","TTW","TTZ/H","WZ","WW","RARES","FLIPS","FAKES","TOTAL") << endl;
+  for (int bin=1;bin<=p_ttw.SRHL.TOTAL->GetNbinsX(); ++bin) {
+    cout << Form("HL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f",bin,
+		 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin),
+		 p_wz.SRHL.TOTAL->GetBinContent(bin),p_ww.SRHL.TOTAL->GetBinContent(bin),p_rares.SRHL.TOTAL->GetBinContent(bin),
+		 p_flips.SRHL.TOTAL->GetBinContent(bin),p_fakes.SRHL.TOTAL->GetBinContent(bin),
+		 (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+
+		  p_wz.SRHL.TOTAL->GetBinContent(bin)+p_ww.SRHL.TOTAL->GetBinContent(bin)+p_rares.SRHL.TOTAL->GetBinContent(bin)+
+		  p_flips.SRHL.TOTAL->GetBinContent(bin)+p_fakes.SRHL.TOTAL->GetBinContent(bin))
+		 )
+	 << endl;
+  }
+
+  cout << endl;
+  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s | %5s","TTW","TTZ/H","WZ","WW","RARES","FLIPS","FAKES","TOTAL") << endl;
+  for (int bin=1;bin<=p_ttw.SRLL.TOTAL->GetNbinsX(); ++bin) {
+    cout << Form("LL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f",bin,
+		 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin),
+		 p_wz.SRLL.TOTAL->GetBinContent(bin),p_ww.SRLL.TOTAL->GetBinContent(bin),p_rares.SRLL.TOTAL->GetBinContent(bin),
+		 p_flips.SRLL.TOTAL->GetBinContent(bin),p_fakes.SRLL.TOTAL->GetBinContent(bin),
+		 (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+
+		  p_wz.SRLL.TOTAL->GetBinContent(bin)+p_ww.SRLL.TOTAL->GetBinContent(bin)+p_rares.SRLL.TOTAL->GetBinContent(bin)+
+		  p_flips.SRLL.TOTAL->GetBinContent(bin)+p_fakes.SRLL.TOTAL->GetBinContent(bin))
+		 )
+	 << endl;
+  }
+
   //SR plots
-  p_qqww.SRHH.TOTAL->Add(p_wzz.SRHH.TOTAL);
-  p_qqww.SRHH.TOTAL->Add(p_wwdps.SRHH.TOTAL);
-  p_qqww.SRHH.TOTAL->Add(p_ttg.SRHH.TOTAL);
-  p_qqww.SRHH.TOTAL->Add(p_dy.SRHH.TOTAL);
-  p_qqww.SRHH.TOTAL->Add(p_vhnonbb.SRHH.TOTAL);
-  p_qqww.SRHH.TOTAL->Add(p_tth.SRHH.TOTAL);
-  p_qqww.SRHH.TOTAL->Add(p_wgamma.SRHH.TOTAL);
-  p_qqww.SRHH.TOTAL->Add(p_tttt.SRHH.TOTAL);
   vector <TH1F*> SRHH_plots;
   SRHH_plots.push_back(p_ttw.SRHH.TOTAL  );
-  SRHH_plots.push_back(p_ttz.SRHH.TOTAL  );
-  SRHH_plots.push_back(p_qqww.SRHH.TOTAL );
+  SRHH_plots.push_back(p_ttzh.SRHH.TOTAL );
   SRHH_plots.push_back(p_wz.SRHH.TOTAL   );
+  SRHH_plots.push_back(p_ww.SRHH.TOTAL );
+  SRHH_plots.push_back(p_rares.SRHH.TOTAL   );
   SRHH_plots.push_back(p_flips.SRHH.TOTAL   );
   SRHH_plots.push_back(p_fakes.SRHH.TOTAL   );
-  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "data-driven", Form("--lumi %.1f --lumiUnit pb --outputName HHSR.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow ", lumiAG*1000));
+  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "data-driven", Form("--lumi %.1f --outputName HHSR.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow ", lumiAG));
 
-  p_qqww.SRHL.TOTAL->Add(p_wzz.SRHL.TOTAL);
-  p_qqww.SRHL.TOTAL->Add(p_wwdps.SRHL.TOTAL);
-  p_qqww.SRHL.TOTAL->Add(p_ttg.SRHL.TOTAL);
-  p_qqww.SRHL.TOTAL->Add(p_dy.SRHL.TOTAL);
-  p_qqww.SRHL.TOTAL->Add(p_vhnonbb.SRHL.TOTAL);
-  p_qqww.SRHL.TOTAL->Add(p_tth.SRHL.TOTAL);
-  p_qqww.SRHL.TOTAL->Add(p_wgamma.SRHL.TOTAL);
-  p_qqww.SRHL.TOTAL->Add(p_tttt.SRHL.TOTAL);
   vector <TH1F*> SRHL_plots;
   SRHL_plots.push_back(p_ttw.SRHL.TOTAL  );
-  SRHL_plots.push_back(p_ttz.SRHL.TOTAL  );
-  SRHL_plots.push_back(p_qqww.SRHL.TOTAL );
+  SRHL_plots.push_back(p_ttzh.SRHL.TOTAL );
   SRHL_plots.push_back(p_wz.SRHL.TOTAL   );
+  SRHL_plots.push_back(p_ww.SRHL.TOTAL );
+  SRHL_plots.push_back(p_rares.SRHL.TOTAL   );
   SRHL_plots.push_back(p_flips.SRHL.TOTAL   );
   SRHL_plots.push_back(p_fakes.SRHL.TOTAL   );
-  dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "H-L SRs", "data-driven", Form("--lumi %.1f --lumiUnit pb --outputName HLSR.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow", lumiAG*1000));
+  dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "H-L SRs", "data-driven", Form("--lumi %.1f --outputName HLSR.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow", lumiAG));
 
-  p_qqww.SRLL.TOTAL->Add(p_wzz.SRLL.TOTAL);
-  p_qqww.SRLL.TOTAL->Add(p_wwdps.SRLL.TOTAL);
-  p_qqww.SRLL.TOTAL->Add(p_ttg.SRLL.TOTAL);
-  p_qqww.SRLL.TOTAL->Add(p_dy.SRLL.TOTAL);
-  p_qqww.SRLL.TOTAL->Add(p_vhnonbb.SRLL.TOTAL);
-  p_qqww.SRLL.TOTAL->Add(p_tth.SRLL.TOTAL);
-  p_qqww.SRLL.TOTAL->Add(p_wgamma.SRLL.TOTAL);
-  p_qqww.SRLL.TOTAL->Add(p_tttt.SRLL.TOTAL);
   vector <TH1F*> SRLL_plots;
   SRLL_plots.push_back(p_ttw.SRLL.TOTAL  );
-  SRLL_plots.push_back(p_ttz.SRLL.TOTAL  );
-  SRLL_plots.push_back(p_qqww.SRLL.TOTAL );
+  SRLL_plots.push_back(p_ttzh.SRLL.TOTAL );
   SRLL_plots.push_back(p_wz.SRLL.TOTAL   );
+  SRLL_plots.push_back(p_ww.SRLL.TOTAL );
+  SRLL_plots.push_back(p_rares.SRLL.TOTAL   );
   SRLL_plots.push_back(p_flips.SRLL.TOTAL   );
   SRLL_plots.push_back(p_fakes.SRLL.TOTAL   );
-  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "L-L SRs", "data-driven", Form("--lumi %.1f --lumiUnit pb --outputName LLSR.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow", lumiAG*1000));
+  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "L-L SRs", "data-driven", Form("--lumi %.1f --outputName LLSR.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow", lumiAG));
 
   //SR plots
-  //we do not need to add rares to qqww since we already did it above
   vector <TH1F*> SRHHMC_plots;
   SRHHMC_plots.push_back(p_ttw.SRHH.TOTAL  );
-  SRHHMC_plots.push_back(p_ttz.SRHH.TOTAL  );
-  SRHHMC_plots.push_back(p_qqww.SRHH.TOTAL );
+  SRHHMC_plots.push_back(p_ttzh.SRHH.TOTAL );
   SRHHMC_plots.push_back(p_wz.SRHH.TOTAL   );
+  SRHHMC_plots.push_back(p_ww.SRHH.TOTAL   );
+  SRHHMC_plots.push_back(p_rares.SRHH.TOTAL);
   SRHHMC_plots.push_back(p_ttbar_ff.SRHH.TOTAL);
   SRHHMC_plots.push_back(p_dy_ff.SRHH.TOTAL);
   SRHHMC_plots.push_back(p_wjets_ff.SRHH.TOTAL);
   SRHHMC_plots.push_back(p_st_ff.SRHH.TOTAL);
-  dataMCplotMaker(p_data.SRHH.TOTAL, SRHHMC_plots, titles2, "H-H SRs", "from MC", Form("--lumi %.1f --lumiUnit pb --outputName HHSRMC.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow", lumiAG*1000));
+  dataMCplotMaker(p_data.SRHH.TOTAL, SRHHMC_plots, titles2, "H-H SRs", "from MC", Form("--lumi %.1f --outputName HHSRMC.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow", lumiAG));
 
-  //we do not need to add rares to qqww since we already did it above
   vector <TH1F*> SRHLMC_plots;
   SRHLMC_plots.push_back(p_ttw.SRHL.TOTAL  );
-  SRHLMC_plots.push_back(p_ttz.SRHL.TOTAL  );
-  SRHLMC_plots.push_back(p_qqww.SRHL.TOTAL );
+  SRHLMC_plots.push_back(p_ttzh.SRHL.TOTAL );
   SRHLMC_plots.push_back(p_wz.SRHL.TOTAL   );
+  SRHLMC_plots.push_back(p_ww.SRHL.TOTAL   );
+  SRHLMC_plots.push_back(p_rares.SRHL.TOTAL);
   SRHLMC_plots.push_back(p_ttbar_ff.SRHL.TOTAL);
   SRHLMC_plots.push_back(p_dy_ff.SRHL.TOTAL);
   SRHLMC_plots.push_back(p_wjets_ff.SRHL.TOTAL);
   SRHLMC_plots.push_back(p_st_ff.SRHL.TOTAL);
-  dataMCplotMaker(p_data.SRHL.TOTAL, SRHLMC_plots, titles2, "H-L SRs", "from MC", Form("--lumi %.1f --lumiUnit pb --outputName HLSRMC.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow", lumiAG*1000));
+  dataMCplotMaker(p_data.SRHL.TOTAL, SRHLMC_plots, titles2, "H-L SRs", "from MC", Form("--lumi %.1f --outputName HLSRMC.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow", lumiAG));
 
-  //we do not need to add rares to qqww since we already did it above
   vector <TH1F*> SRLLMC_plots;
   SRLLMC_plots.push_back(p_ttw.SRLL.TOTAL  );
-  SRLLMC_plots.push_back(p_ttz.SRLL.TOTAL  );
-  SRLLMC_plots.push_back(p_qqww.SRLL.TOTAL );
+  SRLLMC_plots.push_back(p_ttzh.SRLL.TOTAL );
   SRLLMC_plots.push_back(p_wz.SRLL.TOTAL   );
+  SRLLMC_plots.push_back(p_ww.SRLL.TOTAL   );
+  SRLLMC_plots.push_back(p_rares.SRLL.TOTAL);
   SRLLMC_plots.push_back(p_ttbar_ff.SRLL.TOTAL);
   SRLLMC_plots.push_back(p_dy_ff.SRLL.TOTAL);
   SRLLMC_plots.push_back(p_wjets_ff.SRLL.TOTAL);
   SRLLMC_plots.push_back(p_st_ff.SRLL.TOTAL);
-  dataMCplotMaker(p_data.SRLL.TOTAL, SRLLMC_plots, titles2, "L-L SRs", "from MC", Form("--lumi %.1f --lumiUnit pb --outputName LLSRMC.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow", lumiAG*1000));
+  dataMCplotMaker(p_data.SRLL.TOTAL, SRLLMC_plots, titles2, "L-L SRs", "from MC", Form("--lumi %.1f --outputName LLSRMC.pdf --xAxisLabel SR --percentageInBox --isLinear --legendUp -.05 --noOverflow", lumiAG));
 
-  p_qqww.h_type->Add(p_wzz.h_type);
-  p_qqww.h_type->Add(p_wwdps.h_type);
-  p_qqww.h_type->Add(p_ttg.h_type);
-  p_qqww.h_type->Add(p_dy.h_type);
-  p_qqww.h_type->Add(p_vhnonbb.h_type);
-  p_qqww.h_type->Add(p_tth.h_type);
-  p_qqww.h_type->Add(p_wgamma.h_type);
-  p_qqww.h_type->Add(p_tttt.h_type);
   vector <TH1F* > type_plots;
-  type_plots.push_back(p_ttw.h_type);
-  type_plots.push_back(p_ttz.h_type);
-  type_plots.push_back(p_qqww.h_type);
-  type_plots.push_back(p_wz.h_type);
-  type_plots.push_back(p_flips.h_type);
-  type_plots.push_back(p_fakes.h_type);
-  dataMCplotMaker(p_data.h_type, type_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName type_all_SS.pdf --xAxisLabel type --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  type_plots.push_back(p_ttw.h_type  );
+  type_plots.push_back(p_ttzh.h_type );
+  type_plots.push_back(p_wz.h_type   );
+  type_plots.push_back(p_ww.h_type );
+  type_plots.push_back(p_rares.h_type   );
+  type_plots.push_back(p_flips.h_type   );
+  type_plots.push_back(p_fakes.h_type   );
+  dataMCplotMaker(p_data.h_type, type_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName type_all_SS.pdf --xAxisLabel type --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_lep1_miniIso->Add(p_wzz.h_lep1_miniIso);
-  p_qqww.h_lep1_miniIso->Add(p_wwdps.h_lep1_miniIso);
-  p_qqww.h_lep1_miniIso->Add(p_ttg.h_lep1_miniIso);
-  p_qqww.h_lep1_miniIso->Add(p_dy.h_lep1_miniIso);
-  p_qqww.h_lep1_miniIso->Add(p_vhnonbb.h_lep1_miniIso);
-  p_qqww.h_lep1_miniIso->Add(p_tth.h_lep1_miniIso);
-  p_qqww.h_lep1_miniIso->Add(p_wgamma.h_lep1_miniIso);
-  p_qqww.h_lep1_miniIso->Add(p_tttt.h_lep1_miniIso);
   vector <TH1F* > lep1_miniIso_plots;
-  lep1_miniIso_plots.push_back(p_ttw.h_lep1_miniIso);
-  lep1_miniIso_plots.push_back(p_ttz.h_lep1_miniIso);
-  lep1_miniIso_plots.push_back(p_qqww.h_lep1_miniIso);
-  lep1_miniIso_plots.push_back(p_wz.h_lep1_miniIso);
-  lep1_miniIso_plots.push_back(p_flips.h_lep1_miniIso);
-  lep1_miniIso_plots.push_back(p_fakes.h_lep1_miniIso);
-  dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep1_miniIso_all_SS.pdf --xAxisLabel lep1_miniIso --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  lep1_miniIso_plots.push_back(p_ttw.h_lep1_miniIso  );
+  lep1_miniIso_plots.push_back(p_ttzh.h_lep1_miniIso );
+  lep1_miniIso_plots.push_back(p_wz.h_lep1_miniIso   );
+  lep1_miniIso_plots.push_back(p_ww.h_lep1_miniIso );
+  lep1_miniIso_plots.push_back(p_rares.h_lep1_miniIso   );
+  lep1_miniIso_plots.push_back(p_flips.h_lep1_miniIso   );
+  lep1_miniIso_plots.push_back(p_fakes.h_lep1_miniIso   );
+  dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName lep1_miniIso_all_SS.pdf --xAxisLabel lep1_miniIso --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_lep2_miniIso->Add(p_wzz.h_lep2_miniIso);
-  p_qqww.h_lep2_miniIso->Add(p_wwdps.h_lep2_miniIso);
-  p_qqww.h_lep2_miniIso->Add(p_ttg.h_lep2_miniIso);
-  p_qqww.h_lep2_miniIso->Add(p_dy.h_lep2_miniIso);
-  p_qqww.h_lep2_miniIso->Add(p_vhnonbb.h_lep2_miniIso);
-  p_qqww.h_lep2_miniIso->Add(p_tth.h_lep2_miniIso);
-  p_qqww.h_lep2_miniIso->Add(p_wgamma.h_lep2_miniIso);
-  p_qqww.h_lep2_miniIso->Add(p_tttt.h_lep2_miniIso);
   vector <TH1F* > lep2_miniIso_plots;
-  lep2_miniIso_plots.push_back(p_ttw.h_lep2_miniIso);
-  lep2_miniIso_plots.push_back(p_ttz.h_lep2_miniIso);
-  lep2_miniIso_plots.push_back(p_qqww.h_lep2_miniIso);
-  lep2_miniIso_plots.push_back(p_wz.h_lep2_miniIso);
-  lep2_miniIso_plots.push_back(p_flips.h_lep2_miniIso);
-  lep2_miniIso_plots.push_back(p_fakes.h_lep2_miniIso);
-  dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep2_miniIso_all_SS.pdf --xAxisLabel lep2_miniIso --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  lep2_miniIso_plots.push_back(p_ttw.h_lep2_miniIso  );
+  lep2_miniIso_plots.push_back(p_ttzh.h_lep2_miniIso );
+  lep2_miniIso_plots.push_back(p_wz.h_lep2_miniIso   );
+  lep2_miniIso_plots.push_back(p_ww.h_lep2_miniIso );
+  lep2_miniIso_plots.push_back(p_rares.h_lep2_miniIso   );
+  lep2_miniIso_plots.push_back(p_flips.h_lep2_miniIso   );
+  lep2_miniIso_plots.push_back(p_fakes.h_lep2_miniIso   );
+  dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName lep2_miniIso_all_SS.pdf --xAxisLabel lep2_miniIso --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_lep1_ptRel->Add(p_wzz.h_lep1_ptRel);
-  p_qqww.h_lep1_ptRel->Add(p_wwdps.h_lep1_ptRel);
-  p_qqww.h_lep1_ptRel->Add(p_ttg.h_lep1_ptRel);
-  p_qqww.h_lep1_ptRel->Add(p_dy.h_lep1_ptRel);
-  p_qqww.h_lep1_ptRel->Add(p_vhnonbb.h_lep1_ptRel);
-  p_qqww.h_lep1_ptRel->Add(p_tth.h_lep1_ptRel);
-  p_qqww.h_lep1_ptRel->Add(p_wgamma.h_lep1_ptRel);
-  p_qqww.h_lep1_ptRel->Add(p_tttt.h_lep1_ptRel);
   vector <TH1F* > lep1_ptRel_plots;
-  lep1_ptRel_plots.push_back(p_ttw.h_lep1_ptRel);
-  lep1_ptRel_plots.push_back(p_ttz.h_lep1_ptRel);
-  lep1_ptRel_plots.push_back(p_qqww.h_lep1_ptRel);
-  lep1_ptRel_plots.push_back(p_wz.h_lep1_ptRel);
-  lep1_ptRel_plots.push_back(p_flips.h_lep1_ptRel);
-  lep1_ptRel_plots.push_back(p_fakes.h_lep1_ptRel);
-  dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep1_ptRel_all_SS.pdf --xAxisLabel lep1_ptRel --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  lep1_ptRel_plots.push_back(p_ttw.h_lep1_ptRel  );
+  lep1_ptRel_plots.push_back(p_ttzh.h_lep1_ptRel );
+  lep1_ptRel_plots.push_back(p_wz.h_lep1_ptRel   );
+  lep1_ptRel_plots.push_back(p_ww.h_lep1_ptRel );
+  lep1_ptRel_plots.push_back(p_rares.h_lep1_ptRel   );
+  lep1_ptRel_plots.push_back(p_flips.h_lep1_ptRel   );
+  lep1_ptRel_plots.push_back(p_fakes.h_lep1_ptRel   );
+  dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName lep1_ptRel_all_SS.pdf --xAxisLabel lep1_ptRel --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_lep2_ptRel->Add(p_wzz.h_lep2_ptRel);
-  p_qqww.h_lep2_ptRel->Add(p_wwdps.h_lep2_ptRel);
-  p_qqww.h_lep2_ptRel->Add(p_ttg.h_lep2_ptRel);
-  p_qqww.h_lep2_ptRel->Add(p_dy.h_lep2_ptRel);
-  p_qqww.h_lep2_ptRel->Add(p_vhnonbb.h_lep2_ptRel);
-  p_qqww.h_lep2_ptRel->Add(p_tth.h_lep2_ptRel);
-  p_qqww.h_lep2_ptRel->Add(p_wgamma.h_lep2_ptRel);
-  p_qqww.h_lep2_ptRel->Add(p_tttt.h_lep2_ptRel);
   vector <TH1F* > lep2_ptRel_plots;
-  lep2_ptRel_plots.push_back(p_ttw.h_lep2_ptRel);
-  lep2_ptRel_plots.push_back(p_ttz.h_lep2_ptRel);
-  lep2_ptRel_plots.push_back(p_qqww.h_lep2_ptRel);
-  lep2_ptRel_plots.push_back(p_wz.h_lep2_ptRel);
-  lep2_ptRel_plots.push_back(p_flips.h_lep2_ptRel);
-  lep2_ptRel_plots.push_back(p_fakes.h_lep2_ptRel);
-  dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep2_ptRel_all_SS.pdf --xAxisLabel lep2_ptRel --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  lep2_ptRel_plots.push_back(p_ttw.h_lep2_ptRel  );
+  lep2_ptRel_plots.push_back(p_ttzh.h_lep2_ptRel );
+  lep2_ptRel_plots.push_back(p_wz.h_lep2_ptRel   );
+  lep2_ptRel_plots.push_back(p_ww.h_lep2_ptRel );
+  lep2_ptRel_plots.push_back(p_rares.h_lep2_ptRel   );
+  lep2_ptRel_plots.push_back(p_flips.h_lep2_ptRel   );
+  lep2_ptRel_plots.push_back(p_fakes.h_lep2_ptRel   );
+  dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName lep2_ptRel_all_SS.pdf --xAxisLabel lep2_ptRel --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_lep1_ptRatio->Add(p_wzz.h_lep1_ptRatio);
-  p_qqww.h_lep1_ptRatio->Add(p_wwdps.h_lep1_ptRatio);
-  p_qqww.h_lep1_ptRatio->Add(p_ttg.h_lep1_ptRatio);
-  p_qqww.h_lep1_ptRatio->Add(p_dy.h_lep1_ptRatio);
-  p_qqww.h_lep1_ptRatio->Add(p_vhnonbb.h_lep1_ptRatio);
-  p_qqww.h_lep1_ptRatio->Add(p_tth.h_lep1_ptRatio);
-  p_qqww.h_lep1_ptRatio->Add(p_wgamma.h_lep1_ptRatio);
-  p_qqww.h_lep1_ptRatio->Add(p_tttt.h_lep1_ptRatio);
   vector <TH1F* > lep1_ptRatio_plots;
-  lep1_ptRatio_plots.push_back(p_ttw.h_lep1_ptRatio);
-  lep1_ptRatio_plots.push_back(p_ttz.h_lep1_ptRatio);
-  lep1_ptRatio_plots.push_back(p_qqww.h_lep1_ptRatio);
-  lep1_ptRatio_plots.push_back(p_wz.h_lep1_ptRatio);
-  lep1_ptRatio_plots.push_back(p_flips.h_lep1_ptRatio);
-  lep1_ptRatio_plots.push_back(p_fakes.h_lep1_ptRatio);
-  dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep1_ptRatio_all_SS.pdf --xAxisLabel lep1_ptRatio --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  lep1_ptRatio_plots.push_back(p_ttw.h_lep1_ptRatio  );
+  lep1_ptRatio_plots.push_back(p_ttzh.h_lep1_ptRatio );
+  lep1_ptRatio_plots.push_back(p_wz.h_lep1_ptRatio   );
+  lep1_ptRatio_plots.push_back(p_ww.h_lep1_ptRatio );
+  lep1_ptRatio_plots.push_back(p_rares.h_lep1_ptRatio   );
+  lep1_ptRatio_plots.push_back(p_flips.h_lep1_ptRatio   );
+  lep1_ptRatio_plots.push_back(p_fakes.h_lep1_ptRatio   );
+  dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName lep1_ptRatio_all_SS.pdf --xAxisLabel lep1_ptRatio --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_lep2_ptRatio->Add(p_wzz.h_lep2_ptRatio);
-  p_qqww.h_lep2_ptRatio->Add(p_wwdps.h_lep2_ptRatio);
-  p_qqww.h_lep2_ptRatio->Add(p_ttg.h_lep2_ptRatio);
-  p_qqww.h_lep2_ptRatio->Add(p_dy.h_lep2_ptRatio);
-  p_qqww.h_lep2_ptRatio->Add(p_vhnonbb.h_lep2_ptRatio);
-  p_qqww.h_lep2_ptRatio->Add(p_tth.h_lep2_ptRatio);
-  p_qqww.h_lep2_ptRatio->Add(p_wgamma.h_lep2_ptRatio);
-  p_qqww.h_lep2_ptRatio->Add(p_tttt.h_lep2_ptRatio);
   vector <TH1F* > lep2_ptRatio_plots;
-  lep2_ptRatio_plots.push_back(p_ttw.h_lep2_ptRatio);
-  lep2_ptRatio_plots.push_back(p_ttz.h_lep2_ptRatio);
-  lep2_ptRatio_plots.push_back(p_qqww.h_lep2_ptRatio);
-  lep2_ptRatio_plots.push_back(p_wz.h_lep2_ptRatio);
-  lep2_ptRatio_plots.push_back(p_flips.h_lep2_ptRatio);
-  lep2_ptRatio_plots.push_back(p_fakes.h_lep2_ptRatio);
-  dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep2_ptRatio_all_SS.pdf --xAxisLabel lep2_ptRatio --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  lep2_ptRatio_plots.push_back(p_ttw.h_lep2_ptRatio  );
+  lep2_ptRatio_plots.push_back(p_ttzh.h_lep2_ptRatio );
+  lep2_ptRatio_plots.push_back(p_wz.h_lep2_ptRatio   );
+  lep2_ptRatio_plots.push_back(p_ww.h_lep2_ptRatio );
+  lep2_ptRatio_plots.push_back(p_rares.h_lep2_ptRatio   );
+  lep2_ptRatio_plots.push_back(p_flips.h_lep2_ptRatio   );
+  lep2_ptRatio_plots.push_back(p_fakes.h_lep2_ptRatio   );
+  dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName lep2_ptRatio_all_SS.pdf --xAxisLabel lep2_ptRatio --isLinear --percentageInBox --legendUp -.05", lumiAG));
   
   //Redo iso with MC only
-  //we do not need to add rares to qqww since we already did it above
   vector <TH1F* > lep1_miniIso_plotsMC;
-  lep1_miniIso_plotsMC.push_back(p_ttw.h_lep1_miniIso);
-  lep1_miniIso_plotsMC.push_back(p_ttz.h_lep1_miniIso);
-  lep1_miniIso_plotsMC.push_back(p_qqww.h_lep1_miniIso);
-  lep1_miniIso_plotsMC.push_back(p_wz.h_lep1_miniIso);
+  lep1_miniIso_plotsMC.push_back(p_ttw.h_lep1_miniIso  );
+  lep1_miniIso_plotsMC.push_back(p_ttzh.h_lep1_miniIso );
+  lep1_miniIso_plotsMC.push_back(p_wz.h_lep1_miniIso   );
+  lep1_miniIso_plotsMC.push_back(p_ww.h_lep1_miniIso   );
+  lep1_miniIso_plotsMC.push_back(p_rares.h_lep1_miniIso);
   lep1_miniIso_plotsMC.push_back(p_ttbar_ff.h_lep1_miniIso);
   lep1_miniIso_plotsMC.push_back(p_dy_ff.h_lep1_miniIso);
   lep1_miniIso_plotsMC.push_back(p_wjets_ff.h_lep1_miniIso);
   lep1_miniIso_plotsMC.push_back(p_st_ff.h_lep1_miniIso);
-  dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep1_miniIso_all_SSMC.pdf --xAxisLabel lep1_miniIso --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName lep1_miniIso_all_SSMC.pdf --xAxisLabel lep1_miniIso --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  //we do not need to add rares to qqww since we already did it above
   vector <TH1F* > lep2_miniIso_plotsMC;
-  lep2_miniIso_plotsMC.push_back(p_ttw.h_lep2_miniIso);
-  lep2_miniIso_plotsMC.push_back(p_ttz.h_lep2_miniIso);
-  lep2_miniIso_plotsMC.push_back(p_qqww.h_lep2_miniIso);
-  lep2_miniIso_plotsMC.push_back(p_wz.h_lep2_miniIso);
+  lep2_miniIso_plotsMC.push_back(p_ttw.h_lep2_miniIso  );
+  lep2_miniIso_plotsMC.push_back(p_ttzh.h_lep2_miniIso );
+  lep2_miniIso_plotsMC.push_back(p_wz.h_lep2_miniIso   );
+  lep2_miniIso_plotsMC.push_back(p_ww.h_lep2_miniIso   );
+  lep2_miniIso_plotsMC.push_back(p_rares.h_lep2_miniIso);
   lep2_miniIso_plotsMC.push_back(p_ttbar_ff.h_lep2_miniIso);
   lep2_miniIso_plotsMC.push_back(p_dy_ff.h_lep2_miniIso);
   lep2_miniIso_plotsMC.push_back(p_wjets_ff.h_lep2_miniIso);
   lep2_miniIso_plotsMC.push_back(p_st_ff.h_lep2_miniIso);
-  dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep2_miniIso_all_SSMC.pdf --xAxisLabel lep2_miniIso --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName lep2_miniIso_all_SSMC.pdf --xAxisLabel lep2_miniIso --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  //we do not need to add rares to qqww since we already did it above
   vector <TH1F* > lep1_ptRel_plotsMC;
-  lep1_ptRel_plotsMC.push_back(p_ttw.h_lep1_ptRel);
-  lep1_ptRel_plotsMC.push_back(p_ttz.h_lep1_ptRel);
-  lep1_ptRel_plotsMC.push_back(p_qqww.h_lep1_ptRel);
-  lep1_ptRel_plotsMC.push_back(p_wz.h_lep1_ptRel);
+  lep1_ptRel_plotsMC.push_back(p_ttw.h_lep1_ptRel  );
+  lep1_ptRel_plotsMC.push_back(p_ttzh.h_lep1_ptRel );
+  lep1_ptRel_plotsMC.push_back(p_wz.h_lep1_ptRel   );
+  lep1_ptRel_plotsMC.push_back(p_ww.h_lep1_ptRel   );
+  lep1_ptRel_plotsMC.push_back(p_rares.h_lep1_ptRel);
   lep1_ptRel_plotsMC.push_back(p_ttbar_ff.h_lep1_ptRel);
   lep1_ptRel_plotsMC.push_back(p_dy_ff.h_lep1_ptRel);
   lep1_ptRel_plotsMC.push_back(p_wjets_ff.h_lep1_ptRel);
   lep1_ptRel_plotsMC.push_back(p_st_ff.h_lep1_ptRel);
-  dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep1_ptRel_all_SSMC.pdf --xAxisLabel lep1_ptRel --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName lep1_ptRel_all_SSMC.pdf --xAxisLabel lep1_ptRel --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  //we do not need to add rares to qqww since we already did it above
   vector <TH1F* > lep2_ptRel_plotsMC;
-  lep2_ptRel_plotsMC.push_back(p_ttw.h_lep2_ptRel);
-  lep2_ptRel_plotsMC.push_back(p_ttz.h_lep2_ptRel);
-  lep2_ptRel_plotsMC.push_back(p_qqww.h_lep2_ptRel);
-  lep2_ptRel_plotsMC.push_back(p_wz.h_lep2_ptRel);
+  lep2_ptRel_plotsMC.push_back(p_ttw.h_lep2_ptRel  );
+  lep2_ptRel_plotsMC.push_back(p_ttzh.h_lep2_ptRel );
+  lep2_ptRel_plotsMC.push_back(p_wz.h_lep2_ptRel   );
+  lep2_ptRel_plotsMC.push_back(p_ww.h_lep2_ptRel   );
+  lep2_ptRel_plotsMC.push_back(p_rares.h_lep2_ptRel);
   lep2_ptRel_plotsMC.push_back(p_ttbar_ff.h_lep2_ptRel);
   lep2_ptRel_plotsMC.push_back(p_dy_ff.h_lep2_ptRel);
   lep2_ptRel_plotsMC.push_back(p_wjets_ff.h_lep2_ptRel);
   lep2_ptRel_plotsMC.push_back(p_st_ff.h_lep2_ptRel);
-  dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep2_ptRel_all_SSMC.pdf --xAxisLabel lep2_ptRel --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName lep2_ptRel_all_SSMC.pdf --xAxisLabel lep2_ptRel --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  //we do not need to add rares to qqww since we already did it above
   vector <TH1F* > lep1_ptRatio_plotsMC;
-  lep1_ptRatio_plotsMC.push_back(p_ttw.h_lep1_ptRatio);
-  lep1_ptRatio_plotsMC.push_back(p_ttz.h_lep1_ptRatio);
-  lep1_ptRatio_plotsMC.push_back(p_qqww.h_lep1_ptRatio);
-  lep1_ptRatio_plotsMC.push_back(p_wz.h_lep1_ptRatio);
+  lep1_ptRatio_plotsMC.push_back(p_ttw.h_lep1_ptRatio  );
+  lep1_ptRatio_plotsMC.push_back(p_ttzh.h_lep1_ptRatio );
+  lep1_ptRatio_plotsMC.push_back(p_wz.h_lep1_ptRatio   );
+  lep1_ptRatio_plotsMC.push_back(p_ww.h_lep1_ptRatio   );
+  lep1_ptRatio_plotsMC.push_back(p_rares.h_lep1_ptRatio);
   lep1_ptRatio_plotsMC.push_back(p_ttbar_ff.h_lep1_ptRatio);
   lep1_ptRatio_plotsMC.push_back(p_dy_ff.h_lep1_ptRatio);
-  lep1_ptRatio_plotsMC.push_back(p_wjets.h_lep1_ptRatio);
+  lep1_ptRatio_plotsMC.push_back(p_wjets_ff.h_lep1_ptRatio);
   lep1_ptRatio_plotsMC.push_back(p_st_ff.h_lep1_ptRatio);
-  dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep1_ptRatio_all_SSMC.pdf --xAxisLabel lep1_ptRatio --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName lep1_ptRatio_all_SSMC.pdf --xAxisLabel lep1_ptRatio --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  //we do not need to add rares to qqww since we already did it above
   vector <TH1F* > lep2_ptRatio_plotsMC;
-  lep2_ptRatio_plotsMC.push_back(p_ttw.h_lep2_ptRatio);
-  lep2_ptRatio_plotsMC.push_back(p_ttz.h_lep2_ptRatio);
-  lep2_ptRatio_plotsMC.push_back(p_qqww.h_lep2_ptRatio);
-  lep2_ptRatio_plotsMC.push_back(p_wz.h_lep2_ptRatio);
-  lep2_ptRatio_plotsMC.push_back(p_ttbar_ff.h_lep1_ptRatio);
-  lep2_ptRatio_plotsMC.push_back(p_dy_ff.h_lep1_ptRatio);
-  lep2_ptRatio_plotsMC.push_back(p_wjets.h_lep1_ptRatio);
-  lep2_ptRatio_plotsMC.push_back(p_st_ff.h_lep1_ptRatio);
-  dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName lep2_ptRatio_all_SSMC.pdf --xAxisLabel lep2_ptRatio --isLinear --percentageInBox --legendUp -.05", lumiAG*1000));
+  lep2_ptRatio_plotsMC.push_back(p_ttw.h_lep2_ptRatio  );
+  lep2_ptRatio_plotsMC.push_back(p_ttzh.h_lep2_ptRatio );
+  lep2_ptRatio_plotsMC.push_back(p_wz.h_lep2_ptRatio   );
+  lep2_ptRatio_plotsMC.push_back(p_ww.h_lep2_ptRatio   );
+  lep2_ptRatio_plotsMC.push_back(p_rares.h_lep2_ptRatio);
+  lep2_ptRatio_plotsMC.push_back(p_ttbar_ff.h_lep2_ptRatio);
+  lep2_ptRatio_plotsMC.push_back(p_dy_ff.h_lep2_ptRatio);
+  lep2_ptRatio_plotsMC.push_back(p_wjets_ff.h_lep2_ptRatio);
+  lep2_ptRatio_plotsMC.push_back(p_st_ff.h_lep2_ptRatio);
+  dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName lep2_ptRatio_all_SSMC.pdf --xAxisLabel lep2_ptRatio --isLinear --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_ht->Add(p_wzz.h_ht);
-  p_qqww.h_ht->Add(p_wwdps.h_ht);
-  p_qqww.h_ht->Add(p_ttg.h_ht);
-  p_qqww.h_ht->Add(p_dy.h_ht);
-  p_qqww.h_ht->Add(p_vhnonbb.h_ht);
-  p_qqww.h_ht->Add(p_tth.h_ht);
-  p_qqww.h_ht->Add(p_wgamma.h_ht);
-  p_qqww.h_ht->Add(p_tttt.h_ht);
   vector <TH1F* > ht_plots;
-  ht_plots.push_back(p_ttw.h_ht);
-  ht_plots.push_back(p_ttz.h_ht);
-  ht_plots.push_back(p_qqww.h_ht);
-  ht_plots.push_back(p_wz.h_ht);
-  ht_plots.push_back(p_flips.h_ht);
-  ht_plots.push_back(p_fakes.h_ht);
-  dataMCplotMaker(p_data.h_ht, ht_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName ht_all_SS.pdf --xAxisLabel HT --percentageInBox --legendUp -.05", lumiAG*1000));
+  ht_plots.push_back(p_ttw.h_ht  );
+  ht_plots.push_back(p_ttzh.h_ht );
+  ht_plots.push_back(p_wz.h_ht   );
+  ht_plots.push_back(p_ww.h_ht );
+  ht_plots.push_back(p_rares.h_ht   );
+  ht_plots.push_back(p_flips.h_ht   );
+  ht_plots.push_back(p_fakes.h_ht   );
+  dataMCplotMaker(p_data.h_ht, ht_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName ht_all_SS.pdf --xAxisLabel HT --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_met->Add(p_wzz.h_met);
-  p_qqww.h_met->Add(p_wwdps.h_met);
-  p_qqww.h_met->Add(p_ttg.h_met);
-  p_qqww.h_met->Add(p_dy.h_met);
-  p_qqww.h_met->Add(p_vhnonbb.h_met);
-  p_qqww.h_met->Add(p_tth.h_met);
-  p_qqww.h_met->Add(p_wgamma.h_met);
-  p_qqww.h_met->Add(p_tttt.h_met);
   vector <TH1F* > met_plots;
-  met_plots.push_back(p_ttw.h_met);
-  met_plots.push_back(p_ttz.h_met);
-  met_plots.push_back(p_qqww.h_met);
-  met_plots.push_back(p_wz.h_met);
-  met_plots.push_back(p_flips.h_met);
-  met_plots.push_back(p_fakes.h_met);
-  dataMCplotMaker(p_data.h_met, met_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName met_all_SS.pdf --xAxisLabel MET --percentageInBox --legendUp -.05", lumiAG*1000));
+  met_plots.push_back(p_ttw.h_met  );
+  met_plots.push_back(p_ttzh.h_met );
+  met_plots.push_back(p_wz.h_met   );
+  met_plots.push_back(p_ww.h_met );
+  met_plots.push_back(p_rares.h_met   );
+  met_plots.push_back(p_flips.h_met   );
+  met_plots.push_back(p_fakes.h_met   );
+  dataMCplotMaker(p_data.h_met, met_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName met_all_SS.pdf --xAxisLabel MET --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_mll->Add(p_wzz.h_mll);
-  p_qqww.h_mll->Add(p_wwdps.h_mll);
-  p_qqww.h_mll->Add(p_ttg.h_mll);
-  p_qqww.h_mll->Add(p_dy.h_mll);
-  p_qqww.h_mll->Add(p_vhnonbb.h_mll);
-  p_qqww.h_mll->Add(p_tth.h_mll);
-  p_qqww.h_mll->Add(p_wgamma.h_mll);
-  p_qqww.h_mll->Add(p_tttt.h_mll);
   vector <TH1F* > mll_plots;
-  mll_plots.push_back(p_ttw.h_mll);
-  mll_plots.push_back(p_ttz.h_mll);
-  mll_plots.push_back(p_qqww.h_mll);
-  mll_plots.push_back(p_wz.h_mll);
-  mll_plots.push_back(p_flips.h_mll);
-  mll_plots.push_back(p_fakes.h_mll);
-  dataMCplotMaker(p_data.h_mll, mll_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName mll_all_SS.pdf --xAxisLabel M_{LL} --percentageInBox --legendUp -.05", lumiAG*1000));
+  mll_plots.push_back(p_ttw.h_mll  );
+  mll_plots.push_back(p_ttzh.h_mll );
+  mll_plots.push_back(p_wz.h_mll   );
+  mll_plots.push_back(p_ww.h_mll );
+  mll_plots.push_back(p_rares.h_mll   );
+  mll_plots.push_back(p_flips.h_mll   );
+  mll_plots.push_back(p_fakes.h_mll   );
+  dataMCplotMaker(p_data.h_mll, mll_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName mll_all_SS.pdf --xAxisLabel M_{LL} --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_mtmin->Add(p_wzz.h_mtmin);
-  p_qqww.h_mtmin->Add(p_wwdps.h_mtmin);
-  p_qqww.h_mtmin->Add(p_ttg.h_mtmin);
-  p_qqww.h_mtmin->Add(p_dy.h_mtmin);
-  p_qqww.h_mtmin->Add(p_vhnonbb.h_mtmin);
-  p_qqww.h_mtmin->Add(p_tth.h_mtmin);
-  p_qqww.h_mtmin->Add(p_wgamma.h_mtmin);
-  p_qqww.h_mtmin->Add(p_tttt.h_mtmin);
   vector <TH1F* > mtmin_plots;
-  mtmin_plots.push_back(p_ttw.h_mtmin);
-  mtmin_plots.push_back(p_ttz.h_mtmin);
-  mtmin_plots.push_back(p_qqww.h_mtmin);
-  mtmin_plots.push_back(p_wz.h_mtmin);
-  mtmin_plots.push_back(p_flips.h_mtmin);
-  mtmin_plots.push_back(p_fakes.h_mtmin);
-  dataMCplotMaker(p_data.h_mtmin, mtmin_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName mtmin_all_SS.pdf --xAxisLabel MT^{min} --percentageInBox --legendUp -.05", lumiAG*1000));
+  mtmin_plots.push_back(p_ttw.h_mtmin  );
+  mtmin_plots.push_back(p_ttzh.h_mtmin );
+  mtmin_plots.push_back(p_wz.h_mtmin   );
+  mtmin_plots.push_back(p_ww.h_mtmin );
+  mtmin_plots.push_back(p_rares.h_mtmin   );
+  mtmin_plots.push_back(p_flips.h_mtmin   );
+  mtmin_plots.push_back(p_fakes.h_mtmin   );
+  dataMCplotMaker(p_data.h_mtmin, mtmin_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName mtmin_all_SS.pdf --xAxisLabel MT^{min} --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_njets->Add(p_wzz.h_njets);
-  p_qqww.h_njets->Add(p_wwdps.h_njets);
-  p_qqww.h_njets->Add(p_ttg.h_njets);
-  p_qqww.h_njets->Add(p_dy.h_njets);
-  p_qqww.h_njets->Add(p_vhnonbb.h_njets);
-  p_qqww.h_njets->Add(p_tth.h_njets);
-  p_qqww.h_njets->Add(p_wgamma.h_njets);
-  p_qqww.h_njets->Add(p_tttt.h_njets);
   vector <TH1F* > njets_plots;
-  njets_plots.push_back(p_ttw.h_njets);
-  njets_plots.push_back(p_ttz.h_njets);
-  njets_plots.push_back(p_qqww.h_njets);
-  njets_plots.push_back(p_wz.h_njets);
-  njets_plots.push_back(p_flips.h_njets);
-  njets_plots.push_back(p_fakes.h_njets);
-  dataMCplotMaker(p_data.h_njets, njets_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName njets_all_SS.pdf --xAxisLabel Number of Jets --noXaxisUnit --percentageInBox --legendUp -.05", lumiAG*1000));
-
-  p_qqww.h_nbtags->Add(p_wzz.h_nbtags);
-  p_qqww.h_nbtags->Add(p_wwdps.h_nbtags);
-  p_qqww.h_nbtags->Add(p_ttg.h_nbtags);
-  p_qqww.h_nbtags->Add(p_dy.h_nbtags);
-  p_qqww.h_nbtags->Add(p_vhnonbb.h_nbtags);
-  p_qqww.h_nbtags->Add(p_tth.h_nbtags);
-  p_qqww.h_nbtags->Add(p_wgamma.h_nbtags);
-  p_qqww.h_nbtags->Add(p_tttt.h_nbtags);
+  njets_plots.push_back(p_ttw.h_njets  );
+  njets_plots.push_back(p_ttzh.h_njets );
+  njets_plots.push_back(p_wz.h_njets   );
+  njets_plots.push_back(p_ww.h_njets );
+  njets_plots.push_back(p_rares.h_njets   );
+  njets_plots.push_back(p_flips.h_njets   );
+  njets_plots.push_back(p_fakes.h_njets   );
+  dataMCplotMaker(p_data.h_njets, njets_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName njets_all_SS.pdf --xAxisLabel Number of Jets --noXaxisUnit --percentageInBox --legendUp -.05", lumiAG));
 
   vector <TH1F* > nbtags_plots;
-  nbtags_plots.push_back(p_ttw.h_nbtags);
-  nbtags_plots.push_back(p_ttz.h_nbtags);
-  nbtags_plots.push_back(p_qqww.h_nbtags);
-  nbtags_plots.push_back(p_wz.h_nbtags);
-  nbtags_plots.push_back(p_flips.h_nbtags);
-  nbtags_plots.push_back(p_fakes.h_nbtags);
-  dataMCplotMaker(p_data.h_nbtags, nbtags_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName nbtags_all_SS.pdf --xAxisLabel Number of BTags --noXaxisUnit --percentageInBox --legendUp -.05", lumiAG*1000));
+  nbtags_plots.push_back(p_ttw.h_nbtags  );
+  nbtags_plots.push_back(p_ttzh.h_nbtags );
+  nbtags_plots.push_back(p_wz.h_nbtags   );
+  nbtags_plots.push_back(p_ww.h_nbtags );
+  nbtags_plots.push_back(p_rares.h_nbtags   );
+  nbtags_plots.push_back(p_flips.h_nbtags   );
+  nbtags_plots.push_back(p_fakes.h_nbtags   );
+  dataMCplotMaker(p_data.h_nbtags, nbtags_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName nbtags_all_SS.pdf --xAxisLabel Number of BTags --noXaxisUnit --percentageInBox --legendUp -.05", lumiAG));
 
-  p_qqww.h_l1pt->Add(p_wzz.h_l1pt);
-  p_qqww.h_l1pt->Add(p_wwdps.h_l1pt);
-  p_qqww.h_l1pt->Add(p_ttg.h_l1pt);
-  p_qqww.h_l1pt->Add(p_dy.h_l1pt);
-  p_qqww.h_l1pt->Add(p_vhnonbb.h_l1pt);
-  p_qqww.h_l1pt->Add(p_tth.h_l1pt);
-  p_qqww.h_l1pt->Add(p_wgamma.h_l1pt);
-  p_qqww.h_l1pt->Add(p_tttt.h_l1pt);
-  
   //lep1 pt plots
   vector <TH1F* > l1pt_plots;
-  l1pt_plots.push_back(p_ttw.h_l1pt);
-  l1pt_plots.push_back(p_ttz.h_l1pt);
-  l1pt_plots.push_back(p_qqww.h_l1pt);
-  l1pt_plots.push_back(p_wz.h_l1pt);
-  l1pt_plots.push_back(p_flips.h_l1pt);
-  l1pt_plots.push_back(p_fakes.h_l1pt);
-  dataMCplotMaker(p_data.h_l1pt, l1pt_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName l1pt_all_SS.pdf --xAxisLabel Leading Lepton pT --percentageInBox --legendUp -.05", lumiAG*1000));
+  l1pt_plots.push_back(p_ttw.h_l1pt  );
+  l1pt_plots.push_back(p_ttzh.h_l1pt );
+  l1pt_plots.push_back(p_wz.h_l1pt   );
+  l1pt_plots.push_back(p_ww.h_l1pt );
+  l1pt_plots.push_back(p_rares.h_l1pt   );
+  l1pt_plots.push_back(p_flips.h_l1pt   );
+  l1pt_plots.push_back(p_fakes.h_l1pt   );
+  dataMCplotMaker(p_data.h_l1pt, l1pt_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName l1pt_all_SS.pdf --xAxisLabel Leading Lepton pT --percentageInBox --legendUp -.05", lumiAG));
 
   vector <TH1F* > l1pt_plotsMC;
-  l1pt_plotsMC.push_back(p_ttw.h_l1pt);
-  l1pt_plotsMC.push_back(p_ttz.h_l1pt);
-  l1pt_plotsMC.push_back(p_qqww.h_l1pt);
-  l1pt_plotsMC.push_back(p_wz.h_l1pt);
+  l1pt_plotsMC.push_back(p_ttw.h_l1pt  );
+  l1pt_plotsMC.push_back(p_ttzh.h_l1pt );
+  l1pt_plotsMC.push_back(p_wz.h_l1pt   );
+  l1pt_plotsMC.push_back(p_ww.h_l1pt   );
+  l1pt_plotsMC.push_back(p_rares.h_l1pt);
   l1pt_plotsMC.push_back(p_ttbar_ff.h_l1pt);
-  l1pt_plotsMC.push_back(p_wjets_ff.h_l1pt);
   l1pt_plotsMC.push_back(p_dy_ff.h_l1pt);
+  l1pt_plotsMC.push_back(p_wjets_ff.h_l1pt);
   l1pt_plotsMC.push_back(p_st_ff.h_l1pt);
-  dataMCplotMaker(p_data.h_l1pt, l1pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName l1pt_all_SSMC.pdf --xAxisLabel Leading Lepton pT --percentageInBox --legendUp -.05", lumiAG*1000));
-
-  p_qqww.h_l2pt->Add(p_wzz.h_l2pt);
-  p_qqww.h_l2pt->Add(p_wwdps.h_l2pt);
-  p_qqww.h_l2pt->Add(p_ttg.h_l2pt);
-  p_qqww.h_l2pt->Add(p_dy.h_l2pt);
-  p_qqww.h_l2pt->Add(p_vhnonbb.h_l2pt);
-  p_qqww.h_l2pt->Add(p_tth.h_l2pt);
-  p_qqww.h_l2pt->Add(p_wgamma.h_l2pt);
-  p_qqww.h_l2pt->Add(p_tttt.h_l2pt);
+  dataMCplotMaker(p_data.h_l1pt, l1pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName l1pt_all_SSMC.pdf --xAxisLabel Leading Lepton pT --percentageInBox --legendUp -.05", lumiAG));
  
   //lep2 pt plots
   vector <TH1F*> l2pt_plots;
-  l2pt_plots.push_back(p_ttw.h_l2pt);
-  l2pt_plots.push_back(p_ttz.h_l2pt);
-  l2pt_plots.push_back(p_qqww.h_l2pt);
-  l2pt_plots.push_back(p_wz.h_l2pt);
-  l2pt_plots.push_back(p_flips.h_l2pt);
-  l2pt_plots.push_back(p_fakes.h_l2pt);
-  dataMCplotMaker(p_data.h_l2pt, l2pt_plots, titles, "", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName l2pt_all_SS.pdf --xAxisLabel Trailing Lepton pT --percentageInBox --legendUp -.05", lumiAG*1000));
+  l2pt_plots.push_back(p_ttw.h_l2pt  );
+  l2pt_plots.push_back(p_ttzh.h_l2pt );
+  l2pt_plots.push_back(p_wz.h_l2pt   );
+  l2pt_plots.push_back(p_ww.h_l2pt );
+  l2pt_plots.push_back(p_rares.h_l2pt   );
+  l2pt_plots.push_back(p_flips.h_l2pt   );
+  l2pt_plots.push_back(p_fakes.h_l2pt   );
+  dataMCplotMaker(p_data.h_l2pt, l2pt_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName l2pt_all_SS.pdf --xAxisLabel Trailing Lepton pT --percentageInBox --legendUp -.05", lumiAG));
 
   vector <TH1F*> l2pt_plotsMC;
-  l2pt_plotsMC.push_back(p_ttw.h_l2pt);
-  l2pt_plotsMC.push_back(p_ttz.h_l2pt);
-  l2pt_plotsMC.push_back(p_qqww.h_l2pt);
-  l2pt_plotsMC.push_back(p_wz.h_l2pt);
+  l2pt_plotsMC.push_back(p_ttw.h_l2pt  );
+  l2pt_plotsMC.push_back(p_ttzh.h_l2pt );
+  l2pt_plotsMC.push_back(p_wz.h_l2pt   );
+  l2pt_plotsMC.push_back(p_ww.h_l2pt   );
+  l2pt_plotsMC.push_back(p_rares.h_l2pt);
   l2pt_plotsMC.push_back(p_ttbar_ff.h_l2pt);
+  l2pt_plotsMC.push_back(p_dy_ff.h_l2pt);
   l2pt_plotsMC.push_back(p_wjets_ff.h_l2pt);
   l2pt_plotsMC.push_back(p_st_ff.h_l2pt);
-  l2pt_plotsMC.push_back(p_dy_ff.h_l2pt);
-  dataMCplotMaker(p_data.h_l2pt, l2pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --lumiUnit pb --outputName l2pt_all_SSMC.pdf --xAxisLabel Trailing Lepton pT --percentageInBox --legendUp -.05", lumiAG*1000));
-
+  dataMCplotMaker(p_data.h_l2pt, l2pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName l2pt_all_SSMC.pdf --xAxisLabel Trailing Lepton pT --percentageInBox --legendUp -.05", lumiAG)); 
 }
 
 //doFakes = 1 for QCD, 2 for inSitu
@@ -761,6 +649,15 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
       } 
 
+      //drop electrons below 15 GeV
+      if (doFakes==1) {
+	if (abs(ss::lep1_id())==11 && ss::lep1_coneCorrPt()<15) continue;
+	if (abs(ss::lep2_id())==11 && ss::lep2_coneCorrPt()<15) continue;	
+      } else {
+	if (abs(ss::lep1_id())==11 && ss::lep1_p4().pt()<15) continue;
+	if (abs(ss::lep2_id())==11 && ss::lep2_p4().pt()<15) continue;
+      }
+
       //Only keep good events
       if (!doFlips && !doFakes && exclude == 0) {
 	    if (ss::hyp_class() != 3) continue;
@@ -801,11 +698,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if (ss::hyp_class() != 2) continue;
         float fr = 0.;
         if (ss::lep1_passes_id()==0){
-          if (doFakes == 1) fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht_corr());
+          if (doFakes == 1) fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
           if (doFakes == 2) fr = fakeRateInSitu(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
         }
         if (ss::lep2_passes_id()==0){
-          if (doFakes == 1) fr = fakeRate(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::ht_corr());
+          if (doFakes == 1) fr = fakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht_corr());
           if (doFakes == 2) fr = fakeRateInSitu(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
         }
         weight *= fr/(1.-fr);

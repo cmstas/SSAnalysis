@@ -1,8 +1,8 @@
 #ifndef _commonUtils_h_
 #define _commonUtils_h_
 
-float getLumi() { return 0.8487; }
-float getLumiUnblind() { return 0.1495; }
+float getLumi() { return 1.264; }
+float getLumiUnblind() { return 0.133; }
 
 bool isUnblindRun(int run) { return run<=257599; }
 
@@ -57,8 +57,8 @@ float getPUwUnblind(int nvtx) {
 }
 
 float flipRate(float pt, float eta) {
-   float scale = 1.15;
-   if (eta<-1.5 && eta>-2) scale = 3.60;
+  float scale = 1.15;
+   if (eta<-1.5 && eta>-2) scale = 3.1;
    //scale = 1.;
    if (pt>=0 && pt<20 && fabs(eta)>=0 && fabs(eta)<1 ) return scale*5.70541e-06;
    if (pt>=0 && pt<20 && fabs(eta)>=1 && fabs(eta)<2 ) return scale*0.000286472;

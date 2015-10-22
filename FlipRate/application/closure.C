@@ -109,7 +109,7 @@ void closure(){
 
   //Set up chains
   TChain *chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"-data848p7ipb/DataDoubleEGD.root");
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"-data1p280ifb/DataDoubleEGD.root");
   //chain->Add("./Data_DoubleEG2015D.root");
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_high.root");
 

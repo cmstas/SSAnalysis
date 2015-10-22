@@ -90,6 +90,10 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       //Throw away non OS-numerator events
       if (ss::hyp_class() != 4 && ss::hyp_class() != 3 && ss::hyp_class() != 2 && ss::hyp_class() != 6) continue;
 
+      //drop electrons below 15 GeV
+      if (abs(ss::lep1_id())==11 && ss::lep1_p4().pt()<15) continue;
+      if (abs(ss::lep2_id())==11 && ss::lep2_p4().pt()<15) continue;
+
       //Reject not triggered
       if (!ss::fired_trigger()) continue;
 
@@ -255,9 +259,9 @@ void plots(){
   
   //Set up chains
   TChain *chain_data = new TChain("t","data");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data848p7ipb/DataMuonEGD.root");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data848p7ipb/DataDoubleEGD.root");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data848p7ipb/DataDoubleMuonD.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data1p280ifb/DataMuonEGD.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data1p280ifb/DataDoubleEGD.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data1p280ifb/DataDoubleMuonD.root");
 
   TChain *chain_ttv = new TChain("t","ttv"); 
   chain_ttv->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");
@@ -591,13 +595,13 @@ void plots(){
   out.push_back("mll");
   out.push_back("nvtx");
 
-  vector <double> max_upstream   = { 5e5, 5e5, 5e6, 1e6, 1e6, 1e6, 1e6, 1e5, 5e5, 5e5 };
+  vector <double> max_upstream   = { 5e6, 5e6, 5e6, 5e6, 5e6, 5e6, 5e6, 5e6, 5e6, 5e6 };
   vector <double> max_downstream = { 5e4, 5e4, 5e5, 1e5, 1e5, 1e5, 1e5, 1e4, 5e4, 5e4 }; 
   vector <double> max;
   if (mode == 0) max = max_downstream;
   if (mode == 1) max = max_upstream; 
   if (mode == 2) max = max_upstream;
-  double min[10] = {1e-3, 1e-3, 1e-2, 1e-1, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3 };
+  double min[10] = {1, 1, 1e-2, 1e-1, 1, 1, 1, 1, 1, 1 };
 
   std::string title;
   if (mode == 0) title = Form("Run2, HH,HL,LL, BR0-3 %s"   , corrected ? "" : "raw" );
@@ -608,32 +612,32 @@ void plots(){
   for (int i = 0; i < 8; i++){
     cout << i << endl;
     //mm
-    dataMCplotMaker(data.OS[i][0][3][0], OS_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(OS #mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_mm_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
-    dataMCplotMaker(data.SS[i][0][3][0], SS_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(SS #mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_mm_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.SF[i][0][3][0], SF_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(SF #mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_mm_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.EZ[i][0][3][0], EZ_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(EZ #mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_mm_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.OS[i][0][3][0], OS_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(OS #mu#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_mm_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][3][0], SS_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(SS #mu#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_mm_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.SF[i][0][3][0], SF_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(SF #mu#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_mm_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.EZ[i][0][3][0], EZ_plots_mm[i], titles, Form("%s %s", names[i].c_str(), "(EZ #mu#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_mm_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
 
     //ee
-    dataMCplotMaker(data.OS[i][0][3][2], OS_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(OS ee)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_ee_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
-    dataMCplotMaker(data.SS[i][0][3][2], SS_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(SS ee)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_ee_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.SF[i][0][3][2], SF_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(SF ee)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_ee_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.EZ[i][0][3][2], EZ_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(EZ ee)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_ee_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.OS[i][0][3][2], OS_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(OS ee)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_ee_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][3][2], SS_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(SS ee)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_ee_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.SF[i][0][3][2], SF_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(SF ee)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_ee_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.EZ[i][0][3][2], EZ_plots_ee[i], titles, Form("%s %s", names[i].c_str(), "(EZ ee)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_ee_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
 
     //ee+mm
-    dataMCplotMaker(data.OS[i][0][3][3], OS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(OS ee+#mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_eemm_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
-    dataMCplotMaker(data.SS[i][0][3][3], SS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(SS ee+#mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_eemm_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.SF[i][0][3][3], SF_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(SF ee+#mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_eemm_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.EZ[i][0][3][3], EZ_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(EZ ee+#mu#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_eemm_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.OS[i][0][3][3], OS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(OS ee+#mu#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_eemm_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][3][3], SS_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(SS ee+#mu#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_eemm_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.SF[i][0][3][3], SF_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(SF ee+#mu#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_eemm_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.EZ[i][0][3][3], EZ_plots_eemm[i], titles, Form("%s %s", names[i].c_str(), "(EZ ee+#mu#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_eemm_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
    //emu
-    dataMCplotMaker(data.OS[i][0][3][1], OS_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(OS e#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_em_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
-    dataMCplotMaker(data.SS[i][0][3][1], SS_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(SS e#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_em_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.SF[i][0][3][1], SF_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(SF e#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_em_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.EZ[i][0][3][1], EZ_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(EZ e#mu)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_em_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.OS[i][0][3][1], OS_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(OS e#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_em_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][3][1], SS_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(SS e#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_em_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.SF[i][0][3][1], SF_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(SF e#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_em_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.EZ[i][0][3][1], EZ_plots_em[i], titles, Form("%s %s", names[i].c_str(), "(EZ e#mu)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_em_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
    //all
-    dataMCplotMaker(data.OS[i][0][3][4], OS_plots[i], titles, Form("%s %s", names[i].c_str(), "(OS)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_all_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
-    dataMCplotMaker(data.SS[i][0][3][4], SS_plots[i], titles, Form("%s %s", names[i].c_str(), "(SS)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_all_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.SF[i][0][3][4], SF_plots[i], titles, Form("%s %s", names[i].c_str(), "(SF)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_all_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
-    dataMCplotMaker(data.EZ[i][0][3][4], EZ_plots[i], titles, Form("%s %s", names[i].c_str(), "(EZ)"), title.c_str(), Form("--lumi %.1f --lumiUnit pb --outputName mode%i_%s_all_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", 1000*getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.OS[i][0][3][4], OS_plots[i], titles, Form("%s %s", names[i].c_str(), "(OS)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_all_OS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i])); 
+    dataMCplotMaker(data.SS[i][0][3][4], SS_plots[i], titles, Form("%s %s", names[i].c_str(), "(SS)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_all_SS.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumiUnblind(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.SF[i][0][3][4], SF_plots[i], titles, Form("%s %s", names[i].c_str(), "(SF)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_all_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
+    dataMCplotMaker(data.EZ[i][0][3][4], EZ_plots[i], titles, Form("%s %s", names[i].c_str(), "(EZ)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_all_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
   }
 
 }
