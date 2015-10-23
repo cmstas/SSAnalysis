@@ -10,10 +10,15 @@
 #include "../../commonUtils.h"
 #include "../../CORE/Tools/dorky/dorky.h"
 
+//Root files on/off
+bool makeRootFiles = 1;
+
 float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
 
 bool doNoData = true;
+
+float scaleLumi = 1.0;//3.0/1.264;//careful!!!
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
@@ -23,14 +28,19 @@ struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_n
 yields_t total; 
 
 //function declaration
-pair<yields_t, plots_t> run(TChain *chain, bool isData = 0, bool doFlips = 0, int doFakes = 0, int exclude = 0);
+pair<yields_t, plots_t> run(TChain *chain, bool isData = 0, bool doFlips = 0, int doFakes = 0, int exclude = 0, bool isSignal = 0, bool isGamma = 0);
+void avoidNegativeYields(TH1F* plot);
+void writeStatUpDown(TH1F* central,string name,bool down);
+void writeTTVExtrSyst(TH1F* central,string name,TString kine,bool down);
+void writeTTVExtrSyst(TH1F* central,string name,TString kine,bool down);
+void writeWZExtrSyst(TH1F* central,string name,TString kine,bool down);
+void writeJesSyst(TH1F* central,string name,TString kine,bool down);
+void writeLepSyst(TH1F* central,string name,TString kine,bool down);
+void writeBtagSyst(TH1F* central,string name,TString kine,bool down);
 
 void getyields(){
 
-  if (doNoData) lumiAG = getLumi();
-
-  cout << lumiAG << endl;
-  cout << tag << endl;
+  if (doNoData) lumiAG = scaleLumi*getLumi();
 
   //Chains
   //fakes&flips in mc
@@ -43,11 +53,19 @@ void getyields(){
   TChain *ttzh_chain    = new TChain("t","ttzh");
   TChain *wz_chain      = new TChain("t","wz");
   TChain *ww_chain      = new TChain("t","ww");
+  TChain *tg_chain      = new TChain("t","tg");
+  TChain *vg_chain      = new TChain("t","vg");
   TChain *rares_chain   = new TChain("t","rares");
   //data
   TChain *data_chain    = new TChain("t","data"); 
   TChain *flips_chain   = new TChain("t","flips"); 
-  TChain *fakes_chain   = new TChain("t","fakes"); 
+  TChain *fakes_chain   = new TChain("t","fakes");
+  //signals
+  TChain *t1tttt_1200_chain = new TChain("t","t1tttt_1200"); 
+  TChain *t1tttt_1500_chain = new TChain("t","t1tttt_1500"); 
+  TChain *t5tttt_deg_chain = new TChain("t","t5tttt_deg"); 
+  TChain *t6ttww_650_chain = new TChain("t","t6ttww_650"); 
+  TChain *t6ttww_600_chain = new TChain("t","t6ttww_600"); 
 
   //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root"          , tag.c_str())); 
@@ -66,13 +84,15 @@ void getyields(){
   wz_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ3LNU.root"         , tag.c_str()));
   ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWDPS.root"          , tag.c_str()));
   ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
+  tg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TG.root"             , tag.c_str()));
+  tg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTG.root"            , tag.c_str()));
+  //missing ZG
+  vg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"       , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZZ.root"             , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"            , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"            , tag.c_str()));
-  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTG.root"            , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
-  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"       , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
 
   data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleMuonD.root", tag.c_str()));
@@ -89,23 +109,37 @@ void getyields(){
   fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
   fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
 
+  t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root" , tag.c_str()));
+  t1tttt_1500_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1500.root" , tag.c_str()));
+  t5tttt_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5ttttDeg_1000_300_280.root" , tag.c_str()));
+  t6ttww_650_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_650_150_50.root" , tag.c_str()));
+  t6ttww_600_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_600_425_50.root" , tag.c_str()));
+
   //Get yields
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
+  ttbar_chain->SetTitle("ttbar_fa");
   pair<yields_t, plots_t> results_ttbar_fa = run(ttbar_chain, 0, 0, 0, 1);
+  ttbar_chain->SetTitle("ttbar_fl");
   pair<yields_t, plots_t> results_ttbar_fl = run(ttbar_chain, 0, 0, 0, 2);
+  ttbar_chain->SetTitle("ttbar_ff");
   pair<yields_t, plots_t> results_ttbar_ff = run(ttbar_chain, 0, 0, 0, 3);
-  pair<yields_t, plots_t> results_st_ff    = run(st_chain, 0, 0, 0, 3);
-  pair<yields_t, plots_t> results_wjets_ff = run(wjets_chain, 0, 0, 0, 3);
-  pair<yields_t, plots_t> results_dy_ff    = run(dy_chain, 0, 0, 0, 3);
   pair<yields_t, plots_t> results_st       = run(st_chain);
+  st_chain->SetTitle("st_ff");
+  pair<yields_t, plots_t> results_st_ff    = run(st_chain, 0, 0, 0, 3);
   pair<yields_t, plots_t> results_wjets    = run(wjets_chain);
+  wjets_chain->SetTitle("wjets_ff");
+  pair<yields_t, plots_t> results_wjets_ff = run(wjets_chain, 0, 0, 0, 3);
   pair<yields_t, plots_t> results_dy       = run(dy_chain);
+  dy_chain->SetTitle("dy_ff");
+  pair<yields_t, plots_t> results_dy_ff    = run(dy_chain, 0, 0, 0, 3);
 
   pair<yields_t, plots_t> results_ttw      = run(ttw_chain);
   pair<yields_t, plots_t> results_ttzh     = run(ttzh_chain);
   pair<yields_t, plots_t> results_wz       = run(wz_chain);
   pair<yields_t, plots_t> results_ww       = run(ww_chain);
 
+  pair<yields_t, plots_t> results_tg       = run(tg_chain, 0, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_vg       = run(vg_chain, 0, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_rares    = run(rares_chain);
 
   pair<yields_t, plots_t> results_data     = run(data_chain, 1);
@@ -116,6 +150,12 @@ void getyields(){
   duplicate_removal::clear_list();
   fakes_chain->SetTitle("fakes_is");
   pair<yields_t, plots_t> results_fakes_is = run(fakes_chain, 1, 0, 2);
+
+  pair<yields_t, plots_t> results_t1tttt_1200 = run(t1tttt_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t1tttt_1500 = run(t1tttt_1500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t5tttt_deg = run(t5tttt_deg_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t6ttww_650 = run(t6ttww_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t6ttww_600 = run(t6ttww_600_chain, 0, 0, 0, 0, 1);
 
   yields_t& ttbar    = results_ttbar.first;
   yields_t& ttbar_ff = results_ttbar_ff.first;
@@ -132,13 +172,18 @@ void getyields(){
   yields_t& ttzh     = results_ttzh.first;
   yields_t& wz       = results_wz.first;
   yields_t& ww       = results_ww.first;
+  yields_t& tg       = results_tg.first;
+  yields_t& vg       = results_vg.first;
   yields_t& rares    = results_rares.first;
 
   yields_t& data     = results_data.first;
   yields_t& flips    = results_flips.first;
   yields_t& fakes    = results_fakes.first;
   yields_t& fakes_is = results_fakes_is.first;
-  
+
+  yields_t& t1tttt_1200    = results_t1tttt_1200.first;
+  yields_t& t6ttww_650    = results_t6ttww_650.first;
+
   //Make yield table
   CTable table; 
   table.setPrecision(2); 
@@ -149,6 +194,8 @@ void getyields(){
                    ("ttzh"     , ttzh.EE     , ttzh.EM     , ttzh.MM     , ttzh.TOTAL   )
                    ("wz"       , wz.EE       , wz.EM       , wz.MM       , wz.TOTAL     )
                    ("ww"       , ww.EE       , ww.EM       , ww.MM       , ww.TOTAL     )
+                   ("tg"       , tg.EE       , tg.EM       , tg.MM       , tg.TOTAL     )
+                   ("vg"       , vg.EE       , vg.EM       , vg.MM       , vg.TOTAL     )
                    ("rares"    , rares.EE    , rares.EM    , rares.MM    , rares.TOTAL  )
                    ("flips"    , flips.EE    , flips.EM    , flips.MM    , flips.TOTAL  )
                    ("fakes"    , fakes.EE    , fakes.EM    , fakes.MM    , fakes.TOTAL  )
@@ -160,7 +207,9 @@ void getyields(){
                    ("ttbar_fl" , ttbar_fl.EE , ttbar_fl.EM , ttbar_fl.MM , ttbar_fl.TOTAL)
                    ("st"       , st.EE       , st.EM       , st.MM       , st.TOTAL     )
                    ("wjets"    , wjets.EE    , wjets.EM    , wjets.MM    , wjets.TOTAL  )
-                   ("dy"       , dy.EE       , dy.EM       , dy.MM       , dy.TOTAL     );
+                   ("dy"       , dy.EE       , dy.EM       , dy.MM       , dy.TOTAL     )
+                   ("t1tttt_1200"    , t1tttt_1200.EE    , t1tttt_1200.EM    , t1tttt_1200.MM    , t1tttt_1200.TOTAL  )
+                   ("t6ttww_650"    , t6ttww_650.EE    , t6ttww_650.EM    , t6ttww_650.MM    , t6ttww_650.TOTAL  );
   table.print();
 
   plots_t& p_ttbar    = results_ttbar.second;
@@ -178,6 +227,8 @@ void getyields(){
   plots_t& p_ttzh     = results_ttzh.second;
   plots_t& p_wz       = results_wz.second;
   plots_t& p_ww       = results_ww.second;
+  plots_t& p_tg       = results_tg.second;
+  plots_t& p_vg       = results_vg.second;
   plots_t& p_rares    = results_rares.second;
 
   plots_t& p_data     = results_data.second;
@@ -185,12 +236,16 @@ void getyields(){
   plots_t& p_fakes    = results_fakes.second;
   plots_t& p_fakes_is = results_fakes_is.second;
 
+  plots_t& p_t1tttt_1200 = results_t1tttt_1200.second;
+
   //Titles for legend
   vector <string> titles;
   titles.push_back("ttW"); 
   titles.push_back("ttZ/H"); 
   titles.push_back("WZ"); 
   titles.push_back("WW"); 
+  titles.push_back("TG"); 
+  titles.push_back("VG"); 
   titles.push_back("Rares"); 
   titles.push_back("Flips"); 
   titles.push_back("Fakes"); 
@@ -201,6 +256,8 @@ void getyields(){
   titles2.push_back("ttZ/H"); 
   titles2.push_back("WZ"); 
   titles2.push_back("WW"); 
+  titles2.push_back("TG"); 
+  titles2.push_back("VG"); 
   titles2.push_back("Rares"); 
   titles2.push_back("ttbar"); 
   titles2.push_back("dy"); 
@@ -208,43 +265,46 @@ void getyields(){
   titles2.push_back("st"); 
 
   cout << endl;
-  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s | %5s","TTW","TTZ/H","WZ","WW","RARES","FLIPS","FAKES","TOTAL") << endl;
+  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s %5s %5s | %5s | %11s","TTW","TTZ/H","WZ","WW","TG","VG","RARES","FLIPS","FAKES","TOTAL","T1TTTT1200") << endl;
   for (int bin=1;bin<=p_ttw.SRHH.TOTAL->GetNbinsX(); ++bin) {
-    cout << Form("HH SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f",bin,
-		 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin),
-		 p_wz.SRHH.TOTAL->GetBinContent(bin),p_ww.SRHH.TOTAL->GetBinContent(bin),p_rares.SRHH.TOTAL->GetBinContent(bin),
-		 p_flips.SRHH.TOTAL->GetBinContent(bin),p_fakes.SRHH.TOTAL->GetBinContent(bin),
-		 (p_ttw.SRHH.TOTAL->GetBinContent(bin)+p_ttzh.SRHH.TOTAL->GetBinContent(bin)+
-		  p_wz.SRHH.TOTAL->GetBinContent(bin)+p_ww.SRHH.TOTAL->GetBinContent(bin)+p_rares.SRHH.TOTAL->GetBinContent(bin)+
-		  p_flips.SRHH.TOTAL->GetBinContent(bin)+p_fakes.SRHH.TOTAL->GetBinContent(bin))
+    cout << Form("HH SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f |  %10.2f",bin,
+		 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin),p_wz.SRHH.TOTAL->GetBinContent(bin),
+		 p_ww.SRHH.TOTAL->GetBinContent(bin),p_tg.SRHH.TOTAL->GetBinContent(bin),p_vg.SRHH.TOTAL->GetBinContent(bin),
+		 p_rares.SRHH.TOTAL->GetBinContent(bin),p_flips.SRHH.TOTAL->GetBinContent(bin),p_fakes.SRHH.TOTAL->GetBinContent(bin),
+		 (p_ttw.SRHH.TOTAL->GetBinContent(bin)+p_ttzh.SRHH.TOTAL->GetBinContent(bin)+p_wz.SRHH.TOTAL->GetBinContent(bin)+
+		  p_ww.SRHH.TOTAL->GetBinContent(bin)+p_tg.SRHH.TOTAL->GetBinContent(bin)+p_vg.SRHH.TOTAL->GetBinContent(bin)+
+		  p_rares.SRHH.TOTAL->GetBinContent(bin)+p_flips.SRHH.TOTAL->GetBinContent(bin)+p_fakes.SRHH.TOTAL->GetBinContent(bin)),
+		 p_t1tttt_1200.SRHH.TOTAL->GetBinContent(bin)
 		 )
 	 << endl;
   }
 
   cout << endl;
-  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s | %5s","TTW","TTZ/H","WZ","WW","RARES","FLIPS","FAKES","TOTAL") << endl;
+  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s %5s %5s | %5s | %11s","TTW","TTZ/H","WZ","WW","TG","VG","RARES","FLIPS","FAKES","TOTAL","T1TTTT1200") << endl;
   for (int bin=1;bin<=p_ttw.SRHL.TOTAL->GetNbinsX(); ++bin) {
-    cout << Form("HL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f",bin,
-		 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin),
-		 p_wz.SRHL.TOTAL->GetBinContent(bin),p_ww.SRHL.TOTAL->GetBinContent(bin),p_rares.SRHL.TOTAL->GetBinContent(bin),
-		 p_flips.SRHL.TOTAL->GetBinContent(bin),p_fakes.SRHL.TOTAL->GetBinContent(bin),
-		 (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+
-		  p_wz.SRHL.TOTAL->GetBinContent(bin)+p_ww.SRHL.TOTAL->GetBinContent(bin)+p_rares.SRHL.TOTAL->GetBinContent(bin)+
-		  p_flips.SRHL.TOTAL->GetBinContent(bin)+p_fakes.SRHL.TOTAL->GetBinContent(bin))
+    cout << Form("HL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f |  %10.2f",bin,
+		 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin),p_wz.SRHL.TOTAL->GetBinContent(bin),
+		 p_ww.SRHL.TOTAL->GetBinContent(bin),p_tg.SRHL.TOTAL->GetBinContent(bin),p_vg.SRHL.TOTAL->GetBinContent(bin),
+		 p_rares.SRHL.TOTAL->GetBinContent(bin),p_flips.SRHL.TOTAL->GetBinContent(bin),p_fakes.SRHL.TOTAL->GetBinContent(bin),
+		 (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+p_wz.SRHL.TOTAL->GetBinContent(bin)+
+		  p_ww.SRHL.TOTAL->GetBinContent(bin)+p_tg.SRHL.TOTAL->GetBinContent(bin)+p_vg.SRHL.TOTAL->GetBinContent(bin)+
+		  p_rares.SRHL.TOTAL->GetBinContent(bin)+p_flips.SRHL.TOTAL->GetBinContent(bin)+p_fakes.SRHL.TOTAL->GetBinContent(bin)),
+		 p_t1tttt_1200.SRHL.TOTAL->GetBinContent(bin)
 		 )
 	 << endl;
   }
 
   cout << endl;
-  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s | %5s","TTW","TTZ/H","WZ","WW","RARES","FLIPS","FAKES","TOTAL") << endl;
+  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s %5s %5s | %5s | %11s","TTW","TTZ/H","WZ","WW","TG","VG","RARES","FLIPS","FAKES","TOTAL","T1TTTT1200") << endl;
   for (int bin=1;bin<=p_ttw.SRLL.TOTAL->GetNbinsX(); ++bin) {
-    cout << Form("LL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f",bin,
-		 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin),
-		 p_wz.SRLL.TOTAL->GetBinContent(bin),p_ww.SRLL.TOTAL->GetBinContent(bin),p_rares.SRLL.TOTAL->GetBinContent(bin),
-		 p_flips.SRLL.TOTAL->GetBinContent(bin),p_fakes.SRLL.TOTAL->GetBinContent(bin),
-		 (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+
-		  p_wz.SRLL.TOTAL->GetBinContent(bin)+p_ww.SRLL.TOTAL->GetBinContent(bin)+p_rares.SRLL.TOTAL->GetBinContent(bin)+
-		  p_flips.SRLL.TOTAL->GetBinContent(bin)+p_fakes.SRLL.TOTAL->GetBinContent(bin))
+    cout << Form("LL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f |  %10.2f",bin,
+		 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin),p_wz.SRLL.TOTAL->GetBinContent(bin),
+		 p_ww.SRLL.TOTAL->GetBinContent(bin),p_tg.SRLL.TOTAL->GetBinContent(bin),p_vg.SRLL.TOTAL->GetBinContent(bin),
+		 p_rares.SRLL.TOTAL->GetBinContent(bin),p_flips.SRLL.TOTAL->GetBinContent(bin),p_fakes.SRLL.TOTAL->GetBinContent(bin),
+		 (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+p_wz.SRLL.TOTAL->GetBinContent(bin)+
+		  p_ww.SRLL.TOTAL->GetBinContent(bin)+p_tg.SRLL.TOTAL->GetBinContent(bin)+p_vg.SRLL.TOTAL->GetBinContent(bin)+
+		  p_rares.SRLL.TOTAL->GetBinContent(bin)+p_flips.SRLL.TOTAL->GetBinContent(bin)+p_fakes.SRLL.TOTAL->GetBinContent(bin)),
+		 p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
 		 )
 	 << endl;
   }
@@ -255,6 +315,8 @@ void getyields(){
   SRHH_plots.push_back(p_ttzh.SRHH.TOTAL );
   SRHH_plots.push_back(p_wz.SRHH.TOTAL   );
   SRHH_plots.push_back(p_ww.SRHH.TOTAL );
+  SRHH_plots.push_back(p_tg.SRHH.TOTAL );
+  SRHH_plots.push_back(p_vg.SRHH.TOTAL );
   SRHH_plots.push_back(p_rares.SRHH.TOTAL   );
   SRHH_plots.push_back(p_flips.SRHH.TOTAL   );
   SRHH_plots.push_back(p_fakes.SRHH.TOTAL   );
@@ -265,6 +327,8 @@ void getyields(){
   SRHL_plots.push_back(p_ttzh.SRHL.TOTAL );
   SRHL_plots.push_back(p_wz.SRHL.TOTAL   );
   SRHL_plots.push_back(p_ww.SRHL.TOTAL );
+  SRHL_plots.push_back(p_tg.SRHL.TOTAL );
+  SRHL_plots.push_back(p_vg.SRHL.TOTAL );
   SRHL_plots.push_back(p_rares.SRHL.TOTAL   );
   SRHL_plots.push_back(p_flips.SRHL.TOTAL   );
   SRHL_plots.push_back(p_fakes.SRHL.TOTAL   );
@@ -275,6 +339,8 @@ void getyields(){
   SRLL_plots.push_back(p_ttzh.SRLL.TOTAL );
   SRLL_plots.push_back(p_wz.SRLL.TOTAL   );
   SRLL_plots.push_back(p_ww.SRLL.TOTAL );
+  SRLL_plots.push_back(p_tg.SRLL.TOTAL );
+  SRLL_plots.push_back(p_vg.SRLL.TOTAL );
   SRLL_plots.push_back(p_rares.SRLL.TOTAL   );
   SRLL_plots.push_back(p_flips.SRLL.TOTAL   );
   SRLL_plots.push_back(p_fakes.SRLL.TOTAL   );
@@ -286,6 +352,8 @@ void getyields(){
   SRHHMC_plots.push_back(p_ttzh.SRHH.TOTAL );
   SRHHMC_plots.push_back(p_wz.SRHH.TOTAL   );
   SRHHMC_plots.push_back(p_ww.SRHH.TOTAL   );
+  SRHHMC_plots.push_back(p_tg.SRHH.TOTAL   );
+  SRHHMC_plots.push_back(p_vg.SRHH.TOTAL   );
   SRHHMC_plots.push_back(p_rares.SRHH.TOTAL);
   SRHHMC_plots.push_back(p_ttbar_ff.SRHH.TOTAL);
   SRHHMC_plots.push_back(p_dy_ff.SRHH.TOTAL);
@@ -298,6 +366,8 @@ void getyields(){
   SRHLMC_plots.push_back(p_ttzh.SRHL.TOTAL );
   SRHLMC_plots.push_back(p_wz.SRHL.TOTAL   );
   SRHLMC_plots.push_back(p_ww.SRHL.TOTAL   );
+  SRHLMC_plots.push_back(p_tg.SRHL.TOTAL   );
+  SRHLMC_plots.push_back(p_vg.SRHL.TOTAL   );
   SRHLMC_plots.push_back(p_rares.SRHL.TOTAL);
   SRHLMC_plots.push_back(p_ttbar_ff.SRHL.TOTAL);
   SRHLMC_plots.push_back(p_dy_ff.SRHL.TOTAL);
@@ -310,6 +380,8 @@ void getyields(){
   SRLLMC_plots.push_back(p_ttzh.SRLL.TOTAL );
   SRLLMC_plots.push_back(p_wz.SRLL.TOTAL   );
   SRLLMC_plots.push_back(p_ww.SRLL.TOTAL   );
+  SRLLMC_plots.push_back(p_tg.SRLL.TOTAL   );
+  SRLLMC_plots.push_back(p_vg.SRLL.TOTAL   );
   SRLLMC_plots.push_back(p_rares.SRLL.TOTAL);
   SRLLMC_plots.push_back(p_ttbar_ff.SRLL.TOTAL);
   SRLLMC_plots.push_back(p_dy_ff.SRLL.TOTAL);
@@ -322,6 +394,8 @@ void getyields(){
   type_plots.push_back(p_ttzh.h_type );
   type_plots.push_back(p_wz.h_type   );
   type_plots.push_back(p_ww.h_type );
+  type_plots.push_back(p_tg.h_type );
+  type_plots.push_back(p_vg.h_type );
   type_plots.push_back(p_rares.h_type   );
   type_plots.push_back(p_flips.h_type   );
   type_plots.push_back(p_fakes.h_type   );
@@ -332,6 +406,8 @@ void getyields(){
   lep1_miniIso_plots.push_back(p_ttzh.h_lep1_miniIso );
   lep1_miniIso_plots.push_back(p_wz.h_lep1_miniIso   );
   lep1_miniIso_plots.push_back(p_ww.h_lep1_miniIso );
+  lep1_miniIso_plots.push_back(p_tg.h_lep1_miniIso );
+  lep1_miniIso_plots.push_back(p_vg.h_lep1_miniIso );
   lep1_miniIso_plots.push_back(p_rares.h_lep1_miniIso   );
   lep1_miniIso_plots.push_back(p_flips.h_lep1_miniIso   );
   lep1_miniIso_plots.push_back(p_fakes.h_lep1_miniIso   );
@@ -342,6 +418,8 @@ void getyields(){
   lep2_miniIso_plots.push_back(p_ttzh.h_lep2_miniIso );
   lep2_miniIso_plots.push_back(p_wz.h_lep2_miniIso   );
   lep2_miniIso_plots.push_back(p_ww.h_lep2_miniIso );
+  lep2_miniIso_plots.push_back(p_tg.h_lep2_miniIso );
+  lep2_miniIso_plots.push_back(p_vg.h_lep2_miniIso );
   lep2_miniIso_plots.push_back(p_rares.h_lep2_miniIso   );
   lep2_miniIso_plots.push_back(p_flips.h_lep2_miniIso   );
   lep2_miniIso_plots.push_back(p_fakes.h_lep2_miniIso   );
@@ -352,6 +430,8 @@ void getyields(){
   lep1_ptRel_plots.push_back(p_ttzh.h_lep1_ptRel );
   lep1_ptRel_plots.push_back(p_wz.h_lep1_ptRel   );
   lep1_ptRel_plots.push_back(p_ww.h_lep1_ptRel );
+  lep1_ptRel_plots.push_back(p_tg.h_lep1_ptRel );
+  lep1_ptRel_plots.push_back(p_vg.h_lep1_ptRel );
   lep1_ptRel_plots.push_back(p_rares.h_lep1_ptRel   );
   lep1_ptRel_plots.push_back(p_flips.h_lep1_ptRel   );
   lep1_ptRel_plots.push_back(p_fakes.h_lep1_ptRel   );
@@ -362,6 +442,8 @@ void getyields(){
   lep2_ptRel_plots.push_back(p_ttzh.h_lep2_ptRel );
   lep2_ptRel_plots.push_back(p_wz.h_lep2_ptRel   );
   lep2_ptRel_plots.push_back(p_ww.h_lep2_ptRel );
+  lep2_ptRel_plots.push_back(p_tg.h_lep2_ptRel );
+  lep2_ptRel_plots.push_back(p_vg.h_lep2_ptRel );
   lep2_ptRel_plots.push_back(p_rares.h_lep2_ptRel   );
   lep2_ptRel_plots.push_back(p_flips.h_lep2_ptRel   );
   lep2_ptRel_plots.push_back(p_fakes.h_lep2_ptRel   );
@@ -372,6 +454,8 @@ void getyields(){
   lep1_ptRatio_plots.push_back(p_ttzh.h_lep1_ptRatio );
   lep1_ptRatio_plots.push_back(p_wz.h_lep1_ptRatio   );
   lep1_ptRatio_plots.push_back(p_ww.h_lep1_ptRatio );
+  lep1_ptRatio_plots.push_back(p_tg.h_lep1_ptRatio );
+  lep1_ptRatio_plots.push_back(p_vg.h_lep1_ptRatio );
   lep1_ptRatio_plots.push_back(p_rares.h_lep1_ptRatio   );
   lep1_ptRatio_plots.push_back(p_flips.h_lep1_ptRatio   );
   lep1_ptRatio_plots.push_back(p_fakes.h_lep1_ptRatio   );
@@ -382,6 +466,8 @@ void getyields(){
   lep2_ptRatio_plots.push_back(p_ttzh.h_lep2_ptRatio );
   lep2_ptRatio_plots.push_back(p_wz.h_lep2_ptRatio   );
   lep2_ptRatio_plots.push_back(p_ww.h_lep2_ptRatio );
+  lep2_ptRatio_plots.push_back(p_tg.h_lep2_ptRatio );
+  lep2_ptRatio_plots.push_back(p_vg.h_lep2_ptRatio );
   lep2_ptRatio_plots.push_back(p_rares.h_lep2_ptRatio   );
   lep2_ptRatio_plots.push_back(p_flips.h_lep2_ptRatio   );
   lep2_ptRatio_plots.push_back(p_fakes.h_lep2_ptRatio   );
@@ -393,6 +479,8 @@ void getyields(){
   lep1_miniIso_plotsMC.push_back(p_ttzh.h_lep1_miniIso );
   lep1_miniIso_plotsMC.push_back(p_wz.h_lep1_miniIso   );
   lep1_miniIso_plotsMC.push_back(p_ww.h_lep1_miniIso   );
+  lep1_miniIso_plotsMC.push_back(p_tg.h_lep1_miniIso   );
+  lep1_miniIso_plotsMC.push_back(p_vg.h_lep1_miniIso   );
   lep1_miniIso_plotsMC.push_back(p_rares.h_lep1_miniIso);
   lep1_miniIso_plotsMC.push_back(p_ttbar_ff.h_lep1_miniIso);
   lep1_miniIso_plotsMC.push_back(p_dy_ff.h_lep1_miniIso);
@@ -405,6 +493,8 @@ void getyields(){
   lep2_miniIso_plotsMC.push_back(p_ttzh.h_lep2_miniIso );
   lep2_miniIso_plotsMC.push_back(p_wz.h_lep2_miniIso   );
   lep2_miniIso_plotsMC.push_back(p_ww.h_lep2_miniIso   );
+  lep2_miniIso_plotsMC.push_back(p_tg.h_lep2_miniIso   );
+  lep2_miniIso_plotsMC.push_back(p_vg.h_lep2_miniIso   );
   lep2_miniIso_plotsMC.push_back(p_rares.h_lep2_miniIso);
   lep2_miniIso_plotsMC.push_back(p_ttbar_ff.h_lep2_miniIso);
   lep2_miniIso_plotsMC.push_back(p_dy_ff.h_lep2_miniIso);
@@ -417,6 +507,8 @@ void getyields(){
   lep1_ptRel_plotsMC.push_back(p_ttzh.h_lep1_ptRel );
   lep1_ptRel_plotsMC.push_back(p_wz.h_lep1_ptRel   );
   lep1_ptRel_plotsMC.push_back(p_ww.h_lep1_ptRel   );
+  lep1_ptRel_plotsMC.push_back(p_tg.h_lep1_ptRel   );
+  lep1_ptRel_plotsMC.push_back(p_vg.h_lep1_ptRel   );
   lep1_ptRel_plotsMC.push_back(p_rares.h_lep1_ptRel);
   lep1_ptRel_plotsMC.push_back(p_ttbar_ff.h_lep1_ptRel);
   lep1_ptRel_plotsMC.push_back(p_dy_ff.h_lep1_ptRel);
@@ -429,6 +521,8 @@ void getyields(){
   lep2_ptRel_plotsMC.push_back(p_ttzh.h_lep2_ptRel );
   lep2_ptRel_plotsMC.push_back(p_wz.h_lep2_ptRel   );
   lep2_ptRel_plotsMC.push_back(p_ww.h_lep2_ptRel   );
+  lep2_ptRel_plotsMC.push_back(p_tg.h_lep2_ptRel   );
+  lep2_ptRel_plotsMC.push_back(p_vg.h_lep2_ptRel   );
   lep2_ptRel_plotsMC.push_back(p_rares.h_lep2_ptRel);
   lep2_ptRel_plotsMC.push_back(p_ttbar_ff.h_lep2_ptRel);
   lep2_ptRel_plotsMC.push_back(p_dy_ff.h_lep2_ptRel);
@@ -441,6 +535,8 @@ void getyields(){
   lep1_ptRatio_plotsMC.push_back(p_ttzh.h_lep1_ptRatio );
   lep1_ptRatio_plotsMC.push_back(p_wz.h_lep1_ptRatio   );
   lep1_ptRatio_plotsMC.push_back(p_ww.h_lep1_ptRatio   );
+  lep1_ptRatio_plotsMC.push_back(p_tg.h_lep1_ptRatio   );
+  lep1_ptRatio_plotsMC.push_back(p_vg.h_lep1_ptRatio   );
   lep1_ptRatio_plotsMC.push_back(p_rares.h_lep1_ptRatio);
   lep1_ptRatio_plotsMC.push_back(p_ttbar_ff.h_lep1_ptRatio);
   lep1_ptRatio_plotsMC.push_back(p_dy_ff.h_lep1_ptRatio);
@@ -453,6 +549,8 @@ void getyields(){
   lep2_ptRatio_plotsMC.push_back(p_ttzh.h_lep2_ptRatio );
   lep2_ptRatio_plotsMC.push_back(p_wz.h_lep2_ptRatio   );
   lep2_ptRatio_plotsMC.push_back(p_ww.h_lep2_ptRatio   );
+  lep2_ptRatio_plotsMC.push_back(p_tg.h_lep2_ptRatio   );
+  lep2_ptRatio_plotsMC.push_back(p_vg.h_lep2_ptRatio   );
   lep2_ptRatio_plotsMC.push_back(p_rares.h_lep2_ptRatio);
   lep2_ptRatio_plotsMC.push_back(p_ttbar_ff.h_lep2_ptRatio);
   lep2_ptRatio_plotsMC.push_back(p_dy_ff.h_lep2_ptRatio);
@@ -465,6 +563,8 @@ void getyields(){
   ht_plots.push_back(p_ttzh.h_ht );
   ht_plots.push_back(p_wz.h_ht   );
   ht_plots.push_back(p_ww.h_ht );
+  ht_plots.push_back(p_tg.h_ht );
+  ht_plots.push_back(p_vg.h_ht );
   ht_plots.push_back(p_rares.h_ht   );
   ht_plots.push_back(p_flips.h_ht   );
   ht_plots.push_back(p_fakes.h_ht   );
@@ -475,6 +575,8 @@ void getyields(){
   met_plots.push_back(p_ttzh.h_met );
   met_plots.push_back(p_wz.h_met   );
   met_plots.push_back(p_ww.h_met );
+  met_plots.push_back(p_tg.h_met );
+  met_plots.push_back(p_vg.h_met );
   met_plots.push_back(p_rares.h_met   );
   met_plots.push_back(p_flips.h_met   );
   met_plots.push_back(p_fakes.h_met   );
@@ -485,6 +587,8 @@ void getyields(){
   mll_plots.push_back(p_ttzh.h_mll );
   mll_plots.push_back(p_wz.h_mll   );
   mll_plots.push_back(p_ww.h_mll );
+  mll_plots.push_back(p_tg.h_mll );
+  mll_plots.push_back(p_vg.h_mll );
   mll_plots.push_back(p_rares.h_mll   );
   mll_plots.push_back(p_flips.h_mll   );
   mll_plots.push_back(p_fakes.h_mll   );
@@ -495,6 +599,8 @@ void getyields(){
   mtmin_plots.push_back(p_ttzh.h_mtmin );
   mtmin_plots.push_back(p_wz.h_mtmin   );
   mtmin_plots.push_back(p_ww.h_mtmin );
+  mtmin_plots.push_back(p_tg.h_mtmin );
+  mtmin_plots.push_back(p_vg.h_mtmin );
   mtmin_plots.push_back(p_rares.h_mtmin   );
   mtmin_plots.push_back(p_flips.h_mtmin   );
   mtmin_plots.push_back(p_fakes.h_mtmin   );
@@ -505,6 +611,8 @@ void getyields(){
   njets_plots.push_back(p_ttzh.h_njets );
   njets_plots.push_back(p_wz.h_njets   );
   njets_plots.push_back(p_ww.h_njets );
+  njets_plots.push_back(p_tg.h_njets );
+  njets_plots.push_back(p_vg.h_njets );
   njets_plots.push_back(p_rares.h_njets   );
   njets_plots.push_back(p_flips.h_njets   );
   njets_plots.push_back(p_fakes.h_njets   );
@@ -515,6 +623,8 @@ void getyields(){
   nbtags_plots.push_back(p_ttzh.h_nbtags );
   nbtags_plots.push_back(p_wz.h_nbtags   );
   nbtags_plots.push_back(p_ww.h_nbtags );
+  nbtags_plots.push_back(p_tg.h_nbtags );
+  nbtags_plots.push_back(p_vg.h_nbtags );
   nbtags_plots.push_back(p_rares.h_nbtags   );
   nbtags_plots.push_back(p_flips.h_nbtags   );
   nbtags_plots.push_back(p_fakes.h_nbtags   );
@@ -526,6 +636,8 @@ void getyields(){
   l1pt_plots.push_back(p_ttzh.h_l1pt );
   l1pt_plots.push_back(p_wz.h_l1pt   );
   l1pt_plots.push_back(p_ww.h_l1pt );
+  l1pt_plots.push_back(p_tg.h_l1pt );
+  l1pt_plots.push_back(p_vg.h_l1pt );
   l1pt_plots.push_back(p_rares.h_l1pt   );
   l1pt_plots.push_back(p_flips.h_l1pt   );
   l1pt_plots.push_back(p_fakes.h_l1pt   );
@@ -536,6 +648,8 @@ void getyields(){
   l1pt_plotsMC.push_back(p_ttzh.h_l1pt );
   l1pt_plotsMC.push_back(p_wz.h_l1pt   );
   l1pt_plotsMC.push_back(p_ww.h_l1pt   );
+  l1pt_plotsMC.push_back(p_tg.h_l1pt   );
+  l1pt_plotsMC.push_back(p_vg.h_l1pt   );
   l1pt_plotsMC.push_back(p_rares.h_l1pt);
   l1pt_plotsMC.push_back(p_ttbar_ff.h_l1pt);
   l1pt_plotsMC.push_back(p_dy_ff.h_l1pt);
@@ -549,6 +663,8 @@ void getyields(){
   l2pt_plots.push_back(p_ttzh.h_l2pt );
   l2pt_plots.push_back(p_wz.h_l2pt   );
   l2pt_plots.push_back(p_ww.h_l2pt );
+  l2pt_plots.push_back(p_tg.h_l2pt );
+  l2pt_plots.push_back(p_vg.h_l2pt );
   l2pt_plots.push_back(p_rares.h_l2pt   );
   l2pt_plots.push_back(p_flips.h_l2pt   );
   l2pt_plots.push_back(p_fakes.h_l2pt   );
@@ -559,6 +675,8 @@ void getyields(){
   l2pt_plotsMC.push_back(p_ttzh.h_l2pt );
   l2pt_plotsMC.push_back(p_wz.h_l2pt   );
   l2pt_plotsMC.push_back(p_ww.h_l2pt   );
+  l2pt_plotsMC.push_back(p_tg.h_l2pt   );
+  l2pt_plotsMC.push_back(p_vg.h_l2pt   );
   l2pt_plotsMC.push_back(p_rares.h_l2pt);
   l2pt_plotsMC.push_back(p_ttbar_ff.h_l2pt);
   l2pt_plotsMC.push_back(p_dy_ff.h_l2pt);
@@ -568,7 +686,7 @@ void getyields(){
 }
 
 //doFakes = 1 for QCD, 2 for inSitu
-pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFakes, int exclude){
+pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFakes, int exclude, bool isSignal, bool isGamma){
 
   yields_t y_result;
   plots_t  p_result;
@@ -632,6 +750,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       nEventsTotal++;
 
       float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUw(ss::nGoodVertices());
+      weight*=scaleLumi;
 
       if (doNoData) {
 	if (ss::is_real_data() && !doFlips && !doFakes) continue;
@@ -661,8 +780,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       //Only keep good events
       if (!doFlips && !doFakes && exclude == 0) {
 	    if (ss::hyp_class() != 3) continue;
-	    if (!isData && ss::lep1_motherID()!=1) continue;
-	    if (!isData && ss::lep2_motherID()!=1) continue;
+	    if (!isData && !isGamma && ss::lep1_motherID()!=1) continue;
+	    if (!isData && !isGamma && ss::lep2_motherID()!=1) continue;
       }
 
       if (!doFlips && !doFakes && exclude == 1){
@@ -783,6 +902,10 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   if (y_result.EM<0) y_result.EM=0.;
   if (y_result.TOTAL<0) y_result.TOTAL=0.;
 
+  avoidNegativeYields(p_result.SRHH.TOTAL);
+  avoidNegativeYields(p_result.SRHL.TOTAL);
+  avoidNegativeYields(p_result.SRLL.TOTAL);
+
   //Update total
   if (!exclude && (!isData || doFlips || doFakes == 1)){
     total.EE    += y_result.EE;
@@ -791,7 +914,394 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     total.TOTAL += y_result.TOTAL;
   }
 
+  //now save the root files with nominal hists and shape variations
+  //Make root files
+  if (makeRootFiles) {
+
+    TString kinRegs[] = {"hihi","hilow","lowlow"};
+
+    for (int kr = 0; kr<3;kr++) {
+
+      string name = chain->GetTitle();
+
+      TFile *fileOut = TFile::Open(Form("../../cards/%s/%s_histos_%s_%.1fifb.root",tag.c_str(),name.c_str(),kinRegs[kr].Data(),lumiAG),"RECREATE");
+      TH1F* plot = 0;
+      if (kinRegs[kr]=="hihi") plot=p_result.SRHH.TOTAL;
+      else if (kinRegs[kr]=="hilow") plot=p_result.SRHL.TOTAL;
+      else if (kinRegs[kr]=="lowlow") plot=p_result.SRLL.TOTAL;
+      else exit(1);
+      TH1F* h_sr = (TH1F*) plot->Clone("sr");
+      h_sr->Write();
+      
+      //now do systematics
+      
+      //mc stats
+      writeStatUpDown(h_sr,name,0);
+      writeStatUpDown(h_sr,name,1);
+      
+      //ttv
+      if (name=="ttw" || name=="ttz") {
+	writeTTVExtrSyst(h_sr,name,kinRegs[kr],0);
+	writeTTVExtrSyst(h_sr,name,kinRegs[kr],1);
+      }
+      
+      //wz
+      // if (name=="wz") {
+      // 	writeWZExtrSyst(h_sr,name,kinRegs[kr],0);
+      // 	writeWZExtrSyst(h_sr,name,kinRegs[kr],1);
+      // }
+      
+      if (!isData && !doFlips && !doFakes) {
+	//jes
+	writeJesSyst(h_sr,name,kinRegs[kr],0);
+	writeJesSyst(h_sr,name,kinRegs[kr],1);
+	//btag
+	writeBtagSyst(h_sr,name,kinRegs[kr],0);
+	writeBtagSyst(h_sr,name,kinRegs[kr],1);
+	//leptons
+	writeLepSyst(h_sr,name,kinRegs[kr],0);
+	writeLepSyst(h_sr,name,kinRegs[kr],1);
+      }
+      
+      //end systematics
+      
+      fileOut->Close();
+    }
+    
+  }
+
   //Return yield
   return pair<yields_t, plots_t>(y_result,p_result); 
 
+}
+
+void avoidNegativeYields(TH1F* plot) {
+  for (int bin=1;bin<=plot->GetNbinsX();++bin) {
+    if (plot->GetBinContent(bin)<0) {
+      cout << "warning: plot " << plot->GetName() << " has negative yield in bin " << bin << " value=" << plot->GetBinContent(bin) << "; setting to zero."<< endl;
+      plot->SetBinContent(bin,0);
+    } 
+  }
+}
+
+void writeStatUpDown(TH1F* central,string name,bool down) {
+  TString updown = "Up";
+  if (down) updown = "Down";
+  TH1F* statUpDown = new TH1F(Form("%s_stat%s",name.c_str(),updown.Data()),
+			      Form("%s_stat%s",name.c_str(),updown.Data()),
+			      central->GetNbinsX(),central->GetXaxis()->GetXmin(),central->GetXaxis()->GetXmax());
+  for (int bin=1;bin<=statUpDown->GetNbinsX();++bin) {
+    float val = down ? (central->GetBinContent(bin)-central->GetBinError(bin)) : (central->GetBinContent(bin)+central->GetBinError(bin));
+    if (val>0) statUpDown->SetBinContent(bin,val);
+    else statUpDown->SetBinContent(bin,1E-6);
+  }
+  statUpDown->Write();
+}
+
+void writeTTVExtrSyst(TH1F* central,string name,TString kine,bool down) {
+  TString updown = "Up";
+  if (down) updown = "Down";
+
+  if (kine.Contains("lowlow")) {
+    TH1F* systUpDown = (TH1F*) central->Clone(Form("%s_extr_ll%s",name.c_str(),updown.Data()));
+    systUpDown->SetTitle(Form("%s_extr_ll%s",name.c_str(),updown.Data()));
+    float systValue = 1.08;
+    for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+      if (val>0) systUpDown->SetBinContent(bin,val);
+    }
+    systUpDown->Write();
+  } else {
+    //hihi and hilow have different extrapolation unceratinties for hi and low HT
+    TH1F* systUpDownHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),updown.Data()));
+    systUpDownHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),updown.Data()));
+    float systValue = 1.08;
+    for (int bin=1;bin<=systUpDownHTH->GetNbinsX();++bin) {
+      //skip low ht regions
+      if (kine.Contains("hihi")) {
+	if (bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29) continue;
+      }
+      if (kine.Contains("hilow")) {
+	if (bin==1 || bin==3 || bin==7 || bin==9 || bin==13 || bin==15 || bin==19 || bin==21 || bin==23) continue;
+      }
+      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+      if (val>0) systUpDownHTH->SetBinContent(bin,val);
+    }
+    systUpDownHTH->Write();
+    TH1F* systUpDownHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),updown.Data()));
+    systUpDownHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),updown.Data()));
+    systValue = 1.08;
+    for (int bin=1;bin<=systUpDownHTL->GetNbinsX();++bin) {
+      //skip high ht regions (i.e. negate requirement used above)
+      if (kine.Contains("hihi")) {
+	if (!(bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29)) continue;
+      }
+      if (kine.Contains("hilow")) {
+	if (!(bin==1 || bin==3 || bin==7 || bin==9 || bin==13 || bin==15 || bin==19 || bin==21 || bin==23)) continue;
+      }
+      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+      if (val>0) systUpDownHTL->SetBinContent(bin,val);
+    }
+    systUpDownHTL->Write();
+  }
+}
+
+void writeWZExtrSyst(TH1F* central,string name,TString kine,bool down) {
+  //deprecated!
+  return;
+  TString updown = "Up";
+  if (down) updown = "Down";
+  TH1F* systUpDown = (TH1F*) central->Clone(Form("%s_extr%s",name.c_str(),updown.Data()));
+  systUpDown->SetTitle(Form("%s_extr%s",name.c_str(),updown.Data()));
+  float systValue = 1.15;//15%
+  for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+    if (kine.Contains("hihi")) {
+      if (bin<9) continue;
+    }
+    if (kine.Contains("hilow")) {
+      if (bin<7) continue;
+    }
+    if (kine.Contains("lowlow")) {
+      if (bin<3) continue;
+    }
+    float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+    if (val>0) systUpDown->SetBinContent(bin,val);
+  }
+  systUpDown->Write();
+}
+
+void writeLepSyst(TH1F* central,string name,TString kine,bool down) {
+  TString updown = "Up";
+  if (down) updown = "Down";
+  TH1F* systUpDown = (TH1F*) central->Clone(Form("lep%s",updown.Data()));
+  systUpDown->SetTitle(Form("lep%s",updown.Data()));
+  float systValue = 1.;
+
+  if (kine.Contains("hihi")) {
+    systValue = 1.10;
+  }
+  if (kine.Contains("hilow")) {
+    systValue = 1.15;
+  }
+  if (kine.Contains("lowlow")) {
+    systValue = 1.20;
+  }
+  for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+    float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+    if (val>0) systUpDown->SetBinContent(bin,val);
+  }
+  systUpDown->Write();
+}
+
+void writeJesSyst(TH1F* central,string name,TString kine,bool down) {
+  TString updown = "Up";
+  if (down) updown = "Down";
+  TH1F* systUpDown = (TH1F*) central->Clone(Form("jes%s",updown.Data()));
+  systUpDown->SetTitle(Form("jes%s",updown.Data()));
+  float systValue = 1.;
+
+  if (kine.Contains("hihi")) {
+    systValue = 1.08;
+  }
+  if (kine.Contains("hilow")) {
+    systValue = 1.08;
+  }
+  if (kine.Contains("lowlow")) {
+    systValue = 1.15;
+  }
+  for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+    float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+    if (val>0) systUpDown->SetBinContent(bin,val);
+  }
+
+  // //TTV
+  // if (TString(name)=="ttw" || TString(name)=="ttz") {
+  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //     if (kine.Contains("hihi")) {
+  // 	if (bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29) systValue=1.05;
+  // 	if (bin==2 || bin==5 || bin==7 || bin==10 || bin==13 || bin==15 || bin==18 || bin==21 || bin==23 || 
+  // 	    bin==26 || bin==28 || bin==30 || bin==31 || bin==32) systValue=1.08;
+  // 	if (bin==4 || bin==6 || bin==8 || bin==12 || bin==14 || bin==16 || bin==20 || bin==22 || bin==24) systValue=1.04;
+  //     }
+  //     if (kine.Contains("hilow")) {
+  // 	if (bin==1 || bin==3 || bin==7 || bin==9 || bin==13 || bin==15 || bin==19 || bin==21 || bin==23) systValue=1.03;
+  // 	else systValue = 1.08;
+  //     }
+  //     if (kine.Contains("lowlow")) {
+  // 	systValue = 1.15;
+  //     }
+  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   }
+  // }
+
+  // if (TString(name)=="t1tttt_1500") {
+  //   systValue = 1.06;
+  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   }
+  // }
+
+  // if (TString(name)=="t1tttt_1200") {
+  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //     if (kine.Contains("hihi")) {
+  // 	if (bin==20 || bin==26 || bin==28 || bin==30) systValue = 1.03;
+  // 	else systValue = 1.10;
+  //     }
+  //     if (kine.Contains("hilow")) {
+  // 	if (bin==16 || bin==22 || bin==24) systValue = 1.03;
+  // 	else systValue = 1.05;
+  //     } else systValue = 1.00;
+  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   }
+  // }
+
+  // if (TString(name)=="t1ttbbww_1000" || TString(name)=="t1ttbbww_1300") {
+  //   systValue = 1.08;
+  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   }
+  // }
+
+  // if (TString(name)=="t5tttt_1000") {
+  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //     if (kine.Contains("hihi")) {
+  // 	if (bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29) systValue = 1.05;
+  // 	else if (bin==31) systValue = 1.10;
+  // 	else systValue = 1.03;
+  //     }
+  //     if (kine.Contains("hilow")) {
+  // 	if (bin==1 || bin==3 || bin==7 || bin==9 || bin==13 || bin==15 || bin==19 || bin==21 || bin==23) systValue = 1.05;
+  // 	else systValue = 1.10;
+  //     }
+  //     if (kine.Contains("lowlow")) {
+  // 	systValue = 1.10;
+  //     }
+  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   }
+  // }
+
+  // if (TString(name)=="t5qqww_1200") {
+  //   if (kine.Contains("hihi")) {
+  //     systValue = 1.07;
+  //   }
+  //   if (kine.Contains("hilow")) {
+  //     systValue = 1.10;
+  //   }
+  //   if (kine.Contains("lowlow")) {
+  //     systValue = 1.20;
+  //   }
+  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   }
+  // }
+
+  // if (TString(name)=="t5qqww_1500") {
+  //   systValue = 1.05;
+  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   }
+  // }
+
+  // if (TString(name)=="t5qqww_deg") {
+  //   if (kine.Contains("hihi")) {
+  //     systValue = 1.15;
+  //   }
+  //   if (kine.Contains("hilow")) {
+  //     systValue = 1.10;
+  //   }
+  //   if (kine.Contains("lowlow")) {
+  //     systValue = 1.02;
+  //   }
+  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   }
+  // }
+
+  // if (TString(name)=="t6ttww_600" || TString(name)=="t6ttww_650") {
+  //   systValue = 1.10;
+  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   }
+  // }
+
+  systUpDown->Write();
+}
+
+void writeBtagSyst(TH1F* central,string name,TString kine,bool down) {
+  TString updown = "Up";
+  if (down) updown = "Down";
+  TH1F* systUpDown = (TH1F*) central->Clone(Form("btag%s",updown.Data()));
+  systUpDown->SetTitle(Form("btag%s",updown.Data()));
+  float systValue = 1.;
+
+  //fixme add signals
+
+  if (TString(name)=="wz" || TString(name)=="ww" || TString(name)=="vg" || TString(name)=="rares" ) {
+    for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+      if (kine.Contains("hihi")) {
+	if (bin>=1 && bin<=8)        systValue = 0.98;//0 btag
+	else if (bin>=9  && bin<=16) systValue = 1.13;//1 btag
+	else if (bin>=17 && bin<=24) systValue = 1.18;//2 btag
+	else if (bin>=17 && bin<=24) systValue = 2.00;//3+btag
+	else                         systValue = 1.00;//inclusive regions
+      }
+      if (kine.Contains("hilow")) {
+	if (bin>=1 && bin<=6)        systValue = 0.98;//0 btag
+	else if (bin>=7  && bin<=12) systValue = 1.13;//1 btag
+	else if (bin>=13 && bin<=18) systValue = 1.18;//2 btag
+	else if (bin>=19 && bin<=22) systValue = 2.00;//3+btag
+	else                         systValue = 1.00;//inclusive regions
+      }
+      if (kine.Contains("lowlow")) {
+	if (bin>=1 && bin<=2)        systValue = 0.98;//0 btag
+	else if (bin>=3 && bin<=4)   systValue = 1.13;//1 btag
+	else if (bin>=5 && bin<=6)   systValue = 1.18;//2 btag
+	else if (bin==7)             systValue = 2.00;//3+btag
+	else                         systValue = 1.00;//inclusive regions
+      }
+      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+      if (val>0) systUpDown->SetBinContent(bin,val);
+    }
+  }
+
+  if (TString(name)=="ttw" || TString(name)=="ttzh" || TString(name)=="tg" 
+      || TString(name)=="t1tttt_1200" || TString(name)=="t1tttt_1500" 
+      || TString(name)=="t6ttww_650" || TString(name)=="t6ttww_600" 
+      || TString(name)=="t5tttt_deg") {
+    for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+      if (kine.Contains("hihi")) {
+	if (bin>=1 && bin<=8)        systValue = 1.02;//0 btag
+	else if (bin>=9  && bin<=16) systValue = 0.95;//1 btag
+	else if (bin>=17 && bin<=24) systValue = 1.05;//2 btag
+	else if (bin>=17 && bin<=24) systValue = 1.15;//3+btag
+	else                         systValue = 1.00;//inclusive regions
+      }
+      if (kine.Contains("hilow")) {
+	if (bin>=1 && bin<=6)        systValue = 1.02;//0 btag
+	else if (bin>=7  && bin<=12) systValue = 0.95;//1 btag
+	else if (bin>=13 && bin<=18) systValue = 1.05;//2 btag
+	else if (bin>=19 && bin<=22) systValue = 1.15;//3+btag
+	else                         systValue = 1.00;//inclusive regions
+      }
+      if (kine.Contains("lowlow")) {
+	if (bin>=1 && bin<=2)        systValue = 1.02;//0 btag
+	else if (bin>=3 && bin<=4)   systValue = 0.95;//1 btag
+	else if (bin>=5 && bin<=6)   systValue = 1.05;//2 btag
+	else if (bin==7)             systValue = 1.15;//3+btag
+	else                         systValue = 1.00;//inclusive regions
+      }
+      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
+      if (val>0) systUpDown->SetBinContent(bin,val);
+    }
+  }
+  systUpDown->Write();
 }
