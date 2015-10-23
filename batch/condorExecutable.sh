@@ -73,6 +73,7 @@ if [ "$WHICH" == "48" ]; then WHICH_SMALL="qqww"; fi
 if [ "$WHICH" == "49" ]; then WHICH_SMALL="wwz"; fi
 if [ "$WHICH" == "50" ]; then WHICH_SMALL="zz"; fi
 if [ "$WHICH" == "51" ]; then WHICH_SMALL="tg"; fi
+if [ "$WHICH" == "52" ]; then WHICH_SMALL="zg"; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}_$EXPT
 
