@@ -1,6 +1,9 @@
 #include "helper_babymaker.h"
+#include "CORE/Tools/btagsf/BTagCalibrationStandalone.h"
 
 using namespace tas;
+
+const bool applyBtagSFs = true;
 
 //Main functions
 void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
@@ -202,6 +205,31 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("fired_trigger"          , &fired_trigger          ); 
   BabyTree->Branch("triggers"               , &triggers               ); 
 
+  BabyTree->Branch("weight_btagsf"                  , &weight_btagsf                  ); 
+  BabyTree->Branch("weight_btagsf_UP"               , &weight_btagsf_UP               ); 
+  BabyTree->Branch("weight_btagsf_DN"               , &weight_btagsf_DN               ); 
+
+  if (applyBtagSFs) {
+    // setup btag calibration readers
+    calib = new BTagCalibration("csvv2", "btagsf/CSVv2.csv"); // 50ns version of SFs
+    reader_heavy    = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets", "central"); // central
+    reader_heavy_UP = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets", "up");      // sys up
+    reader_heavy_DN = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets", "down");    // sys down
+    reader_light    = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "central");   // central
+    reader_light_UP = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "up");        // sys up
+    reader_light_DN = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "down");      // sys down
+    // get btag efficiencies
+    TFile* f_btag_eff = new TFile("btagsf/btageff__ttbar_powheg_pythia8_25ns.root");
+    TH2D* h_btag_eff_b_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
+    TH2D* h_btag_eff_c_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
+    TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
+    BabyFile->cd();
+    h_btag_eff_b = (TH2D*) h_btag_eff_b_temp->Clone("h_btag_eff_b");
+    h_btag_eff_c = (TH2D*) h_btag_eff_c_temp->Clone("h_btag_eff_c");
+    h_btag_eff_udsg = (TH2D*) h_btag_eff_udsg_temp->Clone("h_btag_eff_udsg");
+    f_btag_eff->Close();
+  }
+
   //Print warning!
   cout << "Careful!! Path is " << path << endl;
 
@@ -396,6 +424,9 @@ void babyMaker::InitBabyNtuple(){
     passes_met_filters = 0;
     madeExtraZ = 0;  
     madeExtraG = 0;  
+    weight_btagsf  = -9999.;
+    weight_btagsf_UP = -9999.;
+    weight_btagsf_DN = -9999.;
 } 
 
 //Main function
@@ -416,7 +447,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   if (tas::hyp_type().size() < 1) return -1;
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return -1;
 
-  if (tas::evt_event() != 381733) return -1;
+  //if (tas::evt_event() != 381733) return -1;
 
   //Fill Easy Variables
   filename = filename_in;
@@ -682,6 +713,16 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     if (abs(lep2_id) == 11 && !isTriggerSafe_v1(lep2_idx)) return -1;
   }
 
+  // for applying btagging SFs, using Method 1a from the twiki below:
+  //   https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods#1a_Event_reweighting_using_scale
+  //   https://twiki.cern.ch/twiki/pub/CMS/BTagSFMethods/Method1aExampleCode_CSVM.cc.txt
+  float btagprob_data = 1.;
+  float btagprob_err_heavy_UP = 0.;
+  float btagprob_err_heavy_DN = 0.;
+  float btagprob_err_light_UP = 0.;
+  float btagprob_err_light_DN = 0.;
+  float btagprob_mc = 1.;  
+
   //Determine and save jet and b-tag variables, corrected
   jet_results = SSJetsCalculator(jetCorr, 1);
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_corr.push_back(jet_results.first.at(i).p4());
@@ -699,6 +740,60 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
      jet_corr_pt.push_back(jets_corr.at(i).pt()*jets_corr_undoJEC.at(i)*jets_corr_JEC.at(i)); 
      ht_corr += jets_corr.at(i).pt()*jets_corr_undoJEC.at(i)*jets_corr_JEC.at(i); 
   }
+
+  //now look at jets for get the btag scale factor (need to save down to 25 GeV)
+  jet_results = SSJetsCalculator(jetCorr, 1, 1);
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) {
+     if (is_real_data) continue;
+     //get btag eff weights
+     float jet_pt = jet_results.first.at(i).p4().pt()*jet_results.first.at(i).undo_jec()*jet_results.first.at(i).jec();
+     if (jet_pt<25.) continue;
+     float jet_eta = jet_results.first.at(i).p4().eta();
+     int jet_mcFlavour = jet_results.first.at(i).mcFlavor();
+     float eff = getBtagEffFromFile(jet_pt, jet_eta, jet_mcFlavour);
+     BTagEntry::JetFlavor flavor = BTagEntry::FLAV_UDSG;
+     if (abs(jet_mcFlavour) == 5) flavor = BTagEntry::FLAV_B;
+     else if (abs(jet_mcFlavour) == 4) flavor = BTagEntry::FLAV_C;
+     float pt_cutoff = std::max(30.,std::min(669.,double(jet_pt)));
+     float weight_cent(1.), weight_UP(1.), weight_DN(1.);
+     if (flavor == BTagEntry::FLAV_UDSG) {
+       weight_cent = reader_light->eval(flavor, jet_eta, pt_cutoff);
+       weight_UP = reader_light_UP->eval(flavor, jet_eta, pt_cutoff);
+       weight_DN = reader_light_DN->eval(flavor, jet_eta, pt_cutoff);
+     } else {
+       weight_cent = reader_heavy->eval(flavor, jet_eta, pt_cutoff);
+       weight_UP = reader_heavy_UP->eval(flavor, jet_eta, pt_cutoff);
+       weight_DN = reader_heavy_DN->eval(flavor, jet_eta, pt_cutoff);
+     }
+     if (jet_results.first.at(i).isBtag()) {
+       btagprob_data *= weight_cent * eff;
+       btagprob_mc *= eff;
+       float abserr_UP = weight_UP - weight_cent;
+       float abserr_DN = weight_cent - weight_DN;
+       if (flavor == BTagEntry::FLAV_UDSG) {
+        btagprob_err_light_UP += abserr_UP/weight_cent;
+        btagprob_err_light_DN += abserr_DN/weight_cent;
+       } else {
+        btagprob_err_heavy_UP += abserr_UP/weight_cent;
+        btagprob_err_heavy_DN += abserr_DN/weight_cent;
+       }
+     } else {
+       btagprob_data *= (1. - weight_cent * eff);
+       btagprob_mc *= (1. - eff);
+       float abserr_UP = weight_UP - weight_cent;
+       float abserr_DN = weight_cent - weight_DN;
+       if (flavor == BTagEntry::FLAV_UDSG) {
+        btagprob_err_light_UP += (-eff * abserr_UP)/(1 - eff * weight_cent);
+        btagprob_err_light_DN += (-eff * abserr_DN)/(1 - eff * weight_cent);
+       } else {
+        btagprob_err_heavy_UP += (-eff * abserr_UP)/(1 - eff * weight_cent);
+        btagprob_err_heavy_DN += (-eff * abserr_DN)/(1 - eff * weight_cent);
+       }
+     }
+  }
+  weight_btagsf = btagprob_data / btagprob_mc;
+  weight_btagsf_UP = weight_btagsf + (sqrt(pow(btagprob_err_heavy_UP,2) + pow(btagprob_err_light_UP,2)) * weight_btagsf);
+  weight_btagsf_DN = weight_btagsf - (sqrt(pow(btagprob_err_heavy_DN,2) + pow(btagprob_err_light_DN,2)) * weight_btagsf);
 
   //Save Most jets 
   for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++){
@@ -834,11 +929,37 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   metphi3p0 = MET3p0_.second;
 
   //MET filters
-  passes_met_filters = passesMETfilter_v2();
+  passes_met_filters = passesMETfilterv2();
 
   //Fill Baby
   BabyTree->Fill();
 
   return 0;  
 
+}
+
+float babyMaker::getBtagEffFromFile(float pt, float eta, int mcFlavour){
+  if(!h_btag_eff_b || !h_btag_eff_c || !h_btag_eff_udsg) {
+    std::cout << "babyMaker::getBtagEffFromFile: ERROR: missing input hists" << std::endl;
+    return 1.;
+  }
+
+  // only use pt bins up to 400 GeV for charm and udsg
+  float pt_cutoff = std::max(20.,std::min(399.,double(pt)));
+  TH2D* h(0);
+  if (abs(mcFlavour) == 5) {
+    h = h_btag_eff_b;
+    // use pt bins up to 600 GeV for b
+    pt_cutoff = std::max(20.,std::min(599.,double(pt)));
+  }
+  else if (abs(mcFlavour) == 4) {
+    h = h_btag_eff_c;
+  }
+  else {
+    h = h_btag_eff_udsg;
+  }
+    
+  int binx = h->GetXaxis()->FindBin(pt_cutoff);
+  int biny = h->GetYaxis()->FindBin(fabs(eta));
+  return h->GetBinContent(binx,biny);
 }

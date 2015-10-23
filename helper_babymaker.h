@@ -6,6 +6,7 @@
 #include "TTree.h"
 #include "TRandom.h"
 #include "TF1.h"
+#include "TH2.h"
 #include "Math/VectorUtil.h" 
 #include "CORE/CMS3.h"
 #include "CORE/Tools/utils.h"
@@ -20,6 +21,9 @@
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef vector<pair<const LorentzVector *, double> > jets_with_corr_t;
+
+class BTagCalibration;
+class BTagCalibrationReader;
 
 using namespace std;
 
@@ -47,6 +51,19 @@ class babyMaker {
     TString path;
     bool verbose;
     unsigned int evt_cut;
+
+    // for btag SFs
+    float getBtagEffFromFile(float pt, float eta, int mcFlavour);
+    BTagCalibration* calib;
+    BTagCalibrationReader* reader_heavy;
+    BTagCalibrationReader* reader_heavy_UP;
+    BTagCalibrationReader* reader_heavy_DN;
+    BTagCalibrationReader* reader_light;
+    BTagCalibrationReader* reader_light_UP;
+    BTagCalibrationReader* reader_light_DN;
+    TH2D* h_btag_eff_b;
+    TH2D* h_btag_eff_c;
+    TH2D* h_btag_eff_udsg;
 
     //MET
     float met;
@@ -312,7 +329,12 @@ class babyMaker {
     //Passes 3rd Z/G vetos
     bool madeExtraZ;
     bool madeExtraG;
- 
+
+    //Btag weights
+    float weight_btagsf;
+    float weight_btagsf_UP;
+    float weight_btagsf_DN;
+
 };
 
 #endif
