@@ -9,13 +9,7 @@ export SCRAM_ARCH=slc6_amd64_gcc491
 if [ ! -d $therelease ]; then cmsrel $therelease; fi
 cd $therelease/src
 eval `scram ru -sh`
-git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
-cd HiggsAnalysis/CombinedLimit
-git checkout 74x-root6
-cd ../..
-scramv1 b vclean
-scramv1 b -j 4
-cd ../..
+cd -
 
 ARCH="$(root-config --arch)"
 if [ $ARCH == "macosx64" ]
