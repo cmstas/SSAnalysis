@@ -834,7 +834,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   metphi3p0 = MET3p0_.second;
 
   //MET filters
-  passes_met_filters = passesMETfilter(is25);
+  passes_met_filters = passesMETfilter_v2();
 
   //Fill Baby
   BabyTree->Fill();
