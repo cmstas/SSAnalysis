@@ -170,8 +170,8 @@ void FR(){
       float ptratio_cut_2  = (abs(ss::lep2_id()) == 11 ? 0.80 : 0.76);
       float mini_cut_1     = (abs(ss::lep1_id()) == 11 ? 0.12 : 0.16);
       float mini_cut_2     = (abs(ss::lep2_id()) == 11 ? 0.12 : 0.16);
-      bool lep1_denom_iso  = (/*(ss::lep1_miniIso() < mini_cut_1) &&*/ (/*(ss::lep1_ptrel_v1() > ptrel_cut_1) ||*/ ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))));
-      bool lep2_denom_iso  = (/*(ss::lep2_miniIso() < mini_cut_2) &&*/ (/*(ss::lep2_ptrel_v1() > ptrel_cut_2) ||*/ ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))));
+      bool lep1_denom_iso  = ((ss::lep1_miniIso() < 0.4) && (/*(ss::lep1_ptrel_v1() > ptrel_cut_1) ||*/ ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))));
+      bool lep2_denom_iso  = ((ss::lep2_miniIso() < 0.4) && (/*(ss::lep2_ptrel_v1() > ptrel_cut_2) ||*/ ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))));
 
       //Temporarily recalculate multiIso (this won't be necessary after v4.00)
       float miniiso_1 = ss::lep1_miniIso();
