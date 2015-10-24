@@ -876,6 +876,15 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
  
       //Get the category
       anal_type_t categ = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      
+      if (doFakes == 1 && ss::is_real_data() && ss::hyp_class()==2) {
+	float ptT = (ss::lep1_passes_id()==0 ? ss::lep2_p4().pt() : ss::lep1_p4().pt());
+	float ptCL = (ss::lep1_passes_id()==0 ? ss::lep1_coneCorrPt() : ss::lep2_coneCorrPt());
+	string cat = "HH";
+	if (categ==1) cat = "HL";
+	if (categ==2) cat = "LL";
+	cout << Form("%20i       %6.2f %6.2f %s SR%i",ss::event(),ptT,ptCL,cat.c_str(),SR) << endl;
+      }
 
       //Calculate the baseline yield
       if      (ss::hyp_type() == 3) y_result.EE    += weight;
