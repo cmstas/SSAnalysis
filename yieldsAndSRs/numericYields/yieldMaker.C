@@ -830,11 +830,16 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       //In Situ Fakes
       if (doFakes == 2){
         if (ss::hyp_class() != 5) continue;
+        //Isolation stuff
+        float ptratio_cut_1  = (abs(ss::lep1_id()) == 11 ? 0.80 : 0.76);
+        float ptratio_cut_2  = (abs(ss::lep2_id()) == 11 ? 0.80 : 0.76);
+        bool lep1_denom_iso  = (/*(ss::lep1_miniIso() < mini_cut_1) &&*/ (/*(ss::lep1_ptrel_v1() > ptrel_cut_1) ||*/ ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))));
+        bool lep2_denom_iso  = (/*(ss::lep2_miniIso() < mini_cut_2) &&*/ (/*(ss::lep2_ptrel_v1() > ptrel_cut_2) ||*/ ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))));
         float fr = 0.;
-        if (ss::lep1_passes_id()==0 && ss::lep1_sip() < 4) fr = fakeRateInSitu(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
-        if (ss::lep2_passes_id()==0 && ss::lep2_sip() < 4) fr = fakeRateInSitu(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
+        if (ss::lep1_passes_id()==0 && ss::lep1_sip() < 4 && lep1_denom_iso) fr = fakeRateInSitu(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
+        if (ss::lep2_passes_id()==0 && ss::lep2_sip() < 4 && lep2_denom_iso) fr = fakeRateInSitu(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
         weight *= fr/(1.-fr);
-        cout << weight << endl;
+        if (weight > 0.01) cout << weight << endl;
         if (!ss::is_real_data()) weight *= -1.;
       }
 
