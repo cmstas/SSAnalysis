@@ -752,9 +752,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUw(ss::nGoodVertices());
       weight*=scaleLumi;
 
-      if (doNoData) {
-	if (ss::is_real_data() && !doFlips && !doFakes) continue;
-      } else if (ss::is_real_data() && !isUnblindRun(ss::run())) continue;
+      if (ss::is_real_data()){
+        if (doNoData) {
+	      if (!doFlips && !doFakes) continue;
+        } 
+        else if (!isUnblindRun(ss::run())) continue;
+      }
 
       //Reject not triggered
       if (!ss::fired_trigger()) continue;
@@ -764,17 +767,18 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       //electron FO is tighter for iso triggers, make sure it is passed
       if (ss::ht_corr()<300.) {
-	if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
-	if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+        if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
+        if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
       } 
 
       //drop electrons below 15 GeV
       if (doFakes==1) {
-	if (abs(ss::lep1_id())==11 && ss::lep1_coneCorrPt()<15) continue;
-	if (abs(ss::lep2_id())==11 && ss::lep2_coneCorrPt()<15) continue;	
-      } else {
-	if (abs(ss::lep1_id())==11 && ss::lep1_p4().pt()<15) continue;
-	if (abs(ss::lep2_id())==11 && ss::lep2_p4().pt()<15) continue;
+        if (abs(ss::lep1_id())==11 && ss::lep1_coneCorrPt()<15) continue;
+        if (abs(ss::lep2_id())==11 && ss::lep2_coneCorrPt()<15) continue;	
+      } 
+      else {
+        if (abs(ss::lep1_id())==11 && ss::lep1_p4().pt()<15) continue;
+        if (abs(ss::lep2_id())==11 && ss::lep2_p4().pt()<15) continue;
       }
 
       //Only keep good events
@@ -800,28 +804,28 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       }
 
       if (doFlips) {
-	if (ss::hyp_class() != 4) continue;
-	    float flipFact = 0.;
-	    if (abs(ss::lep1_id())==11){
-	      float flr = flipRate(ss::lep1_p4().pt(), ss::lep1_p4().eta());
-	      flipFact += (flr/(1-flr));
-	    }
-	    if (abs(ss::lep2_id())==11){
-	      float flr = flipRate(ss::lep2_p4().pt(), ss::lep2_p4().eta());
-	      flipFact += (flr/(1-flr));
-	    }
-	    weight *= flipFact;
+        if (ss::hyp_class() != 4) continue;
+          float flipFact = 0.;
+          if (abs(ss::lep1_id())==11){
+            float flr = flipRate(ss::lep1_p4().pt(), ss::lep1_p4().eta());
+            flipFact += (flr/(1-flr));
+          }
+          if (abs(ss::lep2_id())==11){
+            float flr = flipRate(ss::lep2_p4().pt(), ss::lep2_p4().eta());
+            flipFact += (flr/(1-flr));
+          }
+          weight *= flipFact;
       } 
       
       if (doFakes){
         if (doFakes == 1 && ss::hyp_class() != 2) continue;
         if (doFakes == 2 && ss::hyp_class() != 5) continue;
         float fr = 0.;
-        if (ss::lep1_passes_id()==0){
+        if (ss::lep1_passes_id()==0 && ss::lep1_sip() > 4){
           if (doFakes == 1) fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
           if (doFakes == 2) fr = fakeRateInSitu(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
         }
-        if (ss::lep2_passes_id()==0){
+        if (ss::lep2_passes_id()==0 && ss::lep2_sip() > 4){
           if (doFakes == 1) fr = fakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht_corr());
           if (doFakes == 2) fr = fakeRateInSitu(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
         }

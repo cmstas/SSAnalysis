@@ -1,10 +1,10 @@
-#include "../software/dataMCplotMaker/dataMCplotMaker.h"
+#include "../../software/dataMCplotMaker/dataMCplotMaker.h"
 //include "../software/tableMaker/CTable.h"
-#include "../CORE/SSSelections.h"
-#include "../CORE/Tools/dorky/dorky.h"
-#include "../CORE/Tools/utils.h"
-#include "../commonUtils.h"
-#include "SS.h"
+#include "../../CORE/SSSelections.h"
+#include "../../CORE/Tools/dorky/dorky.h"
+#include "../../CORE/Tools/utils.h"
+#include "../../classFiles/v4.00/SS.h"
+#include "../../commonUtils.h"
 
 //Tables on/off
 bool makeTables = 0;
@@ -66,6 +66,10 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
         if (duplicate_removal::is_duplicate(id)){ reject++; continue; }
       }
 
+      //Blinding
+      if (ss::run() > 257531) continue;
+
+      //Weight
       float weight = isData ? 1 : ss::scale1fb()*getLumi();
 
       //Reject non-SS
@@ -139,7 +143,7 @@ void yields(){
   data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonD.root");
 
   ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR.root");
-  ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP.root");
+  ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP*.root");
 
   ttw->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");
   ttz->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZL.root");
