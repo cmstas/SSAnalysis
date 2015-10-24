@@ -817,18 +817,22 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
           weight *= flipFact;
       } 
       
-      if (doFakes){
-        if (doFakes == 1 && ss::hyp_class() != 2) continue;
-        if (doFakes == 2 && ss::hyp_class() != 5) continue;
+      //QCD Fakes
+      if (doFakes == 1){
+        if (ss::hyp_class() != 2) continue;
         float fr = 0.;
-        if (ss::lep1_passes_id()==0 && ss::lep1_sip() > 4){
-          if (doFakes == 1) fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
-          if (doFakes == 2) fr = fakeRateInSitu(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
-        }
-        if (ss::lep2_passes_id()==0 && ss::lep2_sip() > 4){
-          if (doFakes == 1) fr = fakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht_corr());
-          if (doFakes == 2) fr = fakeRateInSitu(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
-        }
+        if (ss::lep1_passes_id()==0) fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
+        if (ss::lep2_passes_id()==0) fr = fakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht_corr());
+        weight *= fr/(1.-fr);
+        if (!ss::is_real_data()) weight *= -1.;
+      }
+
+      //In Situ Fakes
+      if (doFakes == 2){
+        if (ss::hyp_class() != 5) continue;
+        float fr = 0.;
+        if (ss::lep1_passes_id()==0 && ss::lep1_sip() > 4) fr = fakeRateInSitu(ss::lep1_id(),ss::lep1_p4().pt(), ss::lep1_p4().eta());
+        if (ss::lep2_passes_id()==0 && ss::lep2_sip() > 4) fr = fakeRateInSitu(ss::lep2_id(),ss::lep2_p4().pt(), ss::lep2_p4().eta());
         weight *= fr/(1.-fr);
         if (!ss::is_real_data()) weight *= -1.;
       }
