@@ -842,7 +842,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       } 
       
       if (doFakes){
-        if (ss::hyp_class() != 2) continue;
+        if (doFakes == 1 && ss::hyp_class() != 2) continue;
+        if (doFakes == 2 && ss::hyp_class() != 5) continue;
         float fr = 0.;
         if (ss::lep1_passes_id()==0){
           if (doFakes == 1) fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());

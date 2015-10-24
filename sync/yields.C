@@ -1,9 +1,10 @@
 #include "../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../software/tableMaker/CTable.h"
 #include "../CORE/SSSelections.h"
-#include "SS.h"
+#include "../classFiles/v4.00/SS.h"
 #include "../CORE/Tools/utils.h"
 #include "../commonUtils.h"
+#include "../CORE/Tools/dorky/dorky.h"
 
 bool corrected = true;
 
@@ -15,7 +16,7 @@ void yields(){
 
   //Make chains, histograms
   TChain* chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/sync_files_new/babies/sync_TTW_baby_0.root");
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v4.01-data1p280ifb/*D.root"); 
 
   //Declare counters
   int y0hh[3] = { 0 }; 
@@ -56,6 +57,12 @@ void yields(){
       //Get Event Content
       samesign.GetEntry(event);
       nEventsTotal++;
+
+      //Duplicates
+      duplicate_removal::DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
+
+      //Blinding
+      if (ss::run() > 257531) continue;
     
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
