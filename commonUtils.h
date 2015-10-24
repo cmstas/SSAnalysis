@@ -264,76 +264,40 @@ float fakeRateError(int id, float pt, float eta, float ht) {
     else return 0.;
   }
 }
+
 float elecFakeRateInSitu(float pt, float eta) {
-   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.636364;
-   if (pt>=10 && pt<15 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.461538;
-   if (pt>=10 && pt<15 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 1;
-   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.350877;
-   if (pt>=15 && pt<25 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.472222;
-   if (pt>=15 && pt<25 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.5;
-   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.217391;
-   if (pt>=25 && pt<35 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.291667;
-   if (pt>=25 && pt<35 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0;
-   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.145833;
-   if (pt>=35 && pt<50 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.238095;
-   if (pt>=35 && pt<50 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.4;
-   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.20155;
-   if (pt>=50 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.294737;
-   if (pt>=50 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 1;
+   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 1;
+   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.666667;
+   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.333333;
+   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.166667;
+   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.384615;
    return 0.;
 }
+
 float elecFakeRateInSituError(float pt, float eta) {
-   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.0837393;
-   if (pt>=10 && pt<15 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.138264;
-   if (pt>=10 && pt<15 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0;
-   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.0632126;
-   if (pt>=15 && pt<25 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.0832046;
-   if (pt>=15 && pt<25 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.204124;
-   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.0496557;
-   if (pt>=25 && pt<35 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.0927805;
-   if (pt>=25 && pt<35 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0;
-   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.0360217;
-   if (pt>=35 && pt<50 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.0536606;
-   if (pt>=35 && pt<50 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.219089;
-   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.0227456;
-   if (pt>=50 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.0312194;
-   if (pt>=50 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0;
+   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0;
+   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.272166;
+   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.19245;
+   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.152145;
+   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.0813475;
    return 0.;
 }
+
 float muonFakeRateInSitu(float pt, float eta) {
-   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.376471;
-   if (pt>=10 && pt<15 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.326241;
-   if (pt>=10 && pt<15 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.404255;
-   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.167939;
-   if (pt>=15 && pt<25 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.188172;
-   if (pt>=15 && pt<25 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.304348;
-   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.118644;
-   if (pt>=25 && pt<35 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.144509;
-   if (pt>=25 && pt<35 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.206897;
-   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.0822368;
-   if (pt>=35 && pt<50 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.121212;
-   if (pt>=35 && pt<50 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.170213;
-   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.124294;
-   if (pt>=50 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.152542;
-   if (pt>=50 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.2;
+   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.3125;
+   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.181818;
+   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.1;
+   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.0344828;
+   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.137931;
    return 0.;
 }
+
 float muonFakeRateInSituError(float pt, float eta) {
-   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.0371595;
-   if (pt>=10 && pt<15 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.0394832;
-   if (pt>=10 && pt<15 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.0715829;
-   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.0230942;
-   if (pt>=15 && pt<25 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.0286585;
-   if (pt>=15 && pt<25 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.0678426;
-   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.0210495;
-   if (pt>=25 && pt<35 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.026732;
-   if (pt>=25 && pt<35 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.0752216;
-   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.0157566;
-   if (pt>=35 && pt<50 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.0231944;
-   if (pt>=35 && pt<50 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.0548189;
-   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<1 ) return 0.0119984;
-   if (pt>=50 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.0160271;
-   if (pt>=50 && fabs(eta)>=2 && fabs(eta)<2.4 ) return 0.10328;
+   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.115878;
+   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.0822304;
+   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.0547723;
+   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.033883;
+   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.0546839;
    return 0.;
 }
 
