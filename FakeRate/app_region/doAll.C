@@ -73,12 +73,12 @@
   TChain *ch = new TChain("t"); 
   if(doData) {
     // option += "_data";
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data848p7ipb/DataDoubleMuonD.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data848p7ipb/DataDoubleEGD.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data848p7ipb/DataMuonEGD.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data1p280ifb/DataDoubleMuonD.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data1p280ifb/DataDoubleEGD.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data1p280ifb/DataMuonEGD.root");
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/TTBAR.root");  
-    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WJets.root"); 
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WJets_LO.root"); 
   } else {
     if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
     else ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root"); // FIXME
