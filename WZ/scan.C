@@ -32,7 +32,7 @@ int scan(){
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets*.root"); titles.push_back("WJets");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");     titles.push_back("ZZ");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ3LNU.root");     titles.push_back("WZ");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data848p7ipb/Data*.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data1p280ifb/Data*D.root");
 
 
     int nEventsTotal = 0;
@@ -40,7 +40,7 @@ int scan(){
     int nGoodEvents = 0;
     int nGoodEventsData = 0;
     float nGoodEventsWeighted = 0;
-    float luminosity = 0.8487-0.016;
+    float luminosity = 1.264;
 
     TFile *currentFile = 0;
     TObjArray *listOfFiles = ch->GetListOfFiles();
@@ -185,8 +185,8 @@ int scan(){
             bool goodMtmin = ss::mtmin() < 120;
 
             // Actually ignore the MET and MTMIN boundaries for more statistics
-            goodMet = true;
-            goodMtmin = true;
+            // goodMet = true;
+            // goodMtmin = true;
 
             if(filename.Contains("WZ"))    {
                 h2D_ptlep1_ptlep2_wz->Fill(ss::lep2_p4().pt(),ss::lep1_p4().pt());
@@ -262,7 +262,7 @@ int scan(){
 
     // TH1F* null = new TH1F("","",1,0,1);
     TH1F* data;
-    std::string com = " --errHistAtBottom --doCounts --colorTitle --lumi 832 --lumiUnit pb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/";
+    std::string com = " --errHistAtBottom --doCounts --colorTitle --lumi 1.264 --lumiUnit fb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/";
     std::string pct = " --showPercentage ";
     // std::string spec = "SR1-8";
     std::string spec = "";
