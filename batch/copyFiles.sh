@@ -38,6 +38,7 @@ then
   mkdir -p CORE/Tools/btagsf
 fi
 cp -r ../CORE/Tools/btagsf CORE/Tools/btagsf
+tar -czf btagsf.tar.gz btagsf
 
 #And goodrun list directory 
 if [ ! -d goodRunList ] 

@@ -14,7 +14,7 @@ export SCRAM_ARCH=slc6_amd64_gcc491
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
 #Set CMSSW environment
-pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_6/src/
+pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_12/src/
 eval `scramv1 runtime -sh`
 popd
 
@@ -88,6 +88,7 @@ export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}
 
 #Untar the zip dir
 tar xzvf CORE.tar.gz
+tar xzvf btagsf.tar.gz
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
 echo "running: ./main.exe $WHICH $FILE $EXPT"
