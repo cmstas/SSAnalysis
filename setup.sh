@@ -4,7 +4,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD:$PWD/batch
 
 git update-index --assume-unchanged main.cc
 
-therelease=CMSSW_7_4_7_patch1
+therelease=CMSSW_7_4_12
 export SCRAM_ARCH=slc6_amd64_gcc491
 if [ ! -d $therelease ]; then cmsrel $therelease; fi
 cd $therelease/src

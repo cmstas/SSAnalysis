@@ -266,12 +266,6 @@ int main(int argc, char *argv[]){
       tag="";
       shortname="t5qqqqwz_1200_1000_800";
       break;
-    case T5QQQQWWDeg_1000_315_300:
-      name="T5qqqqWWDeg_mGo1000_mCh315_mChi300_dilep";
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
-      tag="";
-      shortname="t5qqqqdeg_1000_315_300";
-      break;
     case T5ttttDeg_1000_300_285_280:
       name="T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec";
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
@@ -465,7 +459,7 @@ int main(int argc, char *argv[]){
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
 
-    mylooper->ProcessBaby(name, jetCorrAG, expt); 
+    mylooper->ProcessBaby(name, jetCorrAG, expt, file); 
 
   }//event loop 
 
