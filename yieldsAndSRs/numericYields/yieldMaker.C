@@ -301,45 +301,48 @@ void getyields(){
   colors2.push_back(kBlue-9); 
 
   cout << endl;
-  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s %5s %5s | %5s | %11s","TTW","TTZ/H","WZ","WW","TG","VG","RARES","FLIPS","FAKES","TOTAL","T1TTTT1200") << endl;
+  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s %5s %5s | %5s | %5s | %11s","TTW","TTZ/H","WZ","WW","TG","VG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   for (int bin=1;bin<=p_ttw.SRHH.TOTAL->GetNbinsX(); ++bin) {
-    cout << Form("HH SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f |  %10.2f",bin,
+    cout << Form("HH SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f | %5.2f | %10.2f",bin,
 		 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin),p_wz.SRHH.TOTAL->GetBinContent(bin),
 		 p_ww.SRHH.TOTAL->GetBinContent(bin),p_tg.SRHH.TOTAL->GetBinContent(bin),p_vg.SRHH.TOTAL->GetBinContent(bin),
 		 p_rares.SRHH.TOTAL->GetBinContent(bin),p_flips.SRHH.TOTAL->GetBinContent(bin),p_fakes.SRHH.TOTAL->GetBinContent(bin),
 		 (p_ttw.SRHH.TOTAL->GetBinContent(bin)+p_ttzh.SRHH.TOTAL->GetBinContent(bin)+p_wz.SRHH.TOTAL->GetBinContent(bin)+
 		  p_ww.SRHH.TOTAL->GetBinContent(bin)+p_tg.SRHH.TOTAL->GetBinContent(bin)+p_vg.SRHH.TOTAL->GetBinContent(bin)+
 		  p_rares.SRHH.TOTAL->GetBinContent(bin)+p_flips.SRHH.TOTAL->GetBinContent(bin)+p_fakes.SRHH.TOTAL->GetBinContent(bin)),
+		 p_data.SRHH.TOTAL->GetBinContent(bin),
 		 p_t1tttt_1200.SRHH.TOTAL->GetBinContent(bin)
 		 )
 	 << endl;
   }
 
   cout << endl;
-  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s %5s %5s | %5s | %11s","TTW","TTZ/H","WZ","WW","TG","VG","RARES","FLIPS","FAKES","TOTAL","T1TTTT1200") << endl;
+  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s %5s %5s | %5s | %5s | %11s","TTW","TTZ/H","WZ","WW","TG","VG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   for (int bin=1;bin<=p_ttw.SRHL.TOTAL->GetNbinsX(); ++bin) {
-    cout << Form("HL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f |  %10.2f",bin,
+    cout << Form("HL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f | %5.2f | %10.2f",bin,
 		 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin),p_wz.SRHL.TOTAL->GetBinContent(bin),
 		 p_ww.SRHL.TOTAL->GetBinContent(bin),p_tg.SRHL.TOTAL->GetBinContent(bin),p_vg.SRHL.TOTAL->GetBinContent(bin),
 		 p_rares.SRHL.TOTAL->GetBinContent(bin),p_flips.SRHL.TOTAL->GetBinContent(bin),p_fakes.SRHL.TOTAL->GetBinContent(bin),
 		 (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+p_wz.SRHL.TOTAL->GetBinContent(bin)+
 		  p_ww.SRHL.TOTAL->GetBinContent(bin)+p_tg.SRHL.TOTAL->GetBinContent(bin)+p_vg.SRHL.TOTAL->GetBinContent(bin)+
 		  p_rares.SRHL.TOTAL->GetBinContent(bin)+p_flips.SRHL.TOTAL->GetBinContent(bin)+p_fakes.SRHL.TOTAL->GetBinContent(bin)),
+		 p_data.SRHL.TOTAL->GetBinContent(bin),
 		 p_t1tttt_1200.SRHL.TOTAL->GetBinContent(bin)
 		 )
 	 << endl;
   }
 
   cout << endl;
-  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s %5s %5s | %5s | %11s","TTW","TTZ/H","WZ","WW","TG","VG","RARES","FLIPS","FAKES","TOTAL","T1TTTT1200") << endl;
+  cout <<   Form("        %5s %5s %5s %5s %5s %5s %5s %5s %5s | %5s | %5s | %11s","TTW","TTZ/H","WZ","WW","TG","VG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   for (int bin=1;bin<=p_ttw.SRLL.TOTAL->GetNbinsX(); ++bin) {
-    cout << Form("LL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f |  %10.2f",bin,
+    cout << Form("LL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f | %5.2f | %10.2f",bin,
 		 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin),p_wz.SRLL.TOTAL->GetBinContent(bin),
 		 p_ww.SRLL.TOTAL->GetBinContent(bin),p_tg.SRLL.TOTAL->GetBinContent(bin),p_vg.SRLL.TOTAL->GetBinContent(bin),
 		 p_rares.SRLL.TOTAL->GetBinContent(bin),p_flips.SRLL.TOTAL->GetBinContent(bin),p_fakes.SRLL.TOTAL->GetBinContent(bin),
 		 (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+p_wz.SRLL.TOTAL->GetBinContent(bin)+
 		  p_ww.SRLL.TOTAL->GetBinContent(bin)+p_tg.SRLL.TOTAL->GetBinContent(bin)+p_vg.SRLL.TOTAL->GetBinContent(bin)+
 		  p_rares.SRLL.TOTAL->GetBinContent(bin)+p_flips.SRLL.TOTAL->GetBinContent(bin)+p_fakes.SRLL.TOTAL->GetBinContent(bin)),
+		 p_data.SRLL.TOTAL->GetBinContent(bin),
 		 p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
 		 )
 	 << endl;
@@ -435,7 +438,7 @@ void getyields(){
   type_plots.push_back(pair<TH1F*, float>(p_rares.h_type, roughSystRARES ));
   type_plots.push_back(pair<TH1F*, float>(p_flips.h_type, roughSystFLIPS ));
   type_plots.push_back(pair<TH1F*, float>(p_fakes.h_type, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_type, type_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName type_all_SS.pdf --xAxisLabel type --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_type, type_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName type_all_SS.pdf --xAxisLabel type (mm, me, ee) --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep1_miniIso_plots;
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_miniIso  , roughSystTTW   ));
@@ -604,7 +607,7 @@ void getyields(){
   ht_plots.push_back(pair<TH1F*, float>(p_rares.h_ht, roughSystRARES ));
   ht_plots.push_back(pair<TH1F*, float>(p_flips.h_ht, roughSystFLIPS ));
   ht_plots.push_back(pair<TH1F*, float>(p_fakes.h_ht, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_ht, ht_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName ht_all_SS.pdf --xAxisLabel HT --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_ht, ht_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName ht_all_SS.pdf --xAxisLabel HT --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > met_plots;
   met_plots.push_back(pair<TH1F*, float>(p_ttw.h_met  , roughSystTTW   ));
@@ -616,7 +619,7 @@ void getyields(){
   met_plots.push_back(pair<TH1F*, float>(p_rares.h_met, roughSystRARES ));
   met_plots.push_back(pair<TH1F*, float>(p_flips.h_met, roughSystFLIPS ));
   met_plots.push_back(pair<TH1F*, float>(p_fakes.h_met, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_met, met_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName met_all_SS.pdf --xAxisLabel MET --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_met, met_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName met_all_SS.pdf --xAxisLabel MET --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > mll_plots;
   mll_plots.push_back(pair<TH1F*, float>(p_ttw.h_mll  , roughSystTTW   ));
@@ -628,7 +631,7 @@ void getyields(){
   mll_plots.push_back(pair<TH1F*, float>(p_rares.h_mll, roughSystRARES ));
   mll_plots.push_back(pair<TH1F*, float>(p_flips.h_mll, roughSystFLIPS ));
   mll_plots.push_back(pair<TH1F*, float>(p_fakes.h_mll, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mll, mll_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName mll_all_SS.pdf --xAxisLabel M_{LL} --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_mll, mll_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName mll_all_SS.pdf --xAxisLabel M_{LL} --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > mtmin_plots;
   mtmin_plots.push_back(pair<TH1F*, float>(p_ttw.h_mtmin  , roughSystTTW   ));
@@ -640,7 +643,7 @@ void getyields(){
   mtmin_plots.push_back(pair<TH1F*, float>(p_rares.h_mtmin, roughSystRARES ));
   mtmin_plots.push_back(pair<TH1F*, float>(p_flips.h_mtmin, roughSystFLIPS ));
   mtmin_plots.push_back(pair<TH1F*, float>(p_fakes.h_mtmin, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mtmin, mtmin_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName mtmin_all_SS.pdf --xAxisLabel MT^{min} --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_mtmin, mtmin_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName mtmin_all_SS.pdf --xAxisLabel MT^{min} --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > njets_plots;
   njets_plots.push_back(pair<TH1F*, float>(p_ttw.h_njets  , roughSystTTW   ));
@@ -652,7 +655,7 @@ void getyields(){
   njets_plots.push_back(pair<TH1F*, float>(p_rares.h_njets, roughSystRARES ));
   njets_plots.push_back(pair<TH1F*, float>(p_flips.h_njets, roughSystFLIPS ));
   njets_plots.push_back(pair<TH1F*, float>(p_fakes.h_njets, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_njets, njets_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName njets_all_SS.pdf --xAxisLabel Number of Jets --noXaxisUnit --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_njets, njets_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName njets_all_SS.pdf --xAxisLabel Number of Jets --noXaxisUnit --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > nbtags_plots;
   nbtags_plots.push_back(pair<TH1F*, float>(p_ttw.h_nbtags  , roughSystTTW   ));
@@ -664,7 +667,7 @@ void getyields(){
   nbtags_plots.push_back(pair<TH1F*, float>(p_rares.h_nbtags, roughSystRARES ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_flips.h_nbtags, roughSystFLIPS ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_fakes.h_nbtags, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_nbtags, nbtags_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName nbtags_all_SS.pdf --xAxisLabel Number of BTags --noXaxisUnit --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_nbtags, nbtags_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName nbtags_all_SS.pdf --xAxisLabel Number of BTags --noXaxisUnit --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   //lep1 pt plots
   vector<pair<TH1F*, float> > l1pt_plots;
@@ -677,7 +680,7 @@ void getyields(){
   l1pt_plots.push_back(pair<TH1F*, float>(p_rares.h_l1pt, roughSystRARES ));
   l1pt_plots.push_back(pair<TH1F*, float>(p_flips.h_l1pt, roughSystFLIPS ));
   l1pt_plots.push_back(pair<TH1F*, float>(p_fakes.h_l1pt, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_l1pt, l1pt_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName l1pt_all_SS.pdf --xAxisLabel Leading Lepton pT --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_l1pt, l1pt_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName l1pt_all_SS.pdf --xAxisLabel Leading Lepton pT --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector <TH1F* > l1pt_plotsMC;
   l1pt_plotsMC.push_back(p_ttw.h_l1pt  );
@@ -691,7 +694,7 @@ void getyields(){
   l1pt_plotsMC.push_back(p_dy_ff.h_l1pt);
   l1pt_plotsMC.push_back(p_wjets_ff.h_l1pt);
   l1pt_plotsMC.push_back(p_st_ff.h_l1pt);
-  dataMCplotMaker(p_data.h_l1pt, l1pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName l1pt_all_SSMC.pdf --xAxisLabel Leading Lepton pT --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  dataMCplotMaker(p_data.h_l1pt, l1pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName l1pt_all_SSMC.pdf --xAxisLabel Leading Lepton pT --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
  
   //lep2 pt plots
   vector<pair<TH1F*, float> > l2pt_plots;
@@ -704,7 +707,7 @@ void getyields(){
   l2pt_plots.push_back(pair<TH1F*, float>(p_rares.h_l2pt, roughSystRARES ));
   l2pt_plots.push_back(pair<TH1F*, float>(p_flips.h_l2pt, roughSystFLIPS ));
   l2pt_plots.push_back(pair<TH1F*, float>(p_fakes.h_l2pt, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_l2pt, l2pt_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName l2pt_all_SS.pdf --xAxisLabel Trailing Lepton pT --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_l2pt, l2pt_plots, titles, "", "SS Baseline", Form("--lumi %.1f --outputName l2pt_all_SS.pdf --xAxisLabel Trailing Lepton pT --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector <TH1F*> l2pt_plotsMC;
   l2pt_plotsMC.push_back(p_ttw.h_l2pt  );
@@ -718,7 +721,7 @@ void getyields(){
   l2pt_plotsMC.push_back(p_dy_ff.h_l2pt);
   l2pt_plotsMC.push_back(p_wjets_ff.h_l2pt);
   l2pt_plotsMC.push_back(p_st_ff.h_l2pt);
-  dataMCplotMaker(p_data.h_l2pt, l2pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName l2pt_all_SSMC.pdf --xAxisLabel Trailing Lepton pT --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2); 
+  dataMCplotMaker(p_data.h_l2pt, l2pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName l2pt_all_SSMC.pdf --xAxisLabel Trailing Lepton pT --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2); 
 }
 
 //doFakes = 1 for QCD, 2 for inSitu

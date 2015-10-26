@@ -28,6 +28,8 @@ using namespace duplicate_removal;
 CTable electrons;
 CTable muons;
 
+bool doLatex = false;
+
 TH1D * evtCounter = new TH1D("","",1000,0,1000); 
 map<TString, int> evtBinMap;
 int evtBin = 0;
@@ -130,7 +132,8 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   pad_h->cd();
   pred->SetMarkerStyle(kFullCircle);
   obs->SetFillColor(kYellow);
-  obs->Draw("PE");
+  obs->GetYaxis()->SetRangeUser(0.,1.1*std::max(obs->GetMaximum(),pred->GetMaximum()));
+  obs->Draw("HIST");
   pred->Draw("samePE");
 
   //legend
@@ -142,15 +145,15 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   leg->SetFillColor(kWhite); 
   TString predname = pred->GetName();
   TString obsname = obs->GetName();
-  leg->AddEntry(predname,"Predicted","f");
-  leg->AddEntry(obsname,"Observed","p");  
+  leg->AddEntry(predname,"Predicted","p");
+  leg->AddEntry(obsname,"Observed","f");  
   leg->Draw();
 
   //ratio histo
   pad_r->cd();
   TH1F *ratio = (TH1F*) pred->Clone("ratio");
   ratio->Divide(ratio, obs);
-  ratio->GetYaxis()->SetRangeUser(0,3);
+  ratio->GetYaxis()->SetRangeUser(0,2);
   ratio->GetYaxis()->SetNdivisions(4);
   ratio->GetYaxis()->SetLabelSize(0.12);
   ratio->GetYaxis()->SetTitle("pred/obs");
@@ -166,7 +169,8 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   if (print) number++;
 
   int w = 18;
-  if (print) cout << setw(5) << "BR" <<  setw(w) << "Pred" << setw(w) << "Obs" << setw(w) << "Pred/Obs" << setw(w) << "(p-o)/p" << endl;
+  if (print&&!doLatex) cout << setw(5) << "BR" <<  setw(w) << "Pred" << setw(w) << "Obs" << setw(w) << "Pred/Obs" << setw(w) << "(p-o)/p" << endl;
+  if (print&&doLatex) cout << Form("BR & P & O & P/O & (P-O)/P \\\\") << endl;
 
   for (int bin=1;bin<=pred->GetNbinsX();++bin) {
     int sr = bin-1;
@@ -204,7 +208,8 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
     float ratioe = sqrt((p*p*oe*oe + o*o*pe*pe)/(o*o*o*o)); //error prop
     float laste = sqrt((p*p*oe*oe + o*o*pe*pe)/(p*p*p*p));  //error prop
 
-    if (print) cout << setw(5) << sr <<  setw(w) << Form("%5.2f +/-%5.2f", p, pe) << setw(w) << Form("%5.2f +/-%5.2f", o, oe) << setw(w) << Form("%5.2f +/-%5.2f", (o>0?p/o:99.99),ratioe) << setw(w) << Form("%5.2f +/-%5.2f", (p>0?(p-o)/p:99.99), laste) << endl;
+    if (print&&!doLatex) cout << setw(5) << sr <<  setw(w) << Form("%5.2f +/-%5.2f", p, pe) << setw(w) << Form("%5.2f +/-%5.2f", o, oe) << setw(w) << Form("%5.2f +/-%5.2f", (o>0?p/o:99.99),ratioe) << setw(w) << Form("%5.2f +/-%5.2f", (p>0?(p-o)/p:99.99), laste) << endl;
+    if (print&&doLatex) cout << Form("%i & %5.1f $\\pm$ %5.1f & %5.1f $\\pm$ %5.1f & %5.1f $\\pm$ %5.1f & %5.1f $\\pm$ %5.1f \\\\",sr, p, pe, o, oe,(o>0?p/o:99.99),ratioe,(p>0?(p-o)/p:99.99), laste) << endl;
     if (print && number == 2) muons.setCell(Form("%5.2f $\\pm$ %5.2f", p, pe), bin-1, 0); 
     if (print && number == 2) muons.setCell(Form("%5.2f $\\pm$ %5.2f", o, oe), bin-1, 1); 
     if (print && number == 2) muons.setCell(Form("%5.2f $\\pm$ %5.2f", (o>0?p/o:99.99), ratioe), bin-1, 2); 
@@ -233,9 +238,11 @@ float getEta(float eta, float ht, bool extrPtRel = false){
 }
 
 float getFakeRate(TH2D* histo, float pt, float eta, float ht, bool extrPtRel = false, bool doData = false){
+  int id = 11;
+  if (TString(histo->GetTitle()).Contains("_mu")) id = 13;
+  //truncate the muon fake rate to avoid 100% ucneratinty
+  if (abs(id)==13 && pt>=50) pt=45.;
   if (doData) {
-    int id = 11;
-    if (TString(histo->GetTitle()).Contains("_mu")) id = 13;
     return  fakeRate(id, pt, eta, ht); 
   } else {
     pt = getPt(pt,extrPtRel);
@@ -288,7 +295,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   bool highlow = ptRegion.Contains("HL") ? true : false;
   bool lowlow = ptRegion.Contains("LL") ? true : false;
 
-  float luminosity = getLumi();
+  float luminosity = 3.;//getLumi();
 
   //Dir
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
@@ -1124,7 +1131,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h3->Draw();
   pad_r3->Draw();
   TLegend *leg3 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  cout << "\ndump BR all" << endl;
+  if (!doLatex) cout << "\ndump BR all" << endl;
+  else cout << "\\hline \\multicolumn{5}{c}{all} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred")], hists[getHist("Npn_histo_br_obs")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
 
   TH2D *nullarr[40] = {0};
@@ -1135,7 +1143,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h4->Draw();
   pad_r4->Draw();
   TLegend *leg4 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  cout << "\ndump BR mu" << endl;
+  if (!doLatex) cout << "\ndump BR mu" << endl;
+  else cout << "\\hline \\multicolumn{5}{c}{muons} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred_mu")], hists[getHist("Npn_histo_br_obs_mu")], Npn_histo_br_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
 
   TCanvas *c5=new TCanvas("c5","Predicted and Observed Prompt-NonPrompt Background (Single el)", 800,800);
@@ -1144,7 +1153,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   pad_h5->Draw();
   pad_r5->Draw();
   TLegend *leg5 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
-  cout << "\ndump BR ele" << endl;
+  if (!doLatex) cout << "\ndump BR ele" << endl;
+  else cout << "\\hline \\multicolumn{5}{c}{electrons} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred_el")], hists[getHist("Npn_histo_br_obs_el")], nullarr, Npn_histo_br_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);
   c3->SaveAs(plotdir+"br_all"+option+".png");
   c4->SaveAs(plotdir+"br_mu"+option+".png");

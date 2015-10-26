@@ -19,6 +19,10 @@ void flip(){
   int nBinsY = 3; 
   float xbins[] = { 0, 20, 40, 60, 80, 100 }; 
   float ybins[] = { 0, 1, 2, 3 }; 
+  // int nBinsX = 1; 
+  // int nBinsY = 1; 
+  // float xbins[] = { 0, 100 }; 
+  // float ybins[] = { 0, 3 }; 
   TH2D* numer  = new TH2D("numer" , "numer" , nBinsX, xbins, nBinsY, ybins);
   TH2D* denom  = new TH2D("denom" , "denom" , nBinsX, xbins, nBinsY, ybins);
   numer->Sumw2();
@@ -65,6 +69,7 @@ void flip(){
 
       //Only care about electrons
       if (abs(lep1_id()) == 13 && abs(lep2_id()) == 13) continue;
+      // if (abs(lep1_id()) == 11 && abs(lep2_id()) == 11) continue;
 
       //Weight
       float weight = getPUw(ss::nGoodVertices());//scale1fb()*theLumi; 
@@ -72,12 +77,16 @@ void flip(){
       //If they make it this far, they are denominator events
       if (abs(lep1_id()) == 11) denom->Fill(lep1_p4().pt(), fabs(lep1_p4().eta()), weight); 
       if (abs(lep2_id()) == 11) denom->Fill(lep2_p4().pt(), fabs(lep2_p4().eta()), weight); 
+      // if (abs(lep1_id()) == 13) denom->Fill(lep1_p4().pt(), fabs(lep1_p4().eta()), weight); 
+      // if (abs(lep2_id()) == 13) denom->Fill(lep2_p4().pt(), fabs(lep2_p4().eta()), weight); 
 
       //Now require exactly one charge flip
       bool isCF1 = 0;
       bool isCF2 = 0;
       if (abs(lep1_id()) == 11 && abs(lep1_mc_id()) == 11 && lep1_id() != lep1_mc_id()) isCF1 = 1;
       if (abs(lep2_id()) == 11 && abs(lep2_mc_id()) == 11 && lep2_id() != lep2_mc_id()) isCF2 = 1;
+      // if (abs(lep1_id()) == 13 && abs(lep1_mc_id()) == 13 && lep1_id() != lep1_mc_id()) isCF1 = 1;
+      // if (abs(lep2_id()) == 13 && abs(lep2_mc_id()) == 13 && lep2_id() != lep2_mc_id()) isCF2 = 1;
       if (!isCF1 && !isCF2) continue;
       if ( isCF1 &&  isCF2) continue;
 
