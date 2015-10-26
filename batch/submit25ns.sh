@@ -160,21 +160,36 @@ do
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=19
-    elif [ $sname == "DataDoubleMuonD"  ]; 
-      then name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v3";
+    elif [ $sname == "DataDoubleMuonD_05oct"  ]; 
+      then name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-09
+      tag=V07-04-11
       nameNu=46
-    elif [ $sname == "DataDoubleEGD"    ]; 
-      then name="Run2015D_DoubleEG_MINIAOD_PromptReco-v3";
+    elif [ $sname == "DataDoubleEGD_05oct"    ]; 
+      then name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-09
+      tag=V07-04-11
       nameNu=45
-    elif [ $sname == "DATAMUONEGD"    ]; 
-      then name="Run2015D_MuonEG_MINIAOD_PromptReco-v3";
+    elif [ $sname == "DATAMUONEGD_05oct"    ]; 
+      then name="Run2015D_MuonEG_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-09
+      tag=V07-04-11
       nameNu=47
+    elif [ $sname == "DataDoubleMuonD_v4"  ]; 
+      then name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v4";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-11
+      nameNu=53
+    elif [ $sname == "DataDoubleEGD_v4"    ]; 
+      then name="Run2015D_DoubleEG_MINIAOD_PromptReco-v4";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-11
+      nameNu=54
+    elif [ $sname == "DATAMUONEGD_v4"    ]; 
+      then name="Run2015D_MuonEG_MINIAOD_PromptReco-v4";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-11
+      nameNu=55
     elif [ $sname == "TTW" ]
     then
       name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1" 
