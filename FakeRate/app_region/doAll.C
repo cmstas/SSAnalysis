@@ -11,13 +11,15 @@
   TString tag1 = getTag();
   TString tag2 = getTag();
 
-  bool doData = true;
+  bool doData = false;
 
   bool doInSitu = 0;
 
   bool highhigh   = 1;
   bool highlow    = 0;
   bool lowlow     = 0;
+
+  bool doIsoTrigs = 0;
 
   //These are only for not-in-situ
   bool doConeCorr   = 1;
@@ -46,6 +48,7 @@
     if (doBonly) option+="_doBonly";
     if (doConly) option+="_doConly";
     if (doLightonly) option+="_doLightonly";
+    if (doIsoTrigs) option+="_IsoTrigs";
     fakeratefile = "../measurement_region/rate_histos_qcd"+option+".root";
   }
   else {
@@ -80,7 +83,8 @@
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/TTBAR.root");  
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WJets_LO.root"); 
   } else {
-    if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
+    // if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets_LO.root");
+    if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");
     else ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root"); // FIXME
   }
   ScanChain(ch, fakeratefile, option, ptRegion, doData); 

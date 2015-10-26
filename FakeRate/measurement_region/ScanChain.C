@@ -731,6 +731,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v5();
       }
 
+      // if (useIsoTrigs && abs(id())==13) {
+      // 	float cut_trkIso  = 0.3;
+      // 	float trkIso = tkIso()/p4().pt();
+      // 	if (trkIso>cut_trkIso) continue;
+      // }
+
       float evt_met = evt_corrMET();
       float evt_metPhi = evt_corrMETPhi();
       // float evt_met = evt_met3p0();
