@@ -37,7 +37,7 @@ sed -i "s/cgeorge/$USER/" condorExecutable.sh
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "ZG"  "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5QQQQDeg_1000_315_300" "T5ttttDeg_1000_300_285_280" "T2ttDeg_350_330" "T6TTWW_600_425_50" "T2TT_ARXIV" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ" "WWZ" "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DATAMUONEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DATAMUONEGD_v4" "WJets" "WZ3LNu" "TTZL" "TTBAR" "TTW" "DY_high" "DY_low" "T1TTTT_1200" "T1TTTT_1500" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" # "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DATAMUONEGC_05oct"
+  for sname in "ZG"  "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5QQQQDeg_1000_315_300" "T5ttttDeg_1000_300_285_280" "T2ttDeg_350_330" "T6TTWW_600_425_50" "T2TT_ARXIV" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ" "WWZ" "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DATAMUONEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DATAMUONEGD_v4" "WJets" "WZ3LNu" "TTZL" "TTBAR" "TTW" "DY_high" "DY_low" "T1TTTT_1200" "T1TTTT_1500" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH" "WJets_LO" # "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DATAMUONEGC_05oct"
   do
     path="/hadoop/cms/store/group/snt/run2_25ns"
     #Iter
@@ -91,6 +91,15 @@ do
       then name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-08
       nameNu=8
+    elif [ $sname == "TTBAR_PH"      ]; 
+      then name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2"
+      tag=V07-04-08
+      nameNu=59
+    elif [ $sname == "WJets_LO"      ];
+      then name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+      tag=V07-04-11
+      path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
+      nameNu=60
     elif [ $sname == "SINGLETOP1"    ]; 
       then name="ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-08

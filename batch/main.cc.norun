@@ -278,6 +278,17 @@ int main(int argc, char *argv[]){
       shortname="t5ttttdeg_1000_300_285_280";
       tag="";
       break;
+    case TTBAR_PH:
+      name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2";
+      shortname="ttbar_ph";
+      tag="V07-04-08";
+      break;
+    case WJets_LO:
+      name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
+      shortname="wjets_lo";
+      tag="V07-04-11";
+      path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2";
+      break;
     case T2ttDeg_350_330:
       name="T2ttDeg_mStop350_mChi330_4bodydec";
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/";
