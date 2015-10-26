@@ -40,6 +40,9 @@ then
 fi
 cp ../goodRunList/*.txt        goodRunList/
 
+#And btagsSF dir
+cp -r ../btagsf . 
+
 #Linkdef
 cp ../LinkDef.h . 
 
