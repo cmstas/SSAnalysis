@@ -20,6 +20,7 @@ fi
 make -j 10
 
 #Start by checking proxy, get path to proxy file
+voms-proxy-init -hours 168 -voms cms
 voms-proxy-info --all &> voms_status.txt
 if grep "Couldn't find a valid proxy." voms_status.txt &>/dev/null
 then 
@@ -369,8 +370,6 @@ do
       if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/$SPPATH/${sname_lower}_${number}_$expt.root ] 
       then 
         continue
-      else
-        "Redoing, this does not exist: /hadoop/cms/store/user/$USER/condor/ss_13_babies/$SPPATH/${sname_lower}_${number}_$expt.root"
       fi
 
       echo "-------------"
