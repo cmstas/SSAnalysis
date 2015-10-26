@@ -940,7 +940,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if (ss::lep1_passes_id()==0 && passesNumeratorMVA(ss::lep1_id(),ss::lep1_p4().eta(),ss::lep1_MVA()) && ss::lep2_passes_id() && ss::lep1_dxyPV()<0.05 && ss::lep1_sip()<4 && lep1_denom_iso) fr = fakeRateInSitu(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta());
         if (ss::lep2_passes_id()==0 && passesNumeratorMVA(ss::lep2_id(),ss::lep2_p4().eta(),ss::lep2_MVA()) && ss::lep1_passes_id() && ss::lep2_dxyPV()<0.05 && ss::lep2_sip()<4 && lep2_denom_iso) fr = fakeRateInSitu(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta());
         weight *= fr/(1.-fr);
-        //if (weight > 0.01) cout << weight << endl;
         if (!ss::is_real_data()) weight *= -1.;
       }
 

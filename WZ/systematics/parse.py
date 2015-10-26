@@ -157,7 +157,7 @@ b = t-w
 dw, dt, db = math.sqrt(w), math.sqrt(t), 0.3*b
 s = (t-b)/w
 scaleFactor,scaleFactorError = s,s*math.sqrt( (dw/w)**2 + (dt/w)**2 + (db/w)**2 )
-# print "%.2f \\pm %.2f" % (scaleFactor, scaleFactorError)
+print "%.2f \\pm %.2f" % (scaleFactor, scaleFactorError)
 
 # scaleFactor, scaleFactorError = 1.00, 0.00
 
@@ -232,7 +232,7 @@ for i,pair in enumerate(cutCountsPairs):
 
 # read in SS SR yields
 srCodes = {}
-lines = open("sryields.txt","r").readlines()
+lines = open("counter.txt","r").readlines()
 for line in lines:
     if("_" not in line): continue
     line = line.strip()

@@ -40,7 +40,7 @@ for line in lines:
 
 # print nonWZcounts, nonWZerrors
 nonWZcount = sum(nonWZcounts)
-nonWZerr = math.sqrt(sum(map(lambda x: x**2.0, nonWZerrors)) + (1.0*nonWZcount)**2)
+nonWZerr = math.sqrt(sum(map(lambda x: x**2.0, nonWZerrors)) + (0.5*nonWZcount)**2)
 # print nonWZcount, nonWZerr
 # print WZcount, WZerr
 # print datacount, dataerr
