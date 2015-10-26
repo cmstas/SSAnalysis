@@ -37,7 +37,7 @@ sed -i "s/cgeorge/$USER/" condorExecutable.sh
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "ZG"  "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWZ_1200_1000_800" "T5QQQQDeg_1000_300_285_280" "T5QQQQWZ_1500_800_100" "T5ttttDeg_1000_300_280" "T2ttDeg_350_330" "T5QQQQZZ_1200_1000_800" "T6TTWW_600_425_50" "T2TT_ARXIV" "T5QQQQZZ_1500_800_100" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ" "WWZ" "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DATAMUONEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DATAMUONEGD_v4" "WJets" "WZ3LNu" "TTZL" "TTBAR" "TTW" "DY_high" "DY_low" "T1TTTT_1200" "T1TTTT_1500" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" # "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DATAMUONEGC_05oct"
+  for sname in "ZG"  "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5QQQQDeg_1000_315_300" "T5ttttDeg_1000_300_285_280" "T2ttDeg_350_330" "T6TTWW_600_425_50" "T2TT_ARXIV" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ" "WWZ" "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DATAMUONEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DATAMUONEGD_v4" "WJets" "WZ3LNu" "TTZL" "TTBAR" "TTW" "DY_high" "DY_low" "T1TTTT_1200" "T1TTTT_1500" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" # "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DATAMUONEGC_05oct"
   do
     path="/hadoop/cms/store/group/snt/run2_25ns"
     #Iter
@@ -275,27 +275,21 @@ do
       name=SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
       tag=V07-04-08
       nameNu=5
-    elif [ $sname == "T5QQQQWZ_1200_1000_800" ] 
+    elif [ $sname == "T5QQQQWWDeg_1000_315_300" ] 
     then
-      name=T5qqqqWZ_mGo1200_mCh1000_mChi800_lep  
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=35
-    elif [ $sname == "T5QQQQDeg_1000_300_285_280" ] 
-    then
-      name=T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec
+      name=T5ttttDeg_mGo1000_mCh315_mChi300_dilep
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
       nameNu=36
-    elif [ $sname == "T5QQQQWZ_1500_800_100" ] 
+    elif [ $sname == "T5QQQQWW_1200_1000_800" ] 
     then
-      name=T5qqqqWZ_mGo1500_mCh800_mChi100_lep   
+      name=T5qqqqWW_mGo1200_mCh1000_mChi800_dilep
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
       nameNu=37
-    elif [ $sname == "T5ttttDeg_1000_300_280" ] 
+    elif [ $sname == "T5ttttDeg_1000_300_285_280" ] 
     then
-      name=T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec
+      name=T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
       nameNu=38
