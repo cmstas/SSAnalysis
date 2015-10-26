@@ -34,7 +34,7 @@ class looper
     //delete babyTree_;
   };
   
-  int ScanChain ( TChain* chain, TString prefix, TString postfix, bool isData, TString whatTest = "", int nEvents = -1, std::vector<int> evtToDebug = std::vector<int>(), bool expt = 0);
+  int ScanChain ( TChain* chain, TString prefix, TString postfix, bool isData, TString whatTest = "", int nEvents = -1, std::vector<int> evtToDebug = std::vector<int>(), bool expt = 0, bool file = -1);
 
 
 
