@@ -10,7 +10,7 @@
 #include "../CORE/Tools/dorky/dorky.h"
 
 //do the data!!
-bool doData = true; 
+bool doData = false; 
 
 //testPC -- test the prompt contamination, ie allow numer-numer events
 bool testPC = false;
@@ -74,9 +74,10 @@ void FR(){
 
   //Define hists
   nBinsX = 5; 
-  int nBinsY = 3; 
+  int nBinsY = 1; 
   float xbins[] = { 10, 15, 25, 35, 50, 70 }; 
-  float ybins[] = { 0, 1, 2, 2.4 }; 
+  //float ybins[] = { 0, 1, 2, 2.4 }; 
+  float ybins[] = { 0, 2.4 }; 
   numer  = new TH2D("numer" , "numer" , nBinsX, xbins, nBinsY, ybins);
   denom  = new TH2D("denom" , "denom" , nBinsX, xbins, nBinsY, ybins);
   numer2 = new TH2D("numer2", "numer2", nBinsX, xbins, nBinsY, ybins);
