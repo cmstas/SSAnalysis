@@ -386,7 +386,7 @@ int main(int argc, char *argv[]){
 
   //Add good run list
   if (!is25) set_goodrun_file("final_golden_50ns_40p03pb.txt");
-  if ( is25) set_goodrun_file("goldenJson225p57pb.txt");
+  if ( is25) set_goodrun_file("goldenJson1p28023fb.txt");
 
   //Init MVA
   createAndInitMVA("./CORE");
