@@ -341,6 +341,27 @@ int main(int argc, char *argv[]){
       isData = true;
       tag="V07-04-11";
       break;
+    case DataDoubleMuonC_05oct:
+      name="Run2015C_DoubleMuon_MINIAOD_05Oct2015-v1/merged";
+      shortname="datadoublemuonc_05oct";
+      isData = true;
+      path="/store/group/snt/run2_data";
+      tag="V07-04-11";
+      break;
+    case DataDoubleEGC_05oct:
+      shortname="datadoubleegc_05oct";
+      name="Run2015C_DoubleEG_MINIAOD_05Oct2015-v1/merged";
+      isData = true;
+      path="/store/group/snt/run2_data";
+      tag="V07-04-11";
+      break;
+    case DATAMUONEGC_05oct:
+      shortname="datamuonegc_05oct";
+      name="Run2015C_MuonEG_MINIAOD_05Oct2015-v1/merged";
+      path="/store/group/snt/run2_data";
+      isData = true;
+      tag="V07-04-11";
+      break;
     case DataDoubleMuonD_v4:
       name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v4/merged";
       shortname="datadoublemuond_v4";
