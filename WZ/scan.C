@@ -32,7 +32,7 @@ int scan(){
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets*.root"); titles.push_back("WJets");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");     titles.push_back("ZZ");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ3LNU.root");     titles.push_back("WZ");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data848p7ipb/Data*.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data1p280ifb/Data*D.root");
 
 
     int nEventsTotal = 0;
@@ -40,7 +40,7 @@ int scan(){
     int nGoodEvents = 0;
     int nGoodEventsData = 0;
     float nGoodEventsWeighted = 0;
-    float luminosity = 0.8487-0.016;
+    float luminosity = 1.264;
 
     TFile *currentFile = 0;
     TObjArray *listOfFiles = ch->GetListOfFiles();
@@ -180,13 +180,13 @@ int scan(){
             // all 4 of these define the CR
             bool goodBtags = ss::nbtags_corr() < 1;
             bool goodNjets = ss::njets_corr() < 5;
-            bool goodMet = ss::corrMET() < 200.0;
+            bool goodMet = true;//ss::corrMET() < 200.0;
             bool goodHH = ss::lep1_p4().pt() > 25.0 && ss::lep2_p4().pt() > 25.0;
-            bool goodMtmin = ss::mtmin() < 120;
+            bool goodMtmin = true;//ss::mtmin() < 120;
 
             // Actually ignore the MET and MTMIN boundaries for more statistics
-            goodMet = true;
-            goodMtmin = true;
+            // goodMet = true;
+            // goodMtmin = true;
 
             if(filename.Contains("WZ"))    {
                 h2D_ptlep1_ptlep2_wz->Fill(ss::lep2_p4().pt(),ss::lep1_p4().pt());
@@ -262,7 +262,7 @@ int scan(){
 
     // TH1F* null = new TH1F("","",1,0,1);
     TH1F* data;
-    std::string com = " --errHistAtBottom --doCounts --colorTitle --lumi 832 --lumiUnit pb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/";
+    std::string com = " --errHistAtBottom --doCounts --colorTitle --lumi 1.264 --lumiUnit fb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/";
     std::string pct = " --showPercentage ";
     // std::string spec = "SR1-8";
     std::string spec = "";
@@ -275,13 +275,13 @@ int scan(){
     // data = h1D_ht_vec.back(); h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec             ,titles,"H_{T}",spec,com+"h1D_ht.pdf              --isLinear --vLine 300 --xAxisOverride [GeV]");
     // data = h1D_mtmin_vec.back(); h1D_mtmin_vec.pop_back(); dataMCplotMaker(data,h1D_mtmin_vec    ,titles,"m_{T,min}",spec,com+"h1D_mtmin.pdf       --isLinear --vLine 120 --xAxisOverride [GeV]");
     // data = h1D_met_vec.back(); h1D_met_vec.pop_back(); dataMCplotMaker(data,h1D_met_vec          ,titles,"#slash{E}_{T}",spec,com+"h1D_met.pdf     --isLinear --vLine 200 --xAxisOverride [GeV]");
-    data = h1D_ht_vec.back(); h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec             ,titles,"H_{T}",spec,com+"h1D_ht.pdf              --isLinear             --xAxisOverride [GeV]");
-    data = h1D_mtmin_vec.back(); h1D_mtmin_vec.pop_back(); dataMCplotMaker(data,h1D_mtmin_vec    ,titles,"m_{T,min}",spec,com+"h1D_mtmin.pdf       --isLinear             --xAxisOverride [GeV]");
-    data = h1D_met_vec.back(); h1D_met_vec.pop_back(); dataMCplotMaker(data,h1D_met_vec          ,titles,"#slash{E}_{T}",spec,com+"h1D_met.pdf     --isLinear             --xAxisOverride [GeV]");
+    data = h1D_ht_vec.back(); h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec             ,titles,"H_{T}",spec,com+"h1D_ht.pdf              --isLinear             --xAxisOverride H_{T} [GeV]");
+    data = h1D_mtmin_vec.back(); h1D_mtmin_vec.pop_back(); dataMCplotMaker(data,h1D_mtmin_vec    ,titles,"m_{T,min}",spec,com+"h1D_mtmin.pdf       --isLinear             --xAxisOverride m_{T,min} [GeV]");
+    data = h1D_met_vec.back(); h1D_met_vec.pop_back(); dataMCplotMaker(data,h1D_met_vec          ,titles,"#slash{E}_{T}",spec,com+"h1D_met.pdf     --isLinear             --xAxisOverride #slash{E}_{T} [GeV]");
 
-    data = h1D_nbtags_vec.back(); h1D_nbtags_vec.pop_back(); dataMCplotMaker(data,h1D_nbtags_vec ,titles,"Nbtags",spec,com+"h1D_nbtags.pdf         --isLinear --vLine 1 --xAxisOverride n");
-    data = h1D_lep1pt_vec.back(); h1D_lep1pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep1pt_vec ,titles,"p_{T}(lep_{1})",spec,com+"h1D_lep1pt.pdf --isLinear --vLine 25 --xAxisOverride [GeV]");
-    data = h1D_lep2pt_vec.back(); h1D_lep2pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep2pt_vec ,titles,"p_{T}(lep_{2})",spec,com+"h1D_lep2pt.pdf --isLinear --vLine 25 --xAxisOverride [GeV]");
+    data = h1D_nbtags_vec.back(); h1D_nbtags_vec.pop_back(); dataMCplotMaker(data,h1D_nbtags_vec ,titles,"Nbtags",spec,com+"h1D_nbtags.pdf         --isLinear --vLine 1 --xAxisOverride nbtags");
+    data = h1D_lep1pt_vec.back(); h1D_lep1pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep1pt_vec ,titles,"p_{T}(lep_{1})",spec,com+"h1D_lep1pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{1}) [GeV]");
+    data = h1D_lep2pt_vec.back(); h1D_lep2pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep2pt_vec ,titles,"p_{T}(lep_{2})",spec,com+"h1D_lep2pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{2}) [GeV]");
 
 
     drawHist2D(h2D_ht_sumleppt_wz , "pdfs/h2D_ht_sumleppt_wz.pdf" , "--logscale --title WZ: p_{T}(lep_{1})+p_{T}(lep_{2}) vs H_{T} --xlabel  sum H_{T} --ylabel leppt");
@@ -300,7 +300,7 @@ int scan(){
     // dataMCplotMaker(data,h1D_yields_LL_vec ,titles,"LL yields",spec,com+"h1D_yields_LL.pdf --isLinear --xAxisOverride SR "+LLbins);
 
     data = h1D_zmass_vec.back(); h1D_zmass_vec.pop_back();
-    dataMCplotMaker(data,h1D_zmass_vec     ,titles,"m_{ll}",spec,com+"h1D_zmass.pdf                   --isLinear --xAxisOverride [GeV]");
+    dataMCplotMaker(data,h1D_zmass_vec     ,titles,"m_{ll}",spec,com+"h1D_zmass.pdf                   --isLinear --xAxisOverride m_{ll} [GeV]");
 
     // dataMCplotMaker(null,h1D_hyp_class_vec ,titles,"hyp_class (no cuts)",spec,com+"h1D_hyp_class.pdf            --xAxisOverride id    "+pct);
 

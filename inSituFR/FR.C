@@ -29,7 +29,7 @@ float luminosity = doData ? 1.0 : getLumi();
 
 bool passesNumeratorMVA(int which){
   if (abs(ss::lep1_id()) != 11) return true;
-  float aeta = (which == 1) ? fabs(ss::lep1_p4().eta()) : fabs(ss::lep2_p4().eta());
+  float aeta = (which == 1) ? fabs(ss::lep1_p4().eta()) : fabs(ss::lep2_p4().eta());//uhm this should be SCeta
   float disc = (which == 1) ? ss::lep1_MVA() : ss::lep2_MVA();
   if (aeta < 0.8) return disc > 0.87;
   if ((aeta >= 0.8 && aeta <= 1.479)) return disc > 0.60;
@@ -152,9 +152,10 @@ void FR(){
       SSAG::progress(nEventsTotal, nEventsChain);
 
       //Event Selection
-      if (ss::njets() < 2) continue;
-      if (ss::ht() < 80) continue;
-      if (ss::met() < 30 && ss::ht() < 500) continue;
+      // relax cuts for low lumi
+      if (ss::njets_corr() < 2) continue;
+      if (ss::ht_corr() < 80) continue;
+      if (ss::corrMET() < 30 && ss::ht() < 500) continue;
       if (ss::hyp_class() == 4 || ss::hyp_class() == 6) continue;
       if (!ss::fired_trigger()) continue; 
 
@@ -165,8 +166,8 @@ void FR(){
       if (!passesNumeratorMVA(1) && !passesNumeratorMVA(2)) continue;
  
       //Various variables
-      float ptrel_cut_1    = (abs(ss::lep1_id()) == 11 ? 7.20 : 7.2);
-      float ptrel_cut_2    = (abs(ss::lep2_id()) == 11 ? 7.20 : 7.2);
+      float ptrel_cut_1    = (abs(ss::lep1_id()) == 11 ? 7.20 : 7.20);
+      float ptrel_cut_2    = (abs(ss::lep2_id()) == 11 ? 7.20 : 7.20);
       float ptratio_cut_1  = (abs(ss::lep1_id()) == 11 ? 0.80 : 0.76);
       float ptratio_cut_2  = (abs(ss::lep2_id()) == 11 ? 0.80 : 0.76);
       float mini_cut_1     = (abs(ss::lep1_id()) == 11 ? 0.12 : 0.16);
@@ -190,41 +191,41 @@ void FR(){
         denom->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);
         counter++; 
       }
-      else if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
+      if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() > 4 && ss::lep1_passes_id() && lep2_denom_iso){
         if (passesNumeratorMVA(2) && lep2_multiIso) numer->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
         denom->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);
       }
 
       //histo2 is for electrons with SIP < 4 
-      else if (abs(ss::lep1_id()) == 11 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
+      if (abs(ss::lep1_id()) == 11 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
         if (lep1_multiIso) numer2->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
         denom2->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);
       }
-      else if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
+      if (abs(ss::lep2_id()) == 11 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
         if (lep2_multiIso) numer2->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
         denom2->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);
       }
 
       //histo3 is for muons with SIP > 4 
-      else if (abs(ss::lep1_id()) == 13 && ss::lep1_sip() > 4 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep2_passes_id() && lep1_denom_iso){
+      if (abs(ss::lep1_id()) == 13 && ss::lep1_sip() > 4 && (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC) && ss::lep2_passes_id() && lep1_denom_iso){
         if (passesNumeratorMVA(1) && lep1_multiIso) numer3->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
         if (ss::lep1_p4().pt() >= 25) test->Fill(miniiso_1, 1.0/ptratio_1);  
         denom3->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);
 
         counter++; 
       }
-      else if (abs(ss::lep2_id()) == 13 && ss::lep2_sip() > 4 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep1_passes_id() && lep2_denom_iso){
+      if (abs(ss::lep2_id()) == 13 && ss::lep2_sip() > 4 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep1_passes_id() && lep2_denom_iso){
         if (passesNumeratorMVA(2) && lep2_multiIso) numer3->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
         if (ss::lep2_p4().pt() >= 25) test->Fill(miniiso_2, 1.0/ptratio_2);  
         denom3->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);
       }
 
       //histo4 is for muons with SIP < 4 
-      else if (abs(ss::lep1_id()) == 13 && (testPC || isGoodLeg(2)) && (testPC || isFakeLeg(1)) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
+      if (abs(ss::lep1_id()) == 13 && (testPC || isGoodLeg(2)) && (testPC || isFakeLeg(1)) && ss::lep1_sip() < 4 && ss::lep2_passes_id() && lep1_denom_iso){
         if (lep1_multiIso) numer4->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);  
         denom4->Fill(pt1, fabs(ss::lep1_p4().eta()), ss::scale1fb()*luminosity);
       }
-      else if (abs(ss::lep2_id()) == 13 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
+      if (abs(ss::lep2_id()) == 13 && (testPC || isGoodLeg(1)) && (testPC || isFakeLeg(2)) && ss::lep2_sip() < 4 && ss::lep1_passes_id() && lep2_denom_iso){
         if (lep2_multiIso) numer4->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);  
         denom4->Fill(pt2, fabs(ss::lep2_p4().eta()), ss::scale1fb()*luminosity);
       }

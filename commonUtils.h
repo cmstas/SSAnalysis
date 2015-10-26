@@ -321,5 +321,14 @@ bool passIsolatedFO(int id, float eta, float mva) {
   if (aeta > 1.479) return mva > -0.76;
   return false;
 }
- 
+
+bool passesNumeratorMVA(int id, float eta, float disc){
+  if (abs(id) != 11) return true;
+  float aeta = fabs(eta);
+  if (aeta < 0.8) return disc > 0.87;
+  if ((aeta >= 0.8 && aeta <= 1.479)) return disc > 0.60;
+  if (aeta > 1.479) return disc > 0.17;
+  return false;
+}
+
 #endif
