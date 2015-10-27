@@ -28,9 +28,7 @@ hadd TTTT.root                        $path/tttt_*_0.root
 hadd WWDPS.root                       $path/wwdps_*_0.root 
 hadd WZZ.root                         $path/wzz_*_0.root 
 hadd T5QQQQDeg_1000_300_285_280.root  $path/t5qqqqdeg_1000_300_285_280_*_0.root
-hadd T5ttttDeg_1000_300_280.root      $path/t5ttttdeg_1000_300_280_*_0.root 
-#T5QQQQDeg_1000_300_285_280.root
-#T5ttttDeg_1000_300_280.root
+hadd T5QQQQWWDeg_1000_315_300.root    $path/t5qqqqwwdeg_1000_315_300_*_0.root
 hadd T6TTWW_600_425_50.root           $path/t6ttww_600_425_50_*_0.root 
 hadd T6TTWW_650_150_50.root           $path/t6ttww_650_150_50_*_0.root 
 hadd T1TTTT_1200.root                 $path/t1tttt_1200_*_0.root
