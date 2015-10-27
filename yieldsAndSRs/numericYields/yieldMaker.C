@@ -16,7 +16,7 @@ bool makeRootFiles = 1;
 float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
 
-bool doNoData = false;
+bool doNoData = true;
 
 float scaleLumi = 1.0;//3.0/1.264;//careful!!!
 
@@ -51,6 +51,8 @@ static float roughSystFAKES = 0.4;
 void getyields(){
 
   if (doNoData) lumiAG = scaleLumi*getLumi();
+
+  cout << "Running with lumi=" << lumiAG << endl;
 
   //Chains
   //fakes&flips in mc
@@ -969,8 +971,22 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
  
       //Get the category
       anal_type_t categ = analysisCategory(ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
+
+      // if (categ!=0) continue;//test
       
       if (doFakes == 1 && ss::is_real_data() && ss::hyp_class()==2 && SR>0) {
+	float ptT = (ss::lep1_passes_id()==0 ? ss::lep2_coneCorrPt() : ss::lep1_coneCorrPt());
+	float ptCL = (ss::lep1_passes_id()==0 ? ss::lep1_coneCorrPt() : ss::lep2_coneCorrPt());
+	float ptR = (ss::lep1_passes_id()==0 ? ss::lep1_ptrel_v1() : ss::lep2_ptrel_v1());
+	float ptJ = (ss::lep1_passes_id()==0 ? ss::jet_close_lep1().pt() : ss::jet_close_lep2().pt());
+	float iso = (ss::lep1_passes_id()==0 ? ss::lep1_miniIso() : ss::lep2_miniIso());
+	string cat = "HH";
+	if (categ==1) cat = "HL";
+	if (categ==2) cat = "LL";
+	//cout << Form("%20i       %6.2f %6.2f %6.2f %6.2f %6.2f %s SR%i",ss::event(),ptT,ptCL,ptR,ptJ,iso,cat.c_str(),SR) << endl;
+      }
+
+      if (isData && !doFakes && !doFlips) {
 	float ptT = (ss::lep1_passes_id()==0 ? ss::lep2_coneCorrPt() : ss::lep1_coneCorrPt());
 	float ptCL = (ss::lep1_passes_id()==0 ? ss::lep1_coneCorrPt() : ss::lep2_coneCorrPt());
 	float ptR = (ss::lep1_passes_id()==0 ? ss::lep1_ptrel_v1() : ss::lep2_ptrel_v1());

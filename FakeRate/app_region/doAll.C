@@ -84,7 +84,8 @@
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WJets_LO.root"); 
   } else {
     // if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets_LO.root");
-    if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");
+    // if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");
+    if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
     else ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root"); // FIXME
   }
   ScanChain(ch, fakeratefile, option, ptRegion, doData); 

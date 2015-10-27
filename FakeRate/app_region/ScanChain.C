@@ -568,10 +568,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       //require triggers
       if (!ss::fired_trigger()) continue;
       if (doLowHT) {
-	if (ss::ht_corr()>300.) continue; 
+	if (ss::ht_corr()>300.) continue;
       }
       if (!doLowHT) {
-	if (ss::ht_corr()<300.) continue; 
+	if (ss::ht_corr()<300.) continue;
       }
 
       if (doBonly) {
@@ -645,8 +645,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       //Determine mtMin
       float mtmin = ss::mt() > ss::mt_l2() ? ss::mt_l2() : ss::mt();
       if (coneCorr){
-        float mtl1 = MT(lep1_pT, ss::lep1_p4().phi(), ss::corrMET(), ss::metPhi());
-        float mtl2 = MT(lep2_pT, ss::lep2_p4().phi(), ss::corrMET(), ss::metPhi());
+        float mtl1 = MT(lep1_pT, ss::lep1_p4().phi(), ss::corrMET(), ss::corrMETphi());
+        float mtl2 = MT(lep2_pT, ss::lep2_p4().phi(), ss::corrMET(), ss::corrMETphi());
         mtmin = mtl1 > mtl2 ? mtl2 : mtl1;
       }
 
