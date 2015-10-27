@@ -39,7 +39,7 @@ class babyMaker {
     void MakeBabyNtuple(const char* output_name, bool expt);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
-    int ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, bool expt);
+    int ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, bool expt, int file = -1);
 
   protected:
     TFile* BabyFile;
