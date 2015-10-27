@@ -39,7 +39,7 @@ class babyMaker {
     void MakeBabyNtuple(const char* output_name, bool expt);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
-    int ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, bool expt);
+    int ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, bool expt, int file = -1);
 
   protected:
     TFile* BabyFile;
@@ -204,6 +204,8 @@ class babyMaker {
     //Isolation
     float lep1_iso;
     float lep2_iso;
+    float lep1_tkIso;
+    float lep2_tkIso;
 
     //Gen Leptons
     vector <LorentzVector> genps_p4;
