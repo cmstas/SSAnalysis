@@ -8,7 +8,7 @@
   TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleMuon.root" : "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root");
 
   TFile *_file_data = TFile::Open(dataf);
-  TFile *_file_dy = TFile::Open("/nfs-7/userdata/leptonTree/"+tag+"/DY_amcnlo_M50.root");
+  TFile *_file_dy = TFile::Open("/nfs-7/userdata/leptonTree/"+tag+"/DY_amcnlo.root");
 
   TTree* t_data = (TTree*) _file_data->Get("t");
   TTree* t_dy = (TTree*) _file_dy->Get("t");

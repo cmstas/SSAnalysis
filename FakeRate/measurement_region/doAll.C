@@ -14,7 +14,7 @@
   ScanChain(data,"./rate_histos_data_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
   TChain *dy = new TChain("t"); 
-  dy->Add( "/nfs-7/userdata/leptonTree/"+tag+"/DY_amcnlo_M50.root" );
+  dy->Add( "/nfs-7/userdata/leptonTree/"+tag+"/DY_amcnlo.root" );
   ScanChain(dy,"./rate_histos_dy_LooseEMVA.root","useLooseEMVA"); 
   ScanChain(dy,"./rate_histos_dy_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
@@ -33,11 +33,11 @@
   ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA.root","useLooseEMVA"); 
   ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
-  // TChain *qcd = new TChain("t"); 
-  // qcd->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_Mu_Enriched.root" );
-  // qcd->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_EM_Enriched.root" );
-  // ScanChain(qcd,"./rate_histos_qcd_LooseEMVA.root","useLooseEMVA"); 
-  // ScanChain(qcd,"./rate_histos_qcd_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
+  TChain *qcd = new TChain("t"); 
+  qcd->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_Mu_Enriched.root" );
+  qcd->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_EM_Enriched.root" );
+  ScanChain(qcd,"./rate_histos_qcd_LooseEMVA.root","useLooseEMVA"); 
+  ScanChain(qcd,"./rate_histos_qcd_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
   /*
   //default

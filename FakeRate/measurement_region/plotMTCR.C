@@ -1,3 +1,4 @@
+#include "../../commonUtils.h"
 pair<float,float> plotMTCR(float inputSF_el, float inputSF_mu, bool useIsoTrig) {
 
   float sfel, sfmu;
@@ -81,7 +82,7 @@ pair<float,float> plotMTCR(float inputSF_el, float inputSF_mu, bool useIsoTrig) 
   TLegend* leg = new TLegend(0.7,0.7,0.89,0.89);
   leg->SetFillColor(kWhite);
   leg->SetLineColor(kWhite);
-  leg->SetHeader("L=848.7/pb");
+  leg->SetHeader(Form("L=%.1f/fb",getLumi()));
   leg->AddEntry(h_data,"data","pe");
   leg->AddEntry(h_wj  ,"W+jets","f");
   leg->AddEntry(h_dy  ,"DY","f");

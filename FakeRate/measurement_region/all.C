@@ -24,7 +24,7 @@
     cout << "MT SF: " << mtsfEl << " " << mtsfMu << endl;
 
     make1DplotFR(zsfEl, zsfMu, mtsfEl, mtsfMu, false);
-    plotEWKCorFR(mtsfEl, mtsfMu, false);
+    plotEWKCorFR(zsfEl, zsfMu, mtsfEl, mtsfMu, false);
 
     gROOT->ProcessLine(".x plotFR.C");
     gROOT->ProcessLine(".x trigStudyEl.C");
@@ -43,6 +43,6 @@
     cout << "MT SF: " << mtsfEl << " " << mtsfMu << endl;
 
     make1DplotFR(zsfEl, zsfMu, mtsfEl, mtsfMu, true);
-    plotEWKCorFR(mtsfEl, mtsfMu, true);
+    plotEWKCorFR(zsfEl, zsfMu, mtsfEl, mtsfMu, true);
 
 }

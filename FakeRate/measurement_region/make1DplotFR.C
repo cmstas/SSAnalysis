@@ -64,6 +64,13 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
   TH2F* eld_wj = (TH2F*) f_wj->Get("Nl"+var+"_histo_e");
   TH2F* eld_dy = (TH2F*) f_dy->Get("Nl"+var+"_histo_e");
 
+  TH2F* mud_data_zp = (TH2F*) mud_data->Clone("mud_data_zp");
+  TH2F* mud_wj_zp   = (TH2F*) mud_wj->Clone("mud_wj_zp");
+  TH2F* mud_dy_zp   = (TH2F*) mud_dy->Clone("mud_dy_zp");
+  TH2F* eld_data_zp = (TH2F*) eld_data->Clone("eld_data_zp");
+  TH2F* eld_wj_zp   = (TH2F*) eld_wj->Clone("eld_wj_zp");
+  TH2F* eld_dy_zp   = (TH2F*) eld_dy->Clone("eld_dy_zp");
+
   mud_data->Add(mud_wj,-1.*muSF_mt);
   mud_data->Add(mud_dy,-1.*muSF_mt);
   eld_data->Add(eld_wj,-1.*elSF_mt);
@@ -71,13 +78,6 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
 
   TH1D* mud1d_data = (doPt ? mud_data->ProjectionX() : mud_data->ProjectionY());
   TH1D* eld1d_data = (doPt ? eld_data->ProjectionX() : eld_data->ProjectionY());
-
-  TH2F* mud_data_zp = (TH2F*) mud_data->Clone("mud_data_zp");
-  TH2F* mud_wj_zp   = (TH2F*) mud_wj->Clone("mud_wj_zp");
-  TH2F* mud_dy_zp   = (TH2F*) mud_dy->Clone("mud_dy_zp");
-  TH2F* eld_data_zp = (TH2F*) eld_data->Clone("eld_data_zp");
-  TH2F* eld_wj_zp   = (TH2F*) eld_wj->Clone("eld_wj_zp");
-  TH2F* eld_dy_zp   = (TH2F*) eld_dy->Clone("eld_dy_zp");
 
   mud_data_zp->Add(mud_wj_zp,-1.*muSF_zp);
   mud_data_zp->Add(mud_dy_zp,-1.*muSF_zp);
@@ -109,6 +109,13 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
     eln_dy   = (TH2F*) f_dy->Get("Nt_histo_e");
   }
 
+  TH2F* mun_data_zp = (TH2F*) mun_data->Clone("mun_data_zp");
+  TH2F* mun_wj_zp   = (TH2F*) mun_wj->Clone("mun_wj_zp");
+  TH2F* mun_dy_zp   = (TH2F*) mun_dy->Clone("mun_dy_zp");
+  TH2F* eln_data_zp = (TH2F*) eln_data->Clone("eln_data_zp");
+  TH2F* eln_wj_zp   = (TH2F*) eln_wj->Clone("eln_wj_zp");
+  TH2F* eln_dy_zp   = (TH2F*) eln_dy->Clone("eln_dy_zp");
+
   mun_data->Add(mun_wj,-1.*muSF_mt);
   mun_data->Add(mun_dy,-1.*muSF_mt);
   eln_data->Add(eln_wj,-1.*elSF_mt);
@@ -123,13 +130,6 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
 
   TH1D* mun1d_data = (doPt ? mun_data->ProjectionX() : mun_data->ProjectionY());
   TH1D* eln1d_data = (doPt ? eln_data->ProjectionX() : eln_data->ProjectionY());
-
-  TH2F* mun_data_zp = (TH2F*) mun_data->Clone("mun_data_zp");
-  TH2F* mun_wj_zp   = (TH2F*) mun_wj->Clone("mun_wj_zp");
-  TH2F* mun_dy_zp   = (TH2F*) mun_dy->Clone("mun_dy_zp");
-  TH2F* eln_data_zp = (TH2F*) eln_data->Clone("eln_data_zp");
-  TH2F* eln_wj_zp   = (TH2F*) eln_wj->Clone("eln_wj_zp");
-  TH2F* eln_dy_zp   = (TH2F*) eln_dy->Clone("eln_dy_zp");
 
   mun_data_zp->Add(mun_wj_zp,-1.*muSF_zp);
   mun_data_zp->Add(mun_dy_zp,-1.*muSF_zp);
@@ -244,7 +244,7 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
   labelcms->SetTextSize(1.2*0.035);
   labelcms->SetTextFont(42);
   labelcms->SetFillColor(kWhite);
-  labelcms->AddText(Form("%.1f pb^{-1} (13 TeV)",1000*getLumi()));
+  labelcms->AddText(Form("%.1f fb^{-1} (13 TeV)",getLumi()));
   labelcms->SetBorderSize(0);
   labelcms->SetLineWidth(2);
   labelcms->Draw();
