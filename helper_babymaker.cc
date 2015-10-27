@@ -433,7 +433,7 @@ void babyMaker::InitBabyNtuple(){
 } 
 
 //Main function
-int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, bool expt, int file = -1){
+int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, bool expt, int file){
 
   //Figure out if this is a 25ns or 50ns sample
   bool is25 = true;
