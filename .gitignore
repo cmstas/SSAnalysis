@@ -54,3 +54,8 @@ batch/*golden*.txt
 pres
 batch/main.cc
 FO.cc
+batch/btagsf.tar.gz
+batch/btagsf
+plots/phys14_v_run2
+yieldsAndSRs/numericYields/kinem_plot_dump.tex
+rareSyst/analysis_real/tables/
