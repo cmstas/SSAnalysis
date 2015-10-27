@@ -6,6 +6,8 @@
 #include "base.h"
 #include "CORE/Tools/goodrun.h"
 #include "CORE/Tools/JetCorrector.h"
+#include "CORE/Tools/jetcorr/JetCorrectionUncertainty.h"  
+#include "CORE/Tools/jetcorr/SimpleJetCorrectionUncertainty.h"
 
 int main(int argc, char *argv[]){
 
@@ -407,6 +409,11 @@ int main(int argc, char *argv[]){
   if (!is25) set_goodrun_file("final_golden_50ns_40p03pb.txt");
   if ( is25) set_goodrun_file("goldenJson1p28023fb.txt");
 
+  //Make Jet Energy Uncertainties
+  JetCorrectionUncertainty *jecUnc = 0;
+  if ( isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_Uncertainty_AK4PFchs.txt"); 
+  if (!isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_MC_Uncertainty_AK4PFchs.txt"); 
+
   //Init MVA
   createAndInitMVA("./CORE");
 
@@ -458,7 +465,7 @@ int main(int argc, char *argv[]){
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
 
-    mylooper->ProcessBaby(name, jetCorrAG, expt, file); 
+    mylooper->ProcessBaby(name, jetCorrAG, jecUnc, expt, file); 
 
   }//event loop 
 
