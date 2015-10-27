@@ -237,18 +237,11 @@ float getEta(float eta, float ht, bool extrPtRel = false){
   return fabs(eta);
 }
 
-float getFakeRate(TH2D* histo, float pt, float eta, float ht, bool extrPtRel = false, bool doData = false){
-  int id = 11;
-  if (TString(histo->GetTitle()).Contains("_mu")) id = 13;
-  //truncate the muon fake rate to avoid 100% ucneratinty
+float getFakeRate(TH2D* histo, int id, float pt, float eta, float ht, bool extrPtRel = false, bool doData = false){
+  //truncate the muon fake rate to avoid large unceratinties
   if (abs(id)==13 && pt>=50) pt=45.;
-  if (doData) {
-    return  fakeRate(id, pt, eta, ht); 
-  } else {
-    pt = getPt(pt,extrPtRel);
-    eta = getEta(eta,ht,extrPtRel);
-    return histo->GetBinContent( histo->FindBin(pt, fabs(eta) ));
-  }
+  if (doData) return fakeRate(id, pt, eta, ht);
+  else return qcdMCFakeRate(id, pt, eta, ht);
 }
 
 TH1F* histCreator(string str1, string str2, int n1, int n2, int n3){
@@ -294,6 +287,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   bool highhigh = ptRegion.Contains("HH") ? true : false;
   bool highlow = ptRegion.Contains("HL") ? true : false;
   bool lowlow = ptRegion.Contains("LL") ? true : false;
+
+  bool doLowHT = option.Contains("IsoTrigs") ? true : false;
+  bool doHighHT = option.Contains("HTTrigs") ? true : false;
 
   float luminosity = 3.;//getLumi();
 
@@ -365,9 +361,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   //---Load rate histos-----//
   TFile *InputFile = new TFile(fakeratefile,"read");
   cout << "using FR file=" << fakeratefile << endl;
-
-  bool doLowHT = false;
-  if (fakeratefile.Contains("IsoTrigs")) doLowHT = true;
 
   TH2D *rate_histo_e = 0, *rate_histo_mu = 0;
 
@@ -568,10 +561,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       //require triggers
       if (!ss::fired_trigger()) continue;
       if (doLowHT) {
-	if (ss::ht_corr()>300.) continue; 
+	if (ss::ht_corr()>300.) continue;
       }
-      if (!doLowHT) {
-	if (ss::ht_corr()<300.) continue; 
+      if (doHighHT) {
+	if (ss::ht_corr()<300.) continue;
       }
 
       if (doBonly) {
@@ -640,13 +633,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 	//Skip if does not pass FO for isolated triggers
 	if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
 	if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+	//do not do LL for LowHT
+	if (lep1_pT < 25. && lep2_pT < 25.) continue;
       } 
 
       //Determine mtMin
       float mtmin = ss::mt() > ss::mt_l2() ? ss::mt_l2() : ss::mt();
       if (coneCorr){
-        float mtl1 = MT(lep1_pT, ss::lep1_p4().phi(), ss::corrMET(), ss::metPhi());
-        float mtl2 = MT(lep2_pT, ss::lep2_p4().phi(), ss::corrMET(), ss::metPhi());
+        float mtl1 = MT(lep1_pT, ss::lep1_p4().phi(), ss::corrMET(), ss::corrMETphi());
+        float mtl2 = MT(lep2_pT, ss::lep2_p4().phi(), ss::corrMET(), ss::corrMETphi());
         mtmin = mtl1 > mtl2 ? mtl2 : mtl1;
       }
 
@@ -900,7 +895,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           }
 
           if (abs(ss::lep2_id()) == 11){  
-            e2 = getFakeRate( rate_histo_e, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
+            e2 = getFakeRate( rate_histo_e, 11, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
             w = (e2/(1-e2))*weight;
             if(subtractContamination) w = mult*weight;
 
@@ -927,7 +922,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
             if(ss::lep2_motherID() == -2 || ss::lep2_motherID() == 0) notBs_e = notBs_e + mult*weight;
           }
           else if (abs(ss::lep2_id()) == 13){ 
-            e2 = getFakeRate( rate_histo_mu, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
+            e2 = getFakeRate( rate_histo_mu, 13, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
             w = (e2/(1-e2))*weight;
             if(subtractContamination) w = mult*weight;
 
@@ -996,7 +991,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           }
 
           if( abs(ss::lep1_id()) == 11 ){	//if el, use el rate.  FILL WITH NONPROMPT			  
-            e1 = getFakeRate(rate_histo_e, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
+            e1 = getFakeRate(rate_histo_e, 11, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
             w = (e1/(1-e1))*weight;
             if(subtractContamination) w = mult*weight;
 
@@ -1024,7 +1019,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
             if(ss::lep1_motherID() == -2 || ss::lep1_motherID() == 0) notBs_e = notBs_e + mult*weight;
           }
           else if( abs(ss::lep1_id()) == 13 ){ //if mu, use mu rate.  FILL WITH NONPROMPT				  
-            e1 = getFakeRate(rate_histo_mu, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
+            e1 = getFakeRate(rate_histo_mu, 13, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
             w = (e1/(1-e1))*weight;
             if(subtractContamination) w = mult*weight;
 
@@ -1069,10 +1064,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       //nonprompt-nonprompt background
       else if(ss::hyp_class() == 1){
         if( ss::lep1_id()*ss::lep2_id() > 0 ){
-          if( abs(ss::lep2_id()) == 11 ) e2 = getFakeRate( rate_histo_e, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
-          else if( abs(ss::lep2_id()) == 13 ) e2 = getFakeRate( rate_histo_mu, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
-          if( abs(ss::lep1_id()) == 11)      e1 = getFakeRate( rate_histo_e, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
-          else if( abs(ss::lep1_id()) == 13) e1 = getFakeRate( rate_histo_mu, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
+          if( abs(ss::lep2_id()) == 11 ) e2 = getFakeRate( rate_histo_e, 11, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
+          else if( abs(ss::lep2_id()) == 13 ) e2 = getFakeRate( rate_histo_mu, 13, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
+          if( abs(ss::lep1_id()) == 11)      e1 = getFakeRate( rate_histo_e, 11, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
+          else if( abs(ss::lep1_id()) == 13) e1 = getFakeRate( rate_histo_mu, 13, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
           Nnn = Nnn + w*weight;
         }
       } //end hyp = 1 if statement

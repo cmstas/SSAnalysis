@@ -9,6 +9,7 @@
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../../commonUtils.h"
 #include "../../CORE/Tools/dorky/dorky.h"
+#include "../../CORE/Tools/utils.h"
 
 //Root files on/off
 bool makeRootFiles = 1;
@@ -16,7 +17,8 @@ bool makeRootFiles = 1;
 float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
 
-bool doNoData = false;
+bool doNoData   = false;
+bool testFakeSR = false;
 
 float scaleLumi = 1.0;//3.0/1.264;//careful!!!
 
@@ -51,6 +53,8 @@ static float roughSystFAKES = 0.4;
 void getyields(){
 
   if (doNoData) lumiAG = scaleLumi*getLumi();
+
+  cout << "Running with lumi=" << lumiAG << endl;
 
   //Chains
   //fakes&flips in mc
@@ -793,7 +797,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       if (ss::is_real_data()){
         if (doNoData) {
-	  if (!doFlips && !doFakes) continue;
+	  if (!doFlips && !doFakes && !testFakeSR) continue;
         } 
         else if (!isUnblindRun(ss::run())) continue;
       }
@@ -863,15 +867,16 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       // cout << abs(ss::lep1_id()) << " " << ss::lep1_p4().pt() << " " << ss::lep1_coneCorrPt() << endl;
       // cout << abs(ss::lep2_id()) << " " << ss::lep2_p4().pt() << " " << ss::lep2_coneCorrPt() << endl;
 
+      float lep1_pt = ss::lep1_coneCorrPt();
+      float lep2_pt = ss::lep2_coneCorrPt();
+      //now recompute mtmin
+      float mtl1 = MT(lep1_pt, ss::lep1_p4().phi(), ss::corrMET(), ss::corrMETphi());
+      float mtl2 = MT(lep2_pt, ss::lep2_p4().phi(), ss::corrMET(), ss::corrMETphi());
+      float mtmin = mtl1 > mtl2 ? mtl2 : mtl1;
+
       //drop electrons below 15 GeV
-      if (doFakes) {
-        if (abs(ss::lep1_id())==11 && ss::lep1_coneCorrPt()<15) continue;
-        if (abs(ss::lep2_id())==11 && ss::lep2_coneCorrPt()<15) continue;	
-      } 
-      else {
-        if (abs(ss::lep1_id())==11 && ss::lep1_p4().pt()<15) continue;
-        if (abs(ss::lep2_id())==11 && ss::lep2_p4().pt()<15) continue;
-      }
+      if (abs(ss::lep1_id())==11 && lep1_pt<15) continue;
+      if (abs(ss::lep2_id())==11 && lep2_pt<15) continue;	
 
       //Only keep good events
       if (!doFlips && !doFakes && exclude == 0) {
@@ -926,6 +931,10 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if (!ss::is_real_data()) weight *= -1.;
       }
 
+      //Get pt ratio
+      float ptratio_1 = ss::lep1_closeJet().pt() > 0 ? ss::lep1_p4().pt()/ss::lep1_closeJet().pt() : 1.0;
+      float ptratio_2 = ss::lep2_closeJet().pt() > 0 ? ss::lep2_p4().pt()/ss::lep2_closeJet().pt() : 1.0; 
+
       //In Situ Fakes
       if (doFakes == 2){
         if (ss::hyp_class() != 5 && ss::hyp_class() != 2) continue;
@@ -935,8 +944,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         float ptratio_cut_2  = (abs(ss::lep2_id()) == 11 ? 0.80 : 0.76);
         float ptrel_cut_1  = (abs(ss::lep1_id()) == 11 ? 7.20 : 7.20);
         float ptrel_cut_2  = (abs(ss::lep2_id()) == 11 ? 7.20 : 7.20);
-	float ptratio_1 = ss::lep1_closeJet().pt() > 0 ? ss::lep1_p4().pt()/ss::lep1_closeJet().pt() : 1.0; 
-	float ptratio_2 = ss::lep2_closeJet().pt() > 0 ? ss::lep2_p4().pt()/ss::lep2_closeJet().pt() : 1.0; 
         bool lep1_denom_iso  = ((ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || (ptratio_1 < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))));
         bool lep2_denom_iso  = ((ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || (ptratio_2 < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))));
         float fr = 0.;
@@ -946,10 +953,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if (!ss::is_real_data()) weight *= -1.;
       }
 
-      //Get pt ratio
-      float ptratio_1 = ss::lep1_closeJet().pt() > 0 ? ss::lep1_p4().pt()/ss::lep1_closeJet().pt() : 1.0;
-      float ptratio_2 = ss::lep2_closeJet().pt() > 0 ? ss::lep2_p4().pt()/ss::lep2_closeJet().pt() : 1.0; 
-
       //Reject duplicates (after selection otherwise flips are ignored...)
       if (isData && ss::is_real_data()){
         duplicate_removal::DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
@@ -957,25 +960,47 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       }
 
       //Require baseline selections
-      int BR = baselineRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      int BR = baselineRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), lep1_pt, lep2_pt);
       // cout << "BR=" << BR << endl;
       // cout << Form("nj=%i nb=%i met=%f ht=%f",ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr()) << endl;
       if (BR < 0) continue;
-   
+
       //Get the SR
-      int SR = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), ss::mtmin(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
+      int SR = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), mtmin, lep1_pt, lep2_pt);
 
       // cout << "SR=" << SR << endl;
  
       //Get the category
       anal_type_t categ = analysisCategory(ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
-      
+
+      // if (categ!=0) continue;//test
+
+      if (doNoData && testFakeSR) {
+	if (categ==0) {
+	  if (SR!=9) continue;
+	} else if (categ==1) {
+	  if (SR!=1 && SR!=7) continue;
+	} else continue;
+      }
+
       if (doFakes == 1 && ss::is_real_data() && ss::hyp_class()==2 && SR>0) {
 	float ptT = (ss::lep1_passes_id()==0 ? ss::lep2_coneCorrPt() : ss::lep1_coneCorrPt());
 	float ptCL = (ss::lep1_passes_id()==0 ? ss::lep1_coneCorrPt() : ss::lep2_coneCorrPt());
 	float ptR = (ss::lep1_passes_id()==0 ? ss::lep1_ptrel_v1() : ss::lep2_ptrel_v1());
 	float ptJ = (ss::lep1_passes_id()==0 ? ss::jet_close_lep1().pt() : ss::jet_close_lep2().pt());
 	float iso = (ss::lep1_passes_id()==0 ? ss::lep1_miniIso() : ss::lep2_miniIso());
+	string cat = "HH";
+	if (categ==1) cat = "HL";
+	if (categ==2) cat = "LL";
+	//cout << Form("%20i       %6.2f %6.2f %6.2f %6.2f %6.2f %s SR%i",ss::event(),ptT,ptCL,ptR,ptJ,iso,cat.c_str(),SR) << endl;
+      }
+
+      if (isData && !doFakes && !doFlips) {
+	float ptT  = (ss::lep1_passes_id()==0 ? lep2_pt : lep1_pt);
+	float ptCL = (ss::lep1_passes_id()==0 ? lep1_pt : lep2_pt);
+	float ptR  = (ss::lep1_passes_id()==0 ? ss::lep1_ptrel_v1() : ss::lep2_ptrel_v1());
+	float ptJ  = (ss::lep1_passes_id()==0 ? ss::jet_close_lep1().pt() : ss::jet_close_lep2().pt());
+	float iso  = (ss::lep1_passes_id()==0 ? ss::lep1_miniIso() : ss::lep2_miniIso());
 	string cat = "HH";
 	if (categ==1) cat = "HL";
 	if (categ==2) cat = "LL";
@@ -992,11 +1017,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_ht          ->Fill(ss::ht_corr()                    , weight);
       p_result.h_met         ->Fill(ss::corrMET()                    , weight);
       p_result.h_mll         ->Fill((ss::lep1_p4()+ss::lep2_p4()).M(), weight);
-      p_result.h_mtmin       ->Fill(ss::mtmin()                      , weight);
+      p_result.h_mtmin       ->Fill(mtmin                            , weight);
       p_result.h_njets       ->Fill(ss::njets_corr()                 , weight);
       p_result.h_nbtags      ->Fill(ss::nbtags_corr()                , weight);
-      p_result.h_l1pt        ->Fill(ss::lep1_p4().pt()               , weight);
-      p_result.h_l2pt        ->Fill(ss::lep2_p4().pt()               , weight);
+      p_result.h_l1pt        ->Fill(lep1_pt                          , weight);
+      p_result.h_l2pt        ->Fill(lep2_pt                          , weight);
       p_result.h_type        ->Fill(ss::hyp_type()                   , weight); 
       p_result.h_lep1_miniIso->Fill(ss::lep1_miniIso()               , weight); 
       p_result.h_lep2_miniIso->Fill(ss::lep2_miniIso()               , weight); 

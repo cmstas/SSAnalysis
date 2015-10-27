@@ -204,6 +204,8 @@ class babyMaker {
     //Isolation
     float lep1_iso;
     float lep2_iso;
+    float lep1_tkIso;
+    float lep2_tkIso;
 
     //Gen Leptons
     vector <LorentzVector> genps_p4;
