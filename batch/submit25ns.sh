@@ -20,6 +20,7 @@ fi
 make -j 10
 
 #Start by checking proxy, get path to proxy file
+voms-proxy-init -hours 168 -voms cms
 voms-proxy-info --all &> voms_status.txt
 if grep "Couldn't find a valid proxy." voms_status.txt &>/dev/null
 then 
@@ -37,7 +38,7 @@ sed -i "s/cgeorge/$USER/" condorExecutable.sh
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "ZG" # "T1TTTT_1200" "T1TTTT_1500" "TG" # "T5QQQQWZ_1200_1000_800" "T5QQQQDeg_1000_300_285_280" "T5QQQQWZ_1500_800_100" "T5ttttDeg_1000_300_280" "T2ttDeg_350_330" "T5QQQQZZ_1200_1000_800" "T6TTWW_600_425_50" "T2TT_ARXIV" "T5QQQQZZ_1500_800_100" "T6TTWW_650_150_50" # "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ" "WWZ" "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD" "DataDoubleEGD" "DATAMUONEGD" "WJets" "WZ3LNu" "TTZL" "TTBAR" "TTW" "DY_high" "DY_low" "T1TTTT_1200" "T1TTTT_1500" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS"  "WZZ" 
+  for sname in "ZG"  "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5QQQQDeg_1000_315_300" "T5ttttDeg_1000_300_285_280" "T6TTWW_600_425_50" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ" "WWZ" "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DATAMUONEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DATAMUONEGD_v4" "WJets" "WZ3LNu" "TTZL" "TTW" "DY_high" "DY_low" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH" "WJets_LO" # "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DATAMUONEGC_05oct"
   do
     path="/hadoop/cms/store/group/snt/run2_25ns"
     #Iter
@@ -91,6 +92,15 @@ do
       then name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-08
       nameNu=8
+    elif [ $sname == "TTBAR_PH"      ]; 
+      then name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2"
+      tag=V07-04-08
+      nameNu=59
+    elif [ $sname == "WJets_LO"      ];
+      then name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+      tag=V07-04-11
+      path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
+      nameNu=60
     elif [ $sname == "SINGLETOP1"    ]; 
       then name="ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-08
@@ -160,21 +170,51 @@ do
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-08
       nameNu=19
-    elif [ $sname == "DataDoubleMuonD"  ]; 
-      then name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v3";
+    elif [ $sname == "DataDoubleMuonD_05oct"  ]; 
+      then name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-09
+      tag=V07-04-11
       nameNu=46
-    elif [ $sname == "DataDoubleEGD"    ]; 
-      then name="Run2015D_DoubleEG_MINIAOD_PromptReco-v3";
+    elif [ $sname == "DataDoubleEGD_05oct"    ]; 
+      then name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-09
+      tag=V07-04-11
       nameNu=45
-    elif [ $sname == "DATAMUONEGD"    ]; 
-      then name="Run2015D_MuonEG_MINIAOD_PromptReco-v3";
+    elif [ $sname == "DATAMUONEGD_05oct"    ]; 
+      then name="Run2015D_MuonEG_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-09
+      tag=V07-04-11
       nameNu=47
+    elif [ $sname == "DataDoubleMuonC_05oct"  ]; 
+      then name="Run2015C_DoubleMuon_MINIAOD_05Oct2015-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-11
+      nameNu=56
+    elif [ $sname == "DataDoubleEGC_05oct"    ]; 
+      then name="Run2015C_DoubleEG_MINIAOD_05Oct2015-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-11
+      nameNu=57
+    elif [ $sname == "DATAMUONEGC_05oct"    ]; 
+      then name="Run2015C_MuonEG_MINIAOD_05Oct2015-v1";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-11
+      nameNu=58
+    elif [ $sname == "DataDoubleMuonD_v4"  ]; 
+      then name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v4";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-11
+      nameNu=53
+    elif [ $sname == "DataDoubleEGD_v4"    ]; 
+      then name="Run2015D_DoubleEG_MINIAOD_PromptReco-v4";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-11
+      nameNu=54
+    elif [ $sname == "DATAMUONEGD_v4"    ]; 
+      then name="Run2015D_MuonEG_MINIAOD_PromptReco-v4";
+      path="/hadoop/cms/store/group/snt/run2_data"
+      tag=V07-04-11
+      nameNu=55
     elif [ $sname == "TTW" ]
     then
       name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1" 
@@ -245,27 +285,21 @@ do
       name=SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
       tag=V07-04-08
       nameNu=5
-    elif [ $sname == "T5QQQQWZ_1200_1000_800" ] 
+    elif [ $sname == "T5QQQQWWDeg_1000_315_300" ] 
     then
-      name=T5qqqqWZ_mGo1200_mCh1000_mChi800_lep  
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=35
-    elif [ $sname == "T5QQQQDeg_1000_300_285_280" ] 
-    then
-      name=T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec
+      name=T5ttttDeg_mGo1000_mCh315_mChi300_dilep
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
       nameNu=36
-    elif [ $sname == "T5QQQQWZ_1500_800_100" ] 
+    elif [ $sname == "T5QQQQWW_1200_1000_800" ] 
     then
-      name=T5qqqqWZ_mGo1500_mCh800_mChi100_lep   
+      name=T5qqqqWW_mGo1200_mCh1000_mChi800_dilep
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
       nameNu=37
-    elif [ $sname == "T5ttttDeg_1000_300_280" ] 
+    elif [ $sname == "T5ttttDeg_1000_300_285_280" ] 
     then
-      name=T5ttttDeg_mGo1000_mStop300_mChi280_4bodydec
+      name=T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
       nameNu=38
@@ -336,8 +370,6 @@ do
       if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/$SPPATH/${sname_lower}_${number}_$expt.root ] 
       then 
         continue
-      else
-        "Redoing, this does not exist: /hadoop/cms/store/user/$USER/condor/ss_13_babies/$SPPATH/${sname_lower}_${number}_$expt.root"
       fi
 
       echo "-------------"

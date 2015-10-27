@@ -33,12 +33,22 @@ then
 fi
 cp ../CORE/Tools/jetcorr/data/run2_50ns/*.txt CORE/Tools/jetcorr/data/run2_50ns/
 
+if [ ! -d CORE/Tools/btagsf ]
+then
+  mkdir -p CORE/Tools/btagsf
+fi
+cp -r ../CORE/Tools/btagsf CORE/Tools/btagsf
+tar -czf btagsf.tar.gz btagsf
+
 #And goodrun list directory 
 if [ ! -d goodRunList ] 
 then
   mkdir goodRunList
 fi
 cp ../goodRunList/*.txt        goodRunList/
+
+#And btagsSF dir
+cp -r ../btagsf . 
 
 #Linkdef
 cp ../LinkDef.h . 

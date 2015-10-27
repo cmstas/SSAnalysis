@@ -80,6 +80,7 @@ class babyMaker {
     float xsec;         
     float kfactor;      
     TString filename;
+    int filenumber; 
     vector <float> genweights;
     vector <string> genweightsID;
 

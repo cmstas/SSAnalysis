@@ -14,7 +14,7 @@ export SCRAM_ARCH=slc6_amd64_gcc491
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 
 #Set CMSSW environment
-pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_6/src/
+pushd /cvmfs/cms.cern.ch/slc6_amd64_gcc491/cms/cmssw/CMSSW_7_4_12/src/
 eval `scramv1 runtime -sh`
 popd
 
@@ -66,14 +66,20 @@ if [ "$WHICH" == "41" ]; then WHICH_SMALL="t6ttww_600_425_50"; fi
 if [ "$WHICH" == "42" ]; then WHICH_SMALL="t2tt_arxiv"; fi
 if [ "$WHICH" == "43" ]; then WHICH_SMALL="t5qqqqzz_1500_800_100"; fi
 if [ "$WHICH" == "44" ]; then WHICH_SMALL="t6ttww_650_150_50"; fi
-if [ "$WHICH" == "45" ]; then WHICH_SMALL="datadoubleegd"; fi
-if [ "$WHICH" == "46" ]; then WHICH_SMALL="datadoublemuond"; fi
-if [ "$WHICH" == "47" ]; then WHICH_SMALL="datamuonegd"; fi
+if [ "$WHICH" == "45" ]; then WHICH_SMALL="datadoubleegd_05oct"; fi
+if [ "$WHICH" == "46" ]; then WHICH_SMALL="datadoublemuond_05oct"; fi
+if [ "$WHICH" == "47" ]; then WHICH_SMALL="datamuonegd_05oct"; fi
 if [ "$WHICH" == "48" ]; then WHICH_SMALL="qqww"; fi
 if [ "$WHICH" == "49" ]; then WHICH_SMALL="wwz"; fi
 if [ "$WHICH" == "50" ]; then WHICH_SMALL="zz"; fi
 if [ "$WHICH" == "51" ]; then WHICH_SMALL="tg"; fi
 if [ "$WHICH" == "52" ]; then WHICH_SMALL="zg"; fi
+if [ "$WHICH" == "53" ]; then WHICH_SMALL="datadoubleegd_v4"; fi
+if [ "$WHICH" == "54" ]; then WHICH_SMALL="datadoublemuond_v4"; fi
+if [ "$WHICH" == "55" ]; then WHICH_SMALL="datamuonegd_v4"; fi
+if [ "$WHICH" == "56" ]; then WHICH_SMALL="datadoubleegd_05oct"; fi
+if [ "$WHICH" == "57" ]; then WHICH_SMALL="datadoublemuond_05oct"; fi
+if [ "$WHICH" == "58" ]; then WHICH_SMALL="datamuonegd_05oct"; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}_$EXPT
 
@@ -82,6 +88,7 @@ export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}
 
 #Untar the zip dir
 tar xzvf CORE.tar.gz
+tar xzvf btagsf.tar.gz
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
 echo "running: ./main.exe $WHICH $FILE $EXPT"
