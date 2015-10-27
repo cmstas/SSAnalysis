@@ -20,6 +20,7 @@
   bool lowlow     = 0;
 
   bool doIsoTrigs = 0;
+  bool doHTTrigs  = 0;
 
   //These are only for not-in-situ
   bool doConeCorr   = 1;
@@ -49,7 +50,8 @@
     if (doConly) option+="_doConly";
     if (doLightonly) option+="_doLightonly";
     if (doIsoTrigs) option+="_IsoTrigs";
-    fakeratefile = "../measurement_region/rate_histos_qcd"+option+".root";
+    fakeratefile = "../measurement_region/rate_histos_qcd"+option+".root";//not used anymore, now we use functions in commonUtils
+    if (doHTTrigs) option+="_HTTrigs";
   }
   else {
     if (soup) option += "_soup";
