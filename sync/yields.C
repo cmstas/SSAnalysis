@@ -60,9 +60,10 @@ void yields(){
 
       //Duplicates
       duplicate_removal::DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
+      if (duplicate_removal::is_duplicate(id)) continue; 
 
       //Blinding
-      if (ss::run() > 257531) continue;
+      if (ss::run() > 257599) continue;
     
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);

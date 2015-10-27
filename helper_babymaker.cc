@@ -1,5 +1,8 @@
 #include "helper_babymaker.h"
 #include "CORE/Tools/btagsf/BTagCalibrationStandalone.h"
+#include "CORE/Tools/jetcorr/Utilities.icc"
+#include "CORE/Tools/jetcorr/SimpleJetCorrectionUncertainty.icc"
+#include "CORE/Tools/jetcorr/JetCorrectionUncertainty.icc"
 
 using namespace tas;
 
@@ -67,6 +70,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("btags_corr_JEC"          , &btags_corr_JEC          );
   BabyTree->Branch("jets_corr_undoJEC"       , &jets_corr_undoJEC       );
   BabyTree->Branch("btags_corr_undoJEC"      , &btags_corr_undoJEC      );
+  BabyTree->Branch("btags_corr_unc"          , &btags_corr_unc          );
+  BabyTree->Branch("jets_corr_unc"           , &jets_corr_unc           );
+  BabyTree->Branch("btags_unc"               , &btags_unc               );
+  BabyTree->Branch("jets_unc"                , &jets_unc                );
   BabyTree->Branch("btags"                   , &btags                   );
   BabyTree->Branch("nbtags"                  , &nbtags                  );
   BabyTree->Branch("btags_corr"              , &btags_corr              );
@@ -294,6 +301,11 @@ void babyMaker::InitBabyNtuple(){
     btags_corr_JEC.clear();
     jets_corr_undoJEC.clear();
     btags_corr_undoJEC.clear();
+    jets_corr_unc.clear(); 
+    btags_corr_unc.clear(); 
+    jets_unc.clear(); 
+    btags_unc.clear(); 
+    btags.clear(); 
     btags_corr.clear();
     nbtags = -1;
     nbtags_corr = -1;
@@ -437,7 +449,7 @@ void babyMaker::InitBabyNtuple(){
 } 
 
 //Main function
-int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, bool expt, int file){
+int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty* jecUnc, bool expt, int file){
 
   //Figure out if this is a 25ns or 50ns sample
   bool is25 = true;
@@ -703,14 +715,24 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   
   //Determine and save jet and b-tag variables, uncorrected
   std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 0);
-  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets.push_back(jet_results.first.at(i).p4());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++)  jets.push_back(jet_results.first.at(i).p4());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags.push_back(jet_results.second.at(i).p4());
-  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_disc.push_back(jet_results.first.at(i).csv());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++)  jets_disc.push_back(jet_results.first.at(i).csv());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc.push_back(jet_results.second.at(i).csv());
-  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_JEC.push_back(jet_results.first.at(i).jec());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++)  jets_JEC.push_back(jet_results.first.at(i).jec());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_JEC.push_back(jet_results.second.at(i).jec());
-  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_undoJEC.push_back(jet_results.first.at(i).undo_jec());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++)  jets_undoJEC.push_back(jet_results.first.at(i).undo_jec());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_undoJEC.push_back(jet_results.second.at(i).undo_jec());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++){
+    jecUnc->setJetEta(jets[i].eta()); 
+    jecUnc->setJetPt(jets[i].pt()*jets_undoJEC[i]*jets_JEC[i]); 
+    jets_unc.push_back(jecUnc->getUncertainty(true)); 
+  }
+  for (unsigned int i = 0; i < jet_results.second.size(); i++){
+    jecUnc->setJetEta(btags[i].eta()); 
+    jecUnc->setJetPt(btags[i].pt()*btags_undoJEC[i]*btags_JEC[i]); 
+    btags_unc.push_back(jecUnc->getUncertainty(true)); 
+  }
   njets = jets.size();
   nbtags = btags.size();
   ht = 0;
@@ -743,6 +765,16 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_corr_JEC.push_back(jet_results.second.at(i).jec());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_corr_undoJEC.push_back(jet_results.first.at(i).undo_jec());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_corr_undoJEC.push_back(jet_results.second.at(i).undo_jec());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++){
+    jecUnc->setJetEta(jets_corr[i].eta()); 
+    jecUnc->setJetPt(jets_corr[i].pt()*jets_corr_undoJEC[i]*jets_corr_JEC[i]); 
+    jets_corr_unc.push_back(jecUnc->getUncertainty(true)); 
+  }
+  for (unsigned int i = 0; i < jet_results.second.size(); i++){
+    jecUnc->setJetEta(btags_corr[i].eta()); 
+    jecUnc->setJetPt(btags_corr[i].pt()*btags_corr_undoJEC[i]*btags_corr_JEC[i]); 
+    btags_corr_unc.push_back(jecUnc->getUncertainty(true)); 
+  }
   njets_corr = jets_corr.size();
   nbtags_corr = btags_corr.size();
   ht_corr = 0;

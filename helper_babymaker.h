@@ -16,6 +16,8 @@
 #include "CORE/ElectronSelections.h"
 #include "CORE/IsolationTools.h"
 #include "CORE/Tools/goodrun.h"
+#include "CORE/Tools/jetcorr/JetCorrectionUncertainty.h"  
+#include "CORE/Tools/jetcorr/SimpleJetCorrectionUncertainty.h"
 #include "TROOT.h"
 #include <vector>
 
@@ -39,7 +41,7 @@ class babyMaker {
     void MakeBabyNtuple(const char* output_name, bool expt);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
-    int ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, bool expt, int file = -1);
+    int ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, bool expt, int file = -1);
 
   protected:
     TFile* BabyFile;
@@ -107,12 +109,14 @@ class babyMaker {
     vector <LorentzVector> jets;
     vector <float> jets_disc;
     vector <float> jets_JEC; 
+    vector <float> jets_unc; 
     vector <float> jets_undoJEC; 
     int njets_corr;
     float ht_corr;
     vector <LorentzVector> jets_corr;
     vector <float> jets_corr_disc;
     vector <float> jets_corr_JEC; 
+    vector <float> jets_corr_unc; 
     vector <float> jets_corr_undoJEC; 
     vector <LorentzVector> mostJets; //this is all jets with pT > 5, |eta| < 2.4
     vector <float> jet_corr_pt;
@@ -152,11 +156,13 @@ class babyMaker {
     vector <LorentzVector> btags;
     vector <float> btags_disc;
     vector <float> btags_JEC; 
+    vector <float> btags_unc; 
     vector <float> btags_undoJEC; 
     int nbtags;
     vector <LorentzVector> btags_corr;
     vector <float> btags_corr_disc;
     vector <float> btags_corr_JEC; 
+    vector <float> btags_corr_unc; 
     vector <float> btags_corr_undoJEC; 
     int nbtags_corr;
 

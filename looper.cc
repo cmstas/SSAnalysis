@@ -22,6 +22,8 @@
 #include "./CORE/CMS3.h"
 #include "CORE/Tools/goodrun.h"
 #include "CORE/Tools/JetCorrector.h"
+#include "CORE/Tools/jetcorr/JetCorrectionUncertainty.h"  
+#include "CORE/Tools/jetcorr/SimpleJetCorrectionUncertainty.h"
 
 using namespace tas;
 using namespace std;
@@ -83,6 +85,11 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
   //Add good run list
   set_goodrun_file("goodRunList/goldenJson1p28023fb.txt");
+
+  //Make Jet Energy Uncertainties
+  JetCorrectionUncertainty *jecUnc = 0;
+  if ( isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_Uncertainty_AK4PFchs.txt"); 
+  if (!isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_MC_Uncertainty_AK4PFchs.txt"); 
 
   //Set up jet corrs
   vector <std::string> files;
@@ -199,8 +206,8 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //If making baby, fill it
       if (makebaby){	
-	bm->ProcessBaby(currentFile->GetTitle(), jetCorr, expt);
-	continue;
+        bm->ProcessBaby(currentFile->GetTitle(), jetCorr, jecUnc, expt);
+        continue;
       }
 
       //Get event variables
