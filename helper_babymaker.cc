@@ -203,6 +203,12 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("mostJets_undoJEC"        , &mostJets_undoJEC        );
   BabyTree->Branch("mostJets_passID"         , &mostJets_passID         );
   BabyTree->Branch("mostJets_passCleaning"   , &mostJets_passCleaning   );
+  BabyTree->Branch("njets_unc_up"            , &njets_unc_up            );
+  BabyTree->Branch("njets_unc_dn"            , &njets_unc_dn            );
+  BabyTree->Branch("ht_unc_up"               , &ht_unc_up               );
+  BabyTree->Branch("ht_unc_dn"               , &ht_unc_dn               );
+  BabyTree->Branch("nbtags_unc_up"           , &nbtags_unc_up           );
+  BabyTree->Branch("nbtags_unc_dn"           , &nbtags_unc_dn           );
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -460,6 +466,12 @@ void babyMaker::InitBabyNtuple(){
     mostJets_undoJEC.clear(); 
     mostJets_passID.clear(); 
     mostJets_passCleaning.clear(); 
+    njets_unc_up = 0; 
+    njets_unc_dn = 0; 
+    ht_unc_up = 0;
+    ht_unc_dn = 0;
+    nbtags_unc_up = 0;
+    nbtags_unc_dn = 0;
 } 
 
 //Main function
@@ -887,6 +899,27 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     mostJets_passID.push_back(isLoosePFJet_50nsV1(i));
   }
   mostJets_passCleaning = cleanJets(mostJets_jet);
+
+  //And unc up/down results
+  int njetsAG = 0;
+  for (unsigned int i = 0; i < mostJets.size(); i++){
+    //Cuts
+    if (mostJets_passID.at(i) == 0) continue;
+    if (mostJets_passCleaning.at(i) == 0) continue;
+    float jet_pt    = mostJets.at(i).pt()*mostJets_undoJEC.at(i)*mostJets_JEC.at(i); 
+    float jet_pt_up = mostJets.at(i).pt()*mostJets_undoJEC.at(i)*mostJets_JEC.at(i)*(1.0+mostJets_unc.at(i)); 
+    float jet_pt_dn = mostJets.at(i).pt()*mostJets_undoJEC.at(i)*mostJets_JEC.at(i)*(1.0-mostJets_unc.at(i)); 
+    if (jet_pt_up > 40) njets_unc_up++; 
+    if (jet_pt_dn > 40) njets_unc_dn++; 
+    if (jet_pt    > 40) njetsAG++; 
+    if (jet_pt_up > 40) ht_unc_up += jet_pt_up; 
+    if (jet_pt_up > 40) ht_unc_dn += jet_pt_dn; 
+    if (mostJets_disc.at(i) < btagCut) continue;
+    if (jet_pt_up > 25) nbtags_unc_up++; 
+    if (jet_pt_dn > 25) nbtags_unc_dn++; 
+  }
+  if (njetsAG != njets_corr) cout << "Weird.  " << njetsAG << " " << njets_corr << endl;  //need to debug this
+   
   
   //Verbose for jets
   if (verbose){

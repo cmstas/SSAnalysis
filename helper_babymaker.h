@@ -128,6 +128,14 @@ class babyMaker {
     vector <bool> mostJets_passID;
     vector <float> jet_corr_pt;
 
+    //Jets unc stuff
+    int njets_unc_up;
+    int njets_unc_dn;
+    float ht_unc_up;   
+    float ht_unc_dn;   
+    int nbtags_unc_up;
+    int nbtags_unc_dn;
+
     //Hyp Class -- in this order
        //3 for num-num SS leptons
        //2 for num-den SS leptons
