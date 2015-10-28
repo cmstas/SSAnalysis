@@ -714,7 +714,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   }
   
   //Determine and save jet and b-tag variables, uncorrected
-  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 0);
+  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 0, 1);
   for (unsigned int i = 0; i < jet_results.first.size(); i++)  jets.push_back(jet_results.first.at(i).p4());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags.push_back(jet_results.second.at(i).p4());
   for (unsigned int i = 0; i < jet_results.first.size(); i++)  jets_disc.push_back(jet_results.first.at(i).csv());
@@ -783,7 +783,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
      ht_corr += jets_corr.at(i).pt()*jets_corr_undoJEC.at(i)*jets_corr_JEC.at(i); 
   }
 
-  //now look at jets for get the btag scale factor (need to save down to 25 GeV)
+  //now look at jets for get the btag scale factor (need to save down to 25 GeV corrected)
   jet_results = SSJetsCalculator(jetCorr, 1, 1);
   for (unsigned int i = 0; i < jet_results.first.size(); i++) {
      if (is_real_data) continue;
