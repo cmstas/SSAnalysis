@@ -153,9 +153,9 @@ void FR(){
 
       //Event Selection
       // relax cuts for low lumi
-      if (ss::njets_corr() < 2) continue;
-      if (ss::ht_corr() < 80) continue;
-      if (ss::corrMET() < 30 && ss::ht() < 500) continue;
+      //if (ss::njets_corr() < 2) continue;
+      //if (ss::ht_corr() < 80) continue;
+      //if (ss::corrMET() < 30 && ss::ht() < 500) continue;
       if (ss::hyp_class() == 4 || ss::hyp_class() == 6) continue;
       if (!ss::fired_trigger()) continue; 
 
