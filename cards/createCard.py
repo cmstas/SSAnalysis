@@ -15,7 +15,8 @@ import math
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
-lumi = "1.3"
+lumi = "0.1"
+#lumi = "1.3"
 #lumi = "3.0"
 
 class Process:
@@ -27,6 +28,7 @@ class Process:
         self.jes  = "-"
         self.lep  = "-"
         self.btag = "-"
+        self.trigeff = "-"
         self.signal_stat = "-"
         self.TTW = "-"
         self.ttw_pdf = "-"
@@ -53,6 +55,7 @@ class Process:
         self.rares_stat = "-"
         self.fakes = "-"
         self.fakes_stat = "-"
+        self.fakes_EWK = "-"
         self.flips = "-"
     def rate(self): 
         f = ROOT.TFile(dir+"/"+self.rootf)
@@ -113,6 +116,10 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     #nuisance btag
     card.write("%-40s %-5s " % ("btag","shape"))
     for process in processes: card.write("%-15s " % (process.btag))
+    card.write("\n")
+    #nuisance trigeff
+    card.write("%-40s %-5s " % ("trigeff","lnN"))
+    for process in processes: card.write("%-15s " % (process.trigeff))
     card.write("\n")
 
     #nuisance TTW
@@ -191,8 +198,12 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     for process in processes: card.write("%-15s " % (process.fakes))
     card.write("\n")
     #nuisance fakes stat
-    card.write("%-40s %-5s " % ("fakes_dd_stat","shape"))
+    card.write("%-40s %-5s " % ("fakes_stat","shape"))
     for process in processes: card.write("%-15s " % (process.fakes_stat))
+    card.write("\n")
+    #nuisance fakes EWK
+    card.write("%-40s %-5s " % ("fakes_EWK","shape"))
+    for process in processes: card.write("%-15s " % (process.fakes_EWK))
     card.write("\n")
 
     #nuisance flips
@@ -226,6 +237,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTW.jes  = "1"
     TTW.lep  = "1"
     TTW.btag = "1"
+    TTW.trigeff = "1.04"
     TTW.ttw_stat = "1"
     TTZH.TTZH          = "1.11"
     TTZH.ttzh_pdf      = "1.04"
@@ -235,36 +247,43 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTZH.jes  = "1"
     TTZH.lep  = "1"
     TTZH.btag = "1"
+    TTZH.trigeff = "1.04"
     TTZH.ttzh_stat = "1"
     WZ.WZ = "1.30"
     #WZ.wz_extr = "1"
     WZ.jes  = "1"
     WZ.lep  = "1"
     WZ.btag = "1"
+    WZ.trigeff = "1.04"
     WZ.wz_stat = "1"
     WW.WW = "1.30"
     WW.jes  = "1"
     WW.lep  = "1"
     WW.btag = "1"
+    WW.trigeff = "1.04"
     WW.ww_stat = "1"
     TG.TG = "1.50"
     TG.jes  = "1"
     TG.lep  = "1"
     TG.btag = "1"
+    TG.trigeff = "1.04"
     TG.tg_stat = "1"
     VG.VG = "1.30"
     VG.jes  = "1"
     VG.lep  = "1"
     VG.btag = "1"
+    VG.trigeff = "1.04"
     VG.vg_stat = "1"
     rares.RARES = "1.30"
     rares.jes  = "1"
     rares.lep  = "1"
     rares.btag = "1"
+    rares.trigeff = "1.04"
     rares.rares_stat = "1"
-    fakes.fakes = "1.4"
+    fakes.fakes = "1.30"
     fakes.fakes_stat = "1"
-    flips.flips = "1.3"
+    fakes.fakes_EWK = "1"
+    flips.flips = "1.30"
 
     #fill list of processes    
     processes = []

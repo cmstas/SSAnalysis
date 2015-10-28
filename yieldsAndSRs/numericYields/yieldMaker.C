@@ -32,13 +32,15 @@ yields_t total;
 //function declaration
 pair<yields_t, plots_t> run(TChain *chain, bool isData = 0, bool doFlips = 0, int doFakes = 0, int exclude = 0, bool isSignal = 0, bool isGamma = 0);
 void avoidNegativeYields(TH1F* plot);
+void fillDownMirrorUp(TH1F* central,TH1F* up,TH1F* down);
 void writeStatUpDown(TH1F* central,string name,bool down);
-void writeTTVExtrSyst(TH1F* central,string name,TString kine,bool down);
-void writeTTVExtrSyst(TH1F* central,string name,TString kine,bool down);
+void writeStat(TH1F* central,string name);
+void writeTTVExtrSyst(TH1F* central,string name,TString kine);
+void writeJesSyst(TH1F* central,string name,TString kine);
+void writeLepSyst(TH1F* central,string name,TString kine);
+void writeBtagSyst(TH1F* central,string name,TString kine);
+//deprecated:
 void writeWZExtrSyst(TH1F* central,string name,TString kine,bool down);
-void writeJesSyst(TH1F* central,string name,TString kine,bool down);
-void writeLepSyst(TH1F* central,string name,TString kine,bool down);
-void writeBtagSyst(TH1F* central,string name,TString kine,bool down);
 
 static float roughSystTTW   = 0.2;
 static float roughSystTTZH  = 0.2;
@@ -98,7 +100,6 @@ void getyields(){
   ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"           , tag.c_str())); 
   ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
   wz_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ3LNU.root"         , tag.c_str()));
-  ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWDPS.root"          , tag.c_str()));
   ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
   tg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TG.root"             , tag.c_str()));
   tg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTG.root"            , tag.c_str()));
@@ -110,6 +111,7 @@ void getyields(){
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWDPS.root"          , tag.c_str()));
 
   data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleMuonD.root", tag.c_str()));
   data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleEGD.root"  , tag.c_str()));
@@ -768,6 +770,17 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   p_result.h_lep1_ptRel   = new TH1F(Form("lep1_ptRel_%s"   , chain->GetTitle()) , Form("lep1_ptRel_%s"   , chain->GetTitle()) , 25 , 0 , 25);
   p_result.h_lep2_ptRel   = new TH1F(Form("lep2_ptRel_%s"   , chain->GetTitle()) , Form("lep2_ptRel_%s"   , chain->GetTitle()) , 25 , 0 , 25);
 
+  plots_t p_alternative;
+  if (doFakes == 1) {
+    p_alternative.SRHH.TOTAL     = new TH1F(Form("SRHH_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_ALT_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);
+    p_alternative.SRHL.TOTAL     = new TH1F(Form("SRHL_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_ALT_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);
+    p_alternative.SRLL.TOTAL     = new TH1F(Form("SRLL_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_ALT_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9);
+  } else {
+    p_alternative.SRHH.TOTAL     = 0;
+    p_alternative.SRHL.TOTAL     = 0;
+    p_alternative.SRLL.TOTAL     = 0;
+  }
+
   //nEvents in chain
   unsigned int nEventsTotal = 0;
   unsigned int nEventsChain = chain->GetEntries();
@@ -794,6 +807,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUw(ss::nGoodVertices());
       weight*=scaleLumi;
+      float weight_alt = weight;
 
       if (ss::is_real_data()){
         if (doNoData) {
@@ -923,12 +937,19 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if (ss::lep1_passes_id()==0) {
 	  float fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
 	  weight *= fr/(1.-fr);
+	  float fra = alternativeFakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
+	  weight_alt *= fra/(1.-fra);
 	}
         if (ss::lep2_passes_id()==0) {
 	  float fr = fakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht_corr());
 	  weight *= fr/(1.-fr);
+	  float fra = alternativeFakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht_corr());
+	  weight_alt *= fra/(1.-fra);
 	}
-        if (!ss::is_real_data()) weight *= -1.;
+        if (!ss::is_real_data()) {
+	  weight *= -1.;
+	  weight_alt *= -1.;
+	}
       }
 
       //Get pt ratio
@@ -1036,6 +1057,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         else if (ss::hyp_type() == 0) p_result.SRHH.MM->Fill(SR, weight); 
         else                          p_result.SRHH.EM->Fill(SR, weight); 
                                       p_result.SRHH.TOTAL->Fill(SR, weight); 
+	if (doFakes ==1 )             p_alternative.SRHH.TOTAL->Fill(SR, weight_alt); 
       }
 
       if (categ == HighLow){
@@ -1043,6 +1065,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         else if (ss::hyp_type() == 0) p_result.SRHL.MM->Fill(SR, weight); 
         else                          p_result.SRHL.EM->Fill(SR, weight); 
                                       p_result.SRHL.TOTAL->Fill(SR, weight); 
+	if (doFakes == 1)             p_alternative.SRHL.TOTAL->Fill(SR, weight_alt); 
       }
 
       if (categ == LowLow){
@@ -1050,6 +1073,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         else if (ss::hyp_type() == 0) p_result.SRLL.MM->Fill(SR, weight); 
         else                          p_result.SRLL.EM->Fill(SR, weight); 
                                       p_result.SRLL.TOTAL->Fill(SR, weight); 
+	if (doFakes == 1)             p_alternative.SRLL.TOTAL->Fill(SR, weight_alt); 
       }
 
 
@@ -1064,6 +1088,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   avoidNegativeYields(p_result.SRHH.TOTAL);
   avoidNegativeYields(p_result.SRHL.TOTAL);
   avoidNegativeYields(p_result.SRLL.TOTAL);
+  if (doFakes == 1) {
+    avoidNegativeYields(p_alternative.SRHH.TOTAL);
+    avoidNegativeYields(p_alternative.SRHL.TOTAL);
+    avoidNegativeYields(p_alternative.SRLL.TOTAL);
+  }
 
   //Update total
   if (!exclude && (!isData || doFlips || doFakes == 1) && !isSignal){
@@ -1095,13 +1124,25 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       //now do systematics
       
       //mc stats
-      writeStatUpDown(h_sr,name,0);
-      writeStatUpDown(h_sr,name,1);
+      writeStat(h_sr,name);
+
+      //fakes ewk
+      if (doFakes == 1) {
+	TH1F* plot_alt = 0;
+	if (kinRegs[kr]=="hihi") plot_alt=p_alternative.SRHH.TOTAL;
+	else if (kinRegs[kr]=="hilow") plot_alt=p_alternative.SRHL.TOTAL;
+	else if (kinRegs[kr]=="lowlow") plot_alt=p_alternative.SRLL.TOTAL;
+	else exit(1);
+	TH1F* fakes_EWKUp   = (TH1F*) plot_alt->Clone("fakes_EWKUp");
+	TH1F* fakes_EWKDown = (TH1F*) plot_alt->Clone("fakes_EWKDown");
+	fillDownMirrorUp(h_sr,fakes_EWKUp,fakes_EWKDown);
+	fakes_EWKUp->Write();
+	fakes_EWKDown->Write();
+      }
       
       //ttv
       if (name=="ttw" || name=="ttz") {
-	writeTTVExtrSyst(h_sr,name,kinRegs[kr],0);
-	writeTTVExtrSyst(h_sr,name,kinRegs[kr],1);
+	writeTTVExtrSyst(h_sr,name,kinRegs[kr]);
       }
       
       //wz
@@ -1112,14 +1153,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       
       if (!isData && !doFlips && !doFakes) {
 	//jes
-	writeJesSyst(h_sr,name,kinRegs[kr],0);
-	writeJesSyst(h_sr,name,kinRegs[kr],1);
+	writeJesSyst(h_sr,name,kinRegs[kr]);
 	//btag
-	writeBtagSyst(h_sr,name,kinRegs[kr],0);
-	writeBtagSyst(h_sr,name,kinRegs[kr],1);
+	writeBtagSyst(h_sr,name,kinRegs[kr]);
 	//leptons
-	writeLepSyst(h_sr,name,kinRegs[kr],0);
-	writeLepSyst(h_sr,name,kinRegs[kr],1);
+	writeLepSyst(h_sr,name,kinRegs[kr]);
       }
       
       //end systematics
@@ -1157,25 +1195,34 @@ void writeStatUpDown(TH1F* central,string name,bool down) {
   statUpDown->Write();
 }
 
-void writeTTVExtrSyst(TH1F* central,string name,TString kine,bool down) {
-  TString updown = "Up";
-  if (down) updown = "Down";
+void writeStat(TH1F* central,string name) {
+  writeStatUpDown(central,name,0);
+  writeStatUpDown(central,name,1);
+}
 
+void writeTTVExtrSyst(TH1F* central,string name,TString kine) {
+  TString up = "Up";
+  TString down = "Down";
   if (kine.Contains("lowlow")) {
-    TH1F* systUpDown = (TH1F*) central->Clone(Form("%s_extr_ll%s",name.c_str(),updown.Data()));
-    systUpDown->SetTitle(Form("%s_extr_ll%s",name.c_str(),updown.Data()));
+    TH1F* systUp = (TH1F*) central->Clone(Form("%s_extr_ll%s",name.c_str(),up.Data()));
+    systUp->SetTitle(Form("%s_extr_ll%s",name.c_str(),up.Data()));
     float systValue = 1.08;
-    for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
-      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-      if (val>0) systUpDown->SetBinContent(bin,val);
+    for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
+      float val = central->GetBinContent(bin)*systValue;
+      if (val>0) systUp->SetBinContent(bin,val);
     }
-    systUpDown->Write();
+    TH1F* systDown = (TH1F*) central->Clone(Form("%s_extr_ll%s",name.c_str(),down.Data()));
+    systDown->SetTitle(Form("%s_extr_ll%s",name.c_str(),down.Data()));
+    fillDownMirrorUp(central,systUp,systDown);
+    systUp->Write();
+    systDown->Write();
   } else {
     //hihi and hilow have different extrapolation unceratinties for hi and low HT
-    TH1F* systUpDownHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),updown.Data()));
-    systUpDownHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),updown.Data()));
+    //HTHigh
+    TH1F* systUpHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),up.Data()));
+    systUpHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),up.Data()));
     float systValue = 1.08;
-    for (int bin=1;bin<=systUpDownHTH->GetNbinsX();++bin) {
+    for (int bin=1;bin<=systUpHTH->GetNbinsX();++bin) {
       //skip low ht regions
       if (kine.Contains("hihi")) {
 	if (bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29) continue;
@@ -1183,14 +1230,19 @@ void writeTTVExtrSyst(TH1F* central,string name,TString kine,bool down) {
       if (kine.Contains("hilow")) {
 	if (bin==1 || bin==3 || bin==7 || bin==9 || bin==13 || bin==15 || bin==19 || bin==21 || bin==23) continue;
       }
-      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-      if (val>0) systUpDownHTH->SetBinContent(bin,val);
+      float val = central->GetBinContent(bin)*systValue;
+      if (val>0) systUpHTH->SetBinContent(bin,val);
     }
-    systUpDownHTH->Write();
-    TH1F* systUpDownHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),updown.Data()));
-    systUpDownHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),updown.Data()));
+    TH1F* systDownHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),down.Data()));
+    systDownHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),down.Data()));
+    fillDownMirrorUp(central,systUpHTH,systDownHTH);
+    systUpHTH->Write();
+    systDownHTH->Write();
+    //HTLow
+    TH1F* systUpHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),up.Data()));
+    systUpHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),up.Data()));
     systValue = 1.08;
-    for (int bin=1;bin<=systUpDownHTL->GetNbinsX();++bin) {
+    for (int bin=1;bin<=systUpHTL->GetNbinsX();++bin) {
       //skip high ht regions (i.e. negate requirement used above)
       if (kine.Contains("hihi")) {
 	if (!(bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29)) continue;
@@ -1199,9 +1251,13 @@ void writeTTVExtrSyst(TH1F* central,string name,TString kine,bool down) {
 	if (!(bin==1 || bin==3 || bin==7 || bin==9 || bin==13 || bin==15 || bin==19 || bin==21 || bin==23)) continue;
       }
       float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-      if (val>0) systUpDownHTL->SetBinContent(bin,val);
+      if (val>0) systUpHTL->SetBinContent(bin,val);
     }
-    systUpDownHTL->Write();
+    TH1F* systDownHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),down.Data()));
+    systDownHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),down.Data()));
+    fillDownMirrorUp(central,systUpHTL,systDownHTL);
+    systUpHTL->Write();
+    systDownHTL->Write();
   }
 }
 
@@ -1229,13 +1285,11 @@ void writeWZExtrSyst(TH1F* central,string name,TString kine,bool down) {
   systUpDown->Write();
 }
 
-void writeLepSyst(TH1F* central,string name,TString kine,bool down) {
-  TString updown = "Up";
-  if (down) updown = "Down";
-  TH1F* systUpDown = (TH1F*) central->Clone(Form("lep%s",updown.Data()));
-  systUpDown->SetTitle(Form("lep%s",updown.Data()));
+void writeLepSyst(TH1F* central,string name,TString kine) {
+  TString up = "Up";
+  TH1F* systUp = (TH1F*) central->Clone(Form("lep%s",up.Data()));
+  systUp->SetTitle(Form("lep%s",up.Data()));
   float systValue = 1.;
-
   if (kine.Contains("hihi")) {
     systValue = 1.10;
   }
@@ -1245,18 +1299,22 @@ void writeLepSyst(TH1F* central,string name,TString kine,bool down) {
   if (kine.Contains("lowlow")) {
     systValue = 1.20;
   }
-  for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
-    float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-    if (val>0) systUpDown->SetBinContent(bin,val);
+  for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
+    float val = central->GetBinContent(bin)*systValue;
+    if (val>0) systUp->SetBinContent(bin,val);
   }
-  systUpDown->Write();
+  TString down = "Down";
+  TH1F* systDown = (TH1F*) central->Clone(Form("lep%s",down.Data()));
+  systDown->SetTitle(Form("lep%s",down.Data()));
+  fillDownMirrorUp(central,systUp,systDown);
+  systUp->Write();
+  systDown->Write();
 }
 
-void writeJesSyst(TH1F* central,string name,TString kine,bool down) {
-  TString updown = "Up";
-  if (down) updown = "Down";
-  TH1F* systUpDown = (TH1F*) central->Clone(Form("jes%s",updown.Data()));
-  systUpDown->SetTitle(Form("jes%s",updown.Data()));
+void writeJesSyst(TH1F* central,string name,TString kine) {
+  TString up = "Up";
+  TH1F* systUp = (TH1F*) central->Clone(Form("jes%s",up.Data()));
+  systUp->SetTitle(Form("jes%s",up.Data()));
   float systValue = 1.;
 
   if (kine.Contains("hihi")) {
@@ -1268,14 +1326,14 @@ void writeJesSyst(TH1F* central,string name,TString kine,bool down) {
   if (kine.Contains("lowlow")) {
     systValue = 1.15;
   }
-  for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
-    float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-    if (val>0) systUpDown->SetBinContent(bin,val);
+  for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
+    float val = central->GetBinContent(bin)*systValue;
+    if (val>0) systUp->SetBinContent(bin,val);
   }
 
   // //TTV
   // if (TString(name)=="ttw" || TString(name)=="ttz") {
-  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
   //     if (kine.Contains("hihi")) {
   // 	if (bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29) systValue=1.05;
   // 	if (bin==2 || bin==5 || bin==7 || bin==10 || bin==13 || bin==15 || bin==18 || bin==21 || bin==23 || 
@@ -1289,21 +1347,21 @@ void writeJesSyst(TH1F* central,string name,TString kine,bool down) {
   //     if (kine.Contains("lowlow")) {
   // 	systValue = 1.15;
   //     }
-  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //     float val = central->GetBinContent(bin)*systValue;
+  //     if (val>0) systUp->SetBinContent(bin,val);
   //   }
   // }
 
   // if (TString(name)=="t1tttt_1500") {
   //   systValue = 1.06;
-  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
-  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
+  //     float val = central->GetBinContent(bin)*systValue;
+  //     if (val>0) systUp->SetBinContent(bin,val);
   //   }
   // }
 
   // if (TString(name)=="t1tttt_1200") {
-  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
   //     if (kine.Contains("hihi")) {
   // 	if (bin==20 || bin==26 || bin==28 || bin==30) systValue = 1.03;
   // 	else systValue = 1.10;
@@ -1312,21 +1370,21 @@ void writeJesSyst(TH1F* central,string name,TString kine,bool down) {
   // 	if (bin==16 || bin==22 || bin==24) systValue = 1.03;
   // 	else systValue = 1.05;
   //     } else systValue = 1.00;
-  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //     float val = central->GetBinContent(bin)*systValue;
+  //     if (val>0) systUp->SetBinContent(bin,val);
   //   }
   // }
 
   // if (TString(name)=="t1ttbbww_1000" || TString(name)=="t1ttbbww_1300") {
   //   systValue = 1.08;
-  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
-  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
+  //     float val = central->GetBinContent(bin)*systValue;
+  //     if (val>0) systUp->SetBinContent(bin,val);
   //   }
   // }
 
   // if (TString(name)=="t5tttt_1000") {
-  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
   //     if (kine.Contains("hihi")) {
   // 	if (bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29) systValue = 1.05;
   // 	else if (bin==31) systValue = 1.10;
@@ -1339,8 +1397,8 @@ void writeJesSyst(TH1F* central,string name,TString kine,bool down) {
   //     if (kine.Contains("lowlow")) {
   // 	systValue = 1.10;
   //     }
-  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //     float val = central->GetBinContent(bin)*systValue;
+  //     if (val>0) systUp->SetBinContent(bin,val);
   //   }
   // }
 
@@ -1354,17 +1412,17 @@ void writeJesSyst(TH1F* central,string name,TString kine,bool down) {
   //   if (kine.Contains("lowlow")) {
   //     systValue = 1.20;
   //   }
-  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
-  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
+  //     float val = central->GetBinContent(bin)*systValue;
+  //     if (val>0) systUp->SetBinContent(bin,val);
   //   }
   // }
 
   // if (TString(name)=="t5qqww_1500") {
   //   systValue = 1.05;
-  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
-  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
+  //     float val = central->GetBinContent(bin)*systValue;
+  //     if (val>0) systUp->SetBinContent(bin,val);
   //   }
   // }
 
@@ -1378,34 +1436,37 @@ void writeJesSyst(TH1F* central,string name,TString kine,bool down) {
   //   if (kine.Contains("lowlow")) {
   //     systValue = 1.02;
   //   }
-  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
-  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
+  //     float val = central->GetBinContent(bin)*systValue;
+  //     if (val>0) systUp->SetBinContent(bin,val);
   //   }
   // }
 
   // if (TString(name)=="t6ttww_600" || TString(name)=="t6ttww_650") {
   //   systValue = 1.10;
-  //   for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
-  //     float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-  //     if (val>0) systUpDown->SetBinContent(bin,val);
+  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
+  //     float val = central->GetBinContent(bin)*systValue;
+  //     if (val>0) systUp->SetBinContent(bin,val);
   //   }
   // }
 
-  systUpDown->Write();
+  TString down = "Down";
+  TH1F* systDown = (TH1F*) central->Clone(Form("jes%s",down.Data()));
+  systDown->SetTitle(Form("jes%s",down.Data()));
+  fillDownMirrorUp(central,systUp,systDown);
+  systUp->Write();
+  systDown->Write();
 }
 
-void writeBtagSyst(TH1F* central,string name,TString kine,bool down) {
-  TString updown = "Up";
-  if (down) updown = "Down";
-  TH1F* systUpDown = (TH1F*) central->Clone(Form("btag%s",updown.Data()));
-  systUpDown->SetTitle(Form("btag%s",updown.Data()));
+void writeBtagSyst(TH1F* central,string name,TString kine) {
+  TString up = "Up";
+  TH1F* systUp = (TH1F*) central->Clone(Form("btag%s",up.Data()));
+  systUp->SetTitle(Form("btag%s",up.Data()));
   float systValue = 1.;
-
   //fixme add signals
 
   if (TString(name)=="wz" || TString(name)=="ww" || TString(name)=="vg" || TString(name)=="rares" ) {
-    for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+    for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
       if (kine.Contains("hihi")) {
 	if (bin>=1 && bin<=8)        systValue = 0.98;//0 btag
 	else if (bin>=9  && bin<=16) systValue = 1.13;//1 btag
@@ -1427,8 +1488,8 @@ void writeBtagSyst(TH1F* central,string name,TString kine,bool down) {
 	else if (bin==7)             systValue = 2.00;//3+btag
 	else                         systValue = 1.00;//inclusive regions
       }
-      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-      if (val>0) systUpDown->SetBinContent(bin,val);
+      float val = central->GetBinContent(bin)*systValue;
+      if (val>0) systUp->SetBinContent(bin,val);
     }
   }
 
@@ -1436,7 +1497,7 @@ void writeBtagSyst(TH1F* central,string name,TString kine,bool down) {
       || TString(name)=="t1tttt_1200" || TString(name)=="t1tttt_1500" 
       || TString(name)=="t6ttww_650" || TString(name)=="t6ttww_600" 
       || TString(name)=="t5tttt_deg") {
-    for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
+    for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
       if (kine.Contains("hihi")) {
 	if (bin>=1 && bin<=8)        systValue = 1.02;//0 btag
 	else if (bin>=9  && bin<=16) systValue = 0.95;//1 btag
@@ -1458,9 +1519,26 @@ void writeBtagSyst(TH1F* central,string name,TString kine,bool down) {
 	else if (bin==7)             systValue = 1.15;//3+btag
 	else                         systValue = 1.00;//inclusive regions
       }
-      float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-      if (val>0) systUpDown->SetBinContent(bin,val);
+      float val = central->GetBinContent(bin)*systValue;
+      if (val>0) systUp->SetBinContent(bin,val);
     }
   }
-  systUpDown->Write();
+
+  TString down = "Down";
+  TH1F* systDown = (TH1F*) central->Clone(Form("btag%s",down.Data()));
+  systDown->SetTitle(Form("btag%s",down.Data()));
+  fillDownMirrorUp(central,systUp,systDown);
+
+  systUp->Write();
+  systDown->Write();
+}
+
+void fillDownMirrorUp(TH1F* central,TH1F* up,TH1F* down) {
+  down->Reset();
+  down->Add(up);
+  down->Scale(-1);
+  down->Add(central);
+  down->Add(central);
+  //need to avoid negative values...
+  avoidNegativeYields(down);
 }
