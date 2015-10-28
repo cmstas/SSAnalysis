@@ -63,7 +63,7 @@ void yields(){
       if (duplicate_removal::is_duplicate(id)) continue; 
 
       //Blinding
-      if (ss::run() > 257599) continue;
+      if (!isUnblindRun(ss::run())) continue;
     
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
