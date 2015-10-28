@@ -886,7 +886,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     mostJets_undoJEC.push_back(tas::pfjets_undoJEC().at(i)); 
     mostJets_passID.push_back(isLoosePFJet_50nsV1(i));
   }
-  //mostJets_passCleaning = cleanJets(mostJets_jet);
+  mostJets_passCleaning = cleanJets(mostJets_jet);
   
   //Verbose for jets
   if (verbose){
