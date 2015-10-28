@@ -119,6 +119,13 @@ class babyMaker {
     vector <float> jets_corr_unc; 
     vector <float> jets_corr_undoJEC; 
     vector <LorentzVector> mostJets; //this is all jets with pT > 5, |eta| < 2.4
+    vector <LorentzVector> mostJets_rawp4; // this is all jets with pT > 5, |eta| < 2.4
+    vector <float> mostJets_disc;          // this is all jets with pT > 5, |eta| < 2.4
+    vector <float> mostJets_unc;           // this is all jets with pT > 5, |eta| < 2.4
+    vector <float> mostJets_JEC;           // this is all jets with pT > 5, |eta| < 2.4
+    vector <float> mostJets_undoJEC;       // this is all jets with pT > 5, |eta| < 2.4
+    vector <bool> mostJets_passCleaning;
+    vector <bool> mostJets_passID;
     vector <float> jet_corr_pt;
 
     //Hyp Class -- in this order

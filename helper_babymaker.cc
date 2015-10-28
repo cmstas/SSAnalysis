@@ -196,6 +196,13 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("lep3_mcidx"              , &lep3_mcidx               );
   BabyTree->Branch("lep4_mcid"               , &lep4_mcid                );
   BabyTree->Branch("lep4_mcidx"              , &lep4_mcidx               );
+  //BabyTree->Branch("mostJets_rawp4"          , &mostJets_rawp4          );
+  //BabyTree->Branch("mostJets_disc"           , &mostJets_disc           );
+  //BabyTree->Branch("mostJets_unc"            , &mostJets_unc            );
+  //BabyTree->Branch("mostJets_JEC"            , &mostJets_JEC            );
+  //BabyTree->Branch("mostJets_undoJEC"        , &mostJets_undoJEC        );
+  //BabyTree->Branch("mostJets_passID"         , &mostJets_passID         );
+  //BabyTree->Branch("mostJets_passCleaning"   , &mostJets_passCleaning   );
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -446,6 +453,13 @@ void babyMaker::InitBabyNtuple(){
     weight_btagsf_UP = -9999.;
     weight_btagsf_DN = -9999.;
     filenumber = -1;
+    mostJets_rawp4.clear(); 
+    mostJets_disc.clear(); 
+    mostJets_unc.clear(); 
+    mostJets_JEC.clear(); 
+    mostJets_undoJEC.clear(); 
+    mostJets_passID.clear(); 
+    mostJets_passCleaning.clear(); 
 } 
 
 //Main function
@@ -838,11 +852,41 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   weight_btagsf_DN = weight_btagsf - (sqrt(pow(btagprob_err_heavy_DN,2) + pow(btagprob_err_light_DN,2)) * weight_btagsf);
 
   //Save Most jets 
+  vector <Jet> mostJets_jet;
   for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++){
-    if (tas::pfjets_p4().at(i).pt() < 5.) continue;
-    if (fabs(tas::pfjets_p4().at(i).eta()) > 2.4) continue;
-    mostJets.push_back(pfjets_p4().at(i));
+    //Alias
+    LorentzVector jet = tas::pfjets_p4().at(i);
+  
+    //Cuts
+    if (jet.pt() < 5.) continue;
+    if (fabs(jet.eta()) > 2.4) continue;
+  
+    //Calculate raw pt
+    float rawpt = jet.pt()*tas::pfjets_undoJEC().at(i);
+    
+    //Calculate jet corr
+    jetCorr->setJetEta(jet.eta()); 
+    jetCorr->setJetPt(rawpt); 
+    jetCorr->setJetA(tas::pfjets_area().at(i)); 
+    jetCorr->setRho(tas::evt_fixgridfastjet_all_rho()); 
+    float JEC = jetCorr->getCorrection(); 
+  
+    //Calculate jet unc
+    jecUnc->setJetEta(pfjets_p4().at(i).eta()); 
+    jecUnc->setJetPt(rawpt*JEC); 
+    float jetUnc = jecUnc->getUncertainty(true);
+  
+    //Save results
+    mostJets.push_back(jet);
+    mostJets_jet.push_back(Jet(i, JEC)); 
+    mostJets_rawp4.push_back(jet*tas::pfjets_undoJEC().at(i)); 
+    mostJets_disc.push_back(tas::getbtagvalue("pfCombinedSecondaryVertexV2BJetTags",i)); 
+    mostJets_unc.push_back(jetUnc); 
+    mostJets_JEC.push_back(JEC); 
+    mostJets_undoJEC.push_back(tas::pfjets_undoJEC().at(i)); 
+    mostJets_passID.push_back(isLoosePFJet_50nsV1(i));
   }
+  //mostJets_passCleaning = cleanJets(mostJets_jet);
   
   //Verbose for jets
   if (verbose){
