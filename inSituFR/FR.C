@@ -10,7 +10,7 @@
 #include "../CORE/Tools/dorky/dorky.h"
 
 //do the data!!
-bool doData = false; 
+bool doData = true; 
 
 //testPC -- test the prompt contamination, ie allow numer-numer events
 bool testPC = false;
