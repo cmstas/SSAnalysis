@@ -695,8 +695,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx, expt); 
 
   //Closest jet for both leptons
-  lep1_closeJet = closestJet(lep1_p4, 0.4, 2.4, ssWhichCorr);
-  lep2_closeJet = closestJet(lep2_p4, 0.4, 2.4, ssWhichCorr);
+  lep1_closeJet = closestJet(lep1_p4, 0.4, 3.0, ssWhichCorr);
+  lep2_closeJet = closestJet(lep2_p4, 0.4, 3.0, ssWhichCorr);
 
   if (verbose){
     cout << "lep1 ratio: " << lep1_p4.pt()/lep1_closeJet.pt() << endl;
@@ -853,8 +853,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   } 
 
   //Closest Jet
-  jet_close_lep1 = closestJet(lep1_p4, 0.4, 2.4, ssWhichCorr);
-  jet_close_lep2 = closestJet(lep2_p4, 0.4, 2.4, ssWhichCorr);
+  jet_close_lep1 = closestJet(lep1_p4, 0.4, 3.0, ssWhichCorr);
+  jet_close_lep2 = closestJet(lep2_p4, 0.4, 3.0, ssWhichCorr);
 
   //nVeto Leptons
   if (verbose) cout << " PRINTING RECO ELECTRONS" << endl;
