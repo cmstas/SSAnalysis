@@ -959,8 +959,8 @@ void tests::makeSRplots( looper* loop, float& weight_, TString label, int& br, i
     loop->makeFillHisto1D<TH1F,int>("hyp_"+label+"_sr","hyp_"+label+"_sr",40,0,40,sr,weight_);
     loop->makeFillHisto1D<TH1F,int>("hyp_"+label+"_excl_sr","hyp_"+label+"_excl_sr",40,0,40,sr,weight_);
     loop->makeFillHisto1D<TH1F,int>("hyp_"+label+"_excl_sr_mt100","hyp_"+label+"_excl_sr_mt100",40*2,0,40*2,sr+40*(mtmin>100),weight_);
-    int srt1 = signalRegion(jets.size(), btags.size(), met, ht, 5, 200, 600);
-    int srt2 = signalRegion(jets.size(), btags.size(), met, ht, 6, 250, 800);
+    int srt1 = signalRegion(jets.size(), btags.size(), met, ht, 5, 11, 11, 200, 600); //looks like we assumed pt == high, so gonna do the same for id. -AG
+    int srt2 = signalRegion(jets.size(), btags.size(), met, ht, 6, 11, 11, 250, 800);
     loop->makeFillHisto1D<TH1F,int>("hyp_"+label+"_excl_srt1","hyp_"+label+"_excl_srt1",40,0,40,srt1,weight_);
     loop->makeFillHisto1D<TH1F,int>("hyp_"+label+"_excl_srt2","hyp_"+label+"_excl_srt2",40,0,40,srt2,weight_);
     loop->makeFillHisto1D<TH1F,int>("hyp_"+label+"_excl_srt1_mt100","hyp_"+label+"_excl_srt1_mt100",40*2,0,40*2,srt1+40*(mtmin>100),weight_);

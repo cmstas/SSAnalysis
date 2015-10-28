@@ -449,8 +449,8 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       float mtmin = min(mt1, mt2);
 
       //determine which SR this event belongs in 
-      int sr = signalRegion(njets, nbtag, met, ht, mtmin, hypleps[0].pt(), hypleps[1].pt());
-      anal_type_t ac_base = analysisCategory(hypleps[0].pt(), hypleps[1].pt());
+      int sr = signalRegion(njets, nbtag, met, ht, mtmin, hypleps[0].pdgId(), hypleps[1].pdgId(), hypleps[0].pt(), hypleps[1].pt());
+      anal_type_t ac_base = analysisCategory(hypleps[0].pdgId(), hypleps[1].pdgId(), hypleps[0].pt(), hypleps[1].pt());
 
       //write skim here (only SS)
       if (makeSSskim){
@@ -508,7 +508,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
       }
 
       //If not two hyps, continue;
-      if (hypleps.size()!=2 || hypleps[0].pt()<ptCutLow || hypleps[1].pt()<ptCutLow){
+      if (hypleps.size()!=2 || hypleps[0].pt()<ptCutLowAG(hypleps[0].pdgId()) || hypleps[1].pt()<ptCutLowAG(hypleps[1].pdgId())){
 	if (debug){
 	  cout << "skip, not passing lepton cuts" << endl; 
 	  cout << "fobs size = " << fobs.size() << " pdgids=" << fobs[0].pdgId() << ", " << fobs[1].pdgId() << endl;
@@ -516,7 +516,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 	  for (unsigned int fo=0;fo<fobs.size();++fo){
 	    if (abs(fobs[fo].pdgId())!=13) continue;
 	    cout << "fob pt=" << fobs[fo].pt() << " eta=" << fobs[fo].eta() << endl;
-	    if (mus_p4().at(fobs[fo].idx()).pt()<ptCutLow) cout << "fail pt" << endl;
+	    if (mus_p4().at(fobs[fo].idx()).pt()<ptCutLowAG(hypleps[fo].pdgId())) cout << "fail pt" << endl;
 	    if (isFakableMuonNoIso(fobs[fo].idx())==0) cout << "fail FO" << endl;
 	    if (fobs[fo].relIso03()>1.0) cout << "fail loose iso" << endl;
 	    if (isGoodMuonNoIso(fobs[fo].idx())==0) cout << "fail tight id" << endl;
