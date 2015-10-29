@@ -186,17 +186,17 @@ do
       tag=V07-04-11
       nameNu=47
     elif [ $sname == "DataDoubleMuonC_05oct"  ]; 
-      then name="Run2015C_DoubleMuon_MINIAOD_05Oct2015-v1";
+      then name="Run2015C_25ns_DoubleMuon_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-11
       nameNu=56
     elif [ $sname == "DataDoubleEGC_05oct"    ]; 
-      then name="Run2015C_DoubleEG_MINIAOD_05Oct2015-v1";
+      then name="Run2015C_25ns_DoubleEG_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-11
       nameNu=57
     elif [ $sname == "DATAMUONEGC_05oct"    ]; 
-      then name="Run2015C_MuonEG_MINIAOD_05Oct2015-v1";
+      then name="Run2015C_25ns_MuonEG_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-11
       nameNu=58

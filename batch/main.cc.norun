@@ -343,7 +343,7 @@ int main(int argc, char *argv[]){
       tag="V07-04-11";
       break;
     case DataDoubleMuonC_05oct:
-      name="Run2015C_DoubleMuon_MINIAOD_05Oct2015-v1/merged";
+      name="Run2015C_25ns_DoubleMuon_MINIAOD_05Oct2015-v1/merged";
       shortname="datadoublemuonc_05oct";
       isData = true;
       path="/store/group/snt/run2_data";
@@ -351,14 +351,14 @@ int main(int argc, char *argv[]){
       break;
     case DataDoubleEGC_05oct:
       shortname="datadoubleegc_05oct";
-      name="Run2015C_DoubleEG_MINIAOD_05Oct2015-v1/merged";
+      name="Run2015C_25ns_DoubleEG_MINIAOD_05Oct2015-v1/merged";
       isData = true;
       path="/store/group/snt/run2_data";
       tag="V07-04-11";
       break;
     case DATAMUONEGC_05oct:
       shortname="datamuonegc_05oct";
-      name="Run2015C_MuonEG_MINIAOD_05Oct2015-v1/merged";
+      name="Run2015C_25ns_MuonEG_MINIAOD_05Oct2015-v1/merged";
       path="/store/group/snt/run2_data";
       isData = true;
       tag="V07-04-11";
