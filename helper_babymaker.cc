@@ -20,8 +20,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("met"                     , &met                     );
   BabyTree->Branch("filenumber"              , &filenumber              );
   BabyTree->Branch("metPhi"                  , &metPhi                  );
-  BabyTree->Branch("corrMET"                 , &corrMET                 );
-  BabyTree->Branch("corrMETphi"              , &corrMETphi              );
+  BabyTree->Branch("rawmet"                  , &rawmet                  );
+  BabyTree->Branch("rawmetPhi"               , &rawmetPhi               );
   BabyTree->Branch("event"                   , &event                   );
   BabyTree->Branch("lumi"                    , &lumi                    );
   BabyTree->Branch("run"                     , &run                     );
@@ -253,10 +253,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
 
 void babyMaker::InitBabyNtuple(){
 
+    rawmet = -1;
+    rawmetPhi = -1;
     met = -1;
     metPhi = -1;
-    corrMET = -1;
-    corrMETphi = -1;
     event = -1;
     lumi = -1;
     run = -1;
@@ -480,12 +480,17 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //Fill Easy Variables
   filename = filename_in;
   filenumber = file; 
-  met = evt_pfmet();
-  metPhi = evt_pfmetPhi();
+  rawmet = evt_pfmet();
+  rawmetPhi = evt_pfmetPhi();
   event = tas::evt_event();
   lumi = tas::evt_lumiBlock();
   run = tas::evt_run();
   is_real_data = tas::evt_isRealData();
+
+  //Corrected MET
+  pair <float, float> T1CHSMET = getT1CHSMET_fromMINIAOD(jetCorr);
+  met = T1CHSMET.first;
+  metPhi = T1CHSMET.second;
 
   if (!is_real_data){
     trueNumInt = tas::puInfo_trueNumInteractions();
@@ -1025,11 +1030,6 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     if (!isGoodVertex(i)) continue;
     nGoodVertices++;
   }
-
-  //Correct the met
-  pair <float, float> T1CHSMET = getT1CHSMET_fromMINIAOD(jetCorr);
-  corrMET = T1CHSMET.first;
-  corrMETphi = T1CHSMET.second;
 
   //MET3p0 (aka FKW MET)
   pair<float,float> MET3p0_ = MET3p0();
