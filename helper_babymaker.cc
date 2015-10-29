@@ -475,7 +475,6 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return -1;
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return -1;
-  //if (tas::evt_event() != 326295) return -1;
 
   //Fill Easy Variables
   filename = filename_in;
@@ -735,10 +734,10 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   for (unsigned int i = 0; i < jet_results.first.size(); i++)  jets_raw.push_back(jet_results.first.at(i).p4());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_raw.push_back(jet_results.second.at(i).p4());
   for (unsigned int i = 0; i < jet_results.first.size(); i++)  jets_undoJEC_raw.push_back(jet_results.first.at(i).undo_jec());
-  njets_raw = jets.size();
-  nbtags_raw = btags.size();
+  njets_raw = jets_raw.size();
+  nbtags_raw = btags_raw.size();
   ht_raw = 0;
-  for (unsigned int i = 0; i < jets.size(); i++) ht_raw += jets_raw.at(i).pt()*jets_undoJEC_raw.at(i); 
+  for (unsigned int i = 0; i < jets_raw.size(); i++) ht_raw += jets_raw.at(i).pt()*jets_undoJEC_raw.at(i); 
 
   //Reject events that fail trigger matching
   if (ht < 300 && hyp_type != 0){
