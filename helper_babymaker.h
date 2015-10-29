@@ -104,6 +104,8 @@ class babyMaker {
     float gen_met_phi;  
 
     //Jets
+    int njets_raw;
+    float ht_raw;
     int njets;
     float ht;
     vector <LorentzVector> jets;
@@ -111,13 +113,6 @@ class babyMaker {
     vector <float> jets_JEC; 
     vector <float> jets_unc; 
     vector <float> jets_undoJEC; 
-    int njets_corr;
-    float ht_corr;
-    vector <LorentzVector> jets_corr;
-    vector <float> jets_corr_disc;
-    vector <float> jets_corr_JEC; 
-    vector <float> jets_corr_unc; 
-    vector <float> jets_corr_undoJEC; 
     vector <LorentzVector> mostJets; //this is all jets with pT > 5, |eta| < 2.4
     vector <LorentzVector> mostJets_rawp4; // this is all jets with pT > 5, |eta| < 2.4
     vector <float> mostJets_disc;          // this is all jets with pT > 5, |eta| < 2.4
@@ -126,7 +121,7 @@ class babyMaker {
     vector <float> mostJets_undoJEC;       // this is all jets with pT > 5, |eta| < 2.4
     vector <bool> mostJets_passCleaning;
     vector <bool> mostJets_passID;
-    vector <float> jet_corr_pt;
+    vector <float> jet_pt;
 
     //Jets unc stuff
     int njets_unc_up;
@@ -135,6 +130,8 @@ class babyMaker {
     float ht_unc_dn;   
     int nbtags_unc_up;
     int nbtags_unc_dn;
+    int met_unc_up; 
+    int met_unc_dn; 
 
     //Hyp Class -- in this order
        //3 for num-num SS leptons
@@ -168,18 +165,13 @@ class babyMaker {
     int lep2_mc_id;
 
     //b-tags
+    int nbtags_raw;
     vector <LorentzVector> btags;
     vector <float> btags_disc;
     vector <float> btags_JEC; 
     vector <float> btags_unc; 
     vector <float> btags_undoJEC; 
     int nbtags;
-    vector <LorentzVector> btags_corr;
-    vector <float> btags_corr_disc;
-    vector <float> btags_corr_JEC; 
-    vector <float> btags_corr_unc; 
-    vector <float> btags_corr_undoJEC; 
-    int nbtags_corr;
 
     //Scale factors (from 8 TeV, outdated)
     float sf_dilepTrig_hpt; 
