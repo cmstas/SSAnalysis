@@ -491,8 +491,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return -1;
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return -1;
-
-  //if (tas::evt_event() != 381733) return -1;
+  //if (tas::evt_event() != 326295) return -1;
 
   //Fill Easy Variables
   filename = filename_in;
@@ -740,7 +739,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   }
   
   //Determine and save jet and b-tag variables, uncorrected
-  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 0, 1);
+  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 0);
   for (unsigned int i = 0; i < jet_results.first.size(); i++)  jets.push_back(jet_results.first.at(i).p4());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags.push_back(jet_results.second.at(i).p4());
   for (unsigned int i = 0; i < jet_results.first.size(); i++)  jets_disc.push_back(jet_results.first.at(i).csv());
@@ -890,7 +889,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   
     //Save results
     mostJets.push_back(jet);
-    mostJets_jet.push_back(Jet(i, JEC)); 
+    if (rawpt*JEC > 40 && isLoosePFJet_50nsV1(i)) mostJets_jet.push_back(Jet(i, JEC)); 
+    else                                          mostJets_jet.push_back(Jet(-1, -9999)); 
     mostJets_rawp4.push_back(jet*tas::pfjets_undoJEC().at(i)); 
     mostJets_disc.push_back(tas::getbtagvalue("pfCombinedSecondaryVertexV2BJetTags",i)); 
     mostJets_unc.push_back(jetUnc); 
@@ -904,8 +904,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   int njetsAG = 0;
   for (unsigned int i = 0; i < mostJets.size(); i++){
     //Cuts
-    if (mostJets_passID.at(i) == 0) continue;
     if (mostJets_passCleaning.at(i) == 0) continue;
+    if (mostJets_passID.at(i) == 0) continue;
     float jet_pt    = mostJets.at(i).pt()*mostJets_undoJEC.at(i)*mostJets_JEC.at(i); 
     float jet_pt_up = mostJets.at(i).pt()*mostJets_undoJEC.at(i)*mostJets_JEC.at(i)*(1.0+mostJets_unc.at(i)); 
     float jet_pt_dn = mostJets.at(i).pt()*mostJets_undoJEC.at(i)*mostJets_JEC.at(i)*(1.0-mostJets_unc.at(i)); 
@@ -918,9 +918,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     if (jet_pt_up > 25) nbtags_unc_up++; 
     if (jet_pt_dn > 25) nbtags_unc_dn++; 
   }
-  if (njetsAG != njets_corr) cout << "Weird.  " << njetsAG << " " << njets_corr << endl;  //need to debug this
    
-  
   //Verbose for jets
   if (verbose){
     cout << "njets: " << njets << endl;
