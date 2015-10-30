@@ -17,10 +17,10 @@ bool makeRootFiles = 1;
 float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
 
-bool doNoData   = false;
+bool doNoData   = true;
 bool testFakeSR = false;
 
-float scaleLumi = 1.0;//3.0/1.264;//careful!!!
+float scaleLumi = 3.0/1.264;//careful!!!
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
@@ -37,8 +37,10 @@ void writeStatUpDown(TH1F* central,string name,bool down);
 void writeStat(TH1F* central,string name);
 void writeTTVExtrSyst(TH1F* central,string name,TString kine);
 void writeJesSyst(TH1F* central,string name,TString kine);
-void writeLepSyst(TH1F* central,string name,TString kine);
+void writeHTHltSyst(TH1F* central,string name,TString kine);
 void writeBtagSyst(TH1F* central,string name,TString kine);
+bool isSRHighHT(TString kine, int sr);
+int nbtagsSR(TString kine, int sr);
 //deprecated:
 void writeWZExtrSyst(TH1F* central,string name,TString kine,bool down);
 
@@ -742,39 +744,39 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   y_result.MM    = 0;
   y_result.TOTAL = 0;
 
-  p_result.h_ht           = new TH1F(Form("ht_%s"           , chain->GetTitle()) , Form("ht_%s"           , chain->GetTitle()) , 10  , 0 , 500);
-  p_result.h_met          = new TH1F(Form("met_%s"          , chain->GetTitle()) , Form("met_%s"          , chain->GetTitle()) , 10  , 0 , 200);
-  p_result.h_mll          = new TH1F(Form("mll_%s"          , chain->GetTitle()) , Form("mll_%s"          , chain->GetTitle()) , 10  , 0 , 200);
-  p_result.h_mtmin        = new TH1F(Form("mtmin_%s"        , chain->GetTitle()) , Form("mtmin_%s"        , chain->GetTitle()) , 10  , 0 , 200);
-  p_result.h_njets        = new TH1F(Form("njets_%s"        , chain->GetTitle()) , Form("njets_%s"        , chain->GetTitle()) , 8   , 0 , 8);
-  p_result.h_nbtags       = new TH1F(Form("nbtags_%s"       , chain->GetTitle()) , Form("nbtags_%s"       , chain->GetTitle()) , 6   , 0 , 6);
-  p_result.h_l1pt         = new TH1F(Form("l1pt_%s"         , chain->GetTitle()) , Form("l1pt_%s"         , chain->GetTitle()) , 10  , 0 , 150);
-  p_result.h_l2pt         = new TH1F(Form("l2pt_%s"         , chain->GetTitle()) , Form("l2pt_%s"         , chain->GetTitle()) , 10  , 0 , 100);
-  p_result.SRHH.EE        = new TH1F(Form("SRHH_EE_%s"      , chain->GetTitle()) , Form("SRHH_EE_%s"      , chain->GetTitle()) , 32  , 1 , 33);
-  p_result.SRHH.EM        = new TH1F(Form("SRHH_EM_%s"      , chain->GetTitle()) , Form("SRHH_EM_%s"      , chain->GetTitle()) , 32  , 1 , 33);
-  p_result.SRHH.MM        = new TH1F(Form("SRHH_MM_%s"      , chain->GetTitle()) , Form("SRHH_MM_%s"      , chain->GetTitle()) , 32  , 1 , 33);
-  p_result.SRHH.TOTAL     = new TH1F(Form("SRHH_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);
-  p_result.SRHL.EE        = new TH1F(Form("SRHL_EE_%s"      , chain->GetTitle()) , Form("SRHL_EE_%s"      , chain->GetTitle()) , 26  , 1 , 27);
-  p_result.SRHL.EM        = new TH1F(Form("SRHL_EM_%s"      , chain->GetTitle()) , Form("SRHL_EM_%s"      , chain->GetTitle()) , 26  , 1 , 27);
-  p_result.SRHL.MM        = new TH1F(Form("SRHL_MM_%s"      , chain->GetTitle()) , Form("SRHL_MM_%s"      , chain->GetTitle()) , 26  , 1 , 27);
-  p_result.SRHL.TOTAL     = new TH1F(Form("SRHL_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);
-  p_result.SRLL.EE        = new TH1F(Form("SRLL_EE_%s"      , chain->GetTitle()) , Form("SRLL_EE_%s"      , chain->GetTitle()) , 8   , 1 , 9);
-  p_result.SRLL.EM        = new TH1F(Form("SRLL_EM_%s"      , chain->GetTitle()) , Form("SRLL_EM_%s"      , chain->GetTitle()) , 8   , 1 , 9);
-  p_result.SRLL.MM        = new TH1F(Form("SRLL_MM_%s"      , chain->GetTitle()) , Form("SRLL_MM_%s"      , chain->GetTitle()) , 8   , 1 , 9);
-  p_result.SRLL.TOTAL     = new TH1F(Form("SRLL_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9);
-  p_result.h_type         = new TH1F(Form("type_%s"         , chain->GetTitle()) , Form("type_%s"         , chain->GetTitle()) , 4   , 0 , 4);
-  p_result.h_lep1_miniIso = new TH1F(Form("lep1_miniIso_%s" , chain->GetTitle()) , Form("lep1_miniIso_%s" , chain->GetTitle()) , 30 , 0 , 0.2);
-  p_result.h_lep2_miniIso = new TH1F(Form("lep2_miniIso_%s" , chain->GetTitle()) , Form("lep2_miniIso_%s" , chain->GetTitle()) , 30 , 0 , 0.2);
-  p_result.h_lep1_ptRatio = new TH1F(Form("lep1_ptRatio_%s" , chain->GetTitle()) , Form("lep1_ptRatio_%s" , chain->GetTitle()) , 30 , 0 , 1.5);
-  p_result.h_lep2_ptRatio = new TH1F(Form("lep2_ptRatio_%s" , chain->GetTitle()) , Form("lep2_ptRatio_%s" , chain->GetTitle()) , 30 , 0 , 1.5);
-  p_result.h_lep1_ptRel   = new TH1F(Form("lep1_ptRel_%s"   , chain->GetTitle()) , Form("lep1_ptRel_%s"   , chain->GetTitle()) , 25 , 0 , 25);
-  p_result.h_lep2_ptRel   = new TH1F(Form("lep2_ptRel_%s"   , chain->GetTitle()) , Form("lep2_ptRel_%s"   , chain->GetTitle()) , 25 , 0 , 25);
+  p_result.h_ht           = new TH1F(Form("ht_%s"           , chain->GetTitle()) , Form("ht_%s"           , chain->GetTitle()) , 10  , 0 , 500);  p_result.h_ht           ->Sumw2();
+  p_result.h_met          = new TH1F(Form("met_%s"          , chain->GetTitle()) , Form("met_%s"          , chain->GetTitle()) , 10  , 0 , 200);  p_result.h_met          ->Sumw2();
+  p_result.h_mll          = new TH1F(Form("mll_%s"          , chain->GetTitle()) , Form("mll_%s"          , chain->GetTitle()) , 10  , 0 , 200);  p_result.h_mll          ->Sumw2();
+  p_result.h_mtmin        = new TH1F(Form("mtmin_%s"        , chain->GetTitle()) , Form("mtmin_%s"        , chain->GetTitle()) , 10  , 0 , 200);  p_result.h_mtmin        ->Sumw2();
+  p_result.h_njets        = new TH1F(Form("njets_%s"        , chain->GetTitle()) , Form("njets_%s"        , chain->GetTitle()) , 8   , 0 , 8);	  p_result.h_njets        ->Sumw2();
+  p_result.h_nbtags       = new TH1F(Form("nbtags_%s"       , chain->GetTitle()) , Form("nbtags_%s"       , chain->GetTitle()) , 6   , 0 , 6);	  p_result.h_nbtags       ->Sumw2();
+  p_result.h_l1pt         = new TH1F(Form("l1pt_%s"         , chain->GetTitle()) , Form("l1pt_%s"         , chain->GetTitle()) , 10  , 0 , 150);  p_result.h_l1pt         ->Sumw2();
+  p_result.h_l2pt         = new TH1F(Form("l2pt_%s"         , chain->GetTitle()) , Form("l2pt_%s"         , chain->GetTitle()) , 10  , 0 , 100);  p_result.h_l2pt         ->Sumw2();
+  p_result.SRHH.EE        = new TH1F(Form("SRHH_EE_%s"      , chain->GetTitle()) , Form("SRHH_EE_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.EE        ->Sumw2();
+  p_result.SRHH.EM        = new TH1F(Form("SRHH_EM_%s"      , chain->GetTitle()) , Form("SRHH_EM_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.EM        ->Sumw2();
+  p_result.SRHH.MM        = new TH1F(Form("SRHH_MM_%s"      , chain->GetTitle()) , Form("SRHH_MM_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.MM        ->Sumw2();
+  p_result.SRHH.TOTAL     = new TH1F(Form("SRHH_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.TOTAL     ->Sumw2();
+  p_result.SRHL.EE        = new TH1F(Form("SRHL_EE_%s"      , chain->GetTitle()) , Form("SRHL_EE_%s"      , chain->GetTitle()) , 26  , 1 , 27);	  p_result.SRHL.EE        ->Sumw2();
+  p_result.SRHL.EM        = new TH1F(Form("SRHL_EM_%s"      , chain->GetTitle()) , Form("SRHL_EM_%s"      , chain->GetTitle()) , 26  , 1 , 27);	  p_result.SRHL.EM        ->Sumw2();
+  p_result.SRHL.MM        = new TH1F(Form("SRHL_MM_%s"      , chain->GetTitle()) , Form("SRHL_MM_%s"      , chain->GetTitle()) , 26  , 1 , 27);	  p_result.SRHL.MM        ->Sumw2();
+  p_result.SRHL.TOTAL     = new TH1F(Form("SRHL_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);	  p_result.SRHL.TOTAL     ->Sumw2();
+  p_result.SRLL.EE        = new TH1F(Form("SRLL_EE_%s"      , chain->GetTitle()) , Form("SRLL_EE_%s"      , chain->GetTitle()) , 8   , 1 , 9);	  p_result.SRLL.EE        ->Sumw2();
+  p_result.SRLL.EM        = new TH1F(Form("SRLL_EM_%s"      , chain->GetTitle()) , Form("SRLL_EM_%s"      , chain->GetTitle()) , 8   , 1 , 9);	  p_result.SRLL.EM        ->Sumw2();
+  p_result.SRLL.MM        = new TH1F(Form("SRLL_MM_%s"      , chain->GetTitle()) , Form("SRLL_MM_%s"      , chain->GetTitle()) , 8   , 1 , 9);	  p_result.SRLL.MM        ->Sumw2();
+  p_result.SRLL.TOTAL     = new TH1F(Form("SRLL_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9);	  p_result.SRLL.TOTAL     ->Sumw2();
+  p_result.h_type         = new TH1F(Form("type_%s"         , chain->GetTitle()) , Form("type_%s"         , chain->GetTitle()) , 4   , 0 , 4);	  p_result.h_type         ->Sumw2();
+  p_result.h_lep1_miniIso = new TH1F(Form("lep1_miniIso_%s" , chain->GetTitle()) , Form("lep1_miniIso_%s" , chain->GetTitle()) , 30 , 0 , 0.2);	  p_result.h_lep1_miniIso ->Sumw2();
+  p_result.h_lep2_miniIso = new TH1F(Form("lep2_miniIso_%s" , chain->GetTitle()) , Form("lep2_miniIso_%s" , chain->GetTitle()) , 30 , 0 , 0.2);	  p_result.h_lep2_miniIso ->Sumw2();
+  p_result.h_lep1_ptRatio = new TH1F(Form("lep1_ptRatio_%s" , chain->GetTitle()) , Form("lep1_ptRatio_%s" , chain->GetTitle()) , 30 , 0 , 1.5);	  p_result.h_lep1_ptRatio ->Sumw2();
+  p_result.h_lep2_ptRatio = new TH1F(Form("lep2_ptRatio_%s" , chain->GetTitle()) , Form("lep2_ptRatio_%s" , chain->GetTitle()) , 30 , 0 , 1.5);	  p_result.h_lep2_ptRatio ->Sumw2();
+  p_result.h_lep1_ptRel   = new TH1F(Form("lep1_ptRel_%s"   , chain->GetTitle()) , Form("lep1_ptRel_%s"   , chain->GetTitle()) , 25 , 0 , 25);	  p_result.h_lep1_ptRel   ->Sumw2();
+  p_result.h_lep2_ptRel   = new TH1F(Form("lep2_ptRel_%s"   , chain->GetTitle()) , Form("lep2_ptRel_%s"   , chain->GetTitle()) , 25 , 0 , 25);	  p_result.h_lep2_ptRel   ->Sumw2();
 
   plots_t p_alternative;
   if (doFakes == 1) {
-    p_alternative.SRHH.TOTAL     = new TH1F(Form("SRHH_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_ALT_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);
-    p_alternative.SRHL.TOTAL     = new TH1F(Form("SRHL_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_ALT_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);
-    p_alternative.SRLL.TOTAL     = new TH1F(Form("SRLL_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_ALT_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9);
+    p_alternative.SRHH.TOTAL     = new TH1F(Form("SRHH_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_ALT_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_alternative.SRHH.TOTAL->Sumw2();
+    p_alternative.SRHL.TOTAL     = new TH1F(Form("SRHL_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_ALT_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_alternative.SRHL.TOTAL->Sumw2();
+    p_alternative.SRLL.TOTAL     = new TH1F(Form("SRLL_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_ALT_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_alternative.SRLL.TOTAL->Sumw2();
   } else {
     p_alternative.SRHH.TOTAL     = 0;
     p_alternative.SRHL.TOTAL     = 0;
@@ -935,7 +937,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (doFakes == 1){
         if (ss::hyp_class() != 2 && ss::hyp_class() != 1) continue;
         if (ss::lep1_passes_id()==0) {
-	  nfo++;
 	  float fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
 	  weight *= fr/(1.-fr);
 	  float fra = alternativeFakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
@@ -984,18 +985,18 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       }
 
       //Require baseline selections
-      int BR = baselineRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), lep1_pt, lep2_pt);
+      int BR = baselineRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
       // cout << "BR=" << BR << endl;
       // cout << Form("nj=%i nb=%i met=%f ht=%f",ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr()) << endl;
       if (BR < 0) continue;
 
       //Get the SR
-      int SR = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), mtmin, lep1_pt, lep2_pt);
+      int SR = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
 
       // cout << "SR=" << SR << endl;
  
       //Get the category
-      anal_type_t categ = analysisCategory(ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
+      anal_type_t categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
 
       // if (categ!=0) continue;//test
 
@@ -1156,11 +1157,13 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       
       if (!isData && !doFlips && !doFakes) {
 	//jes
-	writeJesSyst(h_sr,name,kinRegs[kr]);
+	writeJesSyst(h_sr,name,kinRegs[kr]);//fixme should not change normalization for WZ
 	//btag
 	writeBtagSyst(h_sr,name,kinRegs[kr]);
 	//leptons
-	writeLepSyst(h_sr,name,kinRegs[kr]);
+	if (name!="wz") {
+	  writeHTHltSyst(h_sr,name,kinRegs[kr]);
+	}
       }
       
       //end systematics
@@ -1174,6 +1177,40 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   return pair<yields_t, plots_t>(y_result,p_result); 
 
 }
+
+bool isSRHighHT(TString kine, int sr) {
+  if (kine.Contains("hihi")) {
+    if (sr==1 || sr==3 || sr==9 || sr==11 || sr==17 || sr==19 || sr==25 || sr==27 || sr==29) return false;
+  } else if (kine.Contains("hilow")) {
+    if (sr==1 || sr==3 || sr==7 || sr==9 || sr==13 || sr==15 || sr==19 || sr==21 || sr==23) return false;
+  } 
+  return true;
+}
+
+int nbtagsSR(TString kine, int sr) {
+  if (kine.Contains("hihi")) {
+    if (sr>=1 && sr<=8)        return  0;//0 btag
+    else if (sr>=9  && sr<=16) return  1;//1 btag
+    else if (sr>=17 && sr<=24) return  2;//2 btag
+    else if (sr>=17 && sr<=24) return  3;//3+btag
+    else                       return -1;//inclusive regions
+  } else if (kine.Contains("hilow")) {
+    if (sr>=1 && sr<=6)        return  0;//0 btag
+    else if (sr>=7  && sr<=12) return  1;//1 btag
+    else if (sr>=13 && sr<=18) return  2;//2 btag
+    else if (sr>=19 && sr<=22) return  3;//3+btag
+    else                       return -1;//inclusive regions
+  } else if (kine.Contains("lowlow")) {
+    if (sr>=1 && sr<=2)        return  0;//0 btag
+    else if (sr>=3 && sr<=4)   return  1;//1 btag
+    else if (sr>=5 && sr<=6)   return  2;//2 btag
+    else if (sr==7)            return  3;//3+btag
+    else                       return -1;//inclusive regions
+  }
+  cout << "error! cannot find this SR!" << endl;
+  return -999;
+}
+
 
 void avoidNegativeYields(TH1F* plot) {
   for (int bin=1;bin<=plot->GetNbinsX();++bin) {
@@ -1227,12 +1264,7 @@ void writeTTVExtrSyst(TH1F* central,string name,TString kine) {
     float systValue = 1.08;
     for (int bin=1;bin<=systUpHTH->GetNbinsX();++bin) {
       //skip low ht regions
-      if (kine.Contains("hihi")) {
-	if (bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29) continue;
-      }
-      if (kine.Contains("hilow")) {
-	if (bin==1 || bin==3 || bin==7 || bin==9 || bin==13 || bin==15 || bin==19 || bin==21 || bin==23) continue;
-      }
+      if (!isSRHighHT(kine,bin)) continue;
       float val = central->GetBinContent(bin)*systValue;
       if (val>0) systUpHTH->SetBinContent(bin,val);
     }
@@ -1244,15 +1276,9 @@ void writeTTVExtrSyst(TH1F* central,string name,TString kine) {
     //HTLow
     TH1F* systUpHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),up.Data()));
     systUpHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),up.Data()));
-    systValue = 1.08;
+    systValue = 1.03;
     for (int bin=1;bin<=systUpHTL->GetNbinsX();++bin) {
-      //skip high ht regions (i.e. negate requirement used above)
-      if (kine.Contains("hihi")) {
-	if (!(bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29)) continue;
-      }
-      if (kine.Contains("hilow")) {
-	if (!(bin==1 || bin==3 || bin==7 || bin==9 || bin==13 || bin==15 || bin==19 || bin==21 || bin==23)) continue;
-      }
+      if (isSRHighHT(kine,bin)) continue;
       float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
       if (val>0) systUpHTL->SetBinContent(bin,val);
     }
@@ -1288,27 +1314,19 @@ void writeWZExtrSyst(TH1F* central,string name,TString kine,bool down) {
   systUpDown->Write();
 }
 
-void writeLepSyst(TH1F* central,string name,TString kine) {
+void writeHTHltSyst(TH1F* central,string name,TString kine) {
   TString up = "Up";
-  TH1F* systUp = (TH1F*) central->Clone(Form("lep%s",up.Data()));
-  systUp->SetTitle(Form("lep%s",up.Data()));
-  float systValue = 1.;
-  if (kine.Contains("hihi")) {
-    systValue = 1.10;
-  }
-  if (kine.Contains("hilow")) {
-    systValue = 1.15;
-  }
-  if (kine.Contains("lowlow")) {
-    systValue = 1.20;
-  }
+  TH1F* systUp = (TH1F*) central->Clone(Form("hthlt%s",up.Data()));
+  systUp->SetTitle(Form("hthlt%s",up.Data()));
+  float systValue = 1.02;
   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
+    if (!isSRHighHT(kine,bin)) continue;
     float val = central->GetBinContent(bin)*systValue;
     if (val>0) systUp->SetBinContent(bin,val);
   }
   TString down = "Down";
-  TH1F* systDown = (TH1F*) central->Clone(Form("lep%s",down.Data()));
-  systDown->SetTitle(Form("lep%s",down.Data()));
+  TH1F* systDown = (TH1F*) central->Clone(Form("hthlt%s",down.Data()));
+  systDown->SetTitle(Form("hthlt%s",down.Data()));
   fillDownMirrorUp(central,systUp,systDown);
   systUp->Write();
   systDown->Write();
@@ -1470,58 +1488,28 @@ void writeBtagSyst(TH1F* central,string name,TString kine) {
 
   if (TString(name)=="wz" || TString(name)=="ww" || TString(name)=="vg" || TString(name)=="rares" ) {
     for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-      if (kine.Contains("hihi")) {
-	if (bin>=1 && bin<=8)        systValue = 0.98;//0 btag
-	else if (bin>=9  && bin<=16) systValue = 1.13;//1 btag
-	else if (bin>=17 && bin<=24) systValue = 1.18;//2 btag
-	else if (bin>=17 && bin<=24) systValue = 2.00;//3+btag
-	else                         systValue = 1.00;//inclusive regions
-      }
-      if (kine.Contains("hilow")) {
-	if (bin>=1 && bin<=6)        systValue = 0.98;//0 btag
-	else if (bin>=7  && bin<=12) systValue = 1.13;//1 btag
-	else if (bin>=13 && bin<=18) systValue = 1.18;//2 btag
-	else if (bin>=19 && bin<=22) systValue = 2.00;//3+btag
-	else                         systValue = 1.00;//inclusive regions
-      }
-      if (kine.Contains("lowlow")) {
-	if (bin>=1 && bin<=2)        systValue = 0.98;//0 btag
-	else if (bin>=3 && bin<=4)   systValue = 1.13;//1 btag
-	else if (bin>=5 && bin<=6)   systValue = 1.18;//2 btag
-	else if (bin==7)             systValue = 2.00;//3+btag
-	else                         systValue = 1.00;//inclusive regions
-      }
+      int nb = nbtagsSR(kine, bin);
+      if (nb==0)      systValue = 0.98;//0 btag
+      else if (nb==1) systValue = 1.13;//1 btag
+      else if (nb==2) systValue = 1.18;//2 btag
+      else if (nb==3) systValue = 2.00;//3+btag
+      else            systValue = 1.00;//inclusive regions
       float val = central->GetBinContent(bin)*systValue;
       if (val>0) systUp->SetBinContent(bin,val);
     }
   }
-
+  
   if (TString(name)=="ttw" || TString(name)=="ttzh" || TString(name)=="tg" 
       || TString(name)=="t1tttt_1200" || TString(name)=="t1tttt_1500" 
       || TString(name)=="t6ttww_650" || TString(name)=="t6ttww_600" 
       || TString(name)=="t5tttt_deg") {
     for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-      if (kine.Contains("hihi")) {
-	if (bin>=1 && bin<=8)        systValue = 1.02;//0 btag
-	else if (bin>=9  && bin<=16) systValue = 0.95;//1 btag
-	else if (bin>=17 && bin<=24) systValue = 1.05;//2 btag
-	else if (bin>=17 && bin<=24) systValue = 1.15;//3+btag
-	else                         systValue = 1.00;//inclusive regions
-      }
-      if (kine.Contains("hilow")) {
-	if (bin>=1 && bin<=6)        systValue = 1.02;//0 btag
-	else if (bin>=7  && bin<=12) systValue = 0.95;//1 btag
-	else if (bin>=13 && bin<=18) systValue = 1.05;//2 btag
-	else if (bin>=19 && bin<=22) systValue = 1.15;//3+btag
-	else                         systValue = 1.00;//inclusive regions
-      }
-      if (kine.Contains("lowlow")) {
-	if (bin>=1 && bin<=2)        systValue = 1.02;//0 btag
-	else if (bin>=3 && bin<=4)   systValue = 0.95;//1 btag
-	else if (bin>=5 && bin<=6)   systValue = 1.05;//2 btag
-	else if (bin==7)             systValue = 1.15;//3+btag
-	else                         systValue = 1.00;//inclusive regions
-      }
+      int nb = nbtagsSR(kine, bin);
+      if (nb==0)      systValue = 1.02;//0 btag
+      else if (nb==1) systValue = 0.95;//1 btag
+      else if (nb==2) systValue = 1.05;//2 btag
+      else if (nb==3) systValue = 1.15;//3+btag
+      else            systValue = 1.00;//inclusive regions
       float val = central->GetBinContent(bin)*systValue;
       if (val>0) systUp->SetBinContent(bin,val);
     }
@@ -1531,7 +1519,6 @@ void writeBtagSyst(TH1F* central,string name,TString kine) {
   TH1F* systDown = (TH1F*) central->Clone(Form("btag%s",down.Data()));
   systDown->SetTitle(Form("btag%s",down.Data()));
   fillDownMirrorUp(central,systUp,systDown);
-
   systUp->Write();
   systDown->Write();
 }

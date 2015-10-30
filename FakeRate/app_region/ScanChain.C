@@ -238,8 +238,6 @@ float getEta(float eta, float ht, bool extrPtRel = false){
 }
 
 float getFakeRate(TH2D* histo, int id, float pt, float eta, float ht, bool extrPtRel = false, bool doData = false){
-  //truncate the muon fake rate to avoid large unceratinties
-  if (abs(id)==13 && pt>=50) pt=45.;
   if (doData) return fakeRate(id, pt, eta, ht);
   else return qcdMCFakeRate(id, pt, eta, ht);
 }

@@ -15,9 +15,9 @@ import math
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
-lumi = "0.1"
+#lumi = "0.1"
 #lumi = "1.3"
-#lumi = "3.0"
+lumi = "3.0"
 
 class Process:
     def __init__(self, mycount, myname, myrootf, myplot):
@@ -25,8 +25,11 @@ class Process:
         self.name = myname
         self.rootf = myrootf
         self.plot = myplot
+        self.lumi  = "-"
         self.jes  = "-"
-        self.lep  = "-"
+        self.lepeff  = "-"
+        self.lephlt  = "-"
+        self.hthlt  = "-"
         self.btag = "-"
         self.trigeff = "-"
         self.signal_stat = "-"
@@ -105,13 +108,25 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     for process in processes: card.write("%-15s " % (process.signal_stat))
     card.write("\n")
 
+    #nuisance lumi
+    card.write("%-40s %-5s " % ("lumi","lnN"))
+    for process in processes: card.write("%-15s " % (process.lumi))
+    card.write("\n")
     #nuisance jes
     card.write("%-40s %-5s " % ("jes","shape"))
     for process in processes: card.write("%-15s " % (process.jes))
     card.write("\n")
-    #nuisance lep
-    card.write("%-40s %-5s " % ("lep","shape"))
-    for process in processes: card.write("%-15s " % (process.lep))
+    #nuisance lepeff
+    card.write("%-40s %-5s " % ("lepeff","lnN"))
+    for process in processes: card.write("%-15s " % (process.lepeff))
+    card.write("\n")
+    #nuisance lephlt
+    card.write("%-40s %-5s " % ("lephlt","lnN"))
+    for process in processes: card.write("%-15s " % (process.lephlt))
+    card.write("\n")
+    #nuisance hthlt
+    card.write("%-40s %-5s " % ("hthlt","shape"))
+    for process in processes: card.write("%-15s " % (process.hthlt))
     card.write("\n")
     #nuisance btag
     card.write("%-40s %-5s " % ("btag","shape"))
@@ -215,7 +230,7 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
 
 def writeOneCard(dir, signal, kine, plot, output):
     #define processes (signal first)
-    data = Process(-1,"data","data_histos_"+kine+"_"+lumi+"ifb.root",plot)
+    data = Process(-1,"data","pdata_histos_"+kine+"_"+lumi+"ifb.root",plot)
     signal = Process(0,signal,signal+"_histos_"+kine+"_"+lumi+"ifb.root",plot)
     TTW = Process(1,"ttw","ttw_histos_"+kine+"_"+lumi+"ifb.root",plot)
     TTZH = Process(2,"ttzh","ttzh_histos_"+kine+"_"+lumi+"ifb.root",plot)
@@ -227,56 +242,74 @@ def writeOneCard(dir, signal, kine, plot, output):
     fakes = Process(8,"fakes","fakes_histos_"+kine+"_"+lumi+"ifb.root",plot)
     flips = Process(9,"flips","flips_histos_"+kine+"_"+lumi+"ifb.root",plot)
     #overwrite nuisances
+    signal.lumi  = "1.09"
     signal.jes  = "1"
     signal.signal_stat = "1"
     TTW.TTW          = "1.13"
+    TTW.lumi         = "1.09"
     TTW.ttw_pdf      = "1.04"
     TTW.ttw_extr_hth = "1"
     TTW.ttw_extr_htl = "1"
     TTW.ttw_extr_ll  = "1"
     TTW.jes  = "1"
-    TTW.lep  = "1"
+    TTW.lepeff  = "1.04"
+    TTW.lephlt  = "1.02"
+    TTW.hthlt  = "1"
     TTW.btag = "1"
     TTW.trigeff = "1.04"
     TTW.ttw_stat = "1"
     TTZH.TTZH          = "1.11"
+    TTZH.lumi          = "1.09"
     TTZH.ttzh_pdf      = "1.04"
     TTZH.ttzh_extr_hth = "1"
     TTZH.ttzh_extr_htl = "1"
     TTZH.ttzh_extr_ll  = "1"
     TTZH.jes  = "1"
-    TTZH.lep  = "1"
+    TTZH.lepeff  = "1.04"
+    TTZH.lephlt  = "1.02"
+    TTZH.hthlt  = "1"
     TTZH.btag = "1"
     TTZH.trigeff = "1.04"
     TTZH.ttzh_stat = "1"
     WZ.WZ = "1.30"
     #WZ.wz_extr = "1"
     WZ.jes  = "1"
-    WZ.lep  = "1"
     WZ.btag = "1"
-    WZ.trigeff = "1.04"
+    WZ.trigeff = "1"
     WZ.wz_stat = "1"
     WW.WW = "1.30"
+    WW.lumi = "1.09"
     WW.jes  = "1"
-    WW.lep  = "1"
+    WW.lepeff  = "1.04"
+    WW.lephlt  = "1.02"
+    WW.hthlt  = "1"
     WW.btag = "1"
     WW.trigeff = "1.04"
     WW.ww_stat = "1"
     TG.TG = "1.50"
+    TG.lumi = "1.09"
     TG.jes  = "1"
-    TG.lep  = "1"
+    TG.lepeff  = "1.04"
+    TG.lephlt  = "1.02"
+    TG.hthlt  = "1"
     TG.btag = "1"
     TG.trigeff = "1.04"
     TG.tg_stat = "1"
-    VG.VG = "1.30"
+    VG.VG = "1.50"
+    VG.lumi = "1.09"
     VG.jes  = "1"
-    VG.lep  = "1"
+    VG.lepeff  = "1.04"
+    VG.lephlt  = "1.02"
+    VG.hthlt  = "1"
     VG.btag = "1"
     VG.trigeff = "1.04"
     VG.vg_stat = "1"
     rares.RARES = "1.30"
+    rares.lumi = "1.09"
     rares.jes  = "1"
-    rares.lep  = "1"
+    rares.lepeff  = "1.04"
+    rares.lephlt  = "1.02"
+    rares.hthlt  = "1"
     rares.btag = "1"
     rares.trigeff = "1.04"
     rares.rares_stat = "1"
