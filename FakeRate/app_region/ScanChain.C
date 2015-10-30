@@ -28,7 +28,7 @@ using namespace duplicate_removal;
 CTable electrons;
 CTable muons;
 
-bool doLatex = false;
+bool doLatex = true;
 
 TH1D * evtCounter = new TH1D("","",1000,0,1000); 
 map<TString, int> evtBinMap;
@@ -209,7 +209,7 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
     float laste = sqrt((p*p*oe*oe + o*o*pe*pe)/(p*p*p*p));  //error prop
 
     if (print&&!doLatex) cout << setw(5) << sr <<  setw(w) << Form("%5.2f +/-%5.2f", p, pe) << setw(w) << Form("%5.2f +/-%5.2f", o, oe) << setw(w) << Form("%5.2f +/-%5.2f", (o>0?p/o:99.99),ratioe) << setw(w) << Form("%5.2f +/-%5.2f", (p>0?(p-o)/p:99.99), laste) << endl;
-    if (print&&doLatex) cout << Form("%i & %5.1f $\\pm$ %5.1f & %5.1f $\\pm$ %5.1f & %5.1f $\\pm$ %5.1f & %5.1f $\\pm$ %5.1f \\\\",sr, p, pe, o, oe,(o>0?p/o:99.99),ratioe,(p>0?(p-o)/p:99.99), laste) << endl;
+    if (print&&doLatex) cout << Form("%i & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f \\\\",sr, p, pe, o, oe,(o>0?p/o:99.99),ratioe,(p>0?(p-o)/p:99.99), laste) << endl;
     if (print && number == 2) muons.setCell(Form("%5.2f $\\pm$ %5.2f", p, pe), bin-1, 0); 
     if (print && number == 2) muons.setCell(Form("%5.2f $\\pm$ %5.2f", o, oe), bin-1, 1); 
     if (print && number == 2) muons.setCell(Form("%5.2f $\\pm$ %5.2f", (o>0?p/o:99.99), ratioe), bin-1, 2); 
@@ -291,10 +291,14 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   bool doLowHT = option.Contains("IsoTrigs") ? true : false;
   bool doHighHT = option.Contains("HTTrigs") ? true : false;
 
-  float luminosity = 3.;//getLumi();
+  float luminosity = doData ? getLumi() : 3.;
 
   //Dir
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
+
+  int nsr = 32;
+  if (highlow) nsr = 26;
+  if (lowlow)  nsr = 8;
 
   //Histograms
   hists.push_back( histCreator("Npn_histo_br_obs"       , "Observed Prompt-NonPrompt Background"              ,  4, 0,    4) ); 
@@ -303,12 +307,12 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   hists.push_back( histCreator("Npn_histo_br_pred_mu"   , "Predicted Prompt-NonPrompt Background (Single mu)" ,  4, 0,    4) );
   hists.push_back( histCreator("Npn_histo_br_obs_el"    , "Observed Prompt-NonPrompt Background (Single el)"  ,  4, 0,    4) );
   hists.push_back( histCreator("Npn_histo_br_pred_el"   , "Predicted Prompt-NonPrompt Background (Single el)" ,  4, 0,    4) );
-  hists.push_back( histCreator("Npn_histo_sr_obs"       , "Observed Prompt-NonPrompt Background"              , 40, 0,   40) );
-  hists.push_back( histCreator("Npn_histo_sr_pred"      , "Predicted Prompt-NonPrompt Background"             , 40, 0,   40) );
-  hists.push_back( histCreator("Npn_histo_sr_obs_mu"    , "Observed Prompt-NonPrompt Background (Single mu)"  , 40, 0,   40) );
-  hists.push_back( histCreator("Npn_histo_sr_pred_mu"   , "Predicted Prompt-NonPrompt Background (Single mu)" , 40, 0,   40) );
-  hists.push_back( histCreator("Npn_histo_sr_obs_el"    , "Observed Prompt-NonPrompt Background (Single el)"  , 40, 0,   40) );
-  hists.push_back( histCreator("Npn_histo_sr_pred_el"   , "Predicted Prompt-NonPrompt Background (Single el)" , 40, 0,   40) );
+  hists.push_back( histCreator("Npn_histo_sr_obs"       , "Observed Prompt-NonPrompt Background"              , nsr, 1,   nsr+1) );
+  hists.push_back( histCreator("Npn_histo_sr_pred"      , "Predicted Prompt-NonPrompt Background"             , nsr, 1,   nsr+1) );
+  hists.push_back( histCreator("Npn_histo_sr_obs_mu"    , "Observed Prompt-NonPrompt Background (Single mu)"  , nsr, 1,   nsr+1) );
+  hists.push_back( histCreator("Npn_histo_sr_pred_mu"   , "Predicted Prompt-NonPrompt Background (Single mu)" , nsr, 1,   nsr+1) );
+  hists.push_back( histCreator("Npn_histo_sr_obs_el"    , "Observed Prompt-NonPrompt Background (Single el)"  , nsr, 1,   nsr+1) );
+  hists.push_back( histCreator("Npn_histo_sr_pred_el"   , "Predicted Prompt-NonPrompt Background (Single el)" , nsr, 1,   nsr+1) );
   hists.push_back( histCreator("Npn_histo_HT_obs"       , "Observed Prompt-NonPrompt Background"              , 20, 0, 1000) );
   hists.push_back( histCreator("Npn_histo_HT_pred"      , "Predicted Prompt-NonPrompt Background"             , 20, 0, 1000) );
   hists.push_back( histCreator("Npn_histo_HT_obs_mu"    , "Observed Prompt-NonPrompt Background (Single mu)"  , 20, 0, 1000) );
@@ -646,10 +650,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       }
 
       //Determine SR and BR
-      anal_type_t ac_base = analysisCategory(lep1_pT, lep2_pT);
+      anal_type_t ac_base = analysisCategory(ss::lep1_id(), ss::lep2_id(), lep1_pT, lep2_pT);
       int br = baselineRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), lep1_pT, lep2_pT); 
       if (br<0) continue;
-      int sr = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), mtmin, lep1_pT, lep2_pT);
+      int sr = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pT, lep2_pT);
 
       //lepton pT selection
       if(highhigh && ac_base!=HighHigh) continue;

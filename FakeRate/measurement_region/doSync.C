@@ -6,8 +6,8 @@
 
   TChain *syncCh = new TChain("t"); 
   syncCh->Add( "./SyncDoubleMu.root" );
-  syncCh->Add( "./SyncDoubleEG.root" );
+  // syncCh->Add( "./SyncDoubleEG.root" );
   ScanChain(syncCh,"./rate_histos_sync_LooseEMVA.root","useLooseEMVA"); 
-  ScanChain(syncCh,"./rate_histos_sync_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
+  // ScanChain(syncCh,"./rate_histos_sync_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
   
 }

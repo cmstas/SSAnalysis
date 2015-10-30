@@ -935,6 +935,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (doFakes == 1){
         if (ss::hyp_class() != 2 && ss::hyp_class() != 1) continue;
         if (ss::lep1_passes_id()==0) {
+	  nfo++;
 	  float fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
 	  weight *= fr/(1.-fr);
 	  float fra = alternativeFakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
@@ -946,6 +947,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	  float fra = alternativeFakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht_corr());
 	  weight_alt *= fra/(1.-fra);
 	}
+	//subtract double FO
+	if (ss::hyp_class() == 1) weight *= -1.;
         if (!ss::is_real_data()) {
 	  weight *= -1.;
 	  weight_alt *= -1.;

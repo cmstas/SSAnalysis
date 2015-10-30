@@ -81,7 +81,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
 
       //Apply PU reweighting
       if (!isData) {
-      	float puw = getPUw(ss::nGoodVertices());
+      	float puw = getPUwECO(ss::nGoodVertices());
       	weight*=puw;
       }
       //DY totWeight=285999/325590
@@ -130,9 +130,9 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
 
       //Determine analysis category
       int AC = -1;
-      if (analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt()) == HighHigh) AC = 0; 
-      if (analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt()) == HighLow ) AC = 1; 
-      if (analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt()) == LowLow  ) AC = 2; 
+      if (analysisCategory(ss::lep1_id(),ss::lep2_id(),ss::lep1_p4().pt(), ss::lep2_p4().pt()) == HighHigh) AC = 0; 
+      if (analysisCategory(ss::lep1_id(),ss::lep2_id(),ss::lep1_p4().pt(), ss::lep2_p4().pt()) == HighLow ) AC = 1; 
+      if (analysisCategory(ss::lep1_id(),ss::lep2_id(),ss::lep1_p4().pt(), ss::lep2_p4().pt()) == LowLow  ) AC = 2; 
       if (AC < 0) continue;
 
       //Determine BR

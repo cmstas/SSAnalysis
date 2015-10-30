@@ -102,7 +102,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   int nptbins = 5;
   int netabins = 3;
   float ptbins[6] = {10., 15., 25., 35., 50., 70.};
-  float etabins[4] = {0., 1., 2., 2.4};
+  float etabins_mu[4] = {0., 1.2, 2.1, 2.4};
+  float etabins_el[4] = {0., 0.8, 1.479, 2.5};
 
   if (false) {
     //this should be ok as long as there are less bins in the extrPtRel case
@@ -111,9 +112,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
     ptbins[2] = 100.;
     ptbins[3] = 150.;
     nptbins = 3;
-    etabins[0] = 0.;
-    etabins[1] = 400.;
-    etabins[2] = 800.;
+    etabins_mu[0] = 0.;
+    etabins_mu[1] = 400.;
+    etabins_mu[2] = 800.;
+    etabins_el[0] = 0.;
+    etabins_el[1] = 400.;
+    etabins_el[2] = 800.;
     netabins = 2;
   } 
 
@@ -121,75 +125,75 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   // Example Histograms
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
 
-  TH2D *Nt_histo_e = new TH2D("Nt_histo_e", "Nt vs Pt, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nt_histo_e = new TH2D("Nt_histo_e", "Nt vs Pt, Eta (electrons)", nptbins,ptbins,netabins,etabins_el);
   Nt_histo_e->SetDirectory(rootdir);
   Nt_histo_e->Sumw2();
 
-  TH2D *Nl_histo_e = new TH2D("Nl_histo_e", "Nl vs Pt, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nl_histo_e = new TH2D("Nl_histo_e", "Nl vs Pt, Eta (electrons)", nptbins,ptbins,netabins,etabins_el);
   Nl_histo_e->SetDirectory(rootdir);
   Nl_histo_e->Sumw2();
 
-  TH2D *Nt_histo_mu = new TH2D("Nt_histo_mu", "Nt vs Pt, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nt_histo_mu = new TH2D("Nt_histo_mu", "Nt vs Pt, Eta (muons)", nptbins,ptbins,netabins,etabins_mu);
   Nt_histo_mu->SetDirectory(rootdir);
   Nt_histo_mu->Sumw2();
 
-  TH2D *Nl_histo_mu = new TH2D("Nl_histo_mu", "Nl vs Pt, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nl_histo_mu = new TH2D("Nl_histo_mu", "Nl vs Pt, Eta (muons)", nptbins,ptbins,netabins,etabins_mu);
   Nl_histo_mu->SetDirectory(rootdir);
   Nl_histo_mu->Sumw2();
 
-  TH2D *Nl_cone_histo_e = new TH2D("Nl_cone_histo_e", "Nl vs Cone Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nl_cone_histo_e = new TH2D("Nl_cone_histo_e", "Nl vs Cone Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins_el);
   Nl_cone_histo_e->SetDirectory(rootdir);
   Nl_cone_histo_e->Sumw2();
 
-  TH2D *Nl_cone_histo_mu = new TH2D("Nl_cone_histo_mu", "Nl vs Cone Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nl_cone_histo_mu = new TH2D("Nl_cone_histo_mu", "Nl vs Cone Energy, Eta (muons)", nptbins,ptbins,netabins,etabins_mu);
   Nl_cone_histo_mu->SetDirectory(rootdir);
   Nl_cone_histo_mu->Sumw2();
 
-  TH2D *Nt_jet_histo_e = new TH2D("Nt_jet_histo_e", "Nt vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nt_jet_histo_e = new TH2D("Nt_jet_histo_e", "Nt vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins_el);
   Nt_jet_histo_e->SetDirectory(rootdir);
   Nt_jet_histo_e->Sumw2();
 
-  TH2D *Nt_jet_histo_mu = new TH2D("Nt_jet_histo_mu", "Nt vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nt_jet_histo_mu = new TH2D("Nt_jet_histo_mu", "Nt vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins_mu);
   Nt_jet_histo_mu->SetDirectory(rootdir);
   Nt_jet_histo_mu->Sumw2();
 
-  TH2D *Nl_jet_histo_e = new TH2D("Nl_jet_histo_e", "Nl vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nl_jet_histo_e = new TH2D("Nl_jet_histo_e", "Nl vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins_el);
   Nl_jet_histo_e->SetDirectory(rootdir);
   Nl_jet_histo_e->Sumw2();
 
-  TH2D *Nl_jet_histo_mu = new TH2D("Nl_jet_histo_mu", "Nl vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nl_jet_histo_mu = new TH2D("Nl_jet_histo_mu", "Nl vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins_mu);
   Nl_jet_histo_mu->SetDirectory(rootdir);
   Nl_jet_histo_mu->Sumw2();
 
-  TH2D *Nt_jet_highpt_histo_e = new TH2D("Nt_jet_highpt_histo_e", "Nt vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nt_jet_highpt_histo_e = new TH2D("Nt_jet_highpt_histo_e", "Nt vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins_el);
   Nt_jet_highpt_histo_e->SetDirectory(rootdir);
   Nt_jet_highpt_histo_e->Sumw2();
 
-  TH2D *Nt_jet_highpt_histo_mu = new TH2D("Nt_jet_highpt_histo_mu", "Nt vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nt_jet_highpt_histo_mu = new TH2D("Nt_jet_highpt_histo_mu", "Nt vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins_mu);
   Nt_jet_highpt_histo_mu->SetDirectory(rootdir);
   Nt_jet_highpt_histo_mu->Sumw2();
 
-  TH2D *Nl_jet_highpt_histo_e = new TH2D("Nl_jet_highpt_histo_e", "Nl vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nl_jet_highpt_histo_e = new TH2D("Nl_jet_highpt_histo_e", "Nl vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins_el);
   Nl_jet_highpt_histo_e->SetDirectory(rootdir);
   Nl_jet_highpt_histo_e->Sumw2();
 
-  TH2D *Nl_jet_highpt_histo_mu = new TH2D("Nl_jet_highpt_histo_mu", "Nl vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nl_jet_highpt_histo_mu = new TH2D("Nl_jet_highpt_histo_mu", "Nl vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins_mu);
   Nl_jet_highpt_histo_mu->SetDirectory(rootdir);
   Nl_jet_highpt_histo_mu->Sumw2();
 
-  TH2D *Nt_jet_lowpt_histo_e = new TH2D("Nt_jet_lowpt_histo_e", "Nt vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nt_jet_lowpt_histo_e = new TH2D("Nt_jet_lowpt_histo_e", "Nt vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins_el);
   Nt_jet_lowpt_histo_e->SetDirectory(rootdir);
   Nt_jet_lowpt_histo_e->Sumw2();
 
-  TH2D *Nt_jet_lowpt_histo_mu = new TH2D("Nt_jet_lowpt_histo_mu", "Nt vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nt_jet_lowpt_histo_mu = new TH2D("Nt_jet_lowpt_histo_mu", "Nt vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins_mu);
   Nt_jet_lowpt_histo_mu->SetDirectory(rootdir);
   Nt_jet_lowpt_histo_mu->Sumw2();
 
-  TH2D *Nl_jet_lowpt_histo_e = new TH2D("Nl_jet_lowpt_histo_e", "Nl vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nl_jet_lowpt_histo_e = new TH2D("Nl_jet_lowpt_histo_e", "Nl vs Jet Energy, Eta (electrons)", nptbins,ptbins,netabins,etabins_el);
   Nl_jet_lowpt_histo_e->SetDirectory(rootdir);
   Nl_jet_lowpt_histo_e->Sumw2();
 
-  TH2D *Nl_jet_lowpt_histo_mu = new TH2D("Nl_jet_lowpt_histo_mu", "Nl vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins);
+  TH2D *Nl_jet_lowpt_histo_mu = new TH2D("Nl_jet_lowpt_histo_mu", "Nl vs Jet Energy, Eta (muons)", nptbins,ptbins,netabins,etabins_mu);
   Nl_jet_lowpt_histo_mu->SetDirectory(rootdir);
   Nl_jet_lowpt_histo_mu->Sumw2();
 
@@ -473,8 +477,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       // Progress
       LeptonTree::progress( nEventsTotal, nEventsChain );
 
-      if (debug && evt_event()!=90556536) continue;
-      if (debug) cout << "event=" << evt_event() << endl;
+      if (debug && evt_event()!=39158858) continue;
+      if (debug) cout << "event=" << evt_event() << " run=" << evt_run() << endl;
 
       //cout << "pt=" << p4().pt() << " iso=" << RelIso03EA() << endl;
       if (debug) cout << "lepp4=" << p4() << " pt=" << p4().pt() << " eta=" << p4().eta() << " phi=" << p4().phi() << " jetp4=" << jet_close_lep() << endl;
@@ -648,6 +652,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	
       }	
 
+      if (debug) cout << "check pt range of triggers" << endl; 
       //check prescales, apply cuts on the pT range depending on the trigger
       int prescale = -1;
       if (abs(id())==11) {	
@@ -677,7 +682,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	}
       }
 
-      if (isSyncFile) weight = 1;
+      //if (isSyncFile) weight = 1;
       
       if (debug) cout << "check nFO_SS" << endl;
       if(nFOs_SS() > 1) //if more than 1 FO in event
@@ -973,8 +978,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		  else Nl_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 
 		  if (isSyncFile) {
-		    cout << Form("Muon FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f isNum=%1i met=%5.2f mt=%5.2f event %i",
-				 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,evt_met,evt_mt,evt_event()) << endl;
+
+		    cout << Form("%1llu %6.2f %6.2f %5.2f %.2f %.2f %5.2f %1i %6.0f",evt_event() , p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,weight) << endl;
 		  }
 
 		  njets40_histo->Fill(njets40, weight);
