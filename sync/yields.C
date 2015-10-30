@@ -1,12 +1,10 @@
 #include "../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../software/tableMaker/CTable.h"
 #include "../CORE/SSSelections.h"
-#include "../classFiles/v4.00/SS.h"
+#include "../classFiles/v4.03/SS.h"
 #include "../CORE/Tools/utils.h"
 #include "../commonUtils.h"
 #include "../CORE/Tools/dorky/dorky.h"
-
-bool corrected = true;
 
 struct results_t { TH1F* hh; TH1F* hl; TH1F* ll; }; 
 
@@ -16,7 +14,8 @@ void yields(){
 
   //Make chains, histograms
   TChain* chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/v4.01-data1p280ifb/*D.root"); 
+  //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v4.01-data1p280ifb/*D.root"); 
+  chain->Add("../sync_TTW_baby_0.root"); 
 
   //Declare counters
   int y0hh[3] = { 0 }; 
@@ -74,24 +73,9 @@ void yields(){
       //Reject not triggered
       if (!ss::fired_trigger()) continue;
 
-      //Determine MET
-      float metAG = ss::met(); 
-      float metPhiAG = ss::metPhi();
-
-      //Determine HT
-      float htAG = (corrected ? ss::ht_corr() : ss::ht());
-
-      //Determine njets
-      int njetsAG =  (corrected ? ss::njets_corr() : ss::njets());
-
-      //Determine nbtags
-      int nbtagsAG = (corrected ? ss::nbtags_corr() : ss::nbtags());
-
-      //cout << nbtagsAG << endl;
-
       //Calculate mtmin
-      float mt1 = MT(ss::lep1_p4().pt(), ss::lep1_p4().phi(), metAG, metPhiAG);
-      float mt2 = MT(ss::lep2_p4().pt(), ss::lep2_p4().phi(), metAG, metPhiAG);
+      float mt1 = MT(ss::lep1_p4().pt(), ss::lep1_p4().phi(), ss::rawmet(), ss::rawmetPhi());
+      float mt2 = MT(ss::lep2_p4().pt(), ss::lep2_p4().phi(), ss::rawmet(), ss::rawmetPhi());
       float mtmin = mt1 > mt2 ? mt2 : mt1; 
 
       //Determine type
@@ -101,9 +85,9 @@ void yields(){
       if (ss::hyp_type() == 0) type = 0;
    
       //Figure out region
-      anal_type_t categ = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());  
-      int SR = signalRegion(njetsAG, nbtagsAG, metAG, htAG, mtmin, ss::lep1_p4().pt(), ss::lep2_p4().pt());
-      int BR = baselineRegion(njetsAG, nbtagsAG, metAG, htAG, ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      anal_type_t categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());  
+      int SR = signalRegion(ss::njets(), ss::nbtags(), ss::rawmet(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::rawmet(), ss::ht(), ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
 
       //Counters
       if (categ == HighHigh && BR >=  0) y0hh[type]++; 
@@ -116,16 +100,9 @@ void yields(){
       if (categ == HighLow  && BR == 3) y3hl[type]++; 
 
       //Print sync script for 0-0 HH    
-      if (categ == HighHigh && BR >=  0) textfile << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), njetsAG, nbtagsAG, metAG, htAG, SR); 
-      if (categ == HighLow && BR >=  0) textfile2 << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), njetsAG, nbtagsAG, metAG, htAG, SR); 
+      if (categ == HighHigh && BR >=  0) textfile << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::rawmet(), ss::ht(), SR); 
+      if (categ == HighLow && BR >=  0) textfile2 << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::rawmet(), ss::ht(), SR); 
 
-      // if ( ss::event()==40405 ) {
-      // 	for (int j = 0; j<ss::jets_corr().size(); ++j) {
-      // 	  cout << "jet " << j << " pT=" << ss::jets_corr()[j].pt()*ss::jets_corr_undoJEC()[j]*ss::jets_corr_JEC()[j] << " uncorr_pT=" << ss::jets_corr()[j].pt()*ss::jets_corr_undoJEC()[j] 
-      // 	       << ", eta=" << ss::jets_corr()[j].eta() << ", phi=" << ss::jets_corr()[j].phi() << endl;
-      // 	}
-      // }
-      
     }//event loop
   }//file loop
   
