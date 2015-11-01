@@ -16,8 +16,10 @@ import math
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
 #lumi = "0.1"
-#lumi = "1.3"
-lumi = "3.0"
+lumi = "1.3"
+#lumi = "3.0"
+
+pseudoData = 1
 
 class Process:
     def __init__(self, mycount, myname, myrootf, myplot):
@@ -230,7 +232,12 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
 
 def writeOneCard(dir, signal, kine, plot, output):
     #define processes (signal first)
-    data = Process(-1,"data","pdata_histos_"+kine+"_"+lumi+"ifb.root",plot)
+    if pseudoData:
+        print "Using pseudo data!"
+        data = Process(-1,"data","pdata_histos_"+kine+"_"+lumi+"ifb.root",plot)
+    else:
+        print "Using real data!"
+        data = Process(-1,"data","data_histos_"+kine+"_"+lumi+"ifb.root",plot)
     signal = Process(0,signal,signal+"_histos_"+kine+"_"+lumi+"ifb.root",plot)
     TTW = Process(1,"ttw","ttw_histos_"+kine+"_"+lumi+"ifb.root",plot)
     TTZH = Process(2,"ttzh","ttzh_histos_"+kine+"_"+lumi+"ifb.root",plot)

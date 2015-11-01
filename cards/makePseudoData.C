@@ -1,3 +1,5 @@
+// root -l -b -q makePseudoData.C'("1.3","v4.01")'
+
 void addThisProcess(TH1F* h_sr, TString process, TString kine, TString lumi, TString dir) {
   TFile *file = TFile::Open(Form("%s/%s_histos_%s_%sifb.root",dir.Data(),process.Data(),kine.Data(),lumi.Data()));
   TH1F* h_sr_proc = (TH1F*) file->Get("sr");

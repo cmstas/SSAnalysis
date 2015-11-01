@@ -106,7 +106,7 @@ void flip(){
   //Now make ratio plot
   numer->Divide(numer, denom, 1, 1, "b"); 
   if (DYonly) PlotMaker2D(numer, "--outputName flips_rate_dy.pdf --noOverflow --setTitle flip rate DY only --Xaxis elec p_{T} --Yaxis |#eta| --sciNot .2 --color --text"); 
-  else PlotMaker2D(numer, "--outputName flips_rate.pdf --noOverflow --setTitle flip rate --Xaxis elec p_{T} --Yaxis |#eta| --sciNot .2 --color --text"); 
+  else PlotMaker2D(numer, "--outputName flips_rate.pdf --noOverflow --setTitle flip rate --Xaxis elec p_{T} --Yaxis |#eta| --color --text"); //--sciNot .6 
 
   //Save the histogram
   TFile *file = new TFile("flip_rate.root", "RECREATE");

@@ -1,5 +1,7 @@
 //root -b -q printShapes.C'("ttw","hihi","10.0","sr","ttw_extr","dir")'
 
+bool doLogy = 0;
+
 void printShapes(TString process, TString kine, TString lumi, TString nameN, TString nameA, TString dir){
 
   gROOT->Reset();
@@ -20,7 +22,12 @@ void printShapes(TString process, TString kine, TString lumi, TString nameN, TSt
   up->SetLineColor(kRed);
   down->SetLineColor(kBlue);
 
-  nominal->GetYaxis()->SetRangeUser(0,1.2*max);
+  if (doLogy) {
+    nominal->GetYaxis()->SetRangeUser(0.01,1.2*max);
+    c1.SetLogy();
+  } else {
+    nominal->GetYaxis()->SetRangeUser(0,1.2*max);
+  }
 
   nominal->SetLineWidth(2.);
   up->SetLineWidth(2.);
@@ -41,6 +48,8 @@ void printShapes(TString process, TString kine, TString lumi, TString nameN, TSt
   leg->AddEntry(down," Syst Down","l");
   leg->Draw();
 
-  c1.SaveAs(Form("%s/%s_%s_%sifb_%s_shape.png",dir.Data(),process.Data(),kine.Data(),lumi.Data(),nameA.Data()));
-
+  if (doLogy)
+    c1.SaveAs(Form("%s/%s_%s_%sifb_%s_shape_log.png",dir.Data(),process.Data(),kine.Data(),lumi.Data(),nameA.Data()));
+  else
+    c1.SaveAs(Form("%s/%s_%s_%sifb_%s_shape.png",dir.Data(),process.Data(),kine.Data(),lumi.Data(),nameA.Data()));
 }
