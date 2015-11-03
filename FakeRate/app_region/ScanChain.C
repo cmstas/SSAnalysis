@@ -556,15 +556,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       // // ignore MC part of chain when looking at data, except for contamination subtraction
       // if(doData && !ss::is_real_data()) weight = 0; 
 
-      if( !(ss::njets_corr() >= 2 && (ss::ht_corr() > 500 ? 1 : ss::corrMET() > 30) ) ) continue;
+      if( !(ss::njets() >= 2 && (ss::ht() > 500 ? 1 : ss::met() > 30) ) ) continue;
 
       //require triggers
       if (!ss::fired_trigger()) continue;
       if (doLowHT) {
-	if (ss::ht_corr()>300.) continue;
+	if (ss::ht()>300.) continue;
       }
       if (doHighHT) {
-	if (ss::ht_corr()<300.) continue;
+	if (ss::ht()<300.) continue;
       }
 
       if (doBonly) {
@@ -629,7 +629,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       bool lep1_passes_id = ss::lep1_passes_id();
       bool lep2_passes_id = ss::lep2_passes_id();
 
-      if (ss::ht_corr()<300.) {
+      if (ss::ht()<300.) {
 	//Skip if does not pass FO for isolated triggers
 	if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
 	if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
@@ -640,16 +640,16 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       //Determine mtMin
       float mtmin = ss::mt() > ss::mt_l2() ? ss::mt_l2() : ss::mt();
       if (coneCorr){
-        float mtl1 = MT(lep1_pT, ss::lep1_p4().phi(), ss::corrMET(), ss::corrMETphi());
-        float mtl2 = MT(lep2_pT, ss::lep2_p4().phi(), ss::corrMET(), ss::corrMETphi());
+        float mtl1 = MT(lep1_pT, ss::lep1_p4().phi(), ss::met(), ss::metPhi());
+        float mtl2 = MT(lep2_pT, ss::lep2_p4().phi(), ss::met(), ss::metPhi());
         mtmin = mtl1 > mtl2 ? mtl2 : mtl1;
       }
 
       //Determine SR and BR
       anal_type_t ac_base = analysisCategory(lep1_pT, lep2_pT);
-      int br = baselineRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), lep1_pT, lep2_pT); 
+      int br = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), lep1_pT, lep2_pT); 
       if (br<0) continue;
-      int sr = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), mtmin, lep1_pT, lep2_pT);
+      int sr = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, lep1_pT, lep2_pT);
 
       //lepton pT selection
       if(highhigh && ac_base!=HighHigh) continue;
@@ -720,8 +720,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
           hists[getHist("Npn_histo_sr_obs")   ]->Fill(sr, weight);
           hists[getHist("Npn_histo_br_obs")   ]->Fill(br, weight);
-          hists[getHist("Npn_histo_HT_obs")   ]->Fill(ss::ht_corr(), weight);
-          hists[getHist("Npn_histo_MET_obs")  ]->Fill(ss::corrMET(), weight);
+          hists[getHist("Npn_histo_HT_obs")   ]->Fill(ss::ht(), weight);
+          hists[getHist("Npn_histo_MET_obs")  ]->Fill(ss::met(), weight);
           hists[getHist("Npn_histo_MTMIN_obs")]->Fill(mtmin, weight);
           hists[getHist("Npn_histo_L1PT_obs") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
           hists[getHist("Npn_histo_L2PT_obs") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
@@ -729,8 +729,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           if(abs(ss::lep2_id()) == 11){
             hists[getHist("Npn_histo_sr_obs_el")   ]->Fill(sr, weight);
             hists[getHist("Npn_histo_br_obs_el")   ]->Fill(br, weight);
-            hists[getHist("Npn_histo_HT_obs_el")   ]->Fill(ss::ht_corr(), weight);
-            hists[getHist("Npn_histo_MET_obs_el")  ]->Fill(ss::corrMET(), weight);
+            hists[getHist("Npn_histo_HT_obs_el")   ]->Fill(ss::ht(), weight);
+            hists[getHist("Npn_histo_MET_obs_el")  ]->Fill(ss::met(), weight);
             hists[getHist("Npn_histo_MTMIN_obs_el")]->Fill(mtmin, weight);
             hists[getHist("Npn_histo_L1PT_obs_el") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
             hists[getHist("Npn_histo_L2PT_obs_el") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
@@ -740,8 +740,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           else if(abs(ss::lep2_id()) == 13){
             hists[getHist("Npn_histo_sr_obs_mu")   ]->Fill(sr, weight);
             hists[getHist("Npn_histo_br_obs_mu")   ]->Fill(br, weight);
-            hists[getHist("Npn_histo_HT_obs_mu")   ]->Fill(ss::ht_corr(), weight);
-            hists[getHist("Npn_histo_MET_obs_mu")  ]->Fill(ss::corrMET(), weight);
+            hists[getHist("Npn_histo_HT_obs_mu")   ]->Fill(ss::ht(), weight);
+            hists[getHist("Npn_histo_MET_obs_mu")  ]->Fill(ss::met(), weight);
             hists[getHist("Npn_histo_MTMIN_obs_mu")]->Fill(mtmin, weight);
             hists[getHist("Npn_histo_L1PT_obs_mu") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
             hists[getHist("Npn_histo_L2PT_obs_mu") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
@@ -757,8 +757,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
           hists[getHist("Npn_histo_sr_obs")]   ->Fill(sr, weight);
           hists[getHist("Npn_histo_br_obs")]   ->Fill(br, weight);
-          hists[getHist("Npn_histo_HT_obs")]   ->Fill(ss::ht_corr(), weight);
-          hists[getHist("Npn_histo_MET_obs")]  ->Fill(ss::corrMET(), weight);
+          hists[getHist("Npn_histo_HT_obs")]   ->Fill(ss::ht(), weight);
+          hists[getHist("Npn_histo_MET_obs")]  ->Fill(ss::met(), weight);
           hists[getHist("Npn_histo_MTMIN_obs")]->Fill(mtmin, weight);
           hists[getHist("Npn_histo_L1PT_obs") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
           hists[getHist("Npn_histo_L2PT_obs") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
@@ -766,8 +766,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           if(abs(ss::lep1_id()) == 11){
             hists[getHist("Npn_histo_sr_obs_el")]   ->Fill(sr, weight);
             hists[getHist("Npn_histo_br_obs_el")]   ->Fill(br, weight);
-            hists[getHist("Npn_histo_HT_obs_el")]   ->Fill(ss::ht_corr(), weight);
-            hists[getHist("Npn_histo_MET_obs_el")]  ->Fill(ss::corrMET(), weight);
+            hists[getHist("Npn_histo_HT_obs_el")]   ->Fill(ss::ht(), weight);
+            hists[getHist("Npn_histo_MET_obs_el")]  ->Fill(ss::met(), weight);
             hists[getHist("Npn_histo_MTMIN_obs_el")]->Fill(mtmin, weight);
             hists[getHist("Npn_histo_L1PT_obs_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
             hists[getHist("Npn_histo_L2PT_obs_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
@@ -778,8 +778,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           else if(abs(ss::lep1_id()) == 13){
             hists[getHist("Npn_histo_sr_obs_mu")]   ->Fill(sr, weight);
             hists[getHist("Npn_histo_br_obs_mu")]   ->Fill(br, weight);
-            hists[getHist("Npn_histo_HT_obs_mu")]   ->Fill(ss::ht_corr(), weight);
-            hists[getHist("Npn_histo_MET_obs_mu")]  ->Fill(ss::corrMET(), weight);
+            hists[getHist("Npn_histo_HT_obs_mu")]   ->Fill(ss::ht(), weight);
+            hists[getHist("Npn_histo_MET_obs_mu")]  ->Fill(ss::met(), weight);
             hists[getHist("Npn_histo_MTMIN_obs_mu")]->Fill(mtmin, weight);
             hists[getHist("Npn_histo_L1PT_obs_mu")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
             hists[getHist("Npn_histo_L2PT_obs_mu")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
@@ -840,7 +840,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           (doData && subtractContamination && !ss::is_real_data()) ) { // do contamination subtraction if doData and MC
 
 
-        int nbjets = ss::nbtags_corr();
+        int nbjets = ss::nbtags();
         if (nbjets > 3) nbjets = 3; 
 
         //0) InSituFR variables
@@ -895,7 +895,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           }
 
           if (abs(ss::lep2_id()) == 11){  
-            e2 = getFakeRate( rate_histo_e, 11, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
+            e2 = getFakeRate( rate_histo_e, 11, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht(), false, doData );
             w = (e2/(1-e2))*weight;
             if(subtractContamination) w = mult*weight;
 
@@ -903,15 +903,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
             hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, w);
-            hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht_corr(), w);
-            hists[getHist("Npn_histo_MET_pred_el")]  ->Fill(ss::corrMET(), w);
+            hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht(), w);
+            hists[getHist("Npn_histo_MET_pred_el")]  ->Fill(ss::met(), w);
             hists[getHist("Npn_histo_MTMIN_pred_el")]->Fill(mtmin, w);
             hists[getHist("Npn_histo_L1PT_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
             if (sr>=0) Npn_histo_sr_err2_pred_el[sr]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_br_err2_pred_el[br]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
-            Npn_histo_HT_err2_pred_el[hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht_corr())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
-            Npn_histo_MET_err2_pred_el[hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::corrMET())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
+            Npn_histo_HT_err2_pred_el[hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
+            Npn_histo_MET_err2_pred_el[hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::met())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_MTMIN_err2_pred_el[hists[getHist("Npn_histo_MTMIN_pred_el")]->FindBin(mtmin)-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_L1PT_err2_pred_el[hists[getHist("Npn_histo_L1PT_pred_el")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_L2PT_err2_pred_el[hists[getHist("Npn_histo_L2PT_pred_el")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
@@ -922,7 +922,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
             if(ss::lep2_motherID() == -2 || ss::lep2_motherID() == 0) notBs_e = notBs_e + mult*weight;
           }
           else if (abs(ss::lep2_id()) == 13){ 
-            e2 = getFakeRate( rate_histo_mu, 13, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
+            e2 = getFakeRate( rate_histo_mu, 13, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht(), false, doData );
             w = (e2/(1-e2))*weight;
             if(subtractContamination) w = mult*weight;
 
@@ -930,15 +930,15 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
             hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, w);
-            hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht_corr(), w);
-            hists[getHist("Npn_histo_MET_pred_mu")]->Fill(ss::corrMET(), w);
+            hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht(), w);
+            hists[getHist("Npn_histo_MET_pred_mu")]->Fill(ss::met(), w);
             hists[getHist("Npn_histo_MTMIN_pred_mu")]->Fill(mtmin, w);
             hists[getHist("Npn_histo_L1PT_pred_mu")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_mu")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
             if (sr>=0) Npn_histo_sr_err2_pred_mu[sr]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_br_err2_pred_mu[br]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
-            Npn_histo_HT_err2_pred_mu[hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht_corr())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
-            Npn_histo_MET_err2_pred_mu[hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::corrMET())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
+            Npn_histo_HT_err2_pred_mu[hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
+            Npn_histo_MET_err2_pred_mu[hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::met())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_MTMIN_err2_pred_mu[hists[getHist("Npn_histo_MTMIN_pred_mu")]->FindBin(mtmin)-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_L1PT_err2_pred_mu[hists[getHist("Npn_histo_L1PT_pred_mu")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_L2PT_err2_pred_mu[hists[getHist("Npn_histo_L2PT_pred_mu")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
@@ -951,8 +951,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           if (ss::lep2_motherID()==1) Npn_s = Npn_s + w;
           hists[getHist("Npn_histo_sr_pred")]->Fill(sr, w);
           hists[getHist("Npn_histo_br_pred")]->Fill(br, w);
-          hists[getHist("Npn_histo_HT_pred")]->Fill(ss::ht_corr(), w);
-          hists[getHist("Npn_histo_MET_pred")]->Fill(ss::corrMET(), w);
+          hists[getHist("Npn_histo_HT_pred")]->Fill(ss::ht(), w);
+          hists[getHist("Npn_histo_MET_pred")]->Fill(ss::met(), w);
           hists[getHist("Npn_histo_MTMIN_pred")]->Fill(mtmin, w);
           hists[getHist("Npn_histo_L1PT_pred")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
           hists[getHist("Npn_histo_L2PT_pred")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
@@ -991,7 +991,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           }
 
           if( abs(ss::lep1_id()) == 11 ){	//if el, use el rate.  FILL WITH NONPROMPT			  
-            e1 = getFakeRate(rate_histo_e, 11, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
+            e1 = getFakeRate(rate_histo_e, 11, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false, doData );
             w = (e1/(1-e1))*weight;
             if(subtractContamination) w = mult*weight;
 
@@ -999,16 +999,16 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
             hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, w);
-            hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht_corr(), w);
-            hists[getHist("Npn_histo_MET_pred_el")]  ->Fill(ss::corrMET(), w);
+            hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht(), w);
+            hists[getHist("Npn_histo_MET_pred_el")]  ->Fill(ss::met(), w);
             hists[getHist("Npn_histo_MTMIN_pred_el")]->Fill(mtmin, w);
             hists[getHist("Npn_histo_L1PT_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
 
             if (sr>=0) Npn_histo_sr_err2_pred_el[sr]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_br_err2_pred_el[br]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
-            Npn_histo_HT_err2_pred_el[hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht_corr())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
-            Npn_histo_MET_err2_pred_el[hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::corrMET())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
+            Npn_histo_HT_err2_pred_el[hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
+            Npn_histo_MET_err2_pred_el[hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::met())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_MTMIN_err2_pred_el[hists[getHist("Npn_histo_MTMIN_pred_el")]->FindBin(mtmin)-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_L1PT_err2_pred_el[hists[getHist("Npn_histo_L1PT_pred_el")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_L2PT_err2_pred_el[hists[getHist("Npn_histo_L2PT_pred_el")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
@@ -1019,7 +1019,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
             if(ss::lep1_motherID() == -2 || ss::lep1_motherID() == 0) notBs_e = notBs_e + mult*weight;
           }
           else if( abs(ss::lep1_id()) == 13 ){ //if mu, use mu rate.  FILL WITH NONPROMPT				  
-            e1 = getFakeRate(rate_histo_mu, 13, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
+            e1 = getFakeRate(rate_histo_mu, 13, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false, doData );
             w = (e1/(1-e1))*weight;
             if(subtractContamination) w = mult*weight;
 
@@ -1027,16 +1027,16 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
             hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, w);
-            hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht_corr(), w);
-            hists[getHist("Npn_histo_MET_pred_mu")]->Fill(ss::corrMET(), w);
+            hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht(), w);
+            hists[getHist("Npn_histo_MET_pred_mu")]->Fill(ss::met(), w);
             hists[getHist("Npn_histo_MTMIN_pred_mu")]->Fill(mtmin, w);
             hists[getHist("Npn_histo_L1PT_pred_mu")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_mu")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
 
             if (sr>=0) Npn_histo_sr_err2_pred_mu[sr]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_br_err2_pred_mu[br]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
-            Npn_histo_HT_err2_pred_mu[hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht_corr())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
-            Npn_histo_MET_err2_pred_mu[hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::corrMET())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
+            Npn_histo_HT_err2_pred_mu[hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
+            Npn_histo_MET_err2_pred_mu[hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::met())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_MTMIN_err2_pred_mu[hists[getHist("Npn_histo_MTMIN_pred_mu")]->FindBin(mtmin)-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_L1PT_err2_pred_mu[hists[getHist("Npn_histo_L1PT_pred_mu")]->FindBin(coneCorr ? lep1_pT : ss::lep1_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_L2PT_err2_pred_mu[hists[getHist("Npn_histo_L2PT_pred_mu")]->FindBin(coneCorr ? lep2_pT : ss::lep2_p4().pt())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
@@ -1050,8 +1050,8 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
           if (ss::lep1_motherID()==1) Npn_s = Npn_s + w;
           hists[getHist("Npn_histo_sr_pred")]->Fill(sr, w);
           hists[getHist("Npn_histo_br_pred")]->Fill(br, w);
-          hists[getHist("Npn_histo_HT_pred")]->Fill(ss::ht_corr(), w);
-          hists[getHist("Npn_histo_MET_pred")]->Fill(ss::corrMET(), w);
+          hists[getHist("Npn_histo_HT_pred")]->Fill(ss::ht(), w);
+          hists[getHist("Npn_histo_MET_pred")]->Fill(ss::met(), w);
           hists[getHist("Npn_histo_MTMIN_pred")]->Fill(mtmin, w);
           hists[getHist("Npn_histo_L1PT_pred")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
           hists[getHist("Npn_histo_L2PT_pred")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
@@ -1064,10 +1064,10 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
       //nonprompt-nonprompt background
       else if(ss::hyp_class() == 1){
         if( ss::lep1_id()*ss::lep2_id() > 0 ){
-          if( abs(ss::lep2_id()) == 11 ) e2 = getFakeRate( rate_histo_e, 11, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
-          else if( abs(ss::lep2_id()) == 13 ) e2 = getFakeRate( rate_histo_mu, 13, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht_corr(), false, doData );
-          if( abs(ss::lep1_id()) == 11)      e1 = getFakeRate( rate_histo_e, 11, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
-          else if( abs(ss::lep1_id()) == 13) e1 = getFakeRate( rate_histo_mu, 13, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht_corr(), false, doData );
+          if( abs(ss::lep2_id()) == 11 ) e2 = getFakeRate( rate_histo_e, 11, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht(), false, doData );
+          else if( abs(ss::lep2_id()) == 13 ) e2 = getFakeRate( rate_histo_mu, 13, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht(), false, doData );
+          if( abs(ss::lep1_id()) == 11)      e1 = getFakeRate( rate_histo_e, 11, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false, doData );
+          else if( abs(ss::lep1_id()) == 13) e1 = getFakeRate( rate_histo_mu, 13, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false, doData );
           Nnn = Nnn + w*weight;
         }
       } //end hyp = 1 if statement

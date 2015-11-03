@@ -77,9 +77,9 @@ if [ "$WHICH" == "52" ]; then WHICH_SMALL="zg"; fi
 if [ "$WHICH" == "53" ]; then WHICH_SMALL="datadoublemuond_v4"; fi
 if [ "$WHICH" == "54" ]; then WHICH_SMALL="datadoubleegd_v4"; fi
 if [ "$WHICH" == "55" ]; then WHICH_SMALL="datamuonegd_v4"; fi
-if [ "$WHICH" == "56" ]; then WHICH_SMALL="datadoubleegd_05oct"; fi
-if [ "$WHICH" == "57" ]; then WHICH_SMALL="datadoublemuond_05oct"; fi
-if [ "$WHICH" == "58" ]; then WHICH_SMALL="datamuonegd_05oct"; fi
+if [ "$WHICH" == "56" ]; then WHICH_SMALL="datadoubleegc_05oct"; fi
+if [ "$WHICH" == "57" ]; then WHICH_SMALL="datadoublemuonc_05oct"; fi
+if [ "$WHICH" == "58" ]; then WHICH_SMALL="datamuonegc_05oct"; fi
 if [ "$WHICH" == "59" ]; then WHICH_SMALL="ttbar_ph"; fi
 if [ "$WHICH" == "60" ]; then WHICH_SMALL="wjets_lo"; fi
 

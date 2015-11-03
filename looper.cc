@@ -84,7 +84,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   createAndInitMVA("./CORE", true);
 
   //Add good run list
-  set_goodrun_file("goodRunList/goldenJson1p28023fb.txt");
+  set_goodrun_file("goodRunList/goldenJson1p56fb.txt");
 
   //Make Jet Energy Uncertainties
   JetCorrectionUncertainty *jecUnc = 0;

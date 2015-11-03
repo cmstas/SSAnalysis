@@ -847,10 +847,10 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       // 	  /*&& ss::event()!=2540713621*/  ) continue;
       // cout << "found it:" << ss::event() << " hyp_class=" << ss::hyp_class() << endl;
       // if (ss::event()!=43097002 && ss::event()!=62830693 && ss::event()!=88489265 && ss::event()!=117654396) continue;
-      // cout << "nbtags=" << ss::nbtags() << " " << ss::nbtags_corr() << endl;
+      // cout << "nbtags=" << ss::nbtags() << " " << ss::nbtags() << endl;
       // if (ss::event()!=14329928) continue;
       // if (ss::event()!=99532861) continue;
-      // cout << ss::ht_corr() << " " << passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA()) << " " << passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA()) << endl;
+      // cout << ss::ht() << " " << passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA()) << " " << passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA()) << endl;
       // unsigned int triggerBits = ss::triggers();
       // if ( (triggerBits & (1<<0))==(1<<0) or (triggerBits & (1<<5))==(1<<5) or (triggerBits & (1<<7))==(1<<7) ) cout << "pass ht trigs" << endl;
       // if ( (triggerBits & (1<<1))==(1<<1) or (triggerBits & (1<<2))==(1<<2) or (triggerBits & (1<<3))==(1<<3) or (triggerBits & (1<<4))==(1<<4) or (triggerBits & (1<<6))==(1<<6) ) cout <<"pass iso trigs" << endl;
@@ -873,7 +873,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
 
       //electron FO is tighter for iso triggers, make sure it is passed
-      if (ss::ht_corr()<300.) {
+      if (ss::ht()<300.) {
         if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
         if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
       } 
@@ -884,8 +884,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       float lep1_pt = ss::lep1_coneCorrPt();
       float lep2_pt = ss::lep2_coneCorrPt();
       //now recompute mtmin
-      float mtl1 = MT(lep1_pt, ss::lep1_p4().phi(), ss::corrMET(), ss::corrMETphi());
-      float mtl2 = MT(lep2_pt, ss::lep2_p4().phi(), ss::corrMET(), ss::corrMETphi());
+      float mtl1 = MT(lep1_pt, ss::lep1_p4().phi(), ss::met(), ss::metPhi());
+      float mtl2 = MT(lep2_pt, ss::lep2_p4().phi(), ss::met(), ss::metPhi());
       float mtmin = mtl1 > mtl2 ? mtl2 : mtl1;
 
       //drop electrons below 15 GeV
@@ -935,15 +935,15 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (doFakes == 1){
         if (ss::hyp_class() != 2 && ss::hyp_class() != 1) continue;
         if (ss::lep1_passes_id()==0) {
-	  float fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
+	  float fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht());
 	  weight *= fr/(1.-fr);
-	  float fra = alternativeFakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht_corr());
+	  float fra = alternativeFakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht());
 	  weight_alt *= fra/(1.-fra);
 	}
         if (ss::lep2_passes_id()==0) {
-	  float fr = fakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht_corr());
+	  float fr = fakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht());
 	  weight *= fr/(1.-fr);
-	  float fra = alternativeFakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht_corr());
+	  float fra = alternativeFakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht());
 	  weight_alt *= fra/(1.-fra);
 	}
         if (!ss::is_real_data()) {
@@ -981,13 +981,13 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       }
 
       //Require baseline selections
-      int BR = baselineRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), lep1_pt, lep2_pt);
+      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), lep1_pt, lep2_pt);
       // cout << "BR=" << BR << endl;
-      // cout << Form("nj=%i nb=%i met=%f ht=%f",ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr()) << endl;
+      // cout << Form("nj=%i nb=%i met=%f ht=%f",ss::njets(), ss::nbtags(), ss::met(), ss::ht()) << endl;
       if (BR < 0) continue;
 
       //Get the SR
-      int SR = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), mtmin, lep1_pt, lep2_pt);
+      int SR = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, lep1_pt, lep2_pt);
 
       // cout << "SR=" << SR << endl;
  
@@ -1035,12 +1035,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
                                     y_result.TOTAL += weight;
 
       //Fill kinem plots
-      p_result.h_ht          ->Fill(ss::ht_corr()                    , weight);
-      p_result.h_met         ->Fill(ss::corrMET()                    , weight);
+      p_result.h_ht          ->Fill(ss::ht()                         , weight);
+      p_result.h_met         ->Fill(ss::met()                        , weight);
       p_result.h_mll         ->Fill((ss::lep1_p4()+ss::lep2_p4()).M(), weight);
       p_result.h_mtmin       ->Fill(mtmin                            , weight);
-      p_result.h_njets       ->Fill(ss::njets_corr()                 , weight);
-      p_result.h_nbtags      ->Fill(ss::nbtags_corr()                , weight);
+      p_result.h_njets       ->Fill(ss::njets()                      , weight);
+      p_result.h_nbtags      ->Fill(ss::nbtags()                     , weight);
       p_result.h_l1pt        ->Fill(lep1_pt                          , weight);
       p_result.h_l2pt        ->Fill(lep2_pt                          , weight);
       p_result.h_type        ->Fill(ss::hyp_type()                   , weight); 
