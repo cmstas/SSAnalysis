@@ -277,7 +277,7 @@ int main(int argc, char *argv[]){
     case TTBAR_PH:
       name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2";
       shortname="ttbar_ph";
-      tag="V07-04-08";
+      tag="V07-04-08_v2";
       break;
     case WJets_LO:
       name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
@@ -407,7 +407,7 @@ int main(int argc, char *argv[]){
 
   //Add good run list
   if (!is25) set_goodrun_file("final_golden_50ns_40p03pb.txt");
-  if ( is25) set_goodrun_file("goldenJson1p28023fb.txt");
+  if ( is25) set_goodrun_file("goldenJson1p56fb.txt");
 
   //Make Jet Energy Uncertainties
   JetCorrectionUncertainty *jecUnc = 0;
