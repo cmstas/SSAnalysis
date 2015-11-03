@@ -74,7 +74,7 @@ class babyMaker {
     float rawmetPhi;
  
     //Meta Variables
-    int event;
+    ULong64_t event;
     int lumi;
     int run;
     bool is_real_data;

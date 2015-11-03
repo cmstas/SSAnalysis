@@ -1,25 +1,25 @@
 #include "TFile.h"
 #include "TChain.h"
 #include "TH2D.h"
-#include "../classFiles/v4.00/SS.h"
+#include "../classFiles/v4.04/SS.h"
 #include "../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../CORE/SSSelections.h"
 #include "../CORE/Tools/dorky/dorky.h"
 #include "../CORE/Tools/utils.h"
 #include "../commonUtils.h"
 
-int mode = 1;  // 0-nominal, 1-upstream, 2-upstream+2jets
-bool corrected = true;
+int mode = 0;  // 0-nominal, 1-upstream, 2-upstream+2jets
 
 struct doublePlotHolder{ TH1F* OS[10][4][4][5]; TH1F* SS[10][4][4][5]; TH1F* SF[10][4][4][5]; TH1F* EZ[10][4][4][5]; };
 
 doublePlotHolder plotMaker(TChain *chain, bool isData){
 
-  int      max[10] = { 700, 800, 10, 5, 300, 200, 400, 24, 700, 700 };
-  int nBins_OS[10] = { 50, 25, 10, 5, 30, 50, 40, 24, 50, 50 };
-  int nBins_SS[10] = { 50, 20, 10, 5, 30, 25, 40, 24, 50, 50 };
-  int nBins_SF[10] = { 50, 20, 10, 5, 30, 25, 40, 24, 50, 50 };
-  int nBins_EZ[10] = { 50, 20, 10, 5, 30, 25, 40, 24, 50, 50 };
+                     //MET,  HT, nj, nb, pt,  mt,  mll nvtx
+  int      max[10] = { 700, 800, 10, 5, 300, 200 , 500, 24, 700, 700 };
+  int nBins_OS[10] = {  50,  25, 10, 5,  30,  50 ,  40, 24,  50,  50 };
+  int nBins_SS[10] = {  50,  20, 10, 5,  30,  25 ,  25, 24,  50,  50 };
+  int nBins_SF[10] = {  50,  20, 10, 5,  30,  25 ,  40, 24,  50,  50 };
+  int nBins_EZ[10] = {  50,  20, 10, 5,  30,  25 ,  40, 24,  50,  50 };
 
   doublePlotHolder plots;
   for (int m = 0; m < 10; m++){       //m - which plots
@@ -65,6 +65,8 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       //Get Event Content
       samesign.GetEntry(event);
       nEventsTotal++;
+
+      if (ss::event() == (int)447808321) cout << "here0!" << endl;
     
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
@@ -74,7 +76,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       float weight = isData ? 1 : ss::scale1fb()*lumi;
 
       //Reject duplicates
-      if (isData == true){
+      if (isData){
         duplicate_removal::DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
         if (duplicate_removal::is_duplicate(id)){ reject++; continue; }
       }
@@ -87,114 +89,91 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       //DY totWeight=285999/325590
       totWeight+=weight;
 
+      if (ss::event() == (int)447808321) cout << "here!" << endl;
+
       //Throw away non OS-numerator events
       if (ss::hyp_class() != 4 && ss::hyp_class() != 3 && ss::hyp_class() != 2 && ss::hyp_class() != 6) continue;
-
-      //drop electrons below 15 GeV
-      if (abs(ss::lep1_id())==11 && ss::lep1_p4().pt()<15) continue;
-      if (abs(ss::lep2_id())==11 && ss::lep2_p4().pt()<15) continue;
+      if (ss::event() == (int)447808321) cout << "here!" << endl;
 
       //Reject not triggered
       if (!ss::fired_trigger()) continue;
-
-      // //select non iso triggers
-      // unsigned int triggerBits = ss::triggers();
-      // if ( (triggerBits & (1<<0))!=(1<<0) && (triggerBits & (1<<5))!=(1<<5) && (triggerBits & (1<<7))!=(1<<7) ) continue;
-      // //select iso triggers
-      // unsigned int triggerBits = ss::triggers();
-      // if ( (triggerBits & (1<<1))!=(1<<1) && (triggerBits & (1<<2))!=(1<<2) && (triggerBits & (1<<3))!=(1<<3) && (triggerBits & (1<<4))!=(1<<4) && (triggerBits & (1<<6))!=(1<<6) ) continue;
-
-      //Determine MET
-      float metAG = (corrected ? ss::corrMET() : ss::met() );
-      float metPhiAG = (corrected ? ss::corrMETphi() : ss::metPhi());
-
-      //Determine HT
-      float htAG = (corrected ? ss::ht_corr() : ss::ht());
-
-      //Determine njets
-      float njetsAG =  (corrected ? ss::njets_corr() : ss::njets());
-
-      //Determine nbtags
-      float nbtagsAG = (corrected ? ss::nbtags_corr() : ss::nbtags());
-
-      //Calculate mtmin
-      float mt1 = MT(ss::lep1_p4().pt(), ss::lep1_p4().phi(), metAG, metPhiAG);
-      float mt2 = MT(ss::lep2_p4().pt(), ss::lep2_p4().phi(), metAG, metPhiAG);
-      float mtmin = mt1 > mt2 ? mt2 : mt1; 
+      if (ss::event() == (int)447808321) cout << "here!" << endl;
 
       //electron FO is tighter for iso triggers, make sure it is passed
-      if (ss::ht_corr()<300.) {
-	if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
-	if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+      if (ss::ht()<300.){
+        if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
+        if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
       } 
+      if (ss::event() == (int)447808321) cout << "here4!" << endl;
 
       //Determine analysis category
       int AC = -1;
-      if (analysisCategory(ss::lep1_id(),ss::lep2_id(),ss::lep1_p4().pt(), ss::lep2_p4().pt()) == HighHigh) AC = 0; 
-      if (analysisCategory(ss::lep1_id(),ss::lep2_id(),ss::lep1_p4().pt(), ss::lep2_p4().pt()) == HighLow ) AC = 1; 
-      if (analysisCategory(ss::lep1_id(),ss::lep2_id(),ss::lep1_p4().pt(), ss::lep2_p4().pt()) == LowLow  ) AC = 2; 
+      if (analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt()) == HighHigh) AC = 0; 
+      if (analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt()) == HighLow ) AC = 1; 
+      if (analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt()) == LowLow  ) AC = 2; 
       if (AC < 0) continue;
+      if (ss::event() == (int)447808321) cout << "here5!" << endl;
 
       //Determine BR
-      int BR = baselineRegion(njetsAG, nbtagsAG, metAG, htAG, ss::lep1_p4().pt(), ss::lep2_p4().pt()); 
+      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt()); 
       if (mode == 0 && BR < 0) continue;
-      if (mode == 2 && njetsAG < 2) continue;
+      if (mode == 2 && ss::njets() < 2) continue;
       BR = 0;
+      if (ss::event() == (int)447808321) cout << "here6!" << endl;
 
       //Determine ee, em, mm
       int type = -1;
-      if (ss::hyp_type() == 0) type = 0; 
+      if      (ss::hyp_type() == 0) type = 0; 
       else if (ss::hyp_type() == 3) type = 2; 
-      else type = 1; 
+      else                          type = 1; 
 
       //Fill MET, HT
       if (ss::hyp_class() == 4){
-        plots.OS[0][BR][AC][type]->Fill(metAG                               , weight); 
-        plots.OS[1][BR][AC][type]->Fill(htAG                                , weight); 
-        plots.OS[2][BR][AC][type]->Fill(njetsAG                             , weight); 
-        plots.OS[3][BR][AC][type]->Fill(nbtagsAG                            , weight); 
-        plots.OS[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                  , weight); 
-        plots.OS[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                  , weight); 
-        plots.OS[5][BR][AC][type]->Fill(mtmin                               , weight); 
+        plots.OS[0][BR][AC][type]->Fill(ss::met()                           , weight);
+        plots.OS[1][BR][AC][type]->Fill(ss::ht()                            , weight);
+        plots.OS[2][BR][AC][type]->Fill(ss::njets()                         , weight);
+        plots.OS[3][BR][AC][type]->Fill(ss::nbtags()                        , weight);
+        plots.OS[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                  , weight);
+        plots.OS[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                  , weight);
+        plots.OS[5][BR][AC][type]->Fill(ss::mtmin()                        , weight);
         plots.OS[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M() , weight);
         plots.OS[7][BR][AC][type]->Fill(ss::nGoodVertices()                 , weight);
       }
       else if (ss::hyp_class() == 3){ 
-	//only unblinded dataset
-	float unblindWeight = isData ? 1 : weight*getLumiUnblind()*getPUwUnblind(ss::nGoodVertices())/(getLumi()*std::max(float(0.00001),getPUw(ss::nGoodVertices())));
-	if (!isData || isUnblindRun(ss::run())) {
-	  plots.SS[0][BR][AC][type]->Fill(metAG                              , unblindWeight); 
-	  plots.SS[1][BR][AC][type]->Fill(htAG                               , unblindWeight); 
-	  plots.SS[2][BR][AC][type]->Fill(njetsAG                            , unblindWeight); 
-	  plots.SS[3][BR][AC][type]->Fill(nbtagsAG                           , unblindWeight); 
-	  plots.SS[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                 , unblindWeight); 
-	  plots.SS[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                 , unblindWeight); 
-	  plots.SS[5][BR][AC][type]->Fill(mtmin                              , unblindWeight); 
-	  plots.SS[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), unblindWeight);
-	  plots.SS[7][BR][AC][type]->Fill(ss::nGoodVertices()                , unblindWeight);
-	}
+        float unblindWeight = isData ? 1 : weight*getLumiUnblind()*getPUwUnblind(ss::nGoodVertices())/(getLumi()*std::max(float(0.00001),getPUw(ss::nGoodVertices())));
+        if (!isData || isUnblindRun(ss::run())) {
+          plots.SS[0][BR][AC][type]->Fill(ss::met()                           , unblindWeight);
+          plots.SS[1][BR][AC][type]->Fill(ss::ht()                            , unblindWeight);
+          plots.SS[2][BR][AC][type]->Fill(ss::njets()                         , unblindWeight);
+          plots.SS[3][BR][AC][type]->Fill(ss::nbtags()                        , unblindWeight);
+          plots.SS[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                  , unblindWeight);
+          plots.SS[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                  , unblindWeight);
+          plots.SS[5][BR][AC][type]->Fill(ss::mtmin()                        , unblindWeight);
+          plots.SS[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M() , unblindWeight);
+          plots.SS[7][BR][AC][type]->Fill(ss::nGoodVertices()                 , unblindWeight);
+        }
       }
       else if (ss::hyp_class() == 2){ 
-        plots.SF[0][BR][AC][type]->Fill(metAG                              , weight); 
-        plots.SF[1][BR][AC][type]->Fill(htAG                               , weight); 
-        plots.SF[2][BR][AC][type]->Fill(njetsAG                            , weight); 
-        plots.SF[3][BR][AC][type]->Fill(nbtagsAG                           , weight); 
-        plots.SF[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                 , weight); 
-        plots.SF[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                 , weight); 
-        plots.SF[5][BR][AC][type]->Fill(mtmin                              , weight); 
-        plots.SF[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), weight);
-        plots.SF[7][BR][AC][type]->Fill(ss::nGoodVertices()                , weight);
+        plots.SF[0][BR][AC][type]->Fill(ss::met()                           , weight);
+        plots.SF[1][BR][AC][type]->Fill(ss::ht()                            , weight);
+        plots.SF[2][BR][AC][type]->Fill(ss::njets()                         , weight);
+        plots.SF[3][BR][AC][type]->Fill(ss::nbtags()                        , weight);
+        plots.SF[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                  , weight);
+        plots.SF[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                  , weight);
+        plots.SF[5][BR][AC][type]->Fill(ss::mtmin()                        , weight);
+        plots.SF[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M() , weight);
+        plots.SF[7][BR][AC][type]->Fill(ss::nGoodVertices()                 , weight);
       }
       else if (ss::hyp_class() == 6 && ss::madeExtraZ() && ss::lep1_passes_id() && ss::lep2_passes_id() && ss::lep3_passes_id()){ 
-        plots.EZ[0][BR][AC][type]->Fill(metAG                              , weight); 
-        plots.EZ[1][BR][AC][type]->Fill(htAG                               , weight); 
-        plots.EZ[2][BR][AC][type]->Fill(njetsAG                            , weight); 
-        plots.EZ[3][BR][AC][type]->Fill(nbtagsAG                           , weight); 
-        plots.EZ[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                 , weight); 
-        plots.EZ[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                 , weight); 
-        plots.EZ[5][BR][AC][type]->Fill(mtmin                              , weight); 
-        plots.EZ[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M(), weight);
-        plots.EZ[7][BR][AC][type]->Fill(ss::nGoodVertices()                , weight);
+        plots.EZ[0][BR][AC][type]->Fill(ss::met()                           , weight);
+        plots.EZ[1][BR][AC][type]->Fill(ss::ht()                            , weight);
+        plots.EZ[2][BR][AC][type]->Fill(ss::njets()                         , weight);
+        plots.EZ[3][BR][AC][type]->Fill(ss::nbtags()                        , weight);
+        plots.EZ[4][BR][AC][type]->Fill(ss::lep1_p4().pt()                  , weight);
+        plots.EZ[4][BR][AC][type]->Fill(ss::lep2_p4().pt()                  , weight);
+        plots.EZ[5][BR][AC][type]->Fill(ss::mtmin()                        , weight);
+        plots.EZ[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M() , weight);
+        plots.EZ[7][BR][AC][type]->Fill(ss::nGoodVertices()                 , weight);
       }
 
     }//event loop
@@ -259,13 +238,21 @@ void plots(){
   
   //Set up chains
   TChain *chain_data = new TChain("t","data");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data1p280ifb/DataMuonEGD.root");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data1p280ifb/DataDoubleEGD.root");
-  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data1p280ifb/DataDoubleMuonD.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGC_05oct.root"  );
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonC_05oct.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGC_05oct.root"    );
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGD_05oct.root"  );
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonD_05oct.root");
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGD_05oct.root"    );
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGD_v4.root"     );
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonD_v4.root"   );
+  chain_data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGD_v4.root"       );
 
   TChain *chain_ttv = new TChain("t","ttv"); 
   chain_ttv->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");
+  chain_ttv->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTWQQ.root");
   chain_ttv->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZL.root");
+  chain_ttv->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZQ.root");
 
   TChain *chain_rares = new TChain("t","rares"); 
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZZ.root");
@@ -280,7 +267,11 @@ void plots(){
 
   TChain *chain_ttbar = new TChain("t","ttbar"); 
   chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR.root");
-  chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP.root");
+  chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP1.root");
+  chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP2.root");
+  chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP3.root");
+  chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP4.root");
+  chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP5.root");
 
   TChain *chain_VZ = new TChain("t","VZ"); 
   chain_VZ->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ3LNU.root");
@@ -295,12 +286,12 @@ void plots(){
   chain_WJets->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WGToLNuG.root");
 
   //Make individual plots
-  doublePlotHolder data = plotMaker(chain_data, 1);   
-  doublePlotHolder ttv = plotMaker(chain_ttv, 0);   
-  doublePlotHolder rares = plotMaker(chain_rares, 0);   
-  doublePlotHolder vz = plotMaker(chain_VZ, 0);
+  doublePlotHolder data  = plotMaker(chain_data, 1);
+  doublePlotHolder ttv   = plotMaker(chain_ttv, 0);
+  doublePlotHolder rares = plotMaker(chain_rares, 0);
+  doublePlotHolder vz    = plotMaker(chain_VZ, 0);
   doublePlotHolder ttbar = plotMaker(chain_ttbar, 0);
-  doublePlotHolder dy = plotMaker(chain_DY, 0);
+  doublePlotHolder dy    = plotMaker(chain_DY, 0);
   doublePlotHolder wjets = plotMaker(chain_WJets, 0);
 
   //Make vectors for plots
@@ -604,9 +595,9 @@ void plots(){
   double min[10] = {1, 1, 1e-2, 1e-1, 1, 1, 1, 1, 1, 1 };
 
   std::string title;
-  if (mode == 0) title = Form("Run2, HH,HL,LL, BR0-3 %s"   , corrected ? "" : "raw" );
-  if (mode == 1) title = Form("Run2, HH,HL,LL, upstream %s", corrected ? "" : "raw" );
-  if (mode == 2) title = Form("Run2, HH,HL,LL, njets > 1 %s", corrected ? "" : "raw" );
+  if (mode == 0) title = Form("Run2, HH,HL,LL, BR0-3"); 
+  if (mode == 1) title = Form("Run2, HH,HL,LL, upstream"); 
+  if (mode == 2) title = Form("Run2, HH,HL,LL, njets #geq 2"); 
 
   //Make plots
   for (int i = 0; i < 8; i++){
