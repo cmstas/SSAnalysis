@@ -85,6 +85,7 @@ class babyMaker {
     int filenumber; 
     vector <float> genweights;
     vector <string> genweightsID;
+    bool passedFilterList; 
 
     //Pileup
     vector <float> trueNumInt;

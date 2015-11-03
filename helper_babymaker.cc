@@ -201,6 +201,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
   BabyTree->Branch("nbtags_unc_dn"           , &nbtags_unc_dn           );
   BabyTree->Branch("met_unc_up"              , &met_unc_up              );
   BabyTree->Branch("met_unc_dn"              , &met_unc_dn              );
+  BabyTree->Branch("passedFilterList"        , &passedFilterList        ); 
   
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"         , &lep1_isGoodLeg         );
@@ -456,6 +457,7 @@ void babyMaker::InitBabyNtuple(){
     nbtags_unc_dn = 0;
     met_unc_up = 0;
     met_unc_dn = 0;
+    passedFilterList = 1; 
 } 
 
 //Main function
@@ -485,6 +487,18 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   lumi = tas::evt_lumiBlock();
   run = tas::evt_run();
   is_real_data = tas::evt_isRealData();
+
+  //If data, check filter list
+  if (is_real_data){
+    string filterFile = ""; 
+    if (filename.Contains("DoubleEG")) filterFile = "CORE/Tools/filterLists/doubleEG.txt"; 
+    if (filename.Contains("DoubleMuon")) filterFile = "CORE/Tools/filterLists/doubleMuon.txt"; 
+    if (filename.Contains("MuonEG")) filterFile = "CORE/Tools/filterLists/muonEG.txt"; 
+    string checkMe = Form("%i:%i:%i", tas::evt_run(), tas::evt_lumiBlock(), (int)tas::evt_event());
+    int blah = system(Form("grep -r %s %s", checkMe.c_str(), filterFile.c_str()));
+    if (blah == 0) passedFilterList = false;
+    else passedFilterList = true;
+  }
 
   //Corrected MET
   pair <float, float> T1CHSMET = getT1CHSMET_fromMINIAOD(jetCorr);
