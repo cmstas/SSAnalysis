@@ -322,7 +322,7 @@ int main(int argc, char *argv[]){
       tag="";
       break;
     case DataDoubleMuonD_05oct:
-      name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v2/merged";
+      name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1/merged";
       shortname="datadoublemuond_05oct";
       isData = true;
       path="/store/group/snt/run2_data";
@@ -330,7 +330,7 @@ int main(int argc, char *argv[]){
       break;
     case DataDoubleEGD_05oct:
       shortname="datadoubleegd_05oct";
-      name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v2/merged";
+      name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v1/merged";
       isData = true;
       path="/store/group/snt/run2_data";
       tag="V07-04-11";

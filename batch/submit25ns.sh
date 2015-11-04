@@ -171,12 +171,12 @@ do
       tag=V07-04-08
       nameNu=19
     elif [ $sname == "DataDoubleMuonD_05oct"  ]; 
-      then name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v2";
+      then name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-11
       nameNu=46
     elif [ $sname == "DataDoubleEGD_05oct"    ]; 
-      then name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v2";
+      then name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-11
       nameNu=45
