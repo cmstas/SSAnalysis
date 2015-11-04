@@ -16,8 +16,8 @@ path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 #hadd TTBAR.root                       $path/ttbar_[0-9]*_0.root            
 #hadd WWZ.root                         $path/wwz_*_0.root            
 #hadd ZZ.root                          $path/zz_*_0.root
-hadd WJets.root                       $path/wjets_[0-9]*_0.root            
-hadd WJets_LO.root                    $path/wjets_LO_[0-9]*_0.root            
+#hadd WJets.root                       $path/wjets_[0-9]*_0.root            
+#hadd WJets_LO.root                    $path/wjets_lo_[0-9]*_0.root            
 #hadd TTZL.root                        $path/ttzl_*_0.root
 #hadd TTZQ.root                        $path/ttzq_*_0.root
 #hadd TTW.root                         $path/ttw_*_0.root
@@ -42,6 +42,8 @@ hadd WJets_LO.root                    $path/wjets_LO_[0-9]*_0.root
 #hadd SINGLETOP3.root                  $path/singletop3_*_0.root
 #hadd SINGLETOP4.root                  $path/singletop4_*_0.root
 #hadd SINGLETOP5.root                  $path/singletop5_*_0.root
-#hadd QQWW.root                         $path/qqww_*_0.root
-#hadd TG.root                           $path/tg_*_0.root
-#hadd ZG.root                           $path/zg_*_0.root
+#hadd QQWW.root                        $path/qqww_*_0.root
+#hadd TG.root                          $path/tg_*_0.root
+#hadd ZG.root                          $path/zg_*_0.root
+hadd T5qqqqWW_1200_1000_800.root       $path/t5qqqqww_1200_1000_800_[1-9]*_0.root  
+hadd T5ttttdeg_1000_300_285_280.root   $path/t5ttttdeg_1000_300_285_280_[1-9]*_0.root
