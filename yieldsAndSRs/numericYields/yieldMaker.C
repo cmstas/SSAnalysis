@@ -149,12 +149,11 @@ void getyields(){
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"            , tag.c_str()));
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"                  , tag.c_str()));
 
-  t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root" , tag.c_str()));
-  t1tttt_1500_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1500.root" , tag.c_str()));
-  t5tttt_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5ttttDeg_1000_300_285_280.root" , tag.c_str()));
-  t6ttww_650_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_650_150_50.root" , tag.c_str()));
-  t6ttww_600_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_600_425_50.root" , tag.c_str()));
-
+  t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root"              , tag.c_str()));
+  t1tttt_1500_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1500.root"              , tag.c_str()));
+  t5tttt_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5ttttDeg_1000_300_285_280.root", tag.c_str()));
+  t6ttww_650_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_650_150_50.root"         , tag.c_str()));
+  t6ttww_600_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_600_425_50.root"         , tag.c_str()));
 
   //Get yields
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
@@ -904,11 +903,14 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       // cout << abs(ss::lep1_id()) << " " << ss::lep1_p4().pt() << " " << ss::lep1_coneCorrPt() << endl;
       // cout << abs(ss::lep2_id()) << " " << ss::lep2_p4().pt() << " " << ss::lep2_coneCorrPt() << endl;
 
+      float metAG    = ss::is_real_data() ? ss::rawmet()    : ss::met(); 
+      float metPhiAG = ss::is_real_data() ? ss::rawmetPhi() : ss::metPhi(); 
+
       float lep1_pt = ss::lep1_coneCorrPt();
       float lep2_pt = ss::lep2_coneCorrPt();
       //now recompute mtmin
-      float mtl1 = MT(lep1_pt, ss::lep1_p4().phi(), ss::met(), ss::metPhi());
-      float mtl2 = MT(lep2_pt, ss::lep2_p4().phi(), ss::met(), ss::metPhi());
+      float mtl1 = MT(lep1_pt, ss::lep1_p4().phi(), metAG, metPhiAG);
+      float mtl2 = MT(lep2_pt, ss::lep2_p4().phi(), metAG, metPhiAG);
       float mtmin = mtl1 > mtl2 ? mtl2 : mtl1;
 
       //drop electrons below 15 GeV
@@ -1006,7 +1008,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       }
 
       //Require baseline selections
-      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
+      int BR = baselineRegion(ss::njets(), ss::nbtags(), metAG, ss::ht(), ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
       // cout << "BR=" << BR << endl;
       // cout << Form("nj=%i nb=%i met=%f ht=%f",ss::njets(), ss::nbtags(), ss::met(), ss::ht()) << endl;
       if (BR < 0) continue;
@@ -1020,7 +1022,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       // float mtl2_unc_up = MT(lep2_pt, ss::lep2_p4().phi(), ss::met_unc_up(), ss::metPhi_unc_up());
       // float mtmin_unc_up = mtl1_unc_up > mtl2_unc_up ? mtl2_unc_up : mtl1_unc_up;
       //fixme met and mtmin should also be unc_up
-      int SR_unc_up = signalRegion(ss::njets_unc_up(), ss::nbtags_unc_up(), ss::met(), ss::ht_unc_up(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
+      int SR_unc_up = signalRegion(ss::njets_unc_up(), ss::nbtags_unc_up(), metAG, ss::ht_unc_up(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
 
       // cout << "SR=" << SR << endl;
  
@@ -1069,7 +1071,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       //Fill kinem plots
       p_result.h_ht          ->Fill(ss::ht()                         , weight);
-      p_result.h_met         ->Fill(ss::met()                        , weight);
+      p_result.h_met         ->Fill(metAG                            , weight);
       p_result.h_mll         ->Fill((ss::lep1_p4()+ss::lep2_p4()).M(), weight);
       p_result.h_mtmin       ->Fill(mtmin                            , weight);
       p_result.h_njets       ->Fill(ss::njets()                      , weight);
@@ -1083,6 +1085,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_lep2_ptRel  ->Fill(ss::lep2_ptrel_v1()              , weight); 
       p_result.h_lep1_ptRatio->Fill(ptratio_1                        , weight); 
       p_result.h_lep2_ptRatio->Fill(ptratio_2                        , weight); 
+      if (isData && !doFakes && !doFlips && SR > 0){
+        cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), SR);
+      }
 
       //Fill SR plots
       if (categ == HighHigh){

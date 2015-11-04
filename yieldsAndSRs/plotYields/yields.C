@@ -3,13 +3,12 @@
 #include "../../CORE/SSSelections.h"
 #include "../../CORE/Tools/dorky/dorky.h"
 #include "../../CORE/Tools/utils.h"
-#include "../../classFiles/v4.00/SS.h"
+#include "../../classFiles/v4.04/SS.h"
 #include "../../commonUtils.h"
 
 //Tables on/off
 bool makeTables = 0;
 bool testClassSF = false;
-bool corrected = true;
 
 struct results_t { TH1F* hh; TH1F* hl; TH1F* ll; }; 
 
@@ -67,10 +66,10 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
       }
 
       //Blinding
-      if (ss::run() > 257531) continue;
+      if (!isUnblindRun(ss::run())) continue; 
 
       //Weight
-      float weight = isData ? 1 : ss::scale1fb()*getLumi();
+      float weight = isData ? 1 : ss::scale1fb()*getLumiUnblind();
 
       //Reject non-SS
       if (ss::hyp_class() != 3 && testClassSF==false) continue;
@@ -81,27 +80,14 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
       if (flavor == EM && ss::hyp_type() != 1 && ss::hyp_type() != 2) continue;
       if (flavor == EE && ss::hyp_type() != 0) continue;
    
-      //Determine MET
-      float metAG = (corrected ? ss::corrMET() : ss::met());
-      float metPhiAG = (corrected ? ss::corrMETphi() : ss::metPhi());
-
-      //Determine HT
-      float htAG = (corrected ? ss::ht_corr() : ss::ht());
-
-      //Determine njets
-      float njetsAG = (corrected ? ss::njets_corr() : ss::njets());
-
-      //Determine nbtags
-      float nbtagsAG = (corrected ? ss::nbtags_corr() : ss::nbtags());
-
       //Calculate mtmin
-      float mt1 = MT(ss::lep1_p4().pt(), ss::lep1_p4().phi(), metAG, metPhiAG);
-      float mt2 = MT(ss::lep2_p4().pt(), ss::lep2_p4().phi(), metAG, metPhiAG);
+      float mt1 = MT(ss::lep1_p4().pt(), ss::lep1_p4().phi(), ss::met(), ss::metPhi());
+      float mt2 = MT(ss::lep2_p4().pt(), ss::lep2_p4().phi(), ss::met(), ss::metPhi());
       float mtmin = mt1 > mt2 ? mt2 : mt1; 
        
       //Figure out region, fill plot
-      anal_type_t categ = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());  
-      int SR = signalRegion(njetsAG, nbtagsAG, metAG, htAG, mtmin, ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      anal_type_t categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());  
+      int SR = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
       if (SR > 0 && categ == HighHigh) HighHighPlot->Fill(SR, weight);
       if (SR > 0 && categ == HighLow)  HighLowPlot ->Fill(SR, weight);
       if (SR > 0 && categ == LowLow)   LowLowPlot  ->Fill(SR, weight);
@@ -138,9 +124,15 @@ void yields(){
   TString tag = getTag();
 
   //Fill chains
-  data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGD.root");
-  data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGD.root");
-  data->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonD.root");
+  data->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGC_05oct.root"    , tag.Data()));
+  data->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonC_05oct.root"  , tag.Data()));
+  data->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGC_05oct.root"      , tag.Data()));
+  data->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_05oct.root"    , tag.Data()));
+  data->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_05oct.root"  , tag.Data()));
+  data->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_05oct.root"      , tag.Data()));
+  data->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_v4.root"       , tag.Data()));
+  data->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_v4.root"     , tag.Data()));
+  data->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_v4.root"         , tag.Data()));
 
   ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR.root");
   ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP*.root");
