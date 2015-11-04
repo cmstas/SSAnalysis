@@ -11,7 +11,7 @@
 #include "../../CORE/Tools/utils.h"
 
 //Root files on/off
-bool makeRootFiles = 0;
+bool makeRootFiles = 1;
 
 float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
@@ -827,7 +827,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       samesign.GetEntry(event);
       nEventsTotal++;
 
-      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUw(ss::nGoodVertices());
+      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUw(ss::nGoodVertices())*ss::weight_btagsf();
       weight*=scaleLumi;
       float weight_alt = weight;
 
