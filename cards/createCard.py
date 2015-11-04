@@ -19,7 +19,7 @@ import math
 lumi = "1.3"
 #lumi = "3.0"
 
-pseudoData = 1
+pseudoData = 0
 
 class Process:
     def __init__(self, mycount, myname, myrootf, myplot):
