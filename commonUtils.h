@@ -4,7 +4,7 @@
 float getLumi() { return 1.56; }
 float getLumiUnblind() { return 1.28; }
 
-bool isUnblindRun(int run) { return run<=258714; }
+bool isUnblindRun(int run) { return run<=258750; }
 
 TString getTag() { return "v4.04"; }
 
