@@ -1,8 +1,8 @@
 #include "helper_babymaker.h"
 #include "CORE/Tools/btagsf/BTagCalibrationStandalone.h"
 #include "CORE/Tools/jetcorr/Utilities.icc"
-#include "CORE/Tools/jetcorr/SimpleJetCorrectionUncertainty.icc"
-#include "CORE/Tools/jetcorr/JetCorrectionUncertainty.icc"
+#include "CORE/Tools/jetcorr/SimpleJetCorrectionUncertainty.h"
+#include "CORE/Tools/jetcorr/JetCorrectionUncertainty.h"
 
 using namespace tas;
 

@@ -37,13 +37,15 @@ if [ ! -d CORE/Tools/btagsf ]
 then
   mkdir -p CORE/Tools/btagsf
 fi
-cp -r ../CORE/Tools/btagsf CORE/Tools/btagsf
+cp -r /nfs-6/userdata/mt2utils/ CORE/Tools/btagsf
 
 if [ ! -d CORE/Tools/filterLists ]
 then
-  mkdir -p CORE/Tools/btagsf
+  mkdir -p CORE/Tools/filterLists
 fi
-cp -r ../CORE/Tools/filterLists/*.txt CORE/Tools/filterLists/
+cp -r /nfs-6/userdata/mt2utils/eventlist_DoubleEG_csc2015.txt CORE/Tools/filterLists/
+cp -r /nfs-6/userdata/mt2utils/eventlist_DoubleMuon_csc2015.txt CORE/Tools/filterLists/
+cp -r /nfs-6/userdata/mt2utils/eventlist_MuonEG_csc2015.txt CORE/Tools/filterLists/
 tar -czf btagsf.tar.gz btagsf
 
 #And goodrun list directory 
