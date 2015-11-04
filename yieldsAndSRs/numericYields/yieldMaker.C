@@ -1028,6 +1028,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
  
       //Get the category
       anal_type_t categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
+	  string cat = "HH";
+	  if (categ==1) cat = "HL";
+	  if (categ==2) cat = "LL";
 
       // if (categ!=0) continue;//test
 
@@ -1045,9 +1048,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	float ptR = (ss::lep1_passes_id()==0 ? ss::lep1_ptrel_v1() : ss::lep2_ptrel_v1());
 	float ptJ = (ss::lep1_passes_id()==0 ? ss::jet_close_lep1().pt() : ss::jet_close_lep2().pt());
 	float iso = (ss::lep1_passes_id()==0 ? ss::lep1_miniIso() : ss::lep2_miniIso());
-	string cat = "HH";
-	if (categ==1) cat = "HL";
-	if (categ==2) cat = "LL";
 	//cout << Form("%20i       %6.2f %6.2f %6.2f %6.2f %6.2f %s SR%i",ss::event(),ptT,ptCL,ptR,ptJ,iso,cat.c_str(),SR) << endl;
       }
 
@@ -1086,7 +1086,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_lep1_ptRatio->Fill(ptratio_1                        , weight); 
       p_result.h_lep2_ptRatio->Fill(ptratio_2                        , weight); 
       if (isData && !doFakes && !doFlips && SR > 0){
-        cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), SR);
+        cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
       }
 
       //Fill SR plots
