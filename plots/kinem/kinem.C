@@ -178,7 +178,6 @@ vector <vector <TH1F*> >  makeAllPlots(vector <TChain*> chains, bool isOS){
 
         //Fill other plots
         if (ss::is_real_data() && mll < 20) cout << ss::event() << endl;
-        if (ss::event() == (int)447808321) cout << "here0!" << endl; 
         plot_leppt        ->Fill(ss::lep1_p4().pt(), ss::scale1fb()*lumiAG);
         plot_leppt        ->Fill(ss::lep2_p4().pt(), ss::scale1fb()*lumiAG);
         plot_mll          ->Fill(mll               , ss::scale1fb()*lumiAG);

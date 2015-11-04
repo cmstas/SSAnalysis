@@ -2,8 +2,7 @@
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TTree.h"
-
-#include "../../classFiles/v4.00/SS.h"
+#include "../../classFiles/v4.04/SS.h"
 #include "../../CORE/SSSelections.h"
 #include "../../software/tableMaker/CTable.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
@@ -12,12 +11,12 @@
 #include "../../CORE/Tools/utils.h"
 
 //Root files on/off
-bool makeRootFiles = 1;
+bool makeRootFiles = 0;
 
 float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
 
-bool doNoData   = true;
+bool doNoData   = false;
 bool testFakeSR = false;
 
 float scaleLumi = 3.0/1.264;//careful!!!
@@ -115,19 +114,40 @@ void getyields(){
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWDPS.root"          , tag.c_str()));
 
-  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleMuonD.root", tag.c_str()));
-  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleEGD.root"  , tag.c_str()));
-  data_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataMuonEGD.root"    , tag.c_str()));
-  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleEGD.root"  , tag.c_str()));
-  flips_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataMuonEGD.root"    , tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleMuonD.root", tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataDoubleEGD.root"  , tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data1p280ifb/DataMuonEGD.root"    , tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"           , tag.c_str())); 
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ3LNU.root"         , tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
-  fakes_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
+  //data
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGC_05oct.root"    , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonC_05oct.root"  , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGC_05oct.root"      , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_05oct.root"    , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_05oct.root"  , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_05oct.root"      , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_v4.root"       , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_v4.root"     , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_v4.root"         , tag.c_str()));
+
+  //flips
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGC_05oct.root"   , tag.c_str()));
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGC_05oct.root"     , tag.c_str()));
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_05oct.root"   , tag.c_str()));
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_05oct.root"     , tag.c_str()));
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_v4.root"      , tag.c_str()));
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_v4.root"        , tag.c_str()));
+
+  //fakes
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGC_05oct.root"   , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonC_05oct.root" , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGC_05oct.root"     , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_05oct.root"   , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_05oct.root" , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_05oct.root"     , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_v4.root"      , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_v4.root"    , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_v4.root"        , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"                   , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"                  , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ3LNU.root"                , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"            , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"                  , tag.c_str()));
 
   t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root" , tag.c_str()));
   t1tttt_1500_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1500.root" , tag.c_str()));
@@ -985,21 +1005,13 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       }
 
       //Require baseline selections
-<<<<<<< HEAD
-      int BR = baselineRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
-=======
-      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), lep1_pt, lep2_pt);
->>>>>>> v4.03-compliant
+      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
       // cout << "BR=" << BR << endl;
       // cout << Form("nj=%i nb=%i met=%f ht=%f",ss::njets(), ss::nbtags(), ss::met(), ss::ht()) << endl;
       if (BR < 0) continue;
 
       //Get the SR
-<<<<<<< HEAD
-      int SR = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
-=======
-      int SR = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, lep1_pt, lep2_pt);
->>>>>>> v4.03-compliant
+      int SR = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
 
       // cout << "SR=" << SR << endl;
  
