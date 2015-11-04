@@ -495,9 +495,9 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //If data, check filter list
   if (is_real_data){
     string filterFile = ""; 
-    if (filename.Contains("DoubleEG")) filterFile = "CORE/Tools/filterLists/doubleEG.txt"; 
-    if (filename.Contains("DoubleMuon")) filterFile = "CORE/Tools/filterLists/doubleMuon.txt"; 
-    if (filename.Contains("MuonEG")) filterFile = "CORE/Tools/filterLists/muonEG.txt"; 
+    if (filename.Contains("DoubleEG")) filterFile = "CORE/Tools/filterLists/DoubleEG.txt"; 
+    if (filename.Contains("DoubleMuon")) filterFile = "CORE/Tools/filterLists/DoubleMuon.txt"; 
+    if (filename.Contains("MuonEG")) filterFile = "CORE/Tools/filterLists/MuonEG.txt"; 
     string checkMe = Form("%i:%i:%i", tas::evt_run(), tas::evt_lumiBlock(), (int)tas::evt_event());
     int blah = system(Form("grep -r %s %s", checkMe.c_str(), filterFile.c_str()));
     if (blah == 0) passedFilterList = false;
