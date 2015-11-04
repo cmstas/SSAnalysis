@@ -131,8 +131,10 @@ class babyMaker {
     float ht_unc_dn;   
     int nbtags_unc_up;
     int nbtags_unc_dn;
-    int met_unc_up; 
-    int met_unc_dn; 
+    float met_unc_up; 
+    float met_unc_dn; 
+    float metPhi_unc_up; 
+    float metPhi_unc_dn; 
 
     //Hyp Class -- in this order
        //3 for num-num SS leptons
