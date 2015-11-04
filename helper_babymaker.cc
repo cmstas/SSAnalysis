@@ -499,7 +499,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     if (filename.Contains("DoubleMuon")) filterFile = "CORE/Tools/filterLists/DoubleMuon.txt"; 
     if (filename.Contains("MuonEG")) filterFile = "CORE/Tools/filterLists/MuonEG.txt"; 
     string checkMe = Form("%i:%i:%i", tas::evt_run(), tas::evt_lumiBlock(), (int)tas::evt_event());
-    int blah = system(Form("grep -r %s %s", checkMe.c_str(), filterFile.c_str()));
+    int blah = system(("grep -r " + checkMe + filterFile).c_str());
     if (blah == 0) passedFilterList = false;
     else passedFilterList = true;
   }
