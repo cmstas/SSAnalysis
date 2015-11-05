@@ -23,7 +23,7 @@ float scaleLumi = 1.;//3.0/1.264;//careful!!!
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
-struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_type; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; }; 
+struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_l1eta; TH1F* h_l2eta; TH1F* h_type; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; }; 
 
 //Total
 yields_t total; 
@@ -753,6 +753,60 @@ void getyields(){
   l2pt_plotsMC.push_back(p_wjets_ff.h_l2pt);
   l2pt_plotsMC.push_back(p_st_ff.h_l2pt);
   dataMCplotMaker(p_data.h_l2pt, l2pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l2pt_all_SSMC.pdf --xAxisLabel Trailing Lepton pT --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2); 
+
+  //lep1 eta plots
+  vector<pair<TH1F*, float> > l1eta_plots;
+  l1eta_plots.push_back(pair<TH1F*, float>(p_ttw.h_l1eta  , roughSystTTW   ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l1eta , roughSystTTZH  ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_wz.h_l1eta   , roughSystWZ    ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_ww.h_l1eta   , roughSystWW    ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_tg.h_l1eta   , roughSystTG    ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_vg.h_l1eta   , roughSystVG    ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_rares.h_l1eta, roughSystRARES ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_flips.h_l1eta, roughSystFLIPS ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_fakes.h_l1eta, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_l1eta, l1eta_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName l1eta_all_SS.pdf --xAxisLabel Leading Leetaon pT --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+
+  vector <TH1F* > l1eta_plotsMC;
+  l1eta_plotsMC.push_back(p_ttw.h_l1eta  );
+  l1eta_plotsMC.push_back(p_ttzh.h_l1eta );
+  l1eta_plotsMC.push_back(p_wz.h_l1eta   );
+  l1eta_plotsMC.push_back(p_ww.h_l1eta   );
+  l1eta_plotsMC.push_back(p_tg.h_l1eta   );
+  l1eta_plotsMC.push_back(p_vg.h_l1eta   );
+  l1eta_plotsMC.push_back(p_rares.h_l1eta);
+  l1eta_plotsMC.push_back(p_ttbar_ff.h_l1eta);
+  l1eta_plotsMC.push_back(p_dy_ff.h_l1eta);
+  l1eta_plotsMC.push_back(p_wjets_ff.h_l1eta);
+  l1eta_plotsMC.push_back(p_st_ff.h_l1eta);
+  dataMCplotMaker(p_data.h_l1eta, l1eta_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l1eta_all_SSMC.pdf --xAxisLabel Leading Lepton #eta --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+ 
+  //lep2 eta plots
+  vector<pair<TH1F*, float> > l2eta_plots;
+  l2eta_plots.push_back(pair<TH1F*, float>(p_ttw.h_l2eta  , roughSystTTW   ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l2eta , roughSystTTZH  ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_wz.h_l2eta   , roughSystWZ    ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_ww.h_l2eta   , roughSystWW    ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_tg.h_l2eta   , roughSystTG    ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_vg.h_l2eta   , roughSystVG    ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_rares.h_l2eta, roughSystRARES ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_flips.h_l2eta, roughSystFLIPS ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_fakes.h_l2eta, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_l2eta, l2eta_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName l2eta_all_SS.pdf --xAxisLabel Trailing Leetaon pT --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+
+  vector <TH1F*> l2eta_plotsMC;
+  l2eta_plotsMC.push_back(p_ttw.h_l2eta  );
+  l2eta_plotsMC.push_back(p_ttzh.h_l2eta );
+  l2eta_plotsMC.push_back(p_wz.h_l2eta   );
+  l2eta_plotsMC.push_back(p_ww.h_l2eta   );
+  l2eta_plotsMC.push_back(p_tg.h_l2eta   );
+  l2eta_plotsMC.push_back(p_vg.h_l2eta   );
+  l2eta_plotsMC.push_back(p_rares.h_l2eta);
+  l2eta_plotsMC.push_back(p_ttbar_ff.h_l2eta);
+  l2eta_plotsMC.push_back(p_dy_ff.h_l2eta);
+  l2eta_plotsMC.push_back(p_wjets_ff.h_l2eta);
+  l2eta_plotsMC.push_back(p_st_ff.h_l2eta);
+  dataMCplotMaker(p_data.h_l2eta, l2eta_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l2eta_all_SSMC.pdf --xAxisLabel Trailing Leetaon pT --isLinear --percentageInBox --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2); 
 }
 
 //doFakes = 1 for QCD, 2 for inSitu
@@ -775,6 +829,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   p_result.h_nbtags       = new TH1F(Form("nbtags_%s"       , chain->GetTitle()) , Form("nbtags_%s"       , chain->GetTitle()) , 6   , 0 , 6);	  p_result.h_nbtags       ->Sumw2();
   p_result.h_l1pt         = new TH1F(Form("l1pt_%s"         , chain->GetTitle()) , Form("l1pt_%s"         , chain->GetTitle()) , 10  , 0 , 150);  p_result.h_l1pt         ->Sumw2();
   p_result.h_l2pt         = new TH1F(Form("l2pt_%s"         , chain->GetTitle()) , Form("l2pt_%s"         , chain->GetTitle()) , 10  , 0 , 100);  p_result.h_l2pt         ->Sumw2();
+  p_result.h_l1eta         = new TH1F(Form("l1eta_%s"         , chain->GetTitle()) , Form("l1eta_%s"         , chain->GetTitle()) , 24  , -2.5 , 2.5);  p_result.h_l1eta         ->Sumw2();
+  p_result.h_l2eta         = new TH1F(Form("l2eta_%s"         , chain->GetTitle()) , Form("l2eta_%s"         , chain->GetTitle()) , 24  , -2.5 , 2.5);  p_result.h_l2eta         ->Sumw2();
   p_result.SRHH.EE        = new TH1F(Form("SRHH_EE_%s"      , chain->GetTitle()) , Form("SRHH_EE_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.EE        ->Sumw2();
   p_result.SRHH.EM        = new TH1F(Form("SRHH_EM_%s"      , chain->GetTitle()) , Form("SRHH_EM_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.EM        ->Sumw2();
   p_result.SRHH.MM        = new TH1F(Form("SRHH_MM_%s"      , chain->GetTitle()) , Form("SRHH_MM_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.MM        ->Sumw2();
@@ -1072,6 +1128,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       else                          y_result.EM    += weight;
                                     y_result.TOTAL += weight;
 
+      if (lep1_pt < 75 || lep1_pt > 90) continue;
+
       //Fill kinem plots
       p_result.h_ht          ->Fill(ss::ht()                         , weight);
       p_result.h_met         ->Fill(ss::met()                        , weight);
@@ -1081,6 +1139,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_nbtags      ->Fill(ss::nbtags()                     , weight);
       p_result.h_l1pt        ->Fill(lep1_pt                          , weight);
       p_result.h_l2pt        ->Fill(lep2_pt                          , weight);
+      p_result.h_l1eta       ->Fill(ss::lep1_p4().eta()              , weight);
+      p_result.h_l2eta       ->Fill(ss::lep2_p4().eta()              , weight);
       p_result.h_type        ->Fill(ss::hyp_type()                   , weight); 
       p_result.h_lep1_miniIso->Fill(ss::lep1_miniIso()               , weight); 
       p_result.h_lep2_miniIso->Fill(ss::lep2_miniIso()               , weight); 
