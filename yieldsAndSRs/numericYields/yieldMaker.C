@@ -1272,6 +1272,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	TH1F* jesUp   = (TH1F*) plot_alt_jes->Clone("jesUp");
 	TH1F* jesDown = (TH1F*) plot_alt_jes->Clone("jesDown");
 	fillDownMirrorUp(h_sr,jesUp,jesDown);
+	//turn on when we'll normalize wz in data for real
+	// if (name=="wz") {
+	//   //wz is normalized in data, so we want only the sr migration
+	//   jesUp->Scale(h_sr->Integral()/jesUp->Integral());  
+	//   jesDown->Scale(h_sr->Integral()/jesDown->Integral());  
+	// }
 	jesUp->Write();
 	jesDown->Write();
 	//leptons
