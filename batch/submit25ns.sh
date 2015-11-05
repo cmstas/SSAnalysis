@@ -181,7 +181,7 @@ do
       tag=V07-04-11
       nameNu=45
     elif [ $sname == "DATAMUONEGD_05oct"    ]; 
-      then name="Run2015D_MuonEG_MINIAOD_05Oct2015-v1";
+      then name="Run2015D_MuonEG_MINIAOD_05Oct2015-v2";
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-11
       nameNu=47

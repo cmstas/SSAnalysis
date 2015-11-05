@@ -337,7 +337,7 @@ int main(int argc, char *argv[]){
       break;
     case DATAMUONEGD_05oct:
       shortname="datamuonegd_05oct";
-      name="Run2015D_MuonEG_MINIAOD_05Oct2015-v1/merged";
+      name="Run2015D_MuonEG_MINIAOD_05Oct2015-v2/merged";
       path="/store/group/snt/run2_data";
       isData = true;
       tag="V07-04-11";
