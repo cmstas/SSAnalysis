@@ -37,7 +37,6 @@ int main(int argc, char *argv[]){
   const char* filename = Form("merged_ntuple_%i.root", file);
   const char* suffix = file < 0 ? "" : Form("_%i", file);
   string tag = "V07-04-08";
-  bool is25 = true;
   bool isData = false;
 
 
@@ -118,7 +117,7 @@ int main(int argc, char *argv[]){
       tag = "V07-04-11";
       shortname="singletop5";
       break;
-    case QQWW:    ###THIS ONE IS MISSING!!!!
+    case QQWW:    //THIS ONE IS MISSING!!!!
       name="WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag="V07-04-08";
       shortname="qqww";
@@ -133,7 +132,7 @@ int main(int argc, char *argv[]){
       tag="V07-04-11";
       shortname="wwdps";
       break;
-    case TTBAR_PH: ###THIS ONE IS MISSING!!!
+    case TTBAR_PH: //THIS ONE IS MISSING!!!
       name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2";
       shortname="ttbar_ph";
       tag="V07-04-08_v2";
@@ -154,7 +153,7 @@ int main(int argc, char *argv[]){
       tag="V07-04-11";
       shortname="zz"; 
       break;
-    case TG: ##THIS ONE IS MISSING!!!
+    case TG:   //THIS ONE IS MISSING!!!
       name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag="V07-04-08";
       shortname="tg";
@@ -195,7 +194,7 @@ int main(int argc, char *argv[]){
       shortname="t1tttt_1500";
       tag="V07-04-11";
       break;
-    case T1TTTT_1200:  ###THIS ONE IS MISSING!!!!
+    case T1TTTT_1200:  //THIS ONE IS MISSING!!!!
       name="SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       tag="V07-04-08";
       shortname="t1tttt_1200";
@@ -242,25 +241,13 @@ int main(int argc, char *argv[]){
       shortname="t6ttww_650_150_50";
       tag="";
       break;
-    case DataDoubleMuonD_05oct:
-      name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1/merged";
-      shortname="datadoublemuond_05oct";
+
+    //Data
+    case DataDoubleEGC_05oct:
+      shortname="datadoubleegc_05oct";
+      name="Run2015C_25ns_DoubleEG_MINIAOD_05Oct2015-v1/merged";
       isData = true;
       path="/store/group/snt/run2_data";
-      tag="V07-04-11";
-      break;
-    case DataDoubleEGD_05oct:
-      shortname="datadoubleegd_05oct";
-      name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v1/merged";
-      isData = true;
-      path="/store/group/snt/run2_data";
-      tag="V07-04-11";
-      break;
-    case DATAMUONEGD_05oct:
-      shortname="datamuonegd_05oct";
-      name="Run2015D_MuonEG_MINIAOD_05Oct2015-v2/merged";
-      path="/store/group/snt/run2_data";
-      isData = true;
       tag="V07-04-11";
       break;
     case DataDoubleMuonC_05oct:
@@ -270,25 +257,32 @@ int main(int argc, char *argv[]){
       path="/store/group/snt/run2_data";
       tag="V07-04-11";
       break;
-    case DataDoubleEGC_05oct:
-      shortname="datadoubleegc_05oct";
-      name="Run2015C_25ns_DoubleEG_MINIAOD_05Oct2015-v1/merged";
-      isData = true;
-      path="/store/group/snt/run2_data";
-      tag="V07-04-11";
-      break;
-    case DATAMUONEGC_05oct:
+    case DataMuonEGC_05oct:
       shortname="datamuonegc_05oct";
       name="Run2015C_25ns_MuonEG_MINIAOD_05Oct2015-v1/merged";
       path="/store/group/snt/run2_data";
       isData = true;
       tag="V07-04-11";
       break;
-    case DataDoubleMuonD_v4:
-      name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v4/merged";
-      shortname="datadoublemuond_v4";
+    case DataDoubleEGD_05oct:
+      shortname="datadoubleegd_05oct";
+      name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v1/merged";
       isData = true;
       path="/store/group/snt/run2_data";
+      tag="V07-04-11";
+      break;
+    case DataDoubleMuonD_05oct:
+      name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1/merged";
+      shortname="datadoublemuond_05oct";
+      isData = true;
+      path="/store/group/snt/run2_data";
+      tag="V07-04-11";
+      break;
+    case DataMuonEGD_05oct:
+      shortname="datamuonegd_05oct";
+      name="Run2015D_MuonEG_MINIAOD_05Oct2015-v2/merged";
+      path="/store/group/snt/run2_data";
+      isData = true;
       tag="V07-04-11";
       break;
     case DataDoubleEGD_v4:
@@ -298,7 +292,14 @@ int main(int argc, char *argv[]){
       path="/store/group/snt/run2_data";
       tag="V07-04-11";
       break;
-    case DATAMUONEGD_v4:
+    case DataDoubleMuonD_v4:
+      name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v4/merged";
+      shortname="datadoublemuond_v4";
+      isData = true;
+      path="/store/group/snt/run2_data";
+      tag="V07-04-11";
+      break;
+    case DataMuonEGD_v4:
       shortname="datamuonegd_v4";
       name="Run2015D_MuonEG_MINIAOD_PromptReco-v4/merged";
       path="/store/group/snt/run2_data";
@@ -327,8 +328,7 @@ int main(int argc, char *argv[]){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  if (!is25) set_goodrun_file("final_golden_50ns_40p03pb.txt");
-  if ( is25) set_goodrun_file("goldenJson1p56fb.txt");
+  set_goodrun_file("goldenJson1p56fb.txt");
 
   //Make Jet Energy Uncertainties
   JetCorrectionUncertainty *jecUnc = 0;
@@ -337,19 +337,6 @@ int main(int argc, char *argv[]){
 
   //Init MVA
   createAndInitMVA("./CORE");
-
-  //JEC files -- 50 ns MC
-  std::vector<std::string> jetcorr_filenames_50ns_MC_pfL1L2L3;
-  jetcorr_filenames_50ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV4_MC_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_50ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV4_MC_L2Relative_AK4PFchs.txt");
-  jetcorr_filenames_50ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV4_MC_L3Absolute_AK4PFchs.txt");
-
-  //JEC files -- 50 ns DATA
-  std::vector<std::string> jetcorr_filenames_50ns_DATA_pfL1L2L3;
-  jetcorr_filenames_50ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV4_DATA_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_50ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV4_DATA_L2Relative_AK4PFchs.txt");
-  jetcorr_filenames_50ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV4_DATA_L3Absolute_AK4PFchs.txt");
-  jetcorr_filenames_50ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_50ns/Summer15_50nsV4_DATA_L2L3Residual_AK4PFchs.txt");
 
   //JEC files -- 25 ns MC
   std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1L2L3;
@@ -366,10 +353,8 @@ int main(int argc, char *argv[]){
 
   //JECs
   std::vector<std::string> filenames;
-  if ( is25 &&  isData) filenames = jetcorr_filenames_25ns_DATA_pfL1L2L3; 
-  if ( is25 && !isData) filenames = jetcorr_filenames_25ns_MC_pfL1L2L3;
-  if (!is25 && !isData) filenames = jetcorr_filenames_50ns_MC_pfL1L2L3;
-  if (!is25 &&  isData) filenames = jetcorr_filenames_50ns_DATA_pfL1L2L3;
+  if ( isData) filenames = jetcorr_filenames_25ns_DATA_pfL1L2L3; 
+  if (!isData) filenames = jetcorr_filenames_25ns_MC_pfL1L2L3;
   FactorizedJetCorrector *jetCorrAG;
   jetCorrAG = makeJetCorrector(filenames);
 

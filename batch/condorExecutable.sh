@@ -21,6 +21,8 @@ popd
 #Specify name of output file and name of dierctory in /hadoop/...
 export DIRNAME=ss_13_babies
 export WHICH_SMALL=`echo ${WHICH,,}`
+
+#backgrounds
 if [ "$WHICH" == "0" ]; then WHICH_SMALL="ttbar"; fi
 if [ "$WHICH" == "1" ]; then WHICH_SMALL="ttw"; fi
 if [ "$WHICH" == "2" ]; then WHICH_SMALL="ttzl"; fi
@@ -51,6 +53,7 @@ if [ "$WHICH" == "26" ]; then WHICH_SMALL="tzq"; fi
 if [ "$WHICH" == "27" ]; then WHICH_SMALL="tthtononbb"; fi
 if [ "$WHICH" == "28" ]; then WHICH_SMALL="vhtononbb"; fi
 
+#signals
 if [ "$WHICH" == "100" ]; then WHICH_SMALL="t1tttt_1500"; fi
 if [ "$WHICH" == "101" ]; then WHICH_SMALL="t1tttt_1200"; fi
 if [ "$WHICH" == "35" ]; then WHICH_SMALL="t5qqqqwz_1200_1000_800"; fi
@@ -62,15 +65,17 @@ if [ "$WHICH" == "40" ]; then WHICH_SMALL="t5qqqqzz_1200_1000_800" ; fi
 if [ "$WHICH" == "41" ]; then WHICH_SMALL="t6ttww_600_425_50"; fi
 if [ "$WHICH" == "43" ]; then WHICH_SMALL="t5qqqqzz_1500_800_100"; fi
 if [ "$WHICH" == "44" ]; then WHICH_SMALL="t6ttww_650_150_50"; fi
-if [ "$WHICH" == "45" ]; then WHICH_SMALL="datadoubleegd_05oct"; fi
-if [ "$WHICH" == "46" ]; then WHICH_SMALL="datadoublemuond_05oct"; fi
-if [ "$WHICH" == "47" ]; then WHICH_SMALL="datamuonegd_05oct"; fi
-if [ "$WHICH" == "53" ]; then WHICH_SMALL="datadoublemuond_v4"; fi
-if [ "$WHICH" == "54" ]; then WHICH_SMALL="datadoubleegd_v4"; fi
-if [ "$WHICH" == "55" ]; then WHICH_SMALL="datamuonegd_v4"; fi
-if [ "$WHICH" == "56" ]; then WHICH_SMALL="datadoubleegc_05oct"; fi
-if [ "$WHICH" == "57" ]; then WHICH_SMALL="datadoublemuonc_05oct"; fi
-if [ "$WHICH" == "58" ]; then WHICH_SMALL="datamuonegc_05oct"; fi
+
+#data
+if [ "$WHICH" == "1000" ]; then WHICH_SMALL="datadoubleegc_05oct"; fi
+if [ "$WHICH" == "1001" ]; then WHICH_SMALL="datadoublemuonc_05oct"; fi
+if [ "$WHICH" == "1002" ]; then WHICH_SMALL="datamuonegc_05oct"; fi
+if [ "$WHICH" == "1003" ]; then WHICH_SMALL="datadoubleegd_05oct"; fi
+if [ "$WHICH" == "1004" ]; then WHICH_SMALL="datadoublemuond_05oct"; fi
+if [ "$WHICH" == "1005" ]; then WHICH_SMALL="datamuonegd_05oct"; fi
+if [ "$WHICH" == "1006" ]; then WHICH_SMALL="datadoubleegd_v4"; fi
+if [ "$WHICH" == "1007" ]; then WHICH_SMALL="datadoublemuond_v4"; fi
+if [ "$WHICH" == "1008" ]; then WHICH_SMALL="datamuonegd_v4"; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}_$EXPT
 

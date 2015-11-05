@@ -2,6 +2,7 @@
 #define THESSBATCHBASE_H
 
 enum sample_t { 
+  //Backgrounds
   TTBAR = 0,
   TTW = 1,
   TTZL = 2,
@@ -32,6 +33,7 @@ enum sample_t {
   TTHtoNonBB = 27,
   VHtoNonBB = 28,
 
+  //Signals
   T1TTTT_1500 = 100,
   T1TTTT_1200 = 101,
   T5QQQQWWDeg_1000_315_285_300 = 36,
@@ -43,15 +45,16 @@ enum sample_t {
   T5QQQQZZ_1500_800_100 = 43,
   T6TTWW_650_150_50 = 44,
 
-  DataDoubleEGD_05oct = 45,
-  DataDoubleMuonD_05oct = 46,
-  DATAMUONEGD_05oct = 47,
-  DataDoubleMuonD_v4 = 53,
-  DataDoubleEGD_v4 = 54,
-  DATAMUONEGD_v4 = 55,
-  DataDoubleEGC_05oct = 56,
-  DataDoubleMuonC_05oct = 57,
-  DATAMUONEGC_05oct = 58,
+  //Data
+  DataDoubleEGC_05oct = 1000,
+  DataDoubleMuonC_05oct = 1001,
+  DataMuonEGC_05oct = 1002,
+  DataDoubleEGD_05oct = 1003,
+  DataDoubleMuonD_05oct = 1004,
+  DataMuonEGD_05oct = 1005,
+  DataDoubleEGD_v4 = 1006,
+  DataDoubleMuonD_v4 = 1007,
+  DataMuonEGD_v4 = 1008,
 };
 
 #endif
