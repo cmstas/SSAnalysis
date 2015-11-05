@@ -63,16 +63,6 @@ int main(int argc, char *argv[]){
       shortname="wz";
       tag="V07-04-11";
       break;
-    case T1TTTT_1500:
-      name="SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      shortname="t1tttt_1500";
-      tag="V07-04-11";
-      break;
-    case T1TTTT_1200:  ###THIS ONE IS MISSING!!!!
-      name="SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
-      tag="V07-04-08";
-      shortname="t1tttt_1200";
-      break;
     case DY_low:
       name="DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       tag = "V07-04-11";
@@ -190,14 +180,25 @@ int main(int argc, char *argv[]){
       shortname="tzq";
       break;
     case TTHtoNonBB:
-      name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
-      tag="V07-04-08";
+      name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-11"
       shortname="tthtononbb";
       break;
     case VHtoNonBB:
-      name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
-      tag="V07-04-08";
+      name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-11";
       shortname="vhtononbb";
+      break;
+
+    case T1TTTT_1500:
+      name="SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
+      shortname="t1tttt_1500";
+      tag="V07-04-11";
+      break;
+    case T1TTTT_1200:  ###THIS ONE IS MISSING!!!!
+      name="SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
+      tag="V07-04-08";
+      shortname="t1tttt_1200";
       break;
     case T5QQQQWW_1200_1000_800:
       name="T5qqqqWW_mGo1200_mCh1000_mChi800_dilep";

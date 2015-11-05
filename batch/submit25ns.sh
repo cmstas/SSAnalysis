@@ -65,126 +65,121 @@ do
       name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
       nameNu=3
-    elif [ $sname == "T1TTTT_1500" ] 
-    then
-      name="SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-      tag=V07-04-11
-      nameNu=4
-    elif [ $sname == "T1TTTT_1200" ]  ###THIS ONE IS MISSING!!!
-    then
-      name="SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=5
     elif [ $sname == "DY_low" ]
       then name="DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-08
-      nameNu=6
+      nameNu=4
     elif [ $sname == "DY_high" ]
       then name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3"
       tag=V07-04-08
-      nameNu=7
+      nameNu=5
     elif [ $sname == "WJets" ]; 
       then name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=8
+      nameNu=6
     elif [ $sname == "TTWQQ" ]
     then 
       name="TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=9
+      nameNu=7
     elif [ $sname == "TTZQ" ]
     then
       name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=10
+      nameNu=8
     elif [ $sname == "TTG" ] 
     then
       name="TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=11
+      nameNu=9
     elif [ $sname == "SINGLETOP1"    ]; 
       then name="ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=12
+      nameNu=10
     elif [ $sname == "SINGLETOP2"    ]; 
       then name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=13
+      nameNu=11
     elif [ $sname == "SINGLETOP3"    ]; 
       then name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=14
+      nameNu=12
     elif [ $sname == "SINGLETOP4"    ]; 
       then name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v2"
       tag=V07-04-11
-      nameNu=15
+      nameNu=13
     elif [ $sname == "SINGLETOP5"    ]; 
       then name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=16
+      nameNu=14
     elif [ $sname == "QQWW" ] ###THIS ONE IS MISSING!!!
     then
       name=WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
       tag=V07-04-08
-      nameNu=17
+      nameNu=15
     elif [ $sname == "TTTT" ] 
     then
       name="TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=18
+      nameNu=16
     elif [ $sname == "WWDPS" ] 
     then
       name="WW_DoubleScattering_13TeV-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=19
+      nameNu=17
     elif [ $sname == "TTBAR_PH" ] ###THIS ONE IS MISSING!!!
       then name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2"
       tag=V07-04-08_v2
-      nameNu=20
+      nameNu=18
     elif [ $sname == "WJets_LO" ]
       then name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
       path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
-      nameNu=21
+      nameNu=19
     elif [ $sname == "WWZ" ]
     then 
       name="WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=22
+      nameNu=20
     elif [ $sname == "ZZ" ]
     then 
       name="ZZTo4L_13TeV_powheg_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v2"
       tag=V07-04-11
-      nameNu=23
+      nameNu=21
     elif [ $sname == "TG" ]; ###THIS ONE IS MISSING!!!
       then name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-08
-      nameNu=24
+      nameNu=22
     elif [ $sname == "ZG" ]
     then
       name="ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=25
+      nameNu=23
     elif [ $sname == "WZZ" ] 
     then
       name="WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=26
+      nameNu=24
     elif [ $sname == "WGToLNuG" ] 
     then
       name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=27
+      nameNu=25
     elif [ $sname == "TZQ" ] 
     then
       name="tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=28
+      nameNu=26
     elif [ $sname == "TTHtoNonBB" ] 
     then
       name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
-      nameNu=29
+      nameNu=27
+    elif [ $sname == "VHtoNonBB" ] 
+    then
+      name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+      tag=V07-04-11
+      nameNu=28
     elif [ $sname == "DataDoubleMuonD_05oct"  ]; 
       then name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
@@ -230,11 +225,16 @@ do
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-11
       nameNu=55
-    elif [ $sname == "VHtoNonBB" ] 
+    elif [ $sname == "T1TTTT_1500" ] 
     then
-      name=VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
+      name="SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+      tag=V07-04-11
+      nameNu=100
+    elif [ $sname == "T1TTTT_1200" ]  ###THIS ONE IS MISSING!!!
+    then
+      name="SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
       tag=V07-04-08
-      nameNu=30
+      nameNu=101
     elif [ $sname == "T5QQQQWWDeg_1000_315_300" ] 
     then
       name=T5ttttDeg_mGo1000_mCh315_mChi300_dilep
