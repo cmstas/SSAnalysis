@@ -6,7 +6,7 @@ import math
 
 #example: python createCard.py dir t1tttt_1500 
 #example: python createCard.py dir t1tttt_1500 hihi sr card-hihi.txt
-#example: for dir in v4.04; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg; do python createCard.py ${dir} ${sig}; done; done
+#example: for dir in v4.04; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg  t5tttt_1200; do python createCard.py ${dir} ${sig}; done; done
 #example: for dir in dir1 dir2; do for sig in t1tttt_1200 t1tttt_1500; do python createCard.py ${dir} ${sig}; done; done
 
 #for dir in gc.v1.24; do for sig in t1tttt_1500 t1tttt_1200 t1ttbbww_1300 t5tttt_1000 t5qqww_1500 t5qqww_1200 t5qqww_deg t6ttww_650 t6ttww_600; do python createCard.py ${dir} ${sig}; done; done
