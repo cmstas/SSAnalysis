@@ -170,6 +170,21 @@ do
       name="WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
       tag=V07-04-11
       nameNu=26
+    elif [ $sname == "WGToLNuG" ] 
+    then
+      name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+      tag=V07-04-11
+      nameNu=27
+    elif [ $sname == "TZQ" ] 
+    then
+      name="tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+      tag=V07-04-11
+      nameNu=28
+    elif [ $sname == "TTHtoNonBB" ] 
+    then
+      name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+      tag=V07-04-11
+      nameNu=29
     elif [ $sname == "DataDoubleMuonD_05oct"  ]; 
       then name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1";
       path="/hadoop/cms/store/group/snt/run2_data"
@@ -215,26 +230,11 @@ do
       path="/hadoop/cms/store/group/snt/run2_data"
       tag=V07-04-11
       nameNu=55
-    elif [ $sname == "WGToLNuG" ] 
-    then
-      name="WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=27
-    elif [ $sname == "TTHtoNonBB" ] 
-    then
-      name=ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
-      tag=V07-04-08
-      nameNu=29
     elif [ $sname == "VHtoNonBB" ] 
     then
       name=VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
       tag=V07-04-08
       nameNu=30
-    elif [ $sname == "TZQ" ] 
-    then
-      name=tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2
-      tag=V07-04-08
-      nameNu=31
     elif [ $sname == "T5QQQQWWDeg_1000_315_300" ] 
     then
       name=T5ttttDeg_mGo1000_mCh315_mChi300_dilep
@@ -271,12 +271,6 @@ do
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
       nameNu=41
-    elif [ $sname == "T2TT_ARXIV" ] 
-    then
-      name=T2tt_arxiv1507_01601               
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=42
     elif [ $sname == "T5QQQQZZ_1500_800_100" ] 
     then
       name=T5qqqqZZ_mGo1500_mCh800_mChi100_lep   

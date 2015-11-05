@@ -80,11 +80,11 @@ void getyields(){
   //signals
   TChain *t1tttt_1200_chain = new TChain("t","t1tttt_1200"); 
   TChain *t1tttt_1500_chain = new TChain("t","t1tttt_1500"); 
+  TChain *t2ttww_600_chain = new TChain("t","t6ttww_600"); 
+  TChain *t5qqqq_1200_chain = new TChain("t", "t5qqqq_1200"); 
   TChain *t5tttt_deg_chain = new TChain("t","t5tttt_deg"); 
   TChain *t6ttww_650_chain = new TChain("t","t6ttww_650"); 
   TChain *t6ttww_600_chain = new TChain("t","t6ttww_600"); 
-
-  TChain *t2ttww_600_chain = new TChain("t","t6ttww_600"); 
 
   //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root"          , tag.c_str())); 
@@ -152,6 +152,7 @@ void getyields(){
   t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root"              , tag.c_str()));
   t1tttt_1500_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1500.root"              , tag.c_str()));
   t5tttt_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5ttttDeg_1000_300_285_280.root", tag.c_str()));
+  t5qqqq_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWW_1200_1000_800.root"     , tag.c_str()));
   t6ttww_650_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_650_150_50.root"         , tag.c_str()));
   t6ttww_600_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_600_425_50.root"         , tag.c_str()));
 
@@ -193,7 +194,8 @@ void getyields(){
 
   pair<yields_t, plots_t> results_t1tttt_1200 = run(t1tttt_1200_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_t1tttt_1500 = run(t1tttt_1500_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t5tttt_deg = run(t5tttt_deg_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t5tttt_deg  = run(t5tttt_deg_chain , 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t5qqqq_1200 = run(t5qqqq_1200_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_t6ttww_650 = run(t6ttww_650_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_t6ttww_600 = run(t6ttww_600_chain, 0, 0, 0, 0, 1);
 
