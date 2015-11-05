@@ -466,11 +466,6 @@ void babyMaker::InitBabyNtuple(){
 //Main function
 int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty* jecUnc, bool expt, int file){
 
-  //Figure out if this is a 25ns or 50ns sample
-  bool is25 = true;
-  if (filename_in.find("50ns") < filename_in.size()) is25 = false;
-  if (filename_in.find("Run2015B") < filename_in.size()) is25 = false;
-
   //Initialize variables
   InitBabyNtuple();
   
