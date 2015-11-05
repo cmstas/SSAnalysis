@@ -812,6 +812,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   TIter fileIter(listOfFiles);
   TFile *currentFile = 0;
 
+  //Number of selected events
+  int nSelected = 0; 
+
   //File Loop
   while ( (currentFile = (TFile*)fileIter.Next()) ){
 
@@ -840,6 +843,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       //Reject not triggered
       if (!ss::fired_trigger()) continue;
+      if (!ss::passedFilterList()) continue;
+      if (!ss::passes_met_filters()) continue;
 
       // if (doFakes!=1) continue;
       // if (ss::event()!=38279201
@@ -1087,6 +1092,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_lep2_ptRatio->Fill(ptratio_2                        , weight); 
       if (isData && !doFakes && !doFlips && SR > 0){
         cout << Form("%1d %9d %12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
+        nSelected++; 
       }
 
       //Fill SR plots
@@ -1120,6 +1126,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
     }//event loop
   }//file loop
+
+  //Print out number selected
+  cout << "Number selected: " << nSelected << endl;
 
   if (y_result.EE<0) y_result.EE=0.;
   if (y_result.MM<0) y_result.MM=0.;
