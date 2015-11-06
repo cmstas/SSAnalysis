@@ -852,14 +852,21 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
   //For JES variations
   plots_t p_alternative;
+  plots_t p_alternative_dn;
   if (doFakes == 1 || isData==0) {
     p_alternative.SRHH.TOTAL     = new TH1F(Form("SRHH_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_ALT_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_alternative.SRHH.TOTAL->Sumw2();
     p_alternative.SRHL.TOTAL     = new TH1F(Form("SRHL_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_ALT_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_alternative.SRHL.TOTAL->Sumw2();
     p_alternative.SRLL.TOTAL     = new TH1F(Form("SRLL_ALT_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_ALT_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_alternative.SRLL.TOTAL->Sumw2();
+    p_alternative_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_alternative_dn.SRHH.TOTAL->Sumw2();
+    p_alternative_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_alternative_dn.SRHL.TOTAL->Sumw2();
+    p_alternative_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_alternative_dn.SRLL.TOTAL->Sumw2();
   } else {
     p_alternative.SRHH.TOTAL     = 0;
     p_alternative.SRHL.TOTAL     = 0;
     p_alternative.SRLL.TOTAL     = 0;
+    p_alternative_dn.SRHH.TOTAL     = 0;
+    p_alternative_dn.SRHL.TOTAL     = 0;
+    p_alternative_dn.SRLL.TOTAL     = 0;
   }
  
   //For btag SF variations
@@ -1107,7 +1114,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       float mtl1_unc_up = MT(lep1_pt, ss::lep1_p4().phi(), ss::met_unc_up(), ss::metPhi_unc_up());
       float mtl2_unc_up = MT(lep2_pt, ss::lep2_p4().phi(), ss::met_unc_up(), ss::metPhi_unc_up());
       float mtmin_unc_up = mtl1_unc_up > mtl2_unc_up ? mtl2_unc_up : mtl1_unc_up;
+      float mtl1_unc_dn = MT(lep1_pt, ss::lep1_p4().phi(), ss::met_unc_dn(), ss::metPhi_unc_dn());
+      float mtl2_unc_dn = MT(lep2_pt, ss::lep2_p4().phi(), ss::met_unc_dn(), ss::metPhi_unc_dn());
+      float mtmin_unc_dn = mtl1_unc_dn > mtl2_unc_dn ? mtl2_unc_dn : mtl1_unc_dn;
       int SR_unc_up = signalRegion(ss::njets_unc_up(), ss::nbtags_unc_up(), ss::met_unc_up(), ss::ht_unc_up(), mtmin_unc_up, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
+      int SR_unc_dn = signalRegion(ss::njets_unc_dn(), ss::nbtags_unc_dn(), ss::met_unc_dn(), ss::ht_unc_dn(), mtmin_unc_dn, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
 
       // cout << "SR=" << SR << endl;
  
@@ -1184,7 +1195,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         else                          p_result.SRHH.EM->Fill(SR, weight); 
                                       p_result.SRHH.TOTAL->Fill(SR, weight); 
         if (doFakes == 1 )            p_alternative.SRHH.TOTAL->Fill(SR, weight_alt); 
-        if (isData  == 0 )            p_alternative.SRHH.TOTAL->Fill(SR_unc_up, weight); 
+        if (isData  == 0 )            p_alternative.SRHH.TOTAL   ->Fill(SR_unc_up, weight); 
+        if (isData  == 0 )            p_alternative_dn.SRHH.TOTAL->Fill(SR_unc_dn, weight); 
         if (isData  == 0 )            p_btagSF_up_alternative.SRHH.TOTAL->Fill(SR, weight_btag_up_alt); 
         if (isData  == 0 )            p_btagSF_dn_alternative.SRHH.TOTAL->Fill(SR, weight_btag_dn_alt); 
       }
@@ -1195,7 +1207,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         else                          p_result.SRHL.EM->Fill(SR, weight); 
                                       p_result.SRHL.TOTAL->Fill(SR, weight); 
         if (doFakes == 1 )            p_alternative.SRHL.TOTAL->Fill(SR, weight_alt); 
-        if (isData  == 0 )            p_alternative.SRHL.TOTAL->Fill(SR_unc_up, weight); 
+        if (isData  == 0 )            p_alternative.SRHL.TOTAL   ->Fill(SR_unc_up, weight); 
+        if (isData  == 0 )            p_alternative_dn.SRHL.TOTAL->Fill(SR_unc_dn, weight); 
         if (isData  == 0 )            p_btagSF_up_alternative.SRHL.TOTAL->Fill(SR, weight_btag_up_alt); 
         if (isData  == 0 )            p_btagSF_dn_alternative.SRHL.TOTAL->Fill(SR, weight_btag_dn_alt); 
       }
@@ -1206,7 +1219,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         else                          p_result.SRLL.EM->Fill(SR, weight); 
                                       p_result.SRLL.TOTAL->Fill(SR, weight); 
         if (doFakes == 1 )            p_alternative.SRLL.TOTAL->Fill(SR, weight_alt); 
-        if (isData  == 0 )            p_alternative.SRLL.TOTAL->Fill(SR_unc_up, weight); 
+        if (isData  == 0 )            p_alternative.SRLL.TOTAL   ->Fill(SR_unc_up, weight); 
+        if (isData  == 0 )            p_alternative_dn.SRLL.TOTAL->Fill(SR_unc_dn, weight); 
         if (isData  == 0 )            p_btagSF_up_alternative.SRLL.TOTAL->Fill(SR, weight_btag_up_alt); 
         if (isData  == 0 )            p_btagSF_dn_alternative.SRLL.TOTAL->Fill(SR, weight_btag_dn_alt); 
       }
@@ -1230,6 +1244,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     avoidNegativeYields(p_alternative.SRHH.TOTAL);
     avoidNegativeYields(p_alternative.SRHL.TOTAL);
     avoidNegativeYields(p_alternative.SRLL.TOTAL);
+    avoidNegativeYields(p_alternative_dn.SRHH.TOTAL);
+    avoidNegativeYields(p_alternative_dn.SRHL.TOTAL);
+    avoidNegativeYields(p_alternative_dn.SRLL.TOTAL);
   }
 
   //Update total
@@ -1270,6 +1287,10 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if      (kinRegs[kr] == "hihi")   plot_alt = p_alternative.SRHH.TOTAL;
         else if (kinRegs[kr] == "hilow")  plot_alt = p_alternative.SRHL.TOTAL;
         else if (kinRegs[kr] == "lowlow") plot_alt = p_alternative.SRLL.TOTAL;
+        else exit(1);
+        if      (kinRegs[kr] == "hihi")   plot_alt = p_alternative_dn.SRHH.TOTAL;
+        else if (kinRegs[kr] == "hilow")  plot_alt = p_alternative_dn.SRHL.TOTAL;
+        else if (kinRegs[kr] == "lowlow") plot_alt = p_alternative_dn.SRLL.TOTAL;
         else exit(1);
         TH1F* fakes_EWKUp    = (TH1F*) plot_alt->Clone("fakes_EWKUp");
         TH1F* fakes_EWKDown  = (TH1F*) plot_alt->Clone("fakes_EWKDown");
@@ -1321,13 +1342,17 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	//jes
 	//writeJesSyst(h_sr,name,kinRegs[kr]);//fixme should not change normalization for WZ
 	TH1F* plot_alt_jes = 0;
-	if (kinRegs[kr]=="hihi") plot_alt_jes=p_alternative.SRHH.TOTAL;
-	else if (kinRegs[kr]=="hilow") plot_alt_jes=p_alternative.SRHL.TOTAL;
+	TH1F* plot_alt_jes_dn = 0;
+	if      (kinRegs[kr]=="hihi")   plot_alt_jes=p_alternative.SRHH.TOTAL;
+	else if (kinRegs[kr]=="hilow")  plot_alt_jes=p_alternative.SRHL.TOTAL;
 	else if (kinRegs[kr]=="lowlow") plot_alt_jes=p_alternative.SRLL.TOTAL;
 	else exit(1);
+	if      (kinRegs[kr]=="hihi")   plot_alt_jes_dn=p_alternative_dn.SRHH.TOTAL;
+	else if (kinRegs[kr]=="hilow")  plot_alt_jes_dn=p_alternative_dn.SRHL.TOTAL;
+	else if (kinRegs[kr]=="lowlow") plot_alt_jes_dn=p_alternative_dn.SRLL.TOTAL;
+	else exit(1);
 	TH1F* jesUp   = (TH1F*) plot_alt_jes->Clone("jesUp");
-	TH1F* jesDown = (TH1F*) plot_alt_jes->Clone("jesDown");
-	fillDownMirrorUp(h_sr,jesUp,jesDown);
+	TH1F* jesDown = (TH1F*) plot_alt_jes_dn->Clone("jesDown");
 	jesUp->Write();
 	jesDown->Write();
 	//leptons
@@ -1337,7 +1362,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       }
       
       //end systematics
-      
       fileOut->Close();
     }
     
