@@ -220,7 +220,7 @@ do
       nameNu=101
     elif [ $sname == "T5QQQQWWDeg_1000_315_300" ] 
     then
-      name=T5ttttDeg_mGo1000_mCh315_mChi300_dilep
+      name=T5qqqqWWDeg_mGo1000_mCh315_mChi300_dilep
       path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
       tag=""
       nameNu=36

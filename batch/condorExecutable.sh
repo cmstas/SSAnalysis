@@ -57,7 +57,7 @@ if [ "$WHICH" == "28" ]; then WHICH_SMALL="vhtononbb"; fi
 if [ "$WHICH" == "100" ]; then WHICH_SMALL="t1tttt_1500"; fi
 if [ "$WHICH" == "101" ]; then WHICH_SMALL="t1tttt_1200"; fi
 if [ "$WHICH" == "35" ]; then WHICH_SMALL="t5qqqqwz_1200_1000_800"; fi
-if [ "$WHICH" == "36" ]; then WHICH_SMALL="t5qqqqdeg_1000_300_285_280"; fi
+if [ "$WHICH" == "36" ]; then WHICH_SMALL="t5qqqqwwdeg_1000_315_300"; fi
 if [ "$WHICH" == "37" ]; then WHICH_SMALL="t5qqqqww_1200_1000_800"; fi
 if [ "$WHICH" == "38" ]; then WHICH_SMALL="t5ttttdeg_1000_300_285_280"; fi
 if [ "$WHICH" == "39" ]; then WHICH_SMALL="t2ttdeg_350_330"; fi
