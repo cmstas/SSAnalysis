@@ -1,11 +1,12 @@
 //root -b -q printShapes.C'("ttw","hihi","10.0","sr","ttw_extr","dir")'
 
-bool doLogy = 0;
-
 void printShapes(TString process, TString kine, TString lumi, TString nameN, TString nameA, TString dir){
 
   gROOT->Reset();
   gStyle->SetOptStat(0);
+
+  bool doLogy = 0;
+
   TFile *_file = TFile::Open(Form("%s/%s_histos_%s_%sifb.root",dir.Data(),process.Data(),kine.Data(),lumi.Data()));
 
   TH1F* nominal = (TH1F*) _file->Get(nameN);
