@@ -30,7 +30,6 @@ class Process:
         self.lephlt  = "-"
         self.hthlt  = "-"
         self.btag = "-"
-        self.trigeff = "-"
         self.TTW = "-"
         self.ttw_pdf = "-"
         self.ttw_extr_hth = "-"
@@ -140,10 +139,6 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("btag","shape"))
     for process in processes: card.write("%-15s " % (process.btag))
     card.write("\n")
-    #nuisance trigeff
-    card.write("%-40s %-5s " % ("trigeff","lnN"))
-    for process in processes: card.write("%-15s " % (process.trigeff))
-    card.write("\n")
 
     #nuisance TTW
     card.write("%-40s %-5s " % ("TTW","lnN"))
@@ -252,7 +247,6 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTW.lephlt  = "1.02"
     TTW.hthlt  = "1"
     TTW.btag = "1"
-    TTW.trigeff = "1.04"
     TTZH.TTZH          = "1.11"
     TTZH.lumi          = "1.09"
     TTZH.ttzh_pdf      = "1.04"
@@ -264,12 +258,10 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTZH.lephlt  = "1.02"
     TTZH.hthlt  = "1"
     TTZH.btag = "1"
-    TTZH.trigeff = "1.04"
     WZ.WZ = "1.30"
     #WZ.wz_extr = "1"
     WZ.jes  = "1"
     WZ.btag = "1"
-    WZ.trigeff = "1"
     WW.WW = "1.30"
     WW.lumi = "1.09"
     WW.jes  = "1"
@@ -277,7 +269,6 @@ def writeOneCard(dir, signal, kine, plot, output):
     WW.lephlt  = "1.02"
     WW.hthlt  = "1"
     WW.btag = "1"
-    WW.trigeff = "1.04"
     XG.XG = "1.50"
     XG.lumi = "1.09"
     XG.jes  = "1"
@@ -285,7 +276,6 @@ def writeOneCard(dir, signal, kine, plot, output):
     XG.lephlt  = "1.02"
     XG.hthlt  = "1"
     XG.btag = "1"
-    XG.trigeff = "1.04"
     rares.RARES = "1.30"
     rares.lumi = "1.09"
     rares.jes  = "1"
@@ -293,7 +283,6 @@ def writeOneCard(dir, signal, kine, plot, output):
     rares.lephlt  = "1.02"
     rares.hthlt  = "1"
     rares.btag = "1"
-    rares.trigeff = "1.04"
     fakes.fakes = "1.30"
     fakes.fakes_EWK = "1"
     flips.flips = "1.30"

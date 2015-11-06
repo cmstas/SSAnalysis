@@ -1,4 +1,6 @@
 //root -b -q printTotalSyst.C'("ttw","hihi","3.0","v4.01")'
+//for r in hihi hilow; do for p in ttw ttzh ww wz fakes flips; do root -b -q printTotalSyst.C'("'$p'","'$r'","1.3","v4.05")'; done; done
+
 void printTotalSyst(TString process, TString kine, TString lumi, TString dir);
 
 void printTotalSyst(TString lumi, TString dir){
@@ -23,13 +25,24 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   TH1F* nominal2 = (TH1F*) nominal->Clone("band");
   nominal2->SetFillColor(kGray);
 
-  float flatSyst2 = 0.;
-  if (process=="ttw")  flatSyst2 = pow(0.13,2)+pow(0.04,2)+pow(0.04,2)+pow(0.02,2)+pow(0.04,2);
-  if (process=="ttzh") flatSyst2 = pow(0.11,2)+pow(0.04,2)+pow(0.04,2)+pow(0.02,2)+pow(0.04,2);
-  if (process=="ww")   flatSyst2 = pow(0.30,2)+pow(0.04,2)+pow(0.04,2)+pow(0.02,2)+pow(0.04,2);
-  if (process=="wz" )  flatSyst2 = pow(0.30,2);
+  //make sure these are inline with createCards.py
+  float ttw = pow(0.13,2)+pow(0.04,2);
+  float ttz = pow(0.11,2)+pow(0.04,2);
+  float ww  = pow(0.30,2);
+  float wz  = pow(0.30,2);
+  float fakes  = pow(0.30,2);
+  float flips  = pow(0.30,2);
+  float lepeff = pow(0.04,2)+pow(0.02,2);//both offline and hlt
 
-  cout << "flatSyst2=" << flatSyst2 << endl;
+  float flatSyst2 = 0.;
+  if (process=="ttw"  ) flatSyst2 = ttw+lepeff;
+  if (process=="ttzh" ) flatSyst2 = ttz+lepeff;
+  if (process=="ww"   ) flatSyst2 = ww+lepeff;
+  if (process=="wz"   ) flatSyst2 = wz;
+  if (process=="fakes") flatSyst2 = fakes;
+  if (process=="flips") flatSyst2 = flips;
+
+  cout << "flatSyst=" << sqrt(flatSyst2) << endl;
 
   TH1F* band = (TH1F*) nominal->Clone("band");
   band->Reset();
@@ -80,12 +93,15 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   pad2->SetGridy(); 
   pad2->cd();
   band2->SetTitle("");
-  band2->GetYaxis()->SetRangeUser(-0.5,0.5);
-  band2->GetYaxis()->SetNdivisions(4,0);
+  band2->GetYaxis()->SetRangeUser(-0.6,0.6);
+  band2->GetYaxis()->SetNdivisions(4,3,0,0);
   band2->GetYaxis()->SetLabelSize(0.08);
   band2->GetXaxis()->SetLabelSize(0.11);
   band2->GetXaxis()->SetTitleSize(0.12);
   band2->GetXaxis()->SetTitle("SR");
+  band2->GetYaxis()->SetTitleSize(0.11);
+  band2->GetYaxis()->SetTitleOffset(0.35);
+  band2->GetYaxis()->SetTitle("ratio   ");
   band2->SetFillColor(kGray);
   band2->Draw("E2");
   pad2->Update();
@@ -100,8 +116,10 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   pad1->cd();
 
   pad1->SetGridx(); 
+  nominal->GetYaxis()->SetTitle("Events");
   nominal->GetYaxis()->SetRangeUser(0,2.*nominal->GetMaximum());
   nominal->GetXaxis()->SetLabelSize(0.);
+  nominal->SetLineWidth(2);
   nominal->Draw("E1");
   nominal2->Draw("E2,SAME");
   nominal->Draw("E1,SAME");
@@ -115,7 +133,7 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   leg->Draw();
 
   pad1->Update();
-  pad1->RedrawAxis("g");
+  pad1->RedrawAxis();
   pad1->Update();
 
   c1.SaveAs(Form("%s/%s_%s_%sifb_totUnc.png",dir.Data(),process.Data(),kine.Data(),lumi.Data()));

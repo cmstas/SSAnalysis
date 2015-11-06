@@ -45,9 +45,8 @@ void writeWZExtrSyst(TH1F* central,string name,TString kine,bool down);
 static float roughSystTTW   = 0.2;
 static float roughSystTTZH  = 0.2;
 static float roughSystWZ    = 0.3;
-static float roughSystWW    = 0.5;
-static float roughSystTG    = 0.5;
-static float roughSystVG    = 0.5;
+static float roughSystWW    = 0.3;
+static float roughSystXG    = 0.5;
 static float roughSystRARES = 0.5;
 static float roughSystFLIPS = 0.3;
 static float roughSystFAKES = 0.4;
@@ -378,7 +377,7 @@ void getyields(){
   SRHH_plots.push_back(pair<TH1F*, float>(p_ttzh.SRHH.TOTAL , roughSystTTZH  ));
   SRHH_plots.push_back(pair<TH1F*, float>(p_wz.SRHH.TOTAL   , roughSystWZ    ));
   SRHH_plots.push_back(pair<TH1F*, float>(p_ww.SRHH.TOTAL   , roughSystWW    ));
-  SRHH_plots.push_back(pair<TH1F*, float>(p_xg.SRHH.TOTAL   , roughSystTG    ));
+  SRHH_plots.push_back(pair<TH1F*, float>(p_xg.SRHH.TOTAL   , roughSystXG    ));
   SRHH_plots.push_back(pair<TH1F*, float>(p_rares.SRHH.TOTAL, roughSystRARES ));
   SRHH_plots.push_back(pair<TH1F*, float>(p_flips.SRHH.TOTAL, roughSystFLIPS ));
   SRHH_plots.push_back(pair<TH1F*, float>(p_fakes.SRHH.TOTAL, roughSystFAKES ));
@@ -389,7 +388,7 @@ void getyields(){
   SRHL_plots.push_back(pair<TH1F*, float>(p_ttzh.SRHL.TOTAL , roughSystTTZH  ));
   SRHL_plots.push_back(pair<TH1F*, float>(p_wz.SRHL.TOTAL   , roughSystWZ    ));
   SRHL_plots.push_back(pair<TH1F*, float>(p_ww.SRHL.TOTAL   , roughSystWW    ));
-  SRHL_plots.push_back(pair<TH1F*, float>(p_xg.SRHL.TOTAL   , roughSystTG    ));
+  SRHL_plots.push_back(pair<TH1F*, float>(p_xg.SRHL.TOTAL   , roughSystXG    ));
   SRHL_plots.push_back(pair<TH1F*, float>(p_rares.SRHL.TOTAL, roughSystRARES ));
   SRHL_plots.push_back(pair<TH1F*, float>(p_flips.SRHL.TOTAL, roughSystFLIPS ));
   SRHL_plots.push_back(pair<TH1F*, float>(p_fakes.SRHL.TOTAL, roughSystFAKES ));
@@ -400,7 +399,7 @@ void getyields(){
   SRLL_plots.push_back(pair<TH1F*, float>(p_ttzh.SRLL.TOTAL , roughSystTTZH  ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_wz.SRLL.TOTAL   , roughSystWZ    ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_ww.SRLL.TOTAL   , roughSystWW    ));
-  SRLL_plots.push_back(pair<TH1F*, float>(p_xg.SRLL.TOTAL   , roughSystTG    ));
+  SRLL_plots.push_back(pair<TH1F*, float>(p_xg.SRLL.TOTAL   , roughSystXG    ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_rares.SRLL.TOTAL, roughSystRARES ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_flips.SRLL.TOTAL, roughSystFLIPS ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_fakes.SRLL.TOTAL, roughSystFAKES ));
@@ -451,7 +450,7 @@ void getyields(){
   type_plots.push_back(pair<TH1F*, float>(p_ttzh.h_type , roughSystTTZH  ));
   type_plots.push_back(pair<TH1F*, float>(p_wz.h_type   , roughSystWZ    ));
   type_plots.push_back(pair<TH1F*, float>(p_ww.h_type   , roughSystWW    ));
-  type_plots.push_back(pair<TH1F*, float>(p_xg.h_type   , roughSystTG    ));
+  type_plots.push_back(pair<TH1F*, float>(p_xg.h_type   , roughSystXG    ));
   type_plots.push_back(pair<TH1F*, float>(p_rares.h_type, roughSystRARES ));
   type_plots.push_back(pair<TH1F*, float>(p_flips.h_type, roughSystFLIPS ));
   type_plots.push_back(pair<TH1F*, float>(p_fakes.h_type, roughSystFAKES ));
@@ -462,7 +461,7 @@ void getyields(){
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep1_miniIso , roughSystTTZH  ));
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_wz.h_lep1_miniIso   , roughSystWZ    ));
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ww.h_lep1_miniIso   , roughSystWW    ));
-  lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_miniIso   , roughSystTG    ));
+  lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_miniIso   , roughSystXG    ));
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_miniIso, roughSystRARES ));
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_miniIso, roughSystFLIPS ));
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_miniIso, roughSystFAKES ));
@@ -473,7 +472,7 @@ void getyields(){
   lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep2_miniIso , roughSystTTZH  ));
   lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_wz.h_lep2_miniIso   , roughSystWZ    ));
   lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_ww.h_lep2_miniIso   , roughSystWW    ));
-  lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_miniIso   , roughSystTG    ));
+  lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_miniIso   , roughSystXG    ));
   lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_miniIso, roughSystRARES ));
   lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_miniIso, roughSystFLIPS ));
   lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_miniIso, roughSystFAKES ));
@@ -484,7 +483,7 @@ void getyields(){
   lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep1_ptRel , roughSystTTZH  ));
   lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_wz.h_lep1_ptRel   , roughSystWZ    ));
   lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_ww.h_lep1_ptRel   , roughSystWW    ));
-  lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_ptRel   , roughSystTG    ));
+  lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_ptRel   , roughSystXG    ));
   lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_ptRel, roughSystRARES ));
   lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_ptRel, roughSystFLIPS ));
   lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_ptRel, roughSystFAKES ));
@@ -495,7 +494,7 @@ void getyields(){
   lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep2_ptRel , roughSystTTZH  ));
   lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_wz.h_lep2_ptRel   , roughSystWZ    ));
   lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_ww.h_lep2_ptRel   , roughSystWW    ));
-  lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_ptRel   , roughSystTG    ));
+  lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_ptRel   , roughSystXG    ));
   lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_ptRel, roughSystRARES ));
   lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_ptRel, roughSystFLIPS ));
   lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_ptRel, roughSystFAKES ));
@@ -506,7 +505,7 @@ void getyields(){
   lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep1_ptRatio , roughSystTTZH  ));
   lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_wz.h_lep1_ptRatio   , roughSystWZ    ));
   lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_ww.h_lep1_ptRatio   , roughSystWW    ));
-  lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_ptRatio   , roughSystTG    ));
+  lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_ptRatio   , roughSystXG    ));
   lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_ptRatio, roughSystRARES ));
   lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_ptRatio, roughSystFLIPS ));
   lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_ptRatio, roughSystFAKES ));
@@ -517,7 +516,7 @@ void getyields(){
   lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep2_ptRatio , roughSystTTZH  ));
   lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_wz.h_lep2_ptRatio   , roughSystWZ    ));
   lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_ww.h_lep2_ptRatio   , roughSystWW    ));
-  lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_ptRatio   , roughSystTG    ));
+  lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_ptRatio   , roughSystXG    ));
   lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_ptRatio, roughSystRARES ));
   lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_ptRatio, roughSystFLIPS ));
   lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_ptRatio, roughSystFAKES ));
@@ -607,7 +606,7 @@ void getyields(){
   ht_plots.push_back(pair<TH1F*, float>(p_ttzh.h_ht , roughSystTTZH  ));
   ht_plots.push_back(pair<TH1F*, float>(p_wz.h_ht   , roughSystWZ    ));
   ht_plots.push_back(pair<TH1F*, float>(p_ww.h_ht   , roughSystWW    ));
-  ht_plots.push_back(pair<TH1F*, float>(p_xg.h_ht   , roughSystTG    ));
+  ht_plots.push_back(pair<TH1F*, float>(p_xg.h_ht   , roughSystXG    ));
   ht_plots.push_back(pair<TH1F*, float>(p_rares.h_ht, roughSystRARES ));
   ht_plots.push_back(pair<TH1F*, float>(p_flips.h_ht, roughSystFLIPS ));
   ht_plots.push_back(pair<TH1F*, float>(p_fakes.h_ht, roughSystFAKES ));
@@ -618,7 +617,7 @@ void getyields(){
   met_plots.push_back(pair<TH1F*, float>(p_ttzh.h_met , roughSystTTZH  ));
   met_plots.push_back(pair<TH1F*, float>(p_wz.h_met   , roughSystWZ    ));
   met_plots.push_back(pair<TH1F*, float>(p_ww.h_met   , roughSystWW    ));
-  met_plots.push_back(pair<TH1F*, float>(p_xg.h_met   , roughSystTG    ));
+  met_plots.push_back(pair<TH1F*, float>(p_xg.h_met   , roughSystXG    ));
   met_plots.push_back(pair<TH1F*, float>(p_rares.h_met, roughSystRARES ));
   met_plots.push_back(pair<TH1F*, float>(p_flips.h_met, roughSystFLIPS ));
   met_plots.push_back(pair<TH1F*, float>(p_fakes.h_met, roughSystFAKES ));
@@ -629,7 +628,7 @@ void getyields(){
   mll_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mll , roughSystTTZH  ));
   mll_plots.push_back(pair<TH1F*, float>(p_wz.h_mll   , roughSystWZ    ));
   mll_plots.push_back(pair<TH1F*, float>(p_ww.h_mll   , roughSystWW    ));
-  mll_plots.push_back(pair<TH1F*, float>(p_xg.h_mll   , roughSystTG    ));
+  mll_plots.push_back(pair<TH1F*, float>(p_xg.h_mll   , roughSystXG    ));
   mll_plots.push_back(pair<TH1F*, float>(p_rares.h_mll, roughSystRARES ));
   mll_plots.push_back(pair<TH1F*, float>(p_flips.h_mll, roughSystFLIPS ));
   mll_plots.push_back(pair<TH1F*, float>(p_fakes.h_mll, roughSystFAKES ));
@@ -640,7 +639,7 @@ void getyields(){
   mtmin_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mtmin , roughSystTTZH  ));
   mtmin_plots.push_back(pair<TH1F*, float>(p_wz.h_mtmin   , roughSystWZ    ));
   mtmin_plots.push_back(pair<TH1F*, float>(p_ww.h_mtmin   , roughSystWW    ));
-  mtmin_plots.push_back(pair<TH1F*, float>(p_xg.h_mtmin   , roughSystTG    ));
+  mtmin_plots.push_back(pair<TH1F*, float>(p_xg.h_mtmin   , roughSystXG    ));
   mtmin_plots.push_back(pair<TH1F*, float>(p_rares.h_mtmin, roughSystRARES ));
   mtmin_plots.push_back(pair<TH1F*, float>(p_flips.h_mtmin, roughSystFLIPS ));
   mtmin_plots.push_back(pair<TH1F*, float>(p_fakes.h_mtmin, roughSystFAKES ));
@@ -651,7 +650,7 @@ void getyields(){
   njets_plots.push_back(pair<TH1F*, float>(p_ttzh.h_njets , roughSystTTZH  ));
   njets_plots.push_back(pair<TH1F*, float>(p_wz.h_njets   , roughSystWZ    ));
   njets_plots.push_back(pair<TH1F*, float>(p_ww.h_njets   , roughSystWW    ));
-  njets_plots.push_back(pair<TH1F*, float>(p_xg.h_njets   , roughSystTG    ));
+  njets_plots.push_back(pair<TH1F*, float>(p_xg.h_njets   , roughSystXG    ));
   njets_plots.push_back(pair<TH1F*, float>(p_rares.h_njets, roughSystRARES ));
   njets_plots.push_back(pair<TH1F*, float>(p_flips.h_njets, roughSystFLIPS ));
   njets_plots.push_back(pair<TH1F*, float>(p_fakes.h_njets, roughSystFAKES ));
@@ -662,7 +661,7 @@ void getyields(){
   nbtags_plots.push_back(pair<TH1F*, float>(p_ttzh.h_nbtags , roughSystTTZH  ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_wz.h_nbtags   , roughSystWZ    ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_ww.h_nbtags   , roughSystWW    ));
-  nbtags_plots.push_back(pair<TH1F*, float>(p_xg.h_nbtags   , roughSystTG    ));
+  nbtags_plots.push_back(pair<TH1F*, float>(p_xg.h_nbtags   , roughSystXG    ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_rares.h_nbtags, roughSystRARES ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_flips.h_nbtags, roughSystFLIPS ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_fakes.h_nbtags, roughSystFAKES ));
@@ -674,7 +673,7 @@ void getyields(){
   l1pt_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l1pt , roughSystTTZH  ));
   l1pt_plots.push_back(pair<TH1F*, float>(p_wz.h_l1pt   , roughSystWZ    ));
   l1pt_plots.push_back(pair<TH1F*, float>(p_ww.h_l1pt   , roughSystWW    ));
-  l1pt_plots.push_back(pair<TH1F*, float>(p_xg.h_l1pt   , roughSystTG    ));
+  l1pt_plots.push_back(pair<TH1F*, float>(p_xg.h_l1pt   , roughSystXG    ));
   l1pt_plots.push_back(pair<TH1F*, float>(p_rares.h_l1pt, roughSystRARES ));
   l1pt_plots.push_back(pair<TH1F*, float>(p_flips.h_l1pt, roughSystFLIPS ));
   l1pt_plots.push_back(pair<TH1F*, float>(p_fakes.h_l1pt, roughSystFAKES ));
@@ -699,7 +698,7 @@ void getyields(){
   l2pt_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l2pt , roughSystTTZH  ));
   l2pt_plots.push_back(pair<TH1F*, float>(p_wz.h_l2pt   , roughSystWZ    ));
   l2pt_plots.push_back(pair<TH1F*, float>(p_ww.h_l2pt   , roughSystWW    ));
-  l2pt_plots.push_back(pair<TH1F*, float>(p_xg.h_l2pt   , roughSystTG    ));
+  l2pt_plots.push_back(pair<TH1F*, float>(p_xg.h_l2pt   , roughSystXG    ));
   l2pt_plots.push_back(pair<TH1F*, float>(p_rares.h_l2pt, roughSystRARES ));
   l2pt_plots.push_back(pair<TH1F*, float>(p_flips.h_l2pt, roughSystFLIPS ));
   l2pt_plots.push_back(pair<TH1F*, float>(p_fakes.h_l2pt, roughSystFAKES ));
@@ -724,7 +723,7 @@ void getyields(){
   l1eta_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l1eta , roughSystTTZH  ));
   l1eta_plots.push_back(pair<TH1F*, float>(p_wz.h_l1eta   , roughSystWZ    ));
   l1eta_plots.push_back(pair<TH1F*, float>(p_ww.h_l1eta   , roughSystWW    ));
-  l1eta_plots.push_back(pair<TH1F*, float>(p_xg.h_l1eta   , roughSystTG    ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_xg.h_l1eta   , roughSystXG    ));
   l1eta_plots.push_back(pair<TH1F*, float>(p_rares.h_l1eta, roughSystRARES ));
   l1eta_plots.push_back(pair<TH1F*, float>(p_flips.h_l1eta, roughSystFLIPS ));
   l1eta_plots.push_back(pair<TH1F*, float>(p_fakes.h_l1eta, roughSystFAKES ));
@@ -749,7 +748,7 @@ void getyields(){
   l2eta_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l2eta , roughSystTTZH  ));
   l2eta_plots.push_back(pair<TH1F*, float>(p_wz.h_l2eta   , roughSystWZ    ));
   l2eta_plots.push_back(pair<TH1F*, float>(p_ww.h_l2eta   , roughSystWW    ));
-  l2eta_plots.push_back(pair<TH1F*, float>(p_xg.h_l2eta   , roughSystTG    ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_xg.h_l2eta   , roughSystXG    ));
   l2eta_plots.push_back(pair<TH1F*, float>(p_rares.h_l2eta, roughSystRARES ));
   l2eta_plots.push_back(pair<TH1F*, float>(p_flips.h_l2eta, roughSystFLIPS ));
   l2eta_plots.push_back(pair<TH1F*, float>(p_fakes.h_l2eta, roughSystFAKES ));
