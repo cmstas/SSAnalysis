@@ -59,3 +59,10 @@ batch/btagsf
 plots/phys14_v_run2
 yieldsAndSRs/numericYields/kinem_plot_dump.tex
 rareSyst/analysis_real/tables/
+cards/roostats*
+cards/v*
+yieldsAndSRs/numericYields/selectedDataEvents.txt
+yieldsAndSRs/numericYields/nov4_pres
+rareSyst/analysis_real/checkNorm
+kinem/fkwMETstudy/
+FR_studies_pres

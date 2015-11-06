@@ -43,5 +43,6 @@ path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 #hadd QQWW.root                        $path/qqww_*_0.root
 #hadd TG.root                          $path/tg_*_0.root
 #hadd ZG.root                          $path/zg_*_0.root
-hadd T5qqqqWW_1200_1000_800.root       $path/t5qqqqww_1200_1000_800_[1-9]*_0.root  
-hadd T5ttttDeg_1000_300_285_280.root   $path/t5ttttdeg_1000_300_285_280_[1-9]*_0.root
+#hadd T5qqqqWW_1200_1000_800.root       $path/t5qqqqww_1200_1000_800_[1-9]*_0.root  
+#hadd T5ttttDeg_1000_300_285_280.root   $path/t5ttttdeg_1000_300_285_280_[1-9]*_0.root
+hadd T5qqqqWWDeg_1000_315_300.root     $path/t5qqqqwwdeg_1000_315_300_[1-9]*_0.root
