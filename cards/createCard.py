@@ -57,25 +57,29 @@ class Process:
             return 0
 
 def writeStatForProcess(dir, card, kine, process, processes):
-    f = ROOT.TFile(dir+"/"+process.rootf)
-    h = f.Get(process.plot)
+    f = ROOT.TFile(dir+"/"+process.rootf,"UPDATE")
     hup = f.Get(("%s_statUp" % (process.name)))
-    if h:
-        for bin in range(1,h.GetNbinsX()+1):
-            card.write ("%-40s %-5s " % (("%s%s%s%s" % (process.name,"_stat_",kine,bin)), "lnN" ) )
+    hdn = f.Get(("%s_statDown" % (process.name)))
+    if hup:
+        for bin in range(1,hup.GetNbinsX()+1):
+            card.write ("%-40s %-5s " % (("%s%s%s%s" % (process.name,"_stat_",kine,bin)), "shape") )
             for myprocess in processes: 
                 if myprocess.count == process.count: 
-                    if (h.GetBinContent(bin)>0.): 
-                        card.write("%-15s " % ("%.2f"  % (hup.GetBinContent(bin)/h.GetBinContent(bin))))
-                        if (process.count == 1 and kine=="hihi"): print ("%.2f %.2f %.2f" % (hup.GetBinContent(bin)/h.GetBinContent(bin),hup.GetBinContent(bin),h.GetBinContent(bin)))
-                    else: card.write("%-15s " % (1.00)) #fixme put weight
+                    card.write("%-15s " % "1")
+                    hupnew = hup.Clone("%s%s%s%sUp" % (process.name,"_stat_",kine,bin))
+                    hupnew.Reset()
+                    hupnew.SetBinContent(bin,hup.GetBinContent(bin))
+                    hdnnew = hdn.Clone("%s%s%s%sDown" % (process.name,"_stat_",kine,bin))
+                    hdnnew.Reset()
+                    hdnnew.SetBinContent(bin,hdn.GetBinContent(bin))
+                    hdnnew.Write()
                 else:  card.write("%-15s " % ("-"))
             card.write("\n")
     else: 
         print self.plot+" not found in "+self.rootf
         return 0
+    f.Close()
     
-
 #write card regardless of number of processes (but make sure signal is first in list)
 def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     line = "---------------------------------------------------------------"
@@ -87,7 +91,7 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write(line+"\n")
     for process in processes:
         card.write("shapes "+process.name+" * "+dir+"/"+process.rootf+" "+plot+" "+plot+"\n")
-    card.write("shapes data_obs * "+dir+"/"+data.rootf+" "+plot+" "+plot+"\n")#pseudo data for now
+    card.write("shapes data_obs * "+dir+"/"+data.rootf+" "+plot+" "+plot+"\n")
     card.write(line+"\n")
     card.write("bin "+str(bin)+"\n")
     #pseudo data for now
@@ -213,7 +217,7 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     for process in processes: card.write("%-15s " % (process.flips))
     card.write("\n")
 
-    #for process in processes: writeStatForProcess(dir,card,kine,process,processes)
+    for process in processes: writeStatForProcess(dir,card,kine,process,processes)
 
     return
 
