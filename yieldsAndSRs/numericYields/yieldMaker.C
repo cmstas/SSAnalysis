@@ -81,7 +81,8 @@ void getyields(){
   TChain *t5tttt_deg_chain = new TChain("t","t5tttt_deg"); 
   TChain *t6ttww_650_chain = new TChain("t","t6ttww_650"); 
   TChain *t6ttww_600_chain = new TChain("t","t6ttww_600"); 
-  TChain *t5qqqq_1200_chain = new TChain("t","t5qqqq_1200"); 
+  TChain *t5qqqqww_1200_chain = new TChain("t","t5qqqqww_1200"); 
+  TChain *t5qqqqww_deg_chain = new TChain("t","t5qqqqww_deg"); 
 
   TChain *t2ttww_600_chain = new TChain("t","t6ttww_600"); 
 
@@ -153,7 +154,8 @@ void getyields(){
   t5tttt_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5ttttDeg_1000_300_285_280.root", tag.c_str()));
   t6ttww_650_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_650_150_50.root"         , tag.c_str()));
   t6ttww_600_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_600_425_50.root"         , tag.c_str()));
-  t5qqqq_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWW_1200_1000_800.root"   , tag.c_str()));
+  t5qqqqww_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWW_1200_1000_800.root"   , tag.c_str()));
+  t5qqqqww_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWWDeg_1000_315_300.root"   , tag.c_str()));
 
   //Get yields
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
@@ -195,7 +197,8 @@ void getyields(){
   pair<yields_t, plots_t> results_t5tttt_deg = run(t5tttt_deg_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_t6ttww_650 = run(t6ttww_650_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_t6ttww_600 = run(t6ttww_600_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t5qqqq_1200 = run(t5qqqq_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t5qqqqww_1200 = run(t5qqqqww_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t5qqqqww_deg = run(t5qqqqww_deg_chain, 0, 0, 0, 0, 1);
 
   yields_t& ttbar    = results_ttbar.first;
   yields_t& ttbar_ff = results_ttbar_ff.first;
@@ -1493,153 +1496,6 @@ void writeHTHltSyst(TH1F* central,string name,TString kine) {
   TString down = "Down";
   TH1F* systDown = (TH1F*) central->Clone(Form("hthlt%s",down.Data()));
   systDown->SetTitle(Form("hthlt%s",down.Data()));
-  fillDownMirrorUp(central,systUp,systDown);
-  systUp->Write();
-  systDown->Write();
-}
-
-void writeJesSyst(TH1F* central,string name,TString kine) {
-  TString up = "Up";
-  TH1F* systUp = (TH1F*) central->Clone(Form("jes%s",up.Data()));
-  systUp->SetTitle(Form("jes%s",up.Data()));
-  float systValue = 1.;
-
-  if (kine.Contains("hihi")) {
-    systValue = 1.08;
-  }
-  if (kine.Contains("hilow")) {
-    systValue = 1.08;
-  }
-  if (kine.Contains("lowlow")) {
-    systValue = 1.15;
-  }
-  for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-    float val = central->GetBinContent(bin)*systValue;
-    if (val>0) systUp->SetBinContent(bin,val);
-  }
-
-  // //TTV
-  // if (TString(name)=="ttw" || TString(name)=="ttz") {
-  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-  //     if (kine.Contains("hihi")) {
-  // 	if (bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29) systValue=1.05;
-  // 	if (bin==2 || bin==5 || bin==7 || bin==10 || bin==13 || bin==15 || bin==18 || bin==21 || bin==23 || 
-  // 	    bin==26 || bin==28 || bin==30 || bin==31 || bin==32) systValue=1.08;
-  // 	if (bin==4 || bin==6 || bin==8 || bin==12 || bin==14 || bin==16 || bin==20 || bin==22 || bin==24) systValue=1.04;
-  //     }
-  //     if (kine.Contains("hilow")) {
-  // 	if (bin==1 || bin==3 || bin==7 || bin==9 || bin==13 || bin==15 || bin==19 || bin==21 || bin==23) systValue=1.03;
-  // 	else systValue = 1.08;
-  //     }
-  //     if (kine.Contains("lowlow")) {
-  // 	systValue = 1.15;
-  //     }
-  //     float val = central->GetBinContent(bin)*systValue;
-  //     if (val>0) systUp->SetBinContent(bin,val);
-  //   }
-  // }
-
-  // if (TString(name)=="t1tttt_1500") {
-  //   systValue = 1.06;
-  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-  //     float val = central->GetBinContent(bin)*systValue;
-  //     if (val>0) systUp->SetBinContent(bin,val);
-  //   }
-  // }
-
-  // if (TString(name)=="t1tttt_1200") {
-  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-  //     if (kine.Contains("hihi")) {
-  // 	if (bin==20 || bin==26 || bin==28 || bin==30) systValue = 1.03;
-  // 	else systValue = 1.10;
-  //     }
-  //     if (kine.Contains("hilow")) {
-  // 	if (bin==16 || bin==22 || bin==24) systValue = 1.03;
-  // 	else systValue = 1.05;
-  //     } else systValue = 1.00;
-  //     float val = central->GetBinContent(bin)*systValue;
-  //     if (val>0) systUp->SetBinContent(bin,val);
-  //   }
-  // }
-
-  // if (TString(name)=="t1ttbbww_1000" || TString(name)=="t1ttbbww_1300") {
-  //   systValue = 1.08;
-  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-  //     float val = central->GetBinContent(bin)*systValue;
-  //     if (val>0) systUp->SetBinContent(bin,val);
-  //   }
-  // }
-
-  // if (TString(name)=="t5tttt_1000") {
-  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-  //     if (kine.Contains("hihi")) {
-  // 	if (bin==1 || bin==3 || bin==9 || bin==11 || bin==17 || bin==19 || bin==25 || bin==27 || bin==29) systValue = 1.05;
-  // 	else if (bin==31) systValue = 1.10;
-  // 	else systValue = 1.03;
-  //     }
-  //     if (kine.Contains("hilow")) {
-  // 	if (bin==1 || bin==3 || bin==7 || bin==9 || bin==13 || bin==15 || bin==19 || bin==21 || bin==23) systValue = 1.05;
-  // 	else systValue = 1.10;
-  //     }
-  //     if (kine.Contains("lowlow")) {
-  // 	systValue = 1.10;
-  //     }
-  //     float val = central->GetBinContent(bin)*systValue;
-  //     if (val>0) systUp->SetBinContent(bin,val);
-  //   }
-  // }
-
-  // if (TString(name)=="t5qqww_1200") {
-  //   if (kine.Contains("hihi")) {
-  //     systValue = 1.07;
-  //   }
-  //   if (kine.Contains("hilow")) {
-  //     systValue = 1.10;
-  //   }
-  //   if (kine.Contains("lowlow")) {
-  //     systValue = 1.20;
-  //   }
-  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-  //     float val = central->GetBinContent(bin)*systValue;
-  //     if (val>0) systUp->SetBinContent(bin,val);
-  //   }
-  // }
-
-  // if (TString(name)=="t5qqww_1500") {
-  //   systValue = 1.05;
-  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-  //     float val = central->GetBinContent(bin)*systValue;
-  //     if (val>0) systUp->SetBinContent(bin,val);
-  //   }
-  // }
-
-  // if (TString(name)=="t5qqww_deg") {
-  //   if (kine.Contains("hihi")) {
-  //     systValue = 1.15;
-  //   }
-  //   if (kine.Contains("hilow")) {
-  //     systValue = 1.10;
-  //   }
-  //   if (kine.Contains("lowlow")) {
-  //     systValue = 1.02;
-  //   }
-  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-  //     float val = central->GetBinContent(bin)*systValue;
-  //     if (val>0) systUp->SetBinContent(bin,val);
-  //   }
-  // }
-
-  // if (TString(name)=="t6ttww_600" || TString(name)=="t6ttww_650") {
-  //   systValue = 1.10;
-  //   for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
-  //     float val = central->GetBinContent(bin)*systValue;
-  //     if (val>0) systUp->SetBinContent(bin,val);
-  //   }
-  // }
-
-  TString down = "Down";
-  TH1F* systDown = (TH1F*) central->Clone(Form("jes%s",down.Data()));
-  systDown->SetTitle(Form("jes%s",down.Data()));
   fillDownMirrorUp(central,systUp,systDown);
   systUp->Write();
   systDown->Write();
