@@ -76,11 +76,11 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   pad2->SetTopMargin(0.);
   pad2->SetBottomMargin(0.3);
   pad2->Draw();
-  pad2->cd();
   pad2->SetGridx(); 
   pad2->SetGridy(); 
+  pad2->cd();
   band2->SetTitle("");
-  band2->GetYaxis()->SetRangeUser(-0.4,0.4);
+  band2->GetYaxis()->SetRangeUser(-0.5,0.5);
   band2->GetYaxis()->SetNdivisions(4,0);
   band2->GetYaxis()->SetLabelSize(0.08);
   band2->GetXaxis()->SetLabelSize(0.11);
@@ -88,6 +88,9 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   band2->GetXaxis()->SetTitle("SR");
   band2->SetFillColor(kGray);
   band2->Draw("E2");
+  pad2->Update();
+  pad2->RedrawAxis("g");
+  pad2->Update();
 
   c1.cd();
 
@@ -108,10 +111,13 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   leg->SetBorderSize(0);
   leg->SetNColumns(2);
   leg->AddEntry(nominal ," Yield+Stat","le");
-  leg->AddEntry(nominal2," Systematics","f");
+  leg->AddEntry(nominal2," Total Syst","f");
   leg->Draw();
 
-  c1.Update();
+  pad1->Update();
+  pad1->RedrawAxis("g");
+  pad1->Update();
+
   c1.SaveAs(Form("%s/%s_%s_%sifb_totUnc.png",dir.Data(),process.Data(),kine.Data(),lumi.Data()));
 
   // TCanvas c2;

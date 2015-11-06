@@ -295,7 +295,6 @@ void getyields(){
   colors.push_back(kOrange+10); 
   colors.push_back(kRed+2); 
   colors.push_back(kViolet+4); 
-  colors.push_back(kViolet-4); 
   colors.push_back(kWhite); 
   colors.push_back(kCyan+1); 
   colors.push_back(kBlue-7); 
@@ -319,7 +318,6 @@ void getyields(){
   colors2.push_back(kOrange+10); 
   colors2.push_back(kRed+2); 
   colors2.push_back(kViolet+4); 
-  colors2.push_back(kViolet-4); 
   colors2.push_back(kWhite); 
   colors2.push_back(kBlue-7); 
   colors2.push_back(kCyan+1); 
