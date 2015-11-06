@@ -6,10 +6,7 @@ import math
 
 #example: python createCard.py dir t1tttt_1500 
 #example: python createCard.py dir t1tttt_1500 hihi sr card-hihi.txt
-#example: for dir in v4.04; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg  t5tttt_1200; do python createCard.py ${dir} ${sig}; done; done
-#example: for dir in dir1 dir2; do for sig in t1tttt_1200 t1tttt_1500; do python createCard.py ${dir} ${sig}; done; done
-
-#for dir in gc.v1.24; do for sig in t1tttt_1500 t1tttt_1200 t1ttbbww_1300 t5tttt_1000 t5qqww_1500 t5qqww_1200 t5qqww_deg t6ttww_650 t6ttww_600; do python createCard.py ${dir} ${sig}; done; done
+#example: for dir in v4.04; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqq_1200; do python createCard.py ${dir} ${sig}; done; done
 
 #then get expected limits with: combine -M Asymptotic dir/card.txt --run expected --noFitAsimov
 
@@ -34,32 +31,22 @@ class Process:
         self.hthlt  = "-"
         self.btag = "-"
         self.trigeff = "-"
-        self.signal_stat = "-"
         self.TTW = "-"
         self.ttw_pdf = "-"
         self.ttw_extr_hth = "-"
         self.ttw_extr_htl = "-"
         self.ttw_extr_ll  = "-"
-        self.ttw_stat = "-"
         self.TTZH = "-"
         self.ttzh_pdf = "-"
         self.ttzh_extr_hth = "-"
         self.ttzh_extr_htl = "-"
         self.ttzh_extr_ll  = "-"
-        self.ttzh_stat = "-"
         self.WZ = "-"
-        self.WZ_stat = "-"
         #self.wz_extr = "-"
         self.WW = "-"
-        self.WW_stat = "-"
-        self.TG = "-"
-        self.tg_stat = "-"
-        self.VG = "-"
-        self.vg_stat = "-"
+        self.XG = "-"
         self.rares = "-"
-        self.rares_stat = "-"
         self.fakes = "-"
-        self.fakes_stat = "-"
         self.fakes_EWK = "-"
         self.flips = "-"
     def rate(self): 
@@ -68,6 +55,26 @@ class Process:
         else: 
             print self.plot+" not found in "+self.rootf
             return 0
+
+def writeStatForProcess(dir, card, kine, process, processes):
+    f = ROOT.TFile(dir+"/"+process.rootf)
+    h = f.Get(process.plot)
+    hup = f.Get(("%s_statUp" % (process.name)))
+    if h:
+        for bin in range(1,h.GetNbinsX()+1):
+            card.write ("%-40s %-5s " % (("%s%s%s%s" % (process.name,"_stat_",kine,bin)), "lnN" ) )
+            for myprocess in processes: 
+                if myprocess.count == process.count: 
+                    if (h.GetBinContent(bin)>0.): 
+                        card.write("%-15s " % ("%.2f"  % (hup.GetBinContent(bin)/h.GetBinContent(bin))))
+                        if (process.count == 1 and kine=="hihi"): print ("%.2f %.2f %.2f" % (hup.GetBinContent(bin)/h.GetBinContent(bin),hup.GetBinContent(bin),h.GetBinContent(bin)))
+                    else: card.write("%-15s " % (1.00)) #fixme put weight
+                else:  card.write("%-15s " % ("-"))
+            card.write("\n")
+    else: 
+        print self.plot+" not found in "+self.rootf
+        return 0
+    
 
 #write card regardless of number of processes (but make sure signal is first in list)
 def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
@@ -104,11 +111,6 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("\n")
     #separate
     card.write(line+"\n")
-
-    #nuisance SIGNAL stat
-    card.write("%-40s %-5s " % (signal+"_stat","shape"))
-    for process in processes: card.write("%-15s " % (process.signal_stat))
-    card.write("\n")
 
     #nuisance lumi
     card.write("%-40s %-5s " % ("lumi","lnN"))
@@ -155,10 +157,6 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("ttw_extr_ll","shape"))
     for process in processes: card.write("%-15s " % (process.ttw_extr_ll))
     card.write("\n")
-    #nuisance TTW stat
-    card.write("%-40s %-5s " % ("ttw_stat","shape"))
-    for process in processes: card.write("%-15s " % (process.ttw_stat))
-    card.write("\n")
 
     #nuisance TTZH
     card.write("%-40s %-5s " % ("TTZH","lnN"))
@@ -176,10 +174,6 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("ttzh_extr_ll","shape"))
     for process in processes: card.write("%-15s " % (process.ttzh_extr_ll))
     card.write("\n")
-    #nuisance TTZH stat
-    card.write("%-40s %-5s " % ("ttzh_stat","shape"))
-    for process in processes: card.write("%-15s " % (process.ttzh_stat))
-    card.write("\n")
 
     #nuisance WZ
     card.write("%-40s %-5s " % ("WZ","lnN"))
@@ -195,14 +189,9 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     for process in processes: card.write("%-15s " % (process.WW))
     card.write("\n")
 
-    #nuisance TG
-    card.write("%-40s %-5s " % ("TG","lnN"))
-    for process in processes: card.write("%-15s " % (process.TG))
-    card.write("\n")
-
-    #nuisance VG
-    card.write("%-40s %-5s " % ("VG","lnN"))
-    for process in processes: card.write("%-15s " % (process.VG))
+    #nuisance XG
+    card.write("%-40s %-5s " % ("XG","lnN"))
+    for process in processes: card.write("%-15s " % (process.XG))
     card.write("\n")
 
     #nuisance RARES
@@ -214,10 +203,6 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("fakes","lnN"))
     for process in processes: card.write("%-15s " % (process.fakes))
     card.write("\n")
-    #nuisance fakes stat
-    card.write("%-40s %-5s " % ("fakes_stat","shape"))
-    for process in processes: card.write("%-15s " % (process.fakes_stat))
-    card.write("\n")
     #nuisance fakes EWK
     card.write("%-40s %-5s " % ("fakes_EWK","shape"))
     for process in processes: card.write("%-15s " % (process.fakes_EWK))
@@ -227,6 +212,8 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("flips","lnN"))
     for process in processes: card.write("%-15s " % (process.flips))
     card.write("\n")
+
+    #for process in processes: writeStatForProcess(dir,card,kine,process,processes)
 
     return
 
@@ -243,15 +230,13 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTZH = Process(2,"ttzh","ttzh_histos_"+kine+"_"+lumi+"ifb.root",plot)
     WZ  = Process(3,"wz","wz_histos_"+kine+"_"+lumi+"ifb.root",plot)
     WW  = Process(4,"ww","ww_histos_"+kine+"_"+lumi+"ifb.root",plot)
-    TG  = Process(5,"tg","tg_histos_"+kine+"_"+lumi+"ifb.root",plot)
-    VG  = Process(6,"vg","vg_histos_"+kine+"_"+lumi+"ifb.root",plot)
-    rares = Process(7,"rares","rares_histos_"+kine+"_"+lumi+"ifb.root",plot)
-    fakes = Process(8,"fakes","fakes_histos_"+kine+"_"+lumi+"ifb.root",plot)
-    flips = Process(9,"flips","flips_histos_"+kine+"_"+lumi+"ifb.root",plot)
+    XG  = Process(5,"xg","xg_histos_"+kine+"_"+lumi+"ifb.root",plot)
+    rares = Process(6,"rares","rares_histos_"+kine+"_"+lumi+"ifb.root",plot)
+    fakes = Process(7,"fakes","fakes_histos_"+kine+"_"+lumi+"ifb.root",plot)
+    flips = Process(8,"flips","flips_histos_"+kine+"_"+lumi+"ifb.root",plot)
     #overwrite nuisances
     signal.lumi  = "1.09"
     signal.jes  = "1"
-    signal.signal_stat = "1"
     TTW.TTW          = "1.13"
     TTW.lumi         = "1.09"
     TTW.ttw_pdf      = "1.04"
@@ -264,7 +249,6 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTW.hthlt  = "1"
     TTW.btag = "1"
     TTW.trigeff = "1.04"
-    TTW.ttw_stat = "1"
     TTZH.TTZH          = "1.11"
     TTZH.lumi          = "1.09"
     TTZH.ttzh_pdf      = "1.04"
@@ -277,13 +261,11 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTZH.hthlt  = "1"
     TTZH.btag = "1"
     TTZH.trigeff = "1.04"
-    TTZH.ttzh_stat = "1"
     WZ.WZ = "1.30"
     #WZ.wz_extr = "1"
     WZ.jes  = "1"
     WZ.btag = "1"
     WZ.trigeff = "1"
-    WZ.wz_stat = "1"
     WW.WW = "1.30"
     WW.lumi = "1.09"
     WW.jes  = "1"
@@ -292,25 +274,14 @@ def writeOneCard(dir, signal, kine, plot, output):
     WW.hthlt  = "1"
     WW.btag = "1"
     WW.trigeff = "1.04"
-    WW.ww_stat = "1"
-    TG.TG = "1.50"
-    TG.lumi = "1.09"
-    TG.jes  = "1"
-    TG.lepeff  = "1.04"
-    TG.lephlt  = "1.02"
-    TG.hthlt  = "1"
-    TG.btag = "1"
-    TG.trigeff = "1.04"
-    TG.tg_stat = "1"
-    VG.VG = "1.50"
-    VG.lumi = "1.09"
-    VG.jes  = "1"
-    VG.lepeff  = "1.04"
-    VG.lephlt  = "1.02"
-    VG.hthlt  = "1"
-    VG.btag = "1"
-    VG.trigeff = "1.04"
-    VG.vg_stat = "1"
+    XG.XG = "1.50"
+    XG.lumi = "1.09"
+    XG.jes  = "1"
+    XG.lepeff  = "1.04"
+    XG.lephlt  = "1.02"
+    XG.hthlt  = "1"
+    XG.btag = "1"
+    XG.trigeff = "1.04"
     rares.RARES = "1.30"
     rares.lumi = "1.09"
     rares.jes  = "1"
@@ -319,9 +290,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     rares.hthlt  = "1"
     rares.btag = "1"
     rares.trigeff = "1.04"
-    rares.rares_stat = "1"
     fakes.fakes = "1.30"
-    fakes.fakes_stat = "1"
     fakes.fakes_EWK = "1"
     flips.flips = "1.30"
 
@@ -332,8 +301,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     processes.append(TTZH)
     processes.append(WZ)
     processes.append(WW)
-    processes.append(TG)
-    processes.append(VG)
+    processes.append(XG)
     processes.append(rares)
     processes.append(fakes)
     processes.append(flips)
