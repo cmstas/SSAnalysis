@@ -12,9 +12,10 @@
 #include "TChain.h"
 
 //Class files
-#include "../classFiles/v4.00/SS.h"
+#include "../classFiles/v4.05/SS.h"
 
 #include "utils.C"
+#include "../commonUtils.h"
 #include "../CORE/SSSelections.h"
 #include "../CORE/Tools/dorky/dorky.cc"
 
@@ -25,22 +26,21 @@ int scan(){
     TChain *ch = new TChain("t");
     std::vector<std::string> titles;
 
-    TString tag = "v4.01";
+    TString tag = getTag();
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR.root");  titles.push_back("tt");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY*.root");    titles.push_back("DY");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZ*.root");    titles.push_back("ttZ");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets*.root"); titles.push_back("WJets");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");     titles.push_back("ZZ");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ3LNU.root");     titles.push_back("WZ");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"-data1p280ifb/Data*D.root");
-
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/Data*.root");
 
     int nEventsTotal = 0;
     int nEventsChain = ch->GetEntries();
     int nGoodEvents = 0;
     int nGoodEventsData = 0;
     float nGoodEventsWeighted = 0;
-    float luminosity = 1.264;
+    float luminosity = getLumi();
 
     TFile *currentFile = 0;
     TObjArray *listOfFiles = ch->GetListOfFiles();
@@ -155,8 +155,8 @@ int scan(){
 
             if( !(ss::lep1_passes_id() && 
                   ss::lep2_passes_id() && 
-                  // ss::lep3_veto()     ) ) continue; // looser selection for third lepton
-                  ss::lep3_passes_id()) ) continue;
+                  ss::lep3_veto()     ) ) continue; // looser selection for third lepton
+                  // ss::lep3_passes_id()) ) continue;
 
 	    //this is what santiago is doing:
 	    // if (ss::lep1_id()*ss::lep2_id()<0) continue;
@@ -172,15 +172,14 @@ int scan(){
             // require a Z
             if (fabs(zmass-91.2) > 15.0) continue;
 
-            // if(ss::corrMET() < 50.0) continue;
-            // if MET < 30 or Njets <= 2 then we don't care about considering it at all, even in the N-1 plots, so exclude it
-            if(ss::corrMET() < 30.0) continue;
-            if(ss::njets_corr() < 2) continue;
+            // if MET < 40 or Njets <= 2 then we don't care about considering it at all, even in the N-1 plots, so exclude it
+            if(ss::met() < 50.0) continue;
+            if(ss::njets() < 2) continue;
 
             // all 4 of these define the CR
-            bool goodBtags = ss::nbtags_corr() < 1;
-            bool goodNjets = ss::njets_corr() < 5;
-            bool goodMet = true;//ss::corrMET() < 200.0;
+            bool goodBtags = ss::nbtags() < 1;
+            bool goodNjets = ss::njets() < 5;
+            bool goodMet = true;//ss::met() < 200.0;
             bool goodHH = ss::lep1_p4().pt() > 25.0 && ss::lep2_p4().pt() > 25.0;
             bool goodMtmin = true;//ss::mtmin() < 120;
 
@@ -190,21 +189,21 @@ int scan(){
 
             if(filename.Contains("WZ"))    {
                 h2D_ptlep1_ptlep2_wz->Fill(ss::lep2_p4().pt(),ss::lep1_p4().pt());
-                h2D_ht_njets_wz->Fill(ss::ht_corr(),ss::njets_corr());
-                h2D_ht_sumleppt_wz->Fill( ss::ht_corr(), ss::lep2_p4().pt()+ss::lep1_p4().pt() );
-                h2D_njets_nbtags_wz->Fill(ss::nbtags_corr(),ss::njets_corr());
-                h2D_met_mtmin_wz->Fill(ss::mtmin(),ss::corrMET());
+                h2D_ht_njets_wz->Fill(ss::ht(),ss::njets());
+                h2D_ht_sumleppt_wz->Fill( ss::ht(), ss::lep2_p4().pt()+ss::lep1_p4().pt() );
+                h2D_njets_nbtags_wz->Fill(ss::nbtags(),ss::njets());
+                h2D_met_mtmin_wz->Fill(ss::mtmin(),ss::met());
             }
 
             if(goodNjets && goodMet && goodHH && goodMtmin)  {
-                if(ss::nbtags_corr() < 1)  addToCounter("2:nbtags<1_" +filename,scale);
-                if(ss::nbtags_corr() >= 1) addToCounter("2:nbtags>=1_"+filename,scale);
-                fill(h1D_nbtags_vec.at(iSample), ss::nbtags_corr(), scale);
+                if(ss::nbtags() < 1)  addToCounter("2:nbtags<1_" +filename,scale);
+                if(ss::nbtags() >= 1) addToCounter("2:nbtags>=1_"+filename,scale);
+                fill(h1D_nbtags_vec.at(iSample), ss::nbtags(), scale);
             }
 
 
             if(goodBtags && goodNjets && goodMet && goodMtmin)  {
-                anal_type_t categ = analysisCategory(ss::lep1_p4().pt(), ss::lep2_p4().pt());  
+	      anal_type_t categ = analysisCategory(abs(ss::lep1_id()),abs(ss::lep2_id()),ss::lep1_p4().pt(), ss::lep2_p4().pt());  
                 if(categ == HighHigh) addToCounter("6:HH_" +filename,scale);
                 if(categ == HighLow)  addToCounter("6:HL_" +filename,scale);
                 fill(h1D_lep1pt_vec.at(iSample),ss::lep1_p4().pt(), scale);
@@ -219,15 +218,15 @@ int scan(){
 
 
             if(goodBtags && goodMet && goodHH && goodMtmin)  {
-                if(ss::njets_corr() < 5)  addToCounter("1:njets<5_" +filename,scale);
-                if(ss::njets_corr() >= 5) addToCounter("1:njets>=5_"+filename,scale);
-                fill(h1D_njets_vec.at(iSample),ss::njets_corr(), scale);
+                if(ss::njets() < 5)  addToCounter("1:njets<5_" +filename,scale);
+                if(ss::njets() >= 5) addToCounter("1:njets>=5_"+filename,scale);
+                fill(h1D_njets_vec.at(iSample),ss::njets(), scale);
             }
 
             if(goodBtags && goodNjets && goodHH && goodMtmin)  {
-                if(ss::corrMET() < 200)  addToCounter("3:met<200_" +filename,scale);
-                if(ss::corrMET() >= 200) addToCounter("3:met>=200_"+filename,scale);
-                fill(h1D_met_vec.at(iSample),ss::corrMET(), scale);
+                if(ss::met() < 200)  addToCounter("3:met<200_" +filename,scale);
+                if(ss::met() >= 200) addToCounter("3:met>=200_"+filename,scale);
+                fill(h1D_met_vec.at(iSample),ss::met(), scale);
             }
 
 
@@ -236,9 +235,9 @@ int scan(){
             //
             fill(h1D_zmass_vec.at(iSample),zmass, scale); 
 
-            if(ss::ht_corr() < 300)  addToCounter("4:ht<300_" +filename,scale);
-            if(ss::ht_corr() >= 300) addToCounter("4:ht>=300_"+filename,scale);
-            fill(h1D_ht_vec.at(iSample),ss::ht_corr(), scale);
+            if(ss::ht() < 300)  addToCounter("4:ht<300_" +filename,scale);
+            if(ss::ht() >= 300) addToCounter("4:ht>=300_"+filename,scale);
+            fill(h1D_ht_vec.at(iSample),ss::ht(), scale);
 
             // fill(h1D_mt_vec.at(iSample),ss::mt(), scale);
             // fill(h1D_zmass_vec.at(iSample),zmass, scale); 
