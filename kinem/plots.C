@@ -1,7 +1,7 @@
 #include "TFile.h"
 #include "TChain.h"
 #include "TH2D.h"
-#include "../classFiles/v4.04/SS.h"
+#include "../classFiles/v4.05/SS.h"
 #include "../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../CORE/SSSelections.h"
 #include "../CORE/Tools/dorky/dorky.h"
@@ -10,7 +10,7 @@
 
 int mode = 0;  // 0-nominal, 1-upstream, 2-upstream+2jets
 
-struct doublePlotHolder{ TH1F* OS[10][4][4][5]; TH1F* SS[10][4][4][5]; TH1F* SF[10][4][4][5]; TH1F* EZ[10][4][4][5]; };
+struct doublePlotHolder{ TH1F* OS[10][4][4][5]; TH1F* SS[10][4][4][5]; TH1F* SF[10][4][4][5]; TH1F* EZ[10][4][4][5]; TH1F* sr3[3]; TH1F* sr2[3]; };
 
 doublePlotHolder plotMaker(TChain *chain, bool isData){
 
@@ -34,6 +34,14 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       }
     }
   }
+
+  //Also SR plots
+  plots.sr3[0] = new TH1F("SRHH_ss", "SRHH_ss", 32, 1, 33); 
+  plots.sr3[1] = new TH1F("SRHL_ss", "SRHL_ss", 26, 1, 27); 
+  plots.sr3[2] = new TH1F("SRLL_ss", "SRLL_ss",  8, 1,  9); 
+  plots.sr2[0] = new TH1F("SRHH_sf", "SRHH_sf", 32, 1, 33); 
+  plots.sr2[1] = new TH1F("SRHL_sf", "SRHL_sf", 26, 1, 27); 
+  plots.sr2[2] = new TH1F("SRLL_sf", "SRLL_sf",  8, 1,  9); 
 
   //Weight
   float totWeight = 0.;
@@ -89,22 +97,19 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       //DY totWeight=285999/325590
       totWeight+=weight;
 
-      if (ss::event() == (int)447808321) cout << "here!" << endl;
-
       //Throw away non OS-numerator events
       if (ss::hyp_class() != 4 && ss::hyp_class() != 3 && ss::hyp_class() != 2 && ss::hyp_class() != 6) continue;
-      if (ss::event() == (int)447808321) cout << "here!" << endl;
 
       //Reject not triggered
       if (!ss::fired_trigger()) continue;
-      if (ss::event() == (int)447808321) cout << "here!" << endl;
+      if (!ss::passedFilterList()) continue;
+      if (!ss::passes_met_filters()) continue;
 
       //electron FO is tighter for iso triggers, make sure it is passed
       if (ss::ht()<300.){
         if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
         if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
       } 
-      if (ss::event() == (int)447808321) cout << "here4!" << endl;
 
       //Determine analysis category
       int AC = -1;
@@ -112,20 +117,21 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       if (analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt()) == HighLow ) AC = 1; 
       if (analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt()) == LowLow  ) AC = 2; 
       if (AC < 0) continue;
-      if (ss::event() == (int)447808321) cout << "here5!" << endl;
 
       //Determine BR
       int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt()); 
       if (mode == 0 && BR < 0) continue;
       if (mode == 2 && ss::njets() < 2) continue;
       BR = 0;
-      if (ss::event() == (int)447808321) cout << "here6!" << endl;
 
       //Determine ee, em, mm
       int type = -1;
       if      (ss::hyp_type() == 0) type = 0; 
       else if (ss::hyp_type() == 3) type = 2; 
       else                          type = 1; 
+
+      //Determine SR
+      int SR = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt()); 
 
       //Fill MET, HT
       if (ss::hyp_class() == 4){
@@ -151,6 +157,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
           plots.SS[5][BR][AC][type]->Fill(ss::mtmin()                        , unblindWeight);
           plots.SS[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M() , unblindWeight);
           plots.SS[7][BR][AC][type]->Fill(ss::nGoodVertices()                 , unblindWeight);
+          plots.sr3[AC]->Fill(SR, unblindWeight); 
         }
       }
       else if (ss::hyp_class() == 2){ 
@@ -163,6 +170,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
         plots.SF[5][BR][AC][type]->Fill(ss::mtmin()                        , weight);
         plots.SF[6][BR][AC][type]->Fill((ss::lep1_p4() + ss::lep2_p4()).M() , weight);
         plots.SF[7][BR][AC][type]->Fill(ss::nGoodVertices()                 , weight);
+        plots.sr2[AC]->Fill(SR, weight); 
       }
       else if (ss::hyp_class() == 6 && ss::madeExtraZ() && ss::lep1_passes_id() && ss::lep2_passes_id() && ss::lep3_passes_id()){ 
         plots.EZ[0][BR][AC][type]->Fill(ss::met()                           , weight);
@@ -630,5 +638,19 @@ void plots(){
     dataMCplotMaker(data.SF[i][0][3][4], SF_plots[i], titles, Form("%s %s", names[i].c_str(), "(SF)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_all_SF.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.01)); 
     dataMCplotMaker(data.EZ[i][0][3][4], EZ_plots[i], titles, Form("%s %s", names[i].c_str(), "(EZ)"), title.c_str(), Form("--lumi %.2f --outputName mode%i_%s_all_EZ.pdf --xAxisLabel %s --percentageInBox --setMinimum %f --setMaximum %f --legendUp -.05", getLumi(), mode, out[i].c_str(), names[i].c_str() , min[i], max[i]*.2)); 
   }
+
+  //And the SR plot
+  vector <TH1F*> SRSSHH = { ttv.sr3[0], rares.sr3[0], vz.sr3[0], ttbar.sr3[0], dy.sr3[0], wjets.sr3[0] }; 
+  vector <TH1F*> SRSSHL = { ttv.sr3[1], rares.sr3[1], vz.sr3[1], ttbar.sr3[1], dy.sr3[1], wjets.sr3[1] }; 
+  vector <TH1F*> SRSSLL = { ttv.sr3[2], rares.sr3[2], vz.sr3[2], ttbar.sr3[2], dy.sr3[2], wjets.sr3[2] }; 
+  vector <TH1F*> SRSFHH = { ttv.sr2[0], rares.sr2[0], vz.sr2[0], ttbar.sr2[0], dy.sr2[0], wjets.sr2[0] }; 
+  vector <TH1F*> SRSFHL = { ttv.sr2[1], rares.sr2[1], vz.sr2[1], ttbar.sr2[1], dy.sr2[1], wjets.sr2[1] }; 
+  vector <TH1F*> SRSFLL = { ttv.sr2[2], rares.sr2[2], vz.sr2[2], ttbar.sr2[2], dy.sr2[2], wjets.sr2[2] }; 
+  dataMCplotMaker(data.sr3[0], SRSSHH, titles, "SS H-H SR", "", "--outputName SR_hh_ss.pdf --isLinear --noDivisionLabel --noXaxisUnit --noOverflow"); 
+  dataMCplotMaker(data.sr3[1], SRSSHL, titles, "SS H-L SR", "", "--outputName SR_hl_ss.pdf --isLinear --noDivisionLabel --noXaxisUnit --noOverflow"); 
+  dataMCplotMaker(data.sr3[2], SRSSLL, titles, "SS L-L SR", "", "--outputName SR_ll_ss.pdf --isLinear --noDivisionLabel --noXaxisUnit --noOverflow"); 
+  dataMCplotMaker(data.sr2[0], SRSFHH, titles, "SF H-H SR", "", "--outputName SR_hh_sf.pdf --isLinear --noDivisionLabel --noXaxisUnit --noOverflow"); 
+  dataMCplotMaker(data.sr2[1], SRSFHL, titles, "SF H-L SR", "", "--outputName SR_hl_sf.pdf --isLinear --noDivisionLabel --noXaxisUnit --noOverflow"); 
+  dataMCplotMaker(data.sr2[2], SRSFLL, titles, "SF L-L SR", "", "--outputName SR_ll_sf.pdf --isLinear --noDivisionLabel --noXaxisUnit --noOverflow"); 
 
 }
