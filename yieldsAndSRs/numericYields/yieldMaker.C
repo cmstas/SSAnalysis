@@ -902,7 +902,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       samesign.GetEntry(event);
       nEventsTotal++;
 
-      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUw(ss::nGoodVertices())*ss::weight_btagsf();
+      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUwECO(ss::nGoodVertices())*ss::weight_btagsf();
       weight*=scaleLumi;
       float weight_alt = weight;
       float weight_btag_up_alt = weight*ss::weight_btagsf_UP()/ss::weight_btagsf();
@@ -919,36 +919,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (!ss::passes_met_filters()) continue;
 
       // if (doFakes!=1) continue;
-      // if (ss::event()!=38279201
-      // 	  // && ss::event()!=69314356
-      // 	  // && ss::event()!=112281886
-      // 	  && ss::event()!=132001490
-      // 	  // && ss::event()!=135382435
-      // 	  && ss::event()!=137653648
-      // 	  && ss::event()!=144000353
-      // 	  && ss::event()!=156439531
-      // 	  && ss::event()!=157459759
-      // 	  && ss::event()!=179181624
-      // 	  && ss::event()!=180911876
-      // 	  && ss::event()!=211490444
-      // 	  && ss::event()!=214440558
-      // 	  && ss::event()!=223606286
-      // 	  && ss::event()!=256554985
-      // 	  && ss::event()!=275726009
-      // 	  && ss::event()!=283086381
-      // 	  // && ss::event()!=406072305
-      // 	  && ss::event()!=478019637
-      // 	  // && ss::event()!=715041088
-      // 	  // && ss::event()!=725861965
-      // 	  // && ss::event()!=1618818705
-      // 	  // && ss::event()!=1659387605
-      // 	  // && ss::event()!=1718480138
-      // 	  /*&& ss::event()!=2540713621*/  ) continue;
+      // if (ss::event()!=1520684273  ) continue;
       // cout << "found it:" << ss::event() << " hyp_class=" << ss::hyp_class() << endl;
-      // if (ss::event()!=43097002 && ss::event()!=62830693 && ss::event()!=88489265 && ss::event()!=117654396) continue;
       // cout << "nbtags=" << ss::nbtags() << " " << ss::nbtags() << endl;
-      // if (ss::event()!=14329928) continue;
-      // if (ss::event()!=99532861) continue;
       // cout << ss::ht() << " " << passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA()) << " " << passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA()) << endl;
       // unsigned int triggerBits = ss::triggers();
       // if ( (triggerBits & (1<<0))==(1<<0) or (triggerBits & (1<<5))==(1<<5) or (triggerBits & (1<<7))==(1<<7) ) cout << "pass ht trigs" << endl;
