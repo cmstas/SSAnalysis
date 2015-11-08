@@ -919,13 +919,17 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (!ss::passes_met_filters()) continue;
 
       // if (doFakes!=1) continue;
-      // if (ss::event()!=1520684273  ) continue;
+      // if (ss::event()!=1554377782) continue;
       // cout << "found it:" << ss::event() << " hyp_class=" << ss::hyp_class() << endl;
       // cout << "nbtags=" << ss::nbtags() << " " << ss::nbtags() << endl;
       // cout << ss::ht() << " " << passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA()) << " " << passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA()) << endl;
+      // for (int j=0;j<ss::mostJets().size();++j) {
+      // 	cout << "most jet pt=" << ss::mostJets()[j].pt() << endl;
+      // }
       // unsigned int triggerBits = ss::triggers();
       // if ( (triggerBits & (1<<0))==(1<<0) or (triggerBits & (1<<5))==(1<<5) or (triggerBits & (1<<7))==(1<<7) ) cout << "pass ht trigs" << endl;
       // if ( (triggerBits & (1<<1))==(1<<1) or (triggerBits & (1<<2))==(1<<2) or (triggerBits & (1<<3))==(1<<3) or (triggerBits & (1<<4))==(1<<4) or (triggerBits & (1<<6))==(1<<6) ) cout <<"pass iso trigs" << endl;
+      // exit(0);
 
       // if ( (triggerBits & (1<<0))==(1<<0) ) cout << "pass bit=" << 0 << endl;
       // if ( (triggerBits & (1<<1))==(1<<1) ) cout << "pass bit=" << 1 << endl;
