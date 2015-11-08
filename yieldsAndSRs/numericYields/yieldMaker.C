@@ -21,7 +21,7 @@ bool testFakeSR = false;
 
 float scaleLumi = 1.;//3.0/1.264;//careful!!!
 
-bool doLatex = false;
+bool doLatex = 1;
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
