@@ -475,6 +475,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return -1;
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return -1;
+  //if (tas::evt_event() != 1007289588) return -1;
+  //verbose=1;
 
   //Fill Easy Variables
   filename = filename_in;
@@ -1007,10 +1009,10 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   if (verbose) cout << "met: " << met << endl;
 
   //Make sure one of our triggers fired
-  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) || 
-      passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")))  (triggers |= 1<<1); 
-  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")) ||
-      passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) 
+     /*|| passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))*/)  (triggers |= 1<<1); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")) 
+     /* || passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"))*/)  (triggers |= 1<<2); 
   if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")))              (triggers |= 1<<3); 
   if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))            (triggers |= 1<<4); 
   if (passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v")) || 
