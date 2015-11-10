@@ -32,6 +32,7 @@ lineWithPath=`sed -n /path/= voms_status.txt`
 pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 
 #Change the username
+sed -i "s/cgeorge/$USER/" condorFileTemplate
 sed -i "s/cgeorge/$USER/" condorExecutable.sh
 
 #Then submit jobs

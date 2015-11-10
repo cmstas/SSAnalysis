@@ -919,7 +919,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     if (rawpt*JEC*(1-jetUnc) > 40 && isLoosePFJet_50nsV1(i)) mostJets_jet_dn.push_back(Jet(i, JEC)); 
     else                                                     mostJets_jet_dn.push_back(Jet(-1, -9999)); 
     mostJets_rawp4.push_back(jet*tas::pfjets_undoJEC().at(i)); 
-    mostJets_disc.push_back(tas::getbtagvalue("pfCombinedSecondaryVertexV2BJetTags",i)); 
+    mostJets_disc.push_back(tas::pfjets_pfCombinedInclusiveSecondaryVertexV2BJetTag().at(i)); 
     mostJets_unc.push_back(jetUnc); 
     mostJets_JEC.push_back(JEC); 
     mostJets_undoJEC.push_back(tas::pfjets_undoJEC().at(i)); 
