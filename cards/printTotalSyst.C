@@ -1,5 +1,5 @@
-//root -b -q printTotalSyst.C'("ttw","hihi","3.0","v4.01")'
-//for r in hihi hilow; do for p in ttw ttzh ww wz fakes flips; do root -b -q printTotalSyst.C'("'$p'","'$r'","1.3","v4.05")'; done; done
+//root -b -q printTotalSyst.C'("ttw","hihi","1.3","v4.06")'
+//for r in hihi hilow; do for p in ttw ttzh ww wz fakes flips xg rares; do root -b -q printTotalSyst.C'("'$p'","'$r'","1.3","v4.06")'; done; done
 
 void printTotalSyst(TString process, TString kine, TString lumi, TString dir);
 
@@ -19,8 +19,8 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   _file->cd();
 
   TH1F* nominal = (TH1F*) _file->Get("sr");
-  if (kine=="hihi") nominal->SetTitle(process+" SRHH L="+lumi+"/fb");
-  if (kine=="hilow") nominal->SetTitle(process+" SRHL L="+lumi+"/fb");
+  if (kine=="hihi")   nominal->SetTitle(process+" SRHH L="+lumi+"/fb");
+  if (kine=="hilow")  nominal->SetTitle(process+" SRHL L="+lumi+"/fb");
   if (kine=="lowlow") nominal->SetTitle(process+" SRLL L="+lumi+"/fb");
   TH1F* nominal2 = (TH1F*) nominal->Clone("band");
   nominal2->SetFillColor(kGray);
@@ -32,6 +32,8 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   float wz  = pow(0.30,2);
   float fakes  = pow(0.30,2);
   float flips  = pow(0.30,2);
+  float xg = pow(0.50,2);
+  float rares = pow(0.50,2);
   float lepeff = pow(0.04,2)+pow(0.02,2);//both offline and hlt
 
   float flatSyst2 = 0.;
@@ -41,6 +43,8 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   if (process=="wz"   ) flatSyst2 = wz;
   if (process=="fakes") flatSyst2 = fakes;
   if (process=="flips") flatSyst2 = flips;
+  if (process=="rares") flatSyst2 = rares+lepeff;
+  if (process=="xg"   ) flatSyst2 = xg+lepeff;
 
   cout << "flatSyst=" << sqrt(flatSyst2) << endl;
 
@@ -95,13 +99,17 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   band2->SetTitle("");
   band2->GetYaxis()->SetRangeUser(-0.6,0.6);
   band2->GetYaxis()->SetNdivisions(4,3,0,0);
+  if (process=="rares" || process=="xg") {
+    band2->GetYaxis()->SetRangeUser(-1.0,1.0);
+    band2->GetYaxis()->SetNdivisions(4,2,0,0);
+  }
   band2->GetYaxis()->SetLabelSize(0.08);
   band2->GetXaxis()->SetLabelSize(0.11);
   band2->GetXaxis()->SetTitleSize(0.12);
   band2->GetXaxis()->SetTitle("SR");
   band2->GetYaxis()->SetTitleSize(0.11);
   band2->GetYaxis()->SetTitleOffset(0.35);
-  band2->GetYaxis()->SetTitle("ratio   ");
+  band2->GetYaxis()->SetTitle("#Delta/Yield   ");
   band2->SetFillColor(kGray);
   band2->Draw("E2");
   pad2->Update();
