@@ -13,12 +13,10 @@ int main(int argc, char *argv[]){
 
   int which_in = 0;
   int file = 2;
-  int expt = 0;
 
-  if (argc > 3) {
+  if (argc > 2) {
      which_in = atoi(argv[1]);
      file     = atoi(argv[2]);
-     expt     = atoi(argv[3]);
   } 
   else { 
     cout << "not enough arguments!" << endl;  
@@ -320,7 +318,7 @@ int main(int argc, char *argv[]){
   
   //Set up file and tree
   cout << "Using xrootd " << endl;
-  mylooper->MakeBabyNtuple(Form("%s%s", shortname.c_str(), suffix), expt);
+  mylooper->MakeBabyNtuple(Form("%s%s", shortname.c_str(), suffix));
   TFile *f;
   if (path.find("nfs") < path.length()) f = TFile::Open(Form("%s/%s/%s/%s", path.c_str(), name.c_str(), tag.c_str(), filename)); 
   else f = TFile::Open(Form("root://cmsxrootd.fnal.gov//%s/%s/%s/%s", path.c_str(), name.c_str(), tag.c_str(), filename)); 
@@ -377,7 +375,7 @@ int main(int argc, char *argv[]){
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
 
-    mylooper->ProcessBaby(name, jetCorrAG, jecUnc, expt, file); 
+    mylooper->ProcessBaby(name, jetCorrAG, jecUnc, file); 
 
   }//event loop 
 

@@ -3,7 +3,6 @@
 WHICH=$1
 FILE=$2
 USER=$3
-EXPT=$4
 
 #Show where you are
 hostname
@@ -77,7 +76,7 @@ if [ "$WHICH" == "1006" ]; then WHICH_SMALL="datadoubleegd_v4"; fi
 if [ "$WHICH" == "1007" ]; then WHICH_SMALL="datadoublemuond_v4"; fi
 if [ "$WHICH" == "1008" ]; then WHICH_SMALL="datamuonegd_v4"; fi
 
-export OUTPUT=${WHICH_SMALL}_${FILE}_$EXPT
+export OUTPUT=${WHICH_SMALL}_${FILE}
 
 #This stuff to get output back
 export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}
@@ -87,8 +86,8 @@ tar xzvf CORE.tar.gz
 tar xzvf btagsf.tar.gz
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
-echo "running: ./main.exe $WHICH $FILE $EXPT"
-./main.exe $WHICH $FILE $EXPT
+echo "running: ./main.exe $WHICH $FILE"
+./main.exe $WHICH $FILE
 ls -l `pwd`/${OUTPUT}.root
 
 echo "copying.  LS is: "
