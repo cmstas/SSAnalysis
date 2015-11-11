@@ -252,6 +252,12 @@ int main(int argc, char *argv[]){
       tag="V07-04-08_v2";
       shortname="zg";
       break;
+    case TTZlow:
+      name="TTZ_lowMM_petrucc";
+      tag="V07-04-11";
+      path="/store/group/snt/run2_25ns_privateMiniAOD";
+      shortname="ttzlow"; 
+      break;
     case T1TTTT_1500:
       name="SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1";
       shortname="t1tttt_1500";
