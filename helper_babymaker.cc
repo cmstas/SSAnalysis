@@ -475,8 +475,6 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return -1;
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return -1;
-  //if (tas::evt_event() != 1007289588) return -1;
-  //verbose=1;
 
   //Fill Easy Variables
   filename = filename_in;
@@ -785,12 +783,6 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   ht_raw = 0;
   for (unsigned int i = 0; i < jets_raw.size(); i++) ht_raw += jets_raw.at(i).pt()*jets_undoJEC_raw.at(i); 
 
-  //Reject events that fail trigger matching
-  if (ht < 300 && hyp_type != 0){
-    if (abs(lep1_id) == 11 && !isTriggerSafe_v1(lep1_idx)) return -1;
-    if (abs(lep2_id) == 11 && !isTriggerSafe_v1(lep2_idx)) return -1;
-  }
-
   // for applying btagging SFs, using Method 1a from the twiki below:
   //   https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods#1a_Event_reweighting_using_scale
   //   https://twiki.cern.ch/twiki/pub/CMS/BTagSFMethods/Method1aExampleCode_CSVM.cc.txt
@@ -828,6 +820,14 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
      jet_pt.push_back(jets.at(i).pt()*jets_undoJEC.at(i)*jets_JEC.at(i)); 
      ht += jets.at(i).pt()*jets_undoJEC.at(i)*jets_JEC.at(i); 
   }
+
+  //Reject events that fail trigger matching
+  if (verbose) cout << "ht: " << ht << endl;
+  if (ht < 300 && hyp_type != 0){
+    if (abs(lep1_id) == 11 && !isTriggerSafe_v1(lep1_idx)) return -1;
+    if (abs(lep2_id) == 11 && !isTriggerSafe_v1(lep2_idx)) return -1;
+  }
+  if (verbose) cout << "passed trigger safety" << endl;
 
   //now look at jets for get the btag scale factor (need to save down to 25 GeV corrected)
   jet_results = SSJetsCalculator(jetCorr, 1, 1);
