@@ -82,6 +82,7 @@ if [ "$WHICH" == "57" ]; then WHICH_SMALL="datadoublemuonc_05oct"; fi
 if [ "$WHICH" == "58" ]; then WHICH_SMALL="datamuonegc_05oct"; fi
 if [ "$WHICH" == "59" ]; then WHICH_SMALL="ttbar_ph"; fi
 if [ "$WHICH" == "60" ]; then WHICH_SMALL="wjets_lo"; fi
+if [ "$WHICH" == "61" ]; then WHICH_SMALL="ttzlow"; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}_$EXPT
 
