@@ -164,13 +164,13 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
 
   TH1D *muf_data_syst = (TH1D*) muf_data->Clone("rate_histo_mu_syst");
   muf_data_syst->SetFillColor(kBlack);
-  muf_data_syst->SetFillStyle(3004);
+  muf_data_syst->SetFillStyle(3001);
   for (int bin=1;bin<=muf_data_syst->GetNbinsX();++bin) {
     muf_data_syst->SetBinError(bin,fabs(muf_data->GetBinContent(bin)-muf_data_zp->GetBinContent(bin)));
   }
   TH1D *elf_data_syst = (TH1D*) elf_data->Clone("rate_histo_el_syst");
   elf_data_syst->SetFillColor(kBlack);
-  elf_data_syst->SetFillStyle(3004);
+  elf_data_syst->SetFillStyle(3001);
   for (int bin=1;bin<=elf_data_syst->GetNbinsX();++bin) {
     elf_data_syst->SetBinError(bin,fabs(elf_data->GetBinContent(bin)-elf_data_zp->GetBinContent(bin)));
   }

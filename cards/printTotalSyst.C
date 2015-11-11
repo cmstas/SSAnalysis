@@ -1,5 +1,5 @@
 //root -b -q printTotalSyst.C'("ttw","hihi","1.3","v4.06")'
-//for r in hihi hilow; do for p in ttw ttzh ww wz fakes flips xg rares; do root -b -q printTotalSyst.C'("'$p'","'$r'","1.3","v4.06")'; done; done
+//for r in hihi hilow; do for p in ttw ttzh ww wz fakes flips xg rares; do root -b -q printTotalSyst.C'("'$p'","'$r'","1.3","v4.06-tmp")'; done; done
 
 void printTotalSyst(TString process, TString kine, TString lumi, TString dir);
 
