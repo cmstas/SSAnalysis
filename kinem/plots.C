@@ -274,7 +274,7 @@ void plots(){
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTTT.root");
 
   TChain *chain_ttbar = new TChain("t","ttbar"); 
-  chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR.root");
+  chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");
   chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP1.root");
   chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP2.root");
   chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP3.root");
@@ -290,7 +290,7 @@ void plots(){
   chain_DY->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_low.root");
 
   TChain *chain_WJets = new TChain("t","WJets"); 
-  chain_WJets->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets.root");
+  chain_WJets->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets_LO.root");
   chain_WJets->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WGToLNuG.root");
 
   //Make individual plots
