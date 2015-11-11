@@ -255,7 +255,7 @@ int main(int argc, char *argv[]){
     case TTZlow:
       name="TTZ_lowMM_petrucc";
       tag="V07-04-11";
-      path="/hadoop/cms/store/group/snt/run2_25ns_privateMiniAOD";
+      path="/store/group/snt/run2_25ns_privateMiniAOD";
       shortname="ttzlow"; 
       break;
     case T1TTTT_1500:
