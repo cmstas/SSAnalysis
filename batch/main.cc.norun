@@ -186,7 +186,12 @@ int main(int argc, char *argv[]){
       tag="V07-04-11";
       shortname="vhtononbb";
       break;
-
+    case TTZlow:
+      name="TTZ_lowMM_petrucc";
+      tag="V07-04-11";
+      path="/store/group/snt/run2_25ns_privateMiniAOD";
+      shortname="ttzlow"; 
+      break;
     case T1TTTT_1500:
       name="SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       shortname="t1tttt_1500";
@@ -340,7 +345,7 @@ int main(int argc, char *argv[]){
   if (!isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_MC_Uncertainty_AK4PFchs.txt"); 
 
   //Init MVA
-  createAndInitMVA("./CORE");
+  createAndInitMVA("./CORE", true);
 
   //JEC files -- 25 ns MC
   std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1L2L3;

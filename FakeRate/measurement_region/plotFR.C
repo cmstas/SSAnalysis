@@ -17,6 +17,7 @@
 
   TString postfix = "";
   postfix+="_LooseEMVA";
+  // postfix+="_IsoTrigs";
   // postfix+="_PtRatioCor";
   // postfix+="_doBonly";
   // postfix+="_doLightonly";

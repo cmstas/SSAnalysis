@@ -167,10 +167,11 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     chain_sync_DoubleMuon->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleMuon_MINIAOD_PromptReco-v3_000_257_531_00000_B26DC190-8166-E511-AE66-02163E0133A7.root");
     chain_sync_DoubleMuon->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleMuon_MINIAOD_PromptReco-v3_000_257_599_00000_908F5705-8666-E511-8362-02163E01432A.root");
     chain_sync_DoubleMuon->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleMuon_MINIAOD_PromptReco-v3_000_256_941_00000_10AA8DF0-0062-E511-B01C-02163E0146ED.root");
-    chain_sync_DoubleEG  ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleEG_MINIAOD_PromptReco-v3_000_257_531_00000_2CFA9A0A-0F66-E511-88FF-02163E013484.root");
-    chain_sync_DoubleEG  ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleEG_257599_4EF0C7A4-8E66-E511-AF95-02163E011C53.root");
-    chain_sync_DoubleEG  ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleEG_256591_5A9CB350-3462-E511-A04D-02163E014393.root");
-    chain_sync_MuonEG    ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/MuonEG_MINIAOD_PromptReco-v3_000_257_531_00000_D62608D5-FB65-E511-B031-02163E0145C1.root");
+    //chain_sync_DoubleEG  ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleEG_MINIAOD_PromptReco-v3_000_257_531_00000_2CFA9A0A-0F66-E511-88FF-02163E013484.root");
+    //chain_sync_DoubleEG  ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/DoubleEG_257599_4EF0C7A4-8E66-E511-AF95-02163E011C53.root");
+    chain_sync_DoubleEG  ->Add("/hadoop/cms/store/group/snt/run2_data/Run2015D_DoubleEG_MINIAOD_PromptReco-v4/merged/V07-04-11/merged_ntuple_134.root");
+    //chain_sync_MuonEG    ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/MuonEG_MINIAOD_PromptReco-v3_000_257_531_00000_D62608D5-FB65-E511-B031-02163E0145C1.root");
+    chain_sync_MuonEG    ->Add("/hadoop/cms/store/group/snt/run2_data/Run2015D_MuonEG_MINIAOD_PromptReco-v4/merged/V07-04-11/merged_ntuple_24.root"); 
     chain_sync_TTW       ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-10/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_MINIAODSIM_74X_mcRun2_asymptotic_v2-v1_10000_3A2285C7-CA6D-E511-B68F-0CC47A13D09C.root");
 
     //Private samples

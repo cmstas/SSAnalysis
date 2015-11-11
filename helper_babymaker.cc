@@ -489,9 +489,9 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //If data, check filter list
   if (is_real_data){
     string filterFile = ""; 
-    if (filename.Contains("DoubleEG")) filterFile   = "CORE/Tools/filterLists/DoubleEG.txt";
-    if (filename.Contains("DoubleMuon")) filterFile = "CORE/Tools/filterLists/DoubleMuon.txt";
-    if (filename.Contains("MuonEG")) filterFile     = "CORE/Tools/filterLists/MuonEG.txt";
+    if (filename.Contains("DoubleEG")) filterFile   = "CORE/Tools/filterLists/eventlist_DoubleEG_csc2015.txt";
+    if (filename.Contains("DoubleMuon")) filterFile = "CORE/Tools/filterLists/eventlist_DoubleMuon_csc2015.txt";
+    if (filename.Contains("MuonEG")) filterFile     = "CORE/Tools/filterLists/eventlist_MuonEG_csc2015.txt";
     string checkMe = Form("%i:%i:%i", tas::evt_run(), tas::evt_lumiBlock(), (int)tas::evt_event());
     int blah = system(("grep -r " + checkMe + filterFile).c_str());
     if (blah == 0) passedFilterList = false;
@@ -783,12 +783,6 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   ht_raw = 0;
   for (unsigned int i = 0; i < jets_raw.size(); i++) ht_raw += jets_raw.at(i).pt()*jets_undoJEC_raw.at(i); 
 
-  //Reject events that fail trigger matching
-  if (ht < 300 && hyp_type != 0){
-    if (abs(lep1_id) == 11 && !isTriggerSafe_v1(lep1_idx)) return -1;
-    if (abs(lep2_id) == 11 && !isTriggerSafe_v1(lep2_idx)) return -1;
-  }
-
   // for applying btagging SFs, using Method 1a from the twiki below:
   //   https://twiki.cern.ch/twiki/bin/viewauth/CMS/BTagSFMethods#1a_Event_reweighting_using_scale
   //   https://twiki.cern.ch/twiki/pub/CMS/BTagSFMethods/Method1aExampleCode_CSVM.cc.txt
@@ -826,6 +820,14 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
      jet_pt.push_back(jets.at(i).pt()*jets_undoJEC.at(i)*jets_JEC.at(i)); 
      ht += jets.at(i).pt()*jets_undoJEC.at(i)*jets_JEC.at(i); 
   }
+
+  //Reject events that fail trigger matching
+  if (verbose) cout << "ht: " << ht << endl;
+  if (ht < 300 && hyp_type != 0){
+    if (abs(lep1_id) == 11 && !isTriggerSafe_v1(lep1_idx)) return -1;
+    if (abs(lep2_id) == 11 && !isTriggerSafe_v1(lep2_idx)) return -1;
+  }
+  if (verbose) cout << "passed trigger safety" << endl;
 
   //now look at jets for get the btag scale factor (need to save down to 25 GeV corrected)
   jet_results = SSJetsCalculator(jetCorr, 1, 1);
@@ -917,7 +919,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     if (rawpt*JEC*(1-jetUnc) > 40 && isLoosePFJet_50nsV1(i)) mostJets_jet_dn.push_back(Jet(i, JEC)); 
     else                                                     mostJets_jet_dn.push_back(Jet(-1, -9999)); 
     mostJets_rawp4.push_back(jet*tas::pfjets_undoJEC().at(i)); 
-    mostJets_disc.push_back(tas::getbtagvalue("pfCombinedSecondaryVertexV2BJetTags",i)); 
+    mostJets_disc.push_back(tas::pfjets_pfCombinedInclusiveSecondaryVertexV2BJetTag().at(i)); 
     mostJets_unc.push_back(jetUnc); 
     mostJets_JEC.push_back(JEC); 
     mostJets_undoJEC.push_back(tas::pfjets_undoJEC().at(i)); 
@@ -1007,10 +1009,10 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   if (verbose) cout << "met: " << met << endl;
 
   //Make sure one of our triggers fired
-  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) || 
-      passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")))  (triggers |= 1<<1); 
-  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")) ||
-      passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) 
+     /*|| passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))*/)  (triggers |= 1<<1); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")) 
+     /* || passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"))*/)  (triggers |= 1<<2); 
   if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")))              (triggers |= 1<<3); 
   if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))            (triggers |= 1<<4); 
   if (passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v")) || 
