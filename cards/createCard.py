@@ -6,10 +6,10 @@ import math
 
 #example: python createCard.py dir t1tttt_1500 
 #example: python createCard.py dir t1tttt_1500 hihi sr card-hihi.txt
-#example: for dir in v4.05; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do python createCard.py ${dir} ${sig}; done; done
+#example: for dir in v4.06-tmp; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do python createCard.py ${dir} ${sig}; done; done
 
 #then get expected limits with: combine -M Asymptotic dir/card.txt --run expected --noFitAsimov
-#for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do echo ${sig}; combine -M Asymptotic v4.06/card_${sig}_1.3ifb-all.txt | grep ": r <" ; done
+#for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do echo ${sig}; combine -M Asymptotic v4.06-tmp/card_${sig}_1.3ifb-all.txt | grep ": r <" ; done
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 

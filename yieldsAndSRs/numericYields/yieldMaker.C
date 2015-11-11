@@ -919,12 +919,26 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (!ss::passes_met_filters()) continue;
 
       // if (doFakes!=1) continue;
-      // if (ss::event()!=1554377782) continue;
+      // if (ss::event()!=326133) continue;
       // cout << "found it:" << ss::event() << " hyp_class=" << ss::hyp_class() << endl;
       // cout << "nbtags=" << ss::nbtags() << " " << ss::nbtags() << endl;
       // cout << ss::ht() << " " << passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA()) << " " << passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA()) << endl;
       // for (int j=0;j<ss::mostJets().size();++j) {
-      // 	cout << "most jet pt=" << ss::mostJets()[j].pt() << endl;
+      // 	cout << "most jet pt=" << ss::mostJets()[j].pt()*ss::mostJets_undoJEC()[j]*ss::mostJets_JEC()[j] << " eta=" << ss::mostJets()[j].eta() 
+      // 	     << " ptUp=" << ss::mostJets()[j].pt()*ss::mostJets_undoJEC()[j]*ss::mostJets_JEC()[j]*(1.0+ss::mostJets_unc()[j])
+      // 	     << " ptDn=" << ss::mostJets()[j].pt()*ss::mostJets_undoJEC()[j]*ss::mostJets_JEC()[j]*(1.0-ss::mostJets_unc()[j])
+      // 	     << " disc=" << ss::mostJets_disc()[j]
+      // 	     << endl;
+      // }
+      // for (int j=0;j<ss::jets().size();++j) {
+      // 	cout << "jet pt=" << ss::jets()[j].pt() << " eta=" << ss::jets()[j].eta() 
+      // 	     << " disc=" << ss::jets_disc()[j]
+      // 	     << endl;
+      // }
+      // for (int j=0;j<ss::btags().size();++j) {
+      // 	cout << "btag pt=" << ss::btags()[j].pt() << " eta=" << ss::btags()[j].eta() 
+      // 	     << " disc=" << ss::btags_disc()[j]
+      // 	     << endl;
       // }
       // unsigned int triggerBits = ss::triggers();
       // if ( (triggerBits & (1<<0))==(1<<0) or (triggerBits & (1<<5))==(1<<5) or (triggerBits & (1<<7))==(1<<7) ) cout << "pass ht trigs" << endl;
