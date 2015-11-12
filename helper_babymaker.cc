@@ -9,10 +9,10 @@ using namespace tas;
 const bool applyBtagSFs = true;
 
 //Main functions
-void babyMaker::MakeBabyNtuple(const char* output_name, bool expt){
+void babyMaker::MakeBabyNtuple(const char* output_name){
 
   //Create Baby
-  BabyFile = new TFile(Form("%s/%s_%i.root", path.Data(), output_name, expt ? 1 : 0), "RECREATE");
+  BabyFile = new TFile(Form("%s/%s.root", path.Data(), output_name), "RECREATE");
   BabyFile->cd();
   BabyTree = new TTree("t", "SS2015 Baby Ntuple");
 
@@ -464,7 +464,7 @@ void babyMaker::InitBabyNtuple(){
 } 
 
 //Main function
-int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty* jecUnc, bool expt, int file){
+int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty* jecUnc, int file){
 
   //Initialize variables
   InitBabyNtuple();
@@ -526,7 +526,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
 
   //Fill lepton variables
-  hyp_result_t best_hyp_info = chooseBestHyp(expt, verbose);
+  hyp_result_t best_hyp_info = chooseBestHyp(verbose);
   hyp_class = best_hyp_info.hyp_class;
   int best_hyp = best_hyp_info.best_hyp;
   if (hyp_class == 6){
@@ -748,8 +748,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   lep2_miniIso = abs(lep2_id)==11 ? elMiniRelIsoCMS3_EA(lep2_idx, ssEAversion) : muMiniRelIsoCMS3_EA(lep2_idx, ssEAversion);
 
   //For inSituFR, both must pass looser ID (easier than selection ID)
-  passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx, expt); 
-  passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx, expt); 
+  passed_id_inSituFR_lep1 = isInSituFRLepton(lep1_id, lep1_idx); 
+  passed_id_inSituFR_lep2 = isInSituFRLepton(lep2_id, lep2_idx); 
 
   //Closest jet for both leptons
   lep1_closeJet = closestJet(lep1_p4, 0.4, 3.0, ssWhichCorr);
