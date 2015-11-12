@@ -29,7 +29,7 @@ int main(int argc, char *argv[]){
   babyMaker *mylooper = new babyMaker();
 
   //Path, filename, suffix
-  string path = "/store/group/snt/run2_25ns/";
+  string path = "/store/group/snt/run2_25ns_MiniAODv2/";
   string name = ""; 
   string shortname = ""; 
   const char* filename = Form("merged_ntuple_%i.root", file);
@@ -139,7 +139,6 @@ int main(int argc, char *argv[]){
       name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       shortname="wjets_lo";
       tag="V07-04-11";
-      path="/store/group/snt/run2_25ns_MiniAODv2";
       break;
     case WWZ:
       name="WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
