@@ -5,13 +5,13 @@ Should_Transfer_Files = YES
 WhenToTransferOutput = ON_EXIT
 Transfer_Input_Files = main.exe,liblooperBatch.so,CORE.tar.gz,LinkDef_out_rdict.pcm,goodRunList/goldenJson1p56fb.txt,btagsf.tar.gz
 Transfer_Output_Files = /dev/null
-Output = /data/tmp/cgeorge/logs/condorLog_ARG1_ARG2_ARG5.stdout
-Error = /data/tmp/cgeorge/logs/condorLog_ARG1_ARG2_ARG5.stderr
-Log = /data/tmp/cgeorge/logs/condorLog_ARG1_ARG2_ARG5.log
+Output = /data/tmp/cgeorge/logs/condorLog_ARG1_ARG2_ARG4.stdout
+Error = /data/tmp/cgeorge/logs/condorLog_ARG1_ARG2_ARG4.stderr
+Log = /data/tmp/cgeorge/logs/condorLog_ARG1_ARG2_ARG4.log
 +Owner = undefined
 notify_user = george@physics.ucsb.edu
 x509userproxy = USER_PROXY
 Executable = condorExecutable.sh
 Transfer_executable = True
-arguments = ARG1 ARG2 ARG4
+arguments = ARG1 ARG2 ARG3
 Queue 1
