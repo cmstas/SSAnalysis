@@ -39,7 +39,7 @@ sed -i "s/cgeorge/$USER/" condorExecutable.sh
 for expt in "0" # "1"
 do
   nIter=0
-  for sname in "TTZlow" # "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DATAMUONEGC_05oct" "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DATAMUONEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DATAMUONEGD_v4" # "WJets" "TTZL" "DY_high" "DY_low" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH"  "T5QQQQWWDeg_1000_315_300"  "TTW" "WZ3LNu" "WJets_LO"  "ZG" "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5ttttDeg_1000_300_285_280" "T6TTWW_600_425_50" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ" "WWZ" "ZZ" "QQWW" "TTBAR"  
+  for sname in "TTWnew" "TTZlow"  "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DATAMUONEGC_05oct" "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DATAMUONEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DATAMUONEGD_v4" # "WJets" "TTZL" "DY_high" "DY_low" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH"  "T5QQQQWWDeg_1000_315_300"  "TTW" "WZ3LNu" "WJets_LO"  "ZG" "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5ttttDeg_1000_300_285_280" "T6TTWW_600_425_50" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ" "WWZ" "ZZ" "QQWW" "TTBAR"  
   do
     path="/hadoop/cms/store/group/snt/run2_25ns"
     #Iter
@@ -51,6 +51,12 @@ do
       name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2"
       tag=V07-04-08
       nameNu=0
+    elif [ $sname == "TTWnew" ]
+    then
+      name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+      tag=V07-04-11
+      nameNu=62
+      path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2/"
     elif   [ $sname == "TTWQQ"           ]
     then 
       name="TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
