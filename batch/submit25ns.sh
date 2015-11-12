@@ -49,7 +49,7 @@ do
     tag=V07-04-11
     nameNu=0
   elif [ $sname == "TTW" ]
-  then name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1" 
+  then name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
     tag=V07-04-11
     nameNu=1
   elif [ $sname == "TTZL" ]
