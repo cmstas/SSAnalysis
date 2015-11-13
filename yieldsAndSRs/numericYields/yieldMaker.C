@@ -25,7 +25,7 @@ bool doLatex = 1;
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
-struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_l1eta; TH1F* h_l2eta; TH1F* h_type; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; }; 
+struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_l1eta; TH1F* h_l2eta; TH1F* h_type; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; TH1F* h_dxy; TH1F* h_dz; TH1F* h_sip3d; TH1F* h_mva; }; 
 
 //Total
 yields_t total; 
@@ -640,6 +640,50 @@ void getyields(){
   met_plots.push_back(pair<TH1F*, float>(p_fakes.h_met, roughSystFAKES ));
   dataMCplotMaker(p_data.h_met, met_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName met_all_SS.pdf --xAxisLabel MET --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
+  vector<pair<TH1F*, float> > dxy_plots;
+  dxy_plots.push_back(pair<TH1F*, float>(p_ttw.h_dxy  , roughSystTTW   ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_ttzh.h_dxy , roughSystTTZH  ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_wz.h_dxy   , roughSystWZ    ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_ww.h_dxy   , roughSystWW    ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_xg.h_dxy   , roughSystXG    ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_rares.h_dxy, roughSystRARES ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_flips.h_dxy, roughSystFLIPS ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_fakes.h_dxy, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_met, met_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName dxy_all_SS.pdf --xAxisLabel dxy --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+
+  vector<pair<TH1F*, float> > dz_plots;
+  dz_plots.push_back(pair<TH1F*, float>(p_ttw.h_dz  , roughSystTTW   ));
+  dz_plots.push_back(pair<TH1F*, float>(p_ttzh.h_dz , roughSystTTZH  ));
+  dz_plots.push_back(pair<TH1F*, float>(p_wz.h_dz   , roughSystWZ    ));
+  dz_plots.push_back(pair<TH1F*, float>(p_ww.h_dz   , roughSystWW    ));
+  dz_plots.push_back(pair<TH1F*, float>(p_xg.h_dz   , roughSystXG    ));
+  dz_plots.push_back(pair<TH1F*, float>(p_rares.h_dz, roughSystRARES ));
+  dz_plots.push_back(pair<TH1F*, float>(p_flips.h_dz, roughSystFLIPS ));
+  dz_plots.push_back(pair<TH1F*, float>(p_fakes.h_dz, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_dz, dz_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName dz_all_SS.pdf --xAxisLabel dz --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+
+  vector<pair<TH1F*, float> > sip3d_plots;
+  sip3d_plots.push_back(pair<TH1F*, float>(p_ttw.h_sip3d  , roughSystTTW   ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_ttzh.h_sip3d , roughSystTTZH  ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_wz.h_sip3d   , roughSystWZ    ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_ww.h_sip3d   , roughSystWW    ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_xg.h_sip3d   , roughSystXG    ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_rares.h_sip3d, roughSystRARES ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_flips.h_sip3d, roughSystFLIPS ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_fakes.h_sip3d, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_sip3d, sip3d_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName sip3d_all_SS.pdf --xAxisLabel SIP3D --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+
+  vector<pair<TH1F*, float> > mva_plots;
+  mva_plots.push_back(pair<TH1F*, float>(p_ttw.h_mva  , roughSystTTW   ));
+  mva_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mva , roughSystTTZH  ));
+  mva_plots.push_back(pair<TH1F*, float>(p_wz.h_mva   , roughSystWZ    ));
+  mva_plots.push_back(pair<TH1F*, float>(p_ww.h_mva   , roughSystWW    ));
+  mva_plots.push_back(pair<TH1F*, float>(p_xg.h_mva   , roughSystXG    ));
+  mva_plots.push_back(pair<TH1F*, float>(p_rares.h_mva, roughSystRARES ));
+  mva_plots.push_back(pair<TH1F*, float>(p_flips.h_mva, roughSystFLIPS ));
+  mva_plots.push_back(pair<TH1F*, float>(p_fakes.h_mva, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mva, mva_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName mva_all_SS.pdf --xAxisLabel MVA --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+
   vector<pair<TH1F*, float> > mll_plots;
   mll_plots.push_back(pair<TH1F*, float>(p_ttw.h_mll  , roughSystTTW   ));
   mll_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mll , roughSystTTZH  ));
@@ -797,35 +841,39 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   y_result.MM    = 0;
   y_result.TOTAL = 0;
 
-  p_result.h_ht           = new TH1F(Form("ht_%s"           , chain->GetTitle()) , Form("ht_%s"           , chain->GetTitle()) , 10  , 0 , 500);  p_result.h_ht           ->Sumw2();
-  p_result.h_met          = new TH1F(Form("met_%s"          , chain->GetTitle()) , Form("met_%s"          , chain->GetTitle()) , 10  , 0 , 200);  p_result.h_met          ->Sumw2();
-  p_result.h_mll          = new TH1F(Form("mll_%s"          , chain->GetTitle()) , Form("mll_%s"          , chain->GetTitle()) , 10  , 0 , 200);  p_result.h_mll          ->Sumw2();
-  p_result.h_mtmin        = new TH1F(Form("mtmin_%s"        , chain->GetTitle()) , Form("mtmin_%s"        , chain->GetTitle()) , 10  , 0 , 200);  p_result.h_mtmin        ->Sumw2();
-  p_result.h_njets        = new TH1F(Form("njets_%s"        , chain->GetTitle()) , Form("njets_%s"        , chain->GetTitle()) , 8   , 0 , 8);	  p_result.h_njets        ->Sumw2();
-  p_result.h_nbtags       = new TH1F(Form("nbtags_%s"       , chain->GetTitle()) , Form("nbtags_%s"       , chain->GetTitle()) , 6   , 0 , 6);	  p_result.h_nbtags       ->Sumw2();
-  p_result.h_l1pt         = new TH1F(Form("l1pt_%s"         , chain->GetTitle()) , Form("l1pt_%s"         , chain->GetTitle()) , 10  , 0 , 150);  p_result.h_l1pt         ->Sumw2();
-  p_result.h_l2pt         = new TH1F(Form("l2pt_%s"         , chain->GetTitle()) , Form("l2pt_%s"         , chain->GetTitle()) , 10  , 0 , 100);  p_result.h_l2pt         ->Sumw2();
-  p_result.h_l1eta         = new TH1F(Form("l1eta_%s"         , chain->GetTitle()) , Form("l1eta_%s"         , chain->GetTitle()) , 24  , -2.5 , 2.5);  p_result.h_l1eta         ->Sumw2();
-  p_result.h_l2eta         = new TH1F(Form("l2eta_%s"         , chain->GetTitle()) , Form("l2eta_%s"         , chain->GetTitle()) , 24  , -2.5 , 2.5);  p_result.h_l2eta         ->Sumw2();
-  p_result.SRHH.EE        = new TH1F(Form("SRHH_EE_%s"      , chain->GetTitle()) , Form("SRHH_EE_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.EE        ->Sumw2();
-  p_result.SRHH.EM        = new TH1F(Form("SRHH_EM_%s"      , chain->GetTitle()) , Form("SRHH_EM_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.EM        ->Sumw2();
-  p_result.SRHH.MM        = new TH1F(Form("SRHH_MM_%s"      , chain->GetTitle()) , Form("SRHH_MM_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.MM        ->Sumw2();
-  p_result.SRHH.TOTAL     = new TH1F(Form("SRHH_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.TOTAL     ->Sumw2();
-  p_result.SRHL.EE        = new TH1F(Form("SRHL_EE_%s"      , chain->GetTitle()) , Form("SRHL_EE_%s"      , chain->GetTitle()) , 26  , 1 , 27);	  p_result.SRHL.EE        ->Sumw2();
-  p_result.SRHL.EM        = new TH1F(Form("SRHL_EM_%s"      , chain->GetTitle()) , Form("SRHL_EM_%s"      , chain->GetTitle()) , 26  , 1 , 27);	  p_result.SRHL.EM        ->Sumw2();
-  p_result.SRHL.MM        = new TH1F(Form("SRHL_MM_%s"      , chain->GetTitle()) , Form("SRHL_MM_%s"      , chain->GetTitle()) , 26  , 1 , 27);	  p_result.SRHL.MM        ->Sumw2();
-  p_result.SRHL.TOTAL     = new TH1F(Form("SRHL_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);	  p_result.SRHL.TOTAL     ->Sumw2();
-  p_result.SRLL.EE        = new TH1F(Form("SRLL_EE_%s"      , chain->GetTitle()) , Form("SRLL_EE_%s"      , chain->GetTitle()) , 8   , 1 , 9);	  p_result.SRLL.EE        ->Sumw2();
-  p_result.SRLL.EM        = new TH1F(Form("SRLL_EM_%s"      , chain->GetTitle()) , Form("SRLL_EM_%s"      , chain->GetTitle()) , 8   , 1 , 9);	  p_result.SRLL.EM        ->Sumw2();
-  p_result.SRLL.MM        = new TH1F(Form("SRLL_MM_%s"      , chain->GetTitle()) , Form("SRLL_MM_%s"      , chain->GetTitle()) , 8   , 1 , 9);	  p_result.SRLL.MM        ->Sumw2();
-  p_result.SRLL.TOTAL     = new TH1F(Form("SRLL_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9);	  p_result.SRLL.TOTAL     ->Sumw2();
-  p_result.h_type         = new TH1F(Form("type_%s"         , chain->GetTitle()) , Form("type_%s"         , chain->GetTitle()) , 4   , 0 , 4);	  p_result.h_type         ->Sumw2();
-  p_result.h_lep1_miniIso = new TH1F(Form("lep1_miniIso_%s" , chain->GetTitle()) , Form("lep1_miniIso_%s" , chain->GetTitle()) , 30 , 0 , 0.2);	  p_result.h_lep1_miniIso ->Sumw2();
-  p_result.h_lep2_miniIso = new TH1F(Form("lep2_miniIso_%s" , chain->GetTitle()) , Form("lep2_miniIso_%s" , chain->GetTitle()) , 30 , 0 , 0.2);	  p_result.h_lep2_miniIso ->Sumw2();
-  p_result.h_lep1_ptRatio = new TH1F(Form("lep1_ptRatio_%s" , chain->GetTitle()) , Form("lep1_ptRatio_%s" , chain->GetTitle()) , 30 , 0 , 1.5);	  p_result.h_lep1_ptRatio ->Sumw2();
-  p_result.h_lep2_ptRatio = new TH1F(Form("lep2_ptRatio_%s" , chain->GetTitle()) , Form("lep2_ptRatio_%s" , chain->GetTitle()) , 30 , 0 , 1.5);	  p_result.h_lep2_ptRatio ->Sumw2();
-  p_result.h_lep1_ptRel   = new TH1F(Form("lep1_ptRel_%s"   , chain->GetTitle()) , Form("lep1_ptRel_%s"   , chain->GetTitle()) , 25 , 0 , 25);	  p_result.h_lep1_ptRel   ->Sumw2();
-  p_result.h_lep2_ptRel   = new TH1F(Form("lep2_ptRel_%s"   , chain->GetTitle()) , Form("lep2_ptRel_%s"   , chain->GetTitle()) , 25 , 0 , 25);	  p_result.h_lep2_ptRel   ->Sumw2();
+  p_result.h_dxy          = new TH1F(Form("dxy_%s"         , chain->GetTitle()) , Form("dxy_%s"         , chain->GetTitle()), 20, 0   ,  10); p_result.h_dxy         ->Sumw2();
+  p_result.h_dz           = new TH1F(Form("dz_%s"          , chain->GetTitle()) , Form("dz_%s"          , chain->GetTitle()), 20, 0   , 0.1); p_result.h_dz          ->Sumw2();
+  p_result.h_sip3d        = new TH1F(Form("sip3d_%s"       , chain->GetTitle()) , Form("sip3d_%s"       , chain->GetTitle()), 20, 0   ,   5); p_result.h_sip3d       ->Sumw2();
+  p_result.h_mva          = new TH1F(Form("mva_%s"         , chain->GetTitle()) , Form("mva_%s"         , chain->GetTitle()), 20, 0   , 1.5); p_result.h_mva         ->Sumw2();
+  p_result.h_ht           = new TH1F(Form("ht_%s"          , chain->GetTitle()) , Form("ht_%s"          , chain->GetTitle()), 10, 0   , 500); p_result.h_ht          ->Sumw2();
+  p_result.h_met          = new TH1F(Form("met_%s"         , chain->GetTitle()) , Form("met_%s"         , chain->GetTitle()), 10, 0   , 200); p_result.h_met         ->Sumw2();
+  p_result.h_mll          = new TH1F(Form("mll_%s"         , chain->GetTitle()) , Form("mll_%s"         , chain->GetTitle()), 10, 0   , 200); p_result.h_mll         ->Sumw2();
+  p_result.h_mtmin        = new TH1F(Form("mtmin_%s"       , chain->GetTitle()) , Form("mtmin_%s"       , chain->GetTitle()), 10, 0   , 200); p_result.h_mtmin       ->Sumw2();
+  p_result.h_njets        = new TH1F(Form("njets_%s"       , chain->GetTitle()) , Form("njets_%s"       , chain->GetTitle()), 8 , 0   , 8);   p_result.h_njets       ->Sumw2();
+  p_result.h_nbtags       = new TH1F(Form("nbtags_%s"      , chain->GetTitle()) , Form("nbtags_%s"      , chain->GetTitle()), 6 , 0   , 6);   p_result.h_nbtags      ->Sumw2();
+  p_result.h_l1pt         = new TH1F(Form("l1pt_%s"        , chain->GetTitle()) , Form("l1pt_%s"        , chain->GetTitle()), 10, 0   , 150); p_result.h_l1pt        ->Sumw2();
+  p_result.h_l2pt         = new TH1F(Form("l2pt_%s"        , chain->GetTitle()) , Form("l2pt_%s"        , chain->GetTitle()), 10, 0   , 100); p_result.h_l2pt        ->Sumw2();
+  p_result.h_l1eta        = new TH1F(Form("l1eta_%s"      , chain->GetTitle()) , Form("l1eta_%s"        , chain->GetTitle()), 24, -2.5, 2.5); p_result.h_l1eta       ->Sumw2();
+  p_result.h_l2eta        = new TH1F(Form("l2eta_%s"      , chain->GetTitle()) , Form("l2eta_%s"        , chain->GetTitle()), 24, -2.5, 2.5); p_result.h_l2eta       ->Sumw2();
+  p_result.SRHH.EE        = new TH1F(Form("SRHH_EE_%s"     , chain->GetTitle()) , Form("SRHH_EE_%s"     , chain->GetTitle()), 32, 1   , 33);  p_result.SRHH.EE       ->Sumw2();
+  p_result.SRHH.EM        = new TH1F(Form("SRHH_EM_%s"     , chain->GetTitle()) , Form("SRHH_EM_%s"     , chain->GetTitle()), 32, 1   , 33);  p_result.SRHH.EM       ->Sumw2();
+  p_result.SRHH.MM        = new TH1F(Form("SRHH_MM_%s"     , chain->GetTitle()) , Form("SRHH_MM_%s"     , chain->GetTitle()), 32, 1   , 33);  p_result.SRHH.MM       ->Sumw2();
+  p_result.SRHH.TOTAL     = new TH1F(Form("SRHH_TOTAL_%s"  , chain->GetTitle()) , Form("SRHH_TOTAL_%s"  , chain->GetTitle()), 32, 1   , 33);  p_result.SRHH.TOTAL    ->Sumw2();
+  p_result.SRHL.EE        = new TH1F(Form("SRHL_EE_%s"     , chain->GetTitle()) , Form("SRHL_EE_%s"     , chain->GetTitle()), 26, 1   , 27);  p_result.SRHL.EE       ->Sumw2();
+  p_result.SRHL.EM        = new TH1F(Form("SRHL_EM_%s"     , chain->GetTitle()) , Form("SRHL_EM_%s"     , chain->GetTitle()), 26, 1   , 27);  p_result.SRHL.EM       ->Sumw2();
+  p_result.SRHL.MM        = new TH1F(Form("SRHL_MM_%s"     , chain->GetTitle()) , Form("SRHL_MM_%s"     , chain->GetTitle()), 26, 1   , 27);  p_result.SRHL.MM       ->Sumw2();
+  p_result.SRHL.TOTAL     = new TH1F(Form("SRHL_TOTAL_%s"  , chain->GetTitle()) , Form("SRHL_TOTAL_%s"  , chain->GetTitle()), 26, 1   , 27);  p_result.SRHL.TOTAL    ->Sumw2();
+  p_result.SRLL.EE        = new TH1F(Form("SRLL_EE_%s"     , chain->GetTitle()) , Form("SRLL_EE_%s"     , chain->GetTitle()), 8 , 1   , 9);   p_result.SRLL.EE       ->Sumw2();
+  p_result.SRLL.EM        = new TH1F(Form("SRLL_EM_%s"     , chain->GetTitle()) , Form("SRLL_EM_%s"     , chain->GetTitle()), 8 , 1   , 9);   p_result.SRLL.EM       ->Sumw2();
+  p_result.SRLL.MM        = new TH1F(Form("SRLL_MM_%s"     , chain->GetTitle()) , Form("SRLL_MM_%s"     , chain->GetTitle()), 8 , 1   , 9);   p_result.SRLL.MM       ->Sumw2();
+  p_result.SRLL.TOTAL     = new TH1F(Form("SRLL_TOTAL_%s"  , chain->GetTitle()) , Form("SRLL_TOTAL_%s"  , chain->GetTitle()), 8 , 1   , 9);   p_result.SRLL.TOTAL    ->Sumw2();
+  p_result.h_type         = new TH1F(Form("type_%s"        , chain->GetTitle()) , Form("type_%s"        , chain->GetTitle()), 4 , 0   , 4);   p_result.h_type        ->Sumw2();
+  p_result.h_lep1_miniIso = new TH1F(Form("lep1_miniIso_%s", chain->GetTitle()) , Form("lep1_miniIso_%s", chain->GetTitle()), 30, 0   , 0.2); p_result.h_lep1_miniIso->Sumw2();
+  p_result.h_lep2_miniIso = new TH1F(Form("lep2_miniIso_%s", chain->GetTitle()) , Form("lep2_miniIso_%s", chain->GetTitle()), 30, 0   , 0.2); p_result.h_lep2_miniIso->Sumw2();
+  p_result.h_lep1_ptRatio = new TH1F(Form("lep1_ptRatio_%s", chain->GetTitle()) , Form("lep1_ptRatio_%s", chain->GetTitle()), 30, 0   , 1.5); p_result.h_lep1_ptRatio->Sumw2();
+  p_result.h_lep2_ptRatio = new TH1F(Form("lep2_ptRatio_%s", chain->GetTitle()) , Form("lep2_ptRatio_%s", chain->GetTitle()), 30, 0   , 1.5); p_result.h_lep2_ptRatio->Sumw2();
+  p_result.h_lep1_ptRel   = new TH1F(Form("lep1_ptRel_%s"  , chain->GetTitle()) , Form("lep1_ptRel_%s"  , chain->GetTitle()), 25, 0   , 25);  p_result.h_lep1_ptRel  ->Sumw2();
+  p_result.h_lep2_ptRel   = new TH1F(Form("lep2_ptRel_%s"  , chain->GetTitle()) , Form("lep2_ptRel_%s"  , chain->GetTitle()), 25, 0   , 25);  p_result.h_lep2_ptRel  ->Sumw2();
 
   //For JES variations
   plots_t p_fake_alt_up;
@@ -1148,23 +1196,31 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
                                     y_result.TOTAL += weight;
 
       //Fill kinem plots
-      p_result.h_ht          ->Fill(ss::ht()                         , weight);
-      p_result.h_met         ->Fill(ss::met()                        , weight);
-      p_result.h_mll         ->Fill((ss::lep1_p4()*lep1_pt/ss::lep1_p4().pt()+ss::lep2_p4()*lep2_pt/ss::lep2_p4().pt()).M(), weight);
-      p_result.h_mtmin       ->Fill(mtmin                            , weight);
-      p_result.h_njets       ->Fill(ss::njets()                      , weight);
-      p_result.h_nbtags      ->Fill(ss::nbtags()                     , weight);
-      p_result.h_l1pt        ->Fill(lep1_pt                          , weight);
-      p_result.h_l2pt        ->Fill(lep2_pt                          , weight);
-      p_result.h_l1eta       ->Fill(ss::lep1_p4().eta()              , weight);
-      p_result.h_l2eta       ->Fill(ss::lep2_p4().eta()              , weight);
-      p_result.h_type        ->Fill(ss::hyp_type()                   , weight); 
-      p_result.h_lep1_miniIso->Fill(ss::lep1_miniIso()               , weight); 
-      p_result.h_lep2_miniIso->Fill(ss::lep2_miniIso()               , weight); 
-      p_result.h_lep1_ptRel  ->Fill(ss::lep1_ptrel_v1()              , weight); 
-      p_result.h_lep2_ptRel  ->Fill(ss::lep2_ptrel_v1()              , weight); 
-      p_result.h_lep1_ptRatio->Fill(ptratio_1                        , weight); 
-      p_result.h_lep2_ptRatio->Fill(ptratio_2                        , weight); 
+      p_result.h_dxy         ->Fill(ss::lep1_dxyPV()                                                                        , weight);
+      p_result.h_dxy         ->Fill(ss::lep2_dxyPV()                                                                        , weight);
+      p_result.h_dz          ->Fill(ss::lep1_dZ()                                                                           , weight);
+      p_result.h_dz          ->Fill(ss::lep2_dZ()                                                                           , weight);
+      p_result.h_sip3d       ->Fill(ss::lep1_sip()                                                                          , weight);
+      p_result.h_sip3d       ->Fill(ss::lep1_sip()                                                                          , weight);
+      if (abs(ss::lep1_id()) == 11) p_result.h_mva->Fill(ss::lep1_MVA()                                                     , weight);
+      if (abs(ss::lep2_id()) == 11) p_result.h_mva->Fill(ss::lep2_MVA()                                                     , weight);
+      p_result.h_ht          ->Fill(ss::ht()                                                                                , weight);
+      p_result.h_met         ->Fill(ss::met()                                                                               , weight);
+      p_result.h_mll         ->Fill((ss::lep1_p4()*lep1_pt/ss::lep1_p4().pt()+ss::lep2_p4()*lep2_pt/ss::lep2_p4().pt()).M() , weight);
+      p_result.h_mtmin       ->Fill(mtmin                                                                                   , weight);
+      p_result.h_njets       ->Fill(ss::njets()                                                                             , weight);
+      p_result.h_nbtags      ->Fill(ss::nbtags()                                                                            , weight);
+      p_result.h_l1pt        ->Fill(lep1_pt                                                                                 , weight);
+      p_result.h_l2pt        ->Fill(lep2_pt                                                                                 , weight);
+      p_result.h_l1eta       ->Fill(ss::lep1_p4().eta()                                                                     , weight);
+      p_result.h_l2eta       ->Fill(ss::lep2_p4().eta()                                                                     , weight);
+      p_result.h_type        ->Fill(ss::hyp_type()                                                                          , weight);
+      p_result.h_lep1_miniIso->Fill(ss::lep1_miniIso()                                                                      , weight);
+      p_result.h_lep2_miniIso->Fill(ss::lep2_miniIso()                                                                      , weight);
+      p_result.h_lep1_ptRel  ->Fill(ss::lep1_ptrel_v1()                                                                     , weight);
+      p_result.h_lep2_ptRel  ->Fill(ss::lep2_ptrel_v1()                                                                     , weight);
+      p_result.h_lep1_ptRatio->Fill(ptratio_1                                                                               , weight);
+      p_result.h_lep2_ptRatio->Fill(ptratio_2                                                                               , weight);
       if (isData && !doFakes && !doFlips && SR > 0){
         cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
         nSelected++; 
