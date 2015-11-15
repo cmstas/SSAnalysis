@@ -1102,14 +1102,21 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	  if (categ==1) cat = "HL";
 	  if (categ==2) cat = "LL";
 
-      // if (categ!=0) continue;//test
+      //bool avi = 0; 
+      //if (categ == 0 && SR ==  9) avi = 1;
+      //if (categ == 0 && SR == 10) avi = 1;
+      //if (categ == 1 && SR ==  7) avi = 1;
+      //if (categ == 1 && SR ==  8) avi = 1;
+      //if (avi == 0) continue; 
 
       if (doNoData && testFakeSR) {
-	if (categ==0) {
-	  if (SR!=9) continue;
-	} else if (categ==1) {
-	  if (SR!=1 && SR!=7) continue;
-	} else continue;
+        if (categ==0) {
+          if (SR!=9) continue;
+        } 
+        else if (categ==1) {
+          if (SR!=1 && SR!=7) continue;
+        } 
+        else continue;
       }
 
       if (doFakes == 1 && ss::is_real_data() && ss::hyp_class()==2 && SR>0) {

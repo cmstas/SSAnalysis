@@ -2,15 +2,15 @@
 
 path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 
-hadd DataDoubleEGC_05oct.root         $path/datadoubleegc_05oct_*_0.root     
-hadd DataDoubleMuonC_05oct.root       $path/datadoublemuonc_05oct_*_0.root   
-hadd DataMuonEGC_05oct.root           $path/datamuonegc_05oct_*_0.root   
-hadd DataDoubleEGD_05oct.root         $path/datadoubleegd_05oct_*_0.root     
-hadd DataDoubleMuonD_05oct.root       $path/datadoublemuond_05oct_*_0.root   
-hadd DataMuonEGD_05oct.root           $path/datamuonegd_05oct_*_0.root   
-hadd DataDoubleEGD_v4.root            $path/datadoubleegd_v4_*_0.root     
-hadd DataDoubleMuonD_v4.root          $path/datadoublemuond_v4_*_0.root   
-hadd DataMuonEGD_v4.root              $path/datamuonegd_v4_*_0.root   
+#hadd DataDoubleEGC_05oct.root         $path/datadoubleegc_05oct_*_0.root     
+#hadd DataDoubleMuonC_05oct.root       $path/datadoublemuonc_05oct_*_0.root   
+#hadd DataMuonEGC_05oct.root           $path/datamuonegc_05oct_*_0.root   
+#hadd DataDoubleEGD_05oct.root         $path/datadoubleegd_05oct_*_0.root     
+#hadd DataDoubleMuonD_05oct.root       $path/datadoublemuond_05oct_*_0.root   
+#hadd DataMuonEGD_05oct.root           $path/datamuonegd_05oct_*_0.root   
+#hadd DataDoubleEGD_v4.root            $path/datadoubleegd_v4_*_0.root     
+#hadd DataDoubleMuonD_v4.root          $path/datadoublemuond_v4_*_0.root   
+#hadd DataMuonEGD_v4.root              $path/datamuonegd_v4_*_0.root   
 #hadd DY_high.root                     $path/dy_high_*_0.root          
 #hadd DY_low.root                      $path/dy_low_*_0.root           
 #hadd TTBAR.root                       $path/ttbar_[0-9]*_0.root            
@@ -21,6 +21,7 @@ hadd DataMuonEGD_v4.root              $path/datamuonegd_v4_*_0.root
 #hadd TTZL.root                        $path/ttzl_*_0.root
 #hadd TTZQ.root                        $path/ttzq_*_0.root
 #hadd TTW.root                         $path/ttw_*_0.root
+hadd TTWnew.root                         $path/ttwnew_*_0.root
 #hadd TTWQQ.root                       $path/ttwqq_*_0.root
 #hadd WZ3LNU.root                      $path/wz3lnu_*_0.root
 #hadd WGToLNuG.root                    $path/wgtolnug_*_0.root                        
