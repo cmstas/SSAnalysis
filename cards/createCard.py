@@ -6,10 +6,10 @@ import math
 
 #example: python createCard.py dir t1tttt_1500 
 #example: python createCard.py dir t1tttt_1500 hihi sr card-hihi.txt
-#example: for dir in v4.06-tmp; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do python createCard.py ${dir} ${sig}; done; done
+#example: for dir in v4.08; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do python createCard.py ${dir} ${sig}; done; done
 
 #then get expected limits with: combine -M Asymptotic dir/card.txt --run expected --noFitAsimov
-#for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do echo ${sig}; combine -M Asymptotic v4.06-tmp/card_${sig}_1.3ifb-all.txt | grep ": r <" ; done
+#for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do echo ${sig}; combine -M Asymptotic v4.08/card_${sig}_1.3ifb-all.txt | grep ": r <" ; done
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
@@ -66,13 +66,18 @@ def writeStatForProcess(dir, card, kine, process, processes):
             for myprocess in processes: 
                 if myprocess.count == process.count: 
                     card.write("%-15s " % "1")
-                    hupnew = hup.Clone("%s%s%s%sUp" % (process.name,"_stat_",kine,bin))
-                    hupnew.Reset()
-                    hupnew.SetBinContent(bin,hup.GetBinContent(bin))
-                    hdnnew = hdn.Clone("%s%s%s%sDown" % (process.name,"_stat_",kine,bin))
-                    hdnnew.Reset()
-                    hdnnew.SetBinContent(bin,hdn.GetBinContent(bin))
-                    hdnnew.Write()
+                    hupnewtest = f.Get("%s%s%s%sUp" % (process.name,"_stat_",kine,bin))
+                    if not hupnewtest:
+                        hupnew = hup.Clone("%s%s%s%sUp" % (process.name,"_stat_",kine,bin))
+                        hupnew.Reset()
+                        hupnew.SetBinContent(bin,hup.GetBinContent(bin))
+                        hupnew.Write()
+                    hdnnewtest = f.Get("%s%s%s%sDown" % (process.name,"_stat_",kine,bin))
+                    if not hdnnewtest:
+                        hdnnew = hdn.Clone("%s%s%s%sDown" % (process.name,"_stat_",kine,bin))
+                        hdnnew.Reset()
+                        hdnnew.SetBinContent(bin,hdn.GetBinContent(bin))
+                        hdnnew.Write()
                 else:  card.write("%-15s " % ("-"))
             card.write("\n")
     else: 

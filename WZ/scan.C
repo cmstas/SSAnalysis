@@ -27,7 +27,7 @@ int scan(){
     std::vector<std::string> titles;
 
     TString tag = getTag();
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR.root");  titles.push_back("tt");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");  titles.push_back("tt");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY*.root");    titles.push_back("DY");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZ*.root");    titles.push_back("ttZ");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets*.root"); titles.push_back("WJets");
@@ -138,7 +138,8 @@ int scan(){
 
             float scale = 1.0;
             if(!ss::is_real_data()) {
-                scale = ss::scale1fb() * luminosity;
+	        scale = ss::scale1fb() * luminosity * getPUwECO(ss::nGoodVertices());
+		// if (iSample==5) scale/=1.0857;//fixme
             } else {
                 DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
                 if (is_duplicate(id) ) continue;
@@ -155,8 +156,8 @@ int scan(){
 
             if( !(ss::lep1_passes_id() && 
                   ss::lep2_passes_id() && 
-                  ss::lep3_veto()     ) ) continue; // looser selection for third lepton
-                  // ss::lep3_passes_id()) ) continue;
+                  // ss::lep3_veto()     ) ) continue; // looser selection for third lepton
+                  ss::lep3_passes_id()) ) continue;
 
 	    //this is what santiago is doing:
 	    // if (ss::lep1_id()*ss::lep2_id()<0) continue;
@@ -173,7 +174,7 @@ int scan(){
             if (fabs(zmass-91.2) > 15.0) continue;
 
             // if MET < 40 or Njets <= 2 then we don't care about considering it at all, even in the N-1 plots, so exclude it
-            if(ss::met() < 50.0) continue;
+            if(ss::met() < 30.0) continue;
             if(ss::njets() < 2) continue;
 
             // all 4 of these define the CR
@@ -261,7 +262,8 @@ int scan(){
 
     // TH1F* null = new TH1F("","",1,0,1);
     TH1F* data;
-    std::string com = " --errHistAtBottom --doCounts --colorTitle --lumi 1.264 --lumiUnit fb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/";
+    TString comt = Form(" --errHistAtBottom --doCounts --colorTitle --lumi %.2f --lumiUnit fb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/",getLumi());
+    std::string com = comt.Data();
     std::string pct = " --showPercentage ";
     // std::string spec = "SR1-8";
     std::string spec = "";
