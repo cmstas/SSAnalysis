@@ -37,7 +37,7 @@ sed -i "s/cgeorge/$USER/" condorExecutable.sh
 
 #Then submit jobs
 nIter=0
-for sname in "GGHtoZZto4L" "TTBAR" "TTW" "WJets_LO"  "ZG" "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5QQQQWWDeg_1000_315_300" "T5ttttDeg_1000_300_285_280" "T6TTWW_600_425_50" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ" "WWZ" "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DataMuonEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DataMuonEGD_v4" "WJets" "TTZL" "DY_high" "DY_low" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH"  "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DataMuonEGC_05oct"
+for sname in "TG" "TTG" # "WZ"  "GGHtoZZto4L" "TTBAR" "TTW" "WJets_LO"  "ZG" "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5QQQQWWDeg_1000_315_300" "T5ttttDeg_1000_300_285_280" "T6TTWW_600_425_50" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ"  "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DataMuonEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DataMuonEGD_v4" "WJets" "TTZL" "DY_high" "DY_low" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH"  "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DataMuonEGC_05oct"
 do
   path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
   #Iter
@@ -231,49 +231,31 @@ do
     name=T5qqqqWWDeg_mGo1000_mCh315_mChi300_dilep
     path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
     tag=""
-    nameNu=36
+    nameNu=104
   elif [ $sname == "T5QQQQWW_1200_1000_800" ] 
   then
     name=T5qqqqWW_mGo1200_mCh1000_mChi800_dilep
     path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
     tag=""
-    nameNu=37
+    nameNu=102
   elif [ $sname == "T5ttttDeg_1000_300_285_280" ] 
   then
     name=T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec
     path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
     tag=""
-    nameNu=38
-  elif [ $sname == "T2ttDeg_350_330" ] 
-  then
-    name=T2ttDeg_mStop350_mChi330_4bodydec  
-    path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-    tag=""
-    nameNu=39
-  elif [ $sname == "T5QQQQZZ_1200_1000_800" ] 
-  then
-    name=T5qqqqZZ_mGo1200_mCh1000_mChi800_lep  
-    path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-    tag=""
-    nameNu=40
+    nameNu=103
   elif [ $sname == "T6TTWW_600_425_50" ] 
   then
     name=T6ttWW_600_425_50
     path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
     tag=""
-    nameNu=41
-  elif [ $sname == "T5QQQQZZ_1500_800_100" ] 
-  then
-    name=T5qqqqZZ_mGo1500_mCh800_mChi100_lep   
-    path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-    tag=""
-    nameNu=43
+    nameNu=105
   elif [ $sname == "T6TTWW_650_150_50" ] 
   then
     name=T6ttWW_650_150_50
     path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
     tag=""
-    nameNu=44
+    nameNu=106
   else 
     name=$sname 
     tag=V07-04-08
