@@ -3,23 +3,12 @@
 #include "TTree.h"
 #include "TColor.h"
 #include "TH1F.h"
-#include "../commonUtils.h"
-#include "../CORE/CMS3.h"
+#include "/home/users/cgeorge/software/makeCMS3ClassFiles/SS.h"
 #include "../CORE/Tools/utils.h"
 #include "../CORE/SSSelections.h"
 #include "../CORE/MCSelections.h"
-#include "../software/dataMCplotMaker/dataMCplotMaker.h"
-
-struct GenParticleStruct {
-    int id;
-    int idx;
-    float pt;
-    float eta;
-    int did;
-    int didx;
-    float dpt;
-    float deta;
-};
+#include "../CORE/CMS3.h"
+#include "babymaker.h"
 
 hyp_type_t getHypType(int id1, int id2){
         
@@ -43,7 +32,7 @@ vector <pair<GenParticleStruct, GenParticleStruct> > makeGenHyps(){
     float eta = tas::genps_p4().at(iGen).eta();
 
     //Require that it is from a W
-    if (abs(tas::genps_id_mother().at(iGen)) != 24 && abs(tas::genps_id_mother().at(iGen)) != 2212) continue;
+    if (abs(tas::genps_id_mother().at(iGen)) != 24) continue;
 
     //Eta cut
     if (fabs(eta) > 2.4) continue;
@@ -134,7 +123,7 @@ std::pair<GenParticleStruct, GenParticleStruct> getGenHyp(float min_pt_elec, flo
     return good_gen_hyp;
 }
 
-vector<LorentzVector> getGenJets(float pt_cut = 40, float eta_cut = 2.4, float muon_pt_cut = 10, float elec_pt_cut = 15, float deltaR = 0.1){
+vector<LorentzVector> getGenJets(float pt_cut, float eta_cut, float muon_pt_cut, float elec_pt_cut, float deltaR){
 
   //Return LorentzVectors of jets
   vector<LorentzVector> tmp_vec;
@@ -152,7 +141,8 @@ vector<LorentzVector> getGenJets(float pt_cut = 40, float eta_cut = 2.4, float m
     //Remove jets that overlap with leptons
     bool jetislep = false;
     for (size_t iGen = 0; iGen < tas::genps_p4().size(); iGen++){
-      if (abs(tas::genps_id_mother().at(iGen)) != 24 && abs(tas::genps_id_mother().at(iGen)) != 2212) continue;
+      if (abs(tas::genps_id_mother().at(iGen)) != 24) continue;
+      if (abs(tas::genps_status().at(iGen)) != 1) continue;
       if (abs(tas::genps_id().at(iGen)) != 11 && abs(tas::genps_id().at(iGen)) != 13) continue;
       if (fabs(tas::genps_p4().at(iGen).eta()) < 2.4) continue;
       if (abs(tas::genps_id().at(iGen)) == 11 && tas::genps_p4().at(iGen).pt() < elec_pt_cut) continue;
@@ -169,24 +159,55 @@ vector<LorentzVector> getGenJets(float pt_cut = 40, float eta_cut = 2.4, float m
   return tmp_vec;
 }
 
-void outreach(){
+void babymaker(){
 
-  //Define Chain
   TChain *chain = new TChain("Events"); 
   chain->Add("/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2/SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/V07-04-11/merged_ntuple_*.root"); 
 
-  //Define output plots
-  float xbins[] = { 10, 15, 20, 25, 30, 40, 50, 65, 80, 100, 120 }; 
-  TH1F *elec_numer = new TH1F("elec_numer", "elec_numer", 10, xbins); 
-  TH1F *elec_denom = new TH1F("elec_denom", "elec_denom", 10, xbins); 
-  TH1F *muon_numer = new TH1F("muon_numer", "muon_numer", 10, xbins); 
-  TH1F *muon_denom = new TH1F("muon_denom", "muon_denom", 10, xbins); 
+  //Baby tree
+  TFile* BabyFile = new TFile("outreachbaby.root", "RECREATE");
+  BabyFile->cd();
+  TTree* BabyTree = new TTree("t", "SS2015 Outreach Ntuple");
 
-  //Do errors properly
-  elec_numer->Sumw2();
-  muon_numer->Sumw2();
-  elec_denom->Sumw2();
-  muon_denom->Sumw2();
+  //Variables
+  float htGen = 0;
+  int nGenJets = 0;
+  vector <LorentzVector> genJets;
+  int genLep1_id = -9999;
+  int genLep2_id = -9999;
+  int genLep1_idx = -9999;
+  int genLep2_idx = -9999;
+  bool lep1_passID = 0;
+  bool lep2_passID = 0;
+  LorentzVector pt1_reco;
+  LorentzVector pt2_reco;
+  int id1_reco    = -1;
+  int id2_reco    = -1;     
+  int idx1_reco   = -1;
+  int idx2_reco   = -1;     
+  float genmet    = -1;
+  LorentzVector genLep1_p4;
+  LorentzVector genLep2_p4;
+
+  //Baby branches
+  BabyTree->Branch("genLep1_id" , &genLep1_id );
+  BabyTree->Branch("genLep2_id" , &genLep2_id );
+  BabyTree->Branch("genLep1_idx", &genLep1_idx);
+  BabyTree->Branch("genLep2_idx", &genLep2_idx);
+  BabyTree->Branch("htGen"      , &htGen      );
+  BabyTree->Branch("genJets"    , &genJets    );
+  BabyTree->Branch("nGenJets"   , &nGenJets   );
+  BabyTree->Branch("genmet"     , &genmet     );
+  BabyTree->Branch("lep1_passID", &lep1_passID);
+  BabyTree->Branch("lep2_passID", &lep2_passID);
+  BabyTree->Branch("pt1_reco"   , &pt1_reco   );
+  BabyTree->Branch("pt2_reco"   , &pt2_reco   );
+  BabyTree->Branch("id1_reco"   , &pt1_reco   );
+  BabyTree->Branch("id2_reco"   , &pt2_reco   );
+  BabyTree->Branch("idx1_reco"  , &idx1_reco  );
+  BabyTree->Branch("idx2_reco"  , &idx2_reco  );
+  BabyTree->Branch("genLep1_p4" , &genLep1_p4 ); 
+  BabyTree->Branch("genLep2_p4" , &genLep2_p4 ); 
 
   //MVA function
   createAndInitMVA("../CORE", true);
@@ -209,7 +230,7 @@ void outreach(){
     cms3.Init(tree);
 
     //Loop over Events in current file
-    for(unsigned int event = 0; event < tree->GetEntriesFast(); event++){
+    for(unsigned int event = 0; event < tree->GetEntries(); event++){
 
       //Get Event Content
       cms3.GetEntry(event);
@@ -218,87 +239,59 @@ void outreach(){
       //Progress
       CMS3::progress(nEventsTotal, nEventsChain);
 
-      //Look for pair of gen variables
+      //Find gen particles, jets
       std::pair<GenParticleStruct, GenParticleStruct> genHyp = getGenHyp(15, 10);
-
-      //If no good gen leptons, done
       if (genHyp.first.id == 0) continue;
-
-      //If we fail genMET cut, done
-      if (tas::gen_met() < 50) continue;
-
-      //get GenJets
-      vector <LorentzVector> genJets = getGenJets(); 
-      int nGenJets = genJets.size(); 
-      float htGen = 0;
-      for (int i = 0; i < nGenJets; i++) htGen += genJets.at(i).pt(); 
-
-      //If we fail genHT, nJets cuts, done
-      if (nGenJets < 2) continue;
-      if (htGen < 200) continue;
-
-      //Now get our gen particles
       GenParticleStruct GenParticle1 = genHyp.first;
       GenParticleStruct GenParticle2 = genHyp.second;
-
-      //If we get here, we have something, fill the denominator
-      if (abs(GenParticle1.id) == 11) elec_denom->Fill(GenParticle1.pt); 
-      if (abs(GenParticle1.id) == 13) muon_denom->Fill(GenParticle1.pt); 
-      if (abs(GenParticle2.id) == 11) elec_denom->Fill(GenParticle2.pt); 
-      if (abs(GenParticle2.id) == 13) muon_denom->Fill(GenParticle2.pt); 
-
-      //Now see what we have in the numerator
-      float idx1_gen = (abs(GenParticle1.id) == 15) ? GenParticle1.didx : GenParticle1.idx;
-      float idx2_gen = (abs(GenParticle2.id) == 15) ? GenParticle2.didx : GenParticle2.idx;
+      genLep1_id = (abs(GenParticle1.id) == 15) ? GenParticle1.did : GenParticle1.id;
+      genLep2_id = (abs(GenParticle2.id) == 15) ? GenParticle2.did : GenParticle2.id;
+      genLep1_idx = (abs(GenParticle1.id) == 15) ? GenParticle1.didx : GenParticle1.idx;
+      genLep2_idx = (abs(GenParticle2.id) == 15) ? GenParticle2.didx : GenParticle2.idx;
+      genJets = getGenJets(); 
+      nGenJets = genJets.size(); 
+      htGen = 0;
+      for (int i = 0; i < nGenJets; i++) htGen += genJets.at(i).pt(); 
+      genmet = tas::gen_met(); 
+      genLep1_p4 = tas::genps_p4().at(genLep1_idx); 
+      genLep2_p4 = tas::genps_p4().at(genLep2_idx); 
 
       //Determine whether leptons are reconstructed.  Loop over all reco particles to see if any of them correspond to the gen leptons.
-      int id1_reco    = -1;
-      int id2_reco    = -1;     
-      int idx1_reco   = -1;
-      int idx2_reco   = -1;     
+      id1_reco    = -1;
+      id2_reco    = -1;     
+      idx1_reco   = -1;
+      idx2_reco   = -1;     
       float dR_best_1 = 0.1; 
       float dR_best_2 = 0.1; 
       for (size_t ilep = 0; ilep < tas::els_p4().size(); ilep++){
-        float dR_1 = DeltaR(tas::els_p4().at(ilep), tas::genps_p4().at(GenParticle1.idx)); 
-        float dR_2 = DeltaR(tas::els_p4().at(ilep), tas::genps_p4().at(GenParticle2.idx)); 
-        if (dR_1 < dR_best_1){ idx1_reco = ilep; id1_reco = -11*tas::els_charge().at(ilep); } 
-        if (dR_2 < dR_best_2){ idx2_reco = ilep; id2_reco = -11*tas::els_charge().at(ilep); } 
+        float dR_1 = DeltaR(tas::els_p4().at(ilep), tas::genps_p4().at(genLep1_idx)); 
+        float dR_2 = DeltaR(tas::els_p4().at(ilep), tas::genps_p4().at(genLep2_idx)); 
+        if (dR_1 < dR_best_1){ dR_best_1 = dR_1; idx1_reco = ilep; id1_reco = -11*tas::els_charge().at(ilep); } 
+        if (dR_2 < dR_best_2){ dR_best_2 = dR_2; idx2_reco = ilep; id2_reco = -11*tas::els_charge().at(ilep); } 
       }
       for (size_t ilep = 0; ilep < tas::mus_p4().size(); ilep++){
-        float dR_1 = DeltaR(tas::mus_p4().at(ilep), tas::genps_p4().at(GenParticle1.idx)); 
-        float dR_2 = DeltaR(tas::mus_p4().at(ilep), tas::genps_p4().at(GenParticle2.idx)); 
-        if (dR_1 < dR_best_1){ idx1_reco = ilep; id1_reco = -13*tas::mus_charge().at(ilep); } ;
-        if (dR_2 < dR_best_2){ idx2_reco = ilep; id2_reco = -13*tas::mus_charge().at(ilep); } ;
+        float dR_1 = DeltaR(tas::mus_p4().at(ilep), tas::genps_p4().at(genLep1_idx)); 
+        float dR_2 = DeltaR(tas::mus_p4().at(ilep), tas::genps_p4().at(genLep2_idx)); 
+        if (dR_1 < dR_best_1){ dR_best_1 = dR_1; idx1_reco = ilep; id1_reco = -13*tas::mus_charge().at(ilep); } ;
+        if (dR_2 < dR_best_2){ dR_best_2 = dR_2; idx2_reco = ilep; id2_reco = -13*tas::mus_charge().at(ilep); } ;
       }
 
       //Record reco pTs
-      LorentzVector pt1_reco, pt2_reco;
-      if (idx1_reco > 0) pt1_reco = (abs(id1_reco) == 11) ? tas::els_p4().at(idx1_reco) : tas::mus_p4().at(idx1_reco);
-      if (idx2_reco > 0) pt2_reco = (abs(id2_reco) == 11) ? tas::els_p4().at(idx2_reco) : tas::mus_p4().at(idx2_reco);
+      if (idx1_reco >= 0) pt1_reco = (abs(id1_reco) == 11) ? tas::els_p4().at(idx1_reco) : tas::mus_p4().at(idx1_reco);
+      if (idx2_reco >= 0) pt2_reco = (abs(id2_reco) == 11) ? tas::els_p4().at(idx2_reco) : tas::mus_p4().at(idx2_reco);
  
       //See if reco lepton passes ID
-      bool lep1_passID = (idx1_reco >= 0 && isGoodLepton(id1_reco, idx1_reco));
-      bool lep2_passID = (idx2_reco >= 0 && isGoodLepton(id2_reco, idx2_reco));
+      lep1_passID = (idx1_reco >= 0 && isGoodLepton(id1_reco, idx1_reco));
+      lep2_passID = (idx2_reco >= 0 && isGoodLepton(id2_reco, idx2_reco));
+    
+      BabyTree->Fill();
 
-      //If it passes ID, should go in the numerator
-      if (lep1_passID && abs(GenParticle1.id) == 11) elec_numer->Fill(GenParticle1.pt); 
-      if (lep1_passID && abs(GenParticle1.id) == 13) muon_numer->Fill(GenParticle1.pt); 
-      if (lep2_passID && abs(GenParticle2.id) == 11) elec_numer->Fill(GenParticle2.pt); 
-      if (lep2_passID && abs(GenParticle2.id) == 13) muon_numer->Fill(GenParticle2.pt); 
- 
     }//event loop
 
   }//file loop
 
-  //Now take the ratio
-  elec_numer->Divide(elec_denom); 
-  muon_numer->Divide(muon_denom); 
-
-  //Now make the plot 
-  vector <TH1F*> bkgds = { elec_numer, muon_numer }; 
-  vector <string> titles = { "elec", "muon" }; 
-  vector <Color_t> colors = { kBlue, kRed }; 
-  TH1F* null = new TH1F("","",1,0,1);
-  dataMCplotMaker(null, bkgds, titles, "Lepton Efficiency", "SS Baseline", "--outputName lepeff --yAxisLabel Efficiency --xAxisLabel p_{T}^{gen} --isLinear --noStack --noLumi --drawDots --noOverflow --setMaximum 1.0 --outOfFrame --legendUp -0.4", std::vector<TH1F*>(), std::vector<string>(), colors); 
-
+  BabyFile->cd(); 
+  BabyTree->Write(); 
+  BabyFile->Close(); 
+  
 }

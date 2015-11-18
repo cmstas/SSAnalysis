@@ -144,6 +144,14 @@ class babyMaker {
        //0 otherwise (not saved)
     int hyp_class;
 
+    //Gen flags
+    bool lep1_isPrompt; 
+    bool lep1_isDirectPrompt;
+    bool lep1_isStat3;
+    bool lep2_isPrompt;      
+    bool lep2_isDirectPrompt;
+    bool lep2_isStat3;
+
     //Leptons
     LorentzVector lep1_p4;
     LorentzVector lep2_p4;

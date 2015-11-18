@@ -17,6 +17,12 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree = new TTree("t", "SS2015 Baby Ntuple");
 
   //Define Branches
+  BabyTree->Branch("lep1_isPrompt"           , &lep1_isPrompt          );
+  BabyTree->Branch("lep1_isDirectPrompt"     , &lep1_isDirectPrompt    );
+  BabyTree->Branch("lep1_isStat3"            , &lep1_isStat3           );
+  BabyTree->Branch("lep2_isPrompt"           , &lep2_isPrompt          );
+  BabyTree->Branch("lep2_isDirectPrompt"     , &lep2_isDirectPrompt    );
+  BabyTree->Branch("lep2_isStat3"            , &lep2_isStat3           );
   BabyTree->Branch("met"                     , &met                    );
   BabyTree->Branch("filenumber"              , &filenumber             );
   BabyTree->Branch("metPhi"                  , &metPhi                 );
@@ -268,6 +274,12 @@ void babyMaker::InitBabyNtuple(){
     filt_ecaltp = 0;
     filt_trkfail = 0;
     filt_eebadsc = 0;
+    lep1_isPrompt       = 0;
+    lep1_isDirectPrompt = 0; 
+    lep1_isStat3        = 0;
+    lep2_isPrompt       = 0;
+    lep2_isDirectPrompt = 0;
+    lep2_isStat3        = 0;
     is_real_data = 0;
     scale1fb = -1;
     xsec = -1;
@@ -319,8 +331,6 @@ void babyMaker::InitBabyNtuple(){
     mLSP = -1;
     mSbottom = -1;
     mChargino = -1;
-    lep1_id_gen = -1;
-    lep2_id_gen = -1;
     lep3_id = -1;
     lep3_idx = -1;
     lep4_id = -1;
@@ -489,7 +499,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //If data, check filter list
   if (is_real_data){
     string filterFile = ""; 
-    if (filename.Contains("DoubleEG")) filterFile   = "CORE/Tools/filterLists/eventlist_DoubleEG_csc2015.txt";
+    if (filename.Contains("DoubleEG")) filterFile   = "CORE/Tools/filterLists/DoubleEG_csc2015.txt";
     if (filename.Contains("DoubleMuon")) filterFile = "CORE/Tools/filterLists/DoubleMuon_csc2015.txt";
     if (filename.Contains("MuonEG")) filterFile     = "CORE/Tools/filterLists/MuonEG_csc2015.txt";
     string checkMe = Form("%i:%i:%i ", tas::evt_run(), tas::evt_lumiBlock(), (int)tas::evt_event());
@@ -611,8 +621,14 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   if (!is_real_data){
     lep1_mc_id = lep1.mc_id();
     lep2_mc_id = lep2.mc_id();
+    lep1_isPrompt = tas::genps_isPromptFinalState().at(lep1.mcidx()); 
+    lep1_isStat3 = tas::genps_isMostlyLikePythia6Status3().at(lep1.mcidx());
+    lep1_isDirectPrompt = tas::genps_isDirectPromptTauDecayProductFinalState().at(lep1.mcidx());
     lep1_motherID = lepMotherID(lep1);
     lep2_motherID = lepMotherID(lep2);
+    lep2_isPrompt = tas::genps_isPromptFinalState().at(lep2.mcidx()); 
+    lep2_isDirectPrompt = tas::genps_isDirectPromptTauDecayProductFinalState().at(lep2.mcidx());
+    lep2_isStat3 = tas::genps_isMostlyLikePythia6Status3().at(lep2.mcidx());
   }
 
   //Electron trigger stuff
