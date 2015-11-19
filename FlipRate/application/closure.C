@@ -172,8 +172,12 @@ void closure(){
         if (duplicate_removal::is_duplicate(id)) { reject++; continue; }
       }
 
+      // if (!isUnblindRun(ss::run())) continue;
+
       //MET filters
       // if (!ss::passes_met_filters()) continue;
+
+      if (ss::met()>50.) continue; 
 
       //Throw away unneeded events
       if (hyp_class() != 3 && hyp_class() != 4) continue;

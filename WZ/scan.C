@@ -30,9 +30,9 @@ int scan(){
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");  titles.push_back("tt");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY*.root");    titles.push_back("DY");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZ*.root");    titles.push_back("ttZ");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets*.root"); titles.push_back("WJets");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets_LO.root"); titles.push_back("WJets");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");     titles.push_back("ZZ");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ3LNU.root");     titles.push_back("WZ");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ.root");     titles.push_back("WZ");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/Data*.root");
 
     int nEventsTotal = 0;
@@ -122,7 +122,7 @@ int scan(){
         else if(filename.Contains("TTZ"))   { filename = "TTZ";   iSample = 2; }
         else if(filename.Contains("WJets")) { filename = "WJets"; iSample = 3; }
         else if(filename.Contains("ZZ"))  { filename = "ZZ";    iSample = 4; }
-        else if(filename.Contains("WZ3L"))    { filename = "WZ";    iSample = 5; }
+        else if(filename.Contains("WZ"))    { filename = "WZ";    iSample = 5; }
         else if(filename.Contains("data"))  { filename = "Data";  iSample = 6; }
         else { std::cout << "ERROR: I don't know what " << filename << " is! Skipping file " << filename << std::endl; continue; }
 
@@ -139,7 +139,6 @@ int scan(){
             float scale = 1.0;
             if(!ss::is_real_data()) {
 	        scale = ss::scale1fb() * luminosity * getPUwECO(ss::nGoodVertices());
-		// if (iSample==5) scale/=1.0857;//fixme
             } else {
                 DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
                 if (is_duplicate(id) ) continue;
@@ -173,8 +172,9 @@ int scan(){
             // require a Z
             if (fabs(zmass-91.2) > 15.0) continue;
 
-            // if MET < 40 or Njets <= 2 then we don't care about considering it at all, even in the N-1 plots, so exclude it
-            if(ss::met() < 30.0) continue;
+            // if MET < 50 or Njets <= 2 then we don't care about considering it at all, even in the N-1 plots, so exclude it
+            // if(ss::met() < 50.0) continue;
+            if(ss::met() < 30.0) continue;//relax to 30 for low lumi
             if(ss::njets() < 2) continue;
 
             // all 4 of these define the CR

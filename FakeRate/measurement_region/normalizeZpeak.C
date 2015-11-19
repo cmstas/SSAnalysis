@@ -16,7 +16,7 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig) {
   int idlep = (doMu ? 13 : 11); 
 
   TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleMuon.root" : "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root");
-  TString dyf = "/nfs-7/userdata/leptonTree/"+tag+"/DY_amcnlo.root";
+  TString dyf = "/nfs-7/userdata/leptonTree/"+tag+"/DY_madgraph.root";
 
   TString leptype = (doMu ? "Mu17" : "Ele12");
 

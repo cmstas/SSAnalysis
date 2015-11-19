@@ -264,7 +264,7 @@ void plots(){
 
   TChain *chain_rares = new TChain("t","rares"); 
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZZ.root");
-  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWZ.root");
+  //chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWZ.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/QQWW.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWDPS.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/VHtoNonBB.root");
@@ -272,6 +272,8 @@ void plots(){
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTG.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TZQ.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTTT.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/GGHtoZZto4L.root");
 
   TChain *chain_ttbar = new TChain("t","ttbar"); 
   chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");
@@ -282,7 +284,7 @@ void plots(){
   chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP5.root");
 
   TChain *chain_VZ = new TChain("t","VZ"); 
-  chain_VZ->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ3LNU.root");
+  chain_VZ->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ.root");
   chain_VZ->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");
 
   TChain *chain_DY = new TChain("t","DY"); 

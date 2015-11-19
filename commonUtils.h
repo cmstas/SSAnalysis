@@ -1,12 +1,12 @@
 #ifndef _commonUtils_h_
 #define _commonUtils_h_
 
-float getLumi() { return 1.56; }
-float getLumiUnblind() { return 1.28; }
+float getLumi() { return 2.11; }
+float getLumiUnblind() { return getLumi(); }
 
-bool isUnblindRun(int run) { return run<=258750; }
+bool isUnblindRun(int run) { return true; }
 
-TString getTag() { return "v4.08"; }
+TString getTag() { return "v5.01"; }
 
 float getPUwECO(int nvtx) {
   float array[] = {1.0, 3.153000427291265, 2.4535501340758543, 2.353696182351581, 2.3718057802881676, 2.3508262193470397, 2.291773427755106, 2.129929297304804, 1.9422796094930384, 1.7126175249202766, 1.4622401225778663, 1.2063711142884181, 0.9608504360968657, 0.7484941355600901, 0.5769889517104192, 0.4315759540480359, 0.3195820162866148, 0.2306052595765186, 0.1691819686464576, 0.12324466445693416, 0.08833641123547825, 0.06306193566475429, 0.047857788612281564, 0.034655984107483044, 0.02358209210941948, 0.019535383939466185, 0.01500976654907348, 0.009407396052837736, 0.006332906010381258, 0.008524617116368491, 0.003145186350322339, 0.0, 0.0, 0.006930381551001214, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
@@ -15,27 +15,27 @@ float getPUwECO(int nvtx) {
 }
 
 float getPUw(int nvtx) {
-   if (nvtx>=0.000000 && nvtx<2.000000) return 7.422880;
-   if (nvtx>=2.000000 && nvtx<4.000000) return 2.171067;
-   if (nvtx>=4.000000 && nvtx<6.000000) return 2.013241;
-   if (nvtx>=6.000000 && nvtx<8.000000) return 2.013387;
-   if (nvtx>=8.000000 && nvtx<10.000000) return 1.773547;
-   if (nvtx>=10.000000 && nvtx<12.000000) return 1.251210;
-   if (nvtx>=12.000000 && nvtx<14.000000) return 0.944763;
-   if (nvtx>=14.000000 && nvtx<16.000000) return 0.633186;
-   if (nvtx>=16.000000 && nvtx<18.000000) return 0.390260;
-   if (nvtx>=18.000000 && nvtx<20.000000) return 0.157115;
-   if (nvtx>=20.000000 && nvtx<22.000000) return 0.061071;
-   if (nvtx>=22.000000 && nvtx<24.000000) return 0.073466;
-   if (nvtx>=24.000000 && nvtx<26.000000) return 0.000000;
-   if (nvtx>=26.000000 && nvtx<28.000000) return 0.000000;
-   if (nvtx>=28.000000 && nvtx<30.000000) return 0.000000;
-   if (nvtx>=30.000000 && nvtx<32.000000) return 0.000000;
-   if (nvtx>=32.000000 && nvtx<34.000000) return 0.000000;
-   if (nvtx>=34.000000 && nvtx<36.000000) return 0.000000;
-   if (nvtx>=36.000000 && nvtx<38.000000) return 0.000000;
-   if (nvtx>=38.000000 && nvtx<40.000000) return 0.000000;
-   return 0.;
+  if (nvtx>=0.000000 && nvtx<2.000000) return 6.874322;
+  if (nvtx>=2.000000 && nvtx<4.000000) return 2.078853;
+  if (nvtx>=4.000000 && nvtx<6.000000) return 1.931197;
+  if (nvtx>=6.000000 && nvtx<8.000000) return 1.983540;
+  if (nvtx>=8.000000 && nvtx<10.000000) return 1.749420;
+  if (nvtx>=10.000000 && nvtx<12.000000) return 1.240954;
+  if (nvtx>=12.000000 && nvtx<14.000000) return 0.963793;
+  if (nvtx>=14.000000 && nvtx<16.000000) return 0.642933;
+  if (nvtx>=16.000000 && nvtx<18.000000) return 0.391587;
+  if (nvtx>=18.000000 && nvtx<20.000000) return 0.199816;
+  if (nvtx>=20.000000 && nvtx<22.000000) return 0.093767;
+  if (nvtx>=22.000000 && nvtx<24.000000) return 0.076702;
+  if (nvtx>=24.000000 && nvtx<26.000000) return 0.000000;
+  if (nvtx>=26.000000 && nvtx<28.000000) return 0.000000;
+  if (nvtx>=28.000000 && nvtx<30.000000) return 0.000000;
+  if (nvtx>=30.000000 && nvtx<32.000000) return 0.000000;
+  if (nvtx>=32.000000 && nvtx<34.000000) return 0.000000;
+  if (nvtx>=34.000000 && nvtx<36.000000) return 0.000000;
+  if (nvtx>=36.000000 && nvtx<38.000000) return 0.000000;
+  if (nvtx>=38.000000 && nvtx<40.000000) return 0.000000;
+  return 0.;
 }
 
 float getPUwUnblind(int nvtx) {
@@ -63,42 +63,41 @@ float getPUwUnblind(int nvtx) {
 }
 
 float flipRate(float pt, float eta) {
-  float scale = 1.15;
-   if (eta<-1.5 && eta>-2) scale = 3.1;
-   //scale = 1.;
-   if (pt>=0 && pt<20 && fabs(eta)>=0 && fabs(eta)<1 ) return scale*5.70541e-06;
-   if (pt>=0 && pt<20 && fabs(eta)>=1 && fabs(eta)<2 ) return scale*0.000286472;
-   if (pt>=0 && pt<20 && fabs(eta)>=2 && fabs(eta)<3 ) return scale*0.000748955;
-   if (pt>=20 && pt<40 && fabs(eta)>=0 && fabs(eta)<1 ) return scale*2.10834e-05;
-   if (pt>=20 && pt<40 && fabs(eta)>=1 && fabs(eta)<2 ) return scale*0.000531631;
-   if (pt>=20 && pt<40 && fabs(eta)>=2 && fabs(eta)<3 ) return scale*0.00126557;
-   if (pt>=40 && pt<60 && fabs(eta)>=0 && fabs(eta)<1 ) return scale*2.48083e-05;
-   if (pt>=40 && pt<60 && fabs(eta)>=1 && fabs(eta)<2 ) return scale*0.000650525;
-   if (pt>=40 && pt<60 && fabs(eta)>=2 && fabs(eta)<3 ) return scale*0.0016674;
-   if (pt>=60 && pt<80 && fabs(eta)>=0 && fabs(eta)<1 ) return scale*4.09732e-05;
-   if (pt>=60 && pt<80 && fabs(eta)>=1 && fabs(eta)<2 ) return scale*0.00101227;
-   if (pt>=60 && pt<80 && fabs(eta)>=2 && fabs(eta)<3 ) return scale*0.00230621;
-   if (pt>=80 && fabs(eta)>=0 && fabs(eta)<1 ) return scale*7.17436e-05;
-   if (pt>=80 && fabs(eta)>=1 && fabs(eta)<2 ) return scale*0.00101483;
-   if (pt>=80 && fabs(eta)>=2 && fabs(eta)<3 ) return scale*0.00512076;
-   return scale*0.;
+   float scale = 1.35;
+   if (pt>=15 && pt<40 && fabs(eta)>=0 && fabs(eta)<0.8 ) return scale*7.36646e-06;
+   if (pt>=15 && pt<40 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*0.000108283;
+   if (pt>=15 && pt<40 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*0.00108401;
+   if (pt>=40 && pt<60 && fabs(eta)>=0 && fabs(eta)<0.8 ) return scale*2.34739e-05;
+   if (pt>=40 && pt<60 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*0.000198413;
+   if (pt>=40 && pt<60 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*0.00141664;
+   if (pt>=60 && fabs(eta)>=0 && fabs(eta)<0.8 ) return scale*0.00011247;
+   if (pt>=60 && pt<80 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*0.000301189;
+   if (pt>=60 && pt<80 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*0.0020123;
+   if (pt>=80 && pt<100 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*0.000560358;
+   if (pt>=80 && pt<100 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*0.00233948;
+   if (pt>=100 && pt<200 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*0.000295415;
+   if (pt>=100 && pt<200 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*0.00395713;
+   if (pt>=200 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*0.00282565;
+   if (pt>=200 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*0.0127978;
+   return 0.;
 }
 float flipRateError(float pt, float eta) {
-   if (pt>=0 && pt<20 && fabs(eta)>=0 && fabs(eta)<1 ) return 5.51727e-06;
-   if (pt>=0 && pt<20 && fabs(eta)>=1 && fabs(eta)<2 ) return 7.15378e-05;
-   if (pt>=0 && pt<20 && fabs(eta)>=2 && fabs(eta)<3 ) return 0.000193457;
-   if (pt>=20 && pt<40 && fabs(eta)>=0 && fabs(eta)<1 ) return 5.91226e-06;
-   if (pt>=20 && pt<40 && fabs(eta)>=1 && fabs(eta)<2 ) return 3.8619e-05;
-   if (pt>=20 && pt<40 && fabs(eta)>=2 && fabs(eta)<3 ) return 0.000106931;
-   if (pt>=40 && pt<60 && fabs(eta)>=0 && fabs(eta)<1 ) return 6.75759e-06;
-   if (pt>=40 && pt<60 && fabs(eta)>=1 && fabs(eta)<2 ) return 4.36419e-05;
-   if (pt>=40 && pt<60 && fabs(eta)>=2 && fabs(eta)<3 ) return 0.000141982;
-   if (pt>=60 && pt<80 && fabs(eta)>=0 && fabs(eta)<1 ) return 1.65967e-05;
-   if (pt>=60 && pt<80 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.000132439;
-   if (pt>=60 && pt<80 && fabs(eta)>=2 && fabs(eta)<3 ) return 0.000391051;
-   if (pt>=80 && fabs(eta)>=0 && fabs(eta)<1 ) return 3.98353e-05;
-   if (pt>=80 && fabs(eta)>=1 && fabs(eta)<2 ) return 0.000217831;
-   if (pt>=80 && fabs(eta)>=2 && fabs(eta)<3 ) return 0.00120939;
+   float scale = 1.35;
+   if (pt>=15 && pt<40 && fabs(eta)>=0 && fabs(eta)<0.8 ) return scale*3.6401e-06;
+   if (pt>=15 && pt<40 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*2.89577e-05;
+   if (pt>=15 && pt<40 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*9.84959e-05;
+   if (pt>=40 && pt<60 && fabs(eta)>=0 && fabs(eta)<0.8 ) return scale*1.09368e-05;
+   if (pt>=40 && pt<60 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*3.71107e-05;
+   if (pt>=40 && pt<60 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*0.000119599;
+   if (pt>=60 && fabs(eta)>=0 && fabs(eta)<0.8 ) return scale*5.90675e-05;
+   if (pt>=60 && pt<80 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*0.000120319;
+   if (pt>=60 && pt<80 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*0.00039592;
+   if (pt>=80 && pt<100 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*0.000285579;
+   if (pt>=80 && pt<100 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*0.000686392;
+   if (pt>=100 && pt<200 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*0.000180937;
+   if (pt>=100 && pt<200 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*0.000965423;
+   if (pt>=200 && fabs(eta)>=0.8 && fabs(eta)<1.479 ) return scale*0.00207696;
+   if (pt>=200 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return scale*0.00742097;
    return 0.;
 }
 
