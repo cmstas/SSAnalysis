@@ -20,7 +20,7 @@ hyp_type_t getHypType(int id1, int id2){
     else return EM; 
 }
 
-vector <pair<GenParticleStruct, GenParticleStruct> > makeGenHyps(){
+vector <GenParticleStruct> makeGenParticles(){
 
   //List Gen Particles
   vector <GenParticleStruct> gleps;
@@ -59,6 +59,14 @@ vector <pair<GenParticleStruct, GenParticleStruct> > makeGenHyps(){
     }
 
   }//gen loop
+
+  return gleps;
+
+}
+
+vector <pair<GenParticleStruct, GenParticleStruct> > makeGenHyps(){
+
+  vector <GenParticleStruct> gleps = makeGenParticles(); 
 
   //Now make gen hyps
   vector <pair <GenParticleStruct, GenParticleStruct> > glepPairs;
@@ -171,46 +179,52 @@ void babymaker(){
 
   //Variables
   float htGen = 0;
+  float ht = 0;
   int nGenJets = 0;
   vector <LorentzVector> genJets;
-  int genLep1_id = -9999;
-  int genLep2_id = -9999;
-  int genLep1_idx = -9999;
-  int genLep2_idx = -9999;
-  bool lep1_passID = 0;
-  bool lep2_passID = 0;
-  LorentzVector pt1_reco;
-  LorentzVector pt2_reco;
-  int id1_reco    = -1;
-  int id2_reco    = -1;     
-  int idx1_reco   = -1;
-  int idx2_reco   = -1;     
-  float genmet    = -1;
-  LorentzVector genLep1_p4;
-  LorentzVector genLep2_p4;
+  vector <LorentzVector> recoJets;
+  vector <int> genLep_id;
+  vector <int> genLep_idx;
+  vector <bool> lep_passID; 
+  vector <LorentzVector> recoLep_p4;
+  vector <int> id_reco;
+  vector <int> idx_reco;
+  float genmet = -1;
+  float met = -1;
+  vector <LorentzVector> genLep_p4;
+  vector <int> genJets_matched; 
+  vector <int> genJets_matchedID; 
+  vector <LorentzVector> pfjets_p4; 
 
   //Baby branches
-  BabyTree->Branch("genLep1_id" , &genLep1_id );
-  BabyTree->Branch("genLep2_id" , &genLep2_id );
-  BabyTree->Branch("genLep1_idx", &genLep1_idx);
-  BabyTree->Branch("genLep2_idx", &genLep2_idx);
-  BabyTree->Branch("htGen"      , &htGen      );
-  BabyTree->Branch("genJets"    , &genJets    );
-  BabyTree->Branch("nGenJets"   , &nGenJets   );
-  BabyTree->Branch("genmet"     , &genmet     );
-  BabyTree->Branch("lep1_passID", &lep1_passID);
-  BabyTree->Branch("lep2_passID", &lep2_passID);
-  BabyTree->Branch("pt1_reco"   , &pt1_reco   );
-  BabyTree->Branch("pt2_reco"   , &pt2_reco   );
-  BabyTree->Branch("id1_reco"   , &pt1_reco   );
-  BabyTree->Branch("id2_reco"   , &pt2_reco   );
-  BabyTree->Branch("idx1_reco"  , &idx1_reco  );
-  BabyTree->Branch("idx2_reco"  , &idx2_reco  );
-  BabyTree->Branch("genLep1_p4" , &genLep1_p4 ); 
-  BabyTree->Branch("genLep2_p4" , &genLep2_p4 ); 
+  BabyTree->Branch("genLep_id"         , &genLep_id        );
+  BabyTree->Branch("genLep_idx"        , &genLep_idx       );
+  BabyTree->Branch("htGen"             , &htGen            );
+  BabyTree->Branch("ht"                , &ht               );
+  BabyTree->Branch("genJets"           , &genJets          );
+  BabyTree->Branch("recoJets"          , &recoJets         );
+  BabyTree->Branch("nGenJets"          , &nGenJets         );
+  BabyTree->Branch("genmet"            , &genmet           );
+  BabyTree->Branch("met"               , &met              );
+  BabyTree->Branch("lep_passID"        , &lep_passID       );
+  BabyTree->Branch("id_reco"           , &id_reco          );
+  BabyTree->Branch("idx_reco"          , &idx_reco         );
+  BabyTree->Branch("genLep_p4"         , &genLep_p4        );
+  BabyTree->Branch("recoLep_p4"        , &recoLep_p4       );
+  BabyTree->Branch("genJets_matched"   , &genJets_matched  );
+  BabyTree->Branch("genJets_matchedID" , &genJets_matchedID);
+  BabyTree->Branch("pfjets_p4"         , &pfjets_p4        );
 
   //MVA function
   createAndInitMVA("../CORE", true);
+
+  //Jet Corrections
+  std::vector<std::string> filenames;
+  filenames.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_L1FastJet_AK4PFchs.txt");
+  filenames.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_L2Relative_AK4PFchs.txt");
+  filenames.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_L3Absolute_AK4PFchs.txt");
+  FactorizedJetCorrector *jetCorr;
+  jetCorr = makeJetCorrector(filenames);
 
   //nEvents in chain
   unsigned int nEventsTotal = 0; 
@@ -238,52 +252,106 @@ void babymaker(){
 
       //Progress
       CMS3::progress(nEventsTotal, nEventsChain);
+   
+      //Initialize variables
+      recoJets.clear(); 
+      htGen = 0;
+      ht = 0;
+      genJets_matched.clear(); 
+      genJets_matchedID.clear(); 
+      pfjets_p4.clear();
+      genLep_id.clear();
+      genLep_p4.clear();
+      genLep_idx.clear();
+      id_reco.clear();
+      idx_reco.clear();
+      lep_passID.clear();
+      recoLep_p4.clear();  
 
       //Find gen particles, jets
-      std::pair<GenParticleStruct, GenParticleStruct> genHyp = getGenHyp(15, 10);
-      if (genHyp.first.id == 0) continue;
-      GenParticleStruct GenParticle1 = genHyp.first;
-      GenParticleStruct GenParticle2 = genHyp.second;
-      genLep1_id = (abs(GenParticle1.id) == 15) ? GenParticle1.did : GenParticle1.id;
-      genLep2_id = (abs(GenParticle2.id) == 15) ? GenParticle2.did : GenParticle2.id;
-      genLep1_idx = (abs(GenParticle1.id) == 15) ? GenParticle1.didx : GenParticle1.idx;
-      genLep2_idx = (abs(GenParticle2.id) == 15) ? GenParticle2.didx : GenParticle2.idx;
+      vector <GenParticleStruct> genParticles = makeGenParticles();
+      if (genParticles.size() == 0) continue;
+      for (unsigned int i = 0; i < genParticles.size(); i++){
+        GenParticleStruct GenParticle = genParticles.at(i); 
+        float genLep_id_ = (abs(GenParticle.id) == 15) ? GenParticle.did : GenParticle.id;
+        float genLep_idx_ = (abs(GenParticle.id) == 15) ? GenParticle.didx : GenParticle.idx;
+        LorentzVector genLep_p4_ = tas::genps_p4().at(genLep_idx_); 
+        genLep_id.push_back(genLep_id_); 
+        genLep_idx.push_back(genLep_idx_); 
+        genLep_p4.push_back(genLep_p4_); 
+      }
       genJets = getGenJets(); 
       nGenJets = genJets.size(); 
-      htGen = 0;
       for (int i = 0; i < nGenJets; i++) htGen += genJets.at(i).pt(); 
       genmet = tas::gen_met(); 
-      genLep1_p4 = tas::genps_p4().at(genLep1_idx); 
-      genLep2_p4 = tas::genps_p4().at(genLep2_idx); 
+      pair <float, float> T1CHSMET = getT1CHSMET_fromMINIAOD(jetCorr);
+      met = T1CHSMET.first;
+      std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 1);
+      for (unsigned int i = 0; i < jet_results.first.size(); i++){
+        ht += jet_results.first.at(i).p4().pt()*jet_results.first.at(i).undo_jec()*jet_results.first.at(i).jec(); 
+        recoJets.push_back(jet_results.first.at(i).p4()*jet_results.first.at(i).undo_jec()*jet_results.first.at(i).jec()); 
+      }
+      for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++){
+        LorentzVector jet = tas::pfjets_p4().at(i);
+        jetCorr->setJetEta(jet.eta()); 
+        jetCorr->setJetPt(jet.pt()*tas::pfjets_undoJEC().at(i)); 
+        jetCorr->setJetA(tas::pfjets_area().at(i)); 
+        jetCorr->setRho(tas::evt_fixgridfastjet_all_rho()); 
+        float JEC = jetCorr->getCorrection(); 
+        pfjets_p4.push_back(jet*JEC*tas::pfjets_undoJEC().at(i)); 
+      }
 
       //Determine whether leptons are reconstructed.  Loop over all reco particles to see if any of them correspond to the gen leptons.
-      id1_reco    = -1;
-      id2_reco    = -1;     
-      idx1_reco   = -1;
-      idx2_reco   = -1;     
-      float dR_best_1 = 0.1; 
-      float dR_best_2 = 0.1; 
-      for (size_t ilep = 0; ilep < tas::els_p4().size(); ilep++){
-        float dR_1 = DeltaR(tas::els_p4().at(ilep), tas::genps_p4().at(genLep1_idx)); 
-        float dR_2 = DeltaR(tas::els_p4().at(ilep), tas::genps_p4().at(genLep2_idx)); 
-        if (dR_1 < dR_best_1){ dR_best_1 = dR_1; idx1_reco = ilep; id1_reco = -11*tas::els_charge().at(ilep); } 
-        if (dR_2 < dR_best_2){ dR_best_2 = dR_2; idx2_reco = ilep; id2_reco = -11*tas::els_charge().at(ilep); } 
+      for (unsigned int iGen = 0; iGen < genLep_id.size(); iGen++){
+        int id_reco_    = -1;
+        int idx_reco_   = -1;
+        float dR_best = 0.1; 
+        for (unsigned int ilep = 0; ilep < tas::els_p4().size(); ilep++){
+          float dR = DeltaR(tas::els_p4().at(ilep), tas::genps_p4().at(genLep_idx.at(iGen))); 
+          if (dR < dR_best){ dR_best = dR; idx_reco_ = ilep; id_reco_ = -11*tas::els_charge().at(ilep); } 
+        }
+        for (unsigned int ilep = 0; ilep < tas::mus_p4().size(); ilep++){
+          float dR = DeltaR(tas::mus_p4().at(ilep), tas::genps_p4().at(genLep_idx.at(iGen))); 
+          if (dR < dR_best){ dR_best = dR; idx_reco_ = ilep; id_reco_ = -13*tas::mus_charge().at(ilep); } 
+        }
+        id_reco.push_back(id_reco_); 
+        idx_reco.push_back(idx_reco_); 
       }
-      for (size_t ilep = 0; ilep < tas::mus_p4().size(); ilep++){
-        float dR_1 = DeltaR(tas::mus_p4().at(ilep), tas::genps_p4().at(genLep1_idx)); 
-        float dR_2 = DeltaR(tas::mus_p4().at(ilep), tas::genps_p4().at(genLep2_idx)); 
-        if (dR_1 < dR_best_1){ dR_best_1 = dR_1; idx1_reco = ilep; id1_reco = -13*tas::mus_charge().at(ilep); } ;
-        if (dR_2 < dR_best_2){ dR_best_2 = dR_2; idx2_reco = ilep; id2_reco = -13*tas::mus_charge().at(ilep); } ;
+
+      //For each gen jet, loop over all reco jets to see if any of them correspond to the gen jets (NO ID)
+      for (unsigned int iJet = 0; iJet < genJets.size(); iJet++){
+        int idx_matched = -1; 
+        float dR_best = 0.1;
+        for (unsigned int iReco = 0; iReco < tas::pfjets_p4().size(); iReco++){
+          float dR = DeltaR(tas::pfjets_p4().at(iReco), genJets.at(iJet));
+          if (dR < dR_best){ dR_best = dR; idx_matched = iReco; } 
+        }
+        genJets_matched.push_back(idx_matched); 
+      }
+
+      //And now the same thing (FULL ID)
+      for (unsigned int iJet = 0; iJet < genJets.size(); iJet++){
+        int idx_matched = -1; 
+        float dR_best = 0.1;
+        for (unsigned int iReco = 0; iReco < recoJets.size(); iReco++){
+          float dR = DeltaR(recoJets.at(iReco), genJets.at(iJet));
+          if (dR < dR_best){ dR_best = dR; idx_matched = iReco; } 
+        }
+        genJets_matchedID.push_back(idx_matched); 
       }
 
       //Record reco pTs
-      if (idx1_reco >= 0) pt1_reco = (abs(id1_reco) == 11) ? tas::els_p4().at(idx1_reco) : tas::mus_p4().at(idx1_reco);
-      if (idx2_reco >= 0) pt2_reco = (abs(id2_reco) == 11) ? tas::els_p4().at(idx2_reco) : tas::mus_p4().at(idx2_reco);
+      LorentzVector null = {0,0,0,0}; 
+      for (unsigned int iGen = 0; iGen < idx_reco.size(); iGen++){
+        if (idx_reco.at(iGen) >= 0) recoLep_p4.push_back((abs(id_reco.at(iGen)) == 11) ? tas::els_p4().at(idx_reco.at(iGen)) : tas::mus_p4().at(idx_reco.at(iGen)));
+        else recoLep_p4.push_back(null);
+      }
  
       //See if reco lepton passes ID
-      lep1_passID = (idx1_reco >= 0 && isGoodLepton(id1_reco, idx1_reco));
-      lep2_passID = (idx2_reco >= 0 && isGoodLepton(id2_reco, idx2_reco));
-    
+      for (unsigned int iGen = 0; iGen < idx_reco.size(); iGen++){
+        lep_passID.push_back((idx_reco.at(iGen) >= 0 && isGoodLepton(id_reco.at(iGen), idx_reco.at(iGen))));
+      }
+
       BabyTree->Fill();
 
     }//event loop
