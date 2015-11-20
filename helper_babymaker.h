@@ -151,6 +151,22 @@ class babyMaker {
     bool lep2_isPrompt;      
     bool lep2_isDirectPrompt;
     bool lep2_isStat3;
+    bool lep2_genps_isHardProcess;
+    bool lep2_genps_fromHardProcessFinalState;
+    bool lep2_genps_fromHardProcessDecayed;
+    bool lep2_genps_isDirectHardProcessTauDecayProductFinalState;
+    bool lep2_genps_fromHardProcessBeforeFSR;
+    bool lep2_genps_isLastCopy;
+    bool lep2_genps_isLastCopyBeforeFSR; 
+    bool lep1_genps_isHardProcess;
+    bool lep1_genps_fromHardProcessFinalState;
+    bool lep1_genps_fromHardProcessDecayed;
+    bool lep1_genps_isDirectHardProcessTauDecayProductFinalState;
+    bool lep1_genps_fromHardProcessBeforeFSR;
+    bool lep1_genps_isLastCopy;
+    bool lep1_genps_isLastCopyBeforeFSR; 
+
+    
 
     //Leptons
     LorentzVector lep1_p4;

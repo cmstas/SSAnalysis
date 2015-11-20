@@ -210,6 +210,20 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("metPhi_unc_up"           , &metPhi_unc_up          );
   BabyTree->Branch("metPhi_unc_dn"           , &metPhi_unc_dn          );
   BabyTree->Branch("passedFilterList"        , &passedFilterList       );
+  BabyTree->Branch("lep2_genps_isHardProcess" , &lep2_genps_isHardProcess);
+  BabyTree->Branch("lep2_genps_fromHardProcessFinalState", &lep2_genps_fromHardProcessFinalState);
+  BabyTree->Branch("lep2_genps_fromHardProcessDecayed", &lep2_genps_fromHardProcessDecayed);
+  BabyTree->Branch("lep2_genps_isDirectHardProcessTauDecayProductFinalState", &lep2_genps_isDirectHardProcessTauDecayProductFinalState);
+  BabyTree->Branch("lep2_genps_fromHardProcessBeforeFSR", &lep2_genps_fromHardProcessBeforeFSR);
+  BabyTree->Branch("lep2_genps_isLastCopy", &lep2_genps_isLastCopy); 
+  BabyTree->Branch("lep2_genps_isLastCopyBeforeFSR", &lep2_genps_isLastCopyBeforeFSR); 
+  BabyTree->Branch("lep1_genps_isHardProcess" , &lep1_genps_isHardProcess);
+  BabyTree->Branch("lep1_genps_fromHardProcessFinalState", &lep1_genps_fromHardProcessFinalState);
+  BabyTree->Branch("lep1_genps_fromHardProcessDecayed", &lep1_genps_fromHardProcessDecayed);
+  BabyTree->Branch("lep1_genps_isDirectHardProcessTauDecayProductFinalState", &lep1_genps_isDirectHardProcessTauDecayProductFinalState);
+  BabyTree->Branch("lep1_genps_fromHardProcessBeforeFSR", &lep1_genps_fromHardProcessBeforeFSR);
+  BabyTree->Branch("lep1_genps_isLastCopy", &lep1_genps_isLastCopy); 
+  BabyTree->Branch("lep1_genps_isLastCopyBeforeFSR", &lep1_genps_isLastCopyBeforeFSR); 
 
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"          , &lep1_isGoodLeg         );
@@ -471,6 +485,20 @@ void babyMaker::InitBabyNtuple(){
     metPhi_unc_up = 0;
     metPhi_unc_dn = 0;
     passedFilterList = 1; 
+    lep1_genps_isHardProcess = 0;
+    lep1_genps_fromHardProcessFinalState = 0;
+    lep1_genps_fromHardProcessDecayed = 0;
+    lep1_genps_isDirectHardProcessTauDecayProductFinalState = 0;
+    lep1_genps_fromHardProcessBeforeFSR = 0;
+    lep1_genps_isLastCopy = 0;
+    lep1_genps_isLastCopyBeforeFSR = 0; 
+    lep2_genps_isHardProcess = 0;
+    lep2_genps_fromHardProcessFinalState = 0;
+    lep2_genps_fromHardProcessDecayed = 0;
+    lep2_genps_isDirectHardProcessTauDecayProductFinalState = 0;
+    lep2_genps_fromHardProcessBeforeFSR = 0;
+    lep2_genps_isLastCopy = 0;
+    lep2_genps_isLastCopyBeforeFSR = 0; 
 } 
 
 //Main function
@@ -621,14 +649,28 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   if (!is_real_data){
     lep1_mc_id = lep1.mc_id();
     lep2_mc_id = lep2.mc_id();
-    lep1_isPrompt = tas::genps_isPromptFinalState().at(lep1.mcidx()); 
-    lep1_isStat3 = tas::genps_isMostlyLikePythia6Status3().at(lep1.mcidx());
-    lep1_isDirectPrompt = tas::genps_isDirectPromptTauDecayProductFinalState().at(lep1.mcidx());
+    lep1_isPrompt = tas::genps_isPromptFinalState().at(lep1.mc3idx()); 
+    lep1_isStat3 = tas::genps_isMostlyLikePythia6Status3().at(lep1.mc3idx());
+    lep1_isDirectPrompt = tas::genps_isDirectPromptTauDecayProductFinalState().at(lep1.mc3idx());
+    lep1_genps_isHardProcess = tas::genps_isHardProcess().at(lep1.mc3idx());
+    lep1_genps_fromHardProcessFinalState = tas::genps_fromHardProcessFinalState().at(lep1.mc3idx());
+    lep1_genps_fromHardProcessDecayed = tas::genps_fromHardProcessDecayed().at(lep1.mc3idx());
+    lep1_genps_isDirectHardProcessTauDecayProductFinalState = tas::genps_isDirectHardProcessTauDecayProductFinalState().at(lep1.mc3idx());
+    lep1_genps_fromHardProcessBeforeFSR = tas::genps_fromHardProcessBeforeFSR().at(lep1.mc3idx());
+    lep1_genps_isLastCopy = tas::genps_isLastCopy().at(lep1.mc3idx());
+    lep1_genps_isLastCopyBeforeFSR = tas::genps_isLastCopyBeforeFSR().at(lep1.mc3idx());
     lep1_motherID = lepMotherID(lep1);
     lep2_motherID = lepMotherID(lep2);
-    lep2_isPrompt = tas::genps_isPromptFinalState().at(lep2.mcidx()); 
-    lep2_isDirectPrompt = tas::genps_isDirectPromptTauDecayProductFinalState().at(lep2.mcidx());
-    lep2_isStat3 = tas::genps_isMostlyLikePythia6Status3().at(lep2.mcidx());
+    lep2_isPrompt = tas::genps_isPromptFinalState().at(lep2.mc3idx()); 
+    lep2_isDirectPrompt = tas::genps_isDirectPromptTauDecayProductFinalState().at(lep2.mc3idx());
+    lep2_isStat3 = tas::genps_isMostlyLikePythia6Status3().at(lep2.mc3idx());
+    lep2_genps_isHardProcess = tas::genps_isHardProcess().at(lep2.mc3idx());
+    lep2_genps_fromHardProcessFinalState = tas::genps_fromHardProcessFinalState().at(lep2.mc3idx());
+    lep2_genps_fromHardProcessDecayed = tas::genps_fromHardProcessDecayed().at(lep2.mc3idx());
+    lep2_genps_isDirectHardProcessTauDecayProductFinalState = tas::genps_isDirectHardProcessTauDecayProductFinalState().at(lep2.mc3idx());
+    lep2_genps_fromHardProcessBeforeFSR = tas::genps_fromHardProcessBeforeFSR().at(lep2.mc3idx());
+    lep2_genps_isLastCopy = tas::genps_isLastCopy().at(lep2.mc3idx());
+    lep2_genps_isLastCopyBeforeFSR = tas::genps_isLastCopyBeforeFSR().at(lep2.mc3idx());
   }
 
   //Electron trigger stuff
