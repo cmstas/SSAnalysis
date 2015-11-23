@@ -25,7 +25,7 @@ bool doLatex = 1;
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
-struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_l1eta; TH1F* h_l2eta; TH1F* h_type; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; }; 
+struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_l1eta; TH1F* h_l2eta; TH1F* h_nleps; TH1F* h_type; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; }; 
 
 //Total
 yields_t total; 
@@ -813,6 +813,21 @@ void getyields(){
   l2eta_plotsMC.push_back(p_wjets_ff.h_l2eta);
   l2eta_plotsMC.push_back(p_st_ff.h_l2eta);
   dataMCplotMaker(p_data.h_l2eta, l2eta_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l2eta_all_SSMC.pdf --xAxisLabel Trailing Lepton #eta --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2); 
+
+  vector <TH1F* > nleps_plotsMC;
+  nleps_plotsMC.push_back(p_ttw.h_nleps  );
+  nleps_plotsMC.push_back(p_ttzh.h_nleps );
+  nleps_plotsMC.push_back(p_wz.h_nleps   );
+  nleps_plotsMC.push_back(p_ww.h_nleps   );
+  nleps_plotsMC.push_back(p_xg.h_nleps   );
+  nleps_plotsMC.push_back(p_rares.h_nleps);
+  nleps_plotsMC.push_back(p_ttbar_ff.h_nleps);
+  nleps_plotsMC.push_back(p_dy_ff.h_nleps);
+  nleps_plotsMC.push_back(p_wjets_ff.h_nleps);
+  nleps_plotsMC.push_back(p_st_ff.h_nleps);
+  dataMCplotMaker(p_data.h_nleps, nleps_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName nleps_all_SSMC.pdf --xAxisLabel N_{leptons} --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+
+
 }
 
 //doFakes = 1 for QCD, 2 for inSitu
@@ -833,6 +848,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   p_result.h_mtmin        = new TH1F(Form("mtmin_%s"        , chain->GetTitle()) , Form("mtmin_%s"        , chain->GetTitle()) , 10  , 0 , 200);  p_result.h_mtmin        ->Sumw2();
   p_result.h_njets        = new TH1F(Form("njets_%s"        , chain->GetTitle()) , Form("njets_%s"        , chain->GetTitle()) , 8   , 0 , 8);	  p_result.h_njets        ->Sumw2();
   p_result.h_nbtags       = new TH1F(Form("nbtags_%s"       , chain->GetTitle()) , Form("nbtags_%s"       , chain->GetTitle()) , 6   , 0 , 6);	  p_result.h_nbtags       ->Sumw2();
+  p_result.h_nleps        = new TH1F(Form("nleps_%s"        , chain->GetTitle()) , Form("nleps_%s"        , chain->GetTitle()) , 6   , 0 , 6);	  p_result.h_nleps        ->Sumw2();
   p_result.h_l1pt         = new TH1F(Form("l1pt_%s"         , chain->GetTitle()) , Form("l1pt_%s"         , chain->GetTitle()) , 10  , 0 , 150);  p_result.h_l1pt         ->Sumw2();
   p_result.h_l2pt         = new TH1F(Form("l2pt_%s"         , chain->GetTitle()) , Form("l2pt_%s"         , chain->GetTitle()) , 10  , 0 , 100);  p_result.h_l2pt         ->Sumw2();
   p_result.h_l1eta        = new TH1F(Form("l1eta_%s"        , chain->GetTitle()) , Form("l1eta_%s"        , chain->GetTitle()) , 24  , -2.5 , 2.5);  p_result.h_l1eta         ->Sumw2();
@@ -1134,7 +1150,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       int SR_unc_dn = signalRegion(ss::njets_unc_dn(), ss::nbtags_unc_dn(), ss::met_unc_dn(), ss::ht_unc_dn(), mtmin_unc_dn, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
 
       // cout << "SR=" << SR << endl;
- 
+
+      int nleps = 2;
+      if (ss::lep3_passes_id()) nleps++;
+      if (ss::lep4_passes_id()) nleps++;
+
       //Get the category
       anal_type_t categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
 	  string cat = "HH";
@@ -1192,6 +1212,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_mtmin       ->Fill(mtmin                            , weight);
       p_result.h_njets       ->Fill(ss::njets()                      , weight);
       p_result.h_nbtags      ->Fill(ss::nbtags()                     , weight);
+      p_result.h_nleps       ->Fill(nleps                            , weight);
       p_result.h_l1pt        ->Fill(lep1_pt                          , weight);
       p_result.h_l2pt        ->Fill(lep2_pt                          , weight);
       p_result.h_l1eta       ->Fill(ss::lep1_p4().eta()              , weight);
