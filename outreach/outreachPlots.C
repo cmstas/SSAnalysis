@@ -3,8 +3,7 @@
 #include "TTree.h"
 #include "TColor.h"
 #include "TH1F.h"
-#include "../commonUtils.h"
-#include "/home/users/cgeorge/software/makeCMS3ClassFiles/OUT.h"
+#include "OUT.h"
 #include "../CORE/Tools/utils.h"
 #include "../CORE/SSSelections.h"
 #include "../CORE/MCSelections.h"
@@ -14,7 +13,7 @@ void outreachPlots(){
 
   //Define Chain
   TChain *chain = new TChain("t"); 
-  chain->Add("/home/users/cgeorge/SSAnalysis/outreach/babymaker/outreachbaby.root"); 
+  chain->Add("/home/users/cgeorge/SSAnalysis/outreach/babymaker/smallbaby.root"); 
 
   //Define output plots
   float xbins[] = { 10, 15, 20, 25, 30, 40, 50, 65, 80, 100, 120 }; 
@@ -65,7 +64,6 @@ void outreachPlots(){
       //If we fail genHT, nJets cuts, done
       if (out::nGenJets() < 2) continue;
       if (out::htGen() < 200) continue;
-
 
       //If we get here, we have something, fill the denominator
       if (abs(out::genLep1_id()) == 11) elec_denom->Fill(out::genLep1_p4().pt()); 

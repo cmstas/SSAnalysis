@@ -182,10 +182,12 @@ void babymaker(){
   float ht = 0;
   int nGenJets = 0;
   vector <LorentzVector> genJets;
+  vector <bool> genJets_isb;
   vector <LorentzVector> recoJets;
   vector <int> genLep_id;
   vector <int> genLep_idx;
   vector <bool> lep_passID; 
+  vector <bool> lep_passID_loose; 
   vector <LorentzVector> recoLep_p4;
   vector <int> id_reco;
   vector <int> idx_reco;
@@ -193,8 +195,22 @@ void babymaker(){
   float met = -1;
   vector <LorentzVector> genLep_p4;
   vector <int> genJets_matched; 
+  vector <int> genJets_matched_tob; 
   vector <int> genJets_matchedID; 
   vector <LorentzVector> pfjets_p4; 
+  vector <bool> pfjets_isClean; 
+  vector <bool> pfjets_isb; 
+  vector <LorentzVector> recoMuons;
+  vector <LorentzVector> recoElectrons;
+  vector <int> recoMuonsMatch;
+  vector <bool> recoMuonsID;
+  vector <bool> recoMuonsID_loose;
+  vector <int> recoElectronsMatch;
+  vector <bool> recoElectronsID;
+  vector <bool> recoElectronsID_loose;
+  vector <int> pfjets_match; 
+  vector <bool> pfjets_matchb; 
+  vector <bool> pfjets_ID; 
 
   //Baby branches
   BabyTree->Branch("genLep_id"         , &genLep_id        );
@@ -202,18 +218,34 @@ void babymaker(){
   BabyTree->Branch("htGen"             , &htGen            );
   BabyTree->Branch("ht"                , &ht               );
   BabyTree->Branch("genJets"           , &genJets          );
+  BabyTree->Branch("genJets_isb"       , &genJets_isb      );
   BabyTree->Branch("recoJets"          , &recoJets         );
   BabyTree->Branch("nGenJets"          , &nGenJets         );
   BabyTree->Branch("genmet"            , &genmet           );
   BabyTree->Branch("met"               , &met              );
   BabyTree->Branch("lep_passID"        , &lep_passID       );
+  BabyTree->Branch("lep_passID_loose"  , &lep_passID_loose );
   BabyTree->Branch("id_reco"           , &id_reco          );
   BabyTree->Branch("idx_reco"          , &idx_reco         );
   BabyTree->Branch("genLep_p4"         , &genLep_p4        );
   BabyTree->Branch("recoLep_p4"        , &recoLep_p4       );
   BabyTree->Branch("genJets_matched"   , &genJets_matched  );
+  BabyTree->Branch("genJets_matched_tob", &genJets_matched_tob  );
   BabyTree->Branch("genJets_matchedID" , &genJets_matchedID);
   BabyTree->Branch("pfjets_p4"         , &pfjets_p4        );
+  BabyTree->Branch("pfjets_isClean"         , &pfjets_isClean        );
+  BabyTree->Branch("pfjets_isb"        , &pfjets_isb       );
+  BabyTree->Branch("recoMuons"         , &recoMuons        );
+  BabyTree->Branch("recoElectrons"     , &recoElectrons    );
+  BabyTree->Branch("recoMuonsMatch"    , &recoMuonsMatch   ); 
+  BabyTree->Branch("recoMuonsID"       , &recoMuonsID      );
+  BabyTree->Branch("recoMuonsID_loose"       , &recoMuonsID_loose      );
+  BabyTree->Branch("recoElectronsMatch", &recoElectronsMatch); 
+  BabyTree->Branch("recoElectronsID"   , &recoElectronsID  ); 
+  BabyTree->Branch("recoElectronsID_loose"   , &recoElectronsID_loose  ); 
+  BabyTree->Branch("pfjets_match"      , &pfjets_match     );  
+  BabyTree->Branch("pfjets_matchb"      , &pfjets_matchb     );  
+  BabyTree->Branch("pfjets_ID"         , &pfjets_ID        );  
 
   //MVA function
   createAndInitMVA("../CORE", true);
@@ -258,15 +290,29 @@ void babymaker(){
       htGen = 0;
       ht = 0;
       genJets_matched.clear(); 
+      genJets_matched_tob.clear(); 
       genJets_matchedID.clear(); 
       pfjets_p4.clear();
+      pfjets_isClean.clear();
+      pfjets_isb.clear();
       genLep_id.clear();
       genLep_p4.clear();
       genLep_idx.clear();
       id_reco.clear();
       idx_reco.clear();
       lep_passID.clear();
+      lep_passID_loose.clear();
       recoLep_p4.clear();  
+      recoElectronsID.clear();
+      recoElectronsID_loose.clear();
+      recoElectronsMatch.clear();
+      recoMuonsID.clear();
+      recoMuonsID_loose.clear();
+      recoMuonsMatch.clear();
+      pfjets_match.clear(); 
+      pfjets_matchb.clear(); 
+      pfjets_ID.clear();
+      genJets_isb.clear(); 
 
       //Find gen particles, jets
       vector <GenParticleStruct> genParticles = makeGenParticles();
@@ -299,6 +345,18 @@ void babymaker(){
         jetCorr->setRho(tas::evt_fixgridfastjet_all_rho()); 
         float JEC = jetCorr->getCorrection(); 
         pfjets_p4.push_back(jet*JEC*tas::pfjets_undoJEC().at(i)); 
+        pfjets_isb.push_back((tas::pfjets_pfCombinedInclusiveSecondaryVertexV2BJetTag().at(i) > .89)); 
+      }
+
+      //Determine whether gen jet is a b or not
+      for (unsigned int iJet = 0; iJet < genJets.size(); iJet++){
+        bool isb = false;        
+        for (unsigned int iGen = 0; iGen < tas::genps_p4().size(); iGen++){
+          if (abs(tas::genps_id().at(iGen)) != 5) continue;
+          float dR = DeltaR(genJets.at(iJet), tas::genps_p4().at(iGen)); 
+          if (dR < 0.4){ isb = true; break; } 
+        }
+        genJets_isb.push_back(isb);  
       }
 
       //Determine whether leptons are reconstructed.  Loop over all reco particles to see if any of them correspond to the gen leptons.
@@ -327,6 +385,7 @@ void babymaker(){
           if (dR < dR_best){ dR_best = dR; idx_matched = iReco; } 
         }
         genJets_matched.push_back(idx_matched); 
+        genJets_matched_tob.push_back(idx_matched < 0 ? 0 : tas::pfjets_pfCombinedInclusiveSecondaryVertexV2BJetTag().at(idx_matched) > 0.89);
       }
 
       //And now the same thing (FULL ID)
@@ -349,7 +408,80 @@ void babymaker(){
  
       //See if reco lepton passes ID
       for (unsigned int iGen = 0; iGen < idx_reco.size(); iGen++){
-        lep_passID.push_back((idx_reco.at(iGen) >= 0 && isGoodLepton(id_reco.at(iGen), idx_reco.at(iGen))));
+        int iReco = idx_reco.at(iGen);
+        if (iReco < 0){ lep_passID.push_back(0); lep_passID_loose.push_back(0); continue; }
+        lep_passID.push_back(isGoodLeptonNoIso(id_reco.at(iGen), iReco));
+        lep_passID_loose.push_back((abs(id_reco.at(iGen)) == 11 ? isLooseElectronPOG(iReco) : isLooseMuonPOG(iReco)));
+      }
+
+      //Mistags: go through reco electrons and see which ones are mapped to gen
+      recoElectrons = tas::els_p4(); 
+      for (unsigned int iElec = 0; iElec < tas::els_p4().size(); iElec++){
+        float dR_best = 0.1; 
+        int match = -1;
+        for (unsigned int iGen = 0; iGen < tas::genps_id().size(); iGen++){
+          if (abs(tas::genps_id().at(iGen)) != 11) continue;
+          float dR = DeltaR(tas::genps_p4().at(iGen), tas::els_p4().at(iElec));  
+          if (dR < dR_best){ dR_best = dR; match = iGen; } 
+        }
+        recoElectronsMatch.push_back(match); 
+        recoElectronsID.push_back(isGoodLeptonNoIso(11, iElec)); 
+        recoElectronsID_loose.push_back(isLooseElectronPOG(iElec)); 
+      }
+
+      //Mistags: same thing for muons
+      recoMuons = tas::mus_p4(); 
+      for (unsigned int iMuon = 0; iMuon < tas::mus_p4().size(); iMuon++){
+        float dR_best = 0.1; 
+        int match = -1;
+        for (unsigned int iGen = 0; iGen < tas::genps_id().size(); iGen++){
+          if (abs(tas::genps_id().at(iGen)) != 13) continue;
+          float dR = DeltaR(tas::genps_p4().at(iGen), tas::mus_p4().at(iMuon));  
+          if (dR < dR_best){ dR_best = dR; match = iGen; } 
+        }
+        recoMuonsMatch.push_back(match); 
+        recoMuonsID.push_back(isGoodLeptonNoIso(13, iMuon)); 
+        recoMuonsID_loose.push_back(isLooseMuonPOG(iMuon)); 
+      }
+
+      //Mistags: same thing for jets
+      for (unsigned int iJet = 0; iJet < tas::pfjets_p4().size(); iJet++){
+        float dR_best = 0.1; 
+        int match = -1;
+        for (unsigned int iGen = 0; iGen < tas::genjets_p4NoMuNoNu().size(); iGen++){
+          float dR = DeltaR(tas::genjets_p4NoMuNoNu().at(iGen), tas::pfjets_p4().at(iJet));  
+          if (dR < dR_best){ dR_best = dR; match = iGen; } 
+        }
+        pfjets_match.push_back(match); 
+        pfjets_ID.push_back(isLoosePFJet_50nsV1(iJet));
+      }
+
+      //Mistags: same thing for btags
+      for (unsigned int iJet = 0; iJet < tas::pfjets_p4().size(); iJet++){
+        bool isb = 0;
+        for (unsigned int iGen = 0; iGen < tas::genps_id().size(); iGen++){
+          if (abs(tas::genps_id().at(iGen)) != 5 && abs(tas::genps_id().at(iGen)) != 6) continue;
+          float dR = DeltaR(tas::genps_p4().at(iGen), tas::pfjets_p4().at(iJet));  
+          if (dR < 0.4) isb = 1; 
+        }
+        pfjets_matchb.push_back(isb); 
+      }
+
+      //Record which reco jets overlap with leptons
+  
+      for (unsigned int iJet = 0; iJet < tas::pfjets_p4().size(); iJet++){
+        LorentzVector vjet = tas::pfjets_p4().at(iJet); 
+        bool jetisClean = true;
+        for (size_t iGen = 0; iGen < tas::genps_p4().size(); iGen++){
+          if (abs(tas::genps_id_mother().at(iGen)) != 24) continue;
+          if (abs(tas::genps_status().at(iGen)) != 1) continue;
+          if (abs(tas::genps_id().at(iGen)) != 11 && abs(tas::genps_id().at(iGen)) != 13) continue;
+          if (fabs(tas::genps_p4().at(iGen).eta()) < 2.4) continue;
+          if (abs(tas::genps_id().at(iGen)) == 11 && tas::genps_p4().at(iGen).pt() < 10) continue;
+          if (abs(tas::genps_id().at(iGen)) == 13 && tas::genps_p4().at(iGen).pt() < 10) continue;
+          if (ROOT::Math::VectorUtil::DeltaR(vjet, tas::genps_p4().at(iGen)) < 0.1){ jetisClean = false; break; }
+        }   
+        pfjets_isClean.push_back(jetisClean); 
       }
 
       BabyTree->Fill();
