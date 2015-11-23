@@ -34,6 +34,7 @@ enum sample_t {
   VHtoNonBB = 28,
   TTZlow = 29,
   GGHtoZZto4L = 30,
+  WZMG = 31,
 
   //Signals
   T1TTTT_1500 = 100,

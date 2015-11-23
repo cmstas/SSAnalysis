@@ -53,6 +53,7 @@ if [ "$WHICH" == "27" ]; then WHICH_SMALL="tthtononbb"; fi
 if [ "$WHICH" == "28" ]; then WHICH_SMALL="vhtononbb"; fi
 if [ "$WHICH" == "29" ]; then WHICH_SMALL="ttzlow"; fi
 if [ "$WHICH" == "30" ]; then WHICH_SMALL="gghtozzto4l"; fi
+if [ "$WHICH" == "31" ]; then WHICH_SMALL="wzmg"; fi
 
 #signals
 if [ "$WHICH" == "100" ]; then WHICH_SMALL="t1tttt_1500"; fi

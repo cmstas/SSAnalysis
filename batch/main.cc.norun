@@ -192,10 +192,15 @@ int main(int argc, char *argv[]){
       shortname="ttzlow"; 
       break;
     case GGHtoZZto4L:
-     name="GluGluHToZZTo4L_M125_13TeV_powheg_JHUgen_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-     tag="V07-04-11";
-     shortname="gghtozzto4l";
-     break;
+      name="GluGluHToZZTo4L_M125_13TeV_powheg_JHUgen_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-11";
+      shortname="gghtozzto4l";
+      break;
+    case WZMG:
+      name="WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+      tag="V07-04-11";
+      shortname="WZMG";
+      break;
     case T1TTTT_1500:
       name="SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       shortname="t1tttt_1500";
