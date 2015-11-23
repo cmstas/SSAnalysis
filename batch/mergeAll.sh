@@ -49,4 +49,4 @@ hadd T5ttttDeg_1000_300_285_280.root  $path/t5ttttdeg_1000_300_285_280_[1-9]*.ro
 hadd T5qqqqWWDeg_1000_315_300.root    $path/t5qqqqwwdeg_1000_315_300_[1-9]*.root
 hadd TTZLOW.root                      $path/ttzlow_*.root
 hadd GGHtoZZto4L.root                 $path/gghtozzto4l_*.root
-hadd wzmg.root                        $path/wzmg_*.root
+hadd WZMG.root                        $path/wzmg_*.root

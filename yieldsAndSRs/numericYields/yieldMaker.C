@@ -2,7 +2,7 @@
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "../../classFiles/v5.01/SS.h"
+#include "../../classFiles/v5.03/SS.h"
 #include "../../CORE/SSSelections.h"
 #include "../../software/tableMaker/CTable.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
@@ -25,7 +25,7 @@ bool doLatex = 1;
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
-struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_l1eta; TH1F* h_l2eta; TH1F* h_type; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; TH1F* h_dxy; TH1F* h_dz; TH1F* h_sip3d; TH1F* h_mva; }; 
+struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_l1eta; TH1F* h_l2eta; TH1F* h_type; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; TH1F* h_dxy; TH1F* h_dz; TH1F* h_sip3d; TH1F* h_mva; TH1F* h_nleps; }; 
 
 //Total
 yields_t total; 
@@ -503,7 +503,7 @@ void getyields(){
   type_plots.push_back(pair<TH1F*, float>(p_rares.h_type, roughSystRARES ));
   type_plots.push_back(pair<TH1F*, float>(p_flips.h_type, roughSystFLIPS ));
   type_plots.push_back(pair<TH1F*, float>(p_fakes.h_type, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_type, type_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName type_all_SS.pdf --xAxisLabel type (mm, me, ee) --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_type, type_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName type_all_SS.pdf --xAxisLabel type (mm, me, ee) --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep1_miniIso_plots;
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_miniIso  , roughSystTTW   ));
@@ -583,7 +583,7 @@ void getyields(){
   lep1_miniIso_plotsMC.push_back(p_dy_ff.h_lep1_miniIso);
   lep1_miniIso_plotsMC.push_back(p_wjets_ff.h_lep1_miniIso);
   lep1_miniIso_plotsMC.push_back(p_st_ff.h_lep1_miniIso);
-  dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_miniIso_all_SSMC.pdf --xAxisLabel lep1_miniIso --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_miniIso_all_SSMC.pdf --xAxisLabel lep1_miniIso --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel ", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
   vector <TH1F* > lep2_miniIso_plotsMC;
   lep2_miniIso_plotsMC.push_back(p_ttw.h_lep2_miniIso  );
@@ -596,7 +596,7 @@ void getyields(){
   lep2_miniIso_plotsMC.push_back(p_dy_ff.h_lep2_miniIso);
   lep2_miniIso_plotsMC.push_back(p_wjets_ff.h_lep2_miniIso);
   lep2_miniIso_plotsMC.push_back(p_st_ff.h_lep2_miniIso);
-  dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_miniIso_all_SSMC.pdf --xAxisLabel lep2_miniIso --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_miniIso_all_SSMC.pdf --xAxisLabel lep2_miniIso --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
   vector <TH1F* > lep1_ptRel_plotsMC;
   lep1_ptRel_plotsMC.push_back(p_ttw.h_lep1_ptRel  );
@@ -609,7 +609,7 @@ void getyields(){
   lep1_ptRel_plotsMC.push_back(p_dy_ff.h_lep1_ptRel);
   lep1_ptRel_plotsMC.push_back(p_wjets_ff.h_lep1_ptRel);
   lep1_ptRel_plotsMC.push_back(p_st_ff.h_lep1_ptRel);
-  dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRel_all_SSMC.pdf --xAxisLabel lep1_ptRel --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRel_all_SSMC.pdf --xAxisLabel lep1_ptRel --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
   vector <TH1F* > lep2_ptRel_plotsMC;
   lep2_ptRel_plotsMC.push_back(p_ttw.h_lep2_ptRel  );
@@ -622,7 +622,7 @@ void getyields(){
   lep2_ptRel_plotsMC.push_back(p_dy_ff.h_lep2_ptRel);
   lep2_ptRel_plotsMC.push_back(p_wjets_ff.h_lep2_ptRel);
   lep2_ptRel_plotsMC.push_back(p_st_ff.h_lep2_ptRel);
-  dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRel_all_SSMC.pdf --xAxisLabel lep2_ptRel --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRel_all_SSMC.pdf --xAxisLabel lep2_ptRel --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
   vector <TH1F* > lep1_ptRatio_plotsMC;
   lep1_ptRatio_plotsMC.push_back(p_ttw.h_lep1_ptRatio  );
@@ -635,7 +635,7 @@ void getyields(){
   lep1_ptRatio_plotsMC.push_back(p_dy_ff.h_lep1_ptRatio);
   lep1_ptRatio_plotsMC.push_back(p_wjets_ff.h_lep1_ptRatio);
   lep1_ptRatio_plotsMC.push_back(p_st_ff.h_lep1_ptRatio);
-  dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRatio_all_SSMC.pdf --xAxisLabel lep1_ptRatio --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRatio_all_SSMC.pdf --xAxisLabel lep1_ptRatio --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
   vector <TH1F* > lep2_ptRatio_plotsMC;
   lep2_ptRatio_plotsMC.push_back(p_ttw.h_lep2_ptRatio  );
@@ -648,7 +648,7 @@ void getyields(){
   lep2_ptRatio_plotsMC.push_back(p_dy_ff.h_lep2_ptRatio);
   lep2_ptRatio_plotsMC.push_back(p_wjets_ff.h_lep2_ptRatio);
   lep2_ptRatio_plotsMC.push_back(p_st_ff.h_lep2_ptRatio);
-  dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRatio_all_SSMC.pdf --xAxisLabel lep2_ptRatio --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRatio_all_SSMC.pdf --xAxisLabel lep2_ptRatio --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
   vector<pair<TH1F*, float> > ht_plots;
   ht_plots.push_back(pair<TH1F*, float>(p_ttw.h_ht  , roughSystTTW   ));
@@ -681,7 +681,7 @@ void getyields(){
   dxy_plots.push_back(pair<TH1F*, float>(p_rares.h_dxy, roughSystRARES ));
   dxy_plots.push_back(pair<TH1F*, float>(p_flips.h_dxy, roughSystFLIPS ));
   dxy_plots.push_back(pair<TH1F*, float>(p_fakes.h_dxy, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_met, dxy_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName dxy_all_SS.pdf --xAxisLabel dxy --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_met, dxy_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName dxy_all_SS.pdf --xAxisLabel dxy --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > dz_plots;
   dz_plots.push_back(pair<TH1F*, float>(p_ttw.h_dz  , roughSystTTW   ));
@@ -692,7 +692,7 @@ void getyields(){
   dz_plots.push_back(pair<TH1F*, float>(p_rares.h_dz, roughSystRARES ));
   dz_plots.push_back(pair<TH1F*, float>(p_flips.h_dz, roughSystFLIPS ));
   dz_plots.push_back(pair<TH1F*, float>(p_fakes.h_dz, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_dz, dz_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName dz_all_SS.pdf --xAxisLabel dz --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_dz, dz_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName dz_all_SS.pdf --xAxisLabel dz --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > sip3d_plots;
   sip3d_plots.push_back(pair<TH1F*, float>(p_ttw.h_sip3d  , roughSystTTW   ));
@@ -703,7 +703,7 @@ void getyields(){
   sip3d_plots.push_back(pair<TH1F*, float>(p_rares.h_sip3d, roughSystRARES ));
   sip3d_plots.push_back(pair<TH1F*, float>(p_flips.h_sip3d, roughSystFLIPS ));
   sip3d_plots.push_back(pair<TH1F*, float>(p_fakes.h_sip3d, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_sip3d, sip3d_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName sip3d_all_SS.pdf --xAxisLabel SIP3D --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_sip3d, sip3d_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName sip3d_all_SS.pdf --xAxisLabel SIP3D --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > mva_plots;
   mva_plots.push_back(pair<TH1F*, float>(p_ttw.h_mva  , roughSystTTW   ));
@@ -714,7 +714,7 @@ void getyields(){
   mva_plots.push_back(pair<TH1F*, float>(p_rares.h_mva, roughSystRARES ));
   mva_plots.push_back(pair<TH1F*, float>(p_flips.h_mva, roughSystFLIPS ));
   mva_plots.push_back(pair<TH1F*, float>(p_fakes.h_mva, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mva, mva_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName mva_all_SS.pdf --xAxisLabel MVA --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_mva, mva_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName mva_all_SS.pdf --xAxisLabel MVA --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > mll_plots;
   mll_plots.push_back(pair<TH1F*, float>(p_ttw.h_mll  , roughSystTTW   ));
@@ -747,7 +747,7 @@ void getyields(){
   njets_plots.push_back(pair<TH1F*, float>(p_rares.h_njets, roughSystRARES ));
   njets_plots.push_back(pair<TH1F*, float>(p_flips.h_njets, roughSystFLIPS ));
   njets_plots.push_back(pair<TH1F*, float>(p_fakes.h_njets, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_njets, njets_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName njets_all_SS.pdf --xAxisLabel Number of Jets --noXaxisUnit --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_njets, njets_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName njets_all_SS.pdf --xAxisLabel Number of Jets --noXaxisUnit --noDivisionLabel --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > nbtags_plots;
   nbtags_plots.push_back(pair<TH1F*, float>(p_ttw.h_nbtags  , roughSystTTW   ));
@@ -758,7 +758,7 @@ void getyields(){
   nbtags_plots.push_back(pair<TH1F*, float>(p_rares.h_nbtags, roughSystRARES ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_flips.h_nbtags, roughSystFLIPS ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_fakes.h_nbtags, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_nbtags, nbtags_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName nbtags_all_SS.pdf --xAxisLabel Number of BTags --noXaxisUnit --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_nbtags, nbtags_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName nbtags_all_SS.pdf --noDivisionLabel --noXaxisUnit --xAxisLabel Number of BTags --noXaxisUnit --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   //lep1 pt plots
   vector<pair<TH1F*, float> > l1pt_plots;
@@ -888,8 +888,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   y_result.MM    = 0;
   y_result.TOTAL = 0;
 
-  p_result.h_dxy          = new TH1F(Form("dxy_%s"         , chain->GetTitle()) , Form("dxy_%s"         , chain->GetTitle()), 20, 0   ,  10); p_result.h_dxy         ->Sumw2();
-  p_result.h_dz           = new TH1F(Form("dz_%s"          , chain->GetTitle()) , Form("dz_%s"          , chain->GetTitle()), 20, 0   , 0.1); p_result.h_dz          ->Sumw2();
+  p_result.h_dxy          = new TH1F(Form("dxy_%s"         , chain->GetTitle()) , Form("dxy_%s"         , chain->GetTitle()), 20, 0   ,  0.02); p_result.h_dxy         ->Sumw2();
+  p_result.h_dz           = new TH1F(Form("dz_%s"          , chain->GetTitle()) , Form("dz_%s"          , chain->GetTitle()), 20, 0   , 0.03); p_result.h_dz          ->Sumw2();
   p_result.h_sip3d        = new TH1F(Form("sip3d_%s"       , chain->GetTitle()) , Form("sip3d_%s"       , chain->GetTitle()), 20, 0   ,   5); p_result.h_sip3d       ->Sumw2();
   p_result.h_mva          = new TH1F(Form("mva_%s"         , chain->GetTitle()) , Form("mva_%s"         , chain->GetTitle()), 20, 0   , 1.5); p_result.h_mva         ->Sumw2();
   p_result.h_ht           = new TH1F(Form("ht_%s"          , chain->GetTitle()) , Form("ht_%s"          , chain->GetTitle()), 10, 0   , 500); p_result.h_ht          ->Sumw2();
@@ -897,6 +897,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   p_result.h_mll          = new TH1F(Form("mll_%s"         , chain->GetTitle()) , Form("mll_%s"         , chain->GetTitle()), 10, 0   , 200); p_result.h_mll         ->Sumw2();
   p_result.h_mtmin        = new TH1F(Form("mtmin_%s"       , chain->GetTitle()) , Form("mtmin_%s"       , chain->GetTitle()), 10, 0   , 200); p_result.h_mtmin       ->Sumw2();
   p_result.h_njets        = new TH1F(Form("njets_%s"       , chain->GetTitle()) , Form("njets_%s"       , chain->GetTitle()), 8 , 0   , 8);   p_result.h_njets       ->Sumw2();
+  p_result.h_nleps        = new TH1F(Form("nleps_%s"        , chain->GetTitle()) , Form("nleps_%s"        , chain->GetTitle()) , 6   , 0 , 6);    p_result.h_nleps        ->Sumw2();
   p_result.h_nbtags       = new TH1F(Form("nbtags_%s"      , chain->GetTitle()) , Form("nbtags_%s"      , chain->GetTitle()), 6 , 0   , 6);   p_result.h_nbtags      ->Sumw2();
   p_result.h_l1pt         = new TH1F(Form("l1pt_%s"        , chain->GetTitle()) , Form("l1pt_%s"        , chain->GetTitle()), 10, 0   , 150); p_result.h_l1pt        ->Sumw2();
   p_result.h_l2pt         = new TH1F(Form("l2pt_%s"        , chain->GetTitle()) , Form("l2pt_%s"        , chain->GetTitle()), 10, 0   , 100); p_result.h_l2pt        ->Sumw2();
@@ -919,8 +920,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   p_result.h_lep2_miniIso = new TH1F(Form("lep2_miniIso_%s", chain->GetTitle()) , Form("lep2_miniIso_%s", chain->GetTitle()), 30, 0   , 0.2); p_result.h_lep2_miniIso->Sumw2();
   p_result.h_lep1_ptRatio = new TH1F(Form("lep1_ptRatio_%s", chain->GetTitle()) , Form("lep1_ptRatio_%s", chain->GetTitle()), 30, 0   , 1.5); p_result.h_lep1_ptRatio->Sumw2();
   p_result.h_lep2_ptRatio = new TH1F(Form("lep2_ptRatio_%s", chain->GetTitle()) , Form("lep2_ptRatio_%s", chain->GetTitle()), 30, 0   , 1.5); p_result.h_lep2_ptRatio->Sumw2();
-  p_result.h_lep1_ptRel   = new TH1F(Form("lep1_ptRel_%s"  , chain->GetTitle()) , Form("lep1_ptRel_%s"  , chain->GetTitle()), 25, 0   , 25);  p_result.h_lep1_ptRel  ->Sumw2();
-  p_result.h_lep2_ptRel   = new TH1F(Form("lep2_ptRel_%s"  , chain->GetTitle()) , Form("lep2_ptRel_%s"  , chain->GetTitle()), 25, 0   , 25);  p_result.h_lep2_ptRel  ->Sumw2();
+  p_result.h_lep1_ptRel   = new TH1F(Form("lep1_ptRel_%s"  , chain->GetTitle()) , Form("lep1_ptRel_%s"  , chain->GetTitle()), 25, 0   , 50);  p_result.h_lep1_ptRel  ->Sumw2();
+  p_result.h_lep2_ptRel   = new TH1F(Form("lep2_ptRel_%s"  , chain->GetTitle()) , Form("lep2_ptRel_%s"  , chain->GetTitle()), 25, 0   , 50);  p_result.h_lep2_ptRel  ->Sumw2();
 
   //For JES variations
   plots_t p_fake_alt_up;
