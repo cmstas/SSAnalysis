@@ -2,7 +2,7 @@
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "../../classFiles/v4.05/SS.h"
+#include "../../classFiles/v5.01/SS.h"
 #include "../../CORE/SSSelections.h"
 #include "../../software/tableMaker/CTable.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
@@ -102,7 +102,7 @@ void getyields(){
 
   ttw_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
   ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"           , tag.c_str())); 
-  //ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ_low.root"        , tag.c_str())); 
+  ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZLOW.root"         , tag.c_str())); 
   ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
   wz_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"             , tag.c_str()));
   ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
@@ -111,7 +111,8 @@ void getyields(){
   xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"       , tag.c_str()));
   xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZG.root"             , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZZ.root"             , tag.c_str()));
-  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"             , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/GGHtoZZto4L.root"    , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"            , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"            , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
@@ -834,8 +835,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   p_result.h_nbtags       = new TH1F(Form("nbtags_%s"       , chain->GetTitle()) , Form("nbtags_%s"       , chain->GetTitle()) , 6   , 0 , 6);	  p_result.h_nbtags       ->Sumw2();
   p_result.h_l1pt         = new TH1F(Form("l1pt_%s"         , chain->GetTitle()) , Form("l1pt_%s"         , chain->GetTitle()) , 10  , 0 , 150);  p_result.h_l1pt         ->Sumw2();
   p_result.h_l2pt         = new TH1F(Form("l2pt_%s"         , chain->GetTitle()) , Form("l2pt_%s"         , chain->GetTitle()) , 10  , 0 , 100);  p_result.h_l2pt         ->Sumw2();
-  p_result.h_l1eta         = new TH1F(Form("l1eta_%s"         , chain->GetTitle()) , Form("l1eta_%s"         , chain->GetTitle()) , 24  , -2.5 , 2.5);  p_result.h_l1eta         ->Sumw2();
-  p_result.h_l2eta         = new TH1F(Form("l2eta_%s"         , chain->GetTitle()) , Form("l2eta_%s"         , chain->GetTitle()) , 24  , -2.5 , 2.5);  p_result.h_l2eta         ->Sumw2();
+  p_result.h_l1eta        = new TH1F(Form("l1eta_%s"        , chain->GetTitle()) , Form("l1eta_%s"        , chain->GetTitle()) , 24  , -2.5 , 2.5);  p_result.h_l1eta         ->Sumw2();
+  p_result.h_l2eta        = new TH1F(Form("l2eta_%s"        , chain->GetTitle()) , Form("l2eta_%s"        , chain->GetTitle()) , 24  , -2.5 , 2.5);  p_result.h_l2eta         ->Sumw2();
   p_result.SRHH.EE        = new TH1F(Form("SRHH_EE_%s"      , chain->GetTitle()) , Form("SRHH_EE_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.EE        ->Sumw2();
   p_result.SRHH.EM        = new TH1F(Form("SRHH_EM_%s"      , chain->GetTitle()) , Form("SRHH_EM_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.EM        ->Sumw2();
   p_result.SRHH.MM        = new TH1F(Form("SRHH_MM_%s"      , chain->GetTitle()) , Form("SRHH_MM_%s"      , chain->GetTitle()) , 32  , 1 , 33);	  p_result.SRHH.MM        ->Sumw2();
@@ -908,6 +909,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     p_btagSF_dn_alternative.SRLL.TOTAL = 0;
   }
 
+  bool isWZ = (TString(chain->GetTitle())=="wz");
+
   //nEvents in chain
   unsigned int nEventsTotal = 0;
   unsigned int nEventsChain = chain->GetEntries();
@@ -935,8 +938,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       samesign.GetEntry(event);
       nEventsTotal++;
 
-      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUwECO(ss::nGoodVertices())*ss::weight_btagsf();
+      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
       weight*=scaleLumi;
+      if (isWZ) weight*=1.549;
       float weight_alt = weight;
       float weight_btag_up_alt = weight*ss::weight_btagsf_UP()/ss::weight_btagsf();
       float weight_btag_dn_alt = weight*ss::weight_btagsf_DN()/ss::weight_btagsf();
@@ -994,7 +998,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       // if ( (triggerBits & (1<<0))!=(1<<0) and (triggerBits & (1<<5))!=(1<<5) and (triggerBits & (1<<7))!=(1<<7) ) continue;
       // if ( (triggerBits & (1<<1))!=(1<<1) and (triggerBits & (1<<2))!=(1<<2) and (triggerBits & (1<<3))!=(1<<3) and (triggerBits & (1<<4))!=(1<<4) and (triggerBits & (1<<6))!=(1<<6) ) continue;
 
-
       //electron FO is tighter for iso triggers, make sure it is passed
       if (ss::ht()<300.) {
         if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
@@ -1018,8 +1021,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       //Only keep good events
       if (!doFlips && !doFakes && exclude == 0) {
 	    if (ss::hyp_class() != 3) continue;
-	    if (!isData && !isGamma && ss::lep1_motherID()!=1) continue;
-	    if (!isData && !isGamma && ss::lep2_motherID()!=1) continue;
+	    if (!isData && !isGamma && ss::lep1_motherID()!=1 && ss::lep1_isPrompt()!=1 && ss::lep1_isDirectPrompt()!=1) continue;
+	    if (!isData && !isGamma && ss::lep2_motherID()!=1 && ss::lep2_isPrompt()!=1 && ss::lep2_isDirectPrompt()!=1) continue;
 	    //photons can give fakes from conversions (not accounted by data-driven method) 
 	    //but flips need to be excluded to avoid double counting
 	    if (isGamma && (ss::lep1_motherID()==2 || ss::lep2_motherID()==2)) continue;

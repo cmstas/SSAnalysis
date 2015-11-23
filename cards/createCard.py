@@ -13,9 +13,7 @@ import math
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
-#lumi = "0.1"
-lumi = "1.3"
-#lumi = "3.0"
+lumi = "2.1"
 
 pseudoData = 0
 
@@ -240,10 +238,10 @@ def writeOneCard(dir, signal, kine, plot, output):
     fakes = Process(7,"fakes","fakes_histos_"+kine+"_"+lumi+"ifb.root",plot)
     flips = Process(8,"flips","flips_histos_"+kine+"_"+lumi+"ifb.root",plot)
     #overwrite nuisances
-    signal.lumi  = "1.09"
+    signal.lumi  = "1.12"
     signal.jes  = "1"
     TTW.TTW          = "1.13"
-    TTW.lumi         = "1.09"
+    TTW.lumi         = "1.12"
     TTW.ttw_pdf      = "1.04"
     TTW.ttw_extr_hth = "1"
     TTW.ttw_extr_htl = "1"
@@ -254,7 +252,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTW.hthlt  = "1"
     TTW.btag = "1"
     TTZH.TTZH          = "1.11"
-    TTZH.lumi          = "1.09"
+    TTZH.lumi          = "1.12"
     TTZH.ttzh_pdf      = "1.04"
     TTZH.ttzh_extr_hth = "1"
     TTZH.ttzh_extr_htl = "1"
@@ -269,21 +267,21 @@ def writeOneCard(dir, signal, kine, plot, output):
     WZ.jes  = "1"
     WZ.btag = "1"
     WW.WW = "1.30"
-    WW.lumi = "1.09"
+    WW.lumi = "1.12"
     WW.jes  = "1"
     WW.lepeff  = "1.04"
     WW.lephlt  = "1.02"
     WW.hthlt  = "1"
     WW.btag = "1"
     XG.XG = "1.50"
-    XG.lumi = "1.09"
+    XG.lumi = "1.12"
     XG.jes  = "1"
     XG.lepeff  = "1.04"
     XG.lephlt  = "1.02"
     XG.hthlt  = "1"
     XG.btag = "1"
     rares.RARES = "1.30"
-    rares.lumi = "1.09"
+    rares.lumi = "1.12"
     rares.jes  = "1"
     rares.lepeff  = "1.04"
     rares.lephlt  = "1.02"
@@ -291,7 +289,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     rares.btag = "1"
     fakes.fakes = "1.30"
     fakes.fakes_EWK = "1"
-    flips.flips = "1.30"
+    flips.flips = "1.35"
 
     #fill list of processes    
     processes = []
