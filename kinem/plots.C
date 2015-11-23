@@ -92,7 +92,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       //Apply PU reweighting
       if (!isData) {
       	//float puw = getPUwECO(ss::nGoodVertices());
-      	float puw = getTruePUwDn(ss::trueNumInt()[0]);
+      	float puw = getTruePUw(ss::trueNumInt()[0]);
       	weight*=puw;
       }
       //DY totWeight=285999/325590
