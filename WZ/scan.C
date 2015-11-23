@@ -27,13 +27,46 @@ int scan(){
     std::vector<std::string> titles;
 
     TString tag = getTag();
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR.root");  titles.push_back("tt");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY*.root");    titles.push_back("DY");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZ*.root");    titles.push_back("ttZ");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets*.root"); titles.push_back("WJets");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");     titles.push_back("ZZ");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ3LNU.root");     titles.push_back("WZ");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/Data*.root");
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");  titles.push_back("Fakes");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP*.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_high.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_low.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets_LO.root");
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZL.root");    titles.push_back("ttZH");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZLOW.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTHtoNonBB.root");
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");   titles.push_back("ttW");
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");     titles.push_back("Rares");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/GGHtoZZto4L.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWZ.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZZ.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWDPS.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/VHtoNonBB.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTTT.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TZQ.root");
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/QQWW.root");     titles.push_back("WW");
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WGToLNuG.root");     titles.push_back("XG");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZG.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TG.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTG.root");
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ.root");     titles.push_back("WZ");
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGC_05oct.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGD_05oct.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGD_v4.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonC_05oct.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonD_05oct.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonD_v4.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGC_05oct.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGD_05oct.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGD_v4.root");
 
     int nEventsTotal = 0;
     int nEventsChain = ch->GetEntries();
@@ -68,7 +101,7 @@ int scan(){
     TH2F* h2D_ht_njets_wz = new TH2F("ht_njets_wz", "", 20,0,1000, 7,0,7);
     TH2F* h2D_ht_sumleppt_wz = new TH2F("ht_sumleppt_wz", "", 20,0,1000, 40,0,400);
 
-    vector<TString> files = {"TTBAR","DY","TTZ","WJets","ZZ","WZ","Data"}; 
+    vector<TString> files = {"Fakes","ttZH","TTW","Rares","WW","XG","WZ","Data"}; 
     for(int i = 0; i < files.size(); i++) {
 
         TH1F* h1D_njets_file = new TH1F("njets"+files.at(i), "Njets;;Entries", 10, 0, 10);
@@ -117,13 +150,15 @@ int scan(){
 
         int iSample = -1;
 
-        if(filename.Contains("TTBAR"))      { filename = "TTBAR"; iSample = 0; }
-        else if(filename.Contains("DY"))    { filename = "DY";    iSample = 1; }
-        else if(filename.Contains("TTZ"))   { filename = "TTZ";   iSample = 2; }
-        else if(filename.Contains("WJets")) { filename = "WJets"; iSample = 3; }
-        else if(filename.Contains("ZZ"))  { filename = "ZZ";    iSample = 4; }
-        else if(filename.Contains("WZ3L"))    { filename = "WZ";    iSample = 5; }
-        else if(filename.Contains("data"))  { filename = "Data";  iSample = 6; }
+        if(filename.Contains("TTBAR") || filename.Contains("SINGLETOP")  || filename.Contains("DY_")  || filename.Contains("WJets") )                          { filename = "Fakes"; iSample = 0; }
+        else if(filename.Contains("TTZL") || filename.Contains("TTHtoNonBB"))                                                                                  { filename = "TTZ";   iSample = 1; }
+        else if(filename.Contains("TTW"))                                                                                                                      { filename = "TTW";   iSample = 2; }
+        else if(filename.Contains("/ZZ.root") || filename.Contains("/GGHtoZZto4L.root") || filename.Contains("/WWZ.root") || filename.Contains("/WZZ.root") || 
+		filename.Contains("/WWDPS.root") || filename.Contains("/VHtoNonBB.root") || filename.Contains("/TTTT.root") || filename.Contains("/TZQ.root")) { filename = "Rares"; iSample = 3; }
+        else if(filename.Contains("QQWW.root"))                                                                                                                { filename = "WW";    iSample = 4; }
+        else if(filename.Contains("/WGToLNuG.root") || filename.Contains("/ZG.root") || filename.Contains("/TG.root") || filename.Contains("/TTG.root"))       { filename = "XG";    iSample = 5; }
+        else if(filename.Contains("/WZ.root"))                                                                                                                 { filename = "WZ";    iSample = 6; }
+        else if(filename.Contains("Data"))                                                                                                                     { filename = "Data";  iSample = 7; }
         else { std::cout << "ERROR: I don't know what " << filename << " is! Skipping file " << filename << std::endl; continue; }
 
         // Loop over Events in current file
@@ -138,7 +173,7 @@ int scan(){
 
             float scale = 1.0;
             if(!ss::is_real_data()) {
-                scale = ss::scale1fb() * luminosity;
+	        scale = ss::scale1fb() * luminosity * getTruePUw(ss::trueNumInt()[0]);
             } else {
                 DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
                 if (is_duplicate(id) ) continue;
@@ -155,8 +190,8 @@ int scan(){
 
             if( !(ss::lep1_passes_id() && 
                   ss::lep2_passes_id() && 
-                  ss::lep3_veto()     ) ) continue; // looser selection for third lepton
-                  // ss::lep3_passes_id()) ) continue;
+                  // ss::lep3_veto()     ) ) continue; // looser selection for third lepton
+                  ss::lep3_passes_id()) ) continue;
 
 	    //this is what santiago is doing:
 	    // if (ss::lep1_id()*ss::lep2_id()<0) continue;
@@ -172,8 +207,9 @@ int scan(){
             // require a Z
             if (fabs(zmass-91.2) > 15.0) continue;
 
-            // if MET < 40 or Njets <= 2 then we don't care about considering it at all, even in the N-1 plots, so exclude it
-            if(ss::met() < 50.0) continue;
+            // if MET < 50 or Njets <= 2 then we don't care about considering it at all, even in the N-1 plots, so exclude it
+            // if(ss::met() < 50.0) continue;
+            if(ss::met() < 30.0) continue;//relax to 30 for low lumi
             if(ss::njets() < 2) continue;
 
             // all 4 of these define the CR
@@ -261,7 +297,8 @@ int scan(){
 
     // TH1F* null = new TH1F("","",1,0,1);
     TH1F* data;
-    std::string com = " --errHistAtBottom --doCounts --colorTitle --lumi 1.264 --lumiUnit fb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/";
+    TString comt = Form(" --errHistAtBottom --doCounts --colorTitle --lumi %.2f --lumiUnit fb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/",getLumi());
+    std::string com = comt.Data();
     std::string pct = " --showPercentage ";
     // std::string spec = "SR1-8";
     std::string spec = "";

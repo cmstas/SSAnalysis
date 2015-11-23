@@ -2,7 +2,7 @@
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "../../classFiles/v4.05/SS.h"
+#include "../../classFiles/v5.01/SS.h"
 #include "../../CORE/SSSelections.h"
 #include "../../software/tableMaker/CTable.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
@@ -90,7 +90,7 @@ void getyields(){
   TChain *t5qqqqww_deg_chain = new TChain("t","t5qqqqww_deg"); 
 
   //Fill chains
-  ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root"          , tag.c_str())); 
+  ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP1.root"     , tag.c_str()));
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP2.root"     , tag.c_str()));
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP3.root"     , tag.c_str()));
@@ -102,6 +102,7 @@ void getyields(){
 
   ttw_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
   ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"           , tag.c_str())); 
+  ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZLOW.root"         , tag.c_str())); 
   ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
   wz_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"             , tag.c_str()));
   ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
@@ -110,6 +111,7 @@ void getyields(){
   xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"       , tag.c_str()));
   xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZG.root"             , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZZ.root"             , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/GGHtoZZto4L.root"    , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"            , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"            , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
@@ -330,12 +332,12 @@ void getyields(){
   colors2.push_back(18); 
 
   TString header = "        %5s %5s %5s %5s %5s %5s %5s %5s | %5s | %5s | %10s";
-  TString HHline = "HH SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f | %5.2f | %10.2f";
-  TString HLline = "HL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f | %5.2f | %10.2f";
-  TString LLline = "LL SR%2i %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f %5.2f | %5.2f | %5.2f | %10.2f";
+  TString HHline = "HH SR%2i %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f | %10.2f";
+  TString HLline = "HL SR%2i %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f | %10.2f";
+  TString LLline = "LL SR%2i %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f | %10.2f";
   if (doLatex) {
     header = "     & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %10s \\\\";
-    HHline = "SR%2i & %5.2f & %5.2f & %5.2f & %5.2f & %5.2f & %5.2f & %5.2f & %5.2f & %5.2f & %5.2f & %10.2f \\\\";
+    HHline = "SR%2i & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f & %10.2f \\\\";
     HLline = HHline;
     LLline = HHline;
   }
@@ -344,12 +346,21 @@ void getyields(){
   cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   for (int bin=1;bin<=p_ttw.SRHH.TOTAL->GetNbinsX(); ++bin) {
     cout << Form(HHline.Data(),bin,
-		 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin),p_wz.SRHH.TOTAL->GetBinContent(bin),
-		 p_ww.SRHH.TOTAL->GetBinContent(bin),p_xg.SRHH.TOTAL->GetBinContent(bin),
-		 p_rares.SRHH.TOTAL->GetBinContent(bin),p_flips.SRHH.TOTAL->GetBinContent(bin),p_fakes.SRHH.TOTAL->GetBinContent(bin),
+		 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,
+		 p_ttzh.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,
+		 p_wz.SRHH.TOTAL->GetBinContent(bin),p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,
+		 p_ww.SRHH.TOTAL->GetBinContent(bin),p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,
+		 p_xg.SRHH.TOTAL->GetBinContent(bin),p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,
+		 p_rares.SRHH.TOTAL->GetBinContent(bin),p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,
+		 p_flips.SRHH.TOTAL->GetBinContent(bin),p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,
+		 p_fakes.SRHH.TOTAL->GetBinContent(bin),p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,
 		 (p_ttw.SRHH.TOTAL->GetBinContent(bin)+p_ttzh.SRHH.TOTAL->GetBinContent(bin)+p_wz.SRHH.TOTAL->GetBinContent(bin)+
 		  p_ww.SRHH.TOTAL->GetBinContent(bin)+p_xg.SRHH.TOTAL->GetBinContent(bin)+
 		  p_rares.SRHH.TOTAL->GetBinContent(bin)+p_flips.SRHH.TOTAL->GetBinContent(bin)+p_fakes.SRHH.TOTAL->GetBinContent(bin)),
+		 sqrt(pow(p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
+		  pow(p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,2)+
+		  pow(p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
+		      pow(p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,2)),
 		 p_data.SRHH.TOTAL->GetBinContent(bin),
 		 p_t1tttt_1200.SRHH.TOTAL->GetBinContent(bin)
 		 )
@@ -360,12 +371,21 @@ void getyields(){
   cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   for (int bin=1;bin<=p_ttw.SRHL.TOTAL->GetNbinsX(); ++bin) {
     cout << Form(HLline.Data(),bin,
-		 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin),p_wz.SRHL.TOTAL->GetBinContent(bin),
-		 p_ww.SRHL.TOTAL->GetBinContent(bin),p_xg.SRHL.TOTAL->GetBinContent(bin),
-		 p_rares.SRHL.TOTAL->GetBinContent(bin),p_flips.SRHL.TOTAL->GetBinContent(bin),p_fakes.SRHL.TOTAL->GetBinContent(bin),
+		 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,
+		 p_ttzh.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,
+		 p_wz.SRHL.TOTAL->GetBinContent(bin),p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,
+		 p_ww.SRHL.TOTAL->GetBinContent(bin),p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,
+		 p_xg.SRHL.TOTAL->GetBinContent(bin),p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,
+		 p_rares.SRHL.TOTAL->GetBinContent(bin),p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,
+		 p_flips.SRHL.TOTAL->GetBinContent(bin),p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
+		 p_fakes.SRHL.TOTAL->GetBinContent(bin),p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
 		 (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+p_wz.SRHL.TOTAL->GetBinContent(bin)+
 		  p_ww.SRHL.TOTAL->GetBinContent(bin)+p_xg.SRHL.TOTAL->GetBinContent(bin)+
 		  p_rares.SRHL.TOTAL->GetBinContent(bin)+p_flips.SRHL.TOTAL->GetBinContent(bin)+p_fakes.SRHL.TOTAL->GetBinContent(bin)),
+		 sqrt(pow(p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
+		  pow(p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
+		  pow(p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
+		      pow(p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
 		 p_data.SRHL.TOTAL->GetBinContent(bin),
 		 p_t1tttt_1200.SRHL.TOTAL->GetBinContent(bin)
 		 )
@@ -376,12 +396,21 @@ void getyields(){
   cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   for (int bin=1;bin<=p_ttw.SRLL.TOTAL->GetNbinsX(); ++bin) {
     cout << Form(LLline.Data(),bin,
-		 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin),p_wz.SRLL.TOTAL->GetBinContent(bin),
-		 p_ww.SRLL.TOTAL->GetBinContent(bin),p_xg.SRLL.TOTAL->GetBinContent(bin),
-		 p_rares.SRLL.TOTAL->GetBinContent(bin),p_flips.SRLL.TOTAL->GetBinContent(bin),p_fakes.SRLL.TOTAL->GetBinContent(bin),
+		 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,
+		 p_ttzh.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,
+		 p_wz.SRLL.TOTAL->GetBinContent(bin),p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,
+		 p_ww.SRLL.TOTAL->GetBinContent(bin),p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,
+		 p_xg.SRLL.TOTAL->GetBinContent(bin),p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,
+		 p_rares.SRLL.TOTAL->GetBinContent(bin),p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,
+		 p_flips.SRLL.TOTAL->GetBinContent(bin),p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
+		 p_fakes.SRLL.TOTAL->GetBinContent(bin),p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
 		 (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+p_wz.SRLL.TOTAL->GetBinContent(bin)+
 		  p_ww.SRLL.TOTAL->GetBinContent(bin)+p_xg.SRLL.TOTAL->GetBinContent(bin)+
 		  p_rares.SRLL.TOTAL->GetBinContent(bin)+p_flips.SRLL.TOTAL->GetBinContent(bin)+p_fakes.SRLL.TOTAL->GetBinContent(bin)),
+		 sqrt(pow(p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
+		  pow(p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
+		  pow(p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
+		      pow(p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
 		 p_data.SRLL.TOTAL->GetBinContent(bin),
 		 p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
 		 )
@@ -399,6 +428,7 @@ void getyields(){
   SRHH_plots.push_back(pair<TH1F*, float>(p_flips.SRHH.TOTAL, roughSystFLIPS   ));
   SRHH_plots.push_back(pair<TH1F*, float>(p_fakes.SRHH.TOTAL, roughSystFAKESHH ));
   dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "data-driven", Form("--lumi %.2f --outputName HHSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow ", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "data-driven", Form("--lumi %.2f --outputName HHSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.05 --noOverflow ", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > SRHL_plots;
   SRHL_plots.push_back(pair<TH1F*, float>(p_ttw.SRHL.TOTAL  , roughSystTTW     ));
@@ -410,6 +440,7 @@ void getyields(){
   SRHL_plots.push_back(pair<TH1F*, float>(p_flips.SRHL.TOTAL, roughSystFLIPS   ));
   SRHL_plots.push_back(pair<TH1F*, float>(p_fakes.SRHL.TOTAL, roughSystFAKESXL ));
   dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "H-L SRs", "data-driven", Form("--lumi %.2f --outputName HLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "H-L SRs", "data-driven", Form("--lumi %.2f --outputName HLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.05 --noOverflow", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > SRLL_plots;
   SRLL_plots.push_back(pair<TH1F*, float>(p_ttw.SRLL.TOTAL  , roughSystTTW     ));
@@ -421,6 +452,7 @@ void getyields(){
   SRLL_plots.push_back(pair<TH1F*, float>(p_flips.SRLL.TOTAL, roughSystFLIPS   ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_fakes.SRLL.TOTAL, roughSystFAKESXL ));
   dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "L-L SRs", "data-driven", Form("--lumi %.2f --outputName LLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "L-L SRs", "data-driven", Form("--lumi %.2f --outputName LLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.05 --noOverflow", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   //SR plots
   vector <TH1F*> SRHHMC_plots;
@@ -827,6 +859,21 @@ void getyields(){
   l2eta_plotsMC.push_back(p_wjets_ff.h_l2eta);
   l2eta_plotsMC.push_back(p_st_ff.h_l2eta);
   dataMCplotMaker(p_data.h_l2eta, l2eta_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l2eta_all_SSMC.pdf --xAxisLabel Trailing Lepton #eta --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2); 
+
+  vector <TH1F* > nleps_plotsMC;
+  nleps_plotsMC.push_back(p_ttw.h_nleps  );
+  nleps_plotsMC.push_back(p_ttzh.h_nleps );
+  nleps_plotsMC.push_back(p_wz.h_nleps   );
+  nleps_plotsMC.push_back(p_ww.h_nleps   );
+  nleps_plotsMC.push_back(p_xg.h_nleps   );
+  nleps_plotsMC.push_back(p_rares.h_nleps);
+  nleps_plotsMC.push_back(p_ttbar_ff.h_nleps);
+  nleps_plotsMC.push_back(p_dy_ff.h_nleps);
+  nleps_plotsMC.push_back(p_wjets_ff.h_nleps);
+  nleps_plotsMC.push_back(p_st_ff.h_nleps);
+  dataMCplotMaker(p_data.h_nleps, nleps_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName nleps_all_SSMC.pdf --xAxisLabel N_{leptons} --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+
+
 }
 
 //doFakes = 1 for QCD, 2 for inSitu
@@ -927,6 +974,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     p_btagSF_dn_alternative.SRLL.TOTAL = 0;
   }
 
+  bool isWZ = (TString(chain->GetTitle())=="wz");
+
   //nEvents in chain
   unsigned int nEventsTotal = 0;
   unsigned int nEventsChain = chain->GetEntries();
@@ -954,12 +1003,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       samesign.GetEntry(event);
       nEventsTotal++;
 
-      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getPUwECO(ss::nGoodVertices())*ss::weight_btagsf();
-      weight*=scaleLumi;
-      float weight_alt = weight;
-      float weight_btag_up_alt = weight*ss::weight_btagsf_UP()/ss::weight_btagsf();
-      float weight_btag_dn_alt = weight*ss::weight_btagsf_DN()/ss::weight_btagsf();
-
       if (ss::is_real_data()){
         if (doNoData && !doFlips && !doFakes && !testFakeSR) continue; 
         else if (!isUnblindRun(ss::run())) continue;
@@ -969,6 +1012,19 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (!ss::fired_trigger()) continue;
       if (!ss::passedFilterList()) continue;
       if (!ss::passes_met_filters()) continue;
+
+      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
+      weight*=scaleLumi;
+      if (isWZ) weight*=1.549;
+
+      //apply lepton scale factors
+      if (ss::is_real_data()==0 && isWZ==0) {
+	weight*=eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht());
+      }
+
+      float weight_alt = weight;
+      float weight_btag_up_alt = weight*ss::weight_btagsf_UP()/ss::weight_btagsf();
+      float weight_btag_dn_alt = weight*ss::weight_btagsf_DN()/ss::weight_btagsf();
 
       // if (doFakes!=1) continue;
       // if (ss::event()!=326133) continue;
@@ -1013,7 +1069,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       // if ( (triggerBits & (1<<0))!=(1<<0) and (triggerBits & (1<<5))!=(1<<5) and (triggerBits & (1<<7))!=(1<<7) ) continue;
       // if ( (triggerBits & (1<<1))!=(1<<1) and (triggerBits & (1<<2))!=(1<<2) and (triggerBits & (1<<3))!=(1<<3) and (triggerBits & (1<<4))!=(1<<4) and (triggerBits & (1<<6))!=(1<<6) ) continue;
 
-
       //electron FO is tighter for iso triggers, make sure it is passed
       if (ss::ht()<300.) {
         if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
@@ -1037,8 +1092,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       //Only keep good events
       if (!doFlips && !doFakes && exclude == 0) {
 	    if (ss::hyp_class() != 3) continue;
-	    if (!isData && !isGamma && ss::lep1_motherID()!=1) continue;
-	    if (!isData && !isGamma && ss::lep2_motherID()!=1) continue;
+	    if (!isData && !isGamma && ss::lep1_motherID()!=1 && ss::lep1_isPrompt()!=1 && ss::lep1_isDirectPrompt()!=1) continue;
+	    if (!isData && !isGamma && ss::lep2_motherID()!=1 && ss::lep2_isPrompt()!=1 && ss::lep2_isDirectPrompt()!=1) continue;
 	    //photons can give fakes from conversions (not accounted by data-driven method) 
 	    //but flips need to be excluded to avoid double counting
 	    if (isGamma && (ss::lep1_motherID()==2 || ss::lep2_motherID()==2)) continue;
@@ -1144,7 +1199,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       int SR_unc_dn = signalRegion(ss::njets_unc_dn(), ss::nbtags_unc_dn(), ss::met_unc_dn(), ss::ht_unc_dn(), mtmin_unc_dn, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
 
       // cout << "SR=" << SR << endl;
- 
+
+      int nleps = 2;
+      if (ss::lep3_passes_id()) nleps++;
+      if (ss::lep4_passes_id()) nleps++;
+
       //Get the category
       anal_type_t categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
 	  string cat = "HH";

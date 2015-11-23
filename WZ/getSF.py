@@ -28,7 +28,7 @@ for line in lines:
     print sample, count, err
 
 
-    if(sample in ["DY", "TTBAR", "TTZ", "ZZ"]):
+    if(sample not in ["WZ","Data"]):
         nonWZcounts.append(count)
         nonWZerrors.append(err)
     elif(sample in ["WZ"]):

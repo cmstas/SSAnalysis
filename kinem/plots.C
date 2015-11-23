@@ -8,7 +8,7 @@
 #include "../CORE/Tools/utils.h"
 #include "../commonUtils.h"
 
-int mode = 0;  // 0-nominal, 1-upstream, 2-upstream+2jets
+int mode = 1;  // 0-nominal, 1-upstream, 2-upstream+2jets
 
 struct doublePlotHolder{ TH1F* OS[10][4][4][5]; TH1F* SS[10][4][4][5]; TH1F* SF[10][4][4][5]; TH1F* EZ[10][4][4][5]; TH1F* sr3[3]; TH1F* sr2[3]; };
 
@@ -74,7 +74,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
       samesign.GetEntry(event);
       nEventsTotal++;
 
-      if (ss::event() == (int)447808321) cout << "here0!" << endl;
+      //if (ss::event() == (int)447808321) cout << "here0!" << endl;
     
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
@@ -91,7 +91,8 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
 
       //Apply PU reweighting
       if (!isData) {
-      	float puw = getPUwECO(ss::nGoodVertices());
+      	//float puw = getPUwECO(ss::nGoodVertices());
+      	float puw = getTruePUw(ss::trueNumInt()[0]);
       	weight*=puw;
       }
       //DY totWeight=285999/325590
@@ -146,7 +147,7 @@ doublePlotHolder plotMaker(TChain *chain, bool isData){
         plots.OS[7][BR][AC][type]->Fill(ss::nGoodVertices()                 , weight);
       }
       else if (ss::hyp_class() == 3){ 
-        float unblindWeight = isData ? 1 : weight*getLumiUnblind()*getPUwUnblind(ss::nGoodVertices())/(getLumi()*std::max(float(0.00001),getPUw(ss::nGoodVertices())));
+        float unblindWeight = isData ? 1 : weight*getLumiUnblind()/getLumi();
         if (!isData || isUnblindRun(ss::run())) {
           plots.SS[0][BR][AC][type]->Fill(ss::met()                           , unblindWeight);
           plots.SS[1][BR][AC][type]->Fill(ss::ht()                            , unblindWeight);
@@ -272,6 +273,8 @@ void plots(){
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTG.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TZQ.root");
   chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTTT.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");
+  chain_rares->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/GGHtoZZto4L.root");
 
   TChain *chain_ttbar = new TChain("t","ttbar"); 
   chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");
@@ -282,7 +285,7 @@ void plots(){
   chain_ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP5.root");
 
   TChain *chain_VZ = new TChain("t","VZ"); 
-  chain_VZ->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ3LNU.root");
+  chain_VZ->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ.root");
   chain_VZ->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");
 
   TChain *chain_DY = new TChain("t","DY"); 

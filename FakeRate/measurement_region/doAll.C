@@ -14,7 +14,7 @@
   ScanChain(data,"./rate_histos_data_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
   TChain *dy = new TChain("t"); 
-  dy->Add( "/nfs-7/userdata/leptonTree/"+tag+"/DY_amcnlo.root" );
+  dy->Add( "/nfs-7/userdata/leptonTree/"+tag+"/DY_madgraph.root" );
   ScanChain(dy,"./rate_histos_dy_LooseEMVA.root","useLooseEMVA"); 
   ScanChain(dy,"./rate_histos_dy_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
