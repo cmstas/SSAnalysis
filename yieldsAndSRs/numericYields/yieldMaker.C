@@ -938,13 +938,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       samesign.GetEntry(event);
       nEventsTotal++;
 
-      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
-      weight*=scaleLumi;
-      if (isWZ) weight*=1.549;
-      float weight_alt = weight;
-      float weight_btag_up_alt = weight*ss::weight_btagsf_UP()/ss::weight_btagsf();
-      float weight_btag_dn_alt = weight*ss::weight_btagsf_DN()/ss::weight_btagsf();
-
       if (ss::is_real_data()){
         if (doNoData && !doFlips && !doFakes && !testFakeSR) continue; 
         else if (!isUnblindRun(ss::run())) continue;
@@ -954,6 +947,19 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (!ss::fired_trigger()) continue;
       if (!ss::passedFilterList()) continue;
       if (!ss::passes_met_filters()) continue;
+
+      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
+      weight*=scaleLumi;
+      if (isWZ) weight*=1.549;
+
+      //apply lepton scale factors
+      if (ss::is_real_data()==0 && isWZ==0) {
+	weight*=eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht());
+      }
+
+      float weight_alt = weight;
+      float weight_btag_up_alt = weight*ss::weight_btagsf_UP()/ss::weight_btagsf();
+      float weight_btag_dn_alt = weight*ss::weight_btagsf_DN()/ss::weight_btagsf();
 
       // if (doFakes!=1) continue;
       // if (ss::event()!=326133) continue;
