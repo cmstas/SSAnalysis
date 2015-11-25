@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
   const char* suffix = file < 0 ? "" : Form("_%i", file);
   string tag = "V07-04-08";
   bool isData = false;
-
+  bool isSignal = false; 
 
   //Info for each sample
   switch (which){
@@ -306,11 +306,24 @@ int main(int argc, char *argv[]){
       isData = true;
       tag="V07-04-11";
       break;
+
+    case FASTSIMTEST:
+      shortname="fastsimtest";
+      name="SMS-T1tttt_mGluino-875to900_mLSP-1to650_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-11_FS";
+      isSignal = true;
+      tag = "V07-04-11_FS";
+      break;
+
     default:
       name="dummy";
       path = "/store/group/snt/run2_25ns/";
       break;
+
   }
+
+  //Path for signal
+  if (isSignal == true) path="/store/group/snt/run2_fastsim"; 
   
   //Set up file and tree
   cout << "Using xrootd " << endl;
@@ -371,7 +384,7 @@ int main(int argc, char *argv[]){
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
 
-    mylooper->ProcessBaby(name, jetCorrAG, jecUnc, file); 
+    mylooper->ProcessBaby(name, jetCorrAG, jecUnc, file, isSignal); 
 
   }//event loop 
 

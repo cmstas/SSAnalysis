@@ -55,6 +55,10 @@ enum sample_t {
   DataDoubleEGD_v4 = 1006,
   DataDoubleMuonD_v4 = 1007,
   DataMuonEGD_v4 = 1008,
+
+  //fastsim
+  FASTSIMTEST = 10001
+
 };
 
 #endif
