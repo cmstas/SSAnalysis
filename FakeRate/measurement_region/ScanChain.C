@@ -516,10 +516,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       }
 
 
+      bool isEWK = false;
+      if (TString(currentFile->GetTitle()).Contains("WJets") || TString(currentFile->GetTitle()).Contains("DY")) isEWK = true;
 
       bool isData = evt_isRealData();
       bool noMCMatch = false;
-      if (isData) noMCMatch = true;
+      if (isData || isEWK) noMCMatch = true;
 
       //reject electrons from DoubleMu and muons from DoubleEG
       if (debug) cout << "check dataset" << endl;
@@ -527,9 +529,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	if ( isDoubleMuon && abs(id())!=13) continue;
 	if (!isDoubleMuon && abs(id())!=11) continue;
       }
-
-      bool isEWK = false;
-      if (TString(currentFile->GetTitle()).Contains("WJets") || TString(currentFile->GetTitle()).Contains("DY")) isEWK = true;
 
       // Analysis Code
       float lumi = getLumi();//in /fb
@@ -851,7 +850,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //Using gen level info to see if prompt -> no prompt contamination in measurement region
       //everything else is RECO (p4, id, passes_id, FO, etc.)
 
-      if( noMCMatch || (isEWK && motherID() == 1) || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if lep is nonprompt
+      if( noMCMatch || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if lep is nonprompt
 	{
 
 	  if( abs( id() ) == 11 ) //it's an el
@@ -895,7 +894,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //everything else is RECO (p4, id, passes_id, FO, etc.)
 	  
 
-      if( noMCMatch || (isEWK && motherID() == 1) || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if el is nonprompt (GEN info)
+      if( noMCMatch || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if el is nonprompt (GEN info)
 	{
 
 	  if (passFO) {

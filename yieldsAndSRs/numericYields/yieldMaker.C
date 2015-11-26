@@ -966,7 +966,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
       weight*=scaleLumi;
-      if (isWZ) weight*=1.549;
+      if (isWZ) weight*=getWZSF();
 
       //apply lepton scale factors
       if (ss::is_real_data()==0 && isWZ==0) {
