@@ -1,6 +1,7 @@
 #ifndef SSBABYMAKER_H
 #define SSBABYMAKER_H
 
+#include "go_xsec.h"
 #include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -21,6 +22,8 @@
 #include "TROOT.h"
 #include <vector>
 
+int nPoints(int sample, int mgl, int mlsp);
+
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef vector<pair<const LorentzVector *, double> > jets_with_corr_t;
 
@@ -38,10 +41,10 @@ class babyMaker {
       verbose = debug;
       evt_cut = 0;
     }
-    void MakeBabyNtuple(const char* output_name, bool expt);
+    void MakeBabyNtuple(const char* output_name);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
-    int ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, bool expt, int file = -1);
+    int ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, int file = -1, bool isFastsim = 0);
 
   protected:
     TFile* BabyFile;
@@ -63,6 +66,10 @@ class babyMaker {
     BTagCalibrationReader* reader_light;
     BTagCalibrationReader* reader_light_UP;
     BTagCalibrationReader* reader_light_DN;
+    BTagCalibration* calib_fs;
+    BTagCalibrationReader* reader_fastsim;
+    BTagCalibrationReader* reader_fastsim_UP;
+    BTagCalibrationReader* reader_fastsim_DN;
     TH2D* h_btag_eff_b;
     TH2D* h_btag_eff_c;
     TH2D* h_btag_eff_udsg;
@@ -80,6 +87,9 @@ class babyMaker {
     bool is_real_data;
     float scale1fb;     
     float xsec;         
+    float xsec_error;         
+    vector <TString> sparmNames; 
+    vector <float> sparms; 
     float kfactor;      
     TString filename;
     int filenumber; 
@@ -98,7 +108,6 @@ class babyMaker {
     bool filt_hcallaser;
     bool filt_ecaltp;
     bool filt_trkfail;
-    bool filt_eebadsc;
 
     //Gen MET 
     float gen_met;      
@@ -144,6 +153,30 @@ class babyMaker {
        //0 otherwise (not saved)
     int hyp_class;
 
+    //Gen flags
+    bool lep1_isPrompt; 
+    bool lep1_isDirectPrompt;
+    bool lep1_isStat3;
+    bool lep2_isPrompt;      
+    bool lep2_isDirectPrompt;
+    bool lep2_isStat3;
+    bool lep2_genps_isHardProcess;
+    bool lep2_genps_fromHardProcessFinalState;
+    bool lep2_genps_fromHardProcessDecayed;
+    bool lep2_genps_isDirectHardProcessTauDecayProductFinalState;
+    bool lep2_genps_fromHardProcessBeforeFSR;
+    bool lep2_genps_isLastCopy;
+    bool lep2_genps_isLastCopyBeforeFSR; 
+    bool lep1_genps_isHardProcess;
+    bool lep1_genps_fromHardProcessFinalState;
+    bool lep1_genps_fromHardProcessDecayed;
+    bool lep1_genps_isDirectHardProcessTauDecayProductFinalState;
+    bool lep1_genps_fromHardProcessBeforeFSR;
+    bool lep1_genps_isLastCopy;
+    bool lep1_genps_isLastCopyBeforeFSR; 
+
+    
+
     //Leptons
     LorentzVector lep1_p4;
     LorentzVector lep2_p4;
@@ -188,12 +221,6 @@ class babyMaker {
     float mt2;
     float mtmin;
 
-    //SUSY sparms
-    float mLSP;
-    float mGluino;
-    float mSbottom;
-    float mChargino;
- 
     //Look at gen-level particles and choose favorite hypothesis
     //Limited usefulness as-is; probably not smart enough to reject non-prompt leptons
     int lep1_id_gen;

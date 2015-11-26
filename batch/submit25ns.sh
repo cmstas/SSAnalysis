@@ -35,400 +35,321 @@ pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
 sed -i "s/cgeorge/$USER/" condorFileTemplate
 sed -i "s/cgeorge/$USER/" condorExecutable.sh
 
+#isSignal defaults to false
+isSignal=0 
+
 #Then submit jobs
-for expt in "0" # "1"
+nIter=0
+for sname in "WWZ" "TG" "TTG"  "WZ"  "GGHtoZZto4L" "TTBAR" "TTW" "WJets_LO"  "ZG" "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5QQQQWWDeg_1000_315_300" "T5ttttDeg_1000_300_285_280" "T6TTWW_600_425_50" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ"  "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DataMuonEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DataMuonEGD_v4" "WJets" "TTZL" "DY_high" "DY_low" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH"  "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DataMuonEGC_05oct" "TTZlow" "WZMG"
 do
-  nIter=0
-  for sname in "TTWnew" "TTZlow"  "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DATAMUONEGC_05oct" "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DATAMUONEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DATAMUONEGD_v4" # "WJets" "TTZL" "DY_high" "DY_low" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH"  "T5QQQQWWDeg_1000_315_300"  "TTW" "WZ3LNu" "WJets_LO"  "ZG" "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5ttttDeg_1000_300_285_280" "T6TTWW_600_425_50" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ" "WWZ" "ZZ" "QQWW" "TTBAR"  
-  do
-    path="/hadoop/cms/store/group/snt/run2_25ns"
-    #Iter
-    nIter=$(( $nIter + 1 ))
+  path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
+  #Iter
+  nIter=$(( $nIter + 1 ))
 
-    #Get Name
-    if   [ $sname == "TTBAR"           ]
-    then 
-      name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2"
-      tag=V07-04-08
-      nameNu=0
-    elif [ $sname == "TTWnew" ]
-    then
-      name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-      tag=V07-04-11
-      nameNu=62
-      path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2/"
-    elif   [ $sname == "TTWQQ"           ]
-    then 
-      name="TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08 
-      nameNu=23
-    elif   [ $sname == "WZ3LNu"          ]
-    then
-      name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=22
-    elif [ $sname == "WZ"              ]
-    then 
-      name="WZ_TuneCUETP8M1_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=3
-    elif [ $sname == "ZG"              ]
-    then
-      name="ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08_v2
-      nameNu=52
-    elif [ $sname == "WWZ"             ]
-    then 
-      name="WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=49
-    elif [ $sname == "ZZ"              ]
-    then 
-      name="ZZTo4L_13TeV_powheg_pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=50
-    elif [ $sname == "DY_low"          ]; 
-      then name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=6
-    elif [ $sname == "DY_high"         ]; 
-      then name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v3"
-      tag=V07-04-08
-      nameNu=7
-    elif [ $sname == "WJets"           ]; 
-      then name="WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=8
-    elif [ $sname == "TTBAR_PH"      ]; 
-      then name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2"
-      tag=V07-04-08_v2
-      nameNu=59
-    elif [ $sname == "WJets_LO"      ];
-      then name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-      tag=V07-04-11
-      path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
-      nameNu=60
-    elif [ $sname == "SINGLETOP1"    ]; 
-      then name="ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=12
-    elif [ $sname == "SINGLETOP2"    ]; 
-      then name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=13
-    elif [ $sname == "SINGLETOP3"    ]; 
-      then name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=14
-    elif [ $sname == "SINGLETOP4"    ]; 
-      then name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=15
-    elif [ $sname == "SINGLETOP5"    ]; 
-      then name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=17
-    elif [ $sname == "TG"  ];
-      then name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=51
-    elif [ $sname == "DataDoubleMuon"  ]; 
-      then name="Run2015B_DoubleMuon_MINIAOD_PromptReco-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-08
-      nameNu=9
-    elif [ $sname == "DataDoubleEG"    ]; 
-      then name="Run2015B_DoubleEG_MINIAOD_PromptReco-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-08
-      nameNu=10
-    elif [ $sname == "DATAMUONEG"    ]; 
-      then name="Run2015B_MuonEG_MINIAOD_PromptReco-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-08
-      nameNu=16
-    elif [ $sname == "DataDoubleMuon2"  ]; 
-      then name="Run2015B_DoubleMuon_MINIAOD_17Jul2015-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-08
-      nameNu=25
-    elif [ $sname == "DataDoubleEG2"    ]; 
-      then name="Run2015B_DoubleEG_MINIAOD_17Jul2015-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-08
-      nameNu=26
-    elif [ $sname == "DATAMUONEG2"    ]; 
-      then name="Run2015B_MuonEG_MINIAOD_17Jul2015-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-08
-      nameNu=24
-    elif [ $sname == "DataDoubleMuonC"  ]; 
-      then name="Run2015C_DoubleMuon_MINIAOD_PromptReco-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-08
-      nameNu=20
-    elif [ $sname == "DataDoubleEGC"    ]; 
-      then name="Run2015C_DoubleEG_MINIAOD_PromptReco-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-08
-      nameNu=21
-    elif [ $sname == "DATAMUONEGC"    ]; 
-      then name="Run2015C_MuonEG_MINIAOD_PromptReco-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-08
-      nameNu=19
-    elif [ $sname == "DataDoubleMuonD_05oct"  ]; 
-      then name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-11
-      nameNu=46
-    elif [ $sname == "DataDoubleEGD_05oct"    ]; 
-      then name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-11
-      nameNu=45
-    elif [ $sname == "DATAMUONEGD_05oct"    ]; 
-      then name="Run2015D_MuonEG_MINIAOD_05Oct2015-v2";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-11
-      nameNu=47
-    elif [ $sname == "DataDoubleMuonC_05oct"  ]; 
-      then name="Run2015C_25ns_DoubleMuon_MINIAOD_05Oct2015-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-11
-      nameNu=57
-    elif [ $sname == "DataDoubleEGC_05oct"    ]; 
-      then name="Run2015C_25ns_DoubleEG_MINIAOD_05Oct2015-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-11
-      nameNu=56
-    elif [ $sname == "DATAMUONEGC_05oct"    ]; 
-      then name="Run2015C_25ns_MuonEG_MINIAOD_05Oct2015-v1";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-11
-      nameNu=58
-    elif [ $sname == "DataDoubleMuonD_v4"  ]; 
-      then name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v4";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-11
-      nameNu=53
-    elif [ $sname == "DataDoubleEGD_v4"    ]; 
-      then name="Run2015D_DoubleEG_MINIAOD_PromptReco-v4";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-11
-      nameNu=54
-    elif [ $sname == "DATAMUONEGD_v4"    ]; 
-      then name="Run2015D_MuonEG_MINIAOD_PromptReco-v4";
-      path="/hadoop/cms/store/group/snt/run2_data"
-      tag=V07-04-11
-      nameNu=55
-    elif [ $sname == "TTW" ]
-    then
-      name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1" 
-      tag=V07-04-08
-      nameNu=1
-    elif [ $sname == "TTZL" ]
-    then
-      name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=2
-    elif [ $sname == "TTZQ" ]
-    then
-      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=18
-    elif [ $sname == "WGToLNuG" ] 
-    then
-      name="WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=27
-    elif [ $sname == "TTG" ] 
-    then
-      name="TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1"
-      tag=V07-04-08
-      nameNu=28
-    elif [ $sname == "TTHtoNonBB" ] 
-    then
-      name=ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
-      tag=V07-04-08
-      nameNu=29
-    elif [ $sname == "VHtoNonBB" ] 
-    then
-      name=VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
-      tag=V07-04-08
-      nameNu=30
-    elif [ $sname == "TZQ" ] 
-    then
-      name=tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2
-      tag=V07-04-08
-      nameNu=31
-    elif [ $sname == "TTTT" ] 
-    then
-      name=TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
-      tag=V07-04-08
-      nameNu=32
-    elif [ $sname == "WWDPS" ] 
-    then
-      name=WW_DoubleScattering_13TeV-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
-      tag=V07-04-08
-      nameNu=33
-    elif [ $sname == "TTZlow" ] 
-    then
-      name=TTZ_lowMM_petrucc
-      tag=V07-04-11
-      path=/hadoop/cms/store/group/snt/run2_25ns_privateMiniAOD
-      nameNu=61
-    elif [ $sname == "WZZ" ] 
-    then
-      name=WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
-      tag=V07-04-08
-      nameNu=34
-    elif [ $sname == "QQWW" ] 
-    then
-      name=WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
-      tag=V07-04-08
-      nameNu=48
-    elif [ $sname == "T1TTTT_1500" ] 
-    then
-      name=SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
-      tag=V07-04-08
-      nameNu=4
-    elif [ $sname == "T1TTTT_1200" ] 
-    then
-      name=SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v1
-      tag=V07-04-08
-      nameNu=5
-    elif [ $sname == "T5QQQQWWDeg_1000_315_300" ] 
-    then
-      name=T5qqqqWWDeg_mGo1000_mCh315_mChi300_dilep
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=36
-    elif [ $sname == "T5QQQQWW_1200_1000_800" ] 
-    then
-      name=T5qqqqWW_mGo1200_mCh1000_mChi800_dilep
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=37
-    elif [ $sname == "T5ttttDeg_1000_300_285_280" ] 
-    then
-      name=T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=38
-    elif [ $sname == "T2ttDeg_350_330" ] 
-    then
-      name=T2ttDeg_mStop350_mChi330_4bodydec  
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=39
-    elif [ $sname == "T5QQQQZZ_1200_1000_800" ] 
-    then
-      name=T5qqqqZZ_mGo1200_mCh1000_mChi800_lep  
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=40
-    elif [ $sname == "T6TTWW_600_425_50" ] 
-    then
-      name=T6ttWW_600_425_50
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=41
-    elif [ $sname == "T2TT_ARXIV" ] 
-    then
-      name=T2tt_arxiv1507_01601               
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=42
-    elif [ $sname == "T5QQQQZZ_1500_800_100" ] 
-    then
-      name=T5qqqqZZ_mGo1500_mCh800_mChi100_lep   
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=43
-    elif [ $sname == "T6TTWW_650_150_50" ] 
-    then
-      name=T6ttWW_650_150_50
-      path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
-      tag=""
-      nameNu=44
-    else 
-      name=$sname 
-      tag=V07-04-08
-      nameNu=9999
-    fi
+  #Get Name
+  if   [ $sname == "TTBAR" ]
+  then name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=0
+  elif [ $sname == "TTW" ]
+  then name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=1
+  elif [ $sname == "TTZL" ]
+  then name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v2"
+    tag=V07-04-11
+    nameNu=2
+  elif [ $sname == "WZ" ]
+  then name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=3
+  elif [ $sname == "DY_low" ]
+    then name="DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=4
+  elif [ $sname == "DY_high" ]
+    then name="/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=5
+  elif [ $sname == "WJets" ]; 
+    then name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=6
+  elif [ $sname == "TTWQQ" ]
+  then name="TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=7
+  elif [ $sname == "TTZQ" ]
+  then name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=8
+  elif [ $sname == "TTG" ] 
+  then name="TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=9
+  elif [ $sname == "SINGLETOP1"    ]; 
+    then name="ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=10
+  elif [ $sname == "SINGLETOP2"    ]; 
+    then name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=11
+  elif [ $sname == "SINGLETOP3"    ]; 
+    then name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=12
+  elif [ $sname == "SINGLETOP4"    ]; 
+    then name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v2"
+    tag=V07-04-11
+    nameNu=13
+  elif [ $sname == "SINGLETOP5"    ]; 
+    then name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=14
+  elif [ $sname == "QQWW" ]
+  then name=WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1
+    tag=V07-04-11
+    nameNu=15
+  elif [ $sname == "TTTT" ] 
+  then name="TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=16
+  elif [ $sname == "WWDPS" ] 
+  then name="WW_DoubleScattering_13TeV-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=17
+  elif [ $sname == "TTBAR_PH" ] 
+    then name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=18
+  elif [ $sname == "WJets_LO" ]
+    then name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=19
+  elif [ $sname == "WWZ" ]
+  then name="WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=20
+  elif [ $sname == "ZZ" ]
+  then name="ZZTo4L_13TeV_powheg_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v2"
+    tag=V07-04-11
+    nameNu=21
+  elif [ $sname == "TG" ]; 
+    then name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=22
+  elif [ $sname == "ZG" ]
+  then name="ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=23
+  elif [ $sname == "WZZ" ] 
+  then name="WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=24
+  elif [ $sname == "WGToLNuG" ] 
+  then name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=25
+  elif [ $sname == "TZQ" ] 
+  then name="tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=26
+  elif [ $sname == "TTHtoNonBB" ] 
+  then name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=27
+  elif [ $sname == "VHtoNonBB" ] 
+  then name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=28
+  elif [ $sname == "TTZlow" ]
+  then name="TTZ_lowMM_petrucc"
+    tag="V07-04-11"
+    path="/hadoop/cms/store/group/snt/run2_25ns_privateMiniAOD"
+    nameNu=29
+  elif [ $sname == "GGHtoZZto4L" ] 
+  then name="GluGluHToZZTo4L_M125_13TeV_powheg_JHUgen_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=30
+  elif [ $sname == "WZMG" ] 
+  then name="WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=31
 
-    #Data vs. MC variables
-    if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]
-    then 
-      infix="merged/"
-      isData="1"
-    else 
-      infix="" 
-      isData="0"
-    fi
+  #data
+  elif [ $sname == "DataDoubleEGC_05oct"    ]; 
+    then name="Run2015C_25ns_DoubleEG_MINIAOD_05Oct2015-v1";
+    path="/hadoop/cms/store/group/snt/run2_data"
+    tag=V07-04-11
+    nameNu=1000
+  elif [ $sname == "DataDoubleMuonC_05oct"  ]; 
+    then name="Run2015C_25ns_DoubleMuon_MINIAOD_05Oct2015-v1";
+    path="/hadoop/cms/store/group/snt/run2_data"
+    tag=V07-04-11
+    nameNu=1001
+  elif [ $sname == "DataMuonEGC_05oct"    ]; 
+    then name="Run2015C_25ns_MuonEG_MINIAOD_05Oct2015-v1";
+    path="/hadoop/cms/store/group/snt/run2_data"
+    tag=V07-04-11
+    nameNu=1002
+  elif [ $sname == "DataDoubleEGD_05oct"    ]; 
+    then name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v1";
+    path="/hadoop/cms/store/group/snt/run2_data"
+    tag=V07-04-11
+    nameNu=1003
+  elif [ $sname == "DataDoubleMuonD_05oct"  ]; 
+    then name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1";
+    path="/hadoop/cms/store/group/snt/run2_data"
+    tag=V07-04-11
+    nameNu=1004
+  elif [ $sname == "DataMuonEGD_05oct"    ]; 
+    then name="Run2015D_MuonEG_MINIAOD_05Oct2015-v2";
+    path="/hadoop/cms/store/group/snt/run2_data"
+    tag=V07-04-11
+    nameNu=1005
+  elif [ $sname == "DataDoubleEGD_v4"    ]; 
+    then name="Run2015D_DoubleEG_MINIAOD_PromptReco-v4";
+    path="/hadoop/cms/store/group/snt/run2_data"
+    tag=V07-04-11
+    nameNu=1006
+  elif [ $sname == "DataDoubleMuonD_v4"  ]; 
+    then name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v4";
+    path="/hadoop/cms/store/group/snt/run2_data"
+    tag=V07-04-11
+    nameNu=1007
+  elif [ $sname == "DataMuonEGD_v4"    ]; 
+    then name="Run2015D_MuonEG_MINIAOD_PromptReco-v4";
+    path="/hadoop/cms/store/group/snt/run2_data"
+    tag=V07-04-11
+    nameNu=1008
 
-    #Get number of files
-    numberOfFiles=$((`ls -l $path/$name/$infix$tag/merged_ntuple_*.root | wc -l`))
-    echo "number of files: $numberOfFiles"
-    echo "dir: $path/$name/$infix$tag"
+  #Signals
+  elif [ $sname == "T1TTTT_1500" ] 
+  then name="SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-11
+    nameNu=100
+  elif [ $sname == "T1TTTT_1200" ]  
+  then name="SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
+    tag=V07-04-11
+    nameNu=101
+  elif [ $sname == "T5QQQQWWDeg_1000_315_300" ] 
+  then
+    name=T5qqqqWWDeg_mGo1000_mCh315_mChi300_dilep
+    path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+    tag=""
+    nameNu=104
+  elif [ $sname == "T5QQQQWW_1200_1000_800" ] 
+  then
+    name=T5qqqqWW_mGo1200_mCh1000_mChi800_dilep
+    path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+    tag=""
+    nameNu=102
+  elif [ $sname == "T5ttttDeg_1000_300_285_280" ] 
+  then
+    name=T5ttttDeg_mGo1000_mStop300_mCh285_mChi280_23bodydec
+    path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+    tag=""
+    nameNu=103
+  elif [ $sname == "T6TTWW_600_425_50" ] 
+  then
+    name=T6ttWW_600_425_50
+    path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+    tag=""
+    nameNu=105
+  elif [ $sname == "T6TTWW_650_150_50" ] 
+  then
+    name=T6ttWW_650_150_50
+    path="/nfs-7/userdata/ss2015/signalSamples/V07-04-08/"
+    tag=""
+    nameNu=106
+
+  #signal
+  elif [ $sname == "FASTSIMTEST" ] 
+  then
+    name="SMS-T1tttt_mGluino-875to900_mLSP-1to650_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10001 
+
+  #default
+  else 
+    name=$sname 
+    tag=V07-04-08
+    nameNu=999999
+  fi
+
+  #fastsim path
+  if [ "$isSignal" == "1" ]; then path="/hadoop/cms/store/group/snt/run2_fastsim"; tag="V07-04-11_FS"; fi
+
+  #Data vs. MC variables
+  if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]
+  then 
+    infix="merged/"
+    isData="1"
+  else 
+    infix="" 
+    isData="0"
+  fi
+
+  #Get number of files
+  numberOfFiles=$((`ls -l $path/$name/$infix$tag/merged_ntuple_*.root | wc -l`))
+  echo "number of files: $numberOfFiles"
+  echo "dir: $path/$name/$infix$tag"
   
-    #Submit all of them
-    for (( i=0; i<$numberOfFiles; i++))
-    do
-      sname_lower=`echo ${sname,,}`
-      number=$(( $i + 1 ))
+  #Submit all of them
+  for (( i=0; i<$numberOfFiles; i++))
+  do
+    sname_lower=`echo ${sname,,}`
+    number=$(( $i + 1 ))
 
-      #Except they've finished
-      if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/$SPPATH/${sname_lower}_${number}_$expt.root ] 
-      then 
+    #Except they've finished
+    if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/$SPPATH/${sname_lower}_${number}.root ] 
+    then 
+      continue
+    fi
+
+    echo "-------------"
+    echo "Working on $sname $number"
+  
+    #Or if they're still running
+    if [ -e /data/tmp/cgeorge/logs/condorLog_${nameNu}_${number}.log ] 
+    then
+      while read line
+      do
+        if [ `echo $line | awk '{ print $1 }'` == "Cluster" ] 
+        then
+          cluster=`echo $line | awk '{ print $3 }'`
+        elif [ `echo $line | awk '{ print $1 }'` == "Proc" ] 
+        then
+          process=`echo $line | awk '{ print $3 }'`
+        fi
+      done < /data/tmp/cgeorge/logs/condorLog_${nameNu}_${number}.log
+      jobid="$cluster.$process"
+      condor_q $jobid > temp.txt
+      result=`more temp.txt | awk 'END{print $1}'`
+      if [ "$result" == "$jobid" ] 
+      then
+        echo "already submitted!"
+        let "nSubmitted=$nSubmitted+1"
         continue
       fi
+    fi
+    echo "submitting..."
+    let "nSubmitted=$nSubmitted+1"
 
-      echo "-------------"
-      echo "Working on $sname $number $expt"
+    #Make condor file
+    cp condorFileTemplate condorFile
+    if [ "$xrootdbroken" == "1" ]
+    then
+      sed -i 's/T2_US_UCSD,T2_US_WISCONSIN,T2_US_FLORIDA,T2_US_PURDUE,T2_US_NEBRASKA,T2_US_CALTECH/T2_US_UCSD/' condorFile
+    fi
   
-      #Or if they're still running
-      if [ -e /data/tmp/cgeorge/logs/condorLog_${nameNu}_${number}_$expt.log ] 
-      then
-        while read line
-        do
-          if [ `echo $line | awk '{ print $1 }'` == "Cluster" ] 
-          then
-            cluster=`echo $line | awk '{ print $3 }'`
-          elif [ `echo $line | awk '{ print $1 }'` == "Proc" ] 
-          then
-            process=`echo $line | awk '{ print $3 }'`
-          fi
-        done < /data/tmp/cgeorge/logs/condorLog_${nameNu}_${number}_$expt.log
-        jobid="$cluster.$process"
-        condor_q $jobid > temp.txt
-        result=`more temp.txt | awk 'END{print $1}'`
-        if [ "$result" == "$jobid" ] 
-        then
-          echo "already submitted!"
-          let "nSubmitted=$nSubmitted+1"
-          continue
-        fi
-      fi
-      echo "submitting..."
-      let "nSubmitted=$nSubmitted+1"
-
-      #Make condor file
-      cp condorFileTemplate condorFile
-      if [ "$xrootdbroken" == "1" ]
-      then
-        sed -i 's/T2_US_UCSD,T2_US_WISCONSIN,T2_US_FLORIDA,T2_US_PURDUE,T2_US_NEBRASKA,T2_US_CALTECH/T2_US_UCSD/' condorFile
-      fi
-  
-      #submit it
-      sed -i s/ARG1/$nameNu/g condorFile
-      sed -i s/ARG2/$number/g condorFile
-      sed -i s/ARG4/$USER/g condorFile
-      sed -i s/ARG5/$expt/g condorFile
-      sed -i "s,USER_PROXY,$pathToProxy,g" condorFile
-      condor_submit condorFile
-    done
+    #submit it
+    sed -i s/ARG1/$nameNu/g condorFile
+    sed -i s/ARG2/$number/g condorFile
+    sed -i s/ARG3/$USER/g condorFile
+    sed -i "s,USER_PROXY,$pathToProxy,g" condorFile
+    condor_submit condorFile
   done
 done
 
@@ -438,4 +359,3 @@ then
 else 
   return 0
 fi
-

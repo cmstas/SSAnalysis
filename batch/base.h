@@ -1,6 +1,64 @@
 #ifndef THESSBATCHBASE_H
 #define THESSBATCHBASE_H
 
-enum sample_t { TTBAR = 0, TTW = 1, TTZL = 2, WZ = 3, T1TTTT_1500 = 4, T1TTTT_1200 = 5, DY_low = 6, DY_high = 7, WJets = 8, DataDoubleMuon = 9, DataDoubleEG = 10, TTPOWHEG = 11, TTZQ = 18, DATAMUONEG = 16, SINGLETOP1 = 12, SINGLETOP2 = 13, SINGLETOP3 = 14, SINGLETOP4 = 15, SINGLETOP5 = 17, DATAMUONEGC = 19, DataDoubleMuonC = 20, DataDoubleEGC = 21, WZ3LNu = 22, TTWQQ = 23, DATAMUONEG2 = 24, DataDoubleMuon2 = 25, DataDoubleEG2 = 26, WGToLNuG = 27, TTG = 28, TTHtoNonBB = 29, VHtoNonBB = 30, TZQ = 31, TTTT = 32, WWDPS = 33, WZZ = 34, T5QQQQWWDeg_1000_315_300 = 36, T5QQQQWW_1200_1000_800 = 37, T5ttttDeg_1000_300_285_280 = 38, T2ttDeg_350_330 = 39, T5QQQQZZ_1200_1000_800 = 40, T6TTWW_600_425_50 = 41, T2TT_ARXIV = 42, T5QQQQZZ_1500_800_100 = 43, T6TTWW_650_150_50 = 44, DataDoubleEGD_05oct = 45, DataDoubleMuonD_05oct = 46, DATAMUONEGD_05oct = 47, QQWW = 48, WWZ = 49, ZZ = 50, TG = 51, ZG = 52, DataDoubleMuonD_v4 = 53, DataDoubleEGD_v4 = 54, DATAMUONEGD_v4 = 55, DataDoubleEGC_05oct = 56, DataDoubleMuonC_05oct = 57, DATAMUONEGC_05oct = 58, TTBAR_PH = 59, WJets_LO = 60, TTZlow = 61, TTWnew = 62 };
+enum sample_t { 
+  //Backgrounds
+  TTBAR = 0,
+  TTW = 1,
+  TTZL = 2,
+  WZ = 3,
+  DY_low = 4,
+  DY_high = 5,
+  WJets = 6,
+  TTWQQ = 7,
+  TTZQ = 8,
+  TTG = 9,
+  SINGLETOP1 = 10,
+  SINGLETOP2 = 11,
+  SINGLETOP3 = 12,
+  SINGLETOP4 = 13,
+  SINGLETOP5 = 14,
+  QQWW = 15,
+  TTTT = 16,
+  WWDPS = 17, 
+  TTBAR_PH = 18,
+  WJets_LO = 19, 
+  WWZ = 20,
+  ZZ = 21,
+  TG = 22,
+  ZG = 23,
+  WZZ = 24,
+  WGToLNuG = 25,
+  TZQ = 26,
+  TTHtoNonBB = 27,
+  VHtoNonBB = 28,
+  TTZlow = 29,
+  GGHtoZZto4L = 30,
+  WZMG = 31,
+
+  //Signals
+  T1TTTT_1500 = 100,
+  T1TTTT_1200 = 101,
+  T5QQQQWW_1200_1000_800 = 102,
+  T5ttttDeg_1000_300_285_280 = 103,
+  T5QQQQWWDeg_1000_315_300 = 104,
+  T6TTWW_600_425_50 = 105,
+  T6TTWW_650_150_50 = 106,
+
+  //Data
+  DataDoubleEGC_05oct = 1000,
+  DataDoubleMuonC_05oct = 1001,
+  DataMuonEGC_05oct = 1002,
+  DataDoubleEGD_05oct = 1003,
+  DataDoubleMuonD_05oct = 1004,
+  DataMuonEGD_05oct = 1005,
+  DataDoubleEGD_v4 = 1006,
+  DataDoubleMuonD_v4 = 1007,
+  DataMuonEGD_v4 = 1008,
+
+  //fastsim
+  FASTSIMTEST = 10001
+
+};
 
 #endif
