@@ -152,7 +152,7 @@ int scan(){
         int iSample = -1;
 
         if(filename.Contains("TTBAR") || filename.Contains("SINGLETOP")  || filename.Contains("DY_")  || filename.Contains("WJets") )                          { filename = "Fakes"; iSample = 0; }
-        else if(filename.Contains("TTZL") || filename.Contains("TTHtoNonBB"))                                                                                  { filename = "TTZ";   iSample = 1; }
+        else if(filename.Contains("TTZL") || filename.Contains("TTZLOW") || filename.Contains("TTHtoNonBB"))                                                   { filename = "TTZ";   iSample = 1; }
         else if(filename.Contains("TTW"))                                                                                                                      { filename = "TTW";   iSample = 2; }
         else if(filename.Contains("/ZZ.root") || filename.Contains("/GGHtoZZto4L.root") || filename.Contains("/WWZ.root") || filename.Contains("/WZZ.root") || //filename.Contains("/T6TTWW_600_425_50.root") ||
 		filename.Contains("/WWDPS.root") || filename.Contains("/VHtoNonBB.root") || filename.Contains("/TTTT.root") || filename.Contains("/TZQ.root") ) { filename = "Rares"; iSample = 3; }
@@ -184,6 +184,10 @@ int scan(){
             fill(h1D_hyp_class_vec.at(iSample), ss::hyp_class(), scale);
 
 	    if (!ss::fired_trigger()) continue;
+	    if (ss::is_real_data()) {
+		if (!ss::passedFilterList()) continue;
+		if (!ss::passes_met_filters()) continue;
+	      }
 
             // this guarantees that the third lepton makes a Z with one of the first two leptons
             // if( ! (ss::hyp_class() == 6 && ss::madeExtraZ()) ) continue;
@@ -223,6 +227,10 @@ int scan(){
             // Actually ignore the MET and MTMIN boundaries for more statistics
             // goodMet = true;
             // goodMtmin = true;
+
+	    // if (ss::is_real_data() && goodBtags && goodNjets && goodHH) {
+	    //   cout << Form("%1d\t%9d\t%llu\t%+2d\t%5.1f\t%+2d\t%5.1f\t%+2d\t%5.1f\t%d\t%2d\t%5.1f\t%6.1f\n", ss::run(), ss::lumi(), ss::event(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::lep3_id(), ss::lep3_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht());
+	    // }
 
             if(filename.Contains("/WZ.root"))    {
                 h2D_ptlep1_ptlep2_wz->Fill(ss::lep2_p4().pt(),ss::lep1_p4().pt());
