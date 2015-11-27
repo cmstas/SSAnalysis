@@ -520,10 +520,10 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   //Initialize variables
   InitBabyNtuple();
   
+  csErr_t babyErrorStruct; 
+
   //Debug mode
   if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return babyErrorStruct;
-
-  csErr_t babyErrorStruct; 
 
   //These c-s errors
   babyErrorStruct.cs_scale_no += tas::genweights().at(0);
