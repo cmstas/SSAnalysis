@@ -66,3 +66,10 @@ yieldsAndSRs/numericYields/nov4_pres
 rareSyst/analysis_real/checkNorm
 kinem/fkwMETstudy/
 FR_studies_pres
+yieldsAndSRs/numericYields/*.txt
+yieldsAndSRs/numericYields/*.tex
+cards/*.txt
+FakeRate/app_region/*.txt
+FakeRate/measurement_region/log*
+FakeRate/measurement_region/*.txt
+WZ/*.txt
