@@ -262,7 +262,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTZH.lephlt  = "1.02"
     TTZH.hthlt  = "1"
     TTZH.btag = "1"
-    WZ.WZ = "1.30"
+    WZ.WZ = "1.25"
     #WZ.wz_extr = "1"
     WZ.jes  = "1"
     WZ.btag = "1"
@@ -289,7 +289,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     rares.btag = "1"
     fakes.fakes = "1.30"
     fakes.fakes_EWK = "1"
-    flips.flips = "1.35"
+    flips.flips = "1.26"
 
     #fill list of processes    
     processes = []

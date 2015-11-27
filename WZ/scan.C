@@ -48,6 +48,7 @@ int scan(){
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/VHtoNonBB.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTTT.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TZQ.root");
+    //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/T6TTWW_600_425_50.root ");
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/QQWW.root");     titles.push_back("WW");
 
@@ -153,8 +154,8 @@ int scan(){
         if(filename.Contains("TTBAR") || filename.Contains("SINGLETOP")  || filename.Contains("DY_")  || filename.Contains("WJets") )                          { filename = "Fakes"; iSample = 0; }
         else if(filename.Contains("TTZL") || filename.Contains("TTHtoNonBB"))                                                                                  { filename = "TTZ";   iSample = 1; }
         else if(filename.Contains("TTW"))                                                                                                                      { filename = "TTW";   iSample = 2; }
-        else if(filename.Contains("/ZZ.root") || filename.Contains("/GGHtoZZto4L.root") || filename.Contains("/WWZ.root") || filename.Contains("/WZZ.root") || 
-		filename.Contains("/WWDPS.root") || filename.Contains("/VHtoNonBB.root") || filename.Contains("/TTTT.root") || filename.Contains("/TZQ.root")) { filename = "Rares"; iSample = 3; }
+        else if(filename.Contains("/ZZ.root") || filename.Contains("/GGHtoZZto4L.root") || filename.Contains("/WWZ.root") || filename.Contains("/WZZ.root") || //filename.Contains("/T6TTWW_600_425_50.root") ||
+		filename.Contains("/WWDPS.root") || filename.Contains("/VHtoNonBB.root") || filename.Contains("/TTTT.root") || filename.Contains("/TZQ.root") ) { filename = "Rares"; iSample = 3; }
         else if(filename.Contains("QQWW.root"))                                                                                                                { filename = "WW";    iSample = 4; }
         else if(filename.Contains("/WGToLNuG.root") || filename.Contains("/ZG.root") || filename.Contains("/TG.root") || filename.Contains("/TTG.root"))       { filename = "XG";    iSample = 5; }
         else if(filename.Contains("/WZ.root"))                                                                                                                 { filename = "WZ";    iSample = 6; }
@@ -223,7 +224,7 @@ int scan(){
             // goodMet = true;
             // goodMtmin = true;
 
-            if(filename.Contains("WZ"))    {
+            if(filename.Contains("/WZ.root"))    {
                 h2D_ptlep1_ptlep2_wz->Fill(ss::lep2_p4().pt(),ss::lep1_p4().pt());
                 h2D_ht_njets_wz->Fill(ss::ht(),ss::njets());
                 h2D_ht_sumleppt_wz->Fill( ss::ht(), ss::lep2_p4().pt()+ss::lep1_p4().pt() );
