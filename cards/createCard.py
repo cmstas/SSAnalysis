@@ -9,7 +9,7 @@ import math
 #example: for dir in v5.03; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do python createCard.py ${dir} ${sig}; done; done
 
 #then get expected limits with: combine -M Asymptotic dir/card.txt --run expected --noFitAsimov
-#for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do echo ${sig}; combine -M Asymptotic v4.08/card_${sig}_1.3ifb-all.txt | grep ": r <" ; done
+#for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do echo ${sig}; combine -M Asymptotic v5.03/card_${sig}_1.3ifb-all.txt | grep ": r <" ; done
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
@@ -278,7 +278,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTZH.hthlt  = "1"
     TTZH.btag = "1"
     TTZH.pu = "1"
-    WZ.WZ = "1.25"
+    WZ.WZ = "1.30"
     #WZ.wz_extr = "1"
     WZ.jes  = "1"
     WZ.btag = "1"

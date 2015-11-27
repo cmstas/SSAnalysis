@@ -34,7 +34,6 @@ yields_t total;
 pair<yields_t, plots_t> run(TChain *chain, bool isData = 0, bool doFlips = 0, int doFakes = 0, int exclude = 0, bool isSignal = 0, bool isGamma = 0);
 void avoidNegativeYields(TH1F* plot);
 void avoidSmallYieldsDueToNegWeightsInPromptSubtraction(TH1F* plot);
-void avoidZeroStatUnc(TH1F* plot);
 void fillDownMirrorUp(TH1F* central,TH1F* up,TH1F* down);
 void writeStatUpDown(TH1F* central,string name,bool down);
 void writeStat(TH1F* central,string name);
@@ -43,8 +42,6 @@ void writeJesSyst(TH1F* central,string name,TString kine);
 void writeHTHltSyst(TH1F* central,string name,TString kine);
 bool isSRHighHT(TString kine, int sr);
 int nbtagsSR(TString kine, int sr);
-//deprecated:
-void writeWZExtrSyst(TH1F* central,string name,TString kine,bool down);
 
 static float roughSystTTW   = 0.2;
 static float roughSystTTZH  = 0.2;
@@ -195,6 +192,8 @@ void getyields(){
   duplicate_removal::clear_list();
   pair<yields_t, plots_t> results_flips    = run(flips_chain, 1, 1);
   duplicate_removal::clear_list();
+  ttbar_chain->SetTitle("fakes_mc");
+  pair<yields_t, plots_t> results_fakes_mc = run(ttbar_chain, 0, 0, 1);
   pair<yields_t, plots_t> results_fakes    = run(fakes_chain, 1, 0, 1);
   duplicate_removal::clear_list();
   fakes_chain->SetTitle("fakes_is");
@@ -1233,7 +1232,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	}
 	//subtract double FO
 	if (ss::hyp_class() == 1) weight *= -1.;
-        if (!ss::is_real_data()) {
+        if (!ss::is_real_data() && isData) {
 	  weight *= -1.;
 	  weight_alt *= -1.;
 	}
@@ -1372,12 +1371,15 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_lep2_ptRel  ->Fill(ss::lep2_ptrel_v1()                                                                     , weight);
       p_result.h_lep1_ptRatio->Fill(ptratio_1                                                                               , weight);
       p_result.h_lep2_ptRatio->Fill(ptratio_2                                                                               , weight);
-      // if (isData && !doFakes && !doFlips && SR == 1 && cat == "HH"){
-      //   cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
-      // 	cout << ss::lep1_p4().eta() << " " << ss::lep2_p4().eta() << " " << ss::lep1_p4().phi() << " " << ss::lep2_p4().phi() << " " << ss::lep3_p4().pt() << " " << ss::lep3_p4().eta() << " " << ss::lep3_p4().phi() << " " << ss::lep3_id() << " " << ss::lep4_p4().pt() << " " << ss::lep4_p4().eta() << " " << ss::lep4_p4().phi() << " " << ss::lep4_id() << " " << ss::lep3_passes_id() << " " << ss::lep4_passes_id() << endl;
-      // 	for (unsigned int i = 0; i < ss::btags().size(); i++) cout << ss::btags().at(i).eta() << ",";
-      // 	cout << endl;
-      // 	nSelected++; 
+      // if (!isData && !doFakes && !doFlips && SR == 1 && cat == "HH"){
+      //   // cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
+
+      //   cout << Form("%1d\t%9d\t%llu\t%+2d\t%5.1f\t%+2d\t%5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\t%5.1f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%6.4f\n", ss::run(), ss::lumi(), ss::event(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR,ss::trueNumInt()[0],getTruePUw(ss::trueNumInt()[0]),ss::weight_btagsf(),triggerScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::ht()),leptonScaleFactor(ss::lep1_id(), ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht()),leptonScaleFactor(ss::lep2_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::ht()),ss::scale1fb()*lumiAG);
+
+      // 	// cout << ss::lep1_p4().eta() << " " << ss::lep2_p4().eta() << " " << ss::lep1_p4().phi() << " " << ss::lep2_p4().phi() << " " << ss::lep3_p4().pt() << " " << ss::lep3_p4().eta() << " " << ss::lep3_p4().phi() << " " << ss::lep3_id() << " " << ss::lep4_p4().pt() << " " << ss::lep4_p4().eta() << " " << ss::lep4_p4().phi() << " " << ss::lep4_id() << " " << ss::lep3_passes_id() << " " << ss::lep4_passes_id() << endl;
+      // 	// for (unsigned int i = 0; i < ss::btags().size(); i++) cout << ss::btags().at(i).eta() << ",";
+      // 	// cout << endl;
+      // 	// nSelected++; 
       // }
 
       //Fill SR plots
@@ -1439,9 +1441,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   avoidNegativeYields(p_result.SRHL.TOTAL);
   avoidNegativeYields(p_result.SRLL.TOTAL);
   if (doFakes == 1) {
-    avoidZeroStatUnc(p_result.SRHH.TOTAL);
-    avoidZeroStatUnc(p_result.SRHL.TOTAL);
-    avoidZeroStatUnc(p_result.SRLL.TOTAL);
     avoidNegativeYields(p_fake_alt_up.SRHH.TOTAL);
     avoidNegativeYields(p_fake_alt_up.SRHL.TOTAL);
     avoidNegativeYields(p_fake_alt_up.SRLL.TOTAL);
@@ -1494,13 +1493,34 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       else if (kinRegs[kr]=="hilow") plot=p_result.SRHL.TOTAL;
       else if (kinRegs[kr]=="lowlow") plot=p_result.SRLL.TOTAL;
       else exit(1);
+
+      //hack to mitigate statistical uncertainty due to empty control regions for fakes
+      if (name=="fakes") {
+	//in case prediction is zero, take statistical upper limit from fakes_mc 
+	TFile *file_fakes_mc = TFile::Open(Form("../../cards/%s/fakes_mc_histos_%s_%.1fifb.root",tag.c_str(),kinRegs[kr].Data(),lumiAG),"OPEN");
+	if (file_fakes_mc==0) {
+	  cout << "warning, need fakes_mc to set stat for fakes" << endl;
+	  assert(0);
+	}
+	TH1F* h_mc = (TH1F*) file_fakes_mc->Get("sr");
+	for (int bin=1;bin<=plot->GetNbinsX();++bin) {
+	  if (plot->GetBinContent(bin)<=2E-6) {
+	    cout << "warning: plot " << plot->GetName() << " has zero stat unc in bin " << bin << " value=" << plot->GetBinContent(bin) << "; setting to MC pred=" << h_mc->GetBinContent(bin) << endl;
+	    plot->SetBinError(bin,h_mc->GetBinContent(bin));
+	  } 
+	}
+	file_fakes_mc->Close();
+	fileOut->cd();
+      }
+
+      //write the central sr plot
       TH1F* h_sr = (TH1F*) plot->Clone("sr");
       h_sr->Write();
       
       //now do systematics
-      
-      //mc stats
-      writeStat(h_sr,name);
+
+      //stats
+      writeStat(plot,name);
 
       //fakes ewk
       if (doFakes == 1) {
@@ -1520,12 +1540,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (name=="ttw" || name=="ttzh"){
         writeTTVExtrSyst(h_sr,name,kinRegs[kr]);
       }
-      
-      //wz
-      // if (name=="wz") {
-      // 	writeWZExtrSyst(h_sr,name,kinRegs[kr],0);
-      // 	writeWZExtrSyst(h_sr,name,kinRegs[kr],1);
-      // }
       
       if (!isData && !doFlips && !doFakes) {
         //btag: init
@@ -1671,15 +1685,6 @@ void avoidSmallYieldsDueToNegWeightsInPromptSubtraction(TH1F* plot) {
   }
 }
 
-void avoidZeroStatUnc(TH1F* plot) {
-  for (int bin=1;bin<=plot->GetNbinsX();++bin) {
-    if (plot->GetBinContent(bin)<=2E-6) {
-      cout << "warning: plot " << plot->GetName() << " has zero stat unc in bin " << bin << " value=" << plot->GetBinContent(bin) << "; setting to 1.8*w."<< endl;
-      plot->SetBinError(bin,1.84*0.4/(1.-0.4));
-    } 
-  }
-}
-
 void writeStatUpDown(TH1F* central,string name,bool down) {
   TString updown = "Up";
   if (down) updown = "Down";
@@ -1688,6 +1693,7 @@ void writeStatUpDown(TH1F* central,string name,bool down) {
 			      central->GetNbinsX(),central->GetXaxis()->GetXmin(),central->GetXaxis()->GetXmax());
   for (int bin=1;bin<=statUpDown->GetNbinsX();++bin) {
     float val = down ? (central->GetBinContent(bin)-central->GetBinError(bin)) : (central->GetBinContent(bin)+central->GetBinError(bin));
+    //if (name=="fakes") cout << bin << " val=" << val << " c=" << central->GetBinContent(bin) << " e=" << central->GetBinError(bin) << endl;
     if (val>0) statUpDown->SetBinContent(bin,val);
     else statUpDown->SetBinContent(bin,1E-6);
   }
@@ -1747,30 +1753,6 @@ void writeTTVExtrSyst(TH1F* central,string name,TString kine) {
   systDownHTL->Write();
   systUpLL->Write();
   systDownLL->Write();
-}
-
-void writeWZExtrSyst(TH1F* central,string name,TString kine,bool down) {
-  //deprecated!
-  return;
-  TString updown = "Up";
-  if (down) updown = "Down";
-  TH1F* systUpDown = (TH1F*) central->Clone(Form("%s_extr%s",name.c_str(),updown.Data()));
-  systUpDown->SetTitle(Form("%s_extr%s",name.c_str(),updown.Data()));
-  float systValue = 1.15;//15%
-  for (int bin=1;bin<=systUpDown->GetNbinsX();++bin) {
-    if (kine.Contains("hihi")) {
-      if (bin<9) continue;
-    }
-    if (kine.Contains("hilow")) {
-      if (bin<7) continue;
-    }
-    if (kine.Contains("lowlow")) {
-      if (bin<3) continue;
-    }
-    float val = down ? (central->GetBinContent(bin)/systValue) : (central->GetBinContent(bin)*systValue);
-    if (val>0) systUpDown->SetBinContent(bin,val);
-  }
-  systUpDown->Write();
 }
 
 void writeHTHltSyst(TH1F* central,string name,TString kine) {

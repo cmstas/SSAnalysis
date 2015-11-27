@@ -7,6 +7,22 @@ void makeTable() {
 
   TString procs[] = {"ttw","ttzh","wz","ww","xg","rares","flips","fakes"};
 
+  cout << "\\documentclass[10pt,a4paper]{article}" << endl;
+  cout << "\\usepackage{lscape}" << endl;
+  cout << "\\begin{document}" << endl;
+  cout << endl;
+
+  TString header = "     & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %10s \\\\";
+
+  cout << "\\begin{landscape}" << endl;
+  cout << "\\begin{table}" << endl;
+  cout << "\\footnotesize" << endl;
+  cout << "\\begin{center}" << endl;
+  cout << "\\caption{Event yields in HH regions.}" << endl;
+  cout << "\\label{tab:yieldsHH}" << endl;
+  cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
+  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  cout << "\\hline\\hline" << endl;
   TString kine = "hihi";
   for (int sr=1;sr<33;++sr) {
     pair<float, float> tye(0,0);
@@ -15,18 +31,41 @@ void makeTable() {
       pair<float, float> ye = dumpCardForOneSR(procs[p], kine, sr, lumi, dir);
       tye.first+=ye.first;
       tye.second+=ye.second;
-      cout << Form("& %6.3f $\\pm$ %6.3f ",ye.first,sqrt(ye.second));
-    }
-    cout << Form("& %6.3f $\\pm$ %6.3f ",tye.first,sqrt(tye.second));
+      int ndec = 1;
+      if (sqrt(ye.second)<1.) ndec = 2; 
+      if (sqrt(ye.second)<0.01) ndec = 3;
+      if (sqrt(ye.second)<0.0005) ndec = 1;
+      cout << Form("& %6.*f $\\pm$ %6.*f ",ndec,ye.first,ndec,sqrt(ye.second));
+    } 
+    int ndec = 1;
+    if (sqrt(tye.second)<1.) ndec = 2; 
+    if (sqrt(tye.second)<0.01) ndec = 3;
+    if (sqrt(tye.second)<0.0005) ndec = 1;
+    cout << Form("& %6.*f $\\pm$ %6.*f ",ndec,tye.first,ndec,sqrt(tye.second));
     float dye = dumpCardForOneSR(TString("data"), kine, sr, lumi, dir).first;
     cout << Form("& %6.0f ",dye);
     float sye = dumpCardForOneSR(TString("t1tttt_1200"), kine, sr, lumi, dir).first;
     cout << Form("& %6.3f ",sye);
     cout << " \\\\ " << endl;
   }
+  cout << "\\hline" << endl;
+  cout << "\\end{tabular}" << endl;
+  cout << "\\end{center}" << endl;
+  cout << "\\end{table}" << endl;
+  cout << "\\end{landscape}" << endl;
+
   cout << endl;
   cout << endl;
   
+  cout << "\\begin{landscape}" << endl;
+  cout << "\\begin{table}" << endl;
+  cout << "\\footnotesize" << endl;
+  cout << "\\begin{center}" << endl;
+  cout << "\\caption{Event yields in HL regions.}" << endl;
+  cout << "\\label{tab:yieldsHL}" << endl;
+  cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
+  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  cout << "\\hline\\hline" << endl;
   kine = "hilow";
   for (int sr=1;sr<27;++sr) {
     pair<float, float> tye(0,0);
@@ -34,19 +73,42 @@ void makeTable() {
     for (int p=0;p<8;++p) {
       pair<float, float> ye = dumpCardForOneSR(procs[p], kine, sr, lumi, dir);
       tye.first+=ye.first;
-      tye.second+=ye.second;
-      cout << Form("& %6.3f $\\pm$ %6.3f ",ye.first,sqrt(ye.second));
+      tye.second+=ye.second;      
+      int ndec = 1;
+      if (sqrt(ye.second)<1.) ndec = 2; 
+      if (sqrt(ye.second)<0.01) ndec = 3;
+      if (sqrt(ye.second)<0.0005) ndec = 1;
+      cout << Form("& %6.*f $\\pm$ %6.*f ",ndec,ye.first,ndec,sqrt(ye.second));
     }
-    cout << Form("& %6.3f $\\pm$ %6.3f ",tye.first,sqrt(tye.second));
+    int ndec = 1;
+    if (sqrt(tye.second)<1.) ndec = 2; 
+    if (sqrt(tye.second)<0.01) ndec = 3;
+    if (sqrt(tye.second)<0.0005) ndec = 1;
+    cout << Form("& %6.*f $\\pm$ %6.*f ",ndec,tye.first,ndec,sqrt(tye.second));
     float dye = dumpCardForOneSR(TString("data"), kine, sr, lumi, dir).first;
     cout << Form("& %6.0f ",dye);
     float sye = dumpCardForOneSR(TString("t1tttt_1200"), kine, sr, lumi, dir).first;
     cout << Form("& %6.3f ",sye);
     cout << " \\\\ " << endl;
   }
+  cout << "\\hline" << endl;
+  cout << "\\end{tabular}" << endl;
+  cout << "\\end{center}" << endl;
+  cout << "\\end{table}" << endl;
+  cout << "\\end{landscape}" << endl;
+
   cout << endl;
   cout << endl;
   
+  cout << "\\begin{landscape}" << endl;
+  cout << "\\begin{table}" << endl;
+  cout << "\\footnotesize" << endl;
+  cout << "\\begin{center}" << endl;
+  cout << "\\caption{Event yields in LL regions.}" << endl;
+  cout << "\\label{tab:yieldsLL}" << endl;
+  cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
+  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  cout << "\\hline\\hline" << endl;
   kine = "lowlow";
   for (int sr=1;sr<9;++sr) {
     pair<float, float> tye(0,0);
@@ -55,16 +117,31 @@ void makeTable() {
       pair<float, float> ye = dumpCardForOneSR(procs[p], kine, sr, lumi, dir);
       tye.first+=ye.first;
       tye.second+=ye.second;
-      cout << Form("& %6.3f $\\pm$ %6.3f ",ye.first,sqrt(ye.second));
+      int ndec = 1;
+      if (sqrt(ye.second)<1.) ndec = 2; 
+      if (sqrt(ye.second)<0.01) ndec = 3;
+      if (sqrt(ye.second)<0.0005) ndec = 1;
+      cout << Form("& %6.*f $\\pm$ %6.*f ",ndec,ye.first,ndec,sqrt(ye.second));
     }
-    cout << Form("& %6.3f $\\pm$ %6.3f ",tye.first,sqrt(tye.second));
+    int ndec = 1;
+    if (sqrt(tye.second)<1.) ndec = 2; 
+    if (sqrt(tye.second)<0.01) ndec = 3;
+    if (sqrt(tye.second)<0.0005) ndec = 1;
+    cout << Form("& %6.*f $\\pm$ %6.*f ",ndec,tye.first,ndec,sqrt(tye.second));
     float dye = dumpCardForOneSR(TString("data"), kine, sr, lumi, dir).first;
     cout << Form("& %6.0f ",dye);
     float sye = dumpCardForOneSR(TString("t1tttt_1200"), kine, sr, lumi, dir).first;
     cout << Form("& %6.3f ",sye);
     cout << " \\\\ " << endl;
   }
-  
+  cout << "\\hline" << endl;
+  cout << "\\end{tabular}" << endl;
+  cout << "\\end{center}" << endl;
+  cout << "\\end{table}" << endl;
+  cout << "\\end{landscape}" << endl;
+
+  cout << "\\end{document}" << endl;
+
 }
 
 
@@ -121,12 +198,12 @@ pair<float, float> dumpCardForOneSR(TString process, TString kine, int sr, TStri
       if (name.Contains("stat") && name.Contains(Form("%i",sr))==0) continue;
       error += pow( h->GetBinContent(sr)-yield ,2);
       //cout << process << " " << h->GetBinContent(sr)-yield << endl;
-      if (process=="fakes" && sr==28) cout << process << " " << h->GetBinContent(sr)-yield << endl;
-      if (process=="fakes" && sr==29) cout << process << " " << h->GetBinContent(sr)-yield << endl;
+      // if (process=="fakes" && sr==28) cout << process << " " << h->GetBinContent(sr)-yield << endl;
+      // if (process=="fakes" && sr==29) cout << process << " " << h->GetBinContent(sr)-yield << endl;
     }
   }
 
   result.second = error;
-
+  _file->Close();
   return result;
 }
