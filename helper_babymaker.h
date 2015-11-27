@@ -32,6 +32,8 @@ class BTagCalibrationReader;
 
 using namespace std;
 
+struct csErr_t { float cs_scale_no = 0; float cs_scale_up = 0; float cs_scale_dn = 0; float cs_pdf[102] = {0}; }; 
+
 //Classes
 class babyMaker {
 
@@ -44,7 +46,7 @@ class babyMaker {
     void MakeBabyNtuple(const char* output_name);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
-    int ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, int file = -1, bool isFastsim = 0);
+    csErr_t ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, int file = -1, bool isFastsim = 0);
 
   protected:
     TFile* BabyFile;
@@ -380,6 +382,12 @@ class babyMaker {
     float weight_btagsf;
     float weight_btagsf_UP;
     float weight_btagsf_DN;
+
+    //ISR unc #s
+    LorentzVector gl1_p4;
+    LorentzVector gl2_p4; 
+    float glglpt; 
+    float isr_unc;
 
 };
 

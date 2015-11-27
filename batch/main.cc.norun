@@ -309,10 +309,9 @@ int main(int argc, char *argv[]){
 
     case FASTSIMTEST:
       shortname="fastsimtest";
-      name="SMS-T1tttt_mGluino-875to900_mLSP-1to650_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-11_FS";
+      name="SMS-T1tttt_mGluino-1950_mLSP-700to950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-12";
       isSignal = true;
-      tag = "V07-04-11_FS";
       break;
 
     default:
@@ -371,6 +370,15 @@ int main(int argc, char *argv[]){
   FactorizedJetCorrector *jetCorrAG;
   jetCorrAG = makeJetCorrector(filenames);
 
+  //Histograms for cross-section calculation
+  TH1F* cs = new TH1F("cs","cs", 1, 0, 1);
+  cs->Sumw2();
+
+  //Floats for other cross-section errors
+  float cs_scale_up = 0;
+  float cs_scale_dn = 0;
+  float cs_pdf[102] = { 0 }; 
+
   //Event Loop
   for(unsigned int eventAG = 0; eventAG < nEvents; eventAG++){
 
@@ -384,13 +392,49 @@ int main(int argc, char *argv[]){
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
 
-    mylooper->ProcessBaby(name, jetCorrAG, jecUnc, file, isSignal); 
+    csErr_t csErr = mylooper->ProcessBaby(name, jetCorrAG, jecUnc, file, isSignal); 
+
+    //c-s error variables
+    if (isSignal){
+      cs->Fill(0.5, csErr.cs_scale_no);  
+      cs_scale_up += csErr.cs_scale_up;
+      cs_scale_dn += csErr.cs_scale_dn;
+      for (unsigned int i = 0; i < 102; i++) cs_pdf[i] += csErr.cs_pdf[i];
+    }
 
   }//event loop 
 
+  TH1F *h_csErr = new TH1F("csErr", "csErr", 7, 0, 7); 
+
+  if (isSignal){
+    //c-s value
+    float cs_int = cs->Integral();
+    float cs_value = 1000*cs_int/cs->GetEntries();
+   
+    //c-s PDF error
+    TH1F* cs_pdf_hist = new TH1F("cs_pdf_hist", "cs_pdf_hist", 10000, 0, 1000); 
+    for (int i = 0; i < 100; i++){
+      cs_pdf_hist->Fill( 1000*cs_pdf[i]/cs->GetEntries() ); 
+    }
+    float cs_pdf_error = cs_pdf_hist->GetRMS(); 
+
+    //c-s error results
+    h_csErr->Fill(0.5, cs_value                         ); 
+    h_csErr->Fill(1.5, 100*cs->GetBinError(1)/cs_int    );  
+    h_csErr->Fill(2.5, 100*(cs_scale_dn - cs_int)/cs_int);
+    h_csErr->Fill(3.5,-100*(cs_scale_up - cs_int)/cs_int);
+    h_csErr->Fill(4.5, 100*cs_pdf_error/cs_value        ); 
+    h_csErr->Fill(5.5,-100*(cs_pdf[100] - cs_int)/cs_int);
+    h_csErr->Fill(6.5, 100*(cs_pdf[101] - cs_int)/cs_int);
+  }
+
   //Delete Chain
   mylooper->CloseBabyNtuple();
-  delete f; 
+
+  //Open the baby file again
+  TFile* BabyFile = new TFile(Form("%s_%i.root", shortname.c_str(), file), "UPDATE");
+  BabyFile->cd();
+  h_csErr->Write(); 
 
   return 0;
 

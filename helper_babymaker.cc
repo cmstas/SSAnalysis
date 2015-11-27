@@ -244,6 +244,14 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("weight_btagsf_UP"                                        , &weight_btagsf_UP                                                                        );
   BabyTree->Branch("weight_btagsf_DN"                                        , &weight_btagsf_DN                                                                        );
 
+  BabyTree->Branch("gl1_p4" , &gl1_p4 );
+  BabyTree->Branch("gl2_p4" , &gl2_p4 );
+  BabyTree->Branch("glglpt" , &glglpt );
+  BabyTree->Branch("isr_unc", &isr_unc);
+
+
+
+
   if (applyBtagSFs) {
     // setup btag calibration readers
     calib = new BTagCalibration("csvv2", "btagsf/CSVv2.csv"); // 50ns version of SFs
@@ -500,20 +508,32 @@ void babyMaker::InitBabyNtuple(){
     lep2_genps_fromHardProcessBeforeFSR = 0;
     lep2_genps_isLastCopy = 0;
     lep2_genps_isLastCopyBeforeFSR = 0; 
+    glglpt = -1;
+    isr_unc = -1; 
+    gl1_p4 = { 0, 0, 0, 0 };
+    gl2_p4 = { 0, 0, 0, 0 };
 } 
 
 //Main function
-int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty* jecUnc, int file, bool isFastsim){
+csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty* jecUnc, int file, bool isFastsim){
 
   //Initialize variables
   InitBabyNtuple();
   
   //Debug mode
-  if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return -1;
+  if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return babyErrorStruct;
+
+  csErr_t babyErrorStruct; 
+
+  //These c-s errors
+  babyErrorStruct.cs_scale_no += tas::genweights().at(0);
+  babyErrorStruct.cs_scale_up += tas::genweights().at(4);
+  babyErrorStruct.cs_scale_dn += tas::genweights().at(8);
+  for (int i = 0; i < 102; i++) babyErrorStruct.cs_pdf[i] = tas::genweights().at(i+9);  
 
   //Preliminary stuff
-  if (tas::hyp_type().size() < 1) return -1;
-  if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return -1;
+  if (tas::hyp_type().size() < 1) return babyErrorStruct;
+  if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return babyErrorStruct;
 
   //Fill Easy Variables
   filename = filename_in;
@@ -579,7 +599,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
     madeExtraG = makesExtraGammaStar(best_hyp);
   }
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
-  if (hyp_class == 0 || hyp_class == -1) return -1;
+  if (hyp_class == 0 || hyp_class == -1) return babyErrorStruct;
   lep1_p4 = (tas::hyp_ll_p4().at(best_hyp).pt() > tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_p4().at(best_hyp) : tas::hyp_lt_p4().at(best_hyp);
   lep2_p4 = (tas::hyp_ll_p4().at(best_hyp).pt() <= tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_p4().at(best_hyp) : tas::hyp_lt_p4().at(best_hyp);
   lep1_id = (tas::hyp_ll_p4().at(best_hyp).pt() > tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_id().at(best_hyp) : tas::hyp_lt_id().at(best_hyp);
@@ -889,8 +909,8 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //Reject events that fail trigger matching
   if (verbose) cout << "ht: " << ht << endl;
   if (ht < 300 && hyp_type != 0){
-    if (abs(lep1_id) == 11 && !isTriggerSafe_v1(lep1_idx)) return -1;
-    if (abs(lep2_id) == 11 && !isTriggerSafe_v1(lep2_idx)) return -1;
+    if (abs(lep1_id) == 11 && !isTriggerSafe_v1(lep1_idx)) return babyErrorStruct;
+    if (abs(lep2_id) == 11 && !isTriggerSafe_v1(lep2_idx)) return babyErrorStruct;
   }
   if (verbose) cout << "passed trigger safety" << endl;
 
@@ -957,6 +977,17 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   weight_btagsf = btagprob_data / btagprob_mc;
   weight_btagsf_UP = weight_btagsf + (sqrt(pow(btagprob_err_heavy_UP,2) + pow(btagprob_err_light_UP,2)) * weight_btagsf);
   weight_btagsf_DN = weight_btagsf - (sqrt(pow(btagprob_err_heavy_DN,2) + pow(btagprob_err_light_DN,2)) * weight_btagsf);
+
+  if (isFastsim){
+    for (unsigned int i = 0; i < tas::genps_status().size(); i++){
+      if (tas::genps_id().at(i) != 1000021) continue;
+      if (tas::genps_status().at(i) != 22) continue; 
+      if (gl1_p4.pt() <= 0){ gl1_p4 = tas::genps_p4().at(i); continue; }
+      if (gl2_p4.pt() <= 0){ gl2_p4 = tas::genps_p4().at(i); break; }
+    }
+    glglpt = (gl1_p4 + gl2_p4).pt(); 
+    isr_unc = (glglpt < 400) ? 0 : ((glglpt < 600) ? 0.15 : 0.30); 
+  }
 
   //Save Most jets 
   vector <Jet> mostJets_jet;
@@ -1166,7 +1197,7 @@ int babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, 
   //Fill Baby
   BabyTree->Fill();
 
-  return 0;  
+  return babyErrorStruct; 
 
 }
 
