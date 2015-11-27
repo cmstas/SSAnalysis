@@ -8,7 +8,7 @@ bool isUnblindRun(int run) { return true; }
 
 TString getTag() { return "v5.03"; }
 
-float getWZSF() { return 1.383; }
+float getWZSF() { return 1.22; }
 
 #include "pu_weights.h"
 #include "flip_rates.h"
