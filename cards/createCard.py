@@ -6,14 +6,14 @@ import math
 
 #example: python createCard.py dir t1tttt_1500 
 #example: python createCard.py dir t1tttt_1500 hihi sr card-hihi.txt
-#example: for dir in v4.08; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do python createCard.py ${dir} ${sig}; done; done
+#example: for dir in v5.03; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do python createCard.py ${dir} ${sig}; done; done
 
 #then get expected limits with: combine -M Asymptotic dir/card.txt --run expected --noFitAsimov
 #for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do echo ${sig}; combine -M Asymptotic v4.08/card_${sig}_1.3ifb-all.txt | grep ": r <" ; done
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
-lumi = "2.1"
+lumi = "1.3"
 
 pseudoData = 0
 
@@ -29,6 +29,7 @@ class Process:
         self.lephlt  = "-"
         self.hthlt  = "-"
         self.btag = "-"
+        self.pu = "-"
         self.TTW = "-"
         self.ttw_pdf = "-"
         self.ttw_extr_hth = "-"
@@ -54,8 +55,17 @@ class Process:
             print self.plot+" not found in "+self.rootf
             return 0
 
+def writeStatForProcessCorrelated(card,process,processes):
+    card.write ("%-40s %-5s " % (("%s%s" % (process.name,"_stat")), "shape") )
+    for myprocess in processes: 
+        if myprocess.count == process.count: 
+            card.write("%-15s " % "1")
+        else:  card.write("%-15s " % ("-"))
+    card.write("\n")
+
 def writeStatForProcess(dir, card, kine, process, processes):
     f = ROOT.TFile(dir+"/"+process.rootf,"UPDATE")
+    h = f.Get("sr")
     hup = f.Get(("%s_statUp" % (process.name)))
     hdn = f.Get(("%s_statDown" % (process.name)))
     if hup:
@@ -66,15 +76,14 @@ def writeStatForProcess(dir, card, kine, process, processes):
                     card.write("%-15s " % "1")
                     hupnewtest = f.Get("%s%s%s%sUp" % (process.name,"_stat_",kine,bin))
                     if not hupnewtest:
-                        hupnew = hup.Clone("%s%s%s%sUp" % (process.name,"_stat_",kine,bin))
-                        hupnew.Reset()
+                        hupnew = h.Clone("%s%s%s%sUp" % (process.name,"_stat_",kine,bin))
                         hupnew.SetBinContent(bin,hup.GetBinContent(bin))
                         hupnew.Write()
                     hdnnewtest = f.Get("%s%s%s%sDown" % (process.name,"_stat_",kine,bin))
                     if not hdnnewtest:
-                        hdnnew = hdn.Clone("%s%s%s%sDown" % (process.name,"_stat_",kine,bin))
-                        hdnnew.Reset()
-                        hdnnew.SetBinContent(bin,hdn.GetBinContent(bin))
+                        hdnnew = h.Clone("%s%s%s%sDown" % (process.name,"_stat_",kine,bin))
+                        if hdn.GetBinContent(bin) > 0: hdnnew.SetBinContent(bin,hdn.GetBinContent(bin))
+                        else: hdnnew.SetBinContent(bin,0)
                         hdnnew.Write()
                 else:  card.write("%-15s " % ("-"))
             card.write("\n")
@@ -93,7 +102,7 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("kmax *  number of nuisance parameters \n")
     card.write(line+"\n")
     for process in processes:
-        card.write("shapes "+process.name+" * "+dir+"/"+process.rootf+" "+plot+" "+plot+"\n")
+        card.write("shapes "+process.name+" * "+dir+"/"+process.rootf+" "+plot+" $SYSTEMATIC\n")
     card.write("shapes data_obs * "+dir+"/"+data.rootf+" "+plot+" "+plot+"\n")
     card.write(line+"\n")
     card.write("bin "+str(bin)+"\n")
@@ -142,6 +151,10 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     #nuisance btag
     card.write("%-40s %-5s " % ("btag","shape"))
     for process in processes: card.write("%-15s " % (process.btag))
+    card.write("\n")
+    #nuisance pu
+    card.write("%-40s %-5s " % ("pu","shape"))
+    for process in processes: card.write("%-15s " % (process.pu))
     card.write("\n")
 
     #nuisance TTW
@@ -217,6 +230,7 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("\n")
 
     for process in processes: writeStatForProcess(dir,card,kine,process,processes)
+    #for process in processes: writeStatForProcessCorrelated(card,process,processes)
 
     return
 
@@ -251,6 +265,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTW.lephlt  = "1.02"
     TTW.hthlt  = "1"
     TTW.btag = "1"
+    TTW.pu = "1"
     TTZH.TTZH          = "1.11"
     TTZH.lumi          = "1.12"
     TTZH.ttzh_pdf      = "1.04"
@@ -262,10 +277,12 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTZH.lephlt  = "1.02"
     TTZH.hthlt  = "1"
     TTZH.btag = "1"
+    TTZH.pu = "1"
     WZ.WZ = "1.25"
     #WZ.wz_extr = "1"
     WZ.jes  = "1"
     WZ.btag = "1"
+    WZ.pu = "1"
     WW.WW = "1.30"
     WW.lumi = "1.12"
     WW.jes  = "1"
@@ -273,6 +290,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     WW.lephlt  = "1.02"
     WW.hthlt  = "1"
     WW.btag = "1"
+    WW.pu = "1"
     XG.XG = "1.50"
     XG.lumi = "1.12"
     XG.jes  = "1"
@@ -280,6 +298,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     XG.lephlt  = "1.02"
     XG.hthlt  = "1"
     XG.btag = "1"
+    XG.pu = "1"
     rares.RARES = "1.30"
     rares.lumi = "1.12"
     rares.jes  = "1"
@@ -287,6 +306,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     rares.lephlt  = "1.02"
     rares.hthlt  = "1"
     rares.btag = "1"
+    rares.pu = "1"
     fakes.fakes = "1.30"
     fakes.fakes_EWK = "1"
     flips.flips = "1.26"
