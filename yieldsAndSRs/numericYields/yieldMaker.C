@@ -21,7 +21,7 @@ bool testFakeSR = false;
 
 float scaleLumi = 1.;//3.0/1.264;//careful!!!
 
-bool doLatex = 1;
+bool doLatex = 0;
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
@@ -33,6 +33,8 @@ yields_t total;
 //function declaration
 pair<yields_t, plots_t> run(TChain *chain, bool isData = 0, bool doFlips = 0, int doFakes = 0, int exclude = 0, bool isSignal = 0, bool isGamma = 0);
 void avoidNegativeYields(TH1F* plot);
+void avoidSmallYieldsDueToNegWeightsInPromptSubtraction(TH1F* plot);
+void avoidZeroStatUnc(TH1F* plot);
 void fillDownMirrorUp(TH1F* central,TH1F* up,TH1F* down);
 void writeStatUpDown(TH1F* central,string name,bool down);
 void writeStat(TH1F* central,string name);
@@ -331,19 +333,32 @@ void getyields(){
   colors2.push_back(18); 
   colors2.push_back(18); 
 
-  TString header = "        %5s %5s %5s %5s %5s %5s %5s %5s | %5s | %5s | %10s";
-  TString HHline = "HH SR%2i %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f | %10.2f";
-  TString HLline = "HL SR%2i %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f | %10.2f";
-  TString LLline = "LL SR%2i %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f | %10.2f";
+  TString header = "        | %15s | %15s | %15s | %15s | %15s | %15s | %15s | %15s | %15s | %5s | %10s";
+  TString HHline = "HH SR%2i | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.0f | %10.2f";
+  TString HLline = "HL SR%2i | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.0f | %10.2f";
+  TString LLline = "LL SR%2i | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.0f | %10.2f";
   if (doLatex) {
     header = "     & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %10s \\\\";
-    HHline = "SR%2i & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f $\\pm$ %4.1f & %4.1f & %10.2f \\\\";
+    HHline = "SR%2i & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.0f & %10.2f \\\\";
     HLline = HHline;
     LLline = HHline;
+    cout << "\\documentclass[12pt,a4paper]{article}" << endl;
+    cout << "\\usepackage{lscape}" << endl;
+    cout << "\\begin{document}" << endl;
   }
 
   cout << endl;
+  if (doLatex) {
+    cout << "\\begin{landscape}" << endl;
+    cout << "\\begin{table}" << endl;
+    cout << "\\footnotesize" << endl;
+    cout << "\\begin{center}" << endl;
+    cout << "\\caption{Event yields in HH regions.}" << endl;
+    cout << "\\label{tab:yieldsHH}" << endl;
+    cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
+  }
   cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  if (doLatex) cout << "\\hline\\hline" << endl;
   for (int bin=1;bin<=p_ttw.SRHH.TOTAL->GetNbinsX(); ++bin) {
     cout << Form(HHline.Data(),bin,
 		 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,
@@ -366,9 +381,26 @@ void getyields(){
 		 )
 	 << endl;
   }
+  if (doLatex) {
+    cout << "\\hline" << endl;
+    cout << "\\end{tabular}" << endl;
+    cout << "\\end{center}" << endl;
+    cout << "\\end{table}" << endl;
+    cout << "\\end{landscape}" << endl;
+  }
 
   cout << endl;
+  if (doLatex) {
+    cout << "\\begin{landscape}" << endl;
+    cout << "\\begin{table}" << endl;
+    cout << "\\footnotesize" << endl;
+    cout << "\\begin{center}" << endl;
+    cout << "\\caption{Event yields in HL regions.}" << endl;
+    cout << "\\label{tab:yieldsHL}" << endl;
+    cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
+  }
   cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  if (doLatex) cout << "\\hline\\hline" << endl;
   for (int bin=1;bin<=p_ttw.SRHL.TOTAL->GetNbinsX(); ++bin) {
     cout << Form(HLline.Data(),bin,
 		 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,
@@ -391,9 +423,26 @@ void getyields(){
 		 )
 	 << endl;
   }
+  if (doLatex) {
+    cout << "\\hline" << endl;
+    cout << "\\end{tabular}" << endl;
+    cout << "\\end{center}" << endl;
+    cout << "\\end{table}" << endl;
+    cout << "\\end{landscape}" << endl;
+  }
 
   cout << endl;
+  if (doLatex) {
+    cout << "\\begin{landscape}" << endl;
+    cout << "\\begin{table}" << endl;
+    cout << "\\footnotesize" << endl;
+    cout << "\\begin{center}" << endl;
+    cout << "\\caption{Event yields in LL regions.}" << endl;
+    cout << "\\label{tab:yieldsLL}" << endl;
+    cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
+  }
   cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  if (doLatex) cout << "\\hline\\hline" << endl;
   for (int bin=1;bin<=p_ttw.SRLL.TOTAL->GetNbinsX(); ++bin) {
     cout << Form(LLline.Data(),bin,
 		 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,
@@ -415,6 +464,15 @@ void getyields(){
 		 p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
 		 )
 	 << endl;
+  }
+  if (doLatex) {
+    cout << "\\hline" << endl;
+    cout << "\\end{tabular}" << endl;
+    cout << "\\end{center}" << endl;
+    cout << "\\end{table}" << endl;
+    cout << "\\end{landscape}" << endl;
+
+    cout << "\\end{document}" << endl;
   }
 
   //SR plots
@@ -923,20 +981,28 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   p_result.h_lep1_ptRel   = new TH1F(Form("lep1_ptRel_%s"  , chain->GetTitle()) , Form("lep1_ptRel_%s"  , chain->GetTitle()), 25, 0   , 50);  p_result.h_lep1_ptRel  ->Sumw2();
   p_result.h_lep2_ptRel   = new TH1F(Form("lep2_ptRel_%s"  , chain->GetTitle()) , Form("lep2_ptRel_%s"  , chain->GetTitle()), 25, 0   , 50);  p_result.h_lep2_ptRel  ->Sumw2();
 
-  //For JES variations
+  //For FR variations
   plots_t p_fake_alt_up;
+  if (doFakes == 1) {
+    p_fake_alt_up.SRHH.TOTAL        = new TH1F(Form("SRHH_FR_TOTAL_%s"      , chain->GetTitle()) , Form("SRHH_FR_TOTAL_%s"      , chain->GetTitle()) , 32  , 1 , 33); p_fake_alt_up.SRHH.TOTAL->Sumw2();
+    p_fake_alt_up.SRHL.TOTAL        = new TH1F(Form("SRHL_FR_TOTAL_%s"      , chain->GetTitle()) , Form("SRHL_FR_TOTAL_%s"      , chain->GetTitle()) , 26  , 1 , 27); p_fake_alt_up.SRHL.TOTAL->Sumw2();
+    p_fake_alt_up.SRLL.TOTAL        = new TH1F(Form("SRLL_FR_TOTAL_%s"      , chain->GetTitle()) , Form("SRLL_FR_TOTAL_%s"      , chain->GetTitle()) , 8   , 1 , 9);  p_fake_alt_up.SRLL.TOTAL->Sumw2();
+  } else {
+    p_fake_alt_up.SRHH.TOTAL    = 0;
+    p_fake_alt_up.SRHL.TOTAL    = 0;
+    p_fake_alt_up.SRLL.TOTAL    = 0;
+  }
+
+  //For JES variations
   plots_t p_jes_alt_up;
   plots_t p_jes_alt_dn;
   if (doFakes == 1 || isData==0) {
-    p_jes_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_ALT_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_ALT_UP_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_jes_alt_up.SRHH.TOTAL->Sumw2();
-    p_jes_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_ALT_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_ALT_UP_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_jes_alt_up.SRHL.TOTAL->Sumw2();
-    p_jes_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_ALT_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_ALT_UP_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_jes_alt_up.SRLL.TOTAL->Sumw2();
-    p_jes_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_jes_alt_dn.SRHH.TOTAL->Sumw2();
-    p_jes_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_jes_alt_dn.SRHL.TOTAL->Sumw2();
-    p_jes_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_ALT_DN_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_jes_alt_dn.SRLL.TOTAL->Sumw2();
-    p_fake_alt_up.SRHH.TOTAL        = new TH1F(Form("SRHH_ALT_TOTAL_%s"      , chain->GetTitle()) , Form("SRHH_ALT_TOTAL_%s"      , chain->GetTitle()) , 32  , 1 , 33); p_fake_alt_up.SRHH.TOTAL->Sumw2();
-    p_fake_alt_up.SRHL.TOTAL        = new TH1F(Form("SRHL_ALT_TOTAL_%s"      , chain->GetTitle()) , Form("SRHL_ALT_TOTAL_%s"      , chain->GetTitle()) , 26  , 1 , 27); p_fake_alt_up.SRHL.TOTAL->Sumw2();
-    p_fake_alt_up.SRLL.TOTAL        = new TH1F(Form("SRLL_ALT_TOTAL_%s"      , chain->GetTitle()) , Form("SRLL_ALT_TOTAL_%s"      , chain->GetTitle()) , 8   , 1 , 9);  p_fake_alt_up.SRLL.TOTAL->Sumw2();
+    p_jes_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_JES_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_JES_UP_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_jes_alt_up.SRHH.TOTAL->Sumw2();
+    p_jes_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_JES_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_JES_UP_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_jes_alt_up.SRHL.TOTAL->Sumw2();
+    p_jes_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_JES_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_JES_UP_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_jes_alt_up.SRLL.TOTAL->Sumw2();
+    p_jes_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_JES_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_JES_DN_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_jes_alt_dn.SRHH.TOTAL->Sumw2();
+    p_jes_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_JES_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_JES_DN_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_jes_alt_dn.SRHL.TOTAL->Sumw2();
+    p_jes_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_JES_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_JES_DN_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_jes_alt_dn.SRLL.TOTAL->Sumw2();
   } else {
     p_jes_alt_up.SRHH.TOTAL     = 0;
     p_jes_alt_up.SRHL.TOTAL     = 0;
@@ -944,35 +1010,52 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     p_jes_alt_dn.SRHH.TOTAL     = 0;
     p_jes_alt_dn.SRHL.TOTAL     = 0;
     p_jes_alt_dn.SRLL.TOTAL     = 0;
-    p_fake_alt_up.SRHH.TOTAL    = 0;
-    p_fake_alt_up.SRHL.TOTAL    = 0;
-    p_fake_alt_up.SRLL.TOTAL    = 0;
   }
  
   //For btag SF variations
-  plots_t p_btagSF_up_alternative;
-  plots_t p_btagSF_dn_alternative;
+  plots_t p_btagSF_alt_up;
+  plots_t p_btagSF_alt_dn;
   if (isData==0){
-    p_btagSF_up_alternative.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), Form("SRHH_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), 32, 1, 33);
-    p_btagSF_up_alternative.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), Form("SRHL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), 26, 1, 27);
-    p_btagSF_up_alternative.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), Form("SRLL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()),  8, 1,  9);
-    p_btagSF_dn_alternative.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), Form("SRHH_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), 32, 1, 33);
-    p_btagSF_dn_alternative.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), Form("SRHL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), 26, 1, 27);
-    p_btagSF_dn_alternative.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), Form("SRLL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()),  8, 1,  9);
-    p_btagSF_up_alternative.SRHH.TOTAL->Sumw2();
-    p_btagSF_up_alternative.SRHL.TOTAL->Sumw2();
-    p_btagSF_up_alternative.SRLL.TOTAL->Sumw2();
-    p_btagSF_dn_alternative.SRHH.TOTAL->Sumw2();
-    p_btagSF_dn_alternative.SRHL.TOTAL->Sumw2();
-    p_btagSF_dn_alternative.SRLL.TOTAL->Sumw2();
+    p_btagSF_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), Form("SRHH_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), 32, 1, 33);
+    p_btagSF_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), Form("SRHL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), 26, 1, 27);
+    p_btagSF_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), Form("SRLL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()),  8, 1,  9);
+    p_btagSF_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), Form("SRHH_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), 32, 1, 33);
+    p_btagSF_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), Form("SRHL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), 26, 1, 27);
+    p_btagSF_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), Form("SRLL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()),  8, 1,  9);
+    p_btagSF_alt_up.SRHH.TOTAL->Sumw2();
+    p_btagSF_alt_up.SRHL.TOTAL->Sumw2();
+    p_btagSF_alt_up.SRLL.TOTAL->Sumw2();
+    p_btagSF_alt_dn.SRHH.TOTAL->Sumw2();
+    p_btagSF_alt_dn.SRHL.TOTAL->Sumw2();
+    p_btagSF_alt_dn.SRLL.TOTAL->Sumw2();
   } 
   else {
-    p_btagSF_up_alternative.SRHH.TOTAL = 0;
-    p_btagSF_up_alternative.SRHL.TOTAL = 0;
-    p_btagSF_up_alternative.SRLL.TOTAL = 0;
-    p_btagSF_dn_alternative.SRHH.TOTAL = 0;
-    p_btagSF_dn_alternative.SRHL.TOTAL = 0;
-    p_btagSF_dn_alternative.SRLL.TOTAL = 0;
+    p_btagSF_alt_up.SRHH.TOTAL = 0;
+    p_btagSF_alt_up.SRHL.TOTAL = 0;
+    p_btagSF_alt_up.SRLL.TOTAL = 0;
+    p_btagSF_alt_dn.SRHH.TOTAL = 0;
+    p_btagSF_alt_dn.SRHL.TOTAL = 0;
+    p_btagSF_alt_dn.SRLL.TOTAL = 0;
+  }
+
+
+  //For PU variations
+  plots_t p_pu_alt_up;
+  plots_t p_pu_alt_dn;
+  if (doFakes == 1 || isData==0) {
+    p_pu_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_PU_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_PU_UP_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_pu_alt_up.SRHH.TOTAL->Sumw2();
+    p_pu_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_PU_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_PU_UP_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_pu_alt_up.SRHL.TOTAL->Sumw2();
+    p_pu_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_PU_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_PU_UP_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_pu_alt_up.SRLL.TOTAL->Sumw2();
+    p_pu_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_PU_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_PU_DN_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_pu_alt_dn.SRHH.TOTAL->Sumw2();
+    p_pu_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_PU_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_PU_DN_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_pu_alt_dn.SRHL.TOTAL->Sumw2();
+    p_pu_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_PU_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_PU_DN_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_pu_alt_dn.SRLL.TOTAL->Sumw2();
+  } else {
+    p_pu_alt_up.SRHH.TOTAL     = 0;
+    p_pu_alt_up.SRHL.TOTAL     = 0;
+    p_pu_alt_up.SRLL.TOTAL     = 0;
+    p_pu_alt_dn.SRHH.TOTAL     = 0;
+    p_pu_alt_dn.SRHL.TOTAL     = 0;
+    p_pu_alt_dn.SRLL.TOTAL     = 0;
   }
 
   bool isWZ = (TString(chain->GetTitle())=="wz");
@@ -987,7 +1070,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   TFile *currentFile = 0;
 
   //Number of selected events
-  int nSelected = 0; 
+  //int nSelected = 0; 
 
   //File Loop
   while ( (currentFile = (TFile*)fileIter.Next()) ){
@@ -1027,10 +1110,14 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       float weight_btag_up_alt = weight*ss::weight_btagsf_UP()/ss::weight_btagsf();
       float weight_btag_dn_alt = weight*ss::weight_btagsf_DN()/ss::weight_btagsf();
 
+      float weight_pu_up_alt = getTruePUw(ss::trueNumInt()[0])>0 ? weight*getTruePUwUp(ss::trueNumInt()[0])/getTruePUw(ss::trueNumInt()[0]) : weight;
+      float weight_pu_dn_alt = getTruePUw(ss::trueNumInt()[0])>0 ? weight*getTruePUwDn(ss::trueNumInt()[0])/getTruePUw(ss::trueNumInt()[0]) : weight;
+
       // if (doFakes!=1) continue;
-      // if (ss::event()!=326133) continue;
+      // if (ss::event()!=99054862) continue;
       // cout << "found it:" << ss::event() << " hyp_class=" << ss::hyp_class() << endl;
       // cout << "nbtags=" << ss::nbtags() << " " << ss::nbtags() << endl;
+      // cout << "met=" << ss::met() << endl;
       // cout << ss::ht() << " " << passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA()) << " " << passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA()) << endl;
       // for (int j=0;j<ss::mostJets().size();++j) {
       // 	cout << "most jet pt=" << ss::mostJets()[j].pt()*ss::mostJets_undoJEC()[j]*ss::mostJets_JEC()[j] << " eta=" << ss::mostJets()[j].eta() 
@@ -1211,16 +1298,16 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	  if (categ==1) cat = "HL";
 	  if (categ==2) cat = "LL";
 
-      bool avi = 0; 
+      //bool avi = 0; 
       //if (categ == 0 && SR == 1)  avi = 1;
       //if (categ == 0 && SR == 2)  avi = 1;
       //if (categ == 0 && SR == 9)  avi = 1;
-      if (categ == 0 && SR == 10) avi = 1;
+      //if (categ == 0 && SR == 10) avi = 1;
       //if (categ == 1 && SR ==  1) avi = 1;
       //if (categ == 1 && SR ==  2) avi = 1;
       //if (categ == 1 && SR ==  7) avi = 1;
-      if (categ == 1 && SR ==  8) avi = 1;
-      if (avi == 0) continue; 
+      //if (categ == 1 && SR ==  8) avi = 1;
+      //if (avi == 0) continue; 
 
       if (doNoData && testFakeSR) {
         if (categ==0) {
@@ -1285,13 +1372,13 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_lep2_ptRel  ->Fill(ss::lep2_ptrel_v1()                                                                     , weight);
       p_result.h_lep1_ptRatio->Fill(ptratio_1                                                                               , weight);
       p_result.h_lep2_ptRatio->Fill(ptratio_2                                                                               , weight);
-      if (isData && !doFakes && !doFlips && SR > 0){
-        //cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
-        //cout << ss::lep1_p4().eta() << " " << ss::lep2_p4().eta() << " " << ss::lep1_p4().phi() << " " << ss::lep2_p4().phi() << " " << ss::lep3_p4().pt() << " " << ss::lep3_p4().eta() << " " << ss::lep3_p4().phi() << " " << ss::lep3_id() << " " << ss::lep4_p4().pt() << " " << ss::lep4_p4().eta() << " " << ss::lep4_p4().phi() << " " << ss::lep4_id() << " " << ss::lep3_passes_id() << " " << ss::lep4_passes_id() << endl;
-        for (unsigned int i = 0; i < ss::btags().size(); i++) cout << ss::btags().at(i).eta() << ",";
-        cout << endl;
-        nSelected++; 
-      }
+      // if (isData && !doFakes && !doFlips && SR == 1 && cat == "HH"){
+      //   cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
+      // 	cout << ss::lep1_p4().eta() << " " << ss::lep2_p4().eta() << " " << ss::lep1_p4().phi() << " " << ss::lep2_p4().phi() << " " << ss::lep3_p4().pt() << " " << ss::lep3_p4().eta() << " " << ss::lep3_p4().phi() << " " << ss::lep3_id() << " " << ss::lep4_p4().pt() << " " << ss::lep4_p4().eta() << " " << ss::lep4_p4().phi() << " " << ss::lep4_id() << " " << ss::lep3_passes_id() << " " << ss::lep4_passes_id() << endl;
+      // 	for (unsigned int i = 0; i < ss::btags().size(); i++) cout << ss::btags().at(i).eta() << ",";
+      // 	cout << endl;
+      // 	nSelected++; 
+      // }
 
       //Fill SR plots
       if (categ == HighHigh){
@@ -1302,8 +1389,10 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if (doFakes == 1 )            p_fake_alt_up.SRHH.TOTAL->Fill(SR, weight_alt); 
         if (isData  == 0 )            p_jes_alt_up.SRHH.TOTAL->Fill(SR_unc_up, weight); 
         if (isData  == 0 )            p_jes_alt_dn.SRHH.TOTAL->Fill(SR_unc_dn, weight); 
-        if (isData  == 0 )            p_btagSF_up_alternative.SRHH.TOTAL->Fill(SR, weight_btag_up_alt); 
-        if (isData  == 0 )            p_btagSF_dn_alternative.SRHH.TOTAL->Fill(SR, weight_btag_dn_alt); 
+        if (isData  == 0 )            p_btagSF_alt_up.SRHH.TOTAL->Fill(SR, weight_btag_up_alt); 
+        if (isData  == 0 )            p_btagSF_alt_dn.SRHH.TOTAL->Fill(SR, weight_btag_dn_alt); 
+        if (isData  == 0 )            p_pu_alt_up.SRHH.TOTAL->Fill(SR, weight_pu_up_alt); 
+        if (isData  == 0 )            p_pu_alt_dn.SRHH.TOTAL->Fill(SR, weight_pu_dn_alt); 
       }
 
       if (categ == HighLow){
@@ -1314,8 +1403,10 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if (doFakes == 1 )            p_fake_alt_up.SRHL.TOTAL->Fill(SR, weight_alt); 
         if (isData  == 0 )            p_jes_alt_up.SRHL.TOTAL->Fill(SR_unc_up, weight); 
         if (isData  == 0 )            p_jes_alt_dn.SRHL.TOTAL->Fill(SR_unc_dn, weight); 
-        if (isData  == 0 )            p_btagSF_up_alternative.SRHL.TOTAL->Fill(SR, weight_btag_up_alt); 
-        if (isData  == 0 )            p_btagSF_dn_alternative.SRHL.TOTAL->Fill(SR, weight_btag_dn_alt); 
+        if (isData  == 0 )            p_btagSF_alt_up.SRHL.TOTAL->Fill(SR, weight_btag_up_alt); 
+        if (isData  == 0 )            p_btagSF_alt_dn.SRHL.TOTAL->Fill(SR, weight_btag_dn_alt); 
+        if (isData  == 0 )            p_pu_alt_up.SRHL.TOTAL->Fill(SR, weight_pu_up_alt); 
+        if (isData  == 0 )            p_pu_alt_dn.SRHL.TOTAL->Fill(SR, weight_pu_dn_alt); 
       }
 
       if (categ == LowLow){
@@ -1326,8 +1417,10 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if (doFakes == 1 )            p_fake_alt_up.SRLL.TOTAL->Fill(SR, weight_alt); 
         if (isData  == 0 )            p_jes_alt_up.SRLL.TOTAL->Fill(SR_unc_up, weight); 
         if (isData  == 0 )            p_jes_alt_dn.SRLL.TOTAL->Fill(SR_unc_dn, weight); 
-        if (isData  == 0 )            p_btagSF_up_alternative.SRLL.TOTAL->Fill(SR, weight_btag_up_alt); 
-        if (isData  == 0 )            p_btagSF_dn_alternative.SRLL.TOTAL->Fill(SR, weight_btag_dn_alt); 
+        if (isData  == 0 )            p_btagSF_alt_up.SRLL.TOTAL->Fill(SR, weight_btag_up_alt); 
+        if (isData  == 0 )            p_btagSF_alt_dn.SRLL.TOTAL->Fill(SR, weight_btag_dn_alt); 
+        if (isData  == 0 )            p_pu_alt_up.SRLL.TOTAL->Fill(SR, weight_pu_up_alt); 
+        if (isData  == 0 )            p_pu_alt_dn.SRLL.TOTAL->Fill(SR, weight_pu_dn_alt); 
       }
 
 
@@ -1346,15 +1439,35 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   avoidNegativeYields(p_result.SRHL.TOTAL);
   avoidNegativeYields(p_result.SRLL.TOTAL);
   if (doFakes == 1) {
+    avoidZeroStatUnc(p_result.SRHH.TOTAL);
+    avoidZeroStatUnc(p_result.SRHL.TOTAL);
+    avoidZeroStatUnc(p_result.SRLL.TOTAL);
+    avoidNegativeYields(p_fake_alt_up.SRHH.TOTAL);
+    avoidNegativeYields(p_fake_alt_up.SRHL.TOTAL);
+    avoidNegativeYields(p_fake_alt_up.SRLL.TOTAL);
+    avoidSmallYieldsDueToNegWeightsInPromptSubtraction(p_fake_alt_up.SRHH.TOTAL);
+    avoidSmallYieldsDueToNegWeightsInPromptSubtraction(p_fake_alt_up.SRHL.TOTAL);
+    avoidSmallYieldsDueToNegWeightsInPromptSubtraction(p_fake_alt_up.SRLL.TOTAL);
+  }
+  if (isData  == 0) {
     avoidNegativeYields(p_jes_alt_up.SRHH.TOTAL);
     avoidNegativeYields(p_jes_alt_up.SRHL.TOTAL);
     avoidNegativeYields(p_jes_alt_up.SRLL.TOTAL);
     avoidNegativeYields(p_jes_alt_dn.SRHH.TOTAL);
     avoidNegativeYields(p_jes_alt_dn.SRHL.TOTAL);
     avoidNegativeYields(p_jes_alt_dn.SRLL.TOTAL);
-    avoidNegativeYields(p_fake_alt_up.SRHH.TOTAL);
-    avoidNegativeYields(p_fake_alt_up.SRHL.TOTAL);
-    avoidNegativeYields(p_fake_alt_up.SRLL.TOTAL);
+    avoidNegativeYields(p_btagSF_alt_up.SRHH.TOTAL);
+    avoidNegativeYields(p_btagSF_alt_up.SRHL.TOTAL);
+    avoidNegativeYields(p_btagSF_alt_up.SRLL.TOTAL);
+    avoidNegativeYields(p_btagSF_alt_dn.SRHH.TOTAL);
+    avoidNegativeYields(p_btagSF_alt_dn.SRHL.TOTAL);
+    avoidNegativeYields(p_btagSF_alt_dn.SRLL.TOTAL);
+    avoidNegativeYields(p_pu_alt_up.SRHH.TOTAL);
+    avoidNegativeYields(p_pu_alt_up.SRHL.TOTAL);
+    avoidNegativeYields(p_pu_alt_up.SRLL.TOTAL);
+    avoidNegativeYields(p_pu_alt_dn.SRHH.TOTAL);
+    avoidNegativeYields(p_pu_alt_dn.SRHL.TOTAL);
+    avoidNegativeYields(p_pu_alt_dn.SRLL.TOTAL);
   }
 
   //Update total
@@ -1404,7 +1517,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       }
       
       //ttv
-      if (name=="ttw" || name=="ttz"){
+      if (name=="ttw" || name=="ttzh"){
         writeTTVExtrSyst(h_sr,name,kinRegs[kr]);
       }
       
@@ -1419,22 +1532,28 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         TH1F* plot_btagSF_up_alt = 0; 
         TH1F* plot_btagSF_ct_alt = 0; 
         TH1F* plot_btagSF_dn_alt = 0; 
-        if      (kinRegs[kr]=="hihi")   plot_btagSF_up_alt = p_btagSF_up_alternative.SRHH.TOTAL;
-        else if (kinRegs[kr]=="hilow")  plot_btagSF_up_alt = p_btagSF_up_alternative.SRHL.TOTAL;
-        else if (kinRegs[kr]=="lowlow") plot_btagSF_up_alt = p_btagSF_up_alternative.SRLL.TOTAL;
-        if      (kinRegs[kr]=="hihi")   plot_btagSF_dn_alt = p_btagSF_dn_alternative.SRHH.TOTAL;
-        else if (kinRegs[kr]=="hilow")  plot_btagSF_dn_alt = p_btagSF_dn_alternative.SRHL.TOTAL;
-        else if (kinRegs[kr]=="lowlow") plot_btagSF_dn_alt = p_btagSF_dn_alternative.SRLL.TOTAL;
+        if      (kinRegs[kr]=="hihi")   plot_btagSF_up_alt = p_btagSF_alt_up.SRHH.TOTAL;
+        else if (kinRegs[kr]=="hilow")  plot_btagSF_up_alt = p_btagSF_alt_up.SRHL.TOTAL;
+        else if (kinRegs[kr]=="lowlow") plot_btagSF_up_alt = p_btagSF_alt_up.SRLL.TOTAL;
+        if      (kinRegs[kr]=="hihi")   plot_btagSF_dn_alt = p_btagSF_alt_dn.SRHH.TOTAL;
+        else if (kinRegs[kr]=="hilow")  plot_btagSF_dn_alt = p_btagSF_alt_dn.SRHL.TOTAL;
+        else if (kinRegs[kr]=="lowlow") plot_btagSF_dn_alt = p_btagSF_alt_dn.SRLL.TOTAL;
         if      (kinRegs[kr]=="hihi")   plot_btagSF_ct_alt = p_result.SRHH.TOTAL;
         else if (kinRegs[kr]=="hilow")  plot_btagSF_ct_alt = p_result.SRHL.TOTAL;
         else if (kinRegs[kr]=="lowlow") plot_btagSF_ct_alt = p_result.SRLL.TOTAL;
-
-        //btag: normalize
-        float scaleBtag_up = plot_btagSF_ct_alt->Integral()/plot_btagSF_up_alt->Integral();
-        float scaleBtag_dn = plot_btagSF_ct_alt->Integral()/plot_btagSF_dn_alt->Integral();
+        //btag: normalize (be careful with bins inclusive in btags, they are not affected by this syst)
+	int nBins = plot_btagSF_ct_alt->GetNbinsX();
+	int nInclBins = 2;
+	if (kinRegs[kr]=="hilow") nInclBins = 4;
+	if (kinRegs[kr]=="lowlow") nInclBins = 1;
+        float scaleBtag_up = plot_btagSF_ct_alt->Integral(1,nBins-nInclBins)/plot_btagSF_up_alt->Integral(1,nBins-nInclBins);
+        float scaleBtag_dn = plot_btagSF_ct_alt->Integral(1,nBins-nInclBins)/plot_btagSF_dn_alt->Integral(1,nBins-nInclBins);
         plot_btagSF_up_alt->Scale(scaleBtag_up); 
         plot_btagSF_dn_alt->Scale(scaleBtag_dn); 
-
+	for (int ibin=1;ibin<=nInclBins;ibin++) {
+	  plot_btagSF_up_alt->SetBinContent(nBins-nInclBins+ibin,plot_btagSF_ct_alt->GetBinContent(nBins-nInclBins+ibin));
+	  plot_btagSF_dn_alt->SetBinContent(nBins-nInclBins+ibin,plot_btagSF_ct_alt->GetBinContent(nBins-nInclBins+ibin));
+	}
         //btag: now save the plot
         TH1F* btagSFUp   = (TH1F*)plot_btagSF_up_alt->Clone("btagUp"); 
         TH1F* btagSFDown = (TH1F*)plot_btagSF_dn_alt->Clone("btagDown"); 
@@ -1444,10 +1563,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         btagSFDown->Write(); 
 
         //jes
-        //writeJesSyst(h_sr,name,kinRegs[kr]);//fixme should not change normalization for WZ
         TH1F* plot_alt_jes_up = 0;
         TH1F* plot_alt_jes_dn = 0;
-        TH1F* plot_alt_jes    = 0;
         if      (kinRegs[kr]=="hihi")   plot_alt_jes_up=p_jes_alt_up.SRHH.TOTAL;
         else if (kinRegs[kr]=="hilow")  plot_alt_jes_up=p_jes_alt_up.SRHL.TOTAL;
         else if (kinRegs[kr]=="lowlow") plot_alt_jes_up=p_jes_alt_up.SRLL.TOTAL;
@@ -1458,14 +1575,34 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         else exit(1);
         TH1F* jesUp   = (TH1F*) plot_alt_jes_up->Clone("jesUp");
         TH1F* jesDown = (TH1F*) plot_alt_jes_dn->Clone("jesDown");
-	//turn on when we'll normalize wz in data for real
-	// if (name=="wz") {
-	//   //wz is normalized in data, so we want only the sr migration
-	//   jesUp->Scale(h_sr->Integral()/jesUp->Integral());  
-	//   jesDown->Scale(h_sr->Integral()/jesDown->Integral());  
-	// }
+	if (name=="wz") {
+	  //wz is normalized in data, so we want only the sr migration
+	  jesUp->Scale(h_sr->Integral()/jesUp->Integral());  
+	  jesDown->Scale(h_sr->Integral()/jesDown->Integral());  
+	}
         jesUp->Write();
         jesDown->Write();
+
+        //pu
+        TH1F* plot_alt_pu_up = 0;
+        TH1F* plot_alt_pu_dn = 0;
+        if      (kinRegs[kr]=="hihi")   plot_alt_pu_up=p_pu_alt_up.SRHH.TOTAL;
+        else if (kinRegs[kr]=="hilow")  plot_alt_pu_up=p_pu_alt_up.SRHL.TOTAL;
+        else if (kinRegs[kr]=="lowlow") plot_alt_pu_up=p_pu_alt_up.SRLL.TOTAL;
+        else exit(1);
+        if      (kinRegs[kr]=="hihi")   plot_alt_pu_dn=p_pu_alt_dn.SRHH.TOTAL;
+        else if (kinRegs[kr]=="hilow")  plot_alt_pu_dn=p_pu_alt_dn.SRHL.TOTAL;
+        else if (kinRegs[kr]=="lowlow") plot_alt_pu_dn=p_pu_alt_dn.SRLL.TOTAL;
+        else exit(1);
+        TH1F* puUp   = (TH1F*) plot_alt_pu_up->Clone("puUp");
+        TH1F* puDown = (TH1F*) plot_alt_pu_dn->Clone("puDown");
+	if (name=="wz") {
+	  //wz is normalized in data, so we want only the sr migration
+	  puUp->Scale(h_sr->Integral()/puUp->Integral());  
+	  puDown->Scale(h_sr->Integral()/puDown->Integral());  
+	}
+        puUp->Write();
+        puDown->Write();
 
         //leptons
         if (name!="wz") writeHTHltSyst(h_sr,name,kinRegs[kr]);
@@ -1519,8 +1656,26 @@ int nbtagsSR(TString kine, int sr) {
 void avoidNegativeYields(TH1F* plot) {
   for (int bin=1;bin<=plot->GetNbinsX();++bin) {
     if (plot->GetBinContent(bin)<0) {
-      cout << "warning: plot " << plot->GetName() << " has negative yield in bin " << bin << " value=" << plot->GetBinContent(bin) << "; setting to zero."<< endl;
-      plot->SetBinContent(bin,0);
+      cout << "warning: plot " << plot->GetName() << " has negative yield in bin " << bin << " value=" << plot->GetBinContent(bin) << "; setting to 1E-6."<< endl;
+      plot->SetBinContent(bin,1E-6);//FIXME
+    } 
+  }
+}
+
+void avoidSmallYieldsDueToNegWeightsInPromptSubtraction(TH1F* plot) {
+  for (int bin=1;bin<=plot->GetNbinsX();++bin) {
+    if (plot->GetBinContent(bin)<1E-4) {
+      cout << "warning: plot " << plot->GetName() << " has yield<1E-4 in bin " << bin << " value=" << plot->GetBinContent(bin) << "; setting to 1E-6."<< endl;
+      plot->SetBinContent(bin,1E-6);
+    } 
+  }
+}
+
+void avoidZeroStatUnc(TH1F* plot) {
+  for (int bin=1;bin<=plot->GetNbinsX();++bin) {
+    if (plot->GetBinContent(bin)<=2E-6) {
+      cout << "warning: plot " << plot->GetName() << " has zero stat unc in bin " << bin << " value=" << plot->GetBinContent(bin) << "; setting to 1.8*w."<< endl;
+      plot->SetBinError(bin,1.84*0.4/(1.-0.4));
     } 
   }
 }
@@ -1547,24 +1702,28 @@ void writeStat(TH1F* central,string name) {
 void writeTTVExtrSyst(TH1F* central,string name,TString kine) {
   TString up = "Up";
   TString down = "Down";
+  TH1F* systUpHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),up.Data()));
+  systUpHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),up.Data()));
+  TH1F* systDownHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),down.Data()));
+  systDownHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),down.Data()));
+  TH1F* systUpHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),up.Data()));
+  systUpHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),up.Data()));
+  TH1F* systDownHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),down.Data()));
+  systDownHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),down.Data()));
+  TH1F* systUpLL = (TH1F*) central->Clone(Form("%s_extr_ll%s",name.c_str(),up.Data()));
+  systUpLL->SetTitle(Form("%s_extr_ll%s",name.c_str(),up.Data()));
+  TH1F* systDownLL = (TH1F*) central->Clone(Form("%s_extr_ll%s",name.c_str(),down.Data()));
+  systDownLL->SetTitle(Form("%s_extr_ll%s",name.c_str(),down.Data()));
   if (kine.Contains("lowlow")) {
-    TH1F* systUp = (TH1F*) central->Clone(Form("%s_extr_ll%s",name.c_str(),up.Data()));
-    systUp->SetTitle(Form("%s_extr_ll%s",name.c_str(),up.Data()));
     float systValue = 1.08;
-    for (int bin=1;bin<=systUp->GetNbinsX();++bin) {
+    for (int bin=1;bin<=systUpLL->GetNbinsX();++bin) {
       float val = central->GetBinContent(bin)*systValue;
-      if (val>0) systUp->SetBinContent(bin,val);
+      if (val>0) systUpLL->SetBinContent(bin,val);
     }
-    TH1F* systDown = (TH1F*) central->Clone(Form("%s_extr_ll%s",name.c_str(),down.Data()));
-    systDown->SetTitle(Form("%s_extr_ll%s",name.c_str(),down.Data()));
-    fillDownMirrorUp(central,systUp,systDown);
-    systUp->Write();
-    systDown->Write();
+    fillDownMirrorUp(central,systUpLL,systDownLL);
   } else {
     //hihi and hilow have different extrapolation unceratinties for hi and low HT
     //HTHigh
-    TH1F* systUpHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),up.Data()));
-    systUpHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),up.Data()));
     float systValue = 1.08;
     for (int bin=1;bin<=systUpHTH->GetNbinsX();++bin) {
       //skip low ht regions
@@ -1572,26 +1731,22 @@ void writeTTVExtrSyst(TH1F* central,string name,TString kine) {
       float val = central->GetBinContent(bin)*systValue;
       if (val>0) systUpHTH->SetBinContent(bin,val);
     }
-    TH1F* systDownHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),down.Data()));
-    systDownHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),down.Data()));
     fillDownMirrorUp(central,systUpHTH,systDownHTH);
-    systUpHTH->Write();
-    systDownHTH->Write();
     //HTLow
-    TH1F* systUpHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),up.Data()));
-    systUpHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),up.Data()));
     systValue = 1.03;
     for (int bin=1;bin<=systUpHTL->GetNbinsX();++bin) {
       if (isSRHighHT(kine,bin)) continue;
       float val = central->GetBinContent(bin)*systValue;
       if (val>0) systUpHTL->SetBinContent(bin,val);
     }
-    TH1F* systDownHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),down.Data()));
-    systDownHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),down.Data()));
     fillDownMirrorUp(central,systUpHTL,systDownHTL);
-    systUpHTL->Write();
-    systDownHTL->Write();
   }
+  systUpHTH->Write();
+  systDownHTH->Write();
+  systUpHTL->Write();
+  systDownHTL->Write();
+  systUpLL->Write();
+  systDownLL->Write();
 }
 
 void writeWZExtrSyst(TH1F* central,string name,TString kine,bool down) {
