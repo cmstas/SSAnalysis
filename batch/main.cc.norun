@@ -474,7 +474,7 @@ int main(int argc, char *argv[]){
         csErr.cs_scale_up = 0;
         csErr.cs_scale_dn = 0;
         for (int i = 0; i < 102; i++) csErr.cs_pdf[i] = 0; 
-        csErr.results = new TH1F(Form("csErr_%i_%i", mGluino, mLSP), Form("csErr_%i_%i", mGluino, mLSP), 109, 0, 109); 
+        csErr.results = new TH1F(Form("csErr_%i_%i", mGluino, mLSP), Form("csErr_%i_%i", mGluino, mLSP), 106, 0, 106); 
         csErr.results->Sumw2(); 
         csErr.nEntries = 0; 
         csErr.mGluino = mGluino; 
@@ -522,7 +522,7 @@ int main(int argc, char *argv[]){
       csErr_info_v[j].results->SetBinError(2, csErr_info_v[j].cs->GetBinError(1)); 
       csErr_info_v[j].results->SetBinContent(3, csErr_info_v[j].cs_scale_up); 
       csErr_info_v[j].results->SetBinContent(4, csErr_info_v[j].cs_scale_dn); 
-      for (unsigned int i = 5; i <= 106; i++) csErr_info_v[j].results->SetBinContent(i, csErr_info_v[j].cs_pdf[i-8]);
+      for (unsigned int i = 5; i <= 106; i++) csErr_info_v[j].results->SetBinContent(i, csErr_info_v[j].cs_pdf[i-5]);
 
       //csErr_info_v[j].results->Fill(1.5, 100*csErr_info_v[j].cs->GetBinError(1)/cs_int    );
       //csErr_info_v[j].results->Fill(2.5, 100*(csErr_info_v[j].cs_scale_dn - cs_int)/cs_int);
