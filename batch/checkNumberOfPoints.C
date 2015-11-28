@@ -3,7 +3,7 @@
   TFile *file = new TFile("T1TTTT_1950_750to950.root"); 
   for (auto&& keyAsObj : *file->GetListOfKeys()){
    auto key = (TKey*) keyAsObj;
-   TH1F *hist = (TH1F*)key; 
+   TH1F *hist = (TH1F*)key->ReadObj(); 
    string title = hist->GetTitle();
    if (title == "SS2015 Baby Ntuple") continue;
    int find = title.find('_');
