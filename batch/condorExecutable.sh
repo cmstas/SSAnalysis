@@ -76,7 +76,7 @@ if [ "$WHICH" == "1007" ]; then WHICH_SMALL="datadoublemuond_v4"; fi
 if [ "$WHICH" == "1008" ]; then WHICH_SMALL="datamuonegd_v4"; fi
 
 #signal
-if [ "$WHICH" == "10001" ]; then WHICH_SMALL="fastsimtest"; fi
+if [ "$WHICH" == "10001" ]; then WHICH_SMALL="t1tttt_1950_750to950"; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 

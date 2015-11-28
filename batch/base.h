@@ -57,7 +57,7 @@ enum sample_t {
   DataMuonEGD_v4 = 1008,
 
   //fastsim
-  FASTSIMTEST = 10001
+  T1TTTT_1950_750to950 = 10001
 
 };
 

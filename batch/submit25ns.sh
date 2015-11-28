@@ -265,7 +265,7 @@ do
     nameNu=106
 
   #signal
-  elif [ $sname == "FASTSIMTEST" ] 
+  elif [ $sname == "T1TTTT_1950_750to950" ] 
   then
     name="SMS-T1tttt_mGluino-1950_mLSP-700to950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
     tag="V07-04-12"
