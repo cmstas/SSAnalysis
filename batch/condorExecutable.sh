@@ -77,6 +77,19 @@ if [ "$WHICH" == "1008" ]; then WHICH_SMALL="datamuonegd_v4"; fi
 
 #signal
 if [ "$WHICH" == "10001" ]; then WHICH_SMALL="t1tttt_1950_750to950"; fi
+if [ "$WHICH" == "10002" ]; then WHICH_SMALL="fastsim1"; fi
+if [ "$WHICH" == "10003" ]; then WHICH_SMALL="fastsim2"; fi
+if [ "$WHICH" == "10004" ]; then WHICH_SMALL="fastsim3"; fi
+if [ "$WHICH" == "10005" ]; then WHICH_SMALL="fastsim4"; fi
+if [ "$WHICH" == "10006" ]; then WHICH_SMALL="fastsim5"; fi
+if [ "$WHICH" == "10007" ]; then WHICH_SMALL="fastsim6"; fi
+if [ "$WHICH" == "10008" ]; then WHICH_SMALL="fastsim7"; fi
+if [ "$WHICH" == "10009" ]; then WHICH_SMALL="fastsim8"; fi
+if [ "$WHICH" == "10010" ]; then WHICH_SMALL="fastsim9"; fi
+if [ "$WHICH" == "10011" ]; then WHICH_SMALL="fastsim10"; fi
+if [ "$WHICH" == "10012" ]; then WHICH_SMALL="fastsim11"; fi
+if [ "$WHICH" == "10013" ]; then WHICH_SMALL="fastsim12"; fi
+if [ "$WHICH" == "10014" ]; then WHICH_SMALL="fastsim13"; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
