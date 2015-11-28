@@ -371,20 +371,41 @@ int main(int argc, char *argv[]){
   jetCorrAG = makeJetCorrector(filenames);
 
   //Histograms for cross-section calculation
-  TH1F* cs = new TH1F("cs","cs", 1, 0, 1);
-  cs->Sumw2();
-
-  //Floats for other cross-section errors
-  float cs_scale_up = 0;
-  float cs_scale_dn = 0;
-  float cs_pdf[102] = { 0 }; 
+  struct csErr_info_t { TH1F* cs; float cs_scale_up; float cs_scale_dn; float cs_pdf[102]; int mGluino; int mLSP; TH1F* results; int nEntries; }; 
+  vector <csErr_info_t> csErr_info_v; 
 
   //Event Loop
   for(unsigned int eventAG = 0; eventAG < nEvents; eventAG++){
-
+ 
     //Get Event Content
     cms3.GetEntry(eventAG);
     nEventsTotal++;
+
+    //See if mass point exists already
+    int idx = -1;
+    if (isSignal){
+      int mGluino = tas::sparm_values().at(0);
+      int mLSP = tas::sparm_values().at(1);
+      for (unsigned int i = 0; i < csErr_info_v.size(); i++){
+        if (mGluino == csErr_info_v[i].mGluino && mLSP == csErr_info_v[i].mLSP){ idx = i; break; }
+      }
+      if (idx < 0){
+        csErr_info_t csErr; 
+        csErr.cs = new TH1F(Form("cs_%i_%i", mGluino, mLSP), Form("cs_%i_%i", mGluino, mLSP), 1, 0, 1);
+        csErr.cs->Sumw2(); 
+        csErr.cs_scale_up = 0;
+        csErr.cs_scale_dn = 0;
+        for (int i = 0; i < 102; i++) csErr.cs_pdf[i] = 0; 
+        csErr.results = new TH1F(Form("csErr_%i_%i", mGluino, mLSP), Form("csErr_%i_%i", mGluino, mLSP), 10, 0, 10); 
+        csErr.results->SetBinContent(7.5, mGluino); 
+        csErr.results->SetBinContent(8.5, mLSP); 
+        csErr.mGluino = mGluino;
+        csErr.mLSP = mLSP;
+        csErr.nEntries = 0; 
+        idx = csErr_info_v.size(); 
+        csErr_info_v.push_back(csErr); 
+      } 
+    }
 
     //If data, check good run list
     if (tas::evt_isRealData() && !goodrun(tas::evt_run(), tas::evt_lumiBlock())) continue; 
@@ -396,36 +417,39 @@ int main(int argc, char *argv[]){
 
     //c-s error variables
     if (isSignal){
-      cs->Fill(0.5, csErr.cs_scale_no);  
-      cs_scale_up += csErr.cs_scale_up;
-      cs_scale_dn += csErr.cs_scale_dn;
-      for (unsigned int i = 0; i < 102; i++) cs_pdf[i] += csErr.cs_pdf[i];
+      csErr_info_v[idx].nEntries++; 
+      csErr_info_v[idx].cs->Fill(0.5, csErr.cs_scale_no);  
+      csErr_info_v[idx].cs_scale_up += csErr.cs_scale_up;
+      csErr_info_v[idx].cs_scale_dn += csErr.cs_scale_dn;
+      for (unsigned int i = 0; i < 102; i++) csErr_info_v[idx].cs_pdf[i] += csErr.cs_pdf[i];
     }
 
   }//event loop 
 
-  TH1F *h_csErr = new TH1F("csErr", "csErr", 7, 0, 7); 
-
   if (isSignal){
-    //c-s value
-    float cs_int = cs->Integral();
-    float cs_value = 1000*cs_int/cs->GetEntries();
-   
-    //c-s PDF error
-    TH1F* cs_pdf_hist = new TH1F("cs_pdf_hist", "cs_pdf_hist", 10000, 0, 1000); 
-    for (int i = 0; i < 100; i++){
-      cs_pdf_hist->Fill( 1000*cs_pdf[i]/cs->GetEntries() ); 
-    }
-    float cs_pdf_error = cs_pdf_hist->GetRMS(); 
+    for (unsigned int j = 0; j < csErr_info_v.size(); j++){
+      //c-s value
+      float cs_int = csErr_info_v[j].cs->Integral();
+      float cs_value = 1000*cs_int; ///csErr_info_v[j].cs->GetEntries();
+     
+      //c-s PDF error
+      TH1F* cs_pdf_hist = new TH1F("cs_pdf_hist", "cs_pdf_hist", 10000, 0, 1000); 
+      for (int i = 0; i < 100; i++){
+        cs_pdf_hist->Fill( 1000*csErr_info_v[j].cs_pdf[i]/csErr_info_v[j].cs->GetEntries() ); 
+      }
+      float cs_pdf_error = cs_pdf_hist->GetRMS(); 
 
-    //c-s error results
-    h_csErr->Fill(0.5, cs_value                         ); 
-    h_csErr->Fill(1.5, 100*cs->GetBinError(1)/cs_int    );  
-    h_csErr->Fill(2.5, 100*(cs_scale_dn - cs_int)/cs_int);
-    h_csErr->Fill(3.5,-100*(cs_scale_up - cs_int)/cs_int);
-    h_csErr->Fill(4.5, 100*cs_pdf_error/cs_value        ); 
-    h_csErr->Fill(5.5,-100*(cs_pdf[100] - cs_int)/cs_int);
-    h_csErr->Fill(6.5, 100*(cs_pdf[101] - cs_int)/cs_int);
+      //c-s error results
+      csErr_info_v[j].results->Fill(0.5, cs_value                                         ); 
+      csErr_info_v[j].results->Fill(1.5, 100*csErr_info_v[j].cs->GetBinError(1)/cs_int    );
+      csErr_info_v[j].results->Fill(2.5, 100*(csErr_info_v[j].cs_scale_dn - cs_int)/cs_int);
+      csErr_info_v[j].results->Fill(3.5,-100*(csErr_info_v[j].cs_scale_up - cs_int)/cs_int);
+      csErr_info_v[j].results->Fill(4.5, 100*cs_pdf_error/cs_value                        ); 
+      csErr_info_v[j].results->Fill(5.5,-100*(csErr_info_v[j].cs_pdf[100] - cs_int)/cs_int);
+      csErr_info_v[j].results->Fill(6.5, 100*(csErr_info_v[j].cs_pdf[101] - cs_int)/cs_int);
+      csErr_info_v[j].results->Fill(9.5, csErr_info_v[j].nEntries                         );
+      delete cs_pdf_hist; 
+    }
   }
 
   //Delete Chain
@@ -434,7 +458,9 @@ int main(int argc, char *argv[]){
   //Open the baby file again
   TFile* BabyFile = new TFile(Form("%s_%i.root", shortname.c_str(), file), "UPDATE");
   BabyFile->cd();
-  h_csErr->Write(); 
+  for (unsigned int j = 0; j < csErr_info_v.size(); j++){
+    csErr_info_v[j].results->Write(); 
+  }
 
   return 0;
 
