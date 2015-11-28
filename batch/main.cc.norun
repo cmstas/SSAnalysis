@@ -474,9 +474,11 @@ int main(int argc, char *argv[]){
         csErr.cs_scale_up = 0;
         csErr.cs_scale_dn = 0;
         for (int i = 0; i < 102; i++) csErr.cs_pdf[i] = 0; 
-        csErr.results = new TH1F(Form("csErr_%i_%i", mGluino, mLSP), Form("csErr_%i_%i", mGluino, mLSP), 10, 0, 10); 
-        csErr.results->SetBinContent(7.5, mGluino); 
-        csErr.results->SetBinContent(8.5, mLSP); 
+        csErr.results = new TH1F(Form("csErr_%i_%i", mGluino, mLSP), Form("csErr_%i_%i", mGluino, mLSP), 109, 0, 109); 
+        csErr.results->Sumw2(); 
+        csErr.results->SetBinContent(1, 1); 
+        csErr.results->SetBinContent(2, mGluino); 
+        csErr.results->SetBinContent(3, mLSP); 
         csErr.mGluino = mGluino;
         csErr.mLSP = mLSP;
         csErr.nEntries = 0; 
@@ -507,26 +509,31 @@ int main(int argc, char *argv[]){
   if (isSignal){
     for (unsigned int j = 0; j < csErr_info_v.size(); j++){
       //c-s value
-      float cs_int = csErr_info_v[j].cs->Integral();
-      float cs_value = 1000*cs_int; ///csErr_info_v[j].cs->GetEntries();
+      //float cs_int = csErr_info_v[j].cs->Integral();
+      //float cs_value = 1000*cs_int; 
      
       //c-s PDF error
-      TH1F* cs_pdf_hist = new TH1F("cs_pdf_hist", "cs_pdf_hist", 10000, 0, 1000); 
-      for (int i = 0; i < 100; i++){
-        cs_pdf_hist->Fill( 1000*csErr_info_v[j].cs_pdf[i]/csErr_info_v[j].cs->GetEntries() ); 
-      }
-      float cs_pdf_error = cs_pdf_hist->GetRMS(); 
+      //TH1F* cs_pdf_hist = new TH1F("cs_pdf_hist", "cs_pdf_hist", 10000, 0, 1000); 
+      //for (int i = 0; i < 100; i++){
+      //  cs_pdf_hist->Fill( 1000*csErr_info_v[j].cs_pdf[i]/csErr_info_v[j].cs->GetEntries() ); 
+      //}
+      //float cs_pdf_error = cs_pdf_hist->GetRMS(); 
 
       //c-s error results
-      csErr_info_v[j].results->Fill(0.5, cs_value                                         ); 
-      csErr_info_v[j].results->Fill(1.5, 100*csErr_info_v[j].cs->GetBinError(1)/cs_int    );
-      csErr_info_v[j].results->Fill(2.5, 100*(csErr_info_v[j].cs_scale_dn - cs_int)/cs_int);
-      csErr_info_v[j].results->Fill(3.5,-100*(csErr_info_v[j].cs_scale_up - cs_int)/cs_int);
-      csErr_info_v[j].results->Fill(4.5, 100*cs_pdf_error/cs_value                        ); 
-      csErr_info_v[j].results->Fill(5.5,-100*(csErr_info_v[j].cs_pdf[100] - cs_int)/cs_int);
-      csErr_info_v[j].results->Fill(6.5, 100*(csErr_info_v[j].cs_pdf[101] - cs_int)/cs_int);
-      csErr_info_v[j].results->Fill(9.5, csErr_info_v[j].nEntries                         );
-      delete cs_pdf_hist; 
+      csErr_info_v[j].results->SetBinContent(4, csErr_info_v[j].nEntries);
+      csErr_info_v[j].results->SetBinContent(5, csErr_info_v[j].cs->Integral()); 
+      csErr_info_v[j].results->SetBinError(5, csErr_info_v[j].cs->GetBinError(1)); 
+      csErr_info_v[j].results->SetBinContent(6, csErr_info_v[j].cs_scale_up); 
+      csErr_info_v[j].results->SetBinContent(7, csErr_info_v[j].cs_scale_dn); 
+      for (unsigned int i = 8; i <= 109; i++) csErr_info_v[j].results->SetBinContent(i, csErr_info_v[j].cs_pdf[i-8]);
+
+      //csErr_info_v[j].results->Fill(1.5, 100*csErr_info_v[j].cs->GetBinError(1)/cs_int    );
+      //csErr_info_v[j].results->Fill(2.5, 100*(csErr_info_v[j].cs_scale_dn - cs_int)/cs_int);
+      //csErr_info_v[j].results->Fill(3.5,-100*(csErr_info_v[j].cs_scale_up - cs_int)/cs_int);
+      //csErr_info_v[j].results->Fill(4.5, 100*cs_pdf_error/cs_value                        ); 
+      //csErr_info_v[j].results->Fill(5.5,-100*(csErr_info_v[j].cs_pdf[100] - cs_int)/cs_int);
+      //csErr_info_v[j].results->Fill(6.5, 100*(csErr_info_v[j].cs_pdf[101] - cs_int)/cs_int);
+      //csErr_info_v[j].results->Fill(9.5, csErr_info_v[j].nEntries                         );
     }
   }
 
