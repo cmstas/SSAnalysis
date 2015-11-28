@@ -449,7 +449,7 @@ int main(int argc, char *argv[]){
   jetCorrAG = makeJetCorrector(filenames);
 
   //Histograms for cross-section calculation
-  struct csErr_info_t { TH1F* cs; float cs_scale_up; float cs_scale_dn; float cs_pdf[102]; int mGluino; int mLSP; TH1F* results; int nEntries; }; 
+  struct csErr_info_t { TH1F* cs; float cs_scale_up; float cs_scale_dn; float cs_pdf[102]; TH1F* results; int nEntries; int mGluino; int mLSP;}; 
   vector <csErr_info_t> csErr_info_v; 
 
   //Event Loop
@@ -476,12 +476,9 @@ int main(int argc, char *argv[]){
         for (int i = 0; i < 102; i++) csErr.cs_pdf[i] = 0; 
         csErr.results = new TH1F(Form("csErr_%i_%i", mGluino, mLSP), Form("csErr_%i_%i", mGluino, mLSP), 109, 0, 109); 
         csErr.results->Sumw2(); 
-        csErr.results->SetBinContent(1, 1); 
-        csErr.results->SetBinContent(2, mGluino); 
-        csErr.results->SetBinContent(3, mLSP); 
-        csErr.mGluino = mGluino;
-        csErr.mLSP = mLSP;
         csErr.nEntries = 0; 
+        csErr.mGluino = mGluino; 
+        csErr.mLSP = mLSP; 
         idx = csErr_info_v.size(); 
         csErr_info_v.push_back(csErr); 
       } 
@@ -520,12 +517,12 @@ int main(int argc, char *argv[]){
       //float cs_pdf_error = cs_pdf_hist->GetRMS(); 
 
       //c-s error results
-      csErr_info_v[j].results->SetBinContent(4, csErr_info_v[j].nEntries);
-      csErr_info_v[j].results->SetBinContent(5, csErr_info_v[j].cs->Integral()); 
-      csErr_info_v[j].results->SetBinError(5, csErr_info_v[j].cs->GetBinError(1)); 
-      csErr_info_v[j].results->SetBinContent(6, csErr_info_v[j].cs_scale_up); 
-      csErr_info_v[j].results->SetBinContent(7, csErr_info_v[j].cs_scale_dn); 
-      for (unsigned int i = 8; i <= 109; i++) csErr_info_v[j].results->SetBinContent(i, csErr_info_v[j].cs_pdf[i-8]);
+      csErr_info_v[j].results->SetBinContent(1, csErr_info_v[j].nEntries);
+      csErr_info_v[j].results->SetBinContent(2, csErr_info_v[j].cs->Integral()); 
+      csErr_info_v[j].results->SetBinError(2, csErr_info_v[j].cs->GetBinError(1)); 
+      csErr_info_v[j].results->SetBinContent(3, csErr_info_v[j].cs_scale_up); 
+      csErr_info_v[j].results->SetBinContent(4, csErr_info_v[j].cs_scale_dn); 
+      for (unsigned int i = 5; i <= 106; i++) csErr_info_v[j].results->SetBinContent(i, csErr_info_v[j].cs_pdf[i-8]);
 
       //csErr_info_v[j].results->Fill(1.5, 100*csErr_info_v[j].cs->GetBinError(1)/cs_int    );
       //csErr_info_v[j].results->Fill(2.5, 100*(csErr_info_v[j].cs_scale_dn - cs_int)/cs_int);
