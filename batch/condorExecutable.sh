@@ -90,9 +90,6 @@ if [ "$WHICH" == "10011" ]; then WHICH_SMALL="t1tttt_625_275to375"; fi
 if [ "$WHICH" == "10012" ]; then WHICH_SMALL="t1tttt_625to650_200to400"; fi
 if [ "$WHICH" == "10013" ]; then WHICH_SMALL="t1tttt_650to675_250to425"; fi
 if [ "$WHICH" == "10014" ]; then WHICH_SMALL="t1tttt_700to750_200to500"; fi
-if [ "$WHICH" == "10015" ]; then WHICH_SMALL="fastsim1"; fi
-if [ "$WHICH" == "10016" ]; then WHICH_SMALL="fastsim2"; fi
-if [ "$WHICH" == "10017" ]; then WHICH_SMALL="fastsim3"; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 

@@ -56,7 +56,7 @@ enum sample_t {
   DataDoubleMuonD_v4 = 1007,
   DataMuonEGD_v4 = 1008,
 
-  //fastsim
+  //Fastsim
   T1TTTT_1950_700to950 = 10001,
   T1TTTT_1100_1to775 = 10002,
   T1TTTT_1175_950 = 10003,
@@ -70,10 +70,7 @@ enum sample_t {
   T1TTTT_625_275to375 = 10011,
   T1TTTT_625to650_200to400 = 10012,
   T1TTTT_650to675_250to425 = 10013,
-  T1TTTT_700to750_200to500 = 10014,
-  FASTSIM1 = 10015,
-  FASTSIM2 = 10016,
-  FASTSIM3 = 10017
+  T1TTTT_700to750_200to500 = 10014
 
 };
 

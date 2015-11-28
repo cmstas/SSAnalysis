@@ -391,29 +391,11 @@ int main(int argc, char *argv[]){
     tag="V07-04-12";
     isSignal=1;
     break;
-  case FASTSIM1:
-    shortname="fastsim1";
-    name="SMS-T1tttt_mGluino-1800to1850_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-    isSignal=1;
-    tag="V07-04-12";
-    break;
-  case FASTSIM2:
-    shortname="fastsim2";
-    name="SMS-T1tttt_mGluino-1350to1375_mLSP-50to1025_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-    isSignal=1;
-    tag="V07-04-12";
-    break;
-  case FASTSIM3:
-    shortname="fastsim3";
-    name="SMS-T1tttt_mGluino-1500to1525_mLSP-50to1125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-    isSignal=1;
-    tag="V07-04-12";
-    break;
 
-    default:
-      name="dummy";
-      path = "/store/group/snt/run2_25ns/";
-      break;
+  default:
+    name="dummy";
+    path = "/store/group/snt/run2_25ns/";
+    break;
 
   }
 
