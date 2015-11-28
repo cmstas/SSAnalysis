@@ -38,8 +38,8 @@ sed -i "s/cgeorge/$USER/" condorExecutable.sh
 #isSignal defaults to false
 isSignal=0 
 
-FASTSIM="T1TTTT_1950_750to950"
-for ((i=1; i<14; i++)); do FASTSIM+=" FASTSIM$i"; done
+FASTSIM="FASTSIM1 FASTSIM2 FASTSIM3 FASTSIM4" 
+#FASTSIM="T1TTTT_1950_700to950 T1TTTT_1100_1to775 T1TTTT_1175_950 T1TTTT_1275_900to975 T1TTTT_1300_1to1075 T1TTTT_1300to1325_700to1100 T1TTTT_1350to1375_50to1025 T1TTTT_1500to1525_50to1125 T1TTTT_1800to1850_1to1450 T1TTTT_1950_700to950 T1TTTT_625_275to375 T1TTTT_625to650_200to400 T1TTTT_650to675_250to425 T1TTTT_700to750_200to500" 
 
 #Then submit jobs
 nIter=0
@@ -268,76 +268,91 @@ do
     nameNu=106
 
   #signal
-  elif [ $sname == "T1TTTT_1950_750to950" ] 
+  elif [ $sname == "T1TTTT_1950_700to950" ] 
   then
     name="SMS-T1tttt_mGluino-1950_mLSP-700to950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10001 
-  elif [ $sname == "FASTSIM1" ] 
+  elif [ $sname == "T1TTTT_1100_1to775" ] 
   then
     name="SMS-T1tttt_mGluino-1100_mLSP-1to775_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10002
-  elif [ $sname == "FASTSIM2" ] 
+  elif [ $sname == "T1TTTT_1175_950" ] 
   then
     name="SMS-T1tttt_mGluino-1175_mLSP-950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10003 
-  elif [ $sname == "FASTSIM3" ] 
+  elif [ $sname == "T1TTTT_1275_900to975" ] 
   then
     name="SMS-T1tttt_mGluino-1275_mLSP-900to975_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10004 
-  elif [ $sname == "FASTSIM4" ] 
+  elif [ $sname == "T1TTTT_1300_1to1075" ] 
   then
     name="SMS-T1tttt_mGluino-1300_mLSP-1to1075_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10005 
-  elif [ $sname == "FASTSIM5" ] 
+  elif [ $sname == "T1TTTT_1300to1325_700to1100" ] 
   then
     name="SMS-T1tttt_mGluino-1300to1325_mLSP-700to1100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10006 
-  elif [ $sname == "FASTSIM6" ] 
+  elif [ $sname == "T1TTTT_1350to1375_50to1025" ] 
   then
     name="SMS-T1tttt_mGluino-1350to1375_mLSP-50to1025_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10007 
-  elif [ $sname == "FASTSIM7" ] 
+  elif [ $sname == "T1TTTT_1500to1525_50to1125" ] 
   then
     name="SMS-T1tttt_mGluino-1500to1525_mLSP-50to1125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10008 
-  elif [ $sname == "FASTSIM8" ] 
+  elif [ $sname == "T1TTTT_1800to1850_1to1450" ] 
   then
     name="SMS-T1tttt_mGluino-1800to1850_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10009
-  elif [ $sname == "FASTSIM9" ] 
+  elif [ $sname == "T1TTTT_1950_700to950" ] 
   then
     name="SMS-T1tttt_mGluino-1950_mLSP-700to950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10010 
-  elif [ $sname == "FASTSIM10" ] 
+  elif [ $sname == "T1TTTT_625_275to375" ] 
   then
     name="SMS-T1tttt_mGluino-625_mLSP-275to375_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10011 
-  elif [ $sname == "FASTSIM11" ] 
+  elif [ $sname == "T1TTTT_625to650_200to400" ] 
   then
     name="SMS-T1tttt_mGluino-625to650_mLSP-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10012 
-  elif [ $sname == "FASTSIM12" ] 
+  elif [ $sname == "T1TTTT_650to675_250to425" ] 
   then
     name="SMS-T1tttt_mGluino-650to675_mLSP-250to425_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10013 
-  elif [ $sname == "FASTSIM13" ] 
+  elif [ $sname == "T1TTTT_700to750_200to500" ] 
   then
     name="SMS-T1tttt_mGluino-700to750_mLSP-200to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10014 
+  elif [ $sname == "FASTSIM1" ]
+  then
+    name="SMS-T1tttt_mGluino-1800to1850_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10015 
+  elif [ $sname == "FASTSIM2" ]
+  then
+    name="SMS-T1tttt_mGluino-1350to1375_mLSP-50to1025_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10016 
+  elif [ $sname == "FASTSIM3" ]
+  then
+    name="SMS-T1tttt_mGluino-1500to1525_mLSP-50to1125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10017 
 
   #default
   else 

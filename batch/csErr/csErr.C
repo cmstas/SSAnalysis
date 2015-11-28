@@ -33,7 +33,7 @@ void csErr(){
    cout << "cs from generator, scale up/dn (%): " << -100*(hist->GetBinContent(3) - cs_int)/cs_int << "/" << 100*(hist->GetBinContent(4) - cs_int)/cs_int << endl;
    cout << "cs from generator, PDF error (%): " << 100*cs_pdf_error/(1000*cs_int) << endl; 
    cout << "cs from generator, alpha_S error (%): " << -100*(hist->GetBinContent(105) - cs_int)/cs_int << endl;
-   cout << "cs from generator, alpha_S error (%): " <<  100*(hist->GetBinContent(106) - cs_int)/cs_int << endl;
+   cout << "cs from generator, alpha_S error (%): " << -100*(hist->GetBinContent(106) - cs_int)/cs_int << endl;
    delete cs_pdf_hist;
   }
 }
