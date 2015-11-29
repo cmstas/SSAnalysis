@@ -306,7 +306,7 @@ void babyMaker::InitBabyNtuple(){
     lep2_isDirectPrompt = 0;
     lep2_isStat3        = 0;
     is_real_data = 0;
-    scale1fb = -1;
+    scale1fb = 1;
     xsec = -1;
     kfactor = -1;
     gen_met = -1;
@@ -571,6 +571,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     gen_met_phi = tas::gen_metPhi();
     genweights = tas::genweights(); 
     genweightsID = tas::genweightsID(); 
+    scale1fb = tas::evt_scale1fb(); 
     if (isFastsim){
       sparms = tas::sparm_values();  
       sparmNames = tas::sparm_names(); 
@@ -586,9 +587,6 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   filt_hcallaser = is_real_data ? tas::filt_hcalLaser() : 1;
   filt_ecaltp = is_real_data ? tas::filt_ecalTP() : 1;
   filt_trkfail = is_real_data ? tas::filt_trackingFailure() : 1;
-
-  //Scale1fb
-  scale1fb = is_real_data ? 1 : tas::evt_scale1fb();
 
   //Fill lepton variables
   hyp_result_t best_hyp_info = chooseBestHyp(verbose);
