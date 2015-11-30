@@ -223,6 +223,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("lep1_genps_isLastCopy"                                   , &lep1_genps_isLastCopy                                   );
   BabyTree->Branch("lep1_genps_isLastCopyBeforeFSR"                          , &lep1_genps_isLastCopyBeforeFSR                          );
 
+  BabyTree->Branch("is_fastsim", &is_fastsim); 
+
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"                                          , &lep1_isGoodLeg                                                                          );
   BabyTree->Branch("lep2_isGoodLeg"                                          , &lep2_isGoodLeg                                                                          );
@@ -289,6 +291,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
 
 void babyMaker::InitBabyNtuple(){
 
+    is_fastsim = 0; 
     rawmet = -1;
     rawmetPhi = -1;
     met = -1;
@@ -582,6 +585,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
       xsec = go_xsec(sparms[0]).xsec;
       xsec_error = go_xsec(sparms[0]).percErr;
       scale1fb = 1000*xsec/nPoints(1, sparms[0], sparms[1]);
+      is_fastsim = 1; 
     }
   }
 
