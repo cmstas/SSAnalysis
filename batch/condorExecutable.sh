@@ -85,7 +85,6 @@ if [ "$WHICH" == "10006" ]; then WHICH_SMALL="t1tttt_1300to1325_700to1100"; fi
 if [ "$WHICH" == "10007" ]; then WHICH_SMALL="t1tttt_1350to1375_50to1025"; fi
 if [ "$WHICH" == "10008" ]; then WHICH_SMALL="t1tttt_1500to1525_50to1125"; fi
 if [ "$WHICH" == "10009" ]; then WHICH_SMALL="t1tttt_1800to1850_1to1450"; fi
-if [ "$WHICH" == "10010" ]; then WHICH_SMALL="t1tttt_1950_700to950"; fi
 if [ "$WHICH" == "10011" ]; then WHICH_SMALL="t1tttt_625_275to375"; fi
 if [ "$WHICH" == "10012" ]; then WHICH_SMALL="t1tttt_625to650_200to400"; fi
 if [ "$WHICH" == "10013" ]; then WHICH_SMALL="t1tttt_650to675_250to425"; fi
