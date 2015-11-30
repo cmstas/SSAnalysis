@@ -307,17 +307,95 @@ int main(int argc, char *argv[]){
       tag="V07-04-11";
       break;
 
-    case FASTSIMTEST:
-      shortname="fastsimtest";
+    case T1TTTT_1950_700to950:
+      shortname="t1tttt_1950_700to950";
       name="SMS-T1tttt_mGluino-1950_mLSP-700to950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
       tag="V07-04-12";
       isSignal = true;
       break;
-
-    default:
-      name="dummy";
-      path = "/store/group/snt/run2_25ns/";
+    case T1TTTT_1100_1to775:
+      shortname="t1tttt_1100_1to775";
+      name="SMS-T1tttt_mGluino-1100_mLSP-1to775_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-12";
+      isSignal=1;
       break;
+    case T1TTTT_1175_950:
+      shortname="t1tttt_1175_950";
+      name="SMS-T1tttt_mGluino-1175_mLSP-950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-12";
+      isSignal=1;
+      break;
+    case T1TTTT_1275_900to975:
+      shortname="t1tttt_1275_900to975";
+      name="SMS-T1tttt_mGluino-1275_mLSP-900to975_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-12";
+      isSignal=1;
+      break;
+    case T1TTTT_1300_1to1075:
+      shortname="t1tttt_1300_1to1075";
+      name="SMS-T1tttt_mGluino-1300_mLSP-1to1075_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-12";
+      isSignal=1;
+      break;
+    case T1TTTT_1300to1325_700to1100:
+      shortname="t1tttt_1300to1325_700to1100";
+      name="SMS-T1tttt_mGluino-1300to1325_mLSP-700to1100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-12";
+      isSignal=1;
+      break;
+    case T1TTTT_1350to1375_50to1025:
+      shortname="t1tttt_1350to1375_50to1025";
+      name="SMS-T1tttt_mGluino-1350to1375_mLSP-50to1025_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-12";
+      isSignal=1;
+      break;
+    case T1TTTT_1500to1525_50to1125:
+      shortname="t1tttt_1500to1525_50to1125";
+      name="SMS-T1tttt_mGluino-1500to1525_mLSP-50to1125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-12";
+      isSignal=1;
+      break;
+    case T1TTTT_1800to1850_1to1450:
+      shortname="t1tttt_1800to1850_1to1450";
+      name="SMS-T1tttt_mGluino-1800to1850_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-12";
+      isSignal=1;
+      break;
+  case T1TTTT_1950_700to950:
+      shortname="t1tttt_1950_700to950";
+      name="SMS-T1tttt_mGluino-1950_mLSP-700to950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      tag="V07-04-12";
+      isSignal=1;
+      break;
+  case T1TTTT_625_275to375:
+    shortname="t1tttt_625_275to375";
+    name="SMS-T1tttt_mGluino-625_mLSP-275to375_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+    tag="V07-04-12";
+    isSignal=1;
+    break;
+  case T1TTTT_625to650_200to400:
+    shortname="t1tttt_625to650_200to400";
+    name="SMS-T1tttt_mGluino-625to650_mLSP-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+    tag="V07-04-12";
+    isSignal=1;
+    break;
+  case T1TTTT_650to675_250to425:
+    shortname="t1tttt_650to675_250to425";
+    name="SMS-T1tttt_mGluino-650to675_mLSP-250to425_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+    tag="V07-04-12";
+    isSignal=1;
+    break;
+  case T1TTTT_700to750_200to500:
+    shortname="t1tttt_700to750_200to500";
+    name="SMS-T1tttt_mGluino-700to750_mLSP-200to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+    tag="V07-04-12";
+    isSignal=1;
+    break;
+
+  default:
+    name="dummy";
+    path = "/store/group/snt/run2_25ns/";
+    break;
 
   }
 
@@ -363,28 +441,56 @@ int main(int argc, char *argv[]){
   jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt");
   jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt");
 
+  //JEC files -- 25 ns FASTSIM
+  std::vector<std::string> jetcorr_filenames_25ns_FASTSIM_pfL1L2L3;
+  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("Fastsim15_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("Fastsim15_L2Relative_AK4PFchs.txt"); 
+  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("Fastsim15_L3Absolute_AK4PFchs.txt"); 
+
   //JECs
   std::vector<std::string> filenames;
-  if ( isData) filenames = jetcorr_filenames_25ns_DATA_pfL1L2L3; 
-  if (!isData) filenames = jetcorr_filenames_25ns_MC_pfL1L2L3;
+  if ( isData)  filenames = jetcorr_filenames_25ns_DATA_pfL1L2L3; 
+  if (!isData)  filenames = jetcorr_filenames_25ns_MC_pfL1L2L3;
+  if (isSignal) filenames = jetcorr_filenames_25ns_FASTSIM_pfL1L2L3;
+
   FactorizedJetCorrector *jetCorrAG;
   jetCorrAG = makeJetCorrector(filenames);
 
   //Histograms for cross-section calculation
-  TH1F* cs = new TH1F("cs","cs", 1, 0, 1);
-  cs->Sumw2();
-
-  //Floats for other cross-section errors
-  float cs_scale_up = 0;
-  float cs_scale_dn = 0;
-  float cs_pdf[102] = { 0 }; 
+  struct csErr_info_t { TH1F* cs; float cs_scale_up; float cs_scale_dn; float cs_pdf[102]; TH1F* results; int nEntries; int mGluino; int mLSP;}; 
+  vector <csErr_info_t> csErr_info_v; 
 
   //Event Loop
   for(unsigned int eventAG = 0; eventAG < nEvents; eventAG++){
-
+ 
     //Get Event Content
     cms3.GetEntry(eventAG);
     nEventsTotal++;
+
+    //See if mass point exists already
+    int idx = -1;
+    if (isSignal){
+      int mGluino = tas::sparm_values().at(0);
+      int mLSP = tas::sparm_values().at(1);
+      for (unsigned int i = 0; i < csErr_info_v.size(); i++){
+        if (mGluino == csErr_info_v[i].mGluino && mLSP == csErr_info_v[i].mLSP){ idx = i; break; }
+      }
+      if (idx < 0){
+        csErr_info_t csErr; 
+        csErr.cs = new TH1F(Form("cs_%i_%i", mGluino, mLSP), Form("cs_%i_%i", mGluino, mLSP), 1, 0, 1);
+        csErr.cs->Sumw2(); 
+        csErr.cs_scale_up = 0;
+        csErr.cs_scale_dn = 0;
+        for (int i = 0; i < 102; i++) csErr.cs_pdf[i] = 0; 
+        csErr.results = new TH1F(Form("csErr_%i_%i", mGluino, mLSP), Form("csErr_%i_%i", mGluino, mLSP), 106, 0, 106); 
+        csErr.results->Sumw2(); 
+        csErr.nEntries = 0; 
+        csErr.mGluino = mGluino; 
+        csErr.mLSP = mLSP; 
+        idx = csErr_info_v.size(); 
+        csErr_info_v.push_back(csErr); 
+      } 
+    }
 
     //If data, check good run list
     if (tas::evt_isRealData() && !goodrun(tas::evt_run(), tas::evt_lumiBlock())) continue; 
@@ -396,36 +502,44 @@ int main(int argc, char *argv[]){
 
     //c-s error variables
     if (isSignal){
-      cs->Fill(0.5, csErr.cs_scale_no);  
-      cs_scale_up += csErr.cs_scale_up;
-      cs_scale_dn += csErr.cs_scale_dn;
-      for (unsigned int i = 0; i < 102; i++) cs_pdf[i] += csErr.cs_pdf[i];
+      csErr_info_v[idx].nEntries++; 
+      csErr_info_v[idx].cs->Fill(0.5, csErr.cs_scale_no);  
+      csErr_info_v[idx].cs_scale_up += csErr.cs_scale_up;
+      csErr_info_v[idx].cs_scale_dn += csErr.cs_scale_dn;
+      for (unsigned int i = 0; i < 102; i++) csErr_info_v[idx].cs_pdf[i] += csErr.cs_pdf[i];
     }
 
   }//event loop 
 
-  TH1F *h_csErr = new TH1F("csErr", "csErr", 7, 0, 7); 
-
   if (isSignal){
-    //c-s value
-    float cs_int = cs->Integral();
-    float cs_value = 1000*cs_int/cs->GetEntries();
-   
-    //c-s PDF error
-    TH1F* cs_pdf_hist = new TH1F("cs_pdf_hist", "cs_pdf_hist", 10000, 0, 1000); 
-    for (int i = 0; i < 100; i++){
-      cs_pdf_hist->Fill( 1000*cs_pdf[i]/cs->GetEntries() ); 
-    }
-    float cs_pdf_error = cs_pdf_hist->GetRMS(); 
+    for (unsigned int j = 0; j < csErr_info_v.size(); j++){
+      //c-s value
+      //float cs_int = csErr_info_v[j].cs->Integral();
+      //float cs_value = 1000*cs_int; 
+     
+      //c-s PDF error
+      //TH1F* cs_pdf_hist = new TH1F("cs_pdf_hist", "cs_pdf_hist", 10000, 0, 1000); 
+      //for (int i = 0; i < 100; i++){
+      //  cs_pdf_hist->Fill( 1000*csErr_info_v[j].cs_pdf[i]/csErr_info_v[j].cs->GetEntries() ); 
+      //}
+      //float cs_pdf_error = cs_pdf_hist->GetRMS(); 
 
-    //c-s error results
-    h_csErr->Fill(0.5, cs_value                         ); 
-    h_csErr->Fill(1.5, 100*cs->GetBinError(1)/cs_int    );  
-    h_csErr->Fill(2.5, 100*(cs_scale_dn - cs_int)/cs_int);
-    h_csErr->Fill(3.5,-100*(cs_scale_up - cs_int)/cs_int);
-    h_csErr->Fill(4.5, 100*cs_pdf_error/cs_value        ); 
-    h_csErr->Fill(5.5,-100*(cs_pdf[100] - cs_int)/cs_int);
-    h_csErr->Fill(6.5, 100*(cs_pdf[101] - cs_int)/cs_int);
+      //c-s error results
+      csErr_info_v[j].results->SetBinContent(1, csErr_info_v[j].nEntries);
+      csErr_info_v[j].results->SetBinContent(2, csErr_info_v[j].cs->Integral()); 
+      csErr_info_v[j].results->SetBinError(2, csErr_info_v[j].cs->GetBinError(1)); 
+      csErr_info_v[j].results->SetBinContent(3, csErr_info_v[j].cs_scale_up); 
+      csErr_info_v[j].results->SetBinContent(4, csErr_info_v[j].cs_scale_dn); 
+      for (unsigned int i = 5; i <= 106; i++) csErr_info_v[j].results->SetBinContent(i, csErr_info_v[j].cs_pdf[i-5]);
+
+      //csErr_info_v[j].results->Fill(1.5, 100*csErr_info_v[j].cs->GetBinError(1)/cs_int    );
+      //csErr_info_v[j].results->Fill(2.5, 100*(csErr_info_v[j].cs_scale_dn - cs_int)/cs_int);
+      //csErr_info_v[j].results->Fill(3.5,-100*(csErr_info_v[j].cs_scale_up - cs_int)/cs_int);
+      //csErr_info_v[j].results->Fill(4.5, 100*cs_pdf_error/cs_value                        ); 
+      //csErr_info_v[j].results->Fill(5.5,-100*(csErr_info_v[j].cs_pdf[100] - cs_int)/cs_int);
+      //csErr_info_v[j].results->Fill(6.5, 100*(csErr_info_v[j].cs_pdf[101] - cs_int)/cs_int);
+      //csErr_info_v[j].results->Fill(9.5, csErr_info_v[j].nEntries                         );
+    }
   }
 
   //Delete Chain
@@ -434,7 +548,9 @@ int main(int argc, char *argv[]){
   //Open the baby file again
   TFile* BabyFile = new TFile(Form("%s_%i.root", shortname.c_str(), file), "UPDATE");
   BabyFile->cd();
-  h_csErr->Write(); 
+  for (unsigned int j = 0; j < csErr_info_v.size(); j++){
+    csErr_info_v[j].results->Write(); 
+  }
 
   return 0;
 
