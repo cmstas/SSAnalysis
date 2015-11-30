@@ -970,7 +970,12 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
          btagprob_err_heavy_UP += (-eff * abserr_UP)/(1 - eff * weight_cent);
          btagprob_err_heavy_DN += (-eff * abserr_DN)/(1 - eff * weight_cent);
        }
-    }
+     }
+     if (verbose) {
+       cout << Form("proc jet pt, eta, isBtagged, mcFlav = %f, %f, %i, %i",jet_pt,jet_eta,jet_results.first.at(i).isBtag(),flavor) << endl;
+       cout << Form("eff, SF = %f %f",eff,weight_cent) << endl;
+       cout << Form("partial SF is %f",btagprob_data / btagprob_mc) << endl;
+     }
   }
   weight_btagsf = btagprob_data / btagprob_mc;
   weight_btagsf_UP = weight_btagsf + (sqrt(pow(btagprob_err_heavy_UP,2) + pow(btagprob_err_light_UP,2)) * weight_btagsf);
