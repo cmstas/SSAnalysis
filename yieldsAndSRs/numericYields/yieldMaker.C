@@ -2,7 +2,7 @@
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "../../classFiles/v5.03-fs/SS.h"
+#include "../../classFiles/v5.04/SS.h"
 #include "../../CORE/SSSelections.h"
 #include "../../software/tableMaker/CTable.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
@@ -87,8 +87,10 @@ void getyields(){
   TChain *t6ttww_600_chain = new TChain("t","t6ttww_600"); 
   TChain *t5qqqqww_1200_chain = new TChain("t","t5qqqqww_1200"); 
   TChain *t5qqqqww_deg_chain = new TChain("t","t5qqqqww_deg"); 
+
   //signals fast sim
   TChain *fs_t1tttt_1500_50_chain = new TChain("t","fs_t1tttt_m1500_m50_chain"); 
+  TChain *fs_t1tttt_1100_1_chain  = new TChain("t","fs_t1tttt_m1100_m1_chain" );
 
   // //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
@@ -166,7 +168,8 @@ void getyields(){
   t5qqqqww_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWWDeg_1000_315_300.root"   , tag.c_str()));
 
   //signals fast sim
-  fs_t1tttt_1500_50_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1500to1525_50to1125.root"   , tag.c_str()));
+  //fs_t1tttt_1500_50_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1500to1525_50to1125.root"   , tag.c_str()));
+  fs_t1tttt_1100_1_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1100_1to775.root", tag.c_str()));
 
   //Get yields
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
@@ -215,6 +218,7 @@ void getyields(){
   pair<yields_t, plots_t> results_t5qqqqww_deg  = run(t5qqqqww_deg_chain, 0, 0, 0, 0, 1);
 
   pair<yields_t, plots_t> results_fs_t1tttt_1500_50       = run(fs_t1tttt_1500_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_1       = run(fs_t1tttt_1100_1_chain, 0, 0, 0, 0, 1);
 
   yields_t& ttbar    = results_ttbar.first;
   yields_t& ttbar_ff = results_ttbar_ff.first;
@@ -1120,7 +1124,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       if (isFastSimSignal) {
 	bool isTheRightSample = true;
-	for (unsigned int isp=0;isp<so::sparms().size();isp++) {
+	for (unsigned int isp=0;isp<ss::sparms().size();isp++) {
 	  if (fabs(ss::sparms()[isp]-mysparms[isp])>0.1) isTheRightSample = false;
 	}
 	if (!isTheRightSample) continue;
