@@ -86,21 +86,21 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
   //Make Jet Energy Uncertainties
   JetCorrectionUncertainty *jecUnc = 0;
-  if ( isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_Uncertainty_AK4PFchs.txt"); 
-  if (!isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_MC_Uncertainty_AK4PFchs.txt"); 
+  if ( isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_Uncertainty_AK4PFchs.txt"); 
+  if (!isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_Uncertainty_AK4PFchs.txt"); 
 
   //Set up jet corrs
   vector <std::string> files;
   //fixme switch to MC when it's not data
-  std::string L1file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt";
-  std::string L2file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2Relative_AK4PFchs.txt";
-  std::string L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt";
-  std::string L2L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt";
+  std::string L1file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt";
+  std::string L2file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt";
+  std::string L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt";
+  std::string L2L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt";
   if (isData==false) {
-    L1file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt";
-    L2file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt";
-    L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt";
-    L2L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L2L3Residual_AK4PFchs.txt";
+    L1file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_L1FastJet_AK4PFchs.txt";
+    L2file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_L2Relative_AK4PFchs.txt";
+    L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_L3Absolute_AK4PFchs.txt";
+    L2L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_L2L3Residual_AK4PFchs.txt";
   }
   files.push_back(L1file);
   files.push_back(L2file);
