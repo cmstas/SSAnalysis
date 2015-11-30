@@ -1120,7 +1120,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       if (isFastSimSignal) {
 	bool isTheRightSample = true;
-	for (unsigned int isp=0;isp<ss::sparms().size();isp++) {
+	for (unsigned int isp=0;isp<so::sparms().size();isp++) {
 	  if (fabs(ss::sparms()[isp]-mysparms[isp])>0.1) isTheRightSample = false;
 	}
 	if (!isTheRightSample) continue;
@@ -1137,8 +1137,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (isWZ) weight*=getWZSF();
 
       if (isFastSimSignal) {
-	//fixme temporary for bug in scale1fb
-	weight = weight*0.0001348/ss::scale1fb();
 	//trigger efficiency
 	weight *= FastSimTriggerEfficiency(ss::ht(), ss::lep1_p4().pt(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_id());
       }

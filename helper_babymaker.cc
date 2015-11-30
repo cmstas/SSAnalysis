@@ -9,7 +9,7 @@ using namespace tas;
 const bool applyBtagSFs = true;
 
 //Main functions
-void babyMaker::MakeBabyNtuple(const char* output_name){
+void babyMaker::MakeBabyNtuple(const char* output_name, bool isFastsim){
 
   //Create Baby
   BabyFile = new TFile(Form("%s/%s.root", path.Data(), output_name), "RECREATE");
@@ -271,7 +271,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
     reader_fastsim_DN = new BTagCalibrationReader(calib_fs, BTagEntry::OP_MEDIUM, "fastsim", "down");    // sys down
 
     // get btag efficiencies
-    TFile* f_btag_eff;
+    TFile* f_btag_eff = 0;
     if (!isFastsim) f_btag_eff = new TFile("btagsf/btageff__ttbar_powheg_pythia8_25ns.root");
     if ( isFastsim) f_btag_eff = new TFile("CORE/Tools/btagsf/data/run2_fastsim/btageff__SMS-T1bbbb-T1qqqq_fastsim.root");
     TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");

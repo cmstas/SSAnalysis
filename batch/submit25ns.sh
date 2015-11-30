@@ -39,6 +39,7 @@ sed -i "s/cgeorge/$USER/" condorExecutable.sh
 isSignal=0 
 
 FASTSIM="T1TTTT_1950_700to950 T1TTTT_1100_1to775 T1TTTT_1175_950 T1TTTT_1275_900to975 T1TTTT_1300_1to1075 T1TTTT_1300to1325_700to1100 T1TTTT_1350to1375_50to1025 T1TTTT_1500to1525_50to1125 T1TTTT_1800to1850_1to1450 T1TTTT_625_275to375 T1TTTT_625to650_200to400 T1TTTT_650to675_250to425 T1TTTT_700to750_200to500" 
+for ((i = 1; i < 31; i++)); do FASTSIM+=" FASTSIM$i" ; done
 
 #Then submit jobs
 nIter=0
@@ -312,6 +313,11 @@ do
     name="SMS-T1tttt_mGluino-1800to1850_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10009
+  elif [ $sname == "FASTSIM1" ] 
+  then
+    name="SMS-T1tttt_mGluino-1100to1125_mLSP-700to900_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10010
   elif [ $sname == "T1TTTT_625_275to375" ] 
   then
     name="SMS-T1tttt_mGluino-625_mLSP-275to375_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
@@ -332,6 +338,151 @@ do
     name="SMS-T1tttt_mGluino-700to750_mLSP-200to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10014 
+  elif [ $sname == "FASTSIM2" ] 
+  then
+    name="SMS-T1tttt_mGluino-1150_mLSP-1to800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10015 
+  elif [ $sname == "FASTSIM3" ] 
+  then
+    name="SMS-T1tttt_mGluino-1150to1175_mLSP-750to925_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10016 
+  elif [ $sname == "FASTSIM4" ] 
+  then
+    name="SMS-T1tttt_mGluino-1200_mLSP-1to825_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10017 
+  elif [ $sname == "FASTSIM5" ] 
+  then
+    name="SMS-T1tttt_mGluino-1200to1225_mLSP-800to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10018 
+  elif [ $sname == "FASTSIM6" ] 
+  then
+    name="SMS-T1tttt_mGluino-1250to1275_mLSP-700to1050_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10019 
+  elif [ $sname == "FASTSIM7" ] 
+  then
+    name="SMS-T1tttt_mGluino-1325to1350_mLSP-1to1125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10020 
+  elif [ $sname == "FASTSIM8" ] 
+  then
+    name="SMS-T1tttt_mGluino-1400_mLSP-1to1175_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10021 
+  elif [ $sname == "FASTSIM9" ] 
+  then
+    name="SMS-T1tttt_mGluino-1400to1425_mLSP-50to1100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10022 
+  elif [ $sname == "FASTSIM10" ] 
+  then
+    name="SMS-T1tttt_mGluino-1425to1450_mLSP-1to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10023 
+  elif [ $sname == "FASTSIM11" ] 
+  then
+    name="SMS-T1tttt_mGluino-1450to1475_mLSP-50to1075_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10024 
+  elif [ $sname == "FASTSIM12" ] 
+  then
+    name="SMS-T1tttt_mGluino-1475to1500_mLSP-1to1250_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10025 
+  elif [ $sname == "FASTSIM13" ] 
+  then
+    name="SMS-T1tttt_mGluino-1525to1550_mLSP-1to1300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10026 
+  elif [ $sname == "FASTSIM14" ] 
+  then
+    name="SMS-T1tttt_mGluino-1600to1650_mLSP-1to1350_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10027 
+  elif [ $sname == "FASTSIM15" ] 
+  then
+    name="SMS-T1tttt_mGluino-1650to1700_mLSP-1to1400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10028 
+  elif [ $sname == "FASTSIM16" ] 
+  then
+    name="SMS-T1tttt_mGluino-1700to1750_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10029 
+  elif [ $sname == "FASTSIM17" ] 
+  then
+    name="SMS-T1tttt_mGluino-1750_mLSP-50to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10030
+  elif [ $sname == "FASTSIM18" ] 
+  then
+    name="SMS-T1tttt_mGluino-1850to1900_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10031 
+  elif [ $sname == "FASTSIM19" ] 
+  then
+    name="SMS-T1tttt_mGluino-1900to1950_mLSP-0to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10032 
+  elif [ $sname == "FASTSIM20" ] 
+  then
+    name="SMS-T1tttt_mGluino-600_mLSP-250to325_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10033 
+  elif [ $sname == "FASTSIM21" ] 
+  then
+    name="SMS-T1tttt_mGluino-675_mLSP-325to450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10034 
+  elif [ $sname == "FASTSIM22" ] 
+  then
+    name="SMS-T1tttt_mGluino-700_mLSP-1to450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10035 
+  elif [ $sname == "FASTSIM23" ] 
+  then
+    name="SMS-T1tttt_mGluino-750to775_mLSP-350to525_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10036 
+  elif [ $sname == "FASTSIM24" ] 
+  then
+    name="SMS-T1tttt_mGluino-775_mLSP-475to550_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10037 
+  elif [ $sname == "FASTSIM25" ] 
+  then
+    name="SMS-T1tttt_mGluino-800to825_mLSP-1to575_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10038 
+  elif [ $sname == "FASTSIM26" ] 
+  then
+    name="SMS-T1tttt_mGluino-825to850_mLSP-200to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10039 
+  elif [ $sname == "FASTSIM27" ] 
+  then
+    name="SMS-T1tttt_mGluino-850to875_mLSP-450to625_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10040 
+  elif [ $sname == "FASTSIM28" ] 
+  then
+    name="SMS-T1tttt_mGluino-875to900_mLSP-1to650_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10041 
+  elif [ $sname == "FASTSIM29" ] 
+  then
+    name="SMS-T1tttt_mGluino-950to975_mLSP-350to725_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10042 
+  elif [ $sname == "FASTSIM30" ] 
+  then
+    name="SMS-T1tttt_mGluino-975_mLSP-600to750_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10043 
 
   #default
   else 
