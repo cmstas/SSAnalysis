@@ -540,7 +540,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   is_real_data = tas::evt_isRealData();
 
   //These c-s errors
-  if (!is_real_data) {
+  if (!is_real_data && tas::genweights().size()>110) {
     babyErrorStruct.cs_scale_no += tas::genweights().at(0);
     babyErrorStruct.cs_scale_up += tas::genweights().at(4);
     babyErrorStruct.cs_scale_dn += tas::genweights().at(8);
