@@ -2,7 +2,7 @@
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "../../classFiles/v5.03/SS.h"
+#include "../../classFiles/v5.03-fs/SS.h"
 #include "../../CORE/SSSelections.h"
 #include "../../software/tableMaker/CTable.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
@@ -77,7 +77,7 @@ void getyields(){
   TChain *data_chain    = new TChain("t","data"); 
   TChain *flips_chain   = new TChain("t","flips"); 
   TChain *fakes_chain   = new TChain("t","fakes");
-  //signals
+  //signals full sim
   TChain *t1tttt_1200_chain = new TChain("t","t1tttt_1200"); 
   TChain *t1tttt_1500_chain = new TChain("t","t1tttt_1500"); 
   TChain *t2ttww_600_chain = new TChain("t","t6ttww_600"); 
@@ -87,8 +87,10 @@ void getyields(){
   TChain *t6ttww_600_chain = new TChain("t","t6ttww_600"); 
   TChain *t5qqqqww_1200_chain = new TChain("t","t5qqqqww_1200"); 
   TChain *t5qqqqww_deg_chain = new TChain("t","t5qqqqww_deg"); 
+  //signals fast sim
+  TChain *fs_t1tttt_1500_50_chain = new TChain("t","fs_t1tttt_m1500_m50_chain"); 
 
-  //Fill chains
+  // //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP1.root"     , tag.c_str()));
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP2.root"     , tag.c_str()));
@@ -153,6 +155,7 @@ void getyields(){
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"            , tag.c_str()));
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"                  , tag.c_str()));
 
+  //signals fullsim
   t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root"              , tag.c_str()));
   t1tttt_1500_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1500.root"              , tag.c_str()));
   t5tttt_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5ttttDeg_1000_300_285_280.root", tag.c_str()));
@@ -161,6 +164,9 @@ void getyields(){
   t6ttww_600_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_600_425_50.root"         , tag.c_str()));
   t5qqqqww_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWW_1200_1000_800.root"   , tag.c_str()));
   t5qqqqww_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWWDeg_1000_315_300.root"   , tag.c_str()));
+
+  //signals fast sim
+  fs_t1tttt_1500_50_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1500to1525_50to1125.root"   , tag.c_str()));
 
   //Get yields
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
@@ -203,10 +209,12 @@ void getyields(){
   pair<yields_t, plots_t> results_t1tttt_1500 = run(t1tttt_1500_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_t5tttt_deg  = run(t5tttt_deg_chain , 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_t5qqqq_1200 = run(t5qqqq_1200_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t6ttww_650 = run(t6ttww_650_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t6ttww_600 = run(t6ttww_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t6ttww_650  = run(t6ttww_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t6ttww_600  = run(t6ttww_600_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_t5qqqqww_1200 = run(t5qqqqww_1200_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t5qqqqww_deg = run(t5qqqqww_deg_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t5qqqqww_deg  = run(t5qqqqww_deg_chain, 0, 0, 0, 0, 1);
+
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_50       = run(fs_t1tttt_1500_50_chain, 0, 0, 0, 0, 1);
 
   yields_t& ttbar    = results_ttbar.first;
   yields_t& ttbar_ff = results_ttbar_ff.first;
@@ -230,6 +238,7 @@ void getyields(){
   yields_t& flips    = results_flips.first;
   yields_t& fakes    = results_fakes.first;
   yields_t& fakes_is = results_fakes_is.first;
+  yields_t& fakes_mc = results_fakes_mc.first;
 
   yields_t& t1tttt_1200    = results_t1tttt_1200.first;
   yields_t& t6ttww_650    = results_t6ttww_650.first;
@@ -251,6 +260,7 @@ void getyields(){
                    ("total"    , total.EE    , total.EM    , total.MM    , total.TOTAL  )
                    ("data"     , data.EE     , data.EM     , data.MM     , data.TOTAL   )
                    ("fakes_is" , fakes_is.EE , fakes_is.EM , fakes_is.MM , fakes_is.TOTAL  )
+                   ("fakes_mc" , fakes_mc.EE , fakes_mc.EM , fakes_mc.MM , fakes_mc.TOTAL  )
                    ("ttbar"    , ttbar.EE    , ttbar.EM    , ttbar.MM    , ttbar.TOTAL  )
                    ("ttbar_fa" , ttbar_fa.EE , ttbar_fa.EM , ttbar_fa.MM , ttbar_fa.TOTAL)
                    ("ttbar_fl" , ttbar_fl.EE , ttbar_fl.EM , ttbar_fl.MM , ttbar_fl.TOTAL)
@@ -936,6 +946,9 @@ void getyields(){
 //doFakes = 1 for QCD, 2 for inSitu
 pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFakes, int exclude, bool isSignal, bool isGamma){
 
+  TString chainTitle = chain->GetTitle();
+  const char* chainTitleCh = chainTitle.Data();
+
   yields_t y_result;
   plots_t  p_result;
 
@@ -945,47 +958,47 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   y_result.MM    = 0;
   y_result.TOTAL = 0;
 
-  p_result.h_dxy          = new TH1F(Form("dxy_%s"         , chain->GetTitle()) , Form("dxy_%s"         , chain->GetTitle()), 20, 0   ,  0.02); p_result.h_dxy         ->Sumw2();
-  p_result.h_dz           = new TH1F(Form("dz_%s"          , chain->GetTitle()) , Form("dz_%s"          , chain->GetTitle()), 20, 0   , 0.03); p_result.h_dz          ->Sumw2();
-  p_result.h_sip3d        = new TH1F(Form("sip3d_%s"       , chain->GetTitle()) , Form("sip3d_%s"       , chain->GetTitle()), 20, 0   ,   5); p_result.h_sip3d       ->Sumw2();
-  p_result.h_mva          = new TH1F(Form("mva_%s"         , chain->GetTitle()) , Form("mva_%s"         , chain->GetTitle()), 20, 0   , 1.5); p_result.h_mva         ->Sumw2();
-  p_result.h_ht           = new TH1F(Form("ht_%s"          , chain->GetTitle()) , Form("ht_%s"          , chain->GetTitle()), 10, 0   , 500); p_result.h_ht          ->Sumw2();
-  p_result.h_met          = new TH1F(Form("met_%s"         , chain->GetTitle()) , Form("met_%s"         , chain->GetTitle()), 10, 0   , 200); p_result.h_met         ->Sumw2();
-  p_result.h_mll          = new TH1F(Form("mll_%s"         , chain->GetTitle()) , Form("mll_%s"         , chain->GetTitle()), 10, 0   , 200); p_result.h_mll         ->Sumw2();
-  p_result.h_mtmin        = new TH1F(Form("mtmin_%s"       , chain->GetTitle()) , Form("mtmin_%s"       , chain->GetTitle()), 10, 0   , 200); p_result.h_mtmin       ->Sumw2();
-  p_result.h_njets        = new TH1F(Form("njets_%s"       , chain->GetTitle()) , Form("njets_%s"       , chain->GetTitle()), 8 , 0   , 8);   p_result.h_njets       ->Sumw2();
-  p_result.h_nleps        = new TH1F(Form("nleps_%s"        , chain->GetTitle()) , Form("nleps_%s"        , chain->GetTitle()) , 6   , 0 , 6);    p_result.h_nleps        ->Sumw2();
-  p_result.h_nbtags       = new TH1F(Form("nbtags_%s"      , chain->GetTitle()) , Form("nbtags_%s"      , chain->GetTitle()), 6 , 0   , 6);   p_result.h_nbtags      ->Sumw2();
-  p_result.h_l1pt         = new TH1F(Form("l1pt_%s"        , chain->GetTitle()) , Form("l1pt_%s"        , chain->GetTitle()), 10, 0   , 150); p_result.h_l1pt        ->Sumw2();
-  p_result.h_l2pt         = new TH1F(Form("l2pt_%s"        , chain->GetTitle()) , Form("l2pt_%s"        , chain->GetTitle()), 10, 0   , 100); p_result.h_l2pt        ->Sumw2();
-  p_result.h_l1eta        = new TH1F(Form("l1eta_%s"      , chain->GetTitle()) , Form("l1eta_%s"        , chain->GetTitle()), 24, -2.5, 2.5); p_result.h_l1eta       ->Sumw2();
-  p_result.h_l2eta        = new TH1F(Form("l2eta_%s"      , chain->GetTitle()) , Form("l2eta_%s"        , chain->GetTitle()), 24, -2.5, 2.5); p_result.h_l2eta       ->Sumw2();
-  p_result.SRHH.EE        = new TH1F(Form("SRHH_EE_%s"     , chain->GetTitle()) , Form("SRHH_EE_%s"     , chain->GetTitle()), 32, 1   , 33);  p_result.SRHH.EE       ->Sumw2();
-  p_result.SRHH.EM        = new TH1F(Form("SRHH_EM_%s"     , chain->GetTitle()) , Form("SRHH_EM_%s"     , chain->GetTitle()), 32, 1   , 33);  p_result.SRHH.EM       ->Sumw2();
-  p_result.SRHH.MM        = new TH1F(Form("SRHH_MM_%s"     , chain->GetTitle()) , Form("SRHH_MM_%s"     , chain->GetTitle()), 32, 1   , 33);  p_result.SRHH.MM       ->Sumw2();
-  p_result.SRHH.TOTAL     = new TH1F(Form("SRHH_TOTAL_%s"  , chain->GetTitle()) , Form("SRHH_TOTAL_%s"  , chain->GetTitle()), 32, 1   , 33);  p_result.SRHH.TOTAL    ->Sumw2();
-  p_result.SRHL.EE        = new TH1F(Form("SRHL_EE_%s"     , chain->GetTitle()) , Form("SRHL_EE_%s"     , chain->GetTitle()), 26, 1   , 27);  p_result.SRHL.EE       ->Sumw2();
-  p_result.SRHL.EM        = new TH1F(Form("SRHL_EM_%s"     , chain->GetTitle()) , Form("SRHL_EM_%s"     , chain->GetTitle()), 26, 1   , 27);  p_result.SRHL.EM       ->Sumw2();
-  p_result.SRHL.MM        = new TH1F(Form("SRHL_MM_%s"     , chain->GetTitle()) , Form("SRHL_MM_%s"     , chain->GetTitle()), 26, 1   , 27);  p_result.SRHL.MM       ->Sumw2();
-  p_result.SRHL.TOTAL     = new TH1F(Form("SRHL_TOTAL_%s"  , chain->GetTitle()) , Form("SRHL_TOTAL_%s"  , chain->GetTitle()), 26, 1   , 27);  p_result.SRHL.TOTAL    ->Sumw2();
-  p_result.SRLL.EE        = new TH1F(Form("SRLL_EE_%s"     , chain->GetTitle()) , Form("SRLL_EE_%s"     , chain->GetTitle()), 8 , 1   , 9);   p_result.SRLL.EE       ->Sumw2();
-  p_result.SRLL.EM        = new TH1F(Form("SRLL_EM_%s"     , chain->GetTitle()) , Form("SRLL_EM_%s"     , chain->GetTitle()), 8 , 1   , 9);   p_result.SRLL.EM       ->Sumw2();
-  p_result.SRLL.MM        = new TH1F(Form("SRLL_MM_%s"     , chain->GetTitle()) , Form("SRLL_MM_%s"     , chain->GetTitle()), 8 , 1   , 9);   p_result.SRLL.MM       ->Sumw2();
-  p_result.SRLL.TOTAL     = new TH1F(Form("SRLL_TOTAL_%s"  , chain->GetTitle()) , Form("SRLL_TOTAL_%s"  , chain->GetTitle()), 8 , 1   , 9);   p_result.SRLL.TOTAL    ->Sumw2();
-  p_result.h_type         = new TH1F(Form("type_%s"        , chain->GetTitle()) , Form("type_%s"        , chain->GetTitle()), 4 , 0   , 4);   p_result.h_type        ->Sumw2();
-  p_result.h_lep1_miniIso = new TH1F(Form("lep1_miniIso_%s", chain->GetTitle()) , Form("lep1_miniIso_%s", chain->GetTitle()), 30, 0   , 0.2); p_result.h_lep1_miniIso->Sumw2();
-  p_result.h_lep2_miniIso = new TH1F(Form("lep2_miniIso_%s", chain->GetTitle()) , Form("lep2_miniIso_%s", chain->GetTitle()), 30, 0   , 0.2); p_result.h_lep2_miniIso->Sumw2();
-  p_result.h_lep1_ptRatio = new TH1F(Form("lep1_ptRatio_%s", chain->GetTitle()) , Form("lep1_ptRatio_%s", chain->GetTitle()), 30, 0   , 1.5); p_result.h_lep1_ptRatio->Sumw2();
-  p_result.h_lep2_ptRatio = new TH1F(Form("lep2_ptRatio_%s", chain->GetTitle()) , Form("lep2_ptRatio_%s", chain->GetTitle()), 30, 0   , 1.5); p_result.h_lep2_ptRatio->Sumw2();
-  p_result.h_lep1_ptRel   = new TH1F(Form("lep1_ptRel_%s"  , chain->GetTitle()) , Form("lep1_ptRel_%s"  , chain->GetTitle()), 25, 0   , 50);  p_result.h_lep1_ptRel  ->Sumw2();
-  p_result.h_lep2_ptRel   = new TH1F(Form("lep2_ptRel_%s"  , chain->GetTitle()) , Form("lep2_ptRel_%s"  , chain->GetTitle()), 25, 0   , 50);  p_result.h_lep2_ptRel  ->Sumw2();
+  p_result.h_dxy          = new TH1F(Form("dxy_%s"         , chainTitleCh) , Form("dxy_%s"         , chainTitleCh), 20, 0   ,  0.02); p_result.h_dxy         ->Sumw2();
+  p_result.h_dz           = new TH1F(Form("dz_%s"          , chainTitleCh) , Form("dz_%s"          , chainTitleCh), 20, 0   , 0.03); p_result.h_dz          ->Sumw2();
+  p_result.h_sip3d        = new TH1F(Form("sip3d_%s"       , chainTitleCh) , Form("sip3d_%s"       , chainTitleCh), 20, 0   ,   5); p_result.h_sip3d       ->Sumw2();
+  p_result.h_mva          = new TH1F(Form("mva_%s"         , chainTitleCh) , Form("mva_%s"         , chainTitleCh), 20, 0   , 1.5); p_result.h_mva         ->Sumw2();
+  p_result.h_ht           = new TH1F(Form("ht_%s"          , chainTitleCh) , Form("ht_%s"          , chainTitleCh), 10, 0   , 500); p_result.h_ht          ->Sumw2();
+  p_result.h_met          = new TH1F(Form("met_%s"         , chainTitleCh) , Form("met_%s"         , chainTitleCh), 10, 0   , 200); p_result.h_met         ->Sumw2();
+  p_result.h_mll          = new TH1F(Form("mll_%s"         , chainTitleCh) , Form("mll_%s"         , chainTitleCh), 10, 0   , 200); p_result.h_mll         ->Sumw2();
+  p_result.h_mtmin        = new TH1F(Form("mtmin_%s"       , chainTitleCh) , Form("mtmin_%s"       , chainTitleCh), 10, 0   , 200); p_result.h_mtmin       ->Sumw2();
+  p_result.h_njets        = new TH1F(Form("njets_%s"       , chainTitleCh) , Form("njets_%s"       , chainTitleCh), 8 , 0   , 8);   p_result.h_njets       ->Sumw2();
+  p_result.h_nleps        = new TH1F(Form("nleps_%s"        , chainTitleCh) , Form("nleps_%s"        , chainTitleCh) , 6   , 0 , 6);    p_result.h_nleps        ->Sumw2();
+  p_result.h_nbtags       = new TH1F(Form("nbtags_%s"      , chainTitleCh) , Form("nbtags_%s"      , chainTitleCh), 6 , 0   , 6);   p_result.h_nbtags      ->Sumw2();
+  p_result.h_l1pt         = new TH1F(Form("l1pt_%s"        , chainTitleCh) , Form("l1pt_%s"        , chainTitleCh), 10, 0   , 150); p_result.h_l1pt        ->Sumw2();
+  p_result.h_l2pt         = new TH1F(Form("l2pt_%s"        , chainTitleCh) , Form("l2pt_%s"        , chainTitleCh), 10, 0   , 100); p_result.h_l2pt        ->Sumw2();
+  p_result.h_l1eta        = new TH1F(Form("l1eta_%s"      , chainTitleCh) , Form("l1eta_%s"        , chainTitleCh), 24, -2.5, 2.5); p_result.h_l1eta       ->Sumw2();
+  p_result.h_l2eta        = new TH1F(Form("l2eta_%s"      , chainTitleCh) , Form("l2eta_%s"        , chainTitleCh), 24, -2.5, 2.5); p_result.h_l2eta       ->Sumw2();
+  p_result.SRHH.EE        = new TH1F(Form("SRHH_EE_%s"     , chainTitleCh) , Form("SRHH_EE_%s"     , chainTitleCh), 32, 1   , 33);  p_result.SRHH.EE       ->Sumw2();
+  p_result.SRHH.EM        = new TH1F(Form("SRHH_EM_%s"     , chainTitleCh) , Form("SRHH_EM_%s"     , chainTitleCh), 32, 1   , 33);  p_result.SRHH.EM       ->Sumw2();
+  p_result.SRHH.MM        = new TH1F(Form("SRHH_MM_%s"     , chainTitleCh) , Form("SRHH_MM_%s"     , chainTitleCh), 32, 1   , 33);  p_result.SRHH.MM       ->Sumw2();
+  p_result.SRHH.TOTAL     = new TH1F(Form("SRHH_TOTAL_%s"  , chainTitleCh) , Form("SRHH_TOTAL_%s"  , chainTitleCh), 32, 1   , 33);  p_result.SRHH.TOTAL    ->Sumw2();
+  p_result.SRHL.EE        = new TH1F(Form("SRHL_EE_%s"     , chainTitleCh) , Form("SRHL_EE_%s"     , chainTitleCh), 26, 1   , 27);  p_result.SRHL.EE       ->Sumw2();
+  p_result.SRHL.EM        = new TH1F(Form("SRHL_EM_%s"     , chainTitleCh) , Form("SRHL_EM_%s"     , chainTitleCh), 26, 1   , 27);  p_result.SRHL.EM       ->Sumw2();
+  p_result.SRHL.MM        = new TH1F(Form("SRHL_MM_%s"     , chainTitleCh) , Form("SRHL_MM_%s"     , chainTitleCh), 26, 1   , 27);  p_result.SRHL.MM       ->Sumw2();
+  p_result.SRHL.TOTAL     = new TH1F(Form("SRHL_TOTAL_%s"  , chainTitleCh) , Form("SRHL_TOTAL_%s"  , chainTitleCh), 26, 1   , 27);  p_result.SRHL.TOTAL    ->Sumw2();
+  p_result.SRLL.EE        = new TH1F(Form("SRLL_EE_%s"     , chainTitleCh) , Form("SRLL_EE_%s"     , chainTitleCh), 8 , 1   , 9);   p_result.SRLL.EE       ->Sumw2();
+  p_result.SRLL.EM        = new TH1F(Form("SRLL_EM_%s"     , chainTitleCh) , Form("SRLL_EM_%s"     , chainTitleCh), 8 , 1   , 9);   p_result.SRLL.EM       ->Sumw2();
+  p_result.SRLL.MM        = new TH1F(Form("SRLL_MM_%s"     , chainTitleCh) , Form("SRLL_MM_%s"     , chainTitleCh), 8 , 1   , 9);   p_result.SRLL.MM       ->Sumw2();
+  p_result.SRLL.TOTAL     = new TH1F(Form("SRLL_TOTAL_%s"  , chainTitleCh) , Form("SRLL_TOTAL_%s"  , chainTitleCh), 8 , 1   , 9);   p_result.SRLL.TOTAL    ->Sumw2();
+  p_result.h_type         = new TH1F(Form("type_%s"        , chainTitleCh) , Form("type_%s"        , chainTitleCh), 4 , 0   , 4);   p_result.h_type        ->Sumw2();
+  p_result.h_lep1_miniIso = new TH1F(Form("lep1_miniIso_%s", chainTitleCh) , Form("lep1_miniIso_%s", chainTitleCh), 30, 0   , 0.2); p_result.h_lep1_miniIso->Sumw2();
+  p_result.h_lep2_miniIso = new TH1F(Form("lep2_miniIso_%s", chainTitleCh) , Form("lep2_miniIso_%s", chainTitleCh), 30, 0   , 0.2); p_result.h_lep2_miniIso->Sumw2();
+  p_result.h_lep1_ptRatio = new TH1F(Form("lep1_ptRatio_%s", chainTitleCh) , Form("lep1_ptRatio_%s", chainTitleCh), 30, 0   , 1.5); p_result.h_lep1_ptRatio->Sumw2();
+  p_result.h_lep2_ptRatio = new TH1F(Form("lep2_ptRatio_%s", chainTitleCh) , Form("lep2_ptRatio_%s", chainTitleCh), 30, 0   , 1.5); p_result.h_lep2_ptRatio->Sumw2();
+  p_result.h_lep1_ptRel   = new TH1F(Form("lep1_ptRel_%s"  , chainTitleCh) , Form("lep1_ptRel_%s"  , chainTitleCh), 25, 0   , 50);  p_result.h_lep1_ptRel  ->Sumw2();
+  p_result.h_lep2_ptRel   = new TH1F(Form("lep2_ptRel_%s"  , chainTitleCh) , Form("lep2_ptRel_%s"  , chainTitleCh), 25, 0   , 50);  p_result.h_lep2_ptRel  ->Sumw2();
 
   //For FR variations
   plots_t p_fake_alt_up;
   if (doFakes == 1) {
-    p_fake_alt_up.SRHH.TOTAL        = new TH1F(Form("SRHH_FR_TOTAL_%s"      , chain->GetTitle()) , Form("SRHH_FR_TOTAL_%s"      , chain->GetTitle()) , 32  , 1 , 33); p_fake_alt_up.SRHH.TOTAL->Sumw2();
-    p_fake_alt_up.SRHL.TOTAL        = new TH1F(Form("SRHL_FR_TOTAL_%s"      , chain->GetTitle()) , Form("SRHL_FR_TOTAL_%s"      , chain->GetTitle()) , 26  , 1 , 27); p_fake_alt_up.SRHL.TOTAL->Sumw2();
-    p_fake_alt_up.SRLL.TOTAL        = new TH1F(Form("SRLL_FR_TOTAL_%s"      , chain->GetTitle()) , Form("SRLL_FR_TOTAL_%s"      , chain->GetTitle()) , 8   , 1 , 9);  p_fake_alt_up.SRLL.TOTAL->Sumw2();
+    p_fake_alt_up.SRHH.TOTAL        = new TH1F(Form("SRHH_FR_TOTAL_%s"      , chainTitleCh) , Form("SRHH_FR_TOTAL_%s"      , chainTitleCh) , 32  , 1 , 33); p_fake_alt_up.SRHH.TOTAL->Sumw2();
+    p_fake_alt_up.SRHL.TOTAL        = new TH1F(Form("SRHL_FR_TOTAL_%s"      , chainTitleCh) , Form("SRHL_FR_TOTAL_%s"      , chainTitleCh) , 26  , 1 , 27); p_fake_alt_up.SRHL.TOTAL->Sumw2();
+    p_fake_alt_up.SRLL.TOTAL        = new TH1F(Form("SRLL_FR_TOTAL_%s"      , chainTitleCh) , Form("SRLL_FR_TOTAL_%s"      , chainTitleCh) , 8   , 1 , 9);  p_fake_alt_up.SRLL.TOTAL->Sumw2();
   } else {
     p_fake_alt_up.SRHH.TOTAL    = 0;
     p_fake_alt_up.SRHL.TOTAL    = 0;
@@ -996,12 +1009,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   plots_t p_jes_alt_up;
   plots_t p_jes_alt_dn;
   if (doFakes == 1 || isData==0) {
-    p_jes_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_JES_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_JES_UP_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_jes_alt_up.SRHH.TOTAL->Sumw2();
-    p_jes_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_JES_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_JES_UP_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_jes_alt_up.SRHL.TOTAL->Sumw2();
-    p_jes_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_JES_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_JES_UP_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_jes_alt_up.SRLL.TOTAL->Sumw2();
-    p_jes_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_JES_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_JES_DN_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_jes_alt_dn.SRHH.TOTAL->Sumw2();
-    p_jes_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_JES_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_JES_DN_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_jes_alt_dn.SRHL.TOTAL->Sumw2();
-    p_jes_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_JES_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_JES_DN_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_jes_alt_dn.SRLL.TOTAL->Sumw2();
+    p_jes_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_JES_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHH_JES_UP_TOTAL_%s"   , chainTitleCh) , 32  , 1 , 33);p_jes_alt_up.SRHH.TOTAL->Sumw2();
+    p_jes_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_JES_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHL_JES_UP_TOTAL_%s"   , chainTitleCh) , 26  , 1 , 27);p_jes_alt_up.SRHL.TOTAL->Sumw2();
+    p_jes_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_JES_UP_TOTAL_%s"   , chainTitleCh) , Form("SRLL_JES_UP_TOTAL_%s"   , chainTitleCh) , 8   , 1 , 9); p_jes_alt_up.SRLL.TOTAL->Sumw2();
+    p_jes_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_JES_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHH_JES_DN_TOTAL_%s"   , chainTitleCh) , 32  , 1 , 33);p_jes_alt_dn.SRHH.TOTAL->Sumw2();
+    p_jes_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_JES_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHL_JES_DN_TOTAL_%s"   , chainTitleCh) , 26  , 1 , 27);p_jes_alt_dn.SRHL.TOTAL->Sumw2();
+    p_jes_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_JES_DN_TOTAL_%s"   , chainTitleCh) , Form("SRLL_JES_DN_TOTAL_%s"   , chainTitleCh) , 8   , 1 , 9); p_jes_alt_dn.SRLL.TOTAL->Sumw2();
   } else {
     p_jes_alt_up.SRHH.TOTAL     = 0;
     p_jes_alt_up.SRHL.TOTAL     = 0;
@@ -1015,12 +1028,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   plots_t p_btagSF_alt_up;
   plots_t p_btagSF_alt_dn;
   if (isData==0){
-    p_btagSF_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), Form("SRHH_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), 32, 1, 33);
-    p_btagSF_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), Form("SRHL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), 26, 1, 27);
-    p_btagSF_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()), Form("SRLL_BTAGSF_UP_TOTAL_%s", chain->GetTitle()),  8, 1,  9);
-    p_btagSF_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), Form("SRHH_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), 32, 1, 33);
-    p_btagSF_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), Form("SRHL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), 26, 1, 27);
-    p_btagSF_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()), Form("SRLL_BTAGSF_DN_TOTAL_%s", chain->GetTitle()),  8, 1,  9);
+    p_btagSF_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_UP_TOTAL_%s", chainTitleCh), Form("SRHH_BTAGSF_UP_TOTAL_%s", chainTitleCh), 32, 1, 33);
+    p_btagSF_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_UP_TOTAL_%s", chainTitleCh), Form("SRHL_BTAGSF_UP_TOTAL_%s", chainTitleCh), 26, 1, 27);
+    p_btagSF_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_UP_TOTAL_%s", chainTitleCh), Form("SRLL_BTAGSF_UP_TOTAL_%s", chainTitleCh),  8, 1,  9);
+    p_btagSF_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_DN_TOTAL_%s", chainTitleCh), Form("SRHH_BTAGSF_DN_TOTAL_%s", chainTitleCh), 32, 1, 33);
+    p_btagSF_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_DN_TOTAL_%s", chainTitleCh), Form("SRHL_BTAGSF_DN_TOTAL_%s", chainTitleCh), 26, 1, 27);
+    p_btagSF_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_DN_TOTAL_%s", chainTitleCh), Form("SRLL_BTAGSF_DN_TOTAL_%s", chainTitleCh),  8, 1,  9);
     p_btagSF_alt_up.SRHH.TOTAL->Sumw2();
     p_btagSF_alt_up.SRHL.TOTAL->Sumw2();
     p_btagSF_alt_up.SRLL.TOTAL->Sumw2();
@@ -1042,12 +1055,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   plots_t p_pu_alt_up;
   plots_t p_pu_alt_dn;
   if (doFakes == 1 || isData==0) {
-    p_pu_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_PU_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_PU_UP_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_pu_alt_up.SRHH.TOTAL->Sumw2();
-    p_pu_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_PU_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_PU_UP_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_pu_alt_up.SRHL.TOTAL->Sumw2();
-    p_pu_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_PU_UP_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_PU_UP_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_pu_alt_up.SRLL.TOTAL->Sumw2();
-    p_pu_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_PU_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHH_PU_DN_TOTAL_%s"   , chain->GetTitle()) , 32  , 1 , 33);p_pu_alt_dn.SRHH.TOTAL->Sumw2();
-    p_pu_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_PU_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRHL_PU_DN_TOTAL_%s"   , chain->GetTitle()) , 26  , 1 , 27);p_pu_alt_dn.SRHL.TOTAL->Sumw2();
-    p_pu_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_PU_DN_TOTAL_%s"   , chain->GetTitle()) , Form("SRLL_PU_DN_TOTAL_%s"   , chain->GetTitle()) , 8   , 1 , 9); p_pu_alt_dn.SRLL.TOTAL->Sumw2();
+    p_pu_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_PU_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHH_PU_UP_TOTAL_%s"   , chainTitleCh) , 32  , 1 , 33);p_pu_alt_up.SRHH.TOTAL->Sumw2();
+    p_pu_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_PU_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHL_PU_UP_TOTAL_%s"   , chainTitleCh) , 26  , 1 , 27);p_pu_alt_up.SRHL.TOTAL->Sumw2();
+    p_pu_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_PU_UP_TOTAL_%s"   , chainTitleCh) , Form("SRLL_PU_UP_TOTAL_%s"   , chainTitleCh) , 8   , 1 , 9); p_pu_alt_up.SRLL.TOTAL->Sumw2();
+    p_pu_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_PU_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHH_PU_DN_TOTAL_%s"   , chainTitleCh) , 32  , 1 , 33);p_pu_alt_dn.SRHH.TOTAL->Sumw2();
+    p_pu_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_PU_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHL_PU_DN_TOTAL_%s"   , chainTitleCh) , 26  , 1 , 27);p_pu_alt_dn.SRHL.TOTAL->Sumw2();
+    p_pu_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_PU_DN_TOTAL_%s"   , chainTitleCh) , Form("SRLL_PU_DN_TOTAL_%s"   , chainTitleCh) , 8   , 1 , 9); p_pu_alt_dn.SRLL.TOTAL->Sumw2();
   } else {
     p_pu_alt_up.SRHH.TOTAL     = 0;
     p_pu_alt_up.SRHL.TOTAL     = 0;
@@ -1057,7 +1070,21 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     p_pu_alt_dn.SRLL.TOTAL     = 0;
   }
 
-  bool isWZ = (TString(chain->GetTitle())=="wz");
+  bool isWZ = (chainTitle=="wz");
+
+  bool isFastSimSignal = false;
+  vector<float> mysparms;
+  if (isSignal && chainTitle.Contains("fs_")) {
+    isFastSimSignal = true;
+    TObjArray *tx = chainTitle.Tokenize("_");
+    for (int i = 0; i < tx->GetEntries(); i++) {
+      if (((TObjString *)(tx->At(i)))->String().BeginsWith("m")) {
+	float asparm = ((TObjString *)(tx->At(i)))->String().ReplaceAll("m","").Atof();
+	//std::cout << asparm << std::endl;
+	mysparms.push_back(asparm);
+      }
+    }
+  }
 
   //nEvents in chain
   unsigned int nEventsTotal = 0;
@@ -1091,14 +1118,30 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         else if (!isUnblindRun(ss::run())) continue;
       }
 
+      if (isFastSimSignal) {
+	bool isTheRightSample = true;
+	for (unsigned int isp=0;isp<ss::sparms().size();isp++) {
+	  if (fabs(ss::sparms()[isp]-mysparms[isp])>0.1) isTheRightSample = false;
+	}
+	if (!isTheRightSample) continue;
+	cout << ss::sparms()[0] << " " << ss::sparms()[1] << " " << mysparms[0]  << " " << mysparms[1] << endl;	
+      }
+
       //Reject not triggered
-      if (!ss::fired_trigger()) continue;
+      if (!ss::fired_trigger() && !isFastSimSignal) continue;
       if (!ss::passedFilterList()) continue;
       if (!ss::passes_met_filters()) continue;
 
       float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
       weight*=scaleLumi;
       if (isWZ) weight*=getWZSF();
+
+      if (isFastSimSignal) {
+	//fixme temporary for bug in scale1fb
+	weight = weight*0.0001348/ss::scale1fb();
+	//trigger efficiency
+	weight *= FastSimTriggerEfficiency(ss::ht(), ss::lep1_p4().pt(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_id());
+      }
 
       //apply lepton scale factors
       if (ss::is_real_data()==0 && isWZ==0) {
@@ -1304,6 +1347,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       //if (categ == 0 && SR == 10) avi = 1;
       //if (categ == 1 && SR ==  1) avi = 1;
       //if (categ == 1 && SR ==  2) avi = 1;
+      //if (categ == 1 && SR ==  4) avi = 1;
       //if (categ == 1 && SR ==  7) avi = 1;
       //if (categ == 1 && SR ==  8) avi = 1;
       //if (avi == 0) continue; 
@@ -1372,8 +1416,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_lep1_ptRatio->Fill(ptratio_1                                                                               , weight);
       p_result.h_lep2_ptRatio->Fill(ptratio_2                                                                               , weight);
       // if (!isData && !doFakes && !doFlips && SR == 1 && cat == "HH"){
-      //   // cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
-
+      // cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
+      // 	cout << ss::filename() << " " << ss::filenumber() << endl;
       //   cout << Form("%1d\t%9d\t%llu\t%+2d\t%5.1f\t%+2d\t%5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\t%5.1f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%6.4f\n", ss::run(), ss::lumi(), ss::event(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR,ss::trueNumInt()[0],getTruePUw(ss::trueNumInt()[0]),ss::weight_btagsf(),triggerScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::ht()),leptonScaleFactor(ss::lep1_id(), ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht()),leptonScaleFactor(ss::lep2_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::ht()),ss::scale1fb()*lumiAG);
 
       // 	// cout << ss::lep1_p4().eta() << " " << ss::lep2_p4().eta() << " " << ss::lep1_p4().phi() << " " << ss::lep2_p4().phi() << " " << ss::lep3_p4().pt() << " " << ss::lep3_p4().eta() << " " << ss::lep3_p4().phi() << " " << ss::lep3_id() << " " << ss::lep4_p4().pt() << " " << ss::lep4_p4().eta() << " " << ss::lep4_p4().phi() << " " << ss::lep4_id() << " " << ss::lep3_passes_id() << " " << ss::lep4_passes_id() << endl;
@@ -1485,7 +1529,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
     for (int kr = 0; kr<3;kr++) {
 
-      string name = chain->GetTitle();
+      string name = chainTitle.Data();
 
       TFile *fileOut = TFile::Open(Form("../../cards/%s/%s_histos_%s_%.1fifb.root",tag.c_str(),name.c_str(),kinRegs[kr].Data(),lumiAG),"RECREATE");
       TH1F* plot = 0;
@@ -1503,10 +1547,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	  assert(0);
 	}
 	TH1F* h_mc = (TH1F*) file_fakes_mc->Get("sr");
+	float scaleFact = 1.2;//from T+L control region
 	for (int bin=1;bin<=plot->GetNbinsX();++bin) {
 	  if (plot->GetBinContent(bin)<=2E-6) {
-	    cout << "warning: plot " << plot->GetName() << " has zero stat unc in bin " << bin << " value=" << plot->GetBinContent(bin) << "; setting to MC pred=" << h_mc->GetBinContent(bin) << endl;
-	    plot->SetBinError(bin,h_mc->GetBinContent(bin));
+	    cout << "warning: plot " << plot->GetName() << " has zero stat unc in bin " << bin << " value=" << plot->GetBinContent(bin) << "; setting to MC pred=" << scaleFact*h_mc->GetBinContent(bin) << endl;
+	    plot->SetBinError(bin,scaleFact*h_mc->GetBinContent(bin));
 	  } 
 	}
 	file_fakes_mc->Close();

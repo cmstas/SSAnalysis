@@ -14,6 +14,7 @@ float getWZSF() { return 1.22; }
 #include "flip_rates.h"
 #include "fake_rates.h"
 #include "lepton_sf.h"
+#include "FastSimTriggerEff.h"
 
 float fakeRate(int id, float pt, float eta, float ht) { 
   if (ht>300.) {

@@ -29,7 +29,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   if (runSync) { 
     TChain *chain_synctest = new TChain("Events");
     chain_synctest->Add("./phys14_sync_CMS3.root");
-    l->ScanChain(chain_synctest,"synctest","",0,"SyncTest",-1, eventsToDebug, expt);
+    l->ScanChain(chain_synctest,"synctest","",0,"SyncTest",-1, eventsToDebug);
     return 0;
   }
 

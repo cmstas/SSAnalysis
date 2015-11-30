@@ -28,7 +28,7 @@
 using namespace tas;
 using namespace std;
 
-int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData, TString whatTest, int nEvents, vector<int> evtToDebug, bool expt_){
+int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData, TString whatTest, int nEvents, vector<int> evtToDebug){
 
   //Don't change these parameters by hand, please set them from main.cc
   makebaby       = 0;
@@ -40,7 +40,6 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   bool makeSSskim     = 0;
   bool makeQCDskim    = 0;
   bool makeSyncTest   = 0;
-  bool expt = 0;
   if (whatTest=="QCDtest") makeQCDtest    = 1;
   if (whatTest=="DYtest" ) makeDYtest     = 1;
   if (whatTest=="WZtest" ) makeWZtest     = 1;
@@ -48,7 +47,6 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   if (whatTest=="QCDskim") makeQCDskim    = 1;
   if (whatTest=="SyncTest")makeSyncTest   = 1;
   if (whatTest=="MakeBaby"){makebaby   = 1; makehist = 0;}
-  if (expt_ == true) expt = 1;
 
   //Status Message
   cout << "Processing " << prefix << " " << suffix << " " << whatTest << endl;
@@ -70,7 +68,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   babyMaker* bm=0;
   if (makebaby){
     bm = new babyMaker(debug);
-    bm->MakeBabyNtuple( Form( "%s%s", prefix.Data(), suffix.Data() ), expt);
+    bm->MakeBabyNtuple( Form( "%s%s", prefix.Data(), suffix.Data() ));
   }
   
   //Instiantiate Hists, if making hists
@@ -84,25 +82,25 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
   createAndInitMVA("./CORE", true);
 
   //Add good run list
-  set_goodrun_file("goodRunList/goldenJson1p56fb.txt");
+  set_goodrun_file("goodRunList/final2015_golden_25ns2p11fb.txt");
 
   //Make Jet Energy Uncertainties
   JetCorrectionUncertainty *jecUnc = 0;
-  if ( isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_Uncertainty_AK4PFchs.txt"); 
-  if (!isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_MC_Uncertainty_AK4PFchs.txt"); 
+  if ( isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_Uncertainty_AK4PFchs.txt"); 
+  if (!isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_Uncertainty_AK4PFchs.txt"); 
 
   //Set up jet corrs
   vector <std::string> files;
   //fixme switch to MC when it's not data
-  std::string L1file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt";
-  std::string L2file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2Relative_AK4PFchs.txt";
-  std::string L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt";
-  std::string L2L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt";
+  std::string L1file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_L1FastJet_AK4PFchs.txt";
+  std::string L2file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_L2Relative_AK4PFchs.txt";
+  std::string L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_L3Absolute_AK4PFchs.txt";
+  std::string L2L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_L2L3Residual_AK4PFchs.txt";
   if (isData==false) {
-    L1file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt";
-    L2file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt";
-    L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt";
-    L2L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L2L3Residual_AK4PFchs.txt";
+    L1file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_L1FastJet_AK4PFchs.txt";
+    L2file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_L2Relative_AK4PFchs.txt";
+    L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_L3Absolute_AK4PFchs.txt";
+    L2L3file = "CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_L2L3Residual_AK4PFchs.txt";
   }
   files.push_back(L1file);
   files.push_back(L2file);
@@ -206,7 +204,7 @@ int looper::ScanChain(TChain* chain, TString prefix, TString suffix, bool isData
 
       //If making baby, fill it
       if (makebaby){	
-        bm->ProcessBaby(currentFile->GetTitle(), jetCorr, jecUnc, expt);
+        bm->ProcessBaby(currentFile->GetTitle(), jetCorr, jecUnc);
         continue;
       }
 
