@@ -525,12 +525,6 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   //Debug mode
   if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return babyErrorStruct;
 
-  //These c-s errors
-  babyErrorStruct.cs_scale_no += tas::genweights().at(0);
-  babyErrorStruct.cs_scale_up += tas::genweights().at(4);
-  babyErrorStruct.cs_scale_dn += tas::genweights().at(8);
-  for (int i = 0; i < 102; i++) babyErrorStruct.cs_pdf[i] = tas::genweights().at(i+9);  
-
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return babyErrorStruct;
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return babyErrorStruct;
@@ -544,6 +538,14 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   lumi = tas::evt_lumiBlock();
   run = tas::evt_run();
   is_real_data = tas::evt_isRealData();
+
+  //These c-s errors
+  if (!is_real_data) {
+    babyErrorStruct.cs_scale_no += tas::genweights().at(0);
+    babyErrorStruct.cs_scale_up += tas::genweights().at(4);
+    babyErrorStruct.cs_scale_dn += tas::genweights().at(8);
+    for (int i = 0; i < 102; i++) babyErrorStruct.cs_pdf[i] = tas::genweights().at(i+9);  
+  }
 
   //If data, check filter list
   if (is_real_data){
