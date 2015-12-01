@@ -6,7 +6,7 @@ float getLumiUnblind() { return getLumi(); }
 
 bool isUnblindRun(int run) { return true; }
 
-TString getTag() { return "v5.03"; }
+TString getTag() { return "v5.04"; }
 
 float getWZSF() { return 1.22; }
 

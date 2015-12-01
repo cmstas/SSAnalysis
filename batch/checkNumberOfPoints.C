@@ -1,6 +1,6 @@
 {
 
-  TFile *file = new TFile("ALLFASTSIM.root"); 
+  TFile *file = new TFile("FASTSIM.root"); 
   for (auto&& keyAsObj : *file->GetListOfKeys()){
    auto key = (TKey*) keyAsObj;
    TH1F *hist = (TH1F*)key->ReadObj(); 

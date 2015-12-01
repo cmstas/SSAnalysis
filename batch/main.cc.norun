@@ -310,87 +310,218 @@ int main(int argc, char *argv[]){
     case T1TTTT_1950_700to950:
       shortname="t1tttt_1950_700to950";
       name="SMS-T1tttt_mGluino-1950_mLSP-700to950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-12";
       isSignal = true;
       break;
     case T1TTTT_1100_1to775:
       shortname="t1tttt_1100_1to775";
       name="SMS-T1tttt_mGluino-1100_mLSP-1to775_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-12";
       isSignal=1;
       break;
     case T1TTTT_1175_950:
       shortname="t1tttt_1175_950";
       name="SMS-T1tttt_mGluino-1175_mLSP-950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-12";
       isSignal=1;
       break;
     case T1TTTT_1275_900to975:
       shortname="t1tttt_1275_900to975";
       name="SMS-T1tttt_mGluino-1275_mLSP-900to975_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-12";
       isSignal=1;
       break;
     case T1TTTT_1300_1to1075:
       shortname="t1tttt_1300_1to1075";
       name="SMS-T1tttt_mGluino-1300_mLSP-1to1075_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-12";
       isSignal=1;
       break;
     case T1TTTT_1300to1325_700to1100:
       shortname="t1tttt_1300to1325_700to1100";
       name="SMS-T1tttt_mGluino-1300to1325_mLSP-700to1100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-12";
       isSignal=1;
       break;
     case T1TTTT_1350to1375_50to1025:
       shortname="t1tttt_1350to1375_50to1025";
       name="SMS-T1tttt_mGluino-1350to1375_mLSP-50to1025_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-12";
       isSignal=1;
       break;
     case T1TTTT_1500to1525_50to1125:
       shortname="t1tttt_1500to1525_50to1125";
       name="SMS-T1tttt_mGluino-1500to1525_mLSP-50to1125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-12";
       isSignal=1;
       break;
     case T1TTTT_1800to1850_1to1450:
       shortname="t1tttt_1800to1850_1to1450";
       name="SMS-T1tttt_mGluino-1800to1850_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-12";
       isSignal=1;
       break;
-  case T1TTTT_1950_700to950:
-      shortname="t1tttt_1950_700to950";
-      name="SMS-T1tttt_mGluino-1950_mLSP-700to950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-12";
+    case T1TTTT_1100to1125_700to900: 
+      shortname="t1tttt_1100to1125_700to900";
+      name="SMS-T1tttt_mGluino-1100to1125_mLSP-700to900_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
       isSignal=1;
       break;
-  case T1TTTT_625_275to375:
-    shortname="t1tttt_625_275to375";
-    name="SMS-T1tttt_mGluino-625_mLSP-275to375_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-    tag="V07-04-12";
-    isSignal=1;
-    break;
-  case T1TTTT_625to650_200to400:
-    shortname="t1tttt_625to650_200to400";
-    name="SMS-T1tttt_mGluino-625to650_mLSP-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-    tag="V07-04-12";
-    isSignal=1;
-    break;
-  case T1TTTT_650to675_250to425:
-    shortname="t1tttt_650to675_250to425";
-    name="SMS-T1tttt_mGluino-650to675_mLSP-250to425_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-    tag="V07-04-12";
-    isSignal=1;
-    break;
-  case T1TTTT_700to750_200to500:
-    shortname="t1tttt_700to750_200to500";
-    name="SMS-T1tttt_mGluino-700to750_mLSP-200to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-    tag="V07-04-12";
-    isSignal=1;
-    break;
+    case T1TTTT_625_275to375:
+      shortname="t1tttt_625_275to375";
+      name="SMS-T1tttt_mGluino-625_mLSP-275to375_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_625to650_200to400:
+      shortname="t1tttt_625to650_200to400";
+      name="SMS-T1tttt_mGluino-625to650_mLSP-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_650to675_250to425:
+      shortname="t1tttt_650to675_250to425";
+      name="SMS-T1tttt_mGluino-650to675_mLSP-250to425_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_700to750_200to500:
+      shortname="t1tttt_700to750_200to500";
+      name="SMS-T1tttt_mGluino-700to750_mLSP-200to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1150_1to800:
+      shortname="t1tttt_1150_1to800";
+      name="SMS-T1tttt_mGluino-1150_mLSP-1to800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1150to1175_750to925:
+      shortname="t1tttt_1150to1175_750to925";
+      name="SMS-T1tttt_mGluino-1150to1175_mLSP-750to925_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1200_1to825:
+      shortname="t1tttt_1200_1to825";
+      name="SMS-T1tttt_mGluino-1200_mLSP-1to825_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1200to1225_800to1000:
+      shortname="t1tttt_1200to1225_800to1000";
+      name="SMS-T1tttt_mGluino-1200to1225_mLSP-800to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1250to1275_700to1050:
+      shortname="t1tttt_1250to1275_700to1050";
+      name="SMS-T1tttt_mGluino-1250to1275_mLSP-700to1050_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1325to1350_1to1125:
+      shortname="t1tttt_1325to1350_1to1125";
+      name="SMS-T1tttt_mGluino-1325to1350_mLSP-1to1125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1400_1to1175:
+      shortname="t1tttt_1400_1to1175";
+      name="SMS-T1tttt_mGluino-1400_mLSP-1to1175_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1400to1425_50to1100:
+      shortname="t1tttt_1400to1425_50to1100";
+      name="SMS-T1tttt_mGluino-1400to1425_mLSP-50to1100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1425to1450_1to1200:
+      shortname="t1tttt_1425to1450_1to1200";
+      name="SMS-T1tttt_mGluino-1425to1450_mLSP-1to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1450to1475_50to1075:
+      shortname="t1tttt_1450to1475_50to1075";
+      name="SMS-T1tttt_mGluino-1450to1475_mLSP-50to1075_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1475to1500_1to1250:
+      shortname="t1tttt_1475to1500_1to1250";
+      name="SMS-T1tttt_mGluino-1475to1500_mLSP-1to1250_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1525to1550_1to1300:  //bad
+      shortname="t1tttt_1525to1550_1to1300";
+      name="SMS-T1tttt_mGluino-1525to1550_mLSP-1to1300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1600to1650_1to1350:
+      shortname="t1tttt_1600to1650_1to1350";
+      name="SMS-T1tttt_mGluino-1600to1650_mLSP-1to1350_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1650to1700_1to1400:
+      shortname="t1tttt_1650to1700_1to1400";
+      name="SMS-T1tttt_mGluino-1650to1700_mLSP-1to1400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1700to1750_1to1450:
+      shortname="t1tttt_1700to1750_1to1450";
+      name="SMS-T1tttt_mGluino-1700to1750_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1750_50to1450:
+      shortname="t1tttt_1750_50to1450";
+      name="SMS-T1tttt_mGluino-1750_mLSP-50to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1850to1900_1to1450:
+      shortname="t1tttt_1850to1900_1to1450";
+      name="SMS-T1tttt_mGluino-1850to1900_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_1900to1950_0to1450:
+      shortname="t1tttt_1900to1950_0to1450";
+      name="SMS-T1tttt_mGluino-1900to1950_mLSP-0to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_600_250to325:
+      shortname="t1tttt_600_250to325";
+      name="SMS-T1tttt_mGluino-600_mLSP-250to325_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_675_325to450:
+      shortname="t1tttt_675_325to450";
+      name="SMS-T1tttt_mGluino-675_mLSP-325to450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_700_1to450:
+      shortname="t1tttt_700_1to450";
+      name="SMS-T1tttt_mGluino-700_mLSP-1to450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_750to775_350to525:
+      shortname="t1tttt_750to775_350to525";
+      name="SMS-T1tttt_mGluino-750to775_mLSP-350to525_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_775_475to550:
+      shortname="t1tttt_775_475to550";
+      name="SMS-T1tttt_mGluino-775_mLSP-475to550_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_800to825_1to575:
+      shortname="t1tttt_800to825_1to575";
+      name="SMS-T1tttt_mGluino-800to825_mLSP-1to575_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_825to850_200to600:
+      shortname="t1tttt_825to850_200to600";
+      name="SMS-T1tttt_mGluino-825to850_mLSP-200to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_850to875_450to625:
+      shortname="t1tttt_850to875_450to625";
+      name="SMS-T1tttt_mGluino-850to875_mLSP-450to625_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_875to900_1to650:
+      shortname="t1tttt_875to900_1to650";
+      name="SMS-T1tttt_mGluino-875to900_mLSP-1to650_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_950to975_350to725:
+      shortname="t1tttt_950to975_350to725";
+      name="SMS-T1tttt_mGluino-950to975_mLSP-350to725_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
+    case T1TTTT_975_600to750:
+      shortname="t1tttt_975_600to750";
+      name="SMS-T1tttt_mGluino-975_mLSP-600to750_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
 
   default:
     name="dummy";
@@ -400,11 +531,14 @@ int main(int argc, char *argv[]){
   }
 
   //Path for signal
-  if (isSignal == true) path="/store/group/snt/run2_fastsim"; 
+  if (isSignal == true){
+    path="/store/group/snt/run2_fastsim"; 
+    tag="V07-04-12";
+  }
   
   //Set up file and tree
   cout << "Using xrootd " << endl;
-  mylooper->MakeBabyNtuple(Form("%s%s", shortname.c_str(), suffix));
+  mylooper->MakeBabyNtuple(Form("%s%s", shortname.c_str(), suffix), isSignal);
   TFile *f;
   if (path.find("nfs") < path.length()) f = TFile::Open(Form("%s/%s/%s/%s", path.c_str(), name.c_str(), tag.c_str(), filename)); 
   else f = TFile::Open(Form("root://cmsxrootd.fnal.gov//%s/%s/%s/%s", path.c_str(), name.c_str(), tag.c_str(), filename)); 
@@ -422,8 +556,9 @@ int main(int argc, char *argv[]){
 
   //Make Jet Energy Uncertainties
   JetCorrectionUncertainty *jecUnc = 0;
-  if ( isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_Uncertainty_AK4PFchs.txt"); 
-  if (!isData) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_Uncertainty_AK4PFchs.txt"); 
+  if ( isData)  jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_DATA_Uncertainty_AK4PFchs.txt"); 
+  if (!isData)  jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV6_MC_Uncertainty_AK4PFchs.txt"); 
+  if (isSignal) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Fastsim15_Uncertainty_AK4PFchs.txt"); 
 
   //Init MVA
   createAndInitMVA("./CORE", true);
@@ -443,9 +578,9 @@ int main(int argc, char *argv[]){
 
   //JEC files -- 25 ns FASTSIM
   std::vector<std::string> jetcorr_filenames_25ns_FASTSIM_pfL1L2L3;
-  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("Fastsim15_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("Fastsim15_L2Relative_AK4PFchs.txt"); 
-  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("Fastsim15_L3Absolute_AK4PFchs.txt"); 
+  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Fastsim15_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Fastsim15_L2Relative_AK4PFchs.txt"); 
+  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Fastsim15_L3Absolute_AK4PFchs.txt"); 
 
   //JECs
   std::vector<std::string> filenames;

@@ -43,7 +43,7 @@ class babyMaker {
       verbose = debug;
       evt_cut = 0;
     }
-    void MakeBabyNtuple(const char* output_name);
+    void MakeBabyNtuple(const char* output_name, bool isFastsim);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
     csErr_t ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, int file = -1, bool isFastsim = 0);
@@ -87,6 +87,7 @@ class babyMaker {
     int lumi;
     int run;
     bool is_real_data;
+    bool is_fastsim; 
     float scale1fb;     
     float xsec;         
     float xsec_error;         
