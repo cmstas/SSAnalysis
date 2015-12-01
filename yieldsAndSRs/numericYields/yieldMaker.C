@@ -632,7 +632,7 @@ void getyields(){
   TChain *fs_t1tttt_975_600_chain   = new TChain("t","fs_t1tttt_m975_m600_chain"  );
   TChain *fs_t1tttt_975_625_chain   = new TChain("t","fs_t1tttt_m975_m625_chain"  );
 
-  // //Fill chains
+  //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP1.root"     , tag.c_str()));
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP2.root"     , tag.c_str()));
@@ -2770,11 +2770,16 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       }
 
       float weight_alt = weight;
-      float weight_btag_up_alt = weight*ss::weight_btagsf_UP()/ss::weight_btagsf();
-      float weight_btag_dn_alt = weight*ss::weight_btagsf_DN()/ss::weight_btagsf();
-
-      float weight_pu_up_alt = getTruePUw(ss::trueNumInt()[0])>0 ? weight*getTruePUwUp(ss::trueNumInt()[0])/getTruePUw(ss::trueNumInt()[0]) : weight;
-      float weight_pu_dn_alt = getTruePUw(ss::trueNumInt()[0])>0 ? weight*getTruePUwDn(ss::trueNumInt()[0])/getTruePUw(ss::trueNumInt()[0]) : weight;
+      float weight_btag_up_alt = weight;
+      float weight_btag_dn_alt = weight;
+      float weight_pu_up_alt = weight;
+      float weight_pu_dn_alt = weight;
+      if (ss::is_real_data()==0) {
+	weight_btag_up_alt = ss::weight_btagsf()>0 ? weight*ss::weight_btagsf_UP()/ss::weight_btagsf() : weight;
+	weight_btag_dn_alt = ss::weight_btagsf()>0 ? weight*ss::weight_btagsf_DN()/ss::weight_btagsf() : weight;
+	weight_pu_up_alt = getTruePUw(ss::trueNumInt()[0])>0 ? weight*getTruePUwUp(ss::trueNumInt()[0])/getTruePUw(ss::trueNumInt()[0]) : weight;
+	weight_pu_dn_alt = getTruePUw(ss::trueNumInt()[0])>0 ? weight*getTruePUwDn(ss::trueNumInt()[0])/getTruePUw(ss::trueNumInt()[0]) : weight;
+      }
 
       // if (doFakes!=1) continue;
       // if (ss::event()!=99054862) continue;
@@ -3038,9 +3043,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_lep2_ptRatio->Fill(ptratio_2                                                                               , weight);
       // if (!isData && !doFakes && !doFlips && SR == 1 && cat == "HH"){
       // cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
+      // cout << Form("%1d %9d %llu\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
       // 	cout << ss::filename() << " " << ss::filenumber() << endl;
-      //   cout << Form("%1d\t%9d\t%llu\t%+2d\t%5.1f\t%+2d\t%5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\t%5.1f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%6.4f\n", ss::run(), ss::lumi(), ss::event(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR,ss::trueNumInt()[0],getTruePUw(ss::trueNumInt()[0]),ss::weight_btagsf(),triggerScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::ht()),leptonScaleFactor(ss::lep1_id(), ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht()),leptonScaleFactor(ss::lep2_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::ht()),ss::scale1fb()*lumiAG);
-
+      // cout << Form("%1d\t%9d\t%llu\t%+2d\t%5.1f\t%+2d\t%5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\t%5.1f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%6.4f\n", ss::run(), ss::lumi(), ss::event(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR,ss::trueNumInt()[0],getTruePUw(ss::trueNumInt()[0]),ss::weight_btagsf(),triggerScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::ht()),leptonScaleFactor(ss::lep1_id(), ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht()),leptonScaleFactor(ss::lep2_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::ht()),ss::scale1fb()*lumiAG);
       // 	// cout << ss::lep1_p4().eta() << " " << ss::lep2_p4().eta() << " " << ss::lep1_p4().phi() << " " << ss::lep2_p4().phi() << " " << ss::lep3_p4().pt() << " " << ss::lep3_p4().eta() << " " << ss::lep3_p4().phi() << " " << ss::lep3_id() << " " << ss::lep4_p4().pt() << " " << ss::lep4_p4().eta() << " " << ss::lep4_p4().phi() << " " << ss::lep4_id() << " " << ss::lep3_passes_id() << " " << ss::lep4_passes_id() << endl;
       // 	// for (unsigned int i = 0; i < ss::btags().size(); i++) cout << ss::btags().at(i).eta() << ",";
       // 	// cout << endl;
