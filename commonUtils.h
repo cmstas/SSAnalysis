@@ -6,7 +6,7 @@ float getLumiUnblind() { return getLumi(); }
 
 bool isUnblindRun(int run) { return true; }
 
-TString getTag() { return "v5.04"; }
+TString getTag() { return "v5.05"; }
 
 float getWZSF() { return 1.22; }
 
@@ -14,7 +14,7 @@ float getWZSF() { return 1.22; }
 #include "flip_rates.h"
 #include "fake_rates.h"
 #include "lepton_sf.h"
-#include "FastSimTriggerEff.h"
+#include "lepton_sf_fastsim.h"
 
 float fakeRate(int id, float pt, float eta, float ht) { 
   if (ht>300.) {

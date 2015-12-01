@@ -59,7 +59,7 @@ for (unsigned int i = 0; i < files.size(); i++){
    string mGluino = title.substr(find+1, find2-find-1);
    string mLSP = title.substr(find2+1, find3-find2); 
   //cout << "  " << mGluino << " " <<  mLSP << endl;
-  //cout << "TChain *fs_t1tttt_" << mGluino << "_" << mLSP << "_chain = new TChain(\"t\",\"fs_t1tttt_m" << mGluino << "_m" << mLSP << "_chain\" );" << endl;
+  //cout << "TChain *fs_t1tttt_" << mGluino << "_" << mLSP << "_chain = new TChain(\"t\",\"fs_t1tttt_m" << mGluino << "_m" << mLSP << "\" );" << endl;
   //cout << Form("fs_t1tttt_%i_%i_chain->Add(Form(\"/nfs-7/userdata/ss2015/ssBabies/%%s-fs/%s\", tag.c_str()));", atoi(mGluino.c_str()), atoi(mLSP.c_str()), files[i].c_str()) << endl; 
    cout << Form("pair<yields_t, plots_t> results_fs_t1tttt_%s_%s = run(fs_t1tttt_%s_%s_chain, 0, 0, 0, 0, 1);", mGluino.c_str(), mLSP.c_str(), mGluino.c_str(), mLSP.c_str()) << endl; 
   }

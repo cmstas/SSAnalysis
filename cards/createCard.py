@@ -25,9 +25,13 @@ class Process:
         self.plot = myplot
         self.lumi  = "-"
         self.jes  = "-"
+        self.fs_lep_hh  = "-"
+        self.fs_lep_hl  = "-"
+        self.fs_lep_ll  = "-"
         self.lepeff  = "-"
         self.lephlt  = "-"
         self.hthlt  = "-"
+        self.bshlt  = "-"
         self.btag = "-"
         self.pu = "-"
         self.TTW = "-"
@@ -136,6 +140,18 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("jes","shape"))
     for process in processes: card.write("%-15s " % (process.jes))
     card.write("\n")
+    #nuisance fs_lep_hh
+    card.write("%-40s %-5s " % ("fs_lep_hh","lnN"))
+    for process in processes: card.write("%-15s " % (process.fs_lep_hh))
+    card.write("\n")
+    #nuisance fs_lep_hl
+    card.write("%-40s %-5s " % ("fs_lep_hl","lnN"))
+    for process in processes: card.write("%-15s " % (process.fs_lep_hl))
+    card.write("\n")
+    #nuisance fs_lep_ll
+    card.write("%-40s %-5s " % ("fs_lep_ll","lnN"))
+    for process in processes: card.write("%-15s " % (process.fs_lep_ll))
+    card.write("\n")
     #nuisance lepeff
     card.write("%-40s %-5s " % ("lepeff","lnN"))
     for process in processes: card.write("%-15s " % (process.lepeff))
@@ -147,6 +163,10 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     #nuisance hthlt
     card.write("%-40s %-5s " % ("hthlt","shape"))
     for process in processes: card.write("%-15s " % (process.hthlt))
+    card.write("\n")
+    #nuisance bshlt
+    card.write("%-40s %-5s " % ("bshlt","shape"))
+    for process in processes: card.write("%-15s " % (process.bshlt))
     card.write("\n")
     #nuisance btag
     card.write("%-40s %-5s " % ("btag","shape"))
@@ -254,6 +274,18 @@ def writeOneCard(dir, signal, kine, plot, output):
     #overwrite nuisances
     signal.lumi  = "1.12"
     signal.jes  = "1"
+    signal.fs_lep_hh  = "1"
+    signal.fs_lep_hl  = "1"
+    signal.fs_lep_ll  = "1"
+    if kine is "hihi": signal.fs_lep_hh  = "1.08"
+    if kine is "hilow": signal.fs_lep_hh  = "1.15"
+    if kine is "lowlow": signal.fs_lep_hh  = "1.20"
+    signal.lepeff  = "1.04"
+    signal.lephlt  = "1.02"
+    signal.hthlt  = "1"
+    signal.bshlt  = "1"
+    signal.btag = "1"
+    signal.pu = "1"
     TTW.TTW          = "1.13"
     TTW.lumi         = "1.12"
     TTW.ttw_pdf      = "1.04"
@@ -264,6 +296,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTW.lepeff  = "1.04"
     TTW.lephlt  = "1.02"
     TTW.hthlt  = "1"
+    TTW.bshlt  = "1"
     TTW.btag = "1"
     TTW.pu = "1"
     TTZH.TTZH          = "1.11"
@@ -276,6 +309,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTZH.lepeff  = "1.04"
     TTZH.lephlt  = "1.02"
     TTZH.hthlt  = "1"
+    TTZH.bshlt  = "1"
     TTZH.btag = "1"
     TTZH.pu = "1"
     WZ.WZ = "1.30"
@@ -289,6 +323,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     WW.lepeff  = "1.04"
     WW.lephlt  = "1.02"
     WW.hthlt  = "1"
+    WW.bshlt  = "1"
     WW.btag = "1"
     WW.pu = "1"
     XG.XG = "1.50"
@@ -297,6 +332,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     XG.lepeff  = "1.04"
     XG.lephlt  = "1.02"
     XG.hthlt  = "1"
+    XG.bshlt  = "1"
     XG.btag = "1"
     XG.pu = "1"
     rares.RARES = "1.30"
@@ -305,6 +341,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     rares.lepeff  = "1.04"
     rares.lephlt  = "1.02"
     rares.hthlt  = "1"
+    rares.bshlt  = "1"
     rares.btag = "1"
     rares.pu = "1"
     fakes.fakes = "1.30"
