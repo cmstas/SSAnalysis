@@ -76,82 +76,49 @@ if [ "$WHICH" == "1007" ]; then WHICH_SMALL="datadoublemuond_v4"; fi
 if [ "$WHICH" == "1008" ]; then WHICH_SMALL="datamuonegd_v4"; fi
 
 #signal
-if [ "$WHICH" == "10001" ]; then WHICH_SMALL="t1tttt_1950_700to950"; fi
-if [ "$WHICH" == "10002" ]; then WHICH_SMALL="t1tttt_1100_1to775"; fi
-if [ "$WHICH" == "10003" ]; then WHICH_SMALL="t1tttt_1175_950"; fi
-if [ "$WHICH" == "10004" ]; then WHICH_SMALL="t1tttt_1275_900to975"; fi
-if [ "$WHICH" == "10005" ]; then WHICH_SMALL="t1tttt_1300_1to1075"; fi
-if [ "$WHICH" == "10006" ]; then WHICH_SMALL="t1tttt_1300to1325_700to1100"; fi
-if [ "$WHICH" == "10007" ]; then WHICH_SMALL="t1tttt_1350to1375_50to1025"; fi
-if [ "$WHICH" == "10008" ]; then WHICH_SMALL="t1tttt_1500to1525_50to1125"; fi
-if [ "$WHICH" == "10009" ]; then WHICH_SMALL="t1tttt_1800to1850_1to1450"; fi
-if [ "$WHICH" == "10010" ]; then WHICH_SMALL="fastsim1"; fi
-if [ "$WHICH" == "10011" ]; then WHICH_SMALL="t1tttt_625_275to375"; fi
-if [ "$WHICH" == "10012" ]; then WHICH_SMALL="t1tttt_625to650_200to400"; fi
-if [ "$WHICH" == "10013" ]; then WHICH_SMALL="t1tttt_650to675_250to425"; fi
-if [ "$WHICH" == "10014" ]; then WHICH_SMALL="t1tttt_700to750_200to500"; fi
-if [ "$WHICH" == "10015" ]; then WHICH_SMALL="fastsim2"; fi
-if [ "$WHICH" == "10016" ]; then WHICH_SMALL="fastsim3"; fi
-if [ "$WHICH" == "10017" ]; then WHICH_SMALL="fastsim4"; fi
-if [ "$WHICH" == "10018" ]; then WHICH_SMALL="fastsim5"; fi
-if [ "$WHICH" == "10019" ]; then WHICH_SMALL="fastsim6"; fi
-if [ "$WHICH" == "10020" ]; then WHICH_SMALL="fastsim7"; fi
-if [ "$WHICH" == "10021" ]; then WHICH_SMALL="fastsim8"; fi
-if [ "$WHICH" == "10022" ]; then WHICH_SMALL="fastsim9"; fi
-if [ "$WHICH" == "10023" ]; then WHICH_SMALL="fastsim10"; fi
-if [ "$WHICH" == "10024" ]; then WHICH_SMALL="fastsim11"; fi
-if [ "$WHICH" == "10025" ]; then WHICH_SMALL="fastsim12"; fi
-if [ "$WHICH" == "10026" ]; then WHICH_SMALL="fastsim13"; fi
-if [ "$WHICH" == "10027" ]; then WHICH_SMALL="fastsim14"; fi
-if [ "$WHICH" == "10028" ]; then WHICH_SMALL="fastsim15"; fi
-if [ "$WHICH" == "10029" ]; then WHICH_SMALL="fastsim16"; fi
-if [ "$WHICH" == "10030" ]; then WHICH_SMALL="fastsim17"; fi
-if [ "$WHICH" == "10031" ]; then WHICH_SMALL="fastsim18"; fi
-if [ "$WHICH" == "10032" ]; then WHICH_SMALL="fastsim19"; fi
-if [ "$WHICH" == "10033" ]; then WHICH_SMALL="fastsim20"; fi
-if [ "$WHICH" == "10034" ]; then WHICH_SMALL="fastsim21"; fi
-if [ "$WHICH" == "10035" ]; then WHICH_SMALL="fastsim22"; fi
-if [ "$WHICH" == "10036" ]; then WHICH_SMALL="fastsim23"; fi
-if [ "$WHICH" == "10037" ]; then WHICH_SMALL="fastsim24"; fi
-if [ "$WHICH" == "10038" ]; then WHICH_SMALL="fastsim25"; fi
-if [ "$WHICH" == "10039" ]; then WHICH_SMALL="fastsim26"; fi
-if [ "$WHICH" == "10040" ]; then WHICH_SMALL="fastsim27"; fi
-if [ "$WHICH" == "10041" ]; then WHICH_SMALL="fastsim28"; fi
-if [ "$WHICH" == "10042" ]; then WHICH_SMALL="fastsim29"; fi
-if [ "$WHICH" == "10043" ]; then WHICH_SMALL="fastsim30"; fi
-
-
-
-#SMS-T1tttt_mGluino-1100to1125_mLSP-700to900_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1150_mLSP-1to800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1150to1175_mLSP-750to925_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1200_mLSP-1to825_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1200to1225_mLSP-800to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1250to1275_mLSP-700to1050_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1325to1350_mLSP-1to1125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1400_mLSP-1to1175_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1400to1425_mLSP-50to1100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1425to1450_mLSP-1to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1450to1475_mLSP-50to1075_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1475to1500_mLSP-1to1250_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1525to1550_mLSP-1to1300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1600to1650_mLSP-1to1350_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1650to1700_mLSP-1to1400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1700to1750_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1750_mLSP-50to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1850to1900_mLSP-1to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-1900to1950_mLSP-0to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-600_mLSP-250to325_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-675_mLSP-325to450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-700_mLSP-1to450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-750to775_mLSP-350to525_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-775_mLSP-475to550_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-800to825_mLSP-1to575_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-825to850_mLSP-200to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-850to875_mLSP-450to625_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-875to900_mLSP-1to650_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-950to975_mLSP-350to725_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
-#SMS-T1tttt_mGluino-975_mLSP-600to750_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1
+if [ "$WHICH" == "10001" ] ; then WHICH_SMALL="t1tttt_1950_700to950"        ; fi
+if [ "$WHICH" == "10002" ] ; then WHICH_SMALL="t1tttt_1100_1to775"          ; fi
+if [ "$WHICH" == "10003" ] ; then WHICH_SMALL="t1tttt_1175_950"             ; fi
+if [ "$WHICH" == "10004" ] ; then WHICH_SMALL="t1tttt_1275_900to975"        ; fi
+if [ "$WHICH" == "10005" ] ; then WHICH_SMALL="t1tttt_1300_1to1075"         ; fi
+if [ "$WHICH" == "10006" ] ; then WHICH_SMALL="t1tttt_1300to1325_700to1100" ; fi
+if [ "$WHICH" == "10007" ] ; then WHICH_SMALL="t1tttt_1350to1375_50to1025"  ; fi
+if [ "$WHICH" == "10008" ] ; then WHICH_SMALL="t1tttt_1500to1525_50to1125"  ; fi
+if [ "$WHICH" == "10009" ] ; then WHICH_SMALL="t1tttt_1800to1850_1to1450"   ; fi
+if [ "$WHICH" == "10010" ] ; then WHICH_SMALL="t1tttt_1100to1125_700to900"  ; fi
+if [ "$WHICH" == "10011" ] ; then WHICH_SMALL="t1tttt_625_275to375"         ; fi
+if [ "$WHICH" == "10012" ] ; then WHICH_SMALL="t1tttt_625to650_200to400"    ; fi
+if [ "$WHICH" == "10013" ] ; then WHICH_SMALL="t1tttt_650to675_250to425"    ; fi
+if [ "$WHICH" == "10014" ] ; then WHICH_SMALL="t1tttt_700to750_200to500"    ; fi
+if [ "$WHICH" == "10015" ] ; then WHICH_SMALL="t1tttt_1150_1to800"          ; fi
+if [ "$WHICH" == "10016" ] ; then WHICH_SMALL="t1tttt_1150to1175_750to925"  ; fi
+if [ "$WHICH" == "10017" ] ; then WHICH_SMALL="t1tttt_1200_1to825"          ; fi
+if [ "$WHICH" == "10018" ] ; then WHICH_SMALL="t1tttt_1200to1225"           ; fi
+if [ "$WHICH" == "10019" ] ; then WHICH_SMALL="t1tttt_1250to1275_700to1050" ; fi
+if [ "$WHICH" == "10020" ] ; then WHICH_SMALL="t1tttt_1325to1350_1to1125"   ; fi
+if [ "$WHICH" == "10021" ] ; then WHICH_SMALL="t1tttt_1400_1to1175"         ; fi
+if [ "$WHICH" == "10022" ] ; then WHICH_SMALL="t1tttt_1400to1425_50to1100"  ; fi
+if [ "$WHICH" == "10023" ] ; then WHICH_SMALL="t1tttt_1425to1450_1to1200"   ; fi
+if [ "$WHICH" == "10024" ] ; then WHICH_SMALL="t1tttt_1450to1475_50to1075"  ; fi
+if [ "$WHICH" == "10025" ] ; then WHICH_SMALL="t1tttt_1475to1500_1to1250"   ; fi
+if [ "$WHICH" == "10026" ] ; then WHICH_SMALL="t1tttt_1525to1550_1to1300"   ; fi
+if [ "$WHICH" == "10027" ] ; then WHICH_SMALL="t1tttt_1600to1650_1to1350"   ; fi
+if [ "$WHICH" == "10028" ] ; then WHICH_SMALL="t1tttt_1650to1700_1to1400"   ; fi
+if [ "$WHICH" == "10029" ] ; then WHICH_SMALL="t1tttt_1700to1750_1to1450"   ; fi
+if [ "$WHICH" == "10030" ] ; then WHICH_SMALL="t1tttt_1750_50to1450"        ; fi
+if [ "$WHICH" == "10031" ] ; then WHICH_SMALL="t1tttt_1850to1900_1to1450"   ; fi
+if [ "$WHICH" == "10032" ] ; then WHICH_SMALL="t1tttt_1900to1950_0to1450"   ; fi
+if [ "$WHICH" == "10033" ] ; then WHICH_SMALL="t1tttt_600_250to325"         ; fi
+if [ "$WHICH" == "10034" ] ; then WHICH_SMALL="t1tttt_675_325to450"         ; fi
+if [ "$WHICH" == "10035" ] ; then WHICH_SMALL="t1tttt_700_1to450"           ; fi
+if [ "$WHICH" == "10036" ] ; then WHICH_SMALL="t1tttt_750to775_350to525"    ; fi
+if [ "$WHICH" == "10037" ] ; then WHICH_SMALL="t1tttt_775_475to550"         ; fi
+if [ "$WHICH" == "10038" ] ; then WHICH_SMALL="t1tttt_800to825_1to575"      ; fi
+if [ "$WHICH" == "10039" ] ; then WHICH_SMALL="t1tttt_825to850_200to600"    ; fi
+if [ "$WHICH" == "10040" ] ; then WHICH_SMALL="t1tttt_850to875_450to625"    ; fi
+if [ "$WHICH" == "10041" ] ; then WHICH_SMALL="t1tttt_875to900_1to650"      ; fi
+if [ "$WHICH" == "10042" ] ; then WHICH_SMALL="t1tttt_950to975_350to725"    ; fi
+if [ "$WHICH" == "10043" ] ; then WHICH_SMALL="t1tttt_975_600to750"         ; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
