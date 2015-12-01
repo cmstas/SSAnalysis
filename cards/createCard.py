@@ -25,9 +25,11 @@ class Process:
         self.plot = myplot
         self.lumi  = "-"
         self.jes  = "-"
+        self.isr  = "-"
         self.fs_lep_hh  = "-"
         self.fs_lep_hl  = "-"
         self.fs_lep_ll  = "-"
+        self.fs_hlt  = "-"
         self.lepeff  = "-"
         self.lephlt  = "-"
         self.hthlt  = "-"
@@ -140,6 +142,10 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("jes","shape"))
     for process in processes: card.write("%-15s " % (process.jes))
     card.write("\n")
+    #nuisance isr
+    card.write("%-40s %-5s " % ("isr","shape"))
+    for process in processes: card.write("%-15s " % (process.isr))
+    card.write("\n")
     #nuisance fs_lep_hh
     card.write("%-40s %-5s " % ("fs_lep_hh","lnN"))
     for process in processes: card.write("%-15s " % (process.fs_lep_hh))
@@ -151,6 +157,10 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     #nuisance fs_lep_ll
     card.write("%-40s %-5s " % ("fs_lep_ll","lnN"))
     for process in processes: card.write("%-15s " % (process.fs_lep_ll))
+    card.write("\n")
+    #nuisance fs_hlt
+    card.write("%-40s %-5s " % ("fs_hlt","lnN"))
+    for process in processes: card.write("%-15s " % (process.fs_hlt))
     card.write("\n")
     #nuisance lepeff
     card.write("%-40s %-5s " % ("lepeff","lnN"))
@@ -274,12 +284,16 @@ def writeOneCard(dir, signal, kine, plot, output):
     #overwrite nuisances
     signal.lumi  = "1.12"
     signal.jes  = "1"
-    signal.fs_lep_hh  = "1"
-    signal.fs_lep_hl  = "1"
-    signal.fs_lep_ll  = "1"
-    if kine is "hihi": signal.fs_lep_hh  = "1.08"
-    if kine is "hilow": signal.fs_lep_hh  = "1.15"
-    if kine is "lowlow": signal.fs_lep_hh  = "1.20"
+    if signal.name.find("fs_") != -1:
+        #these are only for fast sim
+        signal.isr  = "1"
+        signal.fs_lep_hh  = "1"
+        signal.fs_lep_hl  = "1"
+        signal.fs_lep_ll  = "1"
+        signal.fs_hlt     = "1.05"
+        if kine is "hihi": signal.fs_lep_hh  = "1.08"
+        if kine is "hilow": signal.fs_lep_hh  = "1.15"
+        if kine is "lowlow": signal.fs_lep_hh  = "1.20"
     signal.lepeff  = "1.04"
     signal.lephlt  = "1.02"
     signal.hthlt  = "1"
