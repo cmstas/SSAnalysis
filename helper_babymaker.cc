@@ -9,7 +9,7 @@ using namespace tas;
 const bool applyBtagSFs = true;
 
 //Main functions
-void babyMaker::MakeBabyNtuple(const char* output_name){
+void babyMaker::MakeBabyNtuple(const char* output_name, bool isFastsim){
 
   //Create Baby
   BabyFile = new TFile(Form("%s/%s.root", path.Data(), output_name), "RECREATE");
@@ -223,6 +223,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
   BabyTree->Branch("lep1_genps_isLastCopy"                                   , &lep1_genps_isLastCopy                                   );
   BabyTree->Branch("lep1_genps_isLastCopyBeforeFSR"                          , &lep1_genps_isLastCopyBeforeFSR                          );
 
+  BabyTree->Branch("is_fastsim", &is_fastsim); 
+
   //InSituFR
   BabyTree->Branch("lep1_isGoodLeg"                                          , &lep1_isGoodLeg                                                                          );
   BabyTree->Branch("lep2_isGoodLeg"                                          , &lep2_isGoodLeg                                                                          );
@@ -269,7 +271,9 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
     reader_fastsim_DN = new BTagCalibrationReader(calib_fs, BTagEntry::OP_MEDIUM, "fastsim", "down");    // sys down
 
     // get btag efficiencies
-    TFile* f_btag_eff          = new TFile("btagsf/btageff__ttbar_powheg_pythia8_25ns.root");
+    TFile* f_btag_eff = 0;
+    if (!isFastsim) f_btag_eff = new TFile("btagsf/btageff__ttbar_powheg_pythia8_25ns.root");
+    if ( isFastsim) f_btag_eff = new TFile("CORE/Tools/btagsf/data/run2_fastsim/btageff__SMS-T1bbbb-T1qqqq_fastsim.root");
     TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
     TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
     TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
@@ -287,6 +291,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name){
 
 void babyMaker::InitBabyNtuple(){
 
+    is_fastsim = 0; 
     rawmet = -1;
     rawmetPhi = -1;
     met = -1;
@@ -525,12 +530,6 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   //Debug mode
   if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return babyErrorStruct;
 
-  //These c-s errors
-  babyErrorStruct.cs_scale_no += tas::genweights().at(0);
-  babyErrorStruct.cs_scale_up += tas::genweights().at(4);
-  babyErrorStruct.cs_scale_dn += tas::genweights().at(8);
-  for (int i = 0; i < 102; i++) babyErrorStruct.cs_pdf[i] = tas::genweights().at(i+9);  
-
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return babyErrorStruct;
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return babyErrorStruct;
@@ -544,6 +543,14 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   lumi = tas::evt_lumiBlock();
   run = tas::evt_run();
   is_real_data = tas::evt_isRealData();
+
+  //These c-s errors
+  if (!is_real_data && tas::genweights().size()>110) {
+    babyErrorStruct.cs_scale_no += tas::genweights().at(0);
+    babyErrorStruct.cs_scale_up += tas::genweights().at(4);
+    babyErrorStruct.cs_scale_dn += tas::genweights().at(8);
+    for (int i = 0; i < 102; i++) babyErrorStruct.cs_pdf[i] = tas::genweights().at(i+9);  
+  }
 
   //If data, check filter list
   if (is_real_data){
@@ -578,6 +585,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
       xsec = go_xsec(sparms[0]).xsec;
       xsec_error = go_xsec(sparms[0]).percErr;
       scale1fb = 1000*xsec/nPoints(1, sparms[0], sparms[1]);
+      is_fastsim = 1; 
     }
   }
 
@@ -927,7 +935,6 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
      else if (abs(jet_mcFlavour) == 4) flavor = BTagEntry::FLAV_C;
      float pt_cutoff = std::max(30.,std::min(669.,double(jet_pt)));
      float weight_cent(1.), weight_UP(1.), weight_DN(1.);
-     float weight_cent_fs(1.), weight_UP_fs(1.), weight_DN_fs(1.);
      if (flavor == BTagEntry::FLAV_UDSG) {
        weight_cent    = reader_light->eval(flavor, jet_eta, pt_cutoff);
        weight_UP      = reader_light_UP->eval(flavor, jet_eta, pt_cutoff);
@@ -939,9 +946,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
        weight_DN      = reader_heavy_DN->eval(flavor, jet_eta, pt_cutoff);
      }
      if (isFastsim){
-       weight_cent_fs *= reader_fastsim->eval(flavor, jet_eta, pt_cutoff);
-       weight_UP_fs   *= reader_fastsim_UP->eval(flavor, jet_eta, pt_cutoff);
-       weight_DN_fs   *= reader_fastsim_DN->eval(flavor, jet_eta, pt_cutoff);
+       weight_cent *= reader_fastsim->eval(flavor, jet_eta, pt_cutoff);
+       weight_UP   *= reader_fastsim_UP->eval(flavor, jet_eta, pt_cutoff);
+       weight_DN   *= reader_fastsim_DN->eval(flavor, jet_eta, pt_cutoff);
      }
      if (jet_results.first.at(i).isBtag()) {
        btagprob_data *= weight_cent * eff;

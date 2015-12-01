@@ -76,20 +76,49 @@ if [ "$WHICH" == "1007" ]; then WHICH_SMALL="datadoublemuond_v4"; fi
 if [ "$WHICH" == "1008" ]; then WHICH_SMALL="datamuonegd_v4"; fi
 
 #signal
-if [ "$WHICH" == "10001" ]; then WHICH_SMALL="t1tttt_1950_700to950"; fi
-if [ "$WHICH" == "10002" ]; then WHICH_SMALL="t1tttt_1100_1to775"; fi
-if [ "$WHICH" == "10003" ]; then WHICH_SMALL="t1tttt_1175_950"; fi
-if [ "$WHICH" == "10004" ]; then WHICH_SMALL="t1tttt_1275_900to975"; fi
-if [ "$WHICH" == "10005" ]; then WHICH_SMALL="t1tttt_1300_1to1075"; fi
-if [ "$WHICH" == "10006" ]; then WHICH_SMALL="t1tttt_1300to1325_700to1100"; fi
-if [ "$WHICH" == "10007" ]; then WHICH_SMALL="t1tttt_1350to1375_50to1025"; fi
-if [ "$WHICH" == "10008" ]; then WHICH_SMALL="t1tttt_1500to1525_50to1125"; fi
-if [ "$WHICH" == "10009" ]; then WHICH_SMALL="t1tttt_1800to1850_1to1450"; fi
-if [ "$WHICH" == "10010" ]; then WHICH_SMALL="t1tttt_1950_700to950"; fi
-if [ "$WHICH" == "10011" ]; then WHICH_SMALL="t1tttt_625_275to375"; fi
-if [ "$WHICH" == "10012" ]; then WHICH_SMALL="t1tttt_625to650_200to400"; fi
-if [ "$WHICH" == "10013" ]; then WHICH_SMALL="t1tttt_650to675_250to425"; fi
-if [ "$WHICH" == "10014" ]; then WHICH_SMALL="t1tttt_700to750_200to500"; fi
+if [ "$WHICH" == "10001" ] ; then WHICH_SMALL="t1tttt_1950_700to950"        ; fi
+if [ "$WHICH" == "10002" ] ; then WHICH_SMALL="t1tttt_1100_1to775"          ; fi
+if [ "$WHICH" == "10003" ] ; then WHICH_SMALL="t1tttt_1175_950"             ; fi
+if [ "$WHICH" == "10004" ] ; then WHICH_SMALL="t1tttt_1275_900to975"        ; fi
+if [ "$WHICH" == "10005" ] ; then WHICH_SMALL="t1tttt_1300_1to1075"         ; fi
+if [ "$WHICH" == "10006" ] ; then WHICH_SMALL="t1tttt_1300to1325_700to1100" ; fi
+if [ "$WHICH" == "10007" ] ; then WHICH_SMALL="t1tttt_1350to1375_50to1025"  ; fi
+if [ "$WHICH" == "10008" ] ; then WHICH_SMALL="t1tttt_1500to1525_50to1125"  ; fi
+if [ "$WHICH" == "10009" ] ; then WHICH_SMALL="t1tttt_1800to1850_1to1450"   ; fi
+if [ "$WHICH" == "10010" ] ; then WHICH_SMALL="t1tttt_1100to1125_700to900"  ; fi
+if [ "$WHICH" == "10011" ] ; then WHICH_SMALL="t1tttt_625_275to375"         ; fi
+if [ "$WHICH" == "10012" ] ; then WHICH_SMALL="t1tttt_625to650_200to400"    ; fi
+if [ "$WHICH" == "10013" ] ; then WHICH_SMALL="t1tttt_650to675_250to425"    ; fi
+if [ "$WHICH" == "10014" ] ; then WHICH_SMALL="t1tttt_700to750_200to500"    ; fi
+if [ "$WHICH" == "10015" ] ; then WHICH_SMALL="t1tttt_1150_1to800"          ; fi
+if [ "$WHICH" == "10016" ] ; then WHICH_SMALL="t1tttt_1150to1175_750to925"  ; fi
+if [ "$WHICH" == "10017" ] ; then WHICH_SMALL="t1tttt_1200_1to825"          ; fi
+if [ "$WHICH" == "10018" ] ; then WHICH_SMALL="t1tttt_1200to1225"           ; fi
+if [ "$WHICH" == "10019" ] ; then WHICH_SMALL="t1tttt_1250to1275_700to1050" ; fi
+if [ "$WHICH" == "10020" ] ; then WHICH_SMALL="t1tttt_1325to1350_1to1125"   ; fi
+if [ "$WHICH" == "10021" ] ; then WHICH_SMALL="t1tttt_1400_1to1175"         ; fi
+if [ "$WHICH" == "10022" ] ; then WHICH_SMALL="t1tttt_1400to1425_50to1100"  ; fi
+if [ "$WHICH" == "10023" ] ; then WHICH_SMALL="t1tttt_1425to1450_1to1200"   ; fi
+if [ "$WHICH" == "10024" ] ; then WHICH_SMALL="t1tttt_1450to1475_50to1075"  ; fi
+if [ "$WHICH" == "10025" ] ; then WHICH_SMALL="t1tttt_1475to1500_1to1250"   ; fi
+if [ "$WHICH" == "10026" ] ; then WHICH_SMALL="t1tttt_1525to1550_1to1300"   ; fi
+if [ "$WHICH" == "10027" ] ; then WHICH_SMALL="t1tttt_1600to1650_1to1350"   ; fi
+if [ "$WHICH" == "10028" ] ; then WHICH_SMALL="t1tttt_1650to1700_1to1400"   ; fi
+if [ "$WHICH" == "10029" ] ; then WHICH_SMALL="t1tttt_1700to1750_1to1450"   ; fi
+if [ "$WHICH" == "10030" ] ; then WHICH_SMALL="t1tttt_1750_50to1450"        ; fi
+if [ "$WHICH" == "10031" ] ; then WHICH_SMALL="t1tttt_1850to1900_1to1450"   ; fi
+if [ "$WHICH" == "10032" ] ; then WHICH_SMALL="t1tttt_1900to1950_0to1450"   ; fi
+if [ "$WHICH" == "10033" ] ; then WHICH_SMALL="t1tttt_600_250to325"         ; fi
+if [ "$WHICH" == "10034" ] ; then WHICH_SMALL="t1tttt_675_325to450"         ; fi
+if [ "$WHICH" == "10035" ] ; then WHICH_SMALL="t1tttt_700_1to450"           ; fi
+if [ "$WHICH" == "10036" ] ; then WHICH_SMALL="t1tttt_750to775_350to525"    ; fi
+if [ "$WHICH" == "10037" ] ; then WHICH_SMALL="t1tttt_775_475to550"         ; fi
+if [ "$WHICH" == "10038" ] ; then WHICH_SMALL="t1tttt_800to825_1to575"      ; fi
+if [ "$WHICH" == "10039" ] ; then WHICH_SMALL="t1tttt_825to850_200to600"    ; fi
+if [ "$WHICH" == "10040" ] ; then WHICH_SMALL="t1tttt_850to875_450to625"    ; fi
+if [ "$WHICH" == "10041" ] ; then WHICH_SMALL="t1tttt_875to900_1to650"      ; fi
+if [ "$WHICH" == "10042" ] ; then WHICH_SMALL="t1tttt_950to975_350to725"    ; fi
+if [ "$WHICH" == "10043" ] ; then WHICH_SMALL="t1tttt_975_600to750"         ; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
