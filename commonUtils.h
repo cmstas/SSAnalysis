@@ -6,6 +6,10 @@ float getLumiUnblind() { return getLumi(); }
 
 bool isUnblindRun(int run) { return true; }
 
+/* float getLumiUnblind() { return 2.11-1.28; } */
+
+/* bool isUnblindRun(int run) { return run>258750; } */
+
 TString getTag() { return "v5.05"; }
 
 float getWZSF() { return 1.22; }

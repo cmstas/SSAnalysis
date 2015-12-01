@@ -708,7 +708,7 @@ void getyields(){
   t5qqqqww_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWW_1200_1000_800.root"   , tag.c_str()));
   t5qqqqww_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWWDeg_1000_315_300.root"   , tag.c_str()));
 
-  // //signals fast sim
+  //signals fast sim
   fs_t1tttt_1950_700_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1950_700to950.root", tag.c_str()));
   fs_t1tttt_1950_750_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1950_700to950.root", tag.c_str()));
   fs_t1tttt_1950_950_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1950_700to950.root", tag.c_str()));
@@ -2195,7 +2195,7 @@ void getyields(){
   type_plots.push_back(pair<TH1F*, float>(p_rares.h_type, roughSystRARES ));
   type_plots.push_back(pair<TH1F*, float>(p_flips.h_type, roughSystFLIPS ));
   type_plots.push_back(pair<TH1F*, float>(p_fakes.h_type, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_type, type_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName type_all_SS.pdf --xAxisLabel type (mm, me, ee) --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_type, type_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName type_all_SS.pdf --xAxisLabel type (mm, me, em, ee) --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep1_miniIso_plots;
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_miniIso  , roughSystTTW   ));
@@ -3029,6 +3029,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	//cout << Form("%20i       %6.2f %6.2f %6.2f %6.2f %6.2f %s SR%i",ss::event(),ptT,ptCL,ptR,ptJ,iso,cat.c_str(),SR) << endl;
       }
 
+      int mytype = ss::hyp_type();
+      if (mytype==2 && abs(ss::lep1_id())==13) mytype = 1;
+
       //Calculate the baseline yield
       if      (ss::hyp_type() == 3) y_result.EE    += weight;
       else if (ss::hyp_type() == 0) y_result.MM    += weight;
@@ -3054,7 +3057,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_l2pt        ->Fill(lep2_pt                                                                                 , weight);
       p_result.h_l1eta       ->Fill(ss::lep1_p4().eta()                                                                     , weight);
       p_result.h_l2eta       ->Fill(ss::lep2_p4().eta()                                                                     , weight);
-      p_result.h_type        ->Fill(ss::hyp_type()                                                                          , weight);
+      p_result.h_type        ->Fill(mytype                                                                                  , weight);
       p_result.h_lep1_miniIso->Fill(ss::lep1_miniIso()                                                                      , weight);
       p_result.h_lep2_miniIso->Fill(ss::lep2_miniIso()                                                                      , weight);
       p_result.h_lep1_ptRel  ->Fill(ss::lep1_ptrel_v1()                                                                     , weight);

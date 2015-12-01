@@ -13,7 +13,7 @@ import math
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
-lumi = "1.3"
+lumi = "2.1"
 
 pseudoData = 0
 
@@ -47,7 +47,6 @@ class Process:
         self.ttzh_extr_htl = "-"
         self.ttzh_extr_ll  = "-"
         self.WZ = "-"
-        #self.wz_extr = "-"
         self.WW = "-"
         self.XG = "-"
         self.rares = "-"
@@ -225,10 +224,6 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("WZ","lnN"))
     for process in processes: card.write("%-15s " % (process.WZ))
     card.write("\n")
-    #nuisance WZ extr
-    #card.write("%-40s %-5s " % ("wz_extr","shape"))
-    #for process in processes: card.write("%-15s " % (process.wz_extr))
-    #card.write("\n")
 
     #nuisance WW
     card.write("%-40s %-5s " % ("WW","lnN"))
@@ -327,7 +322,6 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTZH.btag = "1"
     TTZH.pu = "1"
     WZ.WZ = "1.30"
-    #WZ.wz_extr = "1"
     WZ.jes  = "1"
     WZ.btag = "1"
     WZ.pu = "1"
