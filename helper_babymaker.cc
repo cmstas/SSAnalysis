@@ -1213,6 +1213,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (categ > 1) SR += 26; 
 
   babyErrorStruct.SR = SR;
+  if (hyp_class == 3 && fired_trigger) babyErrorStruct.isGood = true;
 
   return babyErrorStruct; 
 
