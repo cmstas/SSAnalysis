@@ -1,8 +1,5 @@
 #!/bin/bash
 
-if [ -e *.*~ ] 
-then rm *.*~
-fi
 for f in *.*~; do
     if [ -e $f ] 
     then rm *.*~

@@ -3457,7 +3457,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         else if (kinRegs[kr] == "hilow")  plot_alt = p_xsec_alt_dn.SRHL.TOTAL;
         else if (kinRegs[kr] == "lowlow") plot_alt = p_xsec_alt_dn.SRLL.TOTAL;
         else exit(1);
-        TH1F* xsecDn = (TH1F*) plot_alt->Clone("xsecDn");
+        TH1F* xsecDn = (TH1F*) plot_alt->Clone("xsecDown");
         avoidNegativeYields(xsecDn);
         xsecDn->Scale(h_sr->Integral()/xsecDn->Integral());
         xsecDn->Write();
