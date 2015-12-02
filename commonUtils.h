@@ -10,7 +10,7 @@ bool isUnblindRun(int run) { return true; }
 
 /* bool isUnblindRun(int run) { return run>258750; } */
 
-TString getTag() { return "v5.05"; }
+TString getTag() { return "v5.06"; }
 
 float getWZSF() { return 1.22; }
 

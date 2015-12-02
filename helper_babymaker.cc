@@ -1207,6 +1207,13 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   //Fill Baby
   BabyTree->Fill();
 
+  int SR = signalRegion(njets, nbtags, met, ht, mtmin, lep1_id, lep2_id, lep1_coneCorrPt, lep2_coneCorrPt);
+  anal_type_t categ = analysisCategory(lep1_id, lep2_id, lep1_coneCorrPt, lep2_coneCorrPt);
+  if (categ > 0) SR += 32; 
+  if (categ > 1) SR += 26; 
+
+  babyErrorStruct.SR = SR;
+
   return babyErrorStruct; 
 
 }

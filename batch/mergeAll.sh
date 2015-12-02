@@ -50,7 +50,7 @@ path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 #hadd TTZLOW.root                      $path/ttzlow_*.root
 #hadd GGHtoZZto4L.root                 $path/gghtozzto4l_*.root
 #hadd WZMG.root                        $path/wzmg_*.root
-#hadd T1TTTT_1950_700to950.root        $path/t1tttt_1950_700to950_*.root
+hadd T1TTTT_1950_700to950.root        $path/t1tttt_1950_700to950_*.root
 #hadd T1TTTT_1100_1to775.root          $path/t1tttt_1100_1to775_*.root
 #hadd T1TTTT_1175_950.root             $path/t1tttt_1175_950_*.root
 #hadd T1TTTT_1275_900to975.root        $path/t1tttt_1275_900to975_*.root
@@ -59,7 +59,6 @@ path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 #hadd T1TTTT_1350to1375_50to1025.root  $path/t1tttt_1350to1375_50to1025_*.root
 #hadd T1TTTT_1500to1525_50to1125.root  $path/t1tttt_1500to1525_50to1125_*.root
 #hadd T1TTTT_1800to1850_1to1450.root   $path/t1tttt_1800to1850_1to1450_*.root
-#hadd T1TTTT_1950_700to950.root        $path/t1tttt_1950_700to950_*.root
 #hadd T1TTTT_625_275to375.root         $path/t1tttt_625_275to375_*.root
 #hadd T1TTTT_625to650_200to400.root    $path/t1tttt_625to650_200to400_*.root
 #hadd T1TTTT_650to675_250to425.root    $path/t1tttt_650to675_250to425_*.root
@@ -70,13 +69,13 @@ path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 #hadd T1TTTT_1200_1to825.root          $path/t1tttt_1200_1to825_*.root
 #hadd T1TTTT_1200to1225_800to1000.root $path/t1tttt_1200to1225_800to1000*.root
 #hadd T1TTTT_1250to1275_700to1050.root $path/t1tttt_1250to1275_700to1050_*.root
-hadd T1TTTT_1325to1350_1to1125.root   $path/t1tttt_1325to1350_1to1125_*.root
-hadd T1TTTT_1400_1to1175.root         $path/t1tttt_1400_1to1175_*.root
+#hadd T1TTTT_1325to1350_1to1125.root   $path/t1tttt_1325to1350_1to1125_*.root
+#hadd T1TTTT_1400_1to1175.root         $path/t1tttt_1400_1to1175_*.root
 #hadd T1TTTT_1400to1425_50to1100.root  $path/t1tttt_1400to1425_50to1100_*.root
 #hadd T1TTTT_1425to1450_1to1200.root   $path/t1tttt_1425to1450_1to1200_*.root
 #hadd T1TTTT_1450to1475_50to1075.root  $path/t1tttt_1450to1475_50to1075_*.root
 #hadd T1TTTT_1475to1500_1to1250.root   $path/t1tttt_1475to1500_1to1250_*.root
-hadd T1TTTT_1525to1550_1to1300.root   $path/t1tttt_1525to1550_1to1300_*.root
+#hadd T1TTTT_1525to1550_1to1300.root   $path/t1tttt_1525to1550_1to1300_*.root
 #hadd T1TTTT_1600to1650_1to1350.root   $path/t1tttt_1600to1650_1to1350_*.root
 #hadd T1TTTT_1650to1700_1to1400.root   $path/t1tttt_1650to1700_1to1400_*.root
 #hadd T1TTTT_1700to1750_1to1450.root   $path/t1tttt_1700to1750_1to1450_*.root
@@ -94,4 +93,4 @@ hadd T1TTTT_1525to1550_1to1300.root   $path/t1tttt_1525to1550_1to1300_*.root
 #hadd T1TTTT_875to900_1to650.root      $path/t1tttt_875to900_1to650_*.root
 #hadd T1TTTT_950to975_350to725.root    $path/t1tttt_950to975_350to725_*.root
 #hadd T1TTTT_975_600to750.root         $path/t1tttt_975_600to750_*.root
-T1TTTT_1200to1225.root
+#T1TTTT_1200to1225.root

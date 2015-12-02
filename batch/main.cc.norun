@@ -617,7 +617,7 @@ int main(int argc, char *argv[]){
         csErr.cs_scale_up = 0;
         csErr.cs_scale_dn = 0;
         for (int i = 0; i < 102; i++) csErr.cs_pdf[i] = 0; 
-        csErr.results = new TH1F(Form("csErr_%i_%i", mGluino, mLSP), Form("csErr_%i_%i", mGluino, mLSP), 106, 0, 106); 
+        csErr.results = new TH1F(Form("csErr_%i_%i", mGluino, mLSP), Form("csErr_%i_%i", mGluino, mLSP), 7766, 0, 7766); 
         csErr.results->Sumw2(); 
         csErr.nEntries = 0; 
         csErr.mGluino = mGluino; 
@@ -634,46 +634,45 @@ int main(int argc, char *argv[]){
     CMS3::progress(nEventsTotal, nEvents);
 
     csErr_t csErr = mylooper->ProcessBaby(name, jetCorrAG, jecUnc, file, isSignal); 
+    int SR = csErr.SR; 
 
     //c-s error variables
     if (isSignal){
-      csErr_info_v[idx].nEntries++; 
-      csErr_info_v[idx].cs->Fill(0.5, csErr.cs_scale_no);  
-      csErr_info_v[idx].cs_scale_up += csErr.cs_scale_up;
-      csErr_info_v[idx].cs_scale_dn += csErr.cs_scale_dn;
-      for (unsigned int i = 0; i < 102; i++) csErr_info_v[idx].cs_pdf[i] += csErr.cs_pdf[i];
+      csErr_info_v[idx].results->Fill(0.5, 1);  
+      csErr_info_v[idx].results->Fill(3.5, csErr.cs_scale_up); 
+      csErr_info_v[idx].results->Fill(4.5, csErr.cs_scale_dn); 
+      csErr_info_v[idx].results->Fill(200+SR-0.5, csErr.cs_scale_no); 
+      csErr_info_v[idx].results->Fill(300+SR-0.5, csErr.cs_scale_up); 
+      csErr_info_v[idx].results->Fill(400+SR-0.5, csErr.cs_scale_dn); 
+      for (unsigned int i = 0; i < 100; i++){
+        csErr_info_v[idx].results->Fill(1000+100*(SR-1)+i-0.5, csErr.cs_pdf[i]);
+        csErr_info_v[idx].results->Fill(6+i-0.5, csErr.cs_pdf[i]); 
+      }
+      csErr_info_v[idx].results->Fill(7600+SR-0.5, csErr.cs_pdf[100]); 
+      csErr_info_v[idx].results->Fill(7700+SR-0.5, csErr.cs_pdf[101]); 
     }
 
   }//event loop 
 
   if (isSignal){
     for (unsigned int j = 0; j < csErr_info_v.size(); j++){
-      //c-s value
-      //float cs_int = csErr_info_v[j].cs->Integral();
-      //float cs_value = 1000*cs_int; 
-     
-      //c-s PDF error
-      //TH1F* cs_pdf_hist = new TH1F("cs_pdf_hist", "cs_pdf_hist", 10000, 0, 1000); 
-      //for (int i = 0; i < 100; i++){
-      //  cs_pdf_hist->Fill( 1000*csErr_info_v[j].cs_pdf[i]/csErr_info_v[j].cs->GetEntries() ); 
-      //}
-      //float cs_pdf_error = cs_pdf_hist->GetRMS(); 
+      //bin 1: nEntries
+      //bin 2: cross-section
+        csErr_info_v[j].results->SetBinContent(2, csErr_info_v[j].cs->Integral()); 
+      //bin 3: cross-section stat err
+        csErr_info_v[j].results->SetBinError(3, csErr_info_v[j].cs->GetBinError(1)); 
+      //bin 4: cross-section scale up
+      //bin 5: cross-section scale dn
+      //bin 6-107: cross-section PDF error
+      //bin 201-266: yield in each SR (for cross-check)
+      //bin 301-366: scale up in each SR
+      //bin 401-466: scale dn in each SR 
+      //bin 1000-1099: SR1 PDF weights
+      //bin 1100-1199: SR2 PDF weights
+      //bin 7500-7599: SR66 PDF weights
+      //bin 7600-7666: alpha_s up in each SR
+      //bin 7700-7766: alpha_s dn in each SR
 
-      //c-s error results
-      csErr_info_v[j].results->SetBinContent(1, csErr_info_v[j].nEntries);
-      csErr_info_v[j].results->SetBinContent(2, csErr_info_v[j].cs->Integral()); 
-      csErr_info_v[j].results->SetBinError(2, csErr_info_v[j].cs->GetBinError(1)); 
-      csErr_info_v[j].results->SetBinContent(3, csErr_info_v[j].cs_scale_up); 
-      csErr_info_v[j].results->SetBinContent(4, csErr_info_v[j].cs_scale_dn); 
-      for (unsigned int i = 5; i <= 106; i++) csErr_info_v[j].results->SetBinContent(i, csErr_info_v[j].cs_pdf[i-5]);
-
-      //csErr_info_v[j].results->Fill(1.5, 100*csErr_info_v[j].cs->GetBinError(1)/cs_int    );
-      //csErr_info_v[j].results->Fill(2.5, 100*(csErr_info_v[j].cs_scale_dn - cs_int)/cs_int);
-      //csErr_info_v[j].results->Fill(3.5,-100*(csErr_info_v[j].cs_scale_up - cs_int)/cs_int);
-      //csErr_info_v[j].results->Fill(4.5, 100*cs_pdf_error/cs_value                        ); 
-      //csErr_info_v[j].results->Fill(5.5,-100*(csErr_info_v[j].cs_pdf[100] - cs_int)/cs_int);
-      //csErr_info_v[j].results->Fill(6.5, 100*(csErr_info_v[j].cs_pdf[101] - cs_int)/cs_int);
-      //csErr_info_v[j].results->Fill(9.5, csErr_info_v[j].nEntries                         );
     }
   }
 
