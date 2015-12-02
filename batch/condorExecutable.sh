@@ -93,7 +93,7 @@ if [ "$WHICH" == "10014" ] ; then WHICH_SMALL="t1tttt_700to750_200to500"    ; fi
 if [ "$WHICH" == "10015" ] ; then WHICH_SMALL="t1tttt_1150_1to800"          ; fi
 if [ "$WHICH" == "10016" ] ; then WHICH_SMALL="t1tttt_1150to1175_750to925"  ; fi
 if [ "$WHICH" == "10017" ] ; then WHICH_SMALL="t1tttt_1200_1to825"          ; fi
-if [ "$WHICH" == "10018" ] ; then WHICH_SMALL="t1tttt_1200to1225"           ; fi
+if [ "$WHICH" == "10018" ] ; then WHICH_SMALL="t1tttt_1200to1225_800to1000" ; fi
 if [ "$WHICH" == "10019" ] ; then WHICH_SMALL="t1tttt_1250to1275_700to1050" ; fi
 if [ "$WHICH" == "10020" ] ; then WHICH_SMALL="t1tttt_1325to1350_1to1125"   ; fi
 if [ "$WHICH" == "10021" ] ; then WHICH_SMALL="t1tttt_1400_1to1175"         ; fi
