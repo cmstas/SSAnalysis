@@ -5,8 +5,8 @@ mylumi = "2.1"
 
 #the first time you need to make both cards and limits
 #if you no not delete logs, then next time you can skip cards and limits
-redocards = False
-redolimits = False
+redocards = True
+redolimits = True
 deletelogs = False
 
 sigs = []
