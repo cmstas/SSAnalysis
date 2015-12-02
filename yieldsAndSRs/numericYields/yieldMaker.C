@@ -2913,7 +2913,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
        //cout << "mLSP: " << mLSP << endl;
        //cout << "mysparms[0]: " << mysparms[0] << endl;
        //cout << "mysparms[1]: " << mysparms[1] << endl;
-       if (mysparms[0] != mGluino || mysparms[1] != mLSP){ cout << "not ok" << endl;  continue;  }
+       if (mysparms[0] != mGluino || mysparms[1] != mLSP){ /*cout << "not ok" << endl;*/  continue;  }
        else { cs_hist = (TH1F*)hist->Clone("cs_hist"); break;   } 
       }
 
