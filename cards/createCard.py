@@ -26,6 +26,7 @@ class Process:
         self.lumi  = "-"
         self.jes  = "-"
         self.isr  = "-"
+        self.xsec  = "-"
         self.fs_lep_hh  = "-"
         self.fs_lep_hl  = "-"
         self.fs_lep_ll  = "-"
@@ -144,6 +145,10 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     #nuisance isr
     card.write("%-40s %-5s " % ("isr","shape"))
     for process in processes: card.write("%-15s " % (process.isr))
+    card.write("\n")
+    #nuisance xsec
+    card.write("%-40s %-5s " % ("xsec","shape"))
+    for process in processes: card.write("%-15s " % (process.xsec))
     card.write("\n")
     #nuisance fs_lep_hh
     card.write("%-40s %-5s " % ("fs_lep_hh","lnN"))
@@ -282,6 +287,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     if signal.name.find("fs_") != -1:
         #these are only for fast sim
         signal.isr  = "1"
+        signal.xsec  = "1"
         signal.fs_lep_hh  = "1"
         signal.fs_lep_hl  = "1"
         signal.fs_lep_ll  = "1"
