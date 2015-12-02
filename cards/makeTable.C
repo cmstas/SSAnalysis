@@ -2,7 +2,7 @@ pair<float, float> dumpCardForOneSR(TString process, TString kine, int sr, TStri
 
 void makeTable() {
 
-  bool doLatex = false;
+  bool doLatex = true;
 
   char* sep = "&";
   char* pm  = "$\\pm$";
@@ -12,7 +12,7 @@ void makeTable() {
   }
 
   TString lumi = "2.1";
-  TString dir = "v5.05";
+  TString dir = "v5.06";
 
   TString procs[] = {"ttw","ttzh","wz","ww","xg","rares","flips","fakes"};
 
