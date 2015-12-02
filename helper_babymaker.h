@@ -32,7 +32,7 @@ class BTagCalibrationReader;
 
 using namespace std;
 
-struct csErr_t { float cs_scale_no = 0; float cs_scale_up = 0; float cs_scale_dn = 0; float cs_pdf[102] = {0}; int SR = -1; }; 
+struct csErr_t { float cs_scale_no = 0; float cs_scale_up = 0; float cs_scale_dn = 0; float cs_pdf[102] = {0}; int SR = -1; bool isGood = 0 }; 
 
 //Classes
 class babyMaker {

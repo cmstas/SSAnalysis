@@ -635,21 +635,22 @@ int main(int argc, char *argv[]){
 
     csErr_t csErr = mylooper->ProcessBaby(name, jetCorrAG, jecUnc, file, isSignal); 
     int SR = csErr.SR; 
+    bool isGood = csErr.isGood; 
 
     //c-s error variables
     if (isSignal){
       csErr_info_v[idx].results->Fill(0.5, 1);  
       csErr_info_v[idx].results->Fill(3.5, csErr.cs_scale_up); 
       csErr_info_v[idx].results->Fill(4.5, csErr.cs_scale_dn); 
-      csErr_info_v[idx].results->Fill(200+SR-0.5, csErr.cs_scale_no); 
-      csErr_info_v[idx].results->Fill(300+SR-0.5, csErr.cs_scale_up); 
-      csErr_info_v[idx].results->Fill(400+SR-0.5, csErr.cs_scale_dn); 
+      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(200+SR-0.5, csErr.cs_scale_no); 
+      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(300+SR-0.5, csErr.cs_scale_up); 
+      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(400+SR-0.5, csErr.cs_scale_dn); 
       for (unsigned int i = 0; i < 100; i++){
-        csErr_info_v[idx].results->Fill(1000+100*(SR-1)+i-0.5, csErr.cs_pdf[i]);
+        if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(1000+100*(SR-1)+i-0.5, csErr.cs_pdf[i]);
         csErr_info_v[idx].results->Fill(6+i-0.5, csErr.cs_pdf[i]); 
       }
-      csErr_info_v[idx].results->Fill(7600+SR-0.5, csErr.cs_pdf[100]); 
-      csErr_info_v[idx].results->Fill(7700+SR-0.5, csErr.cs_pdf[101]); 
+      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(7600+SR-0.5, csErr.cs_pdf[100]); 
+      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(7700+SR-0.5, csErr.cs_pdf[101]); 
     }
 
   }//event loop 
