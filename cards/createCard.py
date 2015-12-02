@@ -6,10 +6,10 @@ import math
 
 #example: python createCard.py dir t1tttt_1500 
 #example: python createCard.py dir t1tttt_1500 hihi sr card-hihi.txt
-#example: for dir in v5.03; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do python createCard.py ${dir} ${sig}; done; done
+#example: for dir in v5.06; do for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do python createCard.py ${dir} ${sig}; done; done
 
 #then get expected limits with: combine -M Asymptotic dir/card.txt --run expected --noFitAsimov
-#for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do echo ${sig}; combine -M Asymptotic v5.03/card_${sig}_1.3ifb-all.txt | grep ": r <" ; done
+#for sig in t1tttt_1200 t1tttt_1500 t6ttww_650 t6ttww_600 t5tttt_deg t5qqqqww_1200 t5qqqqww_deg; do echo ${sig}; combine -M Asymptotic v5.06/card_${sig}_2.1ifb-all.txt | grep ": r <" ; done
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
@@ -27,6 +27,7 @@ class Process:
         self.jes  = "-"
         self.isr  = "-"
         self.xsec  = "-"
+        self.norm  = "-"
         self.fs_lep_hh  = "-"
         self.fs_lep_hl  = "-"
         self.fs_lep_ll  = "-"
@@ -149,6 +150,10 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     #nuisance xsec
     card.write("%-40s %-5s " % ("xsec","shape"))
     for process in processes: card.write("%-15s " % (process.xsec))
+    card.write("\n")
+    #nuisance norm
+    card.write("%-40s %-5s " % ("norm","lnN"))
+    for process in processes: card.write("%-15s " % (process.norm))
     card.write("\n")
     #nuisance fs_lep_hh
     card.write("%-40s %-5s " % ("fs_lep_hh","lnN"))
@@ -285,14 +290,26 @@ def writeOneCard(dir, signal, kine, plot, output):
     #overwrite nuisances
     signal.lumi  = "1.12"
     signal.jes  = "1"
+    fxsec = ROOT.TFile("xsec_susy_13tev.root")
+    hxsec = fxsec.Get("h_xsec_gluino")
+    normunc = 1.
     if signal.name.find("fs_") != -1:
         #these are only for fast sim
-        signal.isr  = "1"
         signal.xsec  = "1"
         signal.fs_hlt     = "1.05"
         if kine is "hihi": signal.fs_lep_hh  = "1.08"
         if kine is "hilow": signal.fs_lep_hl  = "1.15"
         if kine is "lowlow": signal.fs_lep_ll  = "1.20"
+        if signal.name.find("t1tttt") != -1:
+            signal.isr  = "1"
+            mglu = signal.name.split("_")[2][1:]
+            normunc = 1 + hxsec.GetBinError(hxsec.FindBin(float(mglu)))/hxsec.GetBinContent(hxsec.FindBin(float(mglu)))
+    else: 
+        if signal.name.find("t1tttt") != -1:
+            mglu = signal.name.split("_")[1]
+            normunc = 1 + hxsec.GetBinError(hxsec.FindBin(float(mglu)))/hxsec.GetBinContent(hxsec.FindBin(float(mglu)))
+    signal.norm  = ("%.2f" % normunc)
+    fxsec.Close()
     signal.lepeff  = "1.04"
     signal.lephlt  = "1.02"
     signal.hthlt  = "1"
