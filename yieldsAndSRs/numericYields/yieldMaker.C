@@ -678,7 +678,13 @@ void getyields(){
   TChain *fs_t1tttt_975_750_chain = new TChain("t","fs_t1tttt_m975_m750" );
   TChain *fs_t1tttt_975_600_chain = new TChain("t","fs_t1tttt_m975_m600" );
   TChain *fs_t1tttt_975_625_chain = new TChain("t","fs_t1tttt_m975_m625" );
-
+  TChain *fs_t1tttt_1950_700_chain = new TChain("t","fs_t1tttt_m1950_m700" );
+  TChain *fs_t1tttt_1950_850_chain = new TChain("t","fs_t1tttt_m1950_m850" );
+  TChain *fs_t1tttt_1950_750_chain = new TChain("t","fs_t1tttt_m1950_m750" );
+  TChain *fs_t1tttt_1950_950_chain = new TChain("t","fs_t1tttt_m1950_m950" );
+  TChain *fs_t1tttt_1950_800_chain = new TChain("t","fs_t1tttt_m1950_m800" );
+  TChain *fs_t1tttt_1950_900_chain = new TChain("t","fs_t1tttt_m1950_m900" );
+  
   //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
   st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP1.root"     , tag.c_str()));
@@ -1340,6 +1346,13 @@ void getyields(){
   fs_t1tttt_975_750_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_975_600to750.root", tag.c_str()));
   fs_t1tttt_975_600_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_975_600to750.root", tag.c_str()));
   fs_t1tttt_975_625_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_975_600to750.root", tag.c_str()));
+  fs_t1tttt_1950_700_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1950_700to950.root", tag.c_str()));
+  fs_t1tttt_1950_750_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1950_700to950.root", tag.c_str()));
+  fs_t1tttt_1950_950_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1950_700to950.root", tag.c_str()));
+  fs_t1tttt_1950_800_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1950_700to950.root", tag.c_str()));
+  fs_t1tttt_1950_900_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1950_700to950.root", tag.c_str()));
+  fs_t1tttt_1950_850_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1950_700to950.root", tag.c_str()));
+
 
   //Get yields
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
@@ -1972,6 +1985,12 @@ void getyields(){
   pair<yields_t, plots_t> results_fs_t1tttt_975_750 = run(fs_t1tttt_975_750_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_fs_t1tttt_975_600 = run(fs_t1tttt_975_600_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_fs_t1tttt_975_625 = run(fs_t1tttt_975_625_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_750 = run(fs_t1tttt_1950_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_950 = run(fs_t1tttt_1950_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_800 = run(fs_t1tttt_1950_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_900 = run(fs_t1tttt_1950_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_850 = run(fs_t1tttt_1950_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_700 = run(fs_t1tttt_1950_700_chain, 0, 0, 0, 0, 1);
 
   yields_t& ttbar    = results_ttbar.first;
   yields_t& ttbar_ff = results_ttbar_ff.first;
