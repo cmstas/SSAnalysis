@@ -721,6 +721,22 @@ int nPoints(int sample, int mgl, int mlsp){
     if (mgl == 1350 && mlsp == 150) return 95310;
     if (mgl == 1350 && mlsp == 1050) return 151913;
     if (mgl == 1350 && mlsp == 300) return 101191;
+    if (mgl == 1400 && mlsp == 1125) return 154083;
+    if (mgl == 1400 && mlsp == 1175) return 154034;
+    if (mgl == 1400 && mlsp == 200) return 102776;
+    if (mgl == 1400 && mlsp == 150) return 102531;
+    if (mgl == 1400 && mlsp == 1150) return 154107;
+    if (mgl == 1400 && mlsp == 250) return 102587;
+    if (mgl == 1400 && mlsp == 300) return 102966;
+    if (mgl == 1400 && mlsp == 350) return 102607;
+    if (mgl == 1400 && mlsp == 400) return 102571;
+    if (mgl == 1400 && mlsp == 1025) return 153793;
+    if (mgl == 1400 && mlsp == 1050) return 153544;
+    if (mgl == 1400 && mlsp == 1075) return 154066;
+    if (mgl == 1400 && mlsp == 0) return 102885;
+    if (mgl == 1400 && mlsp == 100) return 102774;
+    if (mgl == 1400 && mlsp == 1000) return 153545;
+    if (mgl == 1400 && mlsp == 1100) return 154011;
   }
   return -99999999; 
 }

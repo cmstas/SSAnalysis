@@ -739,6 +739,22 @@ void getyields(){
   TChain *fs_t1tttt_1350_150_chain = new TChain("t","fs_t1tttt_m1350_m150");
   TChain *fs_t1tttt_1350_1050_chain = new TChain("t","fs_t1tttt_m1350_m1050");
   TChain *fs_t1tttt_1350_300_chain = new TChain("t","fs_t1tttt_m1350_m300");
+  TChain *fs_t1tttt_1400_1125_chain = new TChain("t","fs_t1tttt_m1400_m1125");
+  TChain *fs_t1tttt_1400_1175_chain = new TChain("t","fs_t1tttt_m1400_m1175");
+  TChain *fs_t1tttt_1400_200_chain = new TChain("t","fs_t1tttt_m1400_m200");
+  TChain *fs_t1tttt_1400_150_chain = new TChain("t","fs_t1tttt_m1400_m150");
+  TChain *fs_t1tttt_1400_1150_chain = new TChain("t","fs_t1tttt_m1400_m1150");
+  TChain *fs_t1tttt_1400_250_chain = new TChain("t","fs_t1tttt_m1400_m250");
+  TChain *fs_t1tttt_1400_300_chain = new TChain("t","fs_t1tttt_m1400_m300");
+  TChain *fs_t1tttt_1400_350_chain = new TChain("t","fs_t1tttt_m1400_m350");
+  TChain *fs_t1tttt_1400_400_chain = new TChain("t","fs_t1tttt_m1400_m400");
+  TChain *fs_t1tttt_1400_1025_chain = new TChain("t","fs_t1tttt_m1400_m1025");
+  TChain *fs_t1tttt_1400_1050_chain = new TChain("t","fs_t1tttt_m1400_m1050");
+  TChain *fs_t1tttt_1400_1075_chain = new TChain("t","fs_t1tttt_m1400_m1075");
+  TChain *fs_t1tttt_1400_0_chain = new TChain("t","fs_t1tttt_m1400_m0");
+  TChain *fs_t1tttt_1400_100_chain = new TChain("t","fs_t1tttt_m1400_m100");
+  TChain *fs_t1tttt_1400_1000_chain = new TChain("t","fs_t1tttt_m1400_m1000");
+  TChain *fs_t1tttt_1400_1100_chain = new TChain("t","fs_t1tttt_m1400_m1100");
   
   //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
@@ -1462,6 +1478,22 @@ void getyields(){
   fs_t1tttt_1350_150_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1325to1350_1to1125.root", tag.c_str()));
   fs_t1tttt_1350_1050_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1325to1350_1to1125.root", tag.c_str()));
   fs_t1tttt_1350_300_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1325to1350_1to1125.root", tag.c_str()));
+  fs_t1tttt_1400_1125_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_1175_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_150_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_1150_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_250_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_300_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_350_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_400_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_1025_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_1050_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_1075_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_0_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_100_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_1000_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
+  fs_t1tttt_1400_1100_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1400_1to1175.root", tag.c_str()));
 
 
   //Get yields
@@ -2156,6 +2188,22 @@ void getyields(){
   pair<yields_t, plots_t> results_fs_t1tttt_1350_150 = run(fs_t1tttt_1350_150_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_fs_t1tttt_1350_1050 = run(fs_t1tttt_1350_1050_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_fs_t1tttt_1350_300 = run(fs_t1tttt_1350_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1125 = run(fs_t1tttt_1400_1125_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1175 = run(fs_t1tttt_1400_1175_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_200 = run(fs_t1tttt_1400_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_150 = run(fs_t1tttt_1400_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1150 = run(fs_t1tttt_1400_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_250 = run(fs_t1tttt_1400_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_300 = run(fs_t1tttt_1400_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_350 = run(fs_t1tttt_1400_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_400 = run(fs_t1tttt_1400_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1025 = run(fs_t1tttt_1400_1025_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1050 = run(fs_t1tttt_1400_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1075 = run(fs_t1tttt_1400_1075_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_0 = run(fs_t1tttt_1400_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_100 = run(fs_t1tttt_1400_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1000 = run(fs_t1tttt_1400_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1100 = run(fs_t1tttt_1400_1100_chain, 0, 0, 0, 0, 1);
 
   yields_t& ttbar    = results_ttbar.first;
   yields_t& ttbar_ff = results_ttbar_ff.first;
