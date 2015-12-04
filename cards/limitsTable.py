@@ -9,17 +9,34 @@ def interpolate(h2):
             myxbinR = 0
             myxbinRVal = 0
             for xbinL in range(xbin-1,0,-1): 
-                if h2.GetBinContent(xbinL,ybin-1)>0: 
+                if h2.GetBinContent(xbinL,ybin)>0: 
                     myxbinL = xbinL
-                    myxbinLVal = h2.GetBinContent(xbinL,ybin-1)
+                    myxbinLVal = h2.GetBinContent(xbinL,ybin)
                     break 
             for xbinR in range(xbin+1,h2.GetNbinsX()+1): 
-                if h2.GetBinContent(xbinR,ybin+1)>0: 
+                if h2.GetBinContent(xbinR,ybin)>0: 
                     myxbinR = xbinR
-                    myxbinRVal = h2.GetBinContent(xbinR,ybin+1)
+                    myxbinRVal = h2.GetBinContent(xbinR,ybin)
                     break 
-            if myxbinL==0 or myxbinR==0: continue
-            h2.SetBinContent(xbin,ybin,((1./(xbin-myxbinL))*myxbinLVal+((1./(myxbinR-xbin))*myxbinRVal))/(1./(xbin-myxbinL)+1./(myxbinR-xbin)))
+            myybinD = 0
+            myybinDVal = 0
+            myybinU = 0
+            myybinUVal = 0
+            for ybinD in range(ybin-1,0,-1): 
+                if h2.GetBinContent(xbin-1,ybinD)>0: 
+                    myybinD = ybinD
+                    myybinDVal = h2.GetBinContent(xbin,ybinD)
+                    break 
+            for ybinU in range(ybin+1,h2.GetNbinsY()+1): 
+                if h2.GetBinContent(xbin,ybinU)>0: 
+                    myybinU = ybinU
+                    myybinUVal = h2.GetBinContent(xbin,ybinU)
+                    break 
+            if myxbinL!=0 and myxbinR!=0 and myybinD!=0 and myybinU!=0:
+                h2.SetBinContent(xbin,ybin,((1./(xbin-myxbinL))*myxbinLVal+(1./(myxbinR-xbin))*myxbinRVal+(1./(ybin-myybinD))*myybinDVal+(1./(myybinU-ybin))*myybinUVal)/(1./(xbin-myxbinL)+1./(myxbinR-xbin)+1./(ybin-myybinD)+1./(myybinU-ybin)))
+            elif myxbinL!=0 and myxbinR!=0:
+                h2.SetBinContent(xbin,ybin,((1./(xbin-myxbinL))*myxbinLVal+(1./(myxbinR-xbin))*myxbinRVal)/(1./(xbin-myxbinL)+1./(myxbinR-xbin)))
+            else: continue
     return
 
 mydir = "v5.06"
