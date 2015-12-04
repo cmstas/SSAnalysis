@@ -5,8 +5,8 @@ mylumi = "2.1"
 
 #the first time you need to make both cards and limits
 #if you no not delete logs, then next time you can skip cards and limits
-redocards = True
-redolimits = True
+redocards = False
+redolimits = False
 deletelogs = False
 
 sigs = []
@@ -110,20 +110,31 @@ for sig in sigs:
     print ("%-8s %4i %4i | %.1f | %.1f (-1s %.1f, +1s %.1f) | %.3f " % (smod , mglu, mlsp , limit_obs[count]  , limit_exp[count] , limit_sm1[count] , limit_sp1[count], hxsec.GetBinContent(hxsec.FindBin(mglu)) ) )
     count = count + 1
 
-#for xbin in range(1,h_sobs.GetNbinsX(),2):
-#    for ybin in range(1,h_sobs.GetNbinsY()+1):
-#        if ((600+xbin*25)-(-50+50*ybin))==175 and (600+xbin*25)<1100: 
-#            print (600+xbin*25),(-50+50*ybin)
-#            h_sobs.SetBinContent(xbin,ybin,1.0)
-#            h_sobs.SetBinContent(xbin+1,ybin,1.0)
-#            h_sobs.SetBinContent(xbin+1,ybin+1,1.0)
+for xbin in range(1,h_sobs.GetNbinsX()):
+    for ybin in range(1,h_sobs.GetNbinsY()):
+        if h_sobs.GetBinContent(xbin,ybin)<=1.0 and h_sobs.GetBinContent(xbin,ybin)>0.: 
+            h_sobs.SetBinContent(xbin,ybin,1.)
+        if h_sobs.GetBinContent(xbin,ybin)>1.: 
+            h_sobs.SetBinContent(xbin,ybin,0.)
+
+#"Official" SUSY palette
+mypalette = array.array('i')
+NRGBs = 5
+NCont = 255
+stops = array.array('d', [0.00, 0.34, 0.61, 0.84, 1.00])
+red   = array.array('d', [0.50, 0.50, 1.00, 1.00, 1.00])
+green = array.array('d', [0.50, 1.00, 1.00, 0.60, 0.50])
+blue  = array.array('d', [1.00, 1.00, 0.50, 0.40, 0.50])
+FI = ROOT.TColor.CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont)
+for i in range (0,NCont): mypalette.append(FI+i)
+ROOT.gStyle.SetPalette(NCont,mypalette)
 
 c1 = ROOT.TCanvas("c1", "", 800, 800)
 c1.cd()
 padt = ROOT.TPad("p_tex", "p_tex", 0.0, 0.0, 1.0, 1.0);
 padt.SetTopMargin(0.1)
 padt.SetBottomMargin(0.1)
-padt.SetRightMargin(0.15)
+padt.SetRightMargin(0.17)
 padt.SetLeftMargin(0.15)
 padt.Draw()
 padt.cd()
@@ -131,23 +142,68 @@ padt.SetLogz()
 h_xsec.GetXaxis().SetLabelSize(0.035)
 h_xsec.GetYaxis().SetLabelSize(0.035)
 h_xsec.GetXaxis().SetTitle("gluino mass [GeV]")
-h_xsec.GetYaxis().SetTitle("#chi_{1}^{0} mass [GeV]")
+h_xsec.GetYaxis().SetTitle("#tilde{#chi}^{0}_{1} mass [GeV]")
 h_xsec.GetZaxis().SetTitle("95% CL upper limit on #sigma [pb]")
 h_xsec.GetZaxis().SetRangeUser(1e-2,1e0)
 h_xsec.GetZaxis().SetLabelSize(0.035)
-h_xsec.GetXaxis().SetTitleOffset(1.1)
-h_xsec.GetYaxis().SetTitleOffset(1.6)
+h_xsec.GetXaxis().SetTitleOffset(1.2)
+h_xsec.GetYaxis().SetTitleOffset(1.7)
 h_xsec.GetZaxis().SetTitleOffset(1.6)
-#contourplot = h_sobs.Clone("contourplot");
-#contours = array.array('d')
-#contours.append(1.0)
-#contourplot.SetContour(1, contours);
-#contourplot.SetLineWidth(4);
-#contourplot.SetLineStyle(2);
-#contourplot.SetLineColor(ROOT.kRed);
-#contourplot.Smooth();
+
+cobs = h_sobs.Clone("cobs");
+contours = array.array('d')
+contours.append(1.0)
+cobs.SetContour(1, contours);
+cobs.SetLineWidth(4);
+cobs.SetLineStyle(1);
+cobs.SetLineColor(ROOT.kBlack);
+cobs.Smooth();
+
+cexp = h_sexp.Clone("cexp");
+contours = array.array('d')
+contours.append(1.0)
+cexp.SetContour(1, contours);
+cexp.SetLineWidth(4);
+cexp.SetLineStyle(1);
+cexp.SetLineColor(ROOT.kRed);
+cexp.Smooth();
+
 h_xsec.Draw("colz")
-#contourplot.Draw("samecont2");
+cobs.Draw("samecont2");
+#cexp.Draw("samecont2");
+
+diag = ROOT.TLine(625,450,1700,1500)
+diag.SetLineWidth(2)
+diag.SetLineStyle(2)
+diag.Draw("same")
+
+l1 = ROOT.TLegend(0.15, 0.70, 0.83, 0.90)
+l1.SetTextFont(42)
+l1.SetTextSize(0.038)
+l1.SetShadowColor(ROOT.kWhite)
+l1.SetFillColor(ROOT.kWhite)
+l1.SetHeader("pp #rightarrow #tilde{g} #tilde{g}, #tilde{g}#rightarrow t#bar{t}#tilde{#chi}^{0}_{1} 95% CL NLO Exclusions")
+l1.AddEntry(cexp , "Expected limit"            , "l")#, #pm 1 #sigma_{exp.}
+l1.AddEntry(cobs , "Observed limit"            , "l")
+
+
+cmstex = ROOT.TLatex(0.575,0.91, "2.1 fb^{-1} (13 TeV)" )
+cmstex.SetNDC()
+cmstex.SetTextSize(0.04)
+cmstex.SetLineWidth(2)
+cmstex.SetTextFont(42)
+cmstex.Draw()
+
+cmstexbold = ROOT.TLatex(0.17,0.91, "CMS Preliminary" )
+cmstexbold.SetNDC()
+cmstexbold.SetTextSize(0.04)
+cmstexbold.SetLineWidth(2)
+cmstexbold.SetTextFont(62)
+cmstexbold.Draw()
+
+padt.RedrawAxis();
+l1.Draw("same")
+
 c1.SaveAs("xsec.png")
 
 h_sobs.GetXaxis().SetLabelSize(0.035)
