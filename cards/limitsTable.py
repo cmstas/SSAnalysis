@@ -9,14 +9,14 @@ def interpolate(h2):
             myxbinR = 0
             myxbinRVal = 0
             for xbinL in range(xbin-1,0,-1): 
-                if h2.GetBinContent(xbinL,ybin)>0: 
+                if h2.GetBinContent(xbinL,ybin-1)>0: 
                     myxbinL = xbinL
-                    myxbinLVal = h2.GetBinContent(xbinL,ybin)
+                    myxbinLVal = h2.GetBinContent(xbinL,ybin-1)
                     break 
             for xbinR in range(xbin+1,h2.GetNbinsX()+1): 
-                if h2.GetBinContent(xbinR,ybin)>0: 
+                if h2.GetBinContent(xbinR,ybin+1)>0: 
                     myxbinR = xbinR
-                    myxbinRVal = h2.GetBinContent(xbinR,ybin)
+                    myxbinRVal = h2.GetBinContent(xbinR,ybin+1)
                     break 
             myybinD = 0
             myybinDVal = 0
@@ -301,7 +301,7 @@ cobs = h_sobs.Clone("cobs");
 #trick for driving the contour
 for xbin in range(1,cobs.GetNbinsX()+1):
     for ybin in range(1,cobs.GetNbinsY()+1):
-        if (ybin*25-xbin*25)>375:
+        if (ybin*25-xbin*25)>325:
              cobs.SetBinContent(xbin,ybin,1.)
         else: 
             if (600+xbin*25)>1500 or (ybin*25>900):
@@ -312,13 +312,13 @@ cobs.SetContour(1, contours);
 cobs.SetLineWidth(4);
 cobs.SetLineStyle(1);
 cobs.SetLineColor(ROOT.kBlack);
-#cobs.Smooth();
+cobs.Smooth();
 
 cexp = h_sexp.Clone("cexp");
 #trick for driving the contour
 for xbin in range(1,cexp.GetNbinsX()+1):
     for ybin in range(1,cexp.GetNbinsY()+1):
-        if (ybin*25-xbin*25)>375:
+        if (ybin*25-xbin*25)>325:
              cexp.SetBinContent(xbin,ybin,1.)
         else: 
             if (600+xbin*25)>1500 or (ybin*25>900):
@@ -329,13 +329,13 @@ cexp.SetContour(1, contours);
 cexp.SetLineWidth(4);
 cexp.SetLineStyle(1);
 cexp.SetLineColor(ROOT.kRed);
-#cexp.Smooth();
+cexp.Smooth();
 
 csm1 = h_ssm1.Clone("csm1");
 #trick for driving the contour
 for xbin in range(1,csm1.GetNbinsX()+1):
     for ybin in range(1,csm1.GetNbinsY()+1):
-        if (ybin*25-xbin*25)>375:
+        if (ybin*25-xbin*25)>325:
              csm1.SetBinContent(xbin,ybin,1.)
         else: 
             if (600+xbin*25)>1500 or (ybin*25>900):
@@ -346,13 +346,13 @@ csm1.SetContour(1, contours);
 csm1.SetLineWidth(2);
 csm1.SetLineStyle(3);
 csm1.SetLineColor(ROOT.kRed);
-#csm1.Smooth();
+csm1.Smooth();
 
 csp1 = h_ssp1.Clone("csp1");
 #trick for driving the contour
 for xbin in range(1,csp1.GetNbinsX()+1):
     for ybin in range(1,csp1.GetNbinsY()+1):
-        if (ybin*25-xbin*25)>375:
+        if (ybin*25-xbin*25)>325:
              csp1.SetBinContent(xbin,ybin,1.)
         else: 
             if (600+xbin*25)>1500 or (ybin*25>900):
@@ -363,7 +363,7 @@ csp1.SetContour(1, contours);
 csp1.SetLineWidth(2);
 csp1.SetLineStyle(3);
 csp1.SetLineColor(ROOT.kRed);
-#csp1.Smooth();
+csp1.Smooth();
 
 h_xsec.Draw("colz")
 cobs.Draw("samecont2");
