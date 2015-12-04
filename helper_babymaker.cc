@@ -554,11 +554,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
   //If data, check filter list
   if (is_real_data){
-    string filterFile = ""; 
-    if (filename.Contains("DoubleEG")) filterFile   = "CORE/Tools/filterLists/DoubleEG_csc2015.txt";
-    if (filename.Contains("DoubleMuon")) filterFile = "CORE/Tools/filterLists/DoubleMuon_csc2015.txt";
-    if (filename.Contains("MuonEG")) filterFile     = "CORE/Tools/filterLists/MuonEG_csc2015.txt";
-    string checkMe = Form("%i:%i:%i ", tas::evt_run(), tas::evt_lumiBlock(), (int)tas::evt_event());
+    string filterFile = "CORE/Tools/filterLists/csc2015_Dec01.txt";
+    string checkMe = Form("%i:%i:%llu", tas::evt_run(), tas::evt_lumiBlock(), tas::evt_event());
     int blah = system(("grep -r " + checkMe + filterFile).c_str());
     if (blah == 0) passedFilterList = false;
     else passedFilterList = true;
