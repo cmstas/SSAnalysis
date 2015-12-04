@@ -522,6 +522,11 @@ int main(int argc, char *argv[]){
       name="SMS-T1tttt_mGluino-975_mLSP-600to750_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
       isSignal=1;
       break;
+    case T1TTTT_1375_950to1150:
+      shortname="t1tttt_1375_950to1150";
+      name="SMS-T1tttt_mGluino-1375_mLSP-950to1150_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+      isSignal=1;
+      break;
 
   default:
     name="dummy";

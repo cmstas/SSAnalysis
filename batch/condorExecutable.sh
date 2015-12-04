@@ -119,6 +119,7 @@ if [ "$WHICH" == "10040" ] ; then WHICH_SMALL="t1tttt_850to875_450to625"    ; fi
 if [ "$WHICH" == "10041" ] ; then WHICH_SMALL="t1tttt_875to900_1to650"      ; fi
 if [ "$WHICH" == "10042" ] ; then WHICH_SMALL="t1tttt_950to975_350to725"    ; fi
 if [ "$WHICH" == "10043" ] ; then WHICH_SMALL="t1tttt_975_600to750"         ; fi
+if [ "$WHICH" == "10044" ] ; then WHICH_SMALL="t1tttt_1375_950to1150"       ; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
