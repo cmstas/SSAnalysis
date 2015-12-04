@@ -2,24 +2,24 @@ import os, ROOT, array
 
 def interpolate(h2):
     for xbin in range(2,h2.GetNbinsX()): #ok we do not consider the edges
-        for ybin in range(1,h2.GetNbinsY()):
+        for ybin in range(2,h2.GetNbinsY()):
             if h2.GetBinContent(xbin,ybin)>0: continue #let's do it only for empty bins
             myxbinL = 0
             myxbinLVal = 0
             myxbinR = 0
             myxbinRVal = 0
-            for xbinL in range(1,xbin): 
-                if h2.GetBinContent(xbinL,ybin)>0: 
+            for xbinL in range(xbin-1,0,-1): 
+                if h2.GetBinContent(xbinL,ybin-1)>0: 
                     myxbinL = xbinL
                     myxbinLVal = h2.GetBinContent(xbinL,ybin-1)
                     break 
-            for xbinR in range(xbin,h2.GetNbinsX()+1): 
-                if h2.GetBinContent(xbinR,ybin)>0: 
+            for xbinR in range(xbin+1,h2.GetNbinsX()+1): 
+                if h2.GetBinContent(xbinR,ybin+1)>0: 
                     myxbinR = xbinR
                     myxbinRVal = h2.GetBinContent(xbinR,ybin+1)
                     break 
             if myxbinL==0 or myxbinR==0: continue
-            h2.SetBinContent(xbin,ybin,((1./(xbin-myxbinL))*myxbinLVal+((1./(myxbinR-xbin))*myxbinRVal)/(1./(xbin-myxbinL)+1./(myxbinR-xbin))))
+            h2.SetBinContent(xbin,ybin,((1./(xbin-myxbinL))*myxbinLVal+((1./(myxbinR-xbin))*myxbinRVal))/(1./(xbin-myxbinL)+1./(myxbinR-xbin)))
     return
 
 mydir = "v5.06"
@@ -34,9 +34,9 @@ deletelogs = False
 sigs = []
 
 for mglu in range (625,1975,25):
-    for mlsp in range (0,1500,50):
+    for mlsp in range (0,1500,25):
         if os.path.isfile(("%s/fs_t1tttt_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
-        #print "found sig = fs_t1tttt_m%i_m%i" % (mglu,mlsp)
+        print "found sig = fs_t1tttt_m%i_m%i" % (mglu,mlsp)
         sigs.append(("fs_t1tttt_m%i_m%i" % (mglu,mlsp)))
 
 #mpoints = []
@@ -127,11 +127,11 @@ hxsec = fxsec.Get("h_xsec_gluino")
 
 ROOT.gStyle.SetOptStat(0)
 
-h_xsec = ROOT.TH2F("h_xsec","",56,600,2000,40,0,2000)
-h_sobs = ROOT.TH2F("h_sobs","",56,600,2000,40,0,2000)
-h_sexp = ROOT.TH2F("h_sexp","",56,600,2000,40,0,2000)
-h_ssm1 = ROOT.TH2F("h_ssm1","",56,600,2000,40,0,2000)
-h_ssp1 = ROOT.TH2F("h_ssp1","",56,600,2000,40,0,2000)
+h_xsec = ROOT.TH2F("h_xsec","",56,600,2000,80,0,2000)
+h_sobs = ROOT.TH2F("h_sobs","",56,600,2000,80,0,2000)
+h_sexp = ROOT.TH2F("h_sexp","",56,600,2000,80,0,2000)
+h_ssm1 = ROOT.TH2F("h_ssm1","",56,600,2000,80,0,2000)
+h_ssp1 = ROOT.TH2F("h_ssp1","",56,600,2000,80,0,2000)
 
 count = 0
 print "limits "
@@ -161,6 +161,26 @@ for sig in sigs:
         h_sexp.SetBinContent( h_xsec.FindBin(mglu+75,mlsp), limit_exp[count] )
         h_ssm1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp), limit_sm1[count] )
         h_ssp1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp), limit_sp1[count] )
+        h_xsec.SetBinContent( h_xsec.FindBin(mglu,mlsp+25), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
+        h_sobs.SetBinContent( h_xsec.FindBin(mglu,mlsp+25), limit_obs[count] )
+        h_sexp.SetBinContent( h_xsec.FindBin(mglu,mlsp+25), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu,mlsp+25), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu,mlsp+25), limit_sp1[count] )
+        h_xsec.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+25), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
+        h_sobs.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+25), limit_obs[count] )
+        h_sexp.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+25), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+25), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+25), limit_sp1[count] )
+        h_xsec.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+25), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
+        h_sobs.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+25), limit_obs[count] )
+        h_sexp.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+25), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+25), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+25), limit_sp1[count] )
+        h_xsec.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+25), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
+        h_sobs.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+25), limit_obs[count] )
+        h_sexp.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+25), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+25), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+25), limit_sp1[count] )
         h_xsec.SetBinContent( h_xsec.FindBin(mglu,mlsp+50), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
         h_sobs.SetBinContent( h_xsec.FindBin(mglu,mlsp+50), limit_obs[count] )
         h_sexp.SetBinContent( h_xsec.FindBin(mglu,mlsp+50), limit_exp[count] )
@@ -181,12 +201,43 @@ for sig in sigs:
         h_sexp.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+50), limit_exp[count] )
         h_ssm1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+50), limit_sm1[count] )
         h_ssp1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+50), limit_sp1[count] )
+        h_xsec.SetBinContent( h_xsec.FindBin(mglu,mlsp+75), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
+        h_sobs.SetBinContent( h_xsec.FindBin(mglu,mlsp+75), limit_obs[count] )
+        h_sexp.SetBinContent( h_xsec.FindBin(mglu,mlsp+75), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu,mlsp+75), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu,mlsp+75), limit_sp1[count] )
+        h_xsec.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+75), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
+        h_sobs.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+75), limit_obs[count] )
+        h_sexp.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+75), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+75), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+75), limit_sp1[count] )
+        h_xsec.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+75), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
+        h_sobs.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+75), limit_obs[count] )
+        h_sexp.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+75), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+75), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+75), limit_sp1[count] )
+        h_xsec.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+75), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
+        h_sobs.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+75), limit_obs[count] )
+        h_sexp.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+75), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+75), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+75), limit_sp1[count] )
     if mglu-mlsp>425 or mlsp>=1200:
         h_xsec.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
         h_sobs.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_obs[count] )
         h_sexp.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_exp[count] )
         h_ssm1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_sm1[count] )
         h_ssp1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_sp1[count] )
+        h_xsec.SetBinContent( h_xsec.FindBin(mglu,mlsp+25), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
+        h_sobs.SetBinContent( h_xsec.FindBin(mglu,mlsp+25), limit_obs[count] )
+        h_sexp.SetBinContent( h_xsec.FindBin(mglu,mlsp+25), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu,mlsp+25), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu,mlsp+25), limit_sp1[count] )
+        h_xsec.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+25), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
+        h_sobs.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+25), limit_obs[count] )
+        h_sexp.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+25), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+25), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+25), limit_sp1[count] )
+
     print ("%-8s %4i %4i | %.1f | %.1f (-1s %.1f, +1s %.1f) | %.3f " % (smod , mglu, mlsp , limit_obs[count]  , limit_exp[count] , limit_sm1[count] , limit_sp1[count], hxsec.GetBinContent(hxsec.FindBin(mglu)) ) )
     count = count + 1
 
@@ -233,10 +284,10 @@ cobs = h_sobs.Clone("cobs");
 #trick for driving the contour
 for xbin in range(1,cobs.GetNbinsX()+1):
     for ybin in range(1,cobs.GetNbinsY()+1):
-        if (ybin*50-xbin*25)>400:
+        if (ybin*25-xbin*25)>375:
              cobs.SetBinContent(xbin,ybin,1.)
         else: 
-            if (600+xbin*25)>1500 or (ybin*50>900):
+            if (600+xbin*25)>1500 or (ybin*25>900):
                 cobs.SetBinContent(xbin,ybin,10.)
 contours = array.array('d')
 contours.append(1.0)
@@ -250,10 +301,10 @@ cexp = h_sexp.Clone("cexp");
 #trick for driving the contour
 for xbin in range(1,cexp.GetNbinsX()+1):
     for ybin in range(1,cexp.GetNbinsY()+1):
-        if (ybin*50-xbin*25)>400:
+        if (ybin*25-xbin*25)>375:
              cexp.SetBinContent(xbin,ybin,1.)
         else: 
-            if (600+xbin*25)>1500 or (ybin*50>900):
+            if (600+xbin*25)>1500 or (ybin*25>900):
                 cexp.SetBinContent(xbin,ybin,10.)
 contours = array.array('d')
 contours.append(1.0)
@@ -267,10 +318,10 @@ csm1 = h_ssm1.Clone("csm1");
 #trick for driving the contour
 for xbin in range(1,csm1.GetNbinsX()+1):
     for ybin in range(1,csm1.GetNbinsY()+1):
-        if (ybin*50-xbin*25)>400:
+        if (ybin*25-xbin*25)>375:
              csm1.SetBinContent(xbin,ybin,1.)
         else: 
-            if (600+xbin*25)>1500 or (ybin*50>900):
+            if (600+xbin*25)>1500 or (ybin*25>900):
                 csm1.SetBinContent(xbin,ybin,10.)
 contours = array.array('d')
 contours.append(1.0)
@@ -284,10 +335,10 @@ csp1 = h_ssp1.Clone("csp1");
 #trick for driving the contour
 for xbin in range(1,csp1.GetNbinsX()+1):
     for ybin in range(1,csp1.GetNbinsY()+1):
-        if (ybin*50-xbin*25)>400:
+        if (ybin*25-xbin*25)>375:
              csp1.SetBinContent(xbin,ybin,1.)
         else: 
-            if (600+xbin*25)>1500 or (ybin*50>900):
+            if (600+xbin*25)>1500 or (ybin*25>900):
                 csp1.SetBinContent(xbin,ybin,10.)
 contours = array.array('d')
 contours.append(1.0)
@@ -303,7 +354,7 @@ cexp.Draw("samecont2");
 csm1.Draw("samecont3");
 csp1.Draw("samecont3");
 
-diag = ROOT.TLine(625,450,1700,1500)
+diag = ROOT.TLine(625,425,1700,1500)
 diag.SetLineWidth(2)
 diag.SetLineStyle(2)
 diag.Draw("same")
