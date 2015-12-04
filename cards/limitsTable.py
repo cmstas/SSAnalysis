@@ -1,5 +1,27 @@
 import os, ROOT, array
 
+def interpolate(h2):
+    for xbin in range(2,h2.GetNbinsX()): #ok we do not consider the edges
+        for ybin in range(1,h2.GetNbinsY()):
+            if h2.GetBinContent(xbin,ybin)>0: continue #let's do it only for empty bins
+            myxbinL = 0
+            myxbinLVal = 0
+            myxbinR = 0
+            myxbinRVal = 0
+            for xbinL in range(1,xbin): 
+                if h2.GetBinContent(xbinL,ybin)>0: 
+                    myxbinL = xbinL
+                    myxbinLVal = h2.GetBinContent(xbinL,ybin-1)
+                    break 
+            for xbinR in range(xbin,h2.GetNbinsX()+1): 
+                if h2.GetBinContent(xbinR,ybin)>0: 
+                    myxbinR = xbinR
+                    myxbinRVal = h2.GetBinContent(xbinR,ybin+1)
+                    break 
+            if myxbinL==0 or myxbinR==0: continue
+            h2.SetBinContent(xbin,ybin,((1./(xbin-myxbinL))*myxbinLVal+((1./(myxbinR-xbin))*myxbinRVal)/(1./(xbin-myxbinL)+1./(myxbinR-xbin))))
+    return
+
 mydir = "v5.06"
 mylumi = "2.1"
 
@@ -10,11 +32,49 @@ redolimits = False
 deletelogs = False
 
 sigs = []
+
 for mglu in range (625,1975,25):
     for mlsp in range (0,1500,50):
         if os.path.isfile(("%s/fs_t1tttt_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
         #print "found sig = fs_t1tttt_m%i_m%i" % (mglu,mlsp)
         sigs.append(("fs_t1tttt_m%i_m%i" % (mglu,mlsp)))
+
+#mpoints = []
+#mpoints.append("m1325_m925")
+#mpoints.append("m1350_m100")
+#mpoints.append("m1350_m0")
+#mpoints.append("m1350_m1075")
+#mpoints.append("m1350_m1000")
+#mpoints.append("m1350_m250")
+#mpoints.append("m1325_m950")
+#mpoints.append("m1350_m1025")
+#mpoints.append("m1350_m1125")
+#mpoints.append("m1350_m200")
+#mpoints.append("m1325_m975")
+#mpoints.append("m1350_m1100")
+#mpoints.append("m1350_m150")
+#mpoints.append("m1350_m1050")
+#mpoints.append("m1350_m300")
+#mpoints.append("m1400_m1125")
+#mpoints.append("m1400_m1175")
+#mpoints.append("m1400_m200")
+#mpoints.append("m1400_m150")
+#mpoints.append("m1400_m1150")
+#mpoints.append("m1400_m250")
+#mpoints.append("m1400_m300")
+#mpoints.append("m1400_m350")
+#mpoints.append("m1400_m400")
+#mpoints.append("m1400_m1025")
+#mpoints.append("m1400_m1050")
+#mpoints.append("m1400_m1075")
+#mpoints.append("m1400_m0")
+#mpoints.append("m1400_m100")
+#mpoints.append("m1400_m1000")
+#mpoints.append("m1400_m1100")
+#for mpoint in mpoints:
+        #if os.path.isfile(("%s/fs_t1tttt_%s_histos_hihi_%sifb.root" % (mydir,mpoint,mylumi))) is False: continue
+        #print "found sig = fs_t1tttt_"+mpoint
+        #sigs.append(("fs_t1tttt_%s" % (mpoint)))
 
 limit_obs = []
 limit_exp = []
@@ -70,6 +130,8 @@ ROOT.gStyle.SetOptStat(0)
 h_xsec = ROOT.TH2F("h_xsec","",56,600,2000,40,0,2000)
 h_sobs = ROOT.TH2F("h_sobs","",56,600,2000,40,0,2000)
 h_sexp = ROOT.TH2F("h_sexp","",56,600,2000,40,0,2000)
+h_ssm1 = ROOT.TH2F("h_ssm1","",56,600,2000,40,0,2000)
+h_ssp1 = ROOT.TH2F("h_ssp1","",56,600,2000,40,0,2000)
 
 count = 0
 print "limits "
@@ -81,41 +143,58 @@ for sig in sigs:
     h_xsec.SetBinContent( h_xsec.FindBin(mglu,mlsp), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
     h_sobs.SetBinContent( h_xsec.FindBin(mglu,mlsp), limit_obs[count] )
     h_sexp.SetBinContent( h_xsec.FindBin(mglu,mlsp), limit_exp[count] )
+    h_ssm1.SetBinContent( h_xsec.FindBin(mglu,mlsp), limit_sm1[count] )
+    h_ssp1.SetBinContent( h_xsec.FindBin(mglu,mlsp), limit_sp1[count] )
     if mglu<1000 and mlsp<200:
         h_xsec.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
         h_sobs.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_obs[count] )
         h_sexp.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_sp1[count] )
         h_xsec.SetBinContent( h_xsec.FindBin(mglu+50,mlsp), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
         h_sobs.SetBinContent( h_xsec.FindBin(mglu+50,mlsp), limit_obs[count] )
         h_sexp.SetBinContent( h_xsec.FindBin(mglu+50,mlsp), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+50,mlsp), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+50,mlsp), limit_sp1[count] )
         h_xsec.SetBinContent( h_xsec.FindBin(mglu+75,mlsp), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
         h_sobs.SetBinContent( h_xsec.FindBin(mglu+75,mlsp), limit_obs[count] )
         h_sexp.SetBinContent( h_xsec.FindBin(mglu+75,mlsp), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp), limit_sp1[count] )
         h_xsec.SetBinContent( h_xsec.FindBin(mglu,mlsp+50), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
         h_sobs.SetBinContent( h_xsec.FindBin(mglu,mlsp+50), limit_obs[count] )
         h_sexp.SetBinContent( h_xsec.FindBin(mglu,mlsp+50), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu,mlsp+50), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu,mlsp+50), limit_sp1[count] )
         h_xsec.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+50), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
         h_sobs.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+50), limit_obs[count] )
         h_sexp.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+50), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+50), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp+50), limit_sp1[count] )
         h_xsec.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+50), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
         h_sobs.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+50), limit_obs[count] )
         h_sexp.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+50), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+50), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+50,mlsp+50), limit_sp1[count] )
         h_xsec.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+50), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
         h_sobs.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+50), limit_obs[count] )
         h_sexp.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+50), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+50), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+75,mlsp+50), limit_sp1[count] )
     if mglu-mlsp>425 or mlsp>=1200:
         h_xsec.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
         h_sobs.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_obs[count] )
         h_sexp.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_exp[count] )
+        h_ssm1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_sm1[count] )
+        h_ssp1.SetBinContent( h_xsec.FindBin(mglu+25,mlsp), limit_sp1[count] )
     print ("%-8s %4i %4i | %.1f | %.1f (-1s %.1f, +1s %.1f) | %.3f " % (smod , mglu, mlsp , limit_obs[count]  , limit_exp[count] , limit_sm1[count] , limit_sp1[count], hxsec.GetBinContent(hxsec.FindBin(mglu)) ) )
     count = count + 1
 
-for xbin in range(1,h_sobs.GetNbinsX()):
-    for ybin in range(1,h_sobs.GetNbinsY()):
-        if h_sobs.GetBinContent(xbin,ybin)<=1.0 and h_sobs.GetBinContent(xbin,ybin)>0.: 
-            h_sobs.SetBinContent(xbin,ybin,1.)
-        if h_sobs.GetBinContent(xbin,ybin)>1.: 
-            h_sobs.SetBinContent(xbin,ybin,0.)
+interpolate( h_xsec )
+interpolate( h_sobs )
+interpolate( h_sexp )
+interpolate( h_ssm1 )
+interpolate( h_ssp1 )
 
 #"Official" SUSY palette
 mypalette = array.array('i')
@@ -144,33 +223,85 @@ h_xsec.GetYaxis().SetLabelSize(0.035)
 h_xsec.GetXaxis().SetTitle("gluino mass [GeV]")
 h_xsec.GetYaxis().SetTitle("#tilde{#chi}^{0}_{1} mass [GeV]")
 h_xsec.GetZaxis().SetTitle("95% CL upper limit on #sigma [pb]")
-h_xsec.GetZaxis().SetRangeUser(1e-2,1e0)
+h_xsec.GetZaxis().SetRangeUser(1e-3,2e0)
 h_xsec.GetZaxis().SetLabelSize(0.035)
 h_xsec.GetXaxis().SetTitleOffset(1.2)
 h_xsec.GetYaxis().SetTitleOffset(1.7)
 h_xsec.GetZaxis().SetTitleOffset(1.6)
 
 cobs = h_sobs.Clone("cobs");
+#trick for driving the contour
+for xbin in range(1,cobs.GetNbinsX()+1):
+    for ybin in range(1,cobs.GetNbinsY()+1):
+        if (ybin*50-xbin*25)>400:
+             cobs.SetBinContent(xbin,ybin,1.)
+        else: 
+            if (600+xbin*25)>1500 or (ybin*50>900):
+                cobs.SetBinContent(xbin,ybin,10.)
 contours = array.array('d')
 contours.append(1.0)
 cobs.SetContour(1, contours);
 cobs.SetLineWidth(4);
 cobs.SetLineStyle(1);
 cobs.SetLineColor(ROOT.kBlack);
-cobs.Smooth();
+#cobs.Smooth();
 
 cexp = h_sexp.Clone("cexp");
+#trick for driving the contour
+for xbin in range(1,cexp.GetNbinsX()+1):
+    for ybin in range(1,cexp.GetNbinsY()+1):
+        if (ybin*50-xbin*25)>400:
+             cexp.SetBinContent(xbin,ybin,1.)
+        else: 
+            if (600+xbin*25)>1500 or (ybin*50>900):
+                cexp.SetBinContent(xbin,ybin,10.)
 contours = array.array('d')
 contours.append(1.0)
 cexp.SetContour(1, contours);
 cexp.SetLineWidth(4);
 cexp.SetLineStyle(1);
 cexp.SetLineColor(ROOT.kRed);
-cexp.Smooth();
+#cexp.Smooth();
+
+csm1 = h_ssm1.Clone("csm1");
+#trick for driving the contour
+for xbin in range(1,csm1.GetNbinsX()+1):
+    for ybin in range(1,csm1.GetNbinsY()+1):
+        if (ybin*50-xbin*25)>400:
+             csm1.SetBinContent(xbin,ybin,1.)
+        else: 
+            if (600+xbin*25)>1500 or (ybin*50>900):
+                csm1.SetBinContent(xbin,ybin,10.)
+contours = array.array('d')
+contours.append(1.0)
+csm1.SetContour(1, contours);
+csm1.SetLineWidth(2);
+csm1.SetLineStyle(3);
+csm1.SetLineColor(ROOT.kRed);
+#csm1.Smooth();
+
+csp1 = h_ssp1.Clone("csp1");
+#trick for driving the contour
+for xbin in range(1,csp1.GetNbinsX()+1):
+    for ybin in range(1,csp1.GetNbinsY()+1):
+        if (ybin*50-xbin*25)>400:
+             csp1.SetBinContent(xbin,ybin,1.)
+        else: 
+            if (600+xbin*25)>1500 or (ybin*50>900):
+                csp1.SetBinContent(xbin,ybin,10.)
+contours = array.array('d')
+contours.append(1.0)
+csp1.SetContour(1, contours);
+csp1.SetLineWidth(2);
+csp1.SetLineStyle(3);
+csp1.SetLineColor(ROOT.kRed);
+#csp1.Smooth();
 
 h_xsec.Draw("colz")
 cobs.Draw("samecont2");
-#cexp.Draw("samecont2");
+cexp.Draw("samecont2");
+csm1.Draw("samecont3");
+csp1.Draw("samecont3");
 
 diag = ROOT.TLine(625,450,1700,1500)
 diag.SetLineWidth(2)
@@ -183,7 +314,7 @@ l1.SetTextSize(0.038)
 l1.SetShadowColor(ROOT.kWhite)
 l1.SetFillColor(ROOT.kWhite)
 l1.SetHeader("pp #rightarrow #tilde{g} #tilde{g}, #tilde{g}#rightarrow t#bar{t}#tilde{#chi}^{0}_{1} 95% CL NLO Exclusions")
-l1.AddEntry(cexp , "Expected limit"            , "l")#, #pm 1 #sigma_{exp.}
+l1.AddEntry(cexp , "Expected limit, #pm 1 #sigma_{exp.}", "l")
 l1.AddEntry(cobs , "Observed limit"            , "l")
 
 
@@ -201,10 +332,12 @@ cmstexbold.SetLineWidth(2)
 cmstexbold.SetTextFont(62)
 cmstexbold.Draw()
 
+padt.Update()
 padt.RedrawAxis();
 l1.Draw("same")
 
 c1.SaveAs("xsec.png")
+c1.SaveAs("t1ttt_scan_xsec.pdf")
 
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
@@ -217,7 +350,7 @@ h_sobs.GetXaxis().SetTitleOffset(1.1)
 h_sobs.GetYaxis().SetTitleOffset(1.6)
 h_sobs.GetZaxis().SetTitleOffset(1.6)
 h_sobs.Draw("colz")
-#contourplot.Draw("samecont2");
+cobs.Draw("samecont2");
 c1.SaveAs("sobs.png")
 
 h_sexp.GetXaxis().SetLabelSize(0.035)
@@ -231,4 +364,5 @@ h_sexp.GetXaxis().SetTitleOffset(1.1)
 h_sexp.GetYaxis().SetTitleOffset(1.6)
 h_sexp.GetZaxis().SetTitleOffset(1.6)
 h_sexp.Draw("colz")
+cexp.Draw("samecont2");
 c1.SaveAs("sexp.png")
