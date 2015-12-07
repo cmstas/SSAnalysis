@@ -2380,25 +2380,25 @@ void getyields(){
   if (doLatex) cout << "\\hline\\hline" << endl;
   for (int bin=1;bin<=p_ttw.SRHH.TOTAL->GetNbinsX(); ++bin) {
     cout << Form(HHline.Data(),bin,
-		 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,
-		 p_ttzh.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,
-		 p_wz.SRHH.TOTAL->GetBinContent(bin),p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,
-		 p_ww.SRHH.TOTAL->GetBinContent(bin),p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,
-		 p_xg.SRHH.TOTAL->GetBinContent(bin),p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,
-		 p_rares.SRHH.TOTAL->GetBinContent(bin),p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,
-		 p_flips.SRHH.TOTAL->GetBinContent(bin),p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,
-		 p_fakes.SRHH.TOTAL->GetBinContent(bin),p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,
-		 (p_ttw.SRHH.TOTAL->GetBinContent(bin)+p_ttzh.SRHH.TOTAL->GetBinContent(bin)+p_wz.SRHH.TOTAL->GetBinContent(bin)+
-		  p_ww.SRHH.TOTAL->GetBinContent(bin)+p_xg.SRHH.TOTAL->GetBinContent(bin)+
-		  p_rares.SRHH.TOTAL->GetBinContent(bin)+p_flips.SRHH.TOTAL->GetBinContent(bin)+p_fakes.SRHH.TOTAL->GetBinContent(bin)),
-		 sqrt(pow(p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
-		  pow(p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,2)+
-		  pow(p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
-		      pow(p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,2)),
-		 p_data.SRHH.TOTAL->GetBinContent(bin),
-		 p_t1tttt_1200.SRHH.TOTAL->GetBinContent(bin)
-		 )
-	 << endl;
+    	 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,
+    	 p_ttzh.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,
+    	 p_wz.SRHH.TOTAL->GetBinContent(bin),p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,
+    	 p_ww.SRHH.TOTAL->GetBinContent(bin),p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,
+    	 p_xg.SRHH.TOTAL->GetBinContent(bin),p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,
+    	 p_rares.SRHH.TOTAL->GetBinContent(bin),p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,
+    	 p_flips.SRHH.TOTAL->GetBinContent(bin),p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,
+    	 p_fakes.SRHH.TOTAL->GetBinContent(bin),p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,
+    	 (p_ttw.SRHH.TOTAL->GetBinContent(bin)+p_ttzh.SRHH.TOTAL->GetBinContent(bin)+p_wz.SRHH.TOTAL->GetBinContent(bin)+
+    	  p_ww.SRHH.TOTAL->GetBinContent(bin)+p_xg.SRHH.TOTAL->GetBinContent(bin)+
+    	  p_rares.SRHH.TOTAL->GetBinContent(bin)+p_flips.SRHH.TOTAL->GetBinContent(bin)+p_fakes.SRHH.TOTAL->GetBinContent(bin)),
+    	 sqrt(pow(p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
+    	  pow(p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,2)+
+    	  pow(p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
+    	      pow(p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,2)),
+    	 p_data.SRHH.TOTAL->GetBinContent(bin),
+    	 p_t1tttt_1200.SRHH.TOTAL->GetBinContent(bin)
+    	 )
+     << endl;
   }
   if (doLatex) {
     cout << "\\hline" << endl;
@@ -2422,25 +2422,25 @@ void getyields(){
   if (doLatex) cout << "\\hline\\hline" << endl;
   for (int bin=1;bin<=p_ttw.SRHL.TOTAL->GetNbinsX(); ++bin) {
     cout << Form(HLline.Data(),bin,
-		 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,
-		 p_ttzh.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,
-		 p_wz.SRHL.TOTAL->GetBinContent(bin),p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,
-		 p_ww.SRHL.TOTAL->GetBinContent(bin),p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,
-		 p_xg.SRHL.TOTAL->GetBinContent(bin),p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,
-		 p_rares.SRHL.TOTAL->GetBinContent(bin),p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,
-		 p_flips.SRHL.TOTAL->GetBinContent(bin),p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
-		 p_fakes.SRHL.TOTAL->GetBinContent(bin),p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
-		 (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+p_wz.SRHL.TOTAL->GetBinContent(bin)+
-		  p_ww.SRHL.TOTAL->GetBinContent(bin)+p_xg.SRHL.TOTAL->GetBinContent(bin)+
-		  p_rares.SRHL.TOTAL->GetBinContent(bin)+p_flips.SRHL.TOTAL->GetBinContent(bin)+p_fakes.SRHL.TOTAL->GetBinContent(bin)),
-		 sqrt(pow(p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
-		  pow(p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
-		  pow(p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
-		      pow(p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
-		 p_data.SRHL.TOTAL->GetBinContent(bin),
-		 p_t1tttt_1200.SRHL.TOTAL->GetBinContent(bin)
-		 )
-	 << endl;
+    	 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,
+    	 p_ttzh.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,
+    	 p_wz.SRHL.TOTAL->GetBinContent(bin),p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,
+    	 p_ww.SRHL.TOTAL->GetBinContent(bin),p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,
+    	 p_xg.SRHL.TOTAL->GetBinContent(bin),p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,
+    	 p_rares.SRHL.TOTAL->GetBinContent(bin),p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,
+    	 p_flips.SRHL.TOTAL->GetBinContent(bin),p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
+    	 p_fakes.SRHL.TOTAL->GetBinContent(bin),p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
+    	 (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+p_wz.SRHL.TOTAL->GetBinContent(bin)+
+    	  p_ww.SRHL.TOTAL->GetBinContent(bin)+p_xg.SRHL.TOTAL->GetBinContent(bin)+
+    	  p_rares.SRHL.TOTAL->GetBinContent(bin)+p_flips.SRHL.TOTAL->GetBinContent(bin)+p_fakes.SRHL.TOTAL->GetBinContent(bin)),
+    	 sqrt(pow(p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
+    	  pow(p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
+    	  pow(p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
+    	      pow(p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
+    	 p_data.SRHL.TOTAL->GetBinContent(bin),
+    	 p_t1tttt_1200.SRHL.TOTAL->GetBinContent(bin)
+    	 )
+     << endl;
   }
   if (doLatex) {
     cout << "\\hline" << endl;
@@ -2464,25 +2464,25 @@ void getyields(){
   if (doLatex) cout << "\\hline\\hline" << endl;
   for (int bin=1;bin<=p_ttw.SRLL.TOTAL->GetNbinsX(); ++bin) {
     cout << Form(LLline.Data(),bin,
-		 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,
-		 p_ttzh.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,
-		 p_wz.SRLL.TOTAL->GetBinContent(bin),p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,
-		 p_ww.SRLL.TOTAL->GetBinContent(bin),p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,
-		 p_xg.SRLL.TOTAL->GetBinContent(bin),p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,
-		 p_rares.SRLL.TOTAL->GetBinContent(bin),p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,
-		 p_flips.SRLL.TOTAL->GetBinContent(bin),p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
-		 p_fakes.SRLL.TOTAL->GetBinContent(bin),p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
-		 (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+p_wz.SRLL.TOTAL->GetBinContent(bin)+
-		  p_ww.SRLL.TOTAL->GetBinContent(bin)+p_xg.SRLL.TOTAL->GetBinContent(bin)+
-		  p_rares.SRLL.TOTAL->GetBinContent(bin)+p_flips.SRLL.TOTAL->GetBinContent(bin)+p_fakes.SRLL.TOTAL->GetBinContent(bin)),
-		 sqrt(pow(p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
-		  pow(p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
-		  pow(p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
-		      pow(p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
-		 p_data.SRLL.TOTAL->GetBinContent(bin),
-		 p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
-		 )
-	 << endl;
+    	 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,
+    	 p_ttzh.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,
+    	 p_wz.SRLL.TOTAL->GetBinContent(bin),p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,
+    	 p_ww.SRLL.TOTAL->GetBinContent(bin),p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,
+    	 p_xg.SRLL.TOTAL->GetBinContent(bin),p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,
+    	 p_rares.SRLL.TOTAL->GetBinContent(bin),p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,
+    	 p_flips.SRLL.TOTAL->GetBinContent(bin),p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
+    	 p_fakes.SRLL.TOTAL->GetBinContent(bin),p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
+    	 (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+p_wz.SRLL.TOTAL->GetBinContent(bin)+
+    	  p_ww.SRLL.TOTAL->GetBinContent(bin)+p_xg.SRLL.TOTAL->GetBinContent(bin)+
+    	  p_rares.SRLL.TOTAL->GetBinContent(bin)+p_flips.SRLL.TOTAL->GetBinContent(bin)+p_fakes.SRLL.TOTAL->GetBinContent(bin)),
+    	 sqrt(pow(p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
+    	  pow(p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
+    	  pow(p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
+    	      pow(p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
+    	 p_data.SRLL.TOTAL->GetBinContent(bin),
+    	 p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
+    	 )
+     << endl;
   }
   if (doLatex) {
     cout << "\\hline" << endl;
@@ -3108,23 +3108,51 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   }
 
   //For XSEC variations
-  plots_t p_xsec_alt_up;
-  plots_t p_xsec_alt_dn;
+  plots_t p_scale_alt_up;
+  plots_t p_scale_alt_dn;
+  plots_t p_pdf_alt_up;
+  plots_t p_pdf_alt_dn;
+  plots_t p_alpha_alt_up;
+  plots_t p_alpha_alt_dn;
   if (isFastSimSignal) {
-    p_xsec_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_XSEC_UP_TOTAL_%s", chainTitleCh), Form("SRHH_XSEC_UP_TOTAL_%s", chainTitleCh), 32, 1, 33); p_xsec_alt_up.SRHH.TOTAL->Sumw2();
-    p_xsec_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_XSEC_UP_TOTAL_%s", chainTitleCh), Form("SRHL_XSEC_UP_TOTAL_%s", chainTitleCh), 26, 1, 27); p_xsec_alt_up.SRHL.TOTAL->Sumw2();
-    p_xsec_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_XSEC_UP_TOTAL_%s", chainTitleCh), Form("SRLL_XSEC_UP_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_xsec_alt_up.SRLL.TOTAL->Sumw2();
-    p_xsec_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_XSEC_DN_TOTAL_%s", chainTitleCh), Form("SRHH_XSEC_DN_TOTAL_%s", chainTitleCh), 32, 1, 33); p_xsec_alt_dn.SRHH.TOTAL->Sumw2();
-    p_xsec_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_XSEC_DN_TOTAL_%s", chainTitleCh), Form("SRHL_XSEC_DN_TOTAL_%s", chainTitleCh), 26, 1, 27); p_xsec_alt_dn.SRHL.TOTAL->Sumw2();
-    p_xsec_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_XSEC_DN_TOTAL_%s", chainTitleCh), Form("SRLL_XSEC_DN_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_xsec_alt_dn.SRLL.TOTAL->Sumw2();
+    p_scale_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRHH_SCALE_UP_TOTAL_%s", chainTitleCh), 32, 1, 33); p_scale_alt_up.SRHH.TOTAL->Sumw2();
+    p_scale_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRHL_SCALE_UP_TOTAL_%s", chainTitleCh), 26, 1, 27); p_scale_alt_up.SRHL.TOTAL->Sumw2();
+    p_scale_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRLL_SCALE_UP_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_scale_alt_up.SRLL.TOTAL->Sumw2();
+    p_scale_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_SCALE_DN_TOTAL_%s", chainTitleCh), Form("SRHH_SCALE_DN_TOTAL_%s", chainTitleCh), 32, 1, 33); p_scale_alt_dn.SRHH.TOTAL->Sumw2();
+    p_scale_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_SCALE_DN_TOTAL_%s", chainTitleCh), Form("SRHL_SCALE_DN_TOTAL_%s", chainTitleCh), 26, 1, 27); p_scale_alt_dn.SRHL.TOTAL->Sumw2();
+    p_scale_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_SCALE_DN_TOTAL_%s", chainTitleCh), Form("SRLL_SCALE_DN_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_scale_alt_dn.SRLL.TOTAL->Sumw2();
+    p_pdf_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_PDF_UP_TOTAL_%s", chainTitleCh), Form("SRHH_PDF_UP_TOTAL_%s", chainTitleCh), 32, 1, 33); p_pdf_alt_up.SRHH.TOTAL->Sumw2();
+    p_pdf_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_PDF_UP_TOTAL_%s", chainTitleCh), Form("SRHL_PDF_UP_TOTAL_%s", chainTitleCh), 26, 1, 27); p_pdf_alt_up.SRHL.TOTAL->Sumw2();
+    p_pdf_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_PDF_UP_TOTAL_%s", chainTitleCh), Form("SRLL_PDF_UP_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_pdf_alt_up.SRLL.TOTAL->Sumw2();
+    p_pdf_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRHH_PDF_DN_TOTAL_%s", chainTitleCh), 32, 1, 33); p_pdf_alt_dn.SRHH.TOTAL->Sumw2();
+    p_pdf_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRHL_PDF_DN_TOTAL_%s", chainTitleCh), 26, 1, 27); p_pdf_alt_dn.SRHL.TOTAL->Sumw2();
+    p_pdf_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRLL_PDF_DN_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_pdf_alt_dn.SRLL.TOTAL->Sumw2();
+    p_alpha_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), 32, 1, 33); p_alpha_alt_up.SRHH.TOTAL->Sumw2();
+    p_alpha_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), 26, 1, 27); p_alpha_alt_up.SRHL.TOTAL->Sumw2();
+    p_alpha_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_alpha_alt_up.SRLL.TOTAL->Sumw2();
+    p_alpha_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRHH_ALPHA_DN_TOTAL_%s", chainTitleCh), 32, 1, 33); p_alpha_alt_dn.SRHH.TOTAL->Sumw2();
+    p_alpha_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRHL_ALPHA_DN_TOTAL_%s", chainTitleCh), 26, 1, 27); p_alpha_alt_dn.SRHL.TOTAL->Sumw2();
+    p_alpha_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRLL_ALPHA_DN_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_alpha_alt_dn.SRLL.TOTAL->Sumw2();
   } 
   else {
-    p_xsec_alt_up.SRHH.TOTAL = 0;
-    p_xsec_alt_up.SRHL.TOTAL = 0;
-    p_xsec_alt_up.SRLL.TOTAL = 0;
-    p_xsec_alt_dn.SRHH.TOTAL = 0;
-    p_xsec_alt_dn.SRHL.TOTAL = 0;
-    p_xsec_alt_dn.SRLL.TOTAL = 0;
+    p_scale_alt_up.SRHH.TOTAL = 0;
+    p_scale_alt_up.SRHL.TOTAL = 0;
+    p_scale_alt_up.SRLL.TOTAL = 0;
+    p_scale_alt_dn.SRHH.TOTAL = 0;
+    p_scale_alt_dn.SRHL.TOTAL = 0;
+    p_scale_alt_dn.SRLL.TOTAL = 0;
+    p_pdf_alt_up.SRHH.TOTAL = 0;
+    p_pdf_alt_up.SRHL.TOTAL = 0;
+    p_pdf_alt_up.SRLL.TOTAL = 0;
+    p_pdf_alt_dn.SRHH.TOTAL = 0;
+    p_pdf_alt_dn.SRHL.TOTAL = 0;
+    p_pdf_alt_dn.SRLL.TOTAL = 0;
+    p_alpha_alt_up.SRHH.TOTAL = 0;
+    p_alpha_alt_up.SRHL.TOTAL = 0;
+    p_alpha_alt_up.SRLL.TOTAL = 0;
+    p_alpha_alt_dn.SRHH.TOTAL = 0;
+    p_alpha_alt_dn.SRHL.TOTAL = 0;
+    p_alpha_alt_dn.SRLL.TOTAL = 0;
   }
 
   //nEvents in chain
@@ -3173,32 +3201,35 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       //Next figure out scale, PDF, and alpha_s variations and fill the histograms
       for (int i = 1; i < 67; i++){
         float nominal  = cs_hist->GetBinContent(200+i); 
-        //cout << __LINE__ << " " << i << " "  << nominal << endl;
-        float scale_up = cs_hist->GetBinContent(300+i); 
-        //cout << __LINE__ << " " << i << " "  << scale_up << endl;
-        float scale_dn = cs_hist->GetBinContent(400+i); 
-        //cout << __LINE__ << " " << i << " "  << scale_dn << endl;
-        float alpha_up = cs_hist->GetBinContent(7600+i); 
-        //cout << __LINE__ << " " << i << " "  << scale_dn << endl;
-        float alpha_dn = cs_hist->GetBinContent(7700+i); 
+        float scale_up = nominal > 0 ? fabs(1-cs_hist->GetBinContent(300+i)/nominal)  : 0; 
+        float scale_dn = nominal > 0 ? fabs(1-cs_hist->GetBinContent(400+i)/nominal)  : 0; 
+        float alpha_up = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7600+i)/nominal) : 0; 
+        float alpha_dn = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7700+i)/nominal) : 0; 
         TH1F *h_pdf = new TH1F("pdf", "pdf", 10000, 0, 1000); 
         for (int j = 0; j < 100; j++){
           h_pdf->Fill(cs_hist->GetBinContent(1000+100*(i-1)+j)); 
         }
         float pdf = h_pdf->GetMean() > 0 ? h_pdf->GetRMS()/nominal : 0; 
-        //cout << __LINE__ << " " << i << " "  << pdf << endl;
         delete h_pdf; 
-        float total_up = sqrt( scale_up*scale_up + pdf*pdf + alpha_up*alpha_up ); 
-        //cout << __LINE__ << " " << i << " "  << total_up << endl;
-        float total_dn = sqrt( scale_dn*scale_dn + pdf*pdf + alpha_dn*alpha_dn ); 
-        if      (i <= 32) p_xsec_alt_up.SRHH.TOTAL->Fill(i,    total_up); 
-        else if (i <= 58) p_xsec_alt_up.SRHL.TOTAL->Fill(i-32, total_up); 
-        else              p_xsec_alt_up.SRLL.TOTAL->Fill(i-58, total_up); 
-        if      (i <= 32) p_xsec_alt_dn.SRHH.TOTAL->Fill(i,    total_dn); 
-        else if (i <= 58) p_xsec_alt_dn.SRHL.TOTAL->Fill(i-32, total_dn); 
-        else              p_xsec_alt_dn.SRLL.TOTAL->Fill(i-58, total_dn); 
+        if      (i <= 32) p_scale_alt_up.SRHH.TOTAL->Fill(i,    scale_up); 
+        else if (i <= 58) p_scale_alt_up.SRHL.TOTAL->Fill(i-32, scale_up); 
+        else              p_scale_alt_up.SRLL.TOTAL->Fill(i-58, scale_up); 
+        if      (i <= 32) p_scale_alt_dn.SRHH.TOTAL->Fill(i,    scale_dn); 
+        else if (i <= 58) p_scale_alt_dn.SRHL.TOTAL->Fill(i-32, scale_dn); 
+        else              p_scale_alt_dn.SRLL.TOTAL->Fill(i-58, scale_dn); 
+        if      (i <= 32) p_pdf_alt_up.SRHH.TOTAL->Fill(i,    pdf); 
+        else if (i <= 58) p_pdf_alt_up.SRHL.TOTAL->Fill(i-32, pdf); 
+        else              p_pdf_alt_up.SRLL.TOTAL->Fill(i-58, pdf); 
+        if      (i <= 32) p_pdf_alt_dn.SRHH.TOTAL->Fill(i,    pdf); 
+        else if (i <= 58) p_pdf_alt_dn.SRHL.TOTAL->Fill(i-32, pdf); 
+        else              p_pdf_alt_dn.SRLL.TOTAL->Fill(i-58, pdf); 
+        if      (i <= 32) p_alpha_alt_up.SRHH.TOTAL->Fill(i,    alpha_up); 
+        else if (i <= 58) p_alpha_alt_up.SRHL.TOTAL->Fill(i-32, alpha_up); 
+        else              p_alpha_alt_up.SRLL.TOTAL->Fill(i-58, alpha_up); 
+        if      (i <= 32) p_alpha_alt_dn.SRHH.TOTAL->Fill(i,    alpha_dn); 
+        else if (i <= 58) p_alpha_alt_dn.SRHL.TOTAL->Fill(i-32, alpha_dn); 
+        else              p_alpha_alt_dn.SRLL.TOTAL->Fill(i-58, alpha_dn); 
       }
-      //cout << p_xsec_alt_up.SRHH.TOTAL->Integral() << endl;
     }
 
     // Loop over Events in current file
@@ -3696,25 +3727,85 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         isrDown->Write();
       }
 
-      //signal xsec
+      //signal scale
       if (isFastSimSignal) {
 	    TH1F* plot_alt = 0;
-        if      (kinRegs[kr] == "hihi")   plot_alt = p_xsec_alt_up.SRHH.TOTAL;
-        else if (kinRegs[kr] == "hilow")  plot_alt = p_xsec_alt_up.SRHL.TOTAL;
-        else if (kinRegs[kr] == "lowlow") plot_alt = p_xsec_alt_up.SRLL.TOTAL;
+        if      (kinRegs[kr] == "hihi")   plot_alt = p_scale_alt_up.SRHH.TOTAL;
+        else if (kinRegs[kr] == "hilow")  plot_alt = p_scale_alt_up.SRHL.TOTAL;
+        else if (kinRegs[kr] == "lowlow") plot_alt = p_scale_alt_up.SRLL.TOTAL;
         else exit(1);
-        TH1F* xsecUp = (TH1F*) plot_alt->Clone("xsecUp");
-        avoidNegativeYields(xsecUp);
-        xsecUp->Scale(h_sr->Integral()/xsecUp->Integral());
-        xsecUp->Write();
-        if      (kinRegs[kr] == "hihi")   plot_alt = p_xsec_alt_dn.SRHH.TOTAL;
-        else if (kinRegs[kr] == "hilow")  plot_alt = p_xsec_alt_dn.SRHL.TOTAL;
-        else if (kinRegs[kr] == "lowlow") plot_alt = p_xsec_alt_dn.SRLL.TOTAL;
+        for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
+          plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1+plot_alt->GetBinContent(bin))); 
+        }
+        TH1F* scaleUp = (TH1F*) plot_alt->Clone("scaleUp");
+        avoidNegativeYields(scaleUp);
+        scaleUp->Scale(h_sr->Integral()/scaleUp->Integral());
+        scaleUp->Write();
+        if      (kinRegs[kr] == "hihi")   plot_alt = p_scale_alt_dn.SRHH.TOTAL;
+        else if (kinRegs[kr] == "hilow")  plot_alt = p_scale_alt_dn.SRHL.TOTAL;
+        else if (kinRegs[kr] == "lowlow") plot_alt = p_scale_alt_dn.SRLL.TOTAL;
         else exit(1);
-        TH1F* xsecDn = (TH1F*) plot_alt->Clone("xsecDown");
-        avoidNegativeYields(xsecDn);
-        xsecDn->Scale(h_sr->Integral()/xsecDn->Integral());
-        xsecDn->Write();
+        for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
+          plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1-plot_alt->GetBinContent(bin))); 
+        }
+        TH1F* scaleDn = (TH1F*) plot_alt->Clone("scaleDown");
+        avoidNegativeYields(scaleDn);
+        scaleDn->Scale(h_sr->Integral()/scaleDn->Integral());
+        scaleDn->Write();
+      }
+
+      //signal pdf
+      if (isFastSimSignal) {
+	    TH1F* plot_alt = 0;
+        if      (kinRegs[kr] == "hihi")   plot_alt = p_pdf_alt_up.SRHH.TOTAL;
+        else if (kinRegs[kr] == "hilow")  plot_alt = p_pdf_alt_up.SRHL.TOTAL;
+        else if (kinRegs[kr] == "lowlow") plot_alt = p_pdf_alt_up.SRLL.TOTAL;
+        else exit(1);
+        for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
+          plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1+plot_alt->GetBinContent(bin))); 
+        }
+        TH1F* pdfUp = (TH1F*) plot_alt->Clone("pdfUp");
+        avoidNegativeYields(pdfUp);
+        pdfUp->Scale(h_sr->Integral()/pdfUp->Integral());
+        pdfUp->Write();
+        if      (kinRegs[kr] == "hihi")   plot_alt = p_pdf_alt_dn.SRHH.TOTAL;
+        else if (kinRegs[kr] == "hilow")  plot_alt = p_pdf_alt_dn.SRHL.TOTAL;
+        else if (kinRegs[kr] == "lowlow") plot_alt = p_pdf_alt_dn.SRLL.TOTAL;
+        else exit(1);
+        for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
+          plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1-plot_alt->GetBinContent(bin))); 
+        }
+        TH1F* pdfDn = (TH1F*) plot_alt->Clone("pdfDown");
+        avoidNegativeYields(pdfDn);
+        pdfDn->Scale(h_sr->Integral()/pdfDn->Integral());
+        pdfDn->Write();
+      }
+
+      //signal alpha
+      if (isFastSimSignal) {
+	    TH1F* plot_alt = 0;
+        if      (kinRegs[kr] == "hihi")   plot_alt = p_alpha_alt_up.SRHH.TOTAL;
+        else if (kinRegs[kr] == "hilow")  plot_alt = p_alpha_alt_up.SRHL.TOTAL;
+        else if (kinRegs[kr] == "lowlow") plot_alt = p_alpha_alt_up.SRLL.TOTAL;
+        else exit(1);
+        for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
+          plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1+plot_alt->GetBinContent(bin))); 
+        }
+        TH1F* alphaUp = (TH1F*) plot_alt->Clone("alphaUp");
+        avoidNegativeYields(alphaUp);
+        alphaUp->Scale(h_sr->Integral()/alphaUp->Integral());
+        alphaUp->Write();
+        if      (kinRegs[kr] == "hihi")   plot_alt = p_alpha_alt_dn.SRHH.TOTAL;
+        else if (kinRegs[kr] == "hilow")  plot_alt = p_alpha_alt_dn.SRHL.TOTAL;
+        else if (kinRegs[kr] == "lowlow") plot_alt = p_alpha_alt_dn.SRLL.TOTAL;
+        else exit(1);
+        for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
+          plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1-plot_alt->GetBinContent(bin))); 
+        }
+        TH1F* alphaDn = (TH1F*) plot_alt->Clone("alphaDown");
+        avoidNegativeYields(alphaDn);
+        alphaDn->Scale(h_sr->Integral()/alphaDn->Integral());
+        alphaDn->Write();
       }
 
       //fakes ewk
