@@ -1511,1444 +1511,1444 @@ void getyields(){
 
 
   //Get yields
-  //pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
-  //ttbar_chain->SetTitle("ttbar_fa");
-  //pair<yields_t, plots_t> results_ttbar_fa = run(ttbar_chain, 0, 0, 0, 1);
-  //ttbar_chain->SetTitle("ttbar_fl");
-  //pair<yields_t, plots_t> results_ttbar_fl = run(ttbar_chain, 0, 0, 0, 2);
-  //ttbar_chain->SetTitle("ttbar_ff");
-  //pair<yields_t, plots_t> results_ttbar_ff = run(ttbar_chain, 0, 0, 0, 3);
-  //pair<yields_t, plots_t> results_st       = run(st_chain);
-  //st_chain->SetTitle("st_ff");
-  //pair<yields_t, plots_t> results_st_ff    = run(st_chain, 0, 0, 0, 3);
-  //pair<yields_t, plots_t> results_wjets    = run(wjets_chain);
-  //wjets_chain->SetTitle("wjets_ff");
-  //pair<yields_t, plots_t> results_wjets_ff = run(wjets_chain, 0, 0, 0, 3);
-  //pair<yields_t, plots_t> results_dy       = run(dy_chain);
-  //dy_chain->SetTitle("dy_ff");
-  //pair<yields_t, plots_t> results_dy_ff    = run(dy_chain, 0, 0, 0, 3);
+  pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
+  ttbar_chain->SetTitle("ttbar_fa");
+  pair<yields_t, plots_t> results_ttbar_fa = run(ttbar_chain, 0, 0, 0, 1);
+  ttbar_chain->SetTitle("ttbar_fl");
+  pair<yields_t, plots_t> results_ttbar_fl = run(ttbar_chain, 0, 0, 0, 2);
+  ttbar_chain->SetTitle("ttbar_ff");
+  pair<yields_t, plots_t> results_ttbar_ff = run(ttbar_chain, 0, 0, 0, 3);
+  pair<yields_t, plots_t> results_st       = run(st_chain);
+  st_chain->SetTitle("st_ff");
+  pair<yields_t, plots_t> results_st_ff    = run(st_chain, 0, 0, 0, 3);
+  pair<yields_t, plots_t> results_wjets    = run(wjets_chain);
+  wjets_chain->SetTitle("wjets_ff");
+  pair<yields_t, plots_t> results_wjets_ff = run(wjets_chain, 0, 0, 0, 3);
+  pair<yields_t, plots_t> results_dy       = run(dy_chain);
+  dy_chain->SetTitle("dy_ff");
+  pair<yields_t, plots_t> results_dy_ff    = run(dy_chain, 0, 0, 0, 3);
 
-  //pair<yields_t, plots_t> results_ttw      = run(ttw_chain);
-  //pair<yields_t, plots_t> results_ttzh     = run(ttzh_chain);
-  //pair<yields_t, plots_t> results_wz       = run(wz_chain);
-  //pair<yields_t, plots_t> results_ww       = run(ww_chain);
+  pair<yields_t, plots_t> results_ttw      = run(ttw_chain);
+  pair<yields_t, plots_t> results_ttzh     = run(ttzh_chain);
+  pair<yields_t, plots_t> results_wz       = run(wz_chain);
+  pair<yields_t, plots_t> results_ww       = run(ww_chain);
 
-  //pair<yields_t, plots_t> results_xg       = run(xg_chain, 0, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_rares    = run(rares_chain);
+  pair<yields_t, plots_t> results_xg       = run(xg_chain, 0, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_rares    = run(rares_chain);
 
-  //pair<yields_t, plots_t> results_data     = run(data_chain, 1);
-  //duplicate_removal::clear_list();
-  //pair<yields_t, plots_t> results_flips    = run(flips_chain, 1, 1);
-  //duplicate_removal::clear_list();
-  //ttbar_chain->SetTitle("fakes_mc");
-  //pair<yields_t, plots_t> results_fakes_mc = run(ttbar_chain, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fakes    = run(fakes_chain, 1, 0, 1);
-  //duplicate_removal::clear_list();
-  //fakes_chain->SetTitle("fakes_is");
-  //pair<yields_t, plots_t> results_fakes_is = run(fakes_chain, 1, 0, 2);
+  pair<yields_t, plots_t> results_data     = run(data_chain, 1);
+  duplicate_removal::clear_list();
+  pair<yields_t, plots_t> results_flips    = run(flips_chain, 1, 1);
+  duplicate_removal::clear_list();
+  ttbar_chain->SetTitle("fakes_mc");
+  pair<yields_t, plots_t> results_fakes_mc = run(ttbar_chain, 0, 0, 1);
+  pair<yields_t, plots_t> results_fakes    = run(fakes_chain, 1, 0, 1);
+  duplicate_removal::clear_list();
+  fakes_chain->SetTitle("fakes_is");
+  pair<yields_t, plots_t> results_fakes_is = run(fakes_chain, 1, 0, 2);
 
-  //pair<yields_t, plots_t> results_t1tttt_1200 = run(t1tttt_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_t1tttt_1500 = run(t1tttt_1500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_t5tttt_deg  = run(t5tttt_deg_chain , 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_t5qqqq_1200 = run(t5qqqq_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_t6ttww_650  = run(t6ttww_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_t6ttww_600  = run(t6ttww_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_t5qqqqww_1200 = run(t5qqqqww_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_t5qqqqww_deg  = run(t5qqqqww_deg_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t1tttt_1200 = run(t1tttt_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t1tttt_1500 = run(t1tttt_1500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t5tttt_deg  = run(t5tttt_deg_chain , 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t5qqqq_1200 = run(t5qqqq_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t6ttww_650  = run(t6ttww_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t6ttww_600  = run(t6ttww_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t5qqqqww_1200 = run(t5qqqqww_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_t5qqqqww_deg  = run(t5qqqqww_deg_chain, 0, 0, 0, 0, 1);
 
   pair<yields_t, plots_t> results_fs_t1tttt_1100_600 = run(fs_t1tttt_1100_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_775 = run(fs_t1tttt_1100_775_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_750 = run(fs_t1tttt_1100_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_0 = run(fs_t1tttt_1100_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_300 = run(fs_t1tttt_1100_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_200 = run(fs_t1tttt_1100_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_500 = run(fs_t1tttt_1100_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_250 = run(fs_t1tttt_1100_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_100 = run(fs_t1tttt_1100_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_450 = run(fs_t1tttt_1100_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_50 = run(fs_t1tttt_1100_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_150 = run(fs_t1tttt_1100_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_350 = run(fs_t1tttt_1100_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_700 = run(fs_t1tttt_1100_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_725 = run(fs_t1tttt_1100_725_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_400 = run(fs_t1tttt_1100_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_550 = run(fs_t1tttt_1100_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_650 = run(fs_t1tttt_1100_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1125_700 = run(fs_t1tttt_1125_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1125_850 = run(fs_t1tttt_1125_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1125_800 = run(fs_t1tttt_1125_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1125_875 = run(fs_t1tttt_1125_875_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_825 = run(fs_t1tttt_1100_825_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_875 = run(fs_t1tttt_1100_875_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_850 = run(fs_t1tttt_1100_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1125_825 = run(fs_t1tttt_1125_825_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1125_725 = run(fs_t1tttt_1125_725_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1125_750 = run(fs_t1tttt_1125_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1100_800 = run(fs_t1tttt_1100_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1125_900 = run(fs_t1tttt_1125_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1125_775 = run(fs_t1tttt_1125_775_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_150 = run(fs_t1tttt_1150_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_800 = run(fs_t1tttt_1150_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_200 = run(fs_t1tttt_1150_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_775 = run(fs_t1tttt_1150_775_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_350 = run(fs_t1tttt_1150_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_50 = run(fs_t1tttt_1150_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_550 = run(fs_t1tttt_1150_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_250 = run(fs_t1tttt_1150_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_400 = run(fs_t1tttt_1150_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_650 = run(fs_t1tttt_1150_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_0 = run(fs_t1tttt_1150_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_100 = run(fs_t1tttt_1150_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_750 = run(fs_t1tttt_1150_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_700 = run(fs_t1tttt_1150_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_300 = run(fs_t1tttt_1150_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_450 = run(fs_t1tttt_1150_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_600 = run(fs_t1tttt_1150_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_500 = run(fs_t1tttt_1150_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1175_925 = run(fs_t1tttt_1175_925_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1175_775 = run(fs_t1tttt_1175_775_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1175_850 = run(fs_t1tttt_1175_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1175_900 = run(fs_t1tttt_1175_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1175_800 = run(fs_t1tttt_1175_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_900 = run(fs_t1tttt_1150_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1175_875 = run(fs_t1tttt_1175_875_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1175_825 = run(fs_t1tttt_1175_825_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_925 = run(fs_t1tttt_1150_925_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_825 = run(fs_t1tttt_1150_825_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_875 = run(fs_t1tttt_1150_875_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1150_850 = run(fs_t1tttt_1150_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1175_750 = run(fs_t1tttt_1175_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1175_950 = run(fs_t1tttt_1175_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_350 = run(fs_t1tttt_1200_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_550 = run(fs_t1tttt_1200_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_400 = run(fs_t1tttt_1200_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_500 = run(fs_t1tttt_1200_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_600 = run(fs_t1tttt_1200_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_450 = run(fs_t1tttt_1200_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_50 = run(fs_t1tttt_1200_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_700 = run(fs_t1tttt_1200_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_100 = run(fs_t1tttt_1200_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_150 = run(fs_t1tttt_1200_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_200 = run(fs_t1tttt_1200_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_825 = run(fs_t1tttt_1200_825_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_300 = run(fs_t1tttt_1200_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_800 = run(fs_t1tttt_1200_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_250 = run(fs_t1tttt_1200_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_650 = run(fs_t1tttt_1200_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_0 = run(fs_t1tttt_1200_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_750 = run(fs_t1tttt_1200_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_975 = run(fs_t1tttt_1200_975_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1225_825 = run(fs_t1tttt_1225_825_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1225_875 = run(fs_t1tttt_1225_875_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1225_850 = run(fs_t1tttt_1225_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1225_925 = run(fs_t1tttt_1225_925_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1225_800 = run(fs_t1tttt_1225_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_900 = run(fs_t1tttt_1200_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_925 = run(fs_t1tttt_1200_925_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1225_900 = run(fs_t1tttt_1225_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_950 = run(fs_t1tttt_1200_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1225_1000 = run(fs_t1tttt_1225_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_875 = run(fs_t1tttt_1200_875_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1200_850 = run(fs_t1tttt_1200_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1275_1050 = run(fs_t1tttt_1275_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1275_875 = run(fs_t1tttt_1275_875_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1275_850 = run(fs_t1tttt_1275_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1275_1000 = run(fs_t1tttt_1275_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1275_1025 = run(fs_t1tttt_1275_1025_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1250_925 = run(fs_t1tttt_1250_925_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1250_950 = run(fs_t1tttt_1250_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1250_700 = run(fs_t1tttt_1250_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1250_750 = run(fs_t1tttt_1250_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1250_900 = run(fs_t1tttt_1250_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1250_800 = run(fs_t1tttt_1250_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1250_850 = run(fs_t1tttt_1250_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1250_975 = run(fs_t1tttt_1250_975_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1250_875 = run(fs_t1tttt_1250_875_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1275_925 = run(fs_t1tttt_1275_925_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1275_950 = run(fs_t1tttt_1275_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1275_975 = run(fs_t1tttt_1275_975_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1275_900 = run(fs_t1tttt_1275_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_1025 = run(fs_t1tttt_1300_1025_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_400 = run(fs_t1tttt_1300_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_500 = run(fs_t1tttt_1300_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_550 = run(fs_t1tttt_1300_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_50 = run(fs_t1tttt_1300_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_1075 = run(fs_t1tttt_1300_1075_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_600 = run(fs_t1tttt_1300_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_450 = run(fs_t1tttt_1300_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_0 = run(fs_t1tttt_1300_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_1000 = run(fs_t1tttt_1300_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_1050 = run(fs_t1tttt_1300_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_150 = run(fs_t1tttt_1300_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_100 = run(fs_t1tttt_1300_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_650 = run(fs_t1tttt_1300_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_300 = run(fs_t1tttt_1300_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_200 = run(fs_t1tttt_1300_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_350 = run(fs_t1tttt_1300_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_250 = run(fs_t1tttt_1300_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_800 = run(fs_t1tttt_1300_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_925 = run(fs_t1tttt_1300_925_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_950 = run(fs_t1tttt_1300_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1325_1075 = run(fs_t1tttt_1325_1075_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_900 = run(fs_t1tttt_1300_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_850 = run(fs_t1tttt_1300_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1325_1000 = run(fs_t1tttt_1325_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1325_900 = run(fs_t1tttt_1325_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1325_1025 = run(fs_t1tttt_1325_1025_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1325_1050 = run(fs_t1tttt_1325_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_975 = run(fs_t1tttt_1300_975_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_700 = run(fs_t1tttt_1300_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1300_750 = run(fs_t1tttt_1300_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1325_1100 = run(fs_t1tttt_1325_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_350 = run(fs_t1tttt_1350_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_400 = run(fs_t1tttt_1350_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_550 = run(fs_t1tttt_1350_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_450 = run(fs_t1tttt_1350_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_500 = run(fs_t1tttt_1350_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_600 = run(fs_t1tttt_1350_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1375_1025 = run(fs_t1tttt_1375_1025_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_700 = run(fs_t1tttt_1350_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_750 = run(fs_t1tttt_1350_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_950 = run(fs_t1tttt_1350_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_975 = run(fs_t1tttt_1350_975_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1375_1000 = run(fs_t1tttt_1375_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_50 = run(fs_t1tttt_1350_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_800 = run(fs_t1tttt_1350_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_850 = run(fs_t1tttt_1350_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_900 = run(fs_t1tttt_1350_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_650 = run(fs_t1tttt_1350_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_800 = run(fs_t1tttt_1400_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_950 = run(fs_t1tttt_1400_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_850 = run(fs_t1tttt_1400_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_900 = run(fs_t1tttt_1400_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1425_1050 = run(fs_t1tttt_1425_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1425_1100 = run(fs_t1tttt_1425_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_550 = run(fs_t1tttt_1400_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_750 = run(fs_t1tttt_1400_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_600 = run(fs_t1tttt_1400_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1425_1000 = run(fs_t1tttt_1425_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1425_1075 = run(fs_t1tttt_1425_1075_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1425_1025 = run(fs_t1tttt_1425_1025_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_50 = run(fs_t1tttt_1400_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_700 = run(fs_t1tttt_1400_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_450 = run(fs_t1tttt_1400_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_500 = run(fs_t1tttt_1400_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_650 = run(fs_t1tttt_1400_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1425_1125 = run(fs_t1tttt_1425_1125_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1425_1150 = run(fs_t1tttt_1425_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1425_1175 = run(fs_t1tttt_1425_1175_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_1075 = run(fs_t1tttt_1450_1075_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_1125 = run(fs_t1tttt_1450_1125_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_1150 = run(fs_t1tttt_1450_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_1175 = run(fs_t1tttt_1450_1175_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_1100 = run(fs_t1tttt_1450_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_1200 = run(fs_t1tttt_1450_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_1050 = run(fs_t1tttt_1450_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_0 = run(fs_t1tttt_1450_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_150 = run(fs_t1tttt_1450_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_200 = run(fs_t1tttt_1450_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_1000 = run(fs_t1tttt_1450_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_100 = run(fs_t1tttt_1450_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_300 = run(fs_t1tttt_1450_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1475_1075 = run(fs_t1tttt_1475_1075_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_350 = run(fs_t1tttt_1450_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_600 = run(fs_t1tttt_1450_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_750 = run(fs_t1tttt_1450_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1475_1050 = run(fs_t1tttt_1475_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_450 = run(fs_t1tttt_1450_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_650 = run(fs_t1tttt_1450_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_550 = run(fs_t1tttt_1450_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_700 = run(fs_t1tttt_1450_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_950 = run(fs_t1tttt_1450_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_800 = run(fs_t1tttt_1450_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_850 = run(fs_t1tttt_1450_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_250 = run(fs_t1tttt_1450_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_50 = run(fs_t1tttt_1450_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_400 = run(fs_t1tttt_1450_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_900 = run(fs_t1tttt_1450_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1450_500 = run(fs_t1tttt_1450_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_1125 = run(fs_t1tttt_1500_1125_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_1150 = run(fs_t1tttt_1500_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1475_1100 = run(fs_t1tttt_1475_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1475_1125 = run(fs_t1tttt_1475_1125_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1475_1150 = run(fs_t1tttt_1475_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_1050 = run(fs_t1tttt_1500_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1475_1175 = run(fs_t1tttt_1475_1175_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_0 = run(fs_t1tttt_1500_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_1000 = run(fs_t1tttt_1500_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_1250 = run(fs_t1tttt_1500_1250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_1175 = run(fs_t1tttt_1500_1175_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_1200 = run(fs_t1tttt_1500_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_1100 = run(fs_t1tttt_1500_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_150 = run(fs_t1tttt_1500_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_100 = run(fs_t1tttt_1500_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_350 = run(fs_t1tttt_1500_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_50 = run(fs_t1tttt_1500_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_700 = run(fs_t1tttt_1500_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_650 = run(fs_t1tttt_1500_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_600 = run(fs_t1tttt_1500_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_800 = run(fs_t1tttt_1500_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_850 = run(fs_t1tttt_1500_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_900 = run(fs_t1tttt_1500_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_950 = run(fs_t1tttt_1500_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_750 = run(fs_t1tttt_1500_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1525_1125 = run(fs_t1tttt_1525_1125_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1525_1100 = run(fs_t1tttt_1525_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_250 = run(fs_t1tttt_1500_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_300 = run(fs_t1tttt_1500_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_400 = run(fs_t1tttt_1500_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_500 = run(fs_t1tttt_1500_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_550 = run(fs_t1tttt_1500_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_450 = run(fs_t1tttt_1500_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1500_200 = run(fs_t1tttt_1500_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_1050 = run(fs_t1tttt_1600_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_1150 = run(fs_t1tttt_1600_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_1250 = run(fs_t1tttt_1600_1250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_1200 = run(fs_t1tttt_1600_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_1100 = run(fs_t1tttt_1600_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_150 = run(fs_t1tttt_1600_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_750 = run(fs_t1tttt_1600_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_800 = run(fs_t1tttt_1600_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_1000 = run(fs_t1tttt_1600_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_100 = run(fs_t1tttt_1600_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_550 = run(fs_t1tttt_1600_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_1000 = run(fs_t1tttt_1650_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_950 = run(fs_t1tttt_1600_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_600 = run(fs_t1tttt_1600_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_0 = run(fs_t1tttt_1650_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_100 = run(fs_t1tttt_1650_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_1050 = run(fs_t1tttt_1650_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_850 = run(fs_t1tttt_1600_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_650 = run(fs_t1tttt_1600_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_900 = run(fs_t1tttt_1600_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_1300 = run(fs_t1tttt_1600_1300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_0 = run(fs_t1tttt_1600_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_200 = run(fs_t1tttt_1600_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_250 = run(fs_t1tttt_1600_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_400 = run(fs_t1tttt_1600_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_450 = run(fs_t1tttt_1600_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_300 = run(fs_t1tttt_1600_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_350 = run(fs_t1tttt_1600_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_1350 = run(fs_t1tttt_1600_1350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_700 = run(fs_t1tttt_1600_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_500 = run(fs_t1tttt_1600_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1600_50 = run(fs_t1tttt_1600_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_1100 = run(fs_t1tttt_1650_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_150 = run(fs_t1tttt_1650_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_1200 = run(fs_t1tttt_1650_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_200 = run(fs_t1tttt_1650_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_1250 = run(fs_t1tttt_1650_1250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_700 = run(fs_t1tttt_1650_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_750 = run(fs_t1tttt_1650_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_1300 = run(fs_t1tttt_1650_1300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_300 = run(fs_t1tttt_1650_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_900 = run(fs_t1tttt_1650_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_950 = run(fs_t1tttt_1650_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_350 = run(fs_t1tttt_1650_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_800 = run(fs_t1tttt_1650_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_650 = run(fs_t1tttt_1650_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_500 = run(fs_t1tttt_1650_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_1000 = run(fs_t1tttt_1700_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_1400 = run(fs_t1tttt_1650_1400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_50 = run(fs_t1tttt_1650_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_550 = run(fs_t1tttt_1650_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_100 = run(fs_t1tttt_1700_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_1350 = run(fs_t1tttt_1650_1350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_850 = run(fs_t1tttt_1650_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_250 = run(fs_t1tttt_1650_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_400 = run(fs_t1tttt_1650_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_600 = run(fs_t1tttt_1650_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_0 = run(fs_t1tttt_1700_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_1050 = run(fs_t1tttt_1700_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_1200 = run(fs_t1tttt_1700_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_1100 = run(fs_t1tttt_1700_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_450 = run(fs_t1tttt_1650_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1650_1150 = run(fs_t1tttt_1650_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_1150 = run(fs_t1tttt_1700_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_1450 = run(fs_t1tttt_1700_1450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_350 = run(fs_t1tttt_1700_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_500 = run(fs_t1tttt_1700_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_250 = run(fs_t1tttt_1700_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_300 = run(fs_t1tttt_1700_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_450 = run(fs_t1tttt_1700_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_400 = run(fs_t1tttt_1700_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_550 = run(fs_t1tttt_1700_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_850 = run(fs_t1tttt_1700_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_1300 = run(fs_t1tttt_1750_1300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_150 = run(fs_t1tttt_1700_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_200 = run(fs_t1tttt_1700_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_100 = run(fs_t1tttt_1750_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_1250 = run(fs_t1tttt_1750_1250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_1350 = run(fs_t1tttt_1700_1350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_1300 = run(fs_t1tttt_1700_1300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_50 = run(fs_t1tttt_1700_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_1400 = run(fs_t1tttt_1700_1400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_1150 = run(fs_t1tttt_1750_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_1200 = run(fs_t1tttt_1750_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_700 = run(fs_t1tttt_1700_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_650 = run(fs_t1tttt_1700_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_750 = run(fs_t1tttt_1700_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_1000 = run(fs_t1tttt_1750_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_800 = run(fs_t1tttt_1700_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_950 = run(fs_t1tttt_1700_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_900 = run(fs_t1tttt_1700_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_0 = run(fs_t1tttt_1750_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_1050 = run(fs_t1tttt_1750_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_600 = run(fs_t1tttt_1700_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1700_1250 = run(fs_t1tttt_1700_1250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_1100 = run(fs_t1tttt_1750_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_1350 = run(fs_t1tttt_1750_1350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_450 = run(fs_t1tttt_1750_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_1400 = run(fs_t1tttt_1750_1400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_500 = run(fs_t1tttt_1750_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_50 = run(fs_t1tttt_1750_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_1450 = run(fs_t1tttt_1750_1450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_300 = run(fs_t1tttt_1750_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_350 = run(fs_t1tttt_1750_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_400 = run(fs_t1tttt_1750_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_600 = run(fs_t1tttt_1750_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_550 = run(fs_t1tttt_1750_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_850 = run(fs_t1tttt_1750_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_900 = run(fs_t1tttt_1750_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_700 = run(fs_t1tttt_1750_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_650 = run(fs_t1tttt_1750_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_800 = run(fs_t1tttt_1750_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_200 = run(fs_t1tttt_1750_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_950 = run(fs_t1tttt_1750_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_150 = run(fs_t1tttt_1750_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_250 = run(fs_t1tttt_1750_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1750_750 = run(fs_t1tttt_1750_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_1150 = run(fs_t1tttt_1850_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_1300 = run(fs_t1tttt_1800_1300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_1350 = run(fs_t1tttt_1800_1350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_1400 = run(fs_t1tttt_1800_1400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_100 = run(fs_t1tttt_1850_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_500 = run(fs_t1tttt_1800_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_950 = run(fs_t1tttt_1800_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_800 = run(fs_t1tttt_1800_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_550 = run(fs_t1tttt_1800_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_50 = run(fs_t1tttt_1800_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_0 = run(fs_t1tttt_1850_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_1150 = run(fs_t1tttt_1800_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_1450 = run(fs_t1tttt_1800_1450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_350 = run(fs_t1tttt_1800_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_1250 = run(fs_t1tttt_1800_1250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_200 = run(fs_t1tttt_1800_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_1200 = run(fs_t1tttt_1800_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_150 = run(fs_t1tttt_1800_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_300 = run(fs_t1tttt_1800_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_650 = run(fs_t1tttt_1800_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_1100 = run(fs_t1tttt_1850_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_400 = run(fs_t1tttt_1800_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_450 = run(fs_t1tttt_1800_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_250 = run(fs_t1tttt_1800_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_1000 = run(fs_t1tttt_1800_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_1050 = run(fs_t1tttt_1800_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_1100 = run(fs_t1tttt_1800_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_100 = run(fs_t1tttt_1800_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_0 = run(fs_t1tttt_1800_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_700 = run(fs_t1tttt_1800_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_600 = run(fs_t1tttt_1800_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_850 = run(fs_t1tttt_1800_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_900 = run(fs_t1tttt_1800_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_1000 = run(fs_t1tttt_1850_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_1050 = run(fs_t1tttt_1850_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1800_750 = run(fs_t1tttt_1800_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_150 = run(fs_t1tttt_1850_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_350 = run(fs_t1tttt_1850_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_550 = run(fs_t1tttt_1850_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_400 = run(fs_t1tttt_1850_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_450 = run(fs_t1tttt_1850_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_600 = run(fs_t1tttt_1850_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_200 = run(fs_t1tttt_1850_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_650 = run(fs_t1tttt_1850_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_1150 = run(fs_t1tttt_1900_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_1200 = run(fs_t1tttt_1900_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_200 = run(fs_t1tttt_1900_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_900 = run(fs_t1tttt_1850_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_1350 = run(fs_t1tttt_1900_1350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_950 = run(fs_t1tttt_1850_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_1400 = run(fs_t1tttt_1900_1400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_1450 = run(fs_t1tttt_1900_1450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_150 = run(fs_t1tttt_1900_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_100 = run(fs_t1tttt_1900_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_1050 = run(fs_t1tttt_1900_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_1250 = run(fs_t1tttt_1900_1250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_1300 = run(fs_t1tttt_1900_1300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_0 = run(fs_t1tttt_1900_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_1000 = run(fs_t1tttt_1900_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_1200 = run(fs_t1tttt_1850_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_1300 = run(fs_t1tttt_1850_1300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_1450 = run(fs_t1tttt_1850_1450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_500 = run(fs_t1tttt_1850_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_1100 = run(fs_t1tttt_1900_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_1350 = run(fs_t1tttt_1850_1350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_1400 = run(fs_t1tttt_1850_1400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_1250 = run(fs_t1tttt_1850_1250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_50 = run(fs_t1tttt_1850_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_250 = run(fs_t1tttt_1850_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_850 = run(fs_t1tttt_1850_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_700 = run(fs_t1tttt_1850_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_800 = run(fs_t1tttt_1850_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_750 = run(fs_t1tttt_1850_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1850_300 = run(fs_t1tttt_1850_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_600_250 = run(fs_t1tttt_600_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_600_300 = run(fs_t1tttt_600_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_600_325 = run(fs_t1tttt_600_325_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_600_275 = run(fs_t1tttt_600_275_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_625_325 = run(fs_t1tttt_625_325_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_625_350 = run(fs_t1tttt_625_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_625_375 = run(fs_t1tttt_625_375_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_625_275 = run(fs_t1tttt_625_275_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_625_300 = run(fs_t1tttt_625_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_650_200 = run(fs_t1tttt_650_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_650_250 = run(fs_t1tttt_650_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_650_325 = run(fs_t1tttt_650_325_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_625_400 = run(fs_t1tttt_625_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_650_275 = run(fs_t1tttt_650_275_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_650_300 = run(fs_t1tttt_650_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_650_425 = run(fs_t1tttt_650_425_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_675_300 = run(fs_t1tttt_675_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_675_275 = run(fs_t1tttt_675_275_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_675_250 = run(fs_t1tttt_675_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_650_350 = run(fs_t1tttt_650_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_650_375 = run(fs_t1tttt_650_375_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_650_400 = run(fs_t1tttt_650_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_675_400 = run(fs_t1tttt_675_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_675_450 = run(fs_t1tttt_675_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_675_425 = run(fs_t1tttt_675_425_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_675_375 = run(fs_t1tttt_675_375_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_675_350 = run(fs_t1tttt_675_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_675_325 = run(fs_t1tttt_675_325_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_250 = run(fs_t1tttt_700_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_300 = run(fs_t1tttt_700_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_450 = run(fs_t1tttt_700_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_200 = run(fs_t1tttt_700_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_400 = run(fs_t1tttt_700_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_425 = run(fs_t1tttt_700_425_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_0 = run(fs_t1tttt_700_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_325 = run(fs_t1tttt_700_325_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_100 = run(fs_t1tttt_700_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_375 = run(fs_t1tttt_700_375_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_350 = run(fs_t1tttt_700_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_725_425 = run(fs_t1tttt_725_425_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_725_450 = run(fs_t1tttt_725_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_725_475 = run(fs_t1tttt_725_475_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_700_475 = run(fs_t1tttt_700_475_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_725_375 = run(fs_t1tttt_725_375_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_725_300 = run(fs_t1tttt_725_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_725_350 = run(fs_t1tttt_725_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_750_200 = run(fs_t1tttt_750_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_750_250 = run(fs_t1tttt_750_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_725_500 = run(fs_t1tttt_725_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_750_300 = run(fs_t1tttt_750_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_725_325 = run(fs_t1tttt_725_325_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_725_400 = run(fs_t1tttt_725_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_775_375 = run(fs_t1tttt_775_375_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_775_425 = run(fs_t1tttt_775_425_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_775_450 = run(fs_t1tttt_775_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_775_400 = run(fs_t1tttt_775_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_775_350 = run(fs_t1tttt_775_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_750_500 = run(fs_t1tttt_750_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_750_525 = run(fs_t1tttt_750_525_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_750_375 = run(fs_t1tttt_750_375_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_750_450 = run(fs_t1tttt_750_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_750_475 = run(fs_t1tttt_750_475_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_750_425 = run(fs_t1tttt_750_425_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_750_350 = run(fs_t1tttt_750_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_750_400 = run(fs_t1tttt_750_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_775_500 = run(fs_t1tttt_775_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_775_550 = run(fs_t1tttt_775_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_775_525 = run(fs_t1tttt_775_525_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_775_475 = run(fs_t1tttt_775_475_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_400 = run(fs_t1tttt_800_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_425 = run(fs_t1tttt_800_425_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_525 = run(fs_t1tttt_800_525_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_0 = run(fs_t1tttt_800_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_250 = run(fs_t1tttt_800_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_350 = run(fs_t1tttt_800_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_200 = run(fs_t1tttt_800_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_300 = run(fs_t1tttt_800_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_575 = run(fs_t1tttt_800_575_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_450 = run(fs_t1tttt_800_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_500 = run(fs_t1tttt_800_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_550 = run(fs_t1tttt_800_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_475 = run(fs_t1tttt_800_475_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_825_400 = run(fs_t1tttt_825_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_800_100 = run(fs_t1tttt_800_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_825_525 = run(fs_t1tttt_825_525_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_825_550 = run(fs_t1tttt_825_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_400 = run(fs_t1tttt_850_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_250 = run(fs_t1tttt_850_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_475 = run(fs_t1tttt_850_475_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_825_500 = run(fs_t1tttt_825_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_825_575 = run(fs_t1tttt_825_575_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_350 = run(fs_t1tttt_850_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_450 = run(fs_t1tttt_850_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_300 = run(fs_t1tttt_850_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_825_450 = run(fs_t1tttt_825_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_825_425 = run(fs_t1tttt_825_425_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_825_475 = run(fs_t1tttt_825_475_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_200 = run(fs_t1tttt_850_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_825_600 = run(fs_t1tttt_825_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_575 = run(fs_t1tttt_850_575_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_625 = run(fs_t1tttt_850_625_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_875_550 = run(fs_t1tttt_875_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_600 = run(fs_t1tttt_850_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_875_475 = run(fs_t1tttt_875_475_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_875_575 = run(fs_t1tttt_875_575_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_875_600 = run(fs_t1tttt_875_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_875_525 = run(fs_t1tttt_875_525_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_525 = run(fs_t1tttt_850_525_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_875_450 = run(fs_t1tttt_875_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_550 = run(fs_t1tttt_850_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_850_500 = run(fs_t1tttt_850_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_875_500 = run(fs_t1tttt_875_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_200 = run(fs_t1tttt_900_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_300 = run(fs_t1tttt_900_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_575 = run(fs_t1tttt_900_575_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_350 = run(fs_t1tttt_900_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_600 = run(fs_t1tttt_900_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_550 = run(fs_t1tttt_900_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_625 = run(fs_t1tttt_900_625_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_875_625 = run(fs_t1tttt_875_625_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_525 = run(fs_t1tttt_900_525_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_500 = run(fs_t1tttt_900_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_875_650 = run(fs_t1tttt_875_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_450 = run(fs_t1tttt_900_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_400 = run(fs_t1tttt_900_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_0 = run(fs_t1tttt_900_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_100 = run(fs_t1tttt_900_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_900_250 = run(fs_t1tttt_900_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_450 = run(fs_t1tttt_950_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_500 = run(fs_t1tttt_950_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_550 = run(fs_t1tttt_950_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_675 = run(fs_t1tttt_950_675_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_975_575 = run(fs_t1tttt_975_575_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_625 = run(fs_t1tttt_950_625_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_700 = run(fs_t1tttt_950_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1375_1075 = run(fs_t1tttt_1375_1075_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1375_1100 = run(fs_t1tttt_1375_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1375_1125 = run(fs_t1tttt_1375_1125_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1375_975 = run(fs_t1tttt_1375_975_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1375_1150 = run(fs_t1tttt_1375_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1375_1050 = run(fs_t1tttt_1375_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1375_950 = run(fs_t1tttt_1375_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_975_550 = run(fs_t1tttt_975_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_575 = run(fs_t1tttt_950_575_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_350 = run(fs_t1tttt_950_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_725 = run(fs_t1tttt_950_725_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_600 = run(fs_t1tttt_950_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_650 = run(fs_t1tttt_950_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_950_400 = run(fs_t1tttt_950_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_975_650 = run(fs_t1tttt_975_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_975_700 = run(fs_t1tttt_975_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_975_725 = run(fs_t1tttt_975_725_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_975_675 = run(fs_t1tttt_975_675_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_975_750 = run(fs_t1tttt_975_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_975_600 = run(fs_t1tttt_975_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_975_625 = run(fs_t1tttt_975_625_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_750 = run(fs_t1tttt_1950_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_950 = run(fs_t1tttt_1950_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_800 = run(fs_t1tttt_1950_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_900 = run(fs_t1tttt_1950_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_850 = run(fs_t1tttt_1950_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_700 = run(fs_t1tttt_1950_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_1350 = run(fs_t1tttt_1950_1350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_1450 = run(fs_t1tttt_1950_1450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_1400 = run(fs_t1tttt_1950_1400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_450 = run(fs_t1tttt_1900_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_50 = run(fs_t1tttt_1900_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_500 = run(fs_t1tttt_1900_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_950 = run(fs_t1tttt_1900_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_1000 = run(fs_t1tttt_1950_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_0 = run(fs_t1tttt_1950_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_1050 = run(fs_t1tttt_1950_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_900 = run(fs_t1tttt_1900_900_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_1100 = run(fs_t1tttt_1950_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_1150 = run(fs_t1tttt_1950_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_250 = run(fs_t1tttt_1950_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_50 = run(fs_t1tttt_1950_50_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_150 = run(fs_t1tttt_1950_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_200 = run(fs_t1tttt_1950_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_300 = run(fs_t1tttt_1950_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_550 = run(fs_t1tttt_1900_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_1200 = run(fs_t1tttt_1950_1200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_700 = run(fs_t1tttt_1900_700_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_750 = run(fs_t1tttt_1900_750_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_1250 = run(fs_t1tttt_1950_1250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_800 = run(fs_t1tttt_1900_800_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_1300 = run(fs_t1tttt_1950_1300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_300 = run(fs_t1tttt_1900_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_350 = run(fs_t1tttt_1900_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_600 = run(fs_t1tttt_1900_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_400 = run(fs_t1tttt_1900_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_250 = run(fs_t1tttt_1900_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_450 = run(fs_t1tttt_1950_450_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_400 = run(fs_t1tttt_1950_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_500 = run(fs_t1tttt_1950_500_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_550 = run(fs_t1tttt_1950_550_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_650 = run(fs_t1tttt_1900_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_350 = run(fs_t1tttt_1950_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_100 = run(fs_t1tttt_1950_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1900_850 = run(fs_t1tttt_1900_850_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_650 = run(fs_t1tttt_1950_650_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1950_600 = run(fs_t1tttt_1950_600_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1325_925 = run(fs_t1tttt_1325_925_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_100 = run(fs_t1tttt_1350_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_0 = run(fs_t1tttt_1350_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_1075 = run(fs_t1tttt_1350_1075_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_1000 = run(fs_t1tttt_1350_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_250 = run(fs_t1tttt_1350_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1325_950 = run(fs_t1tttt_1325_950_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_1025 = run(fs_t1tttt_1350_1025_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_1125 = run(fs_t1tttt_1350_1125_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_200 = run(fs_t1tttt_1350_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1325_975 = run(fs_t1tttt_1325_975_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_1100 = run(fs_t1tttt_1350_1100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_150 = run(fs_t1tttt_1350_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_1050 = run(fs_t1tttt_1350_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1350_300 = run(fs_t1tttt_1350_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_1125 = run(fs_t1tttt_1400_1125_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_1175 = run(fs_t1tttt_1400_1175_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_200 = run(fs_t1tttt_1400_200_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_150 = run(fs_t1tttt_1400_150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_1150 = run(fs_t1tttt_1400_1150_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_250 = run(fs_t1tttt_1400_250_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_300 = run(fs_t1tttt_1400_300_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_350 = run(fs_t1tttt_1400_350_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_400 = run(fs_t1tttt_1400_400_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_1025 = run(fs_t1tttt_1400_1025_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_1050 = run(fs_t1tttt_1400_1050_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_1075 = run(fs_t1tttt_1400_1075_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_0 = run(fs_t1tttt_1400_0_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_100 = run(fs_t1tttt_1400_100_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_1000 = run(fs_t1tttt_1400_1000_chain, 0, 0, 0, 0, 1);
-  //pair<yields_t, plots_t> results_fs_t1tttt_1400_1100 = run(fs_t1tttt_1400_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_775 = run(fs_t1tttt_1100_775_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_750 = run(fs_t1tttt_1100_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_0 = run(fs_t1tttt_1100_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_300 = run(fs_t1tttt_1100_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_200 = run(fs_t1tttt_1100_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_500 = run(fs_t1tttt_1100_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_250 = run(fs_t1tttt_1100_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_100 = run(fs_t1tttt_1100_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_450 = run(fs_t1tttt_1100_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_50 = run(fs_t1tttt_1100_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_150 = run(fs_t1tttt_1100_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_350 = run(fs_t1tttt_1100_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_700 = run(fs_t1tttt_1100_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_725 = run(fs_t1tttt_1100_725_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_400 = run(fs_t1tttt_1100_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_550 = run(fs_t1tttt_1100_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_650 = run(fs_t1tttt_1100_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1125_700 = run(fs_t1tttt_1125_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1125_850 = run(fs_t1tttt_1125_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1125_800 = run(fs_t1tttt_1125_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1125_875 = run(fs_t1tttt_1125_875_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_825 = run(fs_t1tttt_1100_825_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_875 = run(fs_t1tttt_1100_875_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_850 = run(fs_t1tttt_1100_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1125_825 = run(fs_t1tttt_1125_825_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1125_725 = run(fs_t1tttt_1125_725_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1125_750 = run(fs_t1tttt_1125_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1100_800 = run(fs_t1tttt_1100_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1125_900 = run(fs_t1tttt_1125_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1125_775 = run(fs_t1tttt_1125_775_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_150 = run(fs_t1tttt_1150_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_800 = run(fs_t1tttt_1150_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_200 = run(fs_t1tttt_1150_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_775 = run(fs_t1tttt_1150_775_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_350 = run(fs_t1tttt_1150_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_50 = run(fs_t1tttt_1150_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_550 = run(fs_t1tttt_1150_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_250 = run(fs_t1tttt_1150_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_400 = run(fs_t1tttt_1150_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_650 = run(fs_t1tttt_1150_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_0 = run(fs_t1tttt_1150_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_100 = run(fs_t1tttt_1150_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_750 = run(fs_t1tttt_1150_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_700 = run(fs_t1tttt_1150_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_300 = run(fs_t1tttt_1150_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_450 = run(fs_t1tttt_1150_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_600 = run(fs_t1tttt_1150_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_500 = run(fs_t1tttt_1150_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1175_925 = run(fs_t1tttt_1175_925_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1175_775 = run(fs_t1tttt_1175_775_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1175_850 = run(fs_t1tttt_1175_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1175_900 = run(fs_t1tttt_1175_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1175_800 = run(fs_t1tttt_1175_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_900 = run(fs_t1tttt_1150_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1175_875 = run(fs_t1tttt_1175_875_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1175_825 = run(fs_t1tttt_1175_825_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_925 = run(fs_t1tttt_1150_925_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_825 = run(fs_t1tttt_1150_825_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_875 = run(fs_t1tttt_1150_875_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1150_850 = run(fs_t1tttt_1150_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1175_750 = run(fs_t1tttt_1175_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1175_950 = run(fs_t1tttt_1175_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_350 = run(fs_t1tttt_1200_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_550 = run(fs_t1tttt_1200_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_400 = run(fs_t1tttt_1200_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_500 = run(fs_t1tttt_1200_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_600 = run(fs_t1tttt_1200_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_450 = run(fs_t1tttt_1200_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_50 = run(fs_t1tttt_1200_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_700 = run(fs_t1tttt_1200_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_100 = run(fs_t1tttt_1200_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_150 = run(fs_t1tttt_1200_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_200 = run(fs_t1tttt_1200_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_825 = run(fs_t1tttt_1200_825_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_300 = run(fs_t1tttt_1200_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_800 = run(fs_t1tttt_1200_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_250 = run(fs_t1tttt_1200_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_650 = run(fs_t1tttt_1200_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_0 = run(fs_t1tttt_1200_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_750 = run(fs_t1tttt_1200_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_975 = run(fs_t1tttt_1200_975_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1225_825 = run(fs_t1tttt_1225_825_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1225_875 = run(fs_t1tttt_1225_875_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1225_850 = run(fs_t1tttt_1225_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1225_925 = run(fs_t1tttt_1225_925_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1225_800 = run(fs_t1tttt_1225_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_900 = run(fs_t1tttt_1200_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_925 = run(fs_t1tttt_1200_925_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1225_900 = run(fs_t1tttt_1225_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_950 = run(fs_t1tttt_1200_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1225_1000 = run(fs_t1tttt_1225_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_875 = run(fs_t1tttt_1200_875_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1200_850 = run(fs_t1tttt_1200_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1275_1050 = run(fs_t1tttt_1275_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1275_875 = run(fs_t1tttt_1275_875_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1275_850 = run(fs_t1tttt_1275_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1275_1000 = run(fs_t1tttt_1275_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1275_1025 = run(fs_t1tttt_1275_1025_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1250_925 = run(fs_t1tttt_1250_925_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1250_950 = run(fs_t1tttt_1250_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1250_700 = run(fs_t1tttt_1250_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1250_750 = run(fs_t1tttt_1250_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1250_900 = run(fs_t1tttt_1250_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1250_800 = run(fs_t1tttt_1250_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1250_850 = run(fs_t1tttt_1250_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1250_975 = run(fs_t1tttt_1250_975_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1250_875 = run(fs_t1tttt_1250_875_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1275_925 = run(fs_t1tttt_1275_925_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1275_950 = run(fs_t1tttt_1275_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1275_975 = run(fs_t1tttt_1275_975_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1275_900 = run(fs_t1tttt_1275_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_1025 = run(fs_t1tttt_1300_1025_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_400 = run(fs_t1tttt_1300_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_500 = run(fs_t1tttt_1300_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_550 = run(fs_t1tttt_1300_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_50 = run(fs_t1tttt_1300_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_1075 = run(fs_t1tttt_1300_1075_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_600 = run(fs_t1tttt_1300_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_450 = run(fs_t1tttt_1300_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_0 = run(fs_t1tttt_1300_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_1000 = run(fs_t1tttt_1300_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_1050 = run(fs_t1tttt_1300_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_150 = run(fs_t1tttt_1300_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_100 = run(fs_t1tttt_1300_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_650 = run(fs_t1tttt_1300_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_300 = run(fs_t1tttt_1300_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_200 = run(fs_t1tttt_1300_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_350 = run(fs_t1tttt_1300_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_250 = run(fs_t1tttt_1300_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_800 = run(fs_t1tttt_1300_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_925 = run(fs_t1tttt_1300_925_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_950 = run(fs_t1tttt_1300_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1325_1075 = run(fs_t1tttt_1325_1075_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_900 = run(fs_t1tttt_1300_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_850 = run(fs_t1tttt_1300_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1325_1000 = run(fs_t1tttt_1325_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1325_900 = run(fs_t1tttt_1325_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1325_1025 = run(fs_t1tttt_1325_1025_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1325_1050 = run(fs_t1tttt_1325_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_975 = run(fs_t1tttt_1300_975_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_700 = run(fs_t1tttt_1300_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1300_750 = run(fs_t1tttt_1300_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1325_1100 = run(fs_t1tttt_1325_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_350 = run(fs_t1tttt_1350_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_400 = run(fs_t1tttt_1350_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_550 = run(fs_t1tttt_1350_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_450 = run(fs_t1tttt_1350_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_500 = run(fs_t1tttt_1350_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_600 = run(fs_t1tttt_1350_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1375_1025 = run(fs_t1tttt_1375_1025_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_700 = run(fs_t1tttt_1350_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_750 = run(fs_t1tttt_1350_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_950 = run(fs_t1tttt_1350_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_975 = run(fs_t1tttt_1350_975_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1375_1000 = run(fs_t1tttt_1375_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_50 = run(fs_t1tttt_1350_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_800 = run(fs_t1tttt_1350_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_850 = run(fs_t1tttt_1350_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_900 = run(fs_t1tttt_1350_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_650 = run(fs_t1tttt_1350_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_800 = run(fs_t1tttt_1400_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_950 = run(fs_t1tttt_1400_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_850 = run(fs_t1tttt_1400_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_900 = run(fs_t1tttt_1400_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1425_1050 = run(fs_t1tttt_1425_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1425_1100 = run(fs_t1tttt_1425_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_550 = run(fs_t1tttt_1400_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_750 = run(fs_t1tttt_1400_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_600 = run(fs_t1tttt_1400_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1425_1000 = run(fs_t1tttt_1425_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1425_1075 = run(fs_t1tttt_1425_1075_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1425_1025 = run(fs_t1tttt_1425_1025_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_50 = run(fs_t1tttt_1400_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_700 = run(fs_t1tttt_1400_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_450 = run(fs_t1tttt_1400_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_500 = run(fs_t1tttt_1400_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_650 = run(fs_t1tttt_1400_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1425_1125 = run(fs_t1tttt_1425_1125_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1425_1150 = run(fs_t1tttt_1425_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1425_1175 = run(fs_t1tttt_1425_1175_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_1075 = run(fs_t1tttt_1450_1075_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_1125 = run(fs_t1tttt_1450_1125_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_1150 = run(fs_t1tttt_1450_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_1175 = run(fs_t1tttt_1450_1175_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_1100 = run(fs_t1tttt_1450_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_1200 = run(fs_t1tttt_1450_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_1050 = run(fs_t1tttt_1450_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_0 = run(fs_t1tttt_1450_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_150 = run(fs_t1tttt_1450_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_200 = run(fs_t1tttt_1450_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_1000 = run(fs_t1tttt_1450_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_100 = run(fs_t1tttt_1450_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_300 = run(fs_t1tttt_1450_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1475_1075 = run(fs_t1tttt_1475_1075_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_350 = run(fs_t1tttt_1450_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_600 = run(fs_t1tttt_1450_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_750 = run(fs_t1tttt_1450_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1475_1050 = run(fs_t1tttt_1475_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_450 = run(fs_t1tttt_1450_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_650 = run(fs_t1tttt_1450_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_550 = run(fs_t1tttt_1450_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_700 = run(fs_t1tttt_1450_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_950 = run(fs_t1tttt_1450_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_800 = run(fs_t1tttt_1450_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_850 = run(fs_t1tttt_1450_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_250 = run(fs_t1tttt_1450_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_50 = run(fs_t1tttt_1450_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_400 = run(fs_t1tttt_1450_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_900 = run(fs_t1tttt_1450_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1450_500 = run(fs_t1tttt_1450_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_1125 = run(fs_t1tttt_1500_1125_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_1150 = run(fs_t1tttt_1500_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1475_1100 = run(fs_t1tttt_1475_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1475_1125 = run(fs_t1tttt_1475_1125_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1475_1150 = run(fs_t1tttt_1475_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_1050 = run(fs_t1tttt_1500_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1475_1175 = run(fs_t1tttt_1475_1175_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_0 = run(fs_t1tttt_1500_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_1000 = run(fs_t1tttt_1500_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_1250 = run(fs_t1tttt_1500_1250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_1175 = run(fs_t1tttt_1500_1175_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_1200 = run(fs_t1tttt_1500_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_1100 = run(fs_t1tttt_1500_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_150 = run(fs_t1tttt_1500_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_100 = run(fs_t1tttt_1500_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_350 = run(fs_t1tttt_1500_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_50 = run(fs_t1tttt_1500_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_700 = run(fs_t1tttt_1500_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_650 = run(fs_t1tttt_1500_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_600 = run(fs_t1tttt_1500_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_800 = run(fs_t1tttt_1500_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_850 = run(fs_t1tttt_1500_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_900 = run(fs_t1tttt_1500_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_950 = run(fs_t1tttt_1500_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_750 = run(fs_t1tttt_1500_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1525_1125 = run(fs_t1tttt_1525_1125_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1525_1100 = run(fs_t1tttt_1525_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_250 = run(fs_t1tttt_1500_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_300 = run(fs_t1tttt_1500_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_400 = run(fs_t1tttt_1500_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_500 = run(fs_t1tttt_1500_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_550 = run(fs_t1tttt_1500_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_450 = run(fs_t1tttt_1500_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1500_200 = run(fs_t1tttt_1500_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_1050 = run(fs_t1tttt_1600_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_1150 = run(fs_t1tttt_1600_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_1250 = run(fs_t1tttt_1600_1250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_1200 = run(fs_t1tttt_1600_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_1100 = run(fs_t1tttt_1600_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_150 = run(fs_t1tttt_1600_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_750 = run(fs_t1tttt_1600_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_800 = run(fs_t1tttt_1600_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_1000 = run(fs_t1tttt_1600_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_100 = run(fs_t1tttt_1600_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_550 = run(fs_t1tttt_1600_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_1000 = run(fs_t1tttt_1650_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_950 = run(fs_t1tttt_1600_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_600 = run(fs_t1tttt_1600_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_0 = run(fs_t1tttt_1650_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_100 = run(fs_t1tttt_1650_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_1050 = run(fs_t1tttt_1650_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_850 = run(fs_t1tttt_1600_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_650 = run(fs_t1tttt_1600_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_900 = run(fs_t1tttt_1600_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_1300 = run(fs_t1tttt_1600_1300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_0 = run(fs_t1tttt_1600_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_200 = run(fs_t1tttt_1600_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_250 = run(fs_t1tttt_1600_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_400 = run(fs_t1tttt_1600_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_450 = run(fs_t1tttt_1600_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_300 = run(fs_t1tttt_1600_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_350 = run(fs_t1tttt_1600_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_1350 = run(fs_t1tttt_1600_1350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_700 = run(fs_t1tttt_1600_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_500 = run(fs_t1tttt_1600_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1600_50 = run(fs_t1tttt_1600_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_1100 = run(fs_t1tttt_1650_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_150 = run(fs_t1tttt_1650_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_1200 = run(fs_t1tttt_1650_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_200 = run(fs_t1tttt_1650_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_1250 = run(fs_t1tttt_1650_1250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_700 = run(fs_t1tttt_1650_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_750 = run(fs_t1tttt_1650_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_1300 = run(fs_t1tttt_1650_1300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_300 = run(fs_t1tttt_1650_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_900 = run(fs_t1tttt_1650_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_950 = run(fs_t1tttt_1650_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_350 = run(fs_t1tttt_1650_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_800 = run(fs_t1tttt_1650_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_650 = run(fs_t1tttt_1650_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_500 = run(fs_t1tttt_1650_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_1000 = run(fs_t1tttt_1700_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_1400 = run(fs_t1tttt_1650_1400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_50 = run(fs_t1tttt_1650_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_550 = run(fs_t1tttt_1650_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_100 = run(fs_t1tttt_1700_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_1350 = run(fs_t1tttt_1650_1350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_850 = run(fs_t1tttt_1650_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_250 = run(fs_t1tttt_1650_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_400 = run(fs_t1tttt_1650_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_600 = run(fs_t1tttt_1650_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_0 = run(fs_t1tttt_1700_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_1050 = run(fs_t1tttt_1700_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_1200 = run(fs_t1tttt_1700_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_1100 = run(fs_t1tttt_1700_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_450 = run(fs_t1tttt_1650_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1650_1150 = run(fs_t1tttt_1650_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_1150 = run(fs_t1tttt_1700_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_1450 = run(fs_t1tttt_1700_1450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_350 = run(fs_t1tttt_1700_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_500 = run(fs_t1tttt_1700_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_250 = run(fs_t1tttt_1700_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_300 = run(fs_t1tttt_1700_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_450 = run(fs_t1tttt_1700_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_400 = run(fs_t1tttt_1700_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_550 = run(fs_t1tttt_1700_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_850 = run(fs_t1tttt_1700_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_1300 = run(fs_t1tttt_1750_1300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_150 = run(fs_t1tttt_1700_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_200 = run(fs_t1tttt_1700_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_100 = run(fs_t1tttt_1750_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_1250 = run(fs_t1tttt_1750_1250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_1350 = run(fs_t1tttt_1700_1350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_1300 = run(fs_t1tttt_1700_1300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_50 = run(fs_t1tttt_1700_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_1400 = run(fs_t1tttt_1700_1400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_1150 = run(fs_t1tttt_1750_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_1200 = run(fs_t1tttt_1750_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_700 = run(fs_t1tttt_1700_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_650 = run(fs_t1tttt_1700_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_750 = run(fs_t1tttt_1700_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_1000 = run(fs_t1tttt_1750_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_800 = run(fs_t1tttt_1700_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_950 = run(fs_t1tttt_1700_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_900 = run(fs_t1tttt_1700_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_0 = run(fs_t1tttt_1750_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_1050 = run(fs_t1tttt_1750_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_600 = run(fs_t1tttt_1700_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1700_1250 = run(fs_t1tttt_1700_1250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_1100 = run(fs_t1tttt_1750_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_1350 = run(fs_t1tttt_1750_1350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_450 = run(fs_t1tttt_1750_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_1400 = run(fs_t1tttt_1750_1400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_500 = run(fs_t1tttt_1750_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_50 = run(fs_t1tttt_1750_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_1450 = run(fs_t1tttt_1750_1450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_300 = run(fs_t1tttt_1750_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_350 = run(fs_t1tttt_1750_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_400 = run(fs_t1tttt_1750_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_600 = run(fs_t1tttt_1750_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_550 = run(fs_t1tttt_1750_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_850 = run(fs_t1tttt_1750_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_900 = run(fs_t1tttt_1750_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_700 = run(fs_t1tttt_1750_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_650 = run(fs_t1tttt_1750_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_800 = run(fs_t1tttt_1750_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_200 = run(fs_t1tttt_1750_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_950 = run(fs_t1tttt_1750_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_150 = run(fs_t1tttt_1750_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_250 = run(fs_t1tttt_1750_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1750_750 = run(fs_t1tttt_1750_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_1150 = run(fs_t1tttt_1850_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_1300 = run(fs_t1tttt_1800_1300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_1350 = run(fs_t1tttt_1800_1350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_1400 = run(fs_t1tttt_1800_1400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_100 = run(fs_t1tttt_1850_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_500 = run(fs_t1tttt_1800_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_950 = run(fs_t1tttt_1800_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_800 = run(fs_t1tttt_1800_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_550 = run(fs_t1tttt_1800_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_50 = run(fs_t1tttt_1800_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_0 = run(fs_t1tttt_1850_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_1150 = run(fs_t1tttt_1800_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_1450 = run(fs_t1tttt_1800_1450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_350 = run(fs_t1tttt_1800_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_1250 = run(fs_t1tttt_1800_1250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_200 = run(fs_t1tttt_1800_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_1200 = run(fs_t1tttt_1800_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_150 = run(fs_t1tttt_1800_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_300 = run(fs_t1tttt_1800_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_650 = run(fs_t1tttt_1800_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_1100 = run(fs_t1tttt_1850_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_400 = run(fs_t1tttt_1800_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_450 = run(fs_t1tttt_1800_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_250 = run(fs_t1tttt_1800_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_1000 = run(fs_t1tttt_1800_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_1050 = run(fs_t1tttt_1800_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_1100 = run(fs_t1tttt_1800_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_100 = run(fs_t1tttt_1800_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_0 = run(fs_t1tttt_1800_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_700 = run(fs_t1tttt_1800_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_600 = run(fs_t1tttt_1800_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_850 = run(fs_t1tttt_1800_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_900 = run(fs_t1tttt_1800_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_1000 = run(fs_t1tttt_1850_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_1050 = run(fs_t1tttt_1850_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1800_750 = run(fs_t1tttt_1800_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_150 = run(fs_t1tttt_1850_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_350 = run(fs_t1tttt_1850_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_550 = run(fs_t1tttt_1850_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_400 = run(fs_t1tttt_1850_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_450 = run(fs_t1tttt_1850_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_600 = run(fs_t1tttt_1850_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_200 = run(fs_t1tttt_1850_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_650 = run(fs_t1tttt_1850_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_1150 = run(fs_t1tttt_1900_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_1200 = run(fs_t1tttt_1900_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_200 = run(fs_t1tttt_1900_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_900 = run(fs_t1tttt_1850_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_1350 = run(fs_t1tttt_1900_1350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_950 = run(fs_t1tttt_1850_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_1400 = run(fs_t1tttt_1900_1400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_1450 = run(fs_t1tttt_1900_1450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_150 = run(fs_t1tttt_1900_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_100 = run(fs_t1tttt_1900_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_1050 = run(fs_t1tttt_1900_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_1250 = run(fs_t1tttt_1900_1250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_1300 = run(fs_t1tttt_1900_1300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_0 = run(fs_t1tttt_1900_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_1000 = run(fs_t1tttt_1900_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_1200 = run(fs_t1tttt_1850_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_1300 = run(fs_t1tttt_1850_1300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_1450 = run(fs_t1tttt_1850_1450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_500 = run(fs_t1tttt_1850_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_1100 = run(fs_t1tttt_1900_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_1350 = run(fs_t1tttt_1850_1350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_1400 = run(fs_t1tttt_1850_1400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_1250 = run(fs_t1tttt_1850_1250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_50 = run(fs_t1tttt_1850_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_250 = run(fs_t1tttt_1850_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_850 = run(fs_t1tttt_1850_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_700 = run(fs_t1tttt_1850_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_800 = run(fs_t1tttt_1850_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_750 = run(fs_t1tttt_1850_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1850_300 = run(fs_t1tttt_1850_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_600_250 = run(fs_t1tttt_600_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_600_300 = run(fs_t1tttt_600_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_600_325 = run(fs_t1tttt_600_325_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_600_275 = run(fs_t1tttt_600_275_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_625_325 = run(fs_t1tttt_625_325_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_625_350 = run(fs_t1tttt_625_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_625_375 = run(fs_t1tttt_625_375_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_625_275 = run(fs_t1tttt_625_275_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_625_300 = run(fs_t1tttt_625_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_650_200 = run(fs_t1tttt_650_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_650_250 = run(fs_t1tttt_650_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_650_325 = run(fs_t1tttt_650_325_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_625_400 = run(fs_t1tttt_625_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_650_275 = run(fs_t1tttt_650_275_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_650_300 = run(fs_t1tttt_650_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_650_425 = run(fs_t1tttt_650_425_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_675_300 = run(fs_t1tttt_675_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_675_275 = run(fs_t1tttt_675_275_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_675_250 = run(fs_t1tttt_675_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_650_350 = run(fs_t1tttt_650_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_650_375 = run(fs_t1tttt_650_375_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_650_400 = run(fs_t1tttt_650_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_675_400 = run(fs_t1tttt_675_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_675_450 = run(fs_t1tttt_675_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_675_425 = run(fs_t1tttt_675_425_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_675_375 = run(fs_t1tttt_675_375_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_675_350 = run(fs_t1tttt_675_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_675_325 = run(fs_t1tttt_675_325_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_250 = run(fs_t1tttt_700_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_300 = run(fs_t1tttt_700_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_450 = run(fs_t1tttt_700_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_200 = run(fs_t1tttt_700_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_400 = run(fs_t1tttt_700_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_425 = run(fs_t1tttt_700_425_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_0 = run(fs_t1tttt_700_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_325 = run(fs_t1tttt_700_325_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_100 = run(fs_t1tttt_700_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_375 = run(fs_t1tttt_700_375_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_350 = run(fs_t1tttt_700_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_725_425 = run(fs_t1tttt_725_425_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_725_450 = run(fs_t1tttt_725_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_725_475 = run(fs_t1tttt_725_475_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_700_475 = run(fs_t1tttt_700_475_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_725_375 = run(fs_t1tttt_725_375_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_725_300 = run(fs_t1tttt_725_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_725_350 = run(fs_t1tttt_725_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_750_200 = run(fs_t1tttt_750_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_750_250 = run(fs_t1tttt_750_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_725_500 = run(fs_t1tttt_725_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_750_300 = run(fs_t1tttt_750_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_725_325 = run(fs_t1tttt_725_325_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_725_400 = run(fs_t1tttt_725_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_775_375 = run(fs_t1tttt_775_375_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_775_425 = run(fs_t1tttt_775_425_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_775_450 = run(fs_t1tttt_775_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_775_400 = run(fs_t1tttt_775_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_775_350 = run(fs_t1tttt_775_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_750_500 = run(fs_t1tttt_750_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_750_525 = run(fs_t1tttt_750_525_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_750_375 = run(fs_t1tttt_750_375_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_750_450 = run(fs_t1tttt_750_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_750_475 = run(fs_t1tttt_750_475_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_750_425 = run(fs_t1tttt_750_425_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_750_350 = run(fs_t1tttt_750_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_750_400 = run(fs_t1tttt_750_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_775_500 = run(fs_t1tttt_775_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_775_550 = run(fs_t1tttt_775_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_775_525 = run(fs_t1tttt_775_525_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_775_475 = run(fs_t1tttt_775_475_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_400 = run(fs_t1tttt_800_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_425 = run(fs_t1tttt_800_425_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_525 = run(fs_t1tttt_800_525_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_0 = run(fs_t1tttt_800_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_250 = run(fs_t1tttt_800_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_350 = run(fs_t1tttt_800_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_200 = run(fs_t1tttt_800_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_300 = run(fs_t1tttt_800_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_575 = run(fs_t1tttt_800_575_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_450 = run(fs_t1tttt_800_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_500 = run(fs_t1tttt_800_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_550 = run(fs_t1tttt_800_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_475 = run(fs_t1tttt_800_475_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_825_400 = run(fs_t1tttt_825_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_800_100 = run(fs_t1tttt_800_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_825_525 = run(fs_t1tttt_825_525_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_825_550 = run(fs_t1tttt_825_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_400 = run(fs_t1tttt_850_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_250 = run(fs_t1tttt_850_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_475 = run(fs_t1tttt_850_475_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_825_500 = run(fs_t1tttt_825_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_825_575 = run(fs_t1tttt_825_575_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_350 = run(fs_t1tttt_850_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_450 = run(fs_t1tttt_850_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_300 = run(fs_t1tttt_850_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_825_450 = run(fs_t1tttt_825_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_825_425 = run(fs_t1tttt_825_425_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_825_475 = run(fs_t1tttt_825_475_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_200 = run(fs_t1tttt_850_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_825_600 = run(fs_t1tttt_825_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_575 = run(fs_t1tttt_850_575_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_625 = run(fs_t1tttt_850_625_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_875_550 = run(fs_t1tttt_875_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_600 = run(fs_t1tttt_850_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_875_475 = run(fs_t1tttt_875_475_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_875_575 = run(fs_t1tttt_875_575_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_875_600 = run(fs_t1tttt_875_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_875_525 = run(fs_t1tttt_875_525_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_525 = run(fs_t1tttt_850_525_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_875_450 = run(fs_t1tttt_875_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_550 = run(fs_t1tttt_850_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_850_500 = run(fs_t1tttt_850_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_875_500 = run(fs_t1tttt_875_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_200 = run(fs_t1tttt_900_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_300 = run(fs_t1tttt_900_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_575 = run(fs_t1tttt_900_575_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_350 = run(fs_t1tttt_900_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_600 = run(fs_t1tttt_900_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_550 = run(fs_t1tttt_900_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_625 = run(fs_t1tttt_900_625_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_875_625 = run(fs_t1tttt_875_625_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_525 = run(fs_t1tttt_900_525_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_500 = run(fs_t1tttt_900_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_875_650 = run(fs_t1tttt_875_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_450 = run(fs_t1tttt_900_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_400 = run(fs_t1tttt_900_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_0 = run(fs_t1tttt_900_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_100 = run(fs_t1tttt_900_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_900_250 = run(fs_t1tttt_900_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_450 = run(fs_t1tttt_950_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_500 = run(fs_t1tttt_950_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_550 = run(fs_t1tttt_950_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_675 = run(fs_t1tttt_950_675_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_975_575 = run(fs_t1tttt_975_575_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_625 = run(fs_t1tttt_950_625_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_700 = run(fs_t1tttt_950_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1375_1075 = run(fs_t1tttt_1375_1075_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1375_1100 = run(fs_t1tttt_1375_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1375_1125 = run(fs_t1tttt_1375_1125_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1375_975 = run(fs_t1tttt_1375_975_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1375_1150 = run(fs_t1tttt_1375_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1375_1050 = run(fs_t1tttt_1375_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1375_950 = run(fs_t1tttt_1375_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_975_550 = run(fs_t1tttt_975_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_575 = run(fs_t1tttt_950_575_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_350 = run(fs_t1tttt_950_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_725 = run(fs_t1tttt_950_725_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_600 = run(fs_t1tttt_950_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_650 = run(fs_t1tttt_950_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_950_400 = run(fs_t1tttt_950_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_975_650 = run(fs_t1tttt_975_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_975_700 = run(fs_t1tttt_975_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_975_725 = run(fs_t1tttt_975_725_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_975_675 = run(fs_t1tttt_975_675_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_975_750 = run(fs_t1tttt_975_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_975_600 = run(fs_t1tttt_975_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_975_625 = run(fs_t1tttt_975_625_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_750 = run(fs_t1tttt_1950_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_950 = run(fs_t1tttt_1950_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_800 = run(fs_t1tttt_1950_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_900 = run(fs_t1tttt_1950_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_850 = run(fs_t1tttt_1950_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_700 = run(fs_t1tttt_1950_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_1350 = run(fs_t1tttt_1950_1350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_1450 = run(fs_t1tttt_1950_1450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_1400 = run(fs_t1tttt_1950_1400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_450 = run(fs_t1tttt_1900_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_50 = run(fs_t1tttt_1900_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_500 = run(fs_t1tttt_1900_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_950 = run(fs_t1tttt_1900_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_1000 = run(fs_t1tttt_1950_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_0 = run(fs_t1tttt_1950_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_1050 = run(fs_t1tttt_1950_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_900 = run(fs_t1tttt_1900_900_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_1100 = run(fs_t1tttt_1950_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_1150 = run(fs_t1tttt_1950_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_250 = run(fs_t1tttt_1950_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_50 = run(fs_t1tttt_1950_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_150 = run(fs_t1tttt_1950_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_200 = run(fs_t1tttt_1950_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_300 = run(fs_t1tttt_1950_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_550 = run(fs_t1tttt_1900_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_1200 = run(fs_t1tttt_1950_1200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_700 = run(fs_t1tttt_1900_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_750 = run(fs_t1tttt_1900_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_1250 = run(fs_t1tttt_1950_1250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_800 = run(fs_t1tttt_1900_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_1300 = run(fs_t1tttt_1950_1300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_300 = run(fs_t1tttt_1900_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_350 = run(fs_t1tttt_1900_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_600 = run(fs_t1tttt_1900_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_400 = run(fs_t1tttt_1900_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_250 = run(fs_t1tttt_1900_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_450 = run(fs_t1tttt_1950_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_400 = run(fs_t1tttt_1950_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_500 = run(fs_t1tttt_1950_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_550 = run(fs_t1tttt_1950_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_650 = run(fs_t1tttt_1900_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_350 = run(fs_t1tttt_1950_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_100 = run(fs_t1tttt_1950_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1900_850 = run(fs_t1tttt_1900_850_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_650 = run(fs_t1tttt_1950_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1950_600 = run(fs_t1tttt_1950_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1325_925 = run(fs_t1tttt_1325_925_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_100 = run(fs_t1tttt_1350_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_0 = run(fs_t1tttt_1350_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_1075 = run(fs_t1tttt_1350_1075_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_1000 = run(fs_t1tttt_1350_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_250 = run(fs_t1tttt_1350_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1325_950 = run(fs_t1tttt_1325_950_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_1025 = run(fs_t1tttt_1350_1025_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_1125 = run(fs_t1tttt_1350_1125_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_200 = run(fs_t1tttt_1350_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1325_975 = run(fs_t1tttt_1325_975_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_1100 = run(fs_t1tttt_1350_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_150 = run(fs_t1tttt_1350_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_1050 = run(fs_t1tttt_1350_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1350_300 = run(fs_t1tttt_1350_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1125 = run(fs_t1tttt_1400_1125_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1175 = run(fs_t1tttt_1400_1175_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_200 = run(fs_t1tttt_1400_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_150 = run(fs_t1tttt_1400_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1150 = run(fs_t1tttt_1400_1150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_250 = run(fs_t1tttt_1400_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_300 = run(fs_t1tttt_1400_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_350 = run(fs_t1tttt_1400_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_400 = run(fs_t1tttt_1400_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1025 = run(fs_t1tttt_1400_1025_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1050 = run(fs_t1tttt_1400_1050_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1075 = run(fs_t1tttt_1400_1075_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_0 = run(fs_t1tttt_1400_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_100 = run(fs_t1tttt_1400_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1000 = run(fs_t1tttt_1400_1000_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1400_1100 = run(fs_t1tttt_1400_1100_chain, 0, 0, 0, 0, 1);
 
-  //yields_t& ttbar    = results_ttbar.first;
-  //yields_t& ttbar_ff = results_ttbar_ff.first;
-  //yields_t& wjets_ff = results_wjets_ff.first;
-  //yields_t& dy_ff    = results_dy_ff.first;
-  //yields_t& st_ff    = results_st_ff.first;
-  //yields_t& ttbar_fa = results_ttbar_fa.first;
-  //yields_t& ttbar_fl = results_ttbar_fl.first;
-  //yields_t& st       = results_st.first;
-  //yields_t& wjets    = results_wjets.first;
-  //yields_t& dy       = results_dy.first;
+  yields_t& ttbar    = results_ttbar.first;
+  yields_t& ttbar_ff = results_ttbar_ff.first;
+  yields_t& wjets_ff = results_wjets_ff.first;
+  yields_t& dy_ff    = results_dy_ff.first;
+  yields_t& st_ff    = results_st_ff.first;
+  yields_t& ttbar_fa = results_ttbar_fa.first;
+  yields_t& ttbar_fl = results_ttbar_fl.first;
+  yields_t& st       = results_st.first;
+  yields_t& wjets    = results_wjets.first;
+  yields_t& dy       = results_dy.first;
 
-  //yields_t& ttw      = results_ttw.first;
-  //yields_t& ttzh     = results_ttzh.first;
-  //yields_t& wz       = results_wz.first;
-  //yields_t& ww       = results_ww.first;
-  //yields_t& xg       = results_xg.first;
-  //yields_t& rares    = results_rares.first;
+  yields_t& ttw      = results_ttw.first;
+  yields_t& ttzh     = results_ttzh.first;
+  yields_t& wz       = results_wz.first;
+  yields_t& ww       = results_ww.first;
+  yields_t& xg       = results_xg.first;
+  yields_t& rares    = results_rares.first;
 
-  //yields_t& data     = results_data.first;
-  //yields_t& flips    = results_flips.first;
-  //yields_t& fakes    = results_fakes.first;
-  //yields_t& fakes_is = results_fakes_is.first;
-  //yields_t& fakes_mc = results_fakes_mc.first;
+  yields_t& data     = results_data.first;
+  yields_t& flips    = results_flips.first;
+  yields_t& fakes    = results_fakes.first;
+  yields_t& fakes_is = results_fakes_is.first;
+  yields_t& fakes_mc = results_fakes_mc.first;
 
-  //yields_t& t1tttt_1200    = results_t1tttt_1200.first;
-  //yields_t& t6ttww_650    = results_t6ttww_650.first;
+  yields_t& t1tttt_1200    = results_t1tttt_1200.first;
+  yields_t& t6ttww_650    = results_t6ttww_650.first;
 
-  ////Make yield table
-  //CTable table; 
-  //table.setPrecision(2); 
-  //table.setTitle("SS Baseline Yields"); 
-  //table.useTitle(); 
-  //table.setTable() (                  "EE"  , "EM"       , "MM"         , "TOTAL"      )
-  //                 ("ttw"      , ttw.EE      , ttw.EM      , ttw.MM      , ttw.TOTAL    )
-  //                 ("ttzh"     , ttzh.EE     , ttzh.EM     , ttzh.MM     , ttzh.TOTAL   )
-  //                 ("wz"       , wz.EE       , wz.EM       , wz.MM       , wz.TOTAL     )
-  //                 ("ww"       , ww.EE       , ww.EM       , ww.MM       , ww.TOTAL     )
-  //                 ("xg"       , xg.EE       , xg.EM       , xg.MM       , xg.TOTAL     )
-  //                 ("rares"    , rares.EE    , rares.EM    , rares.MM    , rares.TOTAL  )
-  //                 ("flips"    , flips.EE    , flips.EM    , flips.MM    , flips.TOTAL  )
-  //                 ("fakes"    , fakes.EE    , fakes.EM    , fakes.MM    , fakes.TOTAL  )
-  //                 ("total"    , total.EE    , total.EM    , total.MM    , total.TOTAL  )
-  //                 ("data"     , data.EE     , data.EM     , data.MM     , data.TOTAL   )
-  //                 ("fakes_is" , fakes_is.EE , fakes_is.EM , fakes_is.MM , fakes_is.TOTAL  )
-  //                 ("fakes_mc" , fakes_mc.EE , fakes_mc.EM , fakes_mc.MM , fakes_mc.TOTAL  )
-  //                 ("ttbar"    , ttbar.EE    , ttbar.EM    , ttbar.MM    , ttbar.TOTAL  )
-  //                 ("ttbar_fa" , ttbar_fa.EE , ttbar_fa.EM , ttbar_fa.MM , ttbar_fa.TOTAL)
-  //                 ("ttbar_fl" , ttbar_fl.EE , ttbar_fl.EM , ttbar_fl.MM , ttbar_fl.TOTAL)
-  //                 ("st"       , st.EE       , st.EM       , st.MM       , st.TOTAL     )
-  //                 ("wjets"    , wjets.EE    , wjets.EM    , wjets.MM    , wjets.TOTAL  )
-  //                 ("dy"       , dy.EE       , dy.EM       , dy.MM       , dy.TOTAL     )
-  //                 ("t1tttt_1200"    , t1tttt_1200.EE    , t1tttt_1200.EM    , t1tttt_1200.MM    , t1tttt_1200.TOTAL  )
-  //                 ("t6ttww_650"    , t6ttww_650.EE    , t6ttww_650.EM    , t6ttww_650.MM    , t6ttww_650.TOTAL  );
-  //table.print();
+  //Make yield table
+  CTable table; 
+  table.setPrecision(2); 
+  table.setTitle("SS Baseline Yields"); 
+  table.useTitle(); 
+  table.setTable() (                  "EE"  , "EM"       , "MM"         , "TOTAL"      )
+                   ("ttw"      , ttw.EE      , ttw.EM      , ttw.MM      , ttw.TOTAL    )
+                   ("ttzh"     , ttzh.EE     , ttzh.EM     , ttzh.MM     , ttzh.TOTAL   )
+                   ("wz"       , wz.EE       , wz.EM       , wz.MM       , wz.TOTAL     )
+                   ("ww"       , ww.EE       , ww.EM       , ww.MM       , ww.TOTAL     )
+                   ("xg"       , xg.EE       , xg.EM       , xg.MM       , xg.TOTAL     )
+                   ("rares"    , rares.EE    , rares.EM    , rares.MM    , rares.TOTAL  )
+                   ("flips"    , flips.EE    , flips.EM    , flips.MM    , flips.TOTAL  )
+                   ("fakes"    , fakes.EE    , fakes.EM    , fakes.MM    , fakes.TOTAL  )
+                   ("total"    , total.EE    , total.EM    , total.MM    , total.TOTAL  )
+                   ("data"     , data.EE     , data.EM     , data.MM     , data.TOTAL   )
+                   ("fakes_is" , fakes_is.EE , fakes_is.EM , fakes_is.MM , fakes_is.TOTAL  )
+                   ("fakes_mc" , fakes_mc.EE , fakes_mc.EM , fakes_mc.MM , fakes_mc.TOTAL  )
+                   ("ttbar"    , ttbar.EE    , ttbar.EM    , ttbar.MM    , ttbar.TOTAL  )
+                   ("ttbar_fa" , ttbar_fa.EE , ttbar_fa.EM , ttbar_fa.MM , ttbar_fa.TOTAL)
+                   ("ttbar_fl" , ttbar_fl.EE , ttbar_fl.EM , ttbar_fl.MM , ttbar_fl.TOTAL)
+                   ("st"       , st.EE       , st.EM       , st.MM       , st.TOTAL     )
+                   ("wjets"    , wjets.EE    , wjets.EM    , wjets.MM    , wjets.TOTAL  )
+                   ("dy"       , dy.EE       , dy.EM       , dy.MM       , dy.TOTAL     )
+                   ("t1tttt_1200"    , t1tttt_1200.EE    , t1tttt_1200.EM    , t1tttt_1200.MM    , t1tttt_1200.TOTAL  )
+                   ("t6ttww_650"    , t6ttww_650.EE    , t6ttww_650.EM    , t6ttww_650.MM    , t6ttww_650.TOTAL  );
+  table.print();
 
-  //plots_t& p_ttbar    = results_ttbar.second;
-  //plots_t& p_ttbar_ff = results_ttbar_ff.second;
-  //plots_t& p_wjets_ff = results_wjets_ff.second;
-  //plots_t& p_dy_ff    = results_dy_ff.second;
-  //plots_t& p_st_ff    = results_st_ff.second;
-  //plots_t& p_ttbar_fa = results_ttbar_fa.second;
-  //plots_t& p_ttbar_fl = results_ttbar_fl.second;
-  //plots_t& p_st       = results_st.second;
-  //plots_t& p_wjets    = results_wjets.second;
-  //plots_t& p_dy       = results_dy.second;
+  plots_t& p_ttbar    = results_ttbar.second;
+  plots_t& p_ttbar_ff = results_ttbar_ff.second;
+  plots_t& p_wjets_ff = results_wjets_ff.second;
+  plots_t& p_dy_ff    = results_dy_ff.second;
+  plots_t& p_st_ff    = results_st_ff.second;
+  plots_t& p_ttbar_fa = results_ttbar_fa.second;
+  plots_t& p_ttbar_fl = results_ttbar_fl.second;
+  plots_t& p_st       = results_st.second;
+  plots_t& p_wjets    = results_wjets.second;
+  plots_t& p_dy       = results_dy.second;
 
-  //plots_t& p_ttw      = results_ttw.second;
-  //plots_t& p_ttzh     = results_ttzh.second;
-  //plots_t& p_wz       = results_wz.second;
-  //plots_t& p_ww       = results_ww.second;
-  //plots_t& p_xg       = results_xg.second;
-  //plots_t& p_rares    = results_rares.second;
+  plots_t& p_ttw      = results_ttw.second;
+  plots_t& p_ttzh     = results_ttzh.second;
+  plots_t& p_wz       = results_wz.second;
+  plots_t& p_ww       = results_ww.second;
+  plots_t& p_xg       = results_xg.second;
+  plots_t& p_rares    = results_rares.second;
 
-  //plots_t& p_data     = results_data.second;
-  //plots_t& p_flips    = results_flips.second;
-  //plots_t& p_fakes    = results_fakes.second;
-  //plots_t& p_fakes_is = results_fakes_is.second;
+  plots_t& p_data     = results_data.second;
+  plots_t& p_flips    = results_flips.second;
+  plots_t& p_fakes    = results_fakes.second;
+  plots_t& p_fakes_is = results_fakes_is.second;
 
-  //plots_t& p_t1tttt_1200 = results_t1tttt_1200.second;
+  plots_t& p_t1tttt_1200 = results_t1tttt_1200.second;
 
-  ////Titles for legend
-  //vector <string> titles;
-  //titles.push_back("ttW"); 
-  //titles.push_back("ttZ/H"); 
-  //titles.push_back("WZ"); 
-  //titles.push_back("WW"); 
-  //titles.push_back("X+G"); 
-  //titles.push_back("Rares"); 
-  //titles.push_back("Flips"); 
-  //titles.push_back("Fakes"); 
+  //Titles for legend
+  vector <string> titles;
+  titles.push_back("ttW"); 
+  titles.push_back("ttZ/H"); 
+  titles.push_back("WZ"); 
+  titles.push_back("WW"); 
+  titles.push_back("X+G"); 
+  titles.push_back("Rares"); 
+  titles.push_back("Flips"); 
+  titles.push_back("Fakes"); 
 
-  //vector <Color_t> colors;
-  //colors.push_back(kGreen+3); 
-  //colors.push_back(kGreen-6); 
-  //colors.push_back(kOrange); 
-  //colors.push_back(kOrange-3); 
-  //colors.push_back(kViolet+2); 
-  //colors.push_back(kMagenta-7); 
-  //colors.push_back(kGray+2); 
-  //colors.push_back(18); 
+  vector <Color_t> colors;
+  colors.push_back(kGreen+3); 
+  colors.push_back(kGreen-6); 
+  colors.push_back(kOrange); 
+  colors.push_back(kOrange-3); 
+  colors.push_back(kViolet+2); 
+  colors.push_back(kMagenta-7); 
+  colors.push_back(kGray+2); 
+  colors.push_back(18); 
 
-  ////Titles for MC-only plots
-  //vector <string> titles2;
-  //titles2.push_back("ttW"); 
-  //titles2.push_back("ttZ/H"); 
-  //titles2.push_back("WZ"); 
-  //titles2.push_back("WW"); 
-  //titles2.push_back("X+G"); 
-  //titles2.push_back("Rares"); 
-  //titles2.push_back("ttbar"); 
-  //titles2.push_back("dy"); 
-  //titles2.push_back("wjets"); 
-  //titles2.push_back("st"); 
+  //Titles for MC-only plots
+  vector <string> titles2;
+  titles2.push_back("ttW"); 
+  titles2.push_back("ttZ/H"); 
+  titles2.push_back("WZ"); 
+  titles2.push_back("WW"); 
+  titles2.push_back("X+G"); 
+  titles2.push_back("Rares"); 
+  titles2.push_back("ttbar"); 
+  titles2.push_back("dy"); 
+  titles2.push_back("wjets"); 
+  titles2.push_back("st"); 
 
-  //vector <Color_t> colors2;
-  //colors2.push_back(kGreen+3); 
-  //colors2.push_back(kGreen-6); 
-  //colors2.push_back(kOrange); 
-  //colors2.push_back(kOrange-3); 
-  //colors2.push_back(kViolet+2); 
-  //colors2.push_back(kMagenta-7); 
-  //colors2.push_back(18); 
-  //colors2.push_back(kGray+2); 
-  //colors2.push_back(18); 
-  //colors2.push_back(18); 
+  vector <Color_t> colors2;
+  colors2.push_back(kGreen+3); 
+  colors2.push_back(kGreen-6); 
+  colors2.push_back(kOrange); 
+  colors2.push_back(kOrange-3); 
+  colors2.push_back(kViolet+2); 
+  colors2.push_back(kMagenta-7); 
+  colors2.push_back(18); 
+  colors2.push_back(kGray+2); 
+  colors2.push_back(18); 
+  colors2.push_back(18); 
 
-  //TString header = "        | %15s | %15s | %15s | %15s | %15s | %15s | %15s | %15s | %15s | %5s | %10s";
-  //TString HHline = "HH SR%2i | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.0f | %10.2f";
-  //TString HLline = "HL SR%2i | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.0f | %10.2f";
-  //TString LLline = "LL SR%2i | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.0f | %10.2f";
-  //if (doLatex) {
-  //  header = "     & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %10s \\\\";
-  //  HHline = "SR%2i & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.0f & %10.2f \\\\";
-  //  HLline = HHline;
-  //  LLline = HHline;
-  //  cout << "\\documentclass[12pt,a4paper]{article}" << endl;
-  //  cout << "\\usepackage{lscape}" << endl;
-  //  cout << "\\begin{document}" << endl;
-  //}
+  TString header = "        | %15s | %15s | %15s | %15s | %15s | %15s | %15s | %15s | %15s | %5s | %10s";
+  TString HHline = "HH SR%2i | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.0f | %10.2f";
+  TString HLline = "HL SR%2i | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.0f | %10.2f";
+  TString LLline = "LL SR%2i | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.2f +/- %5.2f | %5.0f | %10.2f";
+  if (doLatex) {
+    header = "     & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %10s \\\\";
+    HHline = "SR%2i & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.2f $\\pm$ %5.2f & %5.0f & %10.2f \\\\";
+    HLline = HHline;
+    LLline = HHline;
+    cout << "\\documentclass[12pt,a4paper]{article}" << endl;
+    cout << "\\usepackage{lscape}" << endl;
+    cout << "\\begin{document}" << endl;
+  }
 
-  //cout << endl;
-  //if (doLatex) {
-  //  cout << "\\begin{landscape}" << endl;
-  //  cout << "\\begin{table}" << endl;
-  //  cout << "\\footnotesize" << endl;
-  //  cout << "\\begin{center}" << endl;
-  //  cout << "\\caption{Event yields in HH regions.}" << endl;
-  //  cout << "\\label{tab:yieldsHH}" << endl;
-  //  cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
-  //}
-  //cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
-  //if (doLatex) cout << "\\hline\\hline" << endl;
-  //for (int bin=1;bin<=p_ttw.SRHH.TOTAL->GetNbinsX(); ++bin) {
-  //  cout << Form(HHline.Data(),bin,
-  //  	 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,
-  //  	 p_ttzh.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,
-  //  	 p_wz.SRHH.TOTAL->GetBinContent(bin),p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,
-  //  	 p_ww.SRHH.TOTAL->GetBinContent(bin),p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,
-  //  	 p_xg.SRHH.TOTAL->GetBinContent(bin),p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,
-  //  	 p_rares.SRHH.TOTAL->GetBinContent(bin),p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,
-  //  	 p_flips.SRHH.TOTAL->GetBinContent(bin),p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,
-  //  	 p_fakes.SRHH.TOTAL->GetBinContent(bin),p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,
-  //  	 (p_ttw.SRHH.TOTAL->GetBinContent(bin)+p_ttzh.SRHH.TOTAL->GetBinContent(bin)+p_wz.SRHH.TOTAL->GetBinContent(bin)+
-  //  	  p_ww.SRHH.TOTAL->GetBinContent(bin)+p_xg.SRHH.TOTAL->GetBinContent(bin)+
-  //  	  p_rares.SRHH.TOTAL->GetBinContent(bin)+p_flips.SRHH.TOTAL->GetBinContent(bin)+p_fakes.SRHH.TOTAL->GetBinContent(bin)),
-  //  	 sqrt(pow(p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
-  //  	  pow(p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,2)+
-  //  	  pow(p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
-  //  	      pow(p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,2)),
-  //  	 p_data.SRHH.TOTAL->GetBinContent(bin),
-  //  	 p_t1tttt_1200.SRHH.TOTAL->GetBinContent(bin)
-  //  	 )
-  //   << endl;
-  //}
-  //if (doLatex) {
-  //  cout << "\\hline" << endl;
-  //  cout << "\\end{tabular}" << endl;
-  //  cout << "\\end{center}" << endl;
-  //  cout << "\\end{table}" << endl;
-  //  cout << "\\end{landscape}" << endl;
-  //}
+  cout << endl;
+  if (doLatex) {
+    cout << "\\begin{landscape}" << endl;
+    cout << "\\begin{table}" << endl;
+    cout << "\\footnotesize" << endl;
+    cout << "\\begin{center}" << endl;
+    cout << "\\caption{Event yields in HH regions.}" << endl;
+    cout << "\\label{tab:yieldsHH}" << endl;
+    cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
+  }
+  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  if (doLatex) cout << "\\hline\\hline" << endl;
+  for (int bin=1;bin<=p_ttw.SRHH.TOTAL->GetNbinsX(); ++bin) {
+    cout << Form(HHline.Data(),bin,
+    	 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,
+    	 p_ttzh.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,
+    	 p_wz.SRHH.TOTAL->GetBinContent(bin),p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,
+    	 p_ww.SRHH.TOTAL->GetBinContent(bin),p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,
+    	 p_xg.SRHH.TOTAL->GetBinContent(bin),p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,
+    	 p_rares.SRHH.TOTAL->GetBinContent(bin),p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,
+    	 p_flips.SRHH.TOTAL->GetBinContent(bin),p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,
+    	 p_fakes.SRHH.TOTAL->GetBinContent(bin),p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,
+    	 (p_ttw.SRHH.TOTAL->GetBinContent(bin)+p_ttzh.SRHH.TOTAL->GetBinContent(bin)+p_wz.SRHH.TOTAL->GetBinContent(bin)+
+    	  p_ww.SRHH.TOTAL->GetBinContent(bin)+p_xg.SRHH.TOTAL->GetBinContent(bin)+
+    	  p_rares.SRHH.TOTAL->GetBinContent(bin)+p_flips.SRHH.TOTAL->GetBinContent(bin)+p_fakes.SRHH.TOTAL->GetBinContent(bin)),
+    	 sqrt(pow(p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
+    	  pow(p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,2)+
+    	  pow(p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
+    	      pow(p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,2)),
+    	 p_data.SRHH.TOTAL->GetBinContent(bin),
+    	 p_t1tttt_1200.SRHH.TOTAL->GetBinContent(bin)
+    	 )
+     << endl;
+  }
+  if (doLatex) {
+    cout << "\\hline" << endl;
+    cout << "\\end{tabular}" << endl;
+    cout << "\\end{center}" << endl;
+    cout << "\\end{table}" << endl;
+    cout << "\\end{landscape}" << endl;
+  }
 
-  //cout << endl;
-  //if (doLatex) {
-  //  cout << "\\begin{landscape}" << endl;
-  //  cout << "\\begin{table}" << endl;
-  //  cout << "\\footnotesize" << endl;
-  //  cout << "\\begin{center}" << endl;
-  //  cout << "\\caption{Event yields in HL regions.}" << endl;
-  //  cout << "\\label{tab:yieldsHL}" << endl;
-  //  cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
-  //}
-  //cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
-  //if (doLatex) cout << "\\hline\\hline" << endl;
-  //for (int bin=1;bin<=p_ttw.SRHL.TOTAL->GetNbinsX(); ++bin) {
-  //  cout << Form(HLline.Data(),bin,
-  //  	 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,
-  //  	 p_ttzh.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,
-  //  	 p_wz.SRHL.TOTAL->GetBinContent(bin),p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,
-  //  	 p_ww.SRHL.TOTAL->GetBinContent(bin),p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,
-  //  	 p_xg.SRHL.TOTAL->GetBinContent(bin),p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,
-  //  	 p_rares.SRHL.TOTAL->GetBinContent(bin),p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,
-  //  	 p_flips.SRHL.TOTAL->GetBinContent(bin),p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
-  //  	 p_fakes.SRHL.TOTAL->GetBinContent(bin),p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
-  //  	 (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+p_wz.SRHL.TOTAL->GetBinContent(bin)+
-  //  	  p_ww.SRHL.TOTAL->GetBinContent(bin)+p_xg.SRHL.TOTAL->GetBinContent(bin)+
-  //  	  p_rares.SRHL.TOTAL->GetBinContent(bin)+p_flips.SRHL.TOTAL->GetBinContent(bin)+p_fakes.SRHL.TOTAL->GetBinContent(bin)),
-  //  	 sqrt(pow(p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
-  //  	  pow(p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
-  //  	  pow(p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
-  //  	      pow(p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
-  //  	 p_data.SRHL.TOTAL->GetBinContent(bin),
-  //  	 p_t1tttt_1200.SRHL.TOTAL->GetBinContent(bin)
-  //  	 )
-  //   << endl;
-  //}
-  //if (doLatex) {
-  //  cout << "\\hline" << endl;
-  //  cout << "\\end{tabular}" << endl;
-  //  cout << "\\end{center}" << endl;
-  //  cout << "\\end{table}" << endl;
-  //  cout << "\\end{landscape}" << endl;
-  //}
+  cout << endl;
+  if (doLatex) {
+    cout << "\\begin{landscape}" << endl;
+    cout << "\\begin{table}" << endl;
+    cout << "\\footnotesize" << endl;
+    cout << "\\begin{center}" << endl;
+    cout << "\\caption{Event yields in HL regions.}" << endl;
+    cout << "\\label{tab:yieldsHL}" << endl;
+    cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
+  }
+  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  if (doLatex) cout << "\\hline\\hline" << endl;
+  for (int bin=1;bin<=p_ttw.SRHL.TOTAL->GetNbinsX(); ++bin) {
+    cout << Form(HLline.Data(),bin,
+    	 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,
+    	 p_ttzh.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,
+    	 p_wz.SRHL.TOTAL->GetBinContent(bin),p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,
+    	 p_ww.SRHL.TOTAL->GetBinContent(bin),p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,
+    	 p_xg.SRHL.TOTAL->GetBinContent(bin),p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,
+    	 p_rares.SRHL.TOTAL->GetBinContent(bin),p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,
+    	 p_flips.SRHL.TOTAL->GetBinContent(bin),p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
+    	 p_fakes.SRHL.TOTAL->GetBinContent(bin),p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
+    	 (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+p_wz.SRHL.TOTAL->GetBinContent(bin)+
+    	  p_ww.SRHL.TOTAL->GetBinContent(bin)+p_xg.SRHL.TOTAL->GetBinContent(bin)+
+    	  p_rares.SRHL.TOTAL->GetBinContent(bin)+p_flips.SRHL.TOTAL->GetBinContent(bin)+p_fakes.SRHL.TOTAL->GetBinContent(bin)),
+    	 sqrt(pow(p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
+    	  pow(p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
+    	  pow(p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
+    	      pow(p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
+    	 p_data.SRHL.TOTAL->GetBinContent(bin),
+    	 p_t1tttt_1200.SRHL.TOTAL->GetBinContent(bin)
+    	 )
+     << endl;
+  }
+  if (doLatex) {
+    cout << "\\hline" << endl;
+    cout << "\\end{tabular}" << endl;
+    cout << "\\end{center}" << endl;
+    cout << "\\end{table}" << endl;
+    cout << "\\end{landscape}" << endl;
+  }
 
-  //cout << endl;
-  //if (doLatex) {
-  //  cout << "\\begin{landscape}" << endl;
-  //  cout << "\\begin{table}" << endl;
-  //  cout << "\\footnotesize" << endl;
-  //  cout << "\\begin{center}" << endl;
-  //  cout << "\\caption{Event yields in LL regions.}" << endl;
-  //  cout << "\\label{tab:yieldsLL}" << endl;
-  //  cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
-  //}
-  //cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
-  //if (doLatex) cout << "\\hline\\hline" << endl;
-  //for (int bin=1;bin<=p_ttw.SRLL.TOTAL->GetNbinsX(); ++bin) {
-  //  cout << Form(LLline.Data(),bin,
-  //  	 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,
-  //  	 p_ttzh.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,
-  //  	 p_wz.SRLL.TOTAL->GetBinContent(bin),p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,
-  //  	 p_ww.SRLL.TOTAL->GetBinContent(bin),p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,
-  //  	 p_xg.SRLL.TOTAL->GetBinContent(bin),p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,
-  //  	 p_rares.SRLL.TOTAL->GetBinContent(bin),p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,
-  //  	 p_flips.SRLL.TOTAL->GetBinContent(bin),p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
-  //  	 p_fakes.SRLL.TOTAL->GetBinContent(bin),p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
-  //  	 (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+p_wz.SRLL.TOTAL->GetBinContent(bin)+
-  //  	  p_ww.SRLL.TOTAL->GetBinContent(bin)+p_xg.SRLL.TOTAL->GetBinContent(bin)+
-  //  	  p_rares.SRLL.TOTAL->GetBinContent(bin)+p_flips.SRLL.TOTAL->GetBinContent(bin)+p_fakes.SRLL.TOTAL->GetBinContent(bin)),
-  //  	 sqrt(pow(p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
-  //  	  pow(p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
-  //  	  pow(p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
-  //  	      pow(p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
-  //  	 p_data.SRLL.TOTAL->GetBinContent(bin),
-  //  	 p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
-  //  	 )
-  //   << endl;
-  //}
-  //if (doLatex) {
-  //  cout << "\\hline" << endl;
-  //  cout << "\\end{tabular}" << endl;
-  //  cout << "\\end{center}" << endl;
-  //  cout << "\\end{table}" << endl;
-  //  cout << "\\end{landscape}" << endl;
+  cout << endl;
+  if (doLatex) {
+    cout << "\\begin{landscape}" << endl;
+    cout << "\\begin{table}" << endl;
+    cout << "\\footnotesize" << endl;
+    cout << "\\begin{center}" << endl;
+    cout << "\\caption{Event yields in LL regions.}" << endl;
+    cout << "\\label{tab:yieldsLL}" << endl;
+    cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
+  }
+  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  if (doLatex) cout << "\\hline\\hline" << endl;
+  for (int bin=1;bin<=p_ttw.SRLL.TOTAL->GetNbinsX(); ++bin) {
+    cout << Form(LLline.Data(),bin,
+    	 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,
+    	 p_ttzh.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,
+    	 p_wz.SRLL.TOTAL->GetBinContent(bin),p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,
+    	 p_ww.SRLL.TOTAL->GetBinContent(bin),p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,
+    	 p_xg.SRLL.TOTAL->GetBinContent(bin),p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,
+    	 p_rares.SRLL.TOTAL->GetBinContent(bin),p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,
+    	 p_flips.SRLL.TOTAL->GetBinContent(bin),p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
+    	 p_fakes.SRLL.TOTAL->GetBinContent(bin),p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
+    	 (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+p_wz.SRLL.TOTAL->GetBinContent(bin)+
+    	  p_ww.SRLL.TOTAL->GetBinContent(bin)+p_xg.SRLL.TOTAL->GetBinContent(bin)+
+    	  p_rares.SRLL.TOTAL->GetBinContent(bin)+p_flips.SRLL.TOTAL->GetBinContent(bin)+p_fakes.SRLL.TOTAL->GetBinContent(bin)),
+    	 sqrt(pow(p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
+    	  pow(p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
+    	  pow(p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
+    	      pow(p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
+    	 p_data.SRLL.TOTAL->GetBinContent(bin),
+    	 p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
+    	 )
+     << endl;
+  }
+  if (doLatex) {
+    cout << "\\hline" << endl;
+    cout << "\\end{tabular}" << endl;
+    cout << "\\end{center}" << endl;
+    cout << "\\end{table}" << endl;
+    cout << "\\end{landscape}" << endl;
 
-  //  cout << "\\end{document}" << endl;
-  //}
+    cout << "\\end{document}" << endl;
+  }
 
-  ////SR plots
-  //vector<pair<TH1F*, float> > SRHH_plots;
-  //SRHH_plots.push_back(pair<TH1F*, float>(p_ttw.SRHH.TOTAL  , roughSystTTW     ));
-  //SRHH_plots.push_back(pair<TH1F*, float>(p_ttzh.SRHH.TOTAL , roughSystTTZH    ));
-  //SRHH_plots.push_back(pair<TH1F*, float>(p_wz.SRHH.TOTAL   , roughSystWZ      ));
-  //SRHH_plots.push_back(pair<TH1F*, float>(p_ww.SRHH.TOTAL   , roughSystWW      ));
-  //SRHH_plots.push_back(pair<TH1F*, float>(p_xg.SRHH.TOTAL   , roughSystXG      ));
-  //SRHH_plots.push_back(pair<TH1F*, float>(p_rares.SRHH.TOTAL, roughSystRARES   ));
-  //SRHH_plots.push_back(pair<TH1F*, float>(p_flips.SRHH.TOTAL, roughSystFLIPS   ));
-  //SRHH_plots.push_back(pair<TH1F*, float>(p_fakes.SRHH.TOTAL, roughSystFAKESHH ));
-  //dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "data-driven", Form("--lumi %.2f --outputName HHSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
-  //dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "data-driven", Form("--lumi %.2f --outputName HHSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  //SR plots
+  vector<pair<TH1F*, float> > SRHH_plots;
+  SRHH_plots.push_back(pair<TH1F*, float>(p_ttw.SRHH.TOTAL  , roughSystTTW     ));
+  SRHH_plots.push_back(pair<TH1F*, float>(p_ttzh.SRHH.TOTAL , roughSystTTZH    ));
+  SRHH_plots.push_back(pair<TH1F*, float>(p_wz.SRHH.TOTAL   , roughSystWZ      ));
+  SRHH_plots.push_back(pair<TH1F*, float>(p_ww.SRHH.TOTAL   , roughSystWW      ));
+  SRHH_plots.push_back(pair<TH1F*, float>(p_xg.SRHH.TOTAL   , roughSystXG      ));
+  SRHH_plots.push_back(pair<TH1F*, float>(p_rares.SRHH.TOTAL, roughSystRARES   ));
+  SRHH_plots.push_back(pair<TH1F*, float>(p_flips.SRHH.TOTAL, roughSystFLIPS   ));
+  SRHH_plots.push_back(pair<TH1F*, float>(p_fakes.SRHH.TOTAL, roughSystFAKESHH ));
+  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "data-driven", Form("--lumi %.2f --outputName HHSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "H-H SRs", "data-driven", Form("--lumi %.2f --outputName HHSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > SRHL_plots;
-  //SRHL_plots.push_back(pair<TH1F*, float>(p_ttw.SRHL.TOTAL  , roughSystTTW     ));
-  //SRHL_plots.push_back(pair<TH1F*, float>(p_ttzh.SRHL.TOTAL , roughSystTTZH    ));
-  //SRHL_plots.push_back(pair<TH1F*, float>(p_wz.SRHL.TOTAL   , roughSystWZ      ));
-  //SRHL_plots.push_back(pair<TH1F*, float>(p_ww.SRHL.TOTAL   , roughSystWW      ));
-  //SRHL_plots.push_back(pair<TH1F*, float>(p_xg.SRHL.TOTAL   , roughSystXG      ));
-  //SRHL_plots.push_back(pair<TH1F*, float>(p_rares.SRHL.TOTAL, roughSystRARES   ));
-  //SRHL_plots.push_back(pair<TH1F*, float>(p_flips.SRHL.TOTAL, roughSystFLIPS   ));
-  //SRHL_plots.push_back(pair<TH1F*, float>(p_fakes.SRHL.TOTAL, roughSystFAKESXL ));
-  //dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "H-L SRs", "data-driven", Form("--lumi %.2f --outputName HLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
-  //dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "H-L SRs", "data-driven", Form("--lumi %.2f --outputName HLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > SRHL_plots;
+  SRHL_plots.push_back(pair<TH1F*, float>(p_ttw.SRHL.TOTAL  , roughSystTTW     ));
+  SRHL_plots.push_back(pair<TH1F*, float>(p_ttzh.SRHL.TOTAL , roughSystTTZH    ));
+  SRHL_plots.push_back(pair<TH1F*, float>(p_wz.SRHL.TOTAL   , roughSystWZ      ));
+  SRHL_plots.push_back(pair<TH1F*, float>(p_ww.SRHL.TOTAL   , roughSystWW      ));
+  SRHL_plots.push_back(pair<TH1F*, float>(p_xg.SRHL.TOTAL   , roughSystXG      ));
+  SRHL_plots.push_back(pair<TH1F*, float>(p_rares.SRHL.TOTAL, roughSystRARES   ));
+  SRHL_plots.push_back(pair<TH1F*, float>(p_flips.SRHL.TOTAL, roughSystFLIPS   ));
+  SRHL_plots.push_back(pair<TH1F*, float>(p_fakes.SRHL.TOTAL, roughSystFAKESXL ));
+  dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "H-L SRs", "data-driven", Form("--lumi %.2f --outputName HLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "H-L SRs", "data-driven", Form("--lumi %.2f --outputName HLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > SRLL_plots;
-  //SRLL_plots.push_back(pair<TH1F*, float>(p_ttw.SRLL.TOTAL  , roughSystTTW     ));
-  //SRLL_plots.push_back(pair<TH1F*, float>(p_ttzh.SRLL.TOTAL , roughSystTTZH    ));
-  //SRLL_plots.push_back(pair<TH1F*, float>(p_wz.SRLL.TOTAL   , roughSystWZ      ));
-  //SRLL_plots.push_back(pair<TH1F*, float>(p_ww.SRLL.TOTAL   , roughSystWW      ));
-  //SRLL_plots.push_back(pair<TH1F*, float>(p_xg.SRLL.TOTAL   , roughSystXG      ));
-  //SRLL_plots.push_back(pair<TH1F*, float>(p_rares.SRLL.TOTAL, roughSystRARES   ));
-  //SRLL_plots.push_back(pair<TH1F*, float>(p_flips.SRLL.TOTAL, roughSystFLIPS   ));
-  //SRLL_plots.push_back(pair<TH1F*, float>(p_fakes.SRLL.TOTAL, roughSystFAKESXL ));
-  //dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "L-L SRs", "data-driven", Form("--lumi %.2f --outputName LLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
-  //dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "L-L SRs", "data-driven", Form("--lumi %.2f --outputName LLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > SRLL_plots;
+  SRLL_plots.push_back(pair<TH1F*, float>(p_ttw.SRLL.TOTAL  , roughSystTTW     ));
+  SRLL_plots.push_back(pair<TH1F*, float>(p_ttzh.SRLL.TOTAL , roughSystTTZH    ));
+  SRLL_plots.push_back(pair<TH1F*, float>(p_wz.SRLL.TOTAL   , roughSystWZ      ));
+  SRLL_plots.push_back(pair<TH1F*, float>(p_ww.SRLL.TOTAL   , roughSystWW      ));
+  SRLL_plots.push_back(pair<TH1F*, float>(p_xg.SRLL.TOTAL   , roughSystXG      ));
+  SRLL_plots.push_back(pair<TH1F*, float>(p_rares.SRLL.TOTAL, roughSystRARES   ));
+  SRLL_plots.push_back(pair<TH1F*, float>(p_flips.SRLL.TOTAL, roughSystFLIPS   ));
+  SRLL_plots.push_back(pair<TH1F*, float>(p_fakes.SRLL.TOTAL, roughSystFAKESXL ));
+  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "L-L SRs", "data-driven", Form("--lumi %.2f --outputName LLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "L-L SRs", "data-driven", Form("--lumi %.2f --outputName LLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.05 --noOverflow --systInclStat --noRatioPlot", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  ////SR plots
-  //vector <TH1F*> SRHHMC_plots;
-  //SRHHMC_plots.push_back(p_ttw.SRHH.TOTAL  );
-  //SRHHMC_plots.push_back(p_ttzh.SRHH.TOTAL );
-  //SRHHMC_plots.push_back(p_wz.SRHH.TOTAL   );
-  //SRHHMC_plots.push_back(p_ww.SRHH.TOTAL   );
-  //SRHHMC_plots.push_back(p_xg.SRHH.TOTAL   );
-  //SRHHMC_plots.push_back(p_rares.SRHH.TOTAL);
-  //SRHHMC_plots.push_back(p_ttbar_ff.SRHH.TOTAL);
-  //SRHHMC_plots.push_back(p_dy_ff.SRHH.TOTAL);
-  //SRHHMC_plots.push_back(p_wjets_ff.SRHH.TOTAL);
-  //SRHHMC_plots.push_back(p_st_ff.SRHH.TOTAL);
-  //dataMCplotMaker(p_data.SRHH.TOTAL, SRHHMC_plots, titles2, "H-H SRs", "from MC", Form("--lumi %.2f --outputName HHSRMC.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  //SR plots
+  vector <TH1F*> SRHHMC_plots;
+  SRHHMC_plots.push_back(p_ttw.SRHH.TOTAL  );
+  SRHHMC_plots.push_back(p_ttzh.SRHH.TOTAL );
+  SRHHMC_plots.push_back(p_wz.SRHH.TOTAL   );
+  SRHHMC_plots.push_back(p_ww.SRHH.TOTAL   );
+  SRHHMC_plots.push_back(p_xg.SRHH.TOTAL   );
+  SRHHMC_plots.push_back(p_rares.SRHH.TOTAL);
+  SRHHMC_plots.push_back(p_ttbar_ff.SRHH.TOTAL);
+  SRHHMC_plots.push_back(p_dy_ff.SRHH.TOTAL);
+  SRHHMC_plots.push_back(p_wjets_ff.SRHH.TOTAL);
+  SRHHMC_plots.push_back(p_st_ff.SRHH.TOTAL);
+  dataMCplotMaker(p_data.SRHH.TOTAL, SRHHMC_plots, titles2, "H-H SRs", "from MC", Form("--lumi %.2f --outputName HHSRMC.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
-  //vector <TH1F*> SRHLMC_plots;
-  //SRHLMC_plots.push_back(p_ttw.SRHL.TOTAL  );
-  //SRHLMC_plots.push_back(p_ttzh.SRHL.TOTAL );
-  //SRHLMC_plots.push_back(p_wz.SRHL.TOTAL   );
-  //SRHLMC_plots.push_back(p_ww.SRHL.TOTAL   );
-  //SRHLMC_plots.push_back(p_xg.SRHL.TOTAL   );
-  //SRHLMC_plots.push_back(p_rares.SRHL.TOTAL);
-  //SRHLMC_plots.push_back(p_ttbar_ff.SRHL.TOTAL);
-  //SRHLMC_plots.push_back(p_dy_ff.SRHL.TOTAL);
-  //SRHLMC_plots.push_back(p_wjets_ff.SRHL.TOTAL);
-  //SRHLMC_plots.push_back(p_st_ff.SRHL.TOTAL);
-  //dataMCplotMaker(p_data.SRHL.TOTAL, SRHLMC_plots, titles2, "H-L SRs", "from MC", Form("--lumi %.2f --outputName HLSRMC.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  vector <TH1F*> SRHLMC_plots;
+  SRHLMC_plots.push_back(p_ttw.SRHL.TOTAL  );
+  SRHLMC_plots.push_back(p_ttzh.SRHL.TOTAL );
+  SRHLMC_plots.push_back(p_wz.SRHL.TOTAL   );
+  SRHLMC_plots.push_back(p_ww.SRHL.TOTAL   );
+  SRHLMC_plots.push_back(p_xg.SRHL.TOTAL   );
+  SRHLMC_plots.push_back(p_rares.SRHL.TOTAL);
+  SRHLMC_plots.push_back(p_ttbar_ff.SRHL.TOTAL);
+  SRHLMC_plots.push_back(p_dy_ff.SRHL.TOTAL);
+  SRHLMC_plots.push_back(p_wjets_ff.SRHL.TOTAL);
+  SRHLMC_plots.push_back(p_st_ff.SRHL.TOTAL);
+  dataMCplotMaker(p_data.SRHL.TOTAL, SRHLMC_plots, titles2, "H-L SRs", "from MC", Form("--lumi %.2f --outputName HLSRMC.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
-  //vector <TH1F*> SRLLMC_plots;
-  //SRLLMC_plots.push_back(p_ttw.SRLL.TOTAL  );
-  //SRLLMC_plots.push_back(p_ttzh.SRLL.TOTAL );
-  //SRLLMC_plots.push_back(p_wz.SRLL.TOTAL   );
-  //SRLLMC_plots.push_back(p_ww.SRLL.TOTAL   );
-  //SRLLMC_plots.push_back(p_xg.SRLL.TOTAL   );
-  //SRLLMC_plots.push_back(p_rares.SRLL.TOTAL);
-  //SRLLMC_plots.push_back(p_ttbar_ff.SRLL.TOTAL);
-  //SRLLMC_plots.push_back(p_dy_ff.SRLL.TOTAL);
-  //SRLLMC_plots.push_back(p_wjets_ff.SRLL.TOTAL);
-  //SRLLMC_plots.push_back(p_st_ff.SRLL.TOTAL);
-  //dataMCplotMaker(p_data.SRLL.TOTAL, SRLLMC_plots, titles2, "L-L SRs", "from MC", Form("--lumi %.2f --outputName LLSRMC.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  vector <TH1F*> SRLLMC_plots;
+  SRLLMC_plots.push_back(p_ttw.SRLL.TOTAL  );
+  SRLLMC_plots.push_back(p_ttzh.SRLL.TOTAL );
+  SRLLMC_plots.push_back(p_wz.SRLL.TOTAL   );
+  SRLLMC_plots.push_back(p_ww.SRLL.TOTAL   );
+  SRLLMC_plots.push_back(p_xg.SRLL.TOTAL   );
+  SRLLMC_plots.push_back(p_rares.SRLL.TOTAL);
+  SRLLMC_plots.push_back(p_ttbar_ff.SRLL.TOTAL);
+  SRLLMC_plots.push_back(p_dy_ff.SRLL.TOTAL);
+  SRLLMC_plots.push_back(p_wjets_ff.SRLL.TOTAL);
+  SRLLMC_plots.push_back(p_st_ff.SRLL.TOTAL);
+  dataMCplotMaker(p_data.SRLL.TOTAL, SRLLMC_plots, titles2, "L-L SRs", "from MC", Form("--lumi %.2f --outputName LLSRMC.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.05 --noOverflow", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
-  //vector<pair<TH1F*, float> > type_plots;
-  //type_plots.push_back(pair<TH1F*, float>(p_ttw.h_type  , roughSystTTW   ));
-  //type_plots.push_back(pair<TH1F*, float>(p_ttzh.h_type , roughSystTTZH  ));
-  //type_plots.push_back(pair<TH1F*, float>(p_wz.h_type   , roughSystWZ    ));
-  //type_plots.push_back(pair<TH1F*, float>(p_ww.h_type   , roughSystWW    ));
-  //type_plots.push_back(pair<TH1F*, float>(p_xg.h_type   , roughSystXG    ));
-  //type_plots.push_back(pair<TH1F*, float>(p_rares.h_type, roughSystRARES ));
-  //type_plots.push_back(pair<TH1F*, float>(p_flips.h_type, roughSystFLIPS ));
-  //type_plots.push_back(pair<TH1F*, float>(p_fakes.h_type, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_type, type_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName type_all_SS.pdf --xAxisLabel type (mm, me, em, ee) --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > type_plots;
+  type_plots.push_back(pair<TH1F*, float>(p_ttw.h_type  , roughSystTTW   ));
+  type_plots.push_back(pair<TH1F*, float>(p_ttzh.h_type , roughSystTTZH  ));
+  type_plots.push_back(pair<TH1F*, float>(p_wz.h_type   , roughSystWZ    ));
+  type_plots.push_back(pair<TH1F*, float>(p_ww.h_type   , roughSystWW    ));
+  type_plots.push_back(pair<TH1F*, float>(p_xg.h_type   , roughSystXG    ));
+  type_plots.push_back(pair<TH1F*, float>(p_rares.h_type, roughSystRARES ));
+  type_plots.push_back(pair<TH1F*, float>(p_flips.h_type, roughSystFLIPS ));
+  type_plots.push_back(pair<TH1F*, float>(p_fakes.h_type, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_type, type_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName type_all_SS.pdf --xAxisLabel type (mm, me, em, ee) --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > lep1_miniIso_plots;
-  //lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_miniIso  , roughSystTTW   ));
-  //lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep1_miniIso , roughSystTTZH  ));
-  //lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_wz.h_lep1_miniIso   , roughSystWZ    ));
-  //lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ww.h_lep1_miniIso   , roughSystWW    ));
-  //lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_miniIso   , roughSystXG    ));
-  //lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_miniIso, roughSystRARES ));
-  //lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_miniIso, roughSystFLIPS ));
-  //lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_miniIso, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep1_miniIso_all_SS.pdf --xAxisLabel lep1_miniIso --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > lep1_miniIso_plots;
+  lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_miniIso  , roughSystTTW   ));
+  lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep1_miniIso , roughSystTTZH  ));
+  lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_wz.h_lep1_miniIso   , roughSystWZ    ));
+  lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ww.h_lep1_miniIso   , roughSystWW    ));
+  lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_miniIso   , roughSystXG    ));
+  lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_miniIso, roughSystRARES ));
+  lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_miniIso, roughSystFLIPS ));
+  lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_miniIso, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep1_miniIso_all_SS.pdf --xAxisLabel lep1_miniIso --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > lep2_miniIso_plots;
-  //lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep2_miniIso  , roughSystTTW   ));
-  //lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep2_miniIso , roughSystTTZH  ));
-  //lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_wz.h_lep2_miniIso   , roughSystWZ    ));
-  //lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_ww.h_lep2_miniIso   , roughSystWW    ));
-  //lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_miniIso   , roughSystXG    ));
-  //lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_miniIso, roughSystRARES ));
-  //lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_miniIso, roughSystFLIPS ));
-  //lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_miniIso, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep2_miniIso_all_SS.pdf --xAxisLabel lep2_miniIso --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > lep2_miniIso_plots;
+  lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep2_miniIso  , roughSystTTW   ));
+  lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep2_miniIso , roughSystTTZH  ));
+  lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_wz.h_lep2_miniIso   , roughSystWZ    ));
+  lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_ww.h_lep2_miniIso   , roughSystWW    ));
+  lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_miniIso   , roughSystXG    ));
+  lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_miniIso, roughSystRARES ));
+  lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_miniIso, roughSystFLIPS ));
+  lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_miniIso, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep2_miniIso_all_SS.pdf --xAxisLabel lep2_miniIso --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > lep1_ptRel_plots;
-  //lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_ptRel  , roughSystTTW   ));
-  //lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep1_ptRel , roughSystTTZH  ));
-  //lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_wz.h_lep1_ptRel   , roughSystWZ    ));
-  //lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_ww.h_lep1_ptRel   , roughSystWW    ));
-  //lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_ptRel   , roughSystXG    ));
-  //lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_ptRel, roughSystRARES ));
-  //lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_ptRel, roughSystFLIPS ));
-  //lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_ptRel, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRel_all_SS.pdf --xAxisLabel lep1_ptRel --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > lep1_ptRel_plots;
+  lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_ptRel  , roughSystTTW   ));
+  lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep1_ptRel , roughSystTTZH  ));
+  lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_wz.h_lep1_ptRel   , roughSystWZ    ));
+  lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_ww.h_lep1_ptRel   , roughSystWW    ));
+  lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_ptRel   , roughSystXG    ));
+  lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_ptRel, roughSystRARES ));
+  lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_ptRel, roughSystFLIPS ));
+  lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_ptRel, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRel_all_SS.pdf --xAxisLabel lep1_ptRel --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > lep2_ptRel_plots;
-  //lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep2_ptRel  , roughSystTTW   ));
-  //lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep2_ptRel , roughSystTTZH  ));
-  //lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_wz.h_lep2_ptRel   , roughSystWZ    ));
-  //lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_ww.h_lep2_ptRel   , roughSystWW    ));
-  //lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_ptRel   , roughSystXG    ));
-  //lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_ptRel, roughSystRARES ));
-  //lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_ptRel, roughSystFLIPS ));
-  //lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_ptRel, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRel_all_SS.pdf --xAxisLabel lep2_ptRel --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > lep2_ptRel_plots;
+  lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep2_ptRel  , roughSystTTW   ));
+  lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep2_ptRel , roughSystTTZH  ));
+  lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_wz.h_lep2_ptRel   , roughSystWZ    ));
+  lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_ww.h_lep2_ptRel   , roughSystWW    ));
+  lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_ptRel   , roughSystXG    ));
+  lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_ptRel, roughSystRARES ));
+  lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_ptRel, roughSystFLIPS ));
+  lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_ptRel, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRel_all_SS.pdf --xAxisLabel lep2_ptRel --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > lep1_ptRatio_plots;
-  //lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_ptRatio  , roughSystTTW   ));
-  //lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep1_ptRatio , roughSystTTZH  ));
-  //lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_wz.h_lep1_ptRatio   , roughSystWZ    ));
-  //lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_ww.h_lep1_ptRatio   , roughSystWW    ));
-  //lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_ptRatio   , roughSystXG    ));
-  //lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_ptRatio, roughSystRARES ));
-  //lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_ptRatio, roughSystFLIPS ));
-  //lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_ptRatio, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRatio_all_SS.pdf --xAxisLabel lep1_ptRatio --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > lep1_ptRatio_plots;
+  lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_ptRatio  , roughSystTTW   ));
+  lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep1_ptRatio , roughSystTTZH  ));
+  lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_wz.h_lep1_ptRatio   , roughSystWZ    ));
+  lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_ww.h_lep1_ptRatio   , roughSystWW    ));
+  lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_ptRatio   , roughSystXG    ));
+  lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_ptRatio, roughSystRARES ));
+  lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_ptRatio, roughSystFLIPS ));
+  lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_ptRatio, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRatio_all_SS.pdf --xAxisLabel lep1_ptRatio --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > lep2_ptRatio_plots;
-  //lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep2_ptRatio  , roughSystTTW   ));
-  //lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep2_ptRatio , roughSystTTZH  ));
-  //lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_wz.h_lep2_ptRatio   , roughSystWZ    ));
-  //lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_ww.h_lep2_ptRatio   , roughSystWW    ));
-  //lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_ptRatio   , roughSystXG    ));
-  //lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_ptRatio, roughSystRARES ));
-  //lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_ptRatio, roughSystFLIPS ));
-  //lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_ptRatio, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRatio_all_SS.pdf --xAxisLabel lep2_ptRatio --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
-  //
-  ////Redo iso with MC only
-  //vector <TH1F* > lep1_miniIso_plotsMC;
-  //lep1_miniIso_plotsMC.push_back(p_ttw.h_lep1_miniIso  );
-  //lep1_miniIso_plotsMC.push_back(p_ttzh.h_lep1_miniIso );
-  //lep1_miniIso_plotsMC.push_back(p_wz.h_lep1_miniIso   );
-  //lep1_miniIso_plotsMC.push_back(p_ww.h_lep1_miniIso   );
-  //lep1_miniIso_plotsMC.push_back(p_xg.h_lep1_miniIso   );
-  //lep1_miniIso_plotsMC.push_back(p_rares.h_lep1_miniIso);
-  //lep1_miniIso_plotsMC.push_back(p_ttbar_ff.h_lep1_miniIso);
-  //lep1_miniIso_plotsMC.push_back(p_dy_ff.h_lep1_miniIso);
-  //lep1_miniIso_plotsMC.push_back(p_wjets_ff.h_lep1_miniIso);
-  //lep1_miniIso_plotsMC.push_back(p_st_ff.h_lep1_miniIso);
-  //dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_miniIso_all_SSMC.pdf --xAxisLabel lep1_miniIso --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel ", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  vector<pair<TH1F*, float> > lep2_ptRatio_plots;
+  lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep2_ptRatio  , roughSystTTW   ));
+  lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttzh.h_lep2_ptRatio , roughSystTTZH  ));
+  lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_wz.h_lep2_ptRatio   , roughSystWZ    ));
+  lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_ww.h_lep2_ptRatio   , roughSystWW    ));
+  lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_ptRatio   , roughSystXG    ));
+  lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_ptRatio, roughSystRARES ));
+  lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_ptRatio, roughSystFLIPS ));
+  lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_ptRatio, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRatio_all_SS.pdf --xAxisLabel lep2_ptRatio --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  
+  //Redo iso with MC only
+  vector <TH1F* > lep1_miniIso_plotsMC;
+  lep1_miniIso_plotsMC.push_back(p_ttw.h_lep1_miniIso  );
+  lep1_miniIso_plotsMC.push_back(p_ttzh.h_lep1_miniIso );
+  lep1_miniIso_plotsMC.push_back(p_wz.h_lep1_miniIso   );
+  lep1_miniIso_plotsMC.push_back(p_ww.h_lep1_miniIso   );
+  lep1_miniIso_plotsMC.push_back(p_xg.h_lep1_miniIso   );
+  lep1_miniIso_plotsMC.push_back(p_rares.h_lep1_miniIso);
+  lep1_miniIso_plotsMC.push_back(p_ttbar_ff.h_lep1_miniIso);
+  lep1_miniIso_plotsMC.push_back(p_dy_ff.h_lep1_miniIso);
+  lep1_miniIso_plotsMC.push_back(p_wjets_ff.h_lep1_miniIso);
+  lep1_miniIso_plotsMC.push_back(p_st_ff.h_lep1_miniIso);
+  dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_miniIso_all_SSMC.pdf --xAxisLabel lep1_miniIso --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel ", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
-  //vector <TH1F* > lep2_miniIso_plotsMC;
-  //lep2_miniIso_plotsMC.push_back(p_ttw.h_lep2_miniIso  );
-  //lep2_miniIso_plotsMC.push_back(p_ttzh.h_lep2_miniIso );
-  //lep2_miniIso_plotsMC.push_back(p_wz.h_lep2_miniIso   );
-  //lep2_miniIso_plotsMC.push_back(p_ww.h_lep2_miniIso   );
-  //lep2_miniIso_plotsMC.push_back(p_xg.h_lep2_miniIso   );
-  //lep2_miniIso_plotsMC.push_back(p_rares.h_lep2_miniIso);
-  //lep2_miniIso_plotsMC.push_back(p_ttbar_ff.h_lep2_miniIso);
-  //lep2_miniIso_plotsMC.push_back(p_dy_ff.h_lep2_miniIso);
-  //lep2_miniIso_plotsMC.push_back(p_wjets_ff.h_lep2_miniIso);
-  //lep2_miniIso_plotsMC.push_back(p_st_ff.h_lep2_miniIso);
-  //dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_miniIso_all_SSMC.pdf --xAxisLabel lep2_miniIso --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  vector <TH1F* > lep2_miniIso_plotsMC;
+  lep2_miniIso_plotsMC.push_back(p_ttw.h_lep2_miniIso  );
+  lep2_miniIso_plotsMC.push_back(p_ttzh.h_lep2_miniIso );
+  lep2_miniIso_plotsMC.push_back(p_wz.h_lep2_miniIso   );
+  lep2_miniIso_plotsMC.push_back(p_ww.h_lep2_miniIso   );
+  lep2_miniIso_plotsMC.push_back(p_xg.h_lep2_miniIso   );
+  lep2_miniIso_plotsMC.push_back(p_rares.h_lep2_miniIso);
+  lep2_miniIso_plotsMC.push_back(p_ttbar_ff.h_lep2_miniIso);
+  lep2_miniIso_plotsMC.push_back(p_dy_ff.h_lep2_miniIso);
+  lep2_miniIso_plotsMC.push_back(p_wjets_ff.h_lep2_miniIso);
+  lep2_miniIso_plotsMC.push_back(p_st_ff.h_lep2_miniIso);
+  dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_miniIso_all_SSMC.pdf --xAxisLabel lep2_miniIso --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
-  //vector <TH1F* > lep1_ptRel_plotsMC;
-  //lep1_ptRel_plotsMC.push_back(p_ttw.h_lep1_ptRel  );
-  //lep1_ptRel_plotsMC.push_back(p_ttzh.h_lep1_ptRel );
-  //lep1_ptRel_plotsMC.push_back(p_wz.h_lep1_ptRel   );
-  //lep1_ptRel_plotsMC.push_back(p_ww.h_lep1_ptRel   );
-  //lep1_ptRel_plotsMC.push_back(p_xg.h_lep1_ptRel   );
-  //lep1_ptRel_plotsMC.push_back(p_rares.h_lep1_ptRel);
-  //lep1_ptRel_plotsMC.push_back(p_ttbar_ff.h_lep1_ptRel);
-  //lep1_ptRel_plotsMC.push_back(p_dy_ff.h_lep1_ptRel);
-  //lep1_ptRel_plotsMC.push_back(p_wjets_ff.h_lep1_ptRel);
-  //lep1_ptRel_plotsMC.push_back(p_st_ff.h_lep1_ptRel);
-  //dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRel_all_SSMC.pdf --xAxisLabel lep1_ptRel --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  vector <TH1F* > lep1_ptRel_plotsMC;
+  lep1_ptRel_plotsMC.push_back(p_ttw.h_lep1_ptRel  );
+  lep1_ptRel_plotsMC.push_back(p_ttzh.h_lep1_ptRel );
+  lep1_ptRel_plotsMC.push_back(p_wz.h_lep1_ptRel   );
+  lep1_ptRel_plotsMC.push_back(p_ww.h_lep1_ptRel   );
+  lep1_ptRel_plotsMC.push_back(p_xg.h_lep1_ptRel   );
+  lep1_ptRel_plotsMC.push_back(p_rares.h_lep1_ptRel);
+  lep1_ptRel_plotsMC.push_back(p_ttbar_ff.h_lep1_ptRel);
+  lep1_ptRel_plotsMC.push_back(p_dy_ff.h_lep1_ptRel);
+  lep1_ptRel_plotsMC.push_back(p_wjets_ff.h_lep1_ptRel);
+  lep1_ptRel_plotsMC.push_back(p_st_ff.h_lep1_ptRel);
+  dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRel_all_SSMC.pdf --xAxisLabel lep1_ptRel --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
-  //vector <TH1F* > lep2_ptRel_plotsMC;
-  //lep2_ptRel_plotsMC.push_back(p_ttw.h_lep2_ptRel  );
-  //lep2_ptRel_plotsMC.push_back(p_ttzh.h_lep2_ptRel );
-  //lep2_ptRel_plotsMC.push_back(p_wz.h_lep2_ptRel   );
-  //lep2_ptRel_plotsMC.push_back(p_ww.h_lep2_ptRel   );
-  //lep2_ptRel_plotsMC.push_back(p_xg.h_lep2_ptRel   );
-  //lep2_ptRel_plotsMC.push_back(p_rares.h_lep2_ptRel);
-  //lep2_ptRel_plotsMC.push_back(p_ttbar_ff.h_lep2_ptRel);
-  //lep2_ptRel_plotsMC.push_back(p_dy_ff.h_lep2_ptRel);
-  //lep2_ptRel_plotsMC.push_back(p_wjets_ff.h_lep2_ptRel);
-  //lep2_ptRel_plotsMC.push_back(p_st_ff.h_lep2_ptRel);
-  //dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRel_all_SSMC.pdf --xAxisLabel lep2_ptRel --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  vector <TH1F* > lep2_ptRel_plotsMC;
+  lep2_ptRel_plotsMC.push_back(p_ttw.h_lep2_ptRel  );
+  lep2_ptRel_plotsMC.push_back(p_ttzh.h_lep2_ptRel );
+  lep2_ptRel_plotsMC.push_back(p_wz.h_lep2_ptRel   );
+  lep2_ptRel_plotsMC.push_back(p_ww.h_lep2_ptRel   );
+  lep2_ptRel_plotsMC.push_back(p_xg.h_lep2_ptRel   );
+  lep2_ptRel_plotsMC.push_back(p_rares.h_lep2_ptRel);
+  lep2_ptRel_plotsMC.push_back(p_ttbar_ff.h_lep2_ptRel);
+  lep2_ptRel_plotsMC.push_back(p_dy_ff.h_lep2_ptRel);
+  lep2_ptRel_plotsMC.push_back(p_wjets_ff.h_lep2_ptRel);
+  lep2_ptRel_plotsMC.push_back(p_st_ff.h_lep2_ptRel);
+  dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRel_all_SSMC.pdf --xAxisLabel lep2_ptRel --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
-  //vector <TH1F* > lep1_ptRatio_plotsMC;
-  //lep1_ptRatio_plotsMC.push_back(p_ttw.h_lep1_ptRatio  );
-  //lep1_ptRatio_plotsMC.push_back(p_ttzh.h_lep1_ptRatio );
-  //lep1_ptRatio_plotsMC.push_back(p_wz.h_lep1_ptRatio   );
-  //lep1_ptRatio_plotsMC.push_back(p_ww.h_lep1_ptRatio   );
-  //lep1_ptRatio_plotsMC.push_back(p_xg.h_lep1_ptRatio   );
-  //lep1_ptRatio_plotsMC.push_back(p_rares.h_lep1_ptRatio);
-  //lep1_ptRatio_plotsMC.push_back(p_ttbar_ff.h_lep1_ptRatio);
-  //lep1_ptRatio_plotsMC.push_back(p_dy_ff.h_lep1_ptRatio);
-  //lep1_ptRatio_plotsMC.push_back(p_wjets_ff.h_lep1_ptRatio);
-  //lep1_ptRatio_plotsMC.push_back(p_st_ff.h_lep1_ptRatio);
-  //dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRatio_all_SSMC.pdf --xAxisLabel lep1_ptRatio --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  vector <TH1F* > lep1_ptRatio_plotsMC;
+  lep1_ptRatio_plotsMC.push_back(p_ttw.h_lep1_ptRatio  );
+  lep1_ptRatio_plotsMC.push_back(p_ttzh.h_lep1_ptRatio );
+  lep1_ptRatio_plotsMC.push_back(p_wz.h_lep1_ptRatio   );
+  lep1_ptRatio_plotsMC.push_back(p_ww.h_lep1_ptRatio   );
+  lep1_ptRatio_plotsMC.push_back(p_xg.h_lep1_ptRatio   );
+  lep1_ptRatio_plotsMC.push_back(p_rares.h_lep1_ptRatio);
+  lep1_ptRatio_plotsMC.push_back(p_ttbar_ff.h_lep1_ptRatio);
+  lep1_ptRatio_plotsMC.push_back(p_dy_ff.h_lep1_ptRatio);
+  lep1_ptRatio_plotsMC.push_back(p_wjets_ff.h_lep1_ptRatio);
+  lep1_ptRatio_plotsMC.push_back(p_st_ff.h_lep1_ptRatio);
+  dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep1_ptRatio_all_SSMC.pdf --xAxisLabel lep1_ptRatio --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
-  //vector <TH1F* > lep2_ptRatio_plotsMC;
-  //lep2_ptRatio_plotsMC.push_back(p_ttw.h_lep2_ptRatio  );
-  //lep2_ptRatio_plotsMC.push_back(p_ttzh.h_lep2_ptRatio );
-  //lep2_ptRatio_plotsMC.push_back(p_wz.h_lep2_ptRatio   );
-  //lep2_ptRatio_plotsMC.push_back(p_ww.h_lep2_ptRatio   );
-  //lep2_ptRatio_plotsMC.push_back(p_xg.h_lep2_ptRatio   );
-  //lep2_ptRatio_plotsMC.push_back(p_rares.h_lep2_ptRatio);
-  //lep2_ptRatio_plotsMC.push_back(p_ttbar_ff.h_lep2_ptRatio);
-  //lep2_ptRatio_plotsMC.push_back(p_dy_ff.h_lep2_ptRatio);
-  //lep2_ptRatio_plotsMC.push_back(p_wjets_ff.h_lep2_ptRatio);
-  //lep2_ptRatio_plotsMC.push_back(p_st_ff.h_lep2_ptRatio);
-  //dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRatio_all_SSMC.pdf --xAxisLabel lep2_ptRatio --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  vector <TH1F* > lep2_ptRatio_plotsMC;
+  lep2_ptRatio_plotsMC.push_back(p_ttw.h_lep2_ptRatio  );
+  lep2_ptRatio_plotsMC.push_back(p_ttzh.h_lep2_ptRatio );
+  lep2_ptRatio_plotsMC.push_back(p_wz.h_lep2_ptRatio   );
+  lep2_ptRatio_plotsMC.push_back(p_ww.h_lep2_ptRatio   );
+  lep2_ptRatio_plotsMC.push_back(p_xg.h_lep2_ptRatio   );
+  lep2_ptRatio_plotsMC.push_back(p_rares.h_lep2_ptRatio);
+  lep2_ptRatio_plotsMC.push_back(p_ttbar_ff.h_lep2_ptRatio);
+  lep2_ptRatio_plotsMC.push_back(p_dy_ff.h_lep2_ptRatio);
+  lep2_ptRatio_plotsMC.push_back(p_wjets_ff.h_lep2_ptRatio);
+  lep2_ptRatio_plotsMC.push_back(p_st_ff.h_lep2_ptRatio);
+  dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName lep2_ptRatio_all_SSMC.pdf --xAxisLabel lep2_ptRatio --isLinear --legendUp -.05 --noXaxisUnit --noDivisionLabel", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
-  //vector<pair<TH1F*, float> > ht_plots;
-  //ht_plots.push_back(pair<TH1F*, float>(p_ttw.h_ht  , roughSystTTW   ));
-  //ht_plots.push_back(pair<TH1F*, float>(p_ttzh.h_ht , roughSystTTZH  ));
-  //ht_plots.push_back(pair<TH1F*, float>(p_wz.h_ht   , roughSystWZ    ));
-  //ht_plots.push_back(pair<TH1F*, float>(p_ww.h_ht   , roughSystWW    ));
-  //ht_plots.push_back(pair<TH1F*, float>(p_xg.h_ht   , roughSystXG    ));
-  //ht_plots.push_back(pair<TH1F*, float>(p_rares.h_ht, roughSystRARES ));
-  //ht_plots.push_back(pair<TH1F*, float>(p_flips.h_ht, roughSystFLIPS ));
-  //ht_plots.push_back(pair<TH1F*, float>(p_fakes.h_ht, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_ht, ht_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName ht_all_SS.pdf --xAxisLabel HT --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > ht_plots;
+  ht_plots.push_back(pair<TH1F*, float>(p_ttw.h_ht  , roughSystTTW   ));
+  ht_plots.push_back(pair<TH1F*, float>(p_ttzh.h_ht , roughSystTTZH  ));
+  ht_plots.push_back(pair<TH1F*, float>(p_wz.h_ht   , roughSystWZ    ));
+  ht_plots.push_back(pair<TH1F*, float>(p_ww.h_ht   , roughSystWW    ));
+  ht_plots.push_back(pair<TH1F*, float>(p_xg.h_ht   , roughSystXG    ));
+  ht_plots.push_back(pair<TH1F*, float>(p_rares.h_ht, roughSystRARES ));
+  ht_plots.push_back(pair<TH1F*, float>(p_flips.h_ht, roughSystFLIPS ));
+  ht_plots.push_back(pair<TH1F*, float>(p_fakes.h_ht, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_ht, ht_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName ht_all_SS.pdf --xAxisLabel HT --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > met_plots;
-  //met_plots.push_back(pair<TH1F*, float>(p_ttw.h_met  , roughSystTTW   ));
-  //met_plots.push_back(pair<TH1F*, float>(p_ttzh.h_met , roughSystTTZH  ));
-  //met_plots.push_back(pair<TH1F*, float>(p_wz.h_met   , roughSystWZ    ));
-  //met_plots.push_back(pair<TH1F*, float>(p_ww.h_met   , roughSystWW    ));
-  //met_plots.push_back(pair<TH1F*, float>(p_xg.h_met   , roughSystXG    ));
-  //met_plots.push_back(pair<TH1F*, float>(p_rares.h_met, roughSystRARES ));
-  //met_plots.push_back(pair<TH1F*, float>(p_flips.h_met, roughSystFLIPS ));
-  //met_plots.push_back(pair<TH1F*, float>(p_fakes.h_met, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_met, met_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName met_all_SS.pdf --xAxisLabel MET --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > met_plots;
+  met_plots.push_back(pair<TH1F*, float>(p_ttw.h_met  , roughSystTTW   ));
+  met_plots.push_back(pair<TH1F*, float>(p_ttzh.h_met , roughSystTTZH  ));
+  met_plots.push_back(pair<TH1F*, float>(p_wz.h_met   , roughSystWZ    ));
+  met_plots.push_back(pair<TH1F*, float>(p_ww.h_met   , roughSystWW    ));
+  met_plots.push_back(pair<TH1F*, float>(p_xg.h_met   , roughSystXG    ));
+  met_plots.push_back(pair<TH1F*, float>(p_rares.h_met, roughSystRARES ));
+  met_plots.push_back(pair<TH1F*, float>(p_flips.h_met, roughSystFLIPS ));
+  met_plots.push_back(pair<TH1F*, float>(p_fakes.h_met, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_met, met_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName met_all_SS.pdf --xAxisLabel MET --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > dxy_plots;
-  //dxy_plots.push_back(pair<TH1F*, float>(p_ttw.h_dxy  , roughSystTTW   ));
-  //dxy_plots.push_back(pair<TH1F*, float>(p_ttzh.h_dxy , roughSystTTZH  ));
-  //dxy_plots.push_back(pair<TH1F*, float>(p_wz.h_dxy   , roughSystWZ    ));
-  //dxy_plots.push_back(pair<TH1F*, float>(p_ww.h_dxy   , roughSystWW    ));
-  //dxy_plots.push_back(pair<TH1F*, float>(p_xg.h_dxy   , roughSystXG    ));
-  //dxy_plots.push_back(pair<TH1F*, float>(p_rares.h_dxy, roughSystRARES ));
-  //dxy_plots.push_back(pair<TH1F*, float>(p_flips.h_dxy, roughSystFLIPS ));
-  //dxy_plots.push_back(pair<TH1F*, float>(p_fakes.h_dxy, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_met, dxy_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName dxy_all_SS.pdf --xAxisLabel dxy --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > dxy_plots;
+  dxy_plots.push_back(pair<TH1F*, float>(p_ttw.h_dxy  , roughSystTTW   ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_ttzh.h_dxy , roughSystTTZH  ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_wz.h_dxy   , roughSystWZ    ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_ww.h_dxy   , roughSystWW    ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_xg.h_dxy   , roughSystXG    ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_rares.h_dxy, roughSystRARES ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_flips.h_dxy, roughSystFLIPS ));
+  dxy_plots.push_back(pair<TH1F*, float>(p_fakes.h_dxy, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_met, dxy_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName dxy_all_SS.pdf --xAxisLabel dxy --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > dz_plots;
-  //dz_plots.push_back(pair<TH1F*, float>(p_ttw.h_dz  , roughSystTTW   ));
-  //dz_plots.push_back(pair<TH1F*, float>(p_ttzh.h_dz , roughSystTTZH  ));
-  //dz_plots.push_back(pair<TH1F*, float>(p_wz.h_dz   , roughSystWZ    ));
-  //dz_plots.push_back(pair<TH1F*, float>(p_ww.h_dz   , roughSystWW    ));
-  //dz_plots.push_back(pair<TH1F*, float>(p_xg.h_dz   , roughSystXG    ));
-  //dz_plots.push_back(pair<TH1F*, float>(p_rares.h_dz, roughSystRARES ));
-  //dz_plots.push_back(pair<TH1F*, float>(p_flips.h_dz, roughSystFLIPS ));
-  //dz_plots.push_back(pair<TH1F*, float>(p_fakes.h_dz, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_dz, dz_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName dz_all_SS.pdf --xAxisLabel dz --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > dz_plots;
+  dz_plots.push_back(pair<TH1F*, float>(p_ttw.h_dz  , roughSystTTW   ));
+  dz_plots.push_back(pair<TH1F*, float>(p_ttzh.h_dz , roughSystTTZH  ));
+  dz_plots.push_back(pair<TH1F*, float>(p_wz.h_dz   , roughSystWZ    ));
+  dz_plots.push_back(pair<TH1F*, float>(p_ww.h_dz   , roughSystWW    ));
+  dz_plots.push_back(pair<TH1F*, float>(p_xg.h_dz   , roughSystXG    ));
+  dz_plots.push_back(pair<TH1F*, float>(p_rares.h_dz, roughSystRARES ));
+  dz_plots.push_back(pair<TH1F*, float>(p_flips.h_dz, roughSystFLIPS ));
+  dz_plots.push_back(pair<TH1F*, float>(p_fakes.h_dz, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_dz, dz_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName dz_all_SS.pdf --xAxisLabel dz --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > sip3d_plots;
-  //sip3d_plots.push_back(pair<TH1F*, float>(p_ttw.h_sip3d  , roughSystTTW   ));
-  //sip3d_plots.push_back(pair<TH1F*, float>(p_ttzh.h_sip3d , roughSystTTZH  ));
-  //sip3d_plots.push_back(pair<TH1F*, float>(p_wz.h_sip3d   , roughSystWZ    ));
-  //sip3d_plots.push_back(pair<TH1F*, float>(p_ww.h_sip3d   , roughSystWW    ));
-  //sip3d_plots.push_back(pair<TH1F*, float>(p_xg.h_sip3d   , roughSystXG    ));
-  //sip3d_plots.push_back(pair<TH1F*, float>(p_rares.h_sip3d, roughSystRARES ));
-  //sip3d_plots.push_back(pair<TH1F*, float>(p_flips.h_sip3d, roughSystFLIPS ));
-  //sip3d_plots.push_back(pair<TH1F*, float>(p_fakes.h_sip3d, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_sip3d, sip3d_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName sip3d_all_SS.pdf --xAxisLabel SIP3D --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > sip3d_plots;
+  sip3d_plots.push_back(pair<TH1F*, float>(p_ttw.h_sip3d  , roughSystTTW   ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_ttzh.h_sip3d , roughSystTTZH  ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_wz.h_sip3d   , roughSystWZ    ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_ww.h_sip3d   , roughSystWW    ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_xg.h_sip3d   , roughSystXG    ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_rares.h_sip3d, roughSystRARES ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_flips.h_sip3d, roughSystFLIPS ));
+  sip3d_plots.push_back(pair<TH1F*, float>(p_fakes.h_sip3d, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_sip3d, sip3d_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName sip3d_all_SS.pdf --xAxisLabel SIP3D --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > mva_plots;
-  //mva_plots.push_back(pair<TH1F*, float>(p_ttw.h_mva  , roughSystTTW   ));
-  //mva_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mva , roughSystTTZH  ));
-  //mva_plots.push_back(pair<TH1F*, float>(p_wz.h_mva   , roughSystWZ    ));
-  //mva_plots.push_back(pair<TH1F*, float>(p_ww.h_mva   , roughSystWW    ));
-  //mva_plots.push_back(pair<TH1F*, float>(p_xg.h_mva   , roughSystXG    ));
-  //mva_plots.push_back(pair<TH1F*, float>(p_rares.h_mva, roughSystRARES ));
-  //mva_plots.push_back(pair<TH1F*, float>(p_flips.h_mva, roughSystFLIPS ));
-  //mva_plots.push_back(pair<TH1F*, float>(p_fakes.h_mva, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_mva, mva_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName mva_all_SS.pdf --xAxisLabel MVA --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > mva_plots;
+  mva_plots.push_back(pair<TH1F*, float>(p_ttw.h_mva  , roughSystTTW   ));
+  mva_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mva , roughSystTTZH  ));
+  mva_plots.push_back(pair<TH1F*, float>(p_wz.h_mva   , roughSystWZ    ));
+  mva_plots.push_back(pair<TH1F*, float>(p_ww.h_mva   , roughSystWW    ));
+  mva_plots.push_back(pair<TH1F*, float>(p_xg.h_mva   , roughSystXG    ));
+  mva_plots.push_back(pair<TH1F*, float>(p_rares.h_mva, roughSystRARES ));
+  mva_plots.push_back(pair<TH1F*, float>(p_flips.h_mva, roughSystFLIPS ));
+  mva_plots.push_back(pair<TH1F*, float>(p_fakes.h_mva, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mva, mva_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName mva_all_SS.pdf --xAxisLabel MVA --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > mll_plots;
-  //mll_plots.push_back(pair<TH1F*, float>(p_ttw.h_mll  , roughSystTTW   ));
-  //mll_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mll , roughSystTTZH  ));
-  //mll_plots.push_back(pair<TH1F*, float>(p_wz.h_mll   , roughSystWZ    ));
-  //mll_plots.push_back(pair<TH1F*, float>(p_ww.h_mll   , roughSystWW    ));
-  //mll_plots.push_back(pair<TH1F*, float>(p_xg.h_mll   , roughSystXG    ));
-  //mll_plots.push_back(pair<TH1F*, float>(p_rares.h_mll, roughSystRARES ));
-  //mll_plots.push_back(pair<TH1F*, float>(p_flips.h_mll, roughSystFLIPS ));
-  //mll_plots.push_back(pair<TH1F*, float>(p_fakes.h_mll, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_mll, mll_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName mll_all_SS.pdf --xAxisLabel M_{LL} --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > mll_plots;
+  mll_plots.push_back(pair<TH1F*, float>(p_ttw.h_mll  , roughSystTTW   ));
+  mll_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mll , roughSystTTZH  ));
+  mll_plots.push_back(pair<TH1F*, float>(p_wz.h_mll   , roughSystWZ    ));
+  mll_plots.push_back(pair<TH1F*, float>(p_ww.h_mll   , roughSystWW    ));
+  mll_plots.push_back(pair<TH1F*, float>(p_xg.h_mll   , roughSystXG    ));
+  mll_plots.push_back(pair<TH1F*, float>(p_rares.h_mll, roughSystRARES ));
+  mll_plots.push_back(pair<TH1F*, float>(p_flips.h_mll, roughSystFLIPS ));
+  mll_plots.push_back(pair<TH1F*, float>(p_fakes.h_mll, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mll, mll_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName mll_all_SS.pdf --xAxisLabel M_{LL} --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > mtmin_plots;
-  //mtmin_plots.push_back(pair<TH1F*, float>(p_ttw.h_mtmin  , roughSystTTW   ));
-  //mtmin_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mtmin , roughSystTTZH  ));
-  //mtmin_plots.push_back(pair<TH1F*, float>(p_wz.h_mtmin   , roughSystWZ    ));
-  //mtmin_plots.push_back(pair<TH1F*, float>(p_ww.h_mtmin   , roughSystWW    ));
-  //mtmin_plots.push_back(pair<TH1F*, float>(p_xg.h_mtmin   , roughSystXG    ));
-  //mtmin_plots.push_back(pair<TH1F*, float>(p_rares.h_mtmin, roughSystRARES ));
-  //mtmin_plots.push_back(pair<TH1F*, float>(p_flips.h_mtmin, roughSystFLIPS ));
-  //mtmin_plots.push_back(pair<TH1F*, float>(p_fakes.h_mtmin, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_mtmin, mtmin_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName mtmin_all_SS.pdf --xAxisLabel MT^{min} --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > mtmin_plots;
+  mtmin_plots.push_back(pair<TH1F*, float>(p_ttw.h_mtmin  , roughSystTTW   ));
+  mtmin_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mtmin , roughSystTTZH  ));
+  mtmin_plots.push_back(pair<TH1F*, float>(p_wz.h_mtmin   , roughSystWZ    ));
+  mtmin_plots.push_back(pair<TH1F*, float>(p_ww.h_mtmin   , roughSystWW    ));
+  mtmin_plots.push_back(pair<TH1F*, float>(p_xg.h_mtmin   , roughSystXG    ));
+  mtmin_plots.push_back(pair<TH1F*, float>(p_rares.h_mtmin, roughSystRARES ));
+  mtmin_plots.push_back(pair<TH1F*, float>(p_flips.h_mtmin, roughSystFLIPS ));
+  mtmin_plots.push_back(pair<TH1F*, float>(p_fakes.h_mtmin, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mtmin, mtmin_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName mtmin_all_SS.pdf --xAxisLabel MT^{min} --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > njets_plots;
-  //njets_plots.push_back(pair<TH1F*, float>(p_ttw.h_njets  , roughSystTTW   ));
-  //njets_plots.push_back(pair<TH1F*, float>(p_ttzh.h_njets , roughSystTTZH  ));
-  //njets_plots.push_back(pair<TH1F*, float>(p_wz.h_njets   , roughSystWZ    ));
-  //njets_plots.push_back(pair<TH1F*, float>(p_ww.h_njets   , roughSystWW    ));
-  //njets_plots.push_back(pair<TH1F*, float>(p_xg.h_njets   , roughSystXG    ));
-  //njets_plots.push_back(pair<TH1F*, float>(p_rares.h_njets, roughSystRARES ));
-  //njets_plots.push_back(pair<TH1F*, float>(p_flips.h_njets, roughSystFLIPS ));
-  //njets_plots.push_back(pair<TH1F*, float>(p_fakes.h_njets, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_njets, njets_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName njets_all_SS.pdf --xAxisLabel Number of Jets --noXaxisUnit --noDivisionLabel --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > njets_plots;
+  njets_plots.push_back(pair<TH1F*, float>(p_ttw.h_njets  , roughSystTTW   ));
+  njets_plots.push_back(pair<TH1F*, float>(p_ttzh.h_njets , roughSystTTZH  ));
+  njets_plots.push_back(pair<TH1F*, float>(p_wz.h_njets   , roughSystWZ    ));
+  njets_plots.push_back(pair<TH1F*, float>(p_ww.h_njets   , roughSystWW    ));
+  njets_plots.push_back(pair<TH1F*, float>(p_xg.h_njets   , roughSystXG    ));
+  njets_plots.push_back(pair<TH1F*, float>(p_rares.h_njets, roughSystRARES ));
+  njets_plots.push_back(pair<TH1F*, float>(p_flips.h_njets, roughSystFLIPS ));
+  njets_plots.push_back(pair<TH1F*, float>(p_fakes.h_njets, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_njets, njets_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName njets_all_SS.pdf --xAxisLabel Number of Jets --noXaxisUnit --noDivisionLabel --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector<pair<TH1F*, float> > nbtags_plots;
-  //nbtags_plots.push_back(pair<TH1F*, float>(p_ttw.h_nbtags  , roughSystTTW   ));
-  //nbtags_plots.push_back(pair<TH1F*, float>(p_ttzh.h_nbtags , roughSystTTZH  ));
-  //nbtags_plots.push_back(pair<TH1F*, float>(p_wz.h_nbtags   , roughSystWZ    ));
-  //nbtags_plots.push_back(pair<TH1F*, float>(p_ww.h_nbtags   , roughSystWW    ));
-  //nbtags_plots.push_back(pair<TH1F*, float>(p_xg.h_nbtags   , roughSystXG    ));
-  //nbtags_plots.push_back(pair<TH1F*, float>(p_rares.h_nbtags, roughSystRARES ));
-  //nbtags_plots.push_back(pair<TH1F*, float>(p_flips.h_nbtags, roughSystFLIPS ));
-  //nbtags_plots.push_back(pair<TH1F*, float>(p_fakes.h_nbtags, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_nbtags, nbtags_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName nbtags_all_SS.pdf --noDivisionLabel --noXaxisUnit --xAxisLabel Number of BTags --noXaxisUnit --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  vector<pair<TH1F*, float> > nbtags_plots;
+  nbtags_plots.push_back(pair<TH1F*, float>(p_ttw.h_nbtags  , roughSystTTW   ));
+  nbtags_plots.push_back(pair<TH1F*, float>(p_ttzh.h_nbtags , roughSystTTZH  ));
+  nbtags_plots.push_back(pair<TH1F*, float>(p_wz.h_nbtags   , roughSystWZ    ));
+  nbtags_plots.push_back(pair<TH1F*, float>(p_ww.h_nbtags   , roughSystWW    ));
+  nbtags_plots.push_back(pair<TH1F*, float>(p_xg.h_nbtags   , roughSystXG    ));
+  nbtags_plots.push_back(pair<TH1F*, float>(p_rares.h_nbtags, roughSystRARES ));
+  nbtags_plots.push_back(pair<TH1F*, float>(p_flips.h_nbtags, roughSystFLIPS ));
+  nbtags_plots.push_back(pair<TH1F*, float>(p_fakes.h_nbtags, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_nbtags, nbtags_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName nbtags_all_SS.pdf --noDivisionLabel --noXaxisUnit --xAxisLabel Number of BTags --noXaxisUnit --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  ////lep1 pt plots
-  //vector<pair<TH1F*, float> > l1pt_plots;
-  //l1pt_plots.push_back(pair<TH1F*, float>(p_ttw.h_l1pt  , roughSystTTW   ));
-  //l1pt_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l1pt , roughSystTTZH  ));
-  //l1pt_plots.push_back(pair<TH1F*, float>(p_wz.h_l1pt   , roughSystWZ    ));
-  //l1pt_plots.push_back(pair<TH1F*, float>(p_ww.h_l1pt   , roughSystWW    ));
-  //l1pt_plots.push_back(pair<TH1F*, float>(p_xg.h_l1pt   , roughSystXG    ));
-  //l1pt_plots.push_back(pair<TH1F*, float>(p_rares.h_l1pt, roughSystRARES ));
-  //l1pt_plots.push_back(pair<TH1F*, float>(p_flips.h_l1pt, roughSystFLIPS ));
-  //l1pt_plots.push_back(pair<TH1F*, float>(p_fakes.h_l1pt, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_l1pt, l1pt_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName l1pt_all_SS.pdf --xAxisLabel Leading Lepton pT --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  //lep1 pt plots
+  vector<pair<TH1F*, float> > l1pt_plots;
+  l1pt_plots.push_back(pair<TH1F*, float>(p_ttw.h_l1pt  , roughSystTTW   ));
+  l1pt_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l1pt , roughSystTTZH  ));
+  l1pt_plots.push_back(pair<TH1F*, float>(p_wz.h_l1pt   , roughSystWZ    ));
+  l1pt_plots.push_back(pair<TH1F*, float>(p_ww.h_l1pt   , roughSystWW    ));
+  l1pt_plots.push_back(pair<TH1F*, float>(p_xg.h_l1pt   , roughSystXG    ));
+  l1pt_plots.push_back(pair<TH1F*, float>(p_rares.h_l1pt, roughSystRARES ));
+  l1pt_plots.push_back(pair<TH1F*, float>(p_flips.h_l1pt, roughSystFLIPS ));
+  l1pt_plots.push_back(pair<TH1F*, float>(p_fakes.h_l1pt, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_l1pt, l1pt_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName l1pt_all_SS.pdf --xAxisLabel Leading Lepton pT --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector <TH1F* > l1pt_plotsMC;
-  //l1pt_plotsMC.push_back(p_ttw.h_l1pt  );
-  //l1pt_plotsMC.push_back(p_ttzh.h_l1pt );
-  //l1pt_plotsMC.push_back(p_wz.h_l1pt   );
-  //l1pt_plotsMC.push_back(p_ww.h_l1pt   );
-  //l1pt_plotsMC.push_back(p_xg.h_l1pt   );
-  //l1pt_plotsMC.push_back(p_rares.h_l1pt);
-  //l1pt_plotsMC.push_back(p_ttbar_ff.h_l1pt);
-  //l1pt_plotsMC.push_back(p_dy_ff.h_l1pt);
-  //l1pt_plotsMC.push_back(p_wjets_ff.h_l1pt);
-  //l1pt_plotsMC.push_back(p_st_ff.h_l1pt);
-  //dataMCplotMaker(p_data.h_l1pt, l1pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l1pt_all_SSMC.pdf --xAxisLabel Leading Lepton pT --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  vector <TH1F* > l1pt_plotsMC;
+  l1pt_plotsMC.push_back(p_ttw.h_l1pt  );
+  l1pt_plotsMC.push_back(p_ttzh.h_l1pt );
+  l1pt_plotsMC.push_back(p_wz.h_l1pt   );
+  l1pt_plotsMC.push_back(p_ww.h_l1pt   );
+  l1pt_plotsMC.push_back(p_xg.h_l1pt   );
+  l1pt_plotsMC.push_back(p_rares.h_l1pt);
+  l1pt_plotsMC.push_back(p_ttbar_ff.h_l1pt);
+  l1pt_plotsMC.push_back(p_dy_ff.h_l1pt);
+  l1pt_plotsMC.push_back(p_wjets_ff.h_l1pt);
+  l1pt_plotsMC.push_back(p_st_ff.h_l1pt);
+  dataMCplotMaker(p_data.h_l1pt, l1pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l1pt_all_SSMC.pdf --xAxisLabel Leading Lepton pT --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
  
-  ////lep2 pt plots
-  //vector<pair<TH1F*, float> > l2pt_plots;
-  //l2pt_plots.push_back(pair<TH1F*, float>(p_ttw.h_l2pt  , roughSystTTW   ));
-  //l2pt_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l2pt , roughSystTTZH  ));
-  //l2pt_plots.push_back(pair<TH1F*, float>(p_wz.h_l2pt   , roughSystWZ    ));
-  //l2pt_plots.push_back(pair<TH1F*, float>(p_ww.h_l2pt   , roughSystWW    ));
-  //l2pt_plots.push_back(pair<TH1F*, float>(p_xg.h_l2pt   , roughSystXG    ));
-  //l2pt_plots.push_back(pair<TH1F*, float>(p_rares.h_l2pt, roughSystRARES ));
-  //l2pt_plots.push_back(pair<TH1F*, float>(p_flips.h_l2pt, roughSystFLIPS ));
-  //l2pt_plots.push_back(pair<TH1F*, float>(p_fakes.h_l2pt, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_l2pt, l2pt_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName l2pt_all_SS.pdf --xAxisLabel Trailing Lepton pT --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  //lep2 pt plots
+  vector<pair<TH1F*, float> > l2pt_plots;
+  l2pt_plots.push_back(pair<TH1F*, float>(p_ttw.h_l2pt  , roughSystTTW   ));
+  l2pt_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l2pt , roughSystTTZH  ));
+  l2pt_plots.push_back(pair<TH1F*, float>(p_wz.h_l2pt   , roughSystWZ    ));
+  l2pt_plots.push_back(pair<TH1F*, float>(p_ww.h_l2pt   , roughSystWW    ));
+  l2pt_plots.push_back(pair<TH1F*, float>(p_xg.h_l2pt   , roughSystXG    ));
+  l2pt_plots.push_back(pair<TH1F*, float>(p_rares.h_l2pt, roughSystRARES ));
+  l2pt_plots.push_back(pair<TH1F*, float>(p_flips.h_l2pt, roughSystFLIPS ));
+  l2pt_plots.push_back(pair<TH1F*, float>(p_fakes.h_l2pt, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_l2pt, l2pt_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName l2pt_all_SS.pdf --xAxisLabel Trailing Lepton pT --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector <TH1F*> l2pt_plotsMC;
-  //l2pt_plotsMC.push_back(p_ttw.h_l2pt  );
-  //l2pt_plotsMC.push_back(p_ttzh.h_l2pt );
-  //l2pt_plotsMC.push_back(p_wz.h_l2pt   );
-  //l2pt_plotsMC.push_back(p_ww.h_l2pt   );
-  //l2pt_plotsMC.push_back(p_xg.h_l2pt   );
-  //l2pt_plotsMC.push_back(p_rares.h_l2pt);
-  //l2pt_plotsMC.push_back(p_ttbar_ff.h_l2pt);
-  //l2pt_plotsMC.push_back(p_dy_ff.h_l2pt);
-  //l2pt_plotsMC.push_back(p_wjets_ff.h_l2pt);
-  //l2pt_plotsMC.push_back(p_st_ff.h_l2pt);
-  //dataMCplotMaker(p_data.h_l2pt, l2pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l2pt_all_SSMC.pdf --xAxisLabel Trailing Lepton pT --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2); 
+  vector <TH1F*> l2pt_plotsMC;
+  l2pt_plotsMC.push_back(p_ttw.h_l2pt  );
+  l2pt_plotsMC.push_back(p_ttzh.h_l2pt );
+  l2pt_plotsMC.push_back(p_wz.h_l2pt   );
+  l2pt_plotsMC.push_back(p_ww.h_l2pt   );
+  l2pt_plotsMC.push_back(p_xg.h_l2pt   );
+  l2pt_plotsMC.push_back(p_rares.h_l2pt);
+  l2pt_plotsMC.push_back(p_ttbar_ff.h_l2pt);
+  l2pt_plotsMC.push_back(p_dy_ff.h_l2pt);
+  l2pt_plotsMC.push_back(p_wjets_ff.h_l2pt);
+  l2pt_plotsMC.push_back(p_st_ff.h_l2pt);
+  dataMCplotMaker(p_data.h_l2pt, l2pt_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l2pt_all_SSMC.pdf --xAxisLabel Trailing Lepton pT --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2); 
 
-  ////lep1 eta plots
-  //vector<pair<TH1F*, float> > l1eta_plots;
-  //l1eta_plots.push_back(pair<TH1F*, float>(p_ttw.h_l1eta  , roughSystTTW   ));
-  //l1eta_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l1eta , roughSystTTZH  ));
-  //l1eta_plots.push_back(pair<TH1F*, float>(p_wz.h_l1eta   , roughSystWZ    ));
-  //l1eta_plots.push_back(pair<TH1F*, float>(p_ww.h_l1eta   , roughSystWW    ));
-  //l1eta_plots.push_back(pair<TH1F*, float>(p_xg.h_l1eta   , roughSystXG    ));
-  //l1eta_plots.push_back(pair<TH1F*, float>(p_rares.h_l1eta, roughSystRARES ));
-  //l1eta_plots.push_back(pair<TH1F*, float>(p_flips.h_l1eta, roughSystFLIPS ));
-  //l1eta_plots.push_back(pair<TH1F*, float>(p_fakes.h_l1eta, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_l1eta, l1eta_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName l1eta_all_SS.pdf --xAxisLabel Leading Lepton #eta --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  //lep1 eta plots
+  vector<pair<TH1F*, float> > l1eta_plots;
+  l1eta_plots.push_back(pair<TH1F*, float>(p_ttw.h_l1eta  , roughSystTTW   ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l1eta , roughSystTTZH  ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_wz.h_l1eta   , roughSystWZ    ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_ww.h_l1eta   , roughSystWW    ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_xg.h_l1eta   , roughSystXG    ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_rares.h_l1eta, roughSystRARES ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_flips.h_l1eta, roughSystFLIPS ));
+  l1eta_plots.push_back(pair<TH1F*, float>(p_fakes.h_l1eta, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_l1eta, l1eta_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName l1eta_all_SS.pdf --xAxisLabel Leading Lepton #eta --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector <TH1F* > l1eta_plotsMC;
-  //l1eta_plotsMC.push_back(p_ttw.h_l1eta  );
-  //l1eta_plotsMC.push_back(p_ttzh.h_l1eta );
-  //l1eta_plotsMC.push_back(p_wz.h_l1eta   );
-  //l1eta_plotsMC.push_back(p_ww.h_l1eta   );
-  //l1eta_plotsMC.push_back(p_xg.h_l1eta   );
-  //l1eta_plotsMC.push_back(p_rares.h_l1eta);
-  //l1eta_plotsMC.push_back(p_ttbar_ff.h_l1eta);
-  //l1eta_plotsMC.push_back(p_dy_ff.h_l1eta);
-  //l1eta_plotsMC.push_back(p_wjets_ff.h_l1eta);
-  //l1eta_plotsMC.push_back(p_st_ff.h_l1eta);
-  //dataMCplotMaker(p_data.h_l1eta, l1eta_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l1eta_all_SSMC.pdf --xAxisLabel Leading Lepton #eta --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  vector <TH1F* > l1eta_plotsMC;
+  l1eta_plotsMC.push_back(p_ttw.h_l1eta  );
+  l1eta_plotsMC.push_back(p_ttzh.h_l1eta );
+  l1eta_plotsMC.push_back(p_wz.h_l1eta   );
+  l1eta_plotsMC.push_back(p_ww.h_l1eta   );
+  l1eta_plotsMC.push_back(p_xg.h_l1eta   );
+  l1eta_plotsMC.push_back(p_rares.h_l1eta);
+  l1eta_plotsMC.push_back(p_ttbar_ff.h_l1eta);
+  l1eta_plotsMC.push_back(p_dy_ff.h_l1eta);
+  l1eta_plotsMC.push_back(p_wjets_ff.h_l1eta);
+  l1eta_plotsMC.push_back(p_st_ff.h_l1eta);
+  dataMCplotMaker(p_data.h_l1eta, l1eta_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l1eta_all_SSMC.pdf --xAxisLabel Leading Lepton #eta --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
  
-  ////lep2 eta plots
-  //vector<pair<TH1F*, float> > l2eta_plots;
-  //l2eta_plots.push_back(pair<TH1F*, float>(p_ttw.h_l2eta  , roughSystTTW   ));
-  //l2eta_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l2eta , roughSystTTZH  ));
-  //l2eta_plots.push_back(pair<TH1F*, float>(p_wz.h_l2eta   , roughSystWZ    ));
-  //l2eta_plots.push_back(pair<TH1F*, float>(p_ww.h_l2eta   , roughSystWW    ));
-  //l2eta_plots.push_back(pair<TH1F*, float>(p_xg.h_l2eta   , roughSystXG    ));
-  //l2eta_plots.push_back(pair<TH1F*, float>(p_rares.h_l2eta, roughSystRARES ));
-  //l2eta_plots.push_back(pair<TH1F*, float>(p_flips.h_l2eta, roughSystFLIPS ));
-  //l2eta_plots.push_back(pair<TH1F*, float>(p_fakes.h_l2eta, roughSystFAKES ));
-  //dataMCplotMaker(p_data.h_l2eta, l2eta_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName l2eta_all_SS.pdf --xAxisLabel Trailing Lepton #eta --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  //lep2 eta plots
+  vector<pair<TH1F*, float> > l2eta_plots;
+  l2eta_plots.push_back(pair<TH1F*, float>(p_ttw.h_l2eta  , roughSystTTW   ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_ttzh.h_l2eta , roughSystTTZH  ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_wz.h_l2eta   , roughSystWZ    ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_ww.h_l2eta   , roughSystWW    ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_xg.h_l2eta   , roughSystXG    ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_rares.h_l2eta, roughSystRARES ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_flips.h_l2eta, roughSystFLIPS ));
+  l2eta_plots.push_back(pair<TH1F*, float>(p_fakes.h_l2eta, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_l2eta, l2eta_plots, titles, "", "SS Baseline", Form("--lumi %.2f --outputName l2eta_all_SS.pdf --xAxisLabel Trailing Lepton #eta --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
-  //vector <TH1F*> l2eta_plotsMC;
-  //l2eta_plotsMC.push_back(p_ttw.h_l2eta  );
-  //l2eta_plotsMC.push_back(p_ttzh.h_l2eta );
-  //l2eta_plotsMC.push_back(p_wz.h_l2eta   );
-  //l2eta_plotsMC.push_back(p_ww.h_l2eta   );
-  //l2eta_plotsMC.push_back(p_xg.h_l2eta   );
-  //l2eta_plotsMC.push_back(p_rares.h_l2eta);
-  //l2eta_plotsMC.push_back(p_ttbar_ff.h_l2eta);
-  //l2eta_plotsMC.push_back(p_dy_ff.h_l2eta);
-  //l2eta_plotsMC.push_back(p_wjets_ff.h_l2eta);
-  //l2eta_plotsMC.push_back(p_st_ff.h_l2eta);
-  //dataMCplotMaker(p_data.h_l2eta, l2eta_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l2eta_all_SSMC.pdf --xAxisLabel Trailing Lepton #eta --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2); 
+  vector <TH1F*> l2eta_plotsMC;
+  l2eta_plotsMC.push_back(p_ttw.h_l2eta  );
+  l2eta_plotsMC.push_back(p_ttzh.h_l2eta );
+  l2eta_plotsMC.push_back(p_wz.h_l2eta   );
+  l2eta_plotsMC.push_back(p_ww.h_l2eta   );
+  l2eta_plotsMC.push_back(p_xg.h_l2eta   );
+  l2eta_plotsMC.push_back(p_rares.h_l2eta);
+  l2eta_plotsMC.push_back(p_ttbar_ff.h_l2eta);
+  l2eta_plotsMC.push_back(p_dy_ff.h_l2eta);
+  l2eta_plotsMC.push_back(p_wjets_ff.h_l2eta);
+  l2eta_plotsMC.push_back(p_st_ff.h_l2eta);
+  dataMCplotMaker(p_data.h_l2eta, l2eta_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName l2eta_all_SSMC.pdf --xAxisLabel Trailing Lepton #eta --isLinear --legendUp -.05", lumiAG), vector <TH1F*>(), vector <string>(), colors2); 
 
-  //vector <TH1F* > nleps_plotsMC;
-  //nleps_plotsMC.push_back(p_ttw.h_nleps  );
-  //nleps_plotsMC.push_back(p_ttzh.h_nleps );
-  //nleps_plotsMC.push_back(p_wz.h_nleps   );
-  //nleps_plotsMC.push_back(p_ww.h_nleps   );
-  //nleps_plotsMC.push_back(p_xg.h_nleps   );
-  //nleps_plotsMC.push_back(p_rares.h_nleps);
-  //nleps_plotsMC.push_back(p_ttbar_ff.h_nleps);
-  //nleps_plotsMC.push_back(p_dy_ff.h_nleps);
-  //nleps_plotsMC.push_back(p_wjets_ff.h_nleps);
-  //nleps_plotsMC.push_back(p_st_ff.h_nleps);
-  //dataMCplotMaker(p_data.h_nleps, nleps_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName nleps_all_SSMC.pdf --xAxisLabel N_{leptons} --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  vector <TH1F* > nleps_plotsMC;
+  nleps_plotsMC.push_back(p_ttw.h_nleps  );
+  nleps_plotsMC.push_back(p_ttzh.h_nleps );
+  nleps_plotsMC.push_back(p_wz.h_nleps   );
+  nleps_plotsMC.push_back(p_ww.h_nleps   );
+  nleps_plotsMC.push_back(p_xg.h_nleps   );
+  nleps_plotsMC.push_back(p_rares.h_nleps);
+  nleps_plotsMC.push_back(p_ttbar_ff.h_nleps);
+  nleps_plotsMC.push_back(p_dy_ff.h_nleps);
+  nleps_plotsMC.push_back(p_wjets_ff.h_nleps);
+  nleps_plotsMC.push_back(p_st_ff.h_nleps);
+  dataMCplotMaker(p_data.h_nleps, nleps_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName nleps_all_SSMC.pdf --xAxisLabel N_{leptons} --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle data/pred", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
 
 }
@@ -3174,7 +3174,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       for (int i = 1; i < 67; i++){
         float nominal  = cs_hist->GetBinContent(200+i); 
         float scale_up = nominal > 0 ? fabs(1-cs_hist->GetBinContent(300+i)/nominal)  : 0; 
-        float scale_dn = nominal > 0 ? fabs(1-cs_hist->GetBinContent(400+i)/nominal)  : 0; 
+        float scale_dn = nominal > -5 ? fabs(1-cs_hist->GetBinContent(400+i)/nominal)  : 0; 
         float alpha_up = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7600+i)/nominal) : 0; 
         float alpha_dn = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7700+i)/nominal) : 0; 
         TH1F *h_pdf = new TH1F("pdf", "pdf", 10000, 0, 1000); 
