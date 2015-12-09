@@ -3112,8 +3112,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   plots_t p_scale_alt_dn;
   plots_t p_pdf_alt_up;
   plots_t p_pdf_alt_dn;
-  plots_t p_alpha_alt_up;
-  plots_t p_alpha_alt_dn;
+  //plots_t p_alpha_alt_up;
+  //plots_t p_alpha_alt_dn;
   if (isFastSimSignal) {
     p_scale_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRHH_SCALE_UP_TOTAL_%s", chainTitleCh), 32, 1, 33); p_scale_alt_up.SRHH.TOTAL->Sumw2();
     p_scale_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRHL_SCALE_UP_TOTAL_%s", chainTitleCh), 26, 1, 27); p_scale_alt_up.SRHL.TOTAL->Sumw2();
@@ -3127,12 +3127,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     p_pdf_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRHH_PDF_DN_TOTAL_%s", chainTitleCh), 32, 1, 33); p_pdf_alt_dn.SRHH.TOTAL->Sumw2();
     p_pdf_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRHL_PDF_DN_TOTAL_%s", chainTitleCh), 26, 1, 27); p_pdf_alt_dn.SRHL.TOTAL->Sumw2();
     p_pdf_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRLL_PDF_DN_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_pdf_alt_dn.SRLL.TOTAL->Sumw2();
-    p_alpha_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), 32, 1, 33); p_alpha_alt_up.SRHH.TOTAL->Sumw2();
-    p_alpha_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), 26, 1, 27); p_alpha_alt_up.SRHL.TOTAL->Sumw2();
-    p_alpha_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_alpha_alt_up.SRLL.TOTAL->Sumw2();
-    p_alpha_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRHH_ALPHA_DN_TOTAL_%s", chainTitleCh), 32, 1, 33); p_alpha_alt_dn.SRHH.TOTAL->Sumw2();
-    p_alpha_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRHL_ALPHA_DN_TOTAL_%s", chainTitleCh), 26, 1, 27); p_alpha_alt_dn.SRHL.TOTAL->Sumw2();
-    p_alpha_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRLL_ALPHA_DN_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_alpha_alt_dn.SRLL.TOTAL->Sumw2();
+    //p_alpha_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), 32, 1, 33); p_alpha_alt_up.SRHH.TOTAL->Sumw2();
+    //p_alpha_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), 26, 1, 27); p_alpha_alt_up.SRHL.TOTAL->Sumw2();
+    //p_alpha_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_alpha_alt_up.SRLL.TOTAL->Sumw2();
+    //p_alpha_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRHH_ALPHA_DN_TOTAL_%s", chainTitleCh), 32, 1, 33); p_alpha_alt_dn.SRHH.TOTAL->Sumw2();
+    //p_alpha_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRHL_ALPHA_DN_TOTAL_%s", chainTitleCh), 26, 1, 27); p_alpha_alt_dn.SRHL.TOTAL->Sumw2();
+    //p_alpha_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRLL_ALPHA_DN_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_alpha_alt_dn.SRLL.TOTAL->Sumw2();
   } 
   else {
     p_scale_alt_up.SRHH.TOTAL = 0;
@@ -3147,12 +3147,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     p_pdf_alt_dn.SRHH.TOTAL = 0;
     p_pdf_alt_dn.SRHL.TOTAL = 0;
     p_pdf_alt_dn.SRLL.TOTAL = 0;
-    p_alpha_alt_up.SRHH.TOTAL = 0;
-    p_alpha_alt_up.SRHL.TOTAL = 0;
-    p_alpha_alt_up.SRLL.TOTAL = 0;
-    p_alpha_alt_dn.SRHH.TOTAL = 0;
-    p_alpha_alt_dn.SRHL.TOTAL = 0;
-    p_alpha_alt_dn.SRLL.TOTAL = 0;
+    //p_alpha_alt_up.SRHH.TOTAL = 0;
+    //p_alpha_alt_up.SRHL.TOTAL = 0;
+    //p_alpha_alt_up.SRLL.TOTAL = 0;
+    //p_alpha_alt_dn.SRHH.TOTAL = 0;
+    //p_alpha_alt_dn.SRHL.TOTAL = 0;
+    //p_alpha_alt_dn.SRLL.TOTAL = 0;
   }
 
   //nEvents in chain
@@ -3203,8 +3203,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         float nominal  = cs_hist->GetBinContent(200+i); 
         float scale_up = nominal > 0 ? fabs(1-cs_hist->GetBinContent(300+i)/nominal)  : 0; 
         float scale_dn = nominal > 0 ? fabs(1-cs_hist->GetBinContent(400+i)/nominal)  : 0; 
-        float alpha_up = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7600+i)/nominal) : 0; 
-        float alpha_dn = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7700+i)/nominal) : 0; 
+        //float alpha_up = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7600+i)/nominal) : 0; 
+        //float alpha_dn = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7700+i)/nominal) : 0; 
         TH1F *h_pdf = new TH1F("pdf", "pdf", 10000, 0, 1000); 
         for (int j = 0; j < 100; j++){
           h_pdf->Fill(cs_hist->GetBinContent(1000+100*(i-1)+j)); 
@@ -3223,12 +3223,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if      (i <= 32) p_pdf_alt_dn.SRHH.TOTAL->Fill(i,    pdf); 
         else if (i <= 58) p_pdf_alt_dn.SRHL.TOTAL->Fill(i-32, pdf); 
         else              p_pdf_alt_dn.SRLL.TOTAL->Fill(i-58, pdf); 
-        if      (i <= 32) p_alpha_alt_up.SRHH.TOTAL->Fill(i,    alpha_up); 
-        else if (i <= 58) p_alpha_alt_up.SRHL.TOTAL->Fill(i-32, alpha_up); 
-        else              p_alpha_alt_up.SRLL.TOTAL->Fill(i-58, alpha_up); 
-        if      (i <= 32) p_alpha_alt_dn.SRHH.TOTAL->Fill(i,    alpha_dn); 
-        else if (i <= 58) p_alpha_alt_dn.SRHL.TOTAL->Fill(i-32, alpha_dn); 
-        else              p_alpha_alt_dn.SRLL.TOTAL->Fill(i-58, alpha_dn); 
+        //if      (i <= 32) p_alpha_alt_up.SRHH.TOTAL->Fill(i,    alpha_up); 
+        //else if (i <= 58) p_alpha_alt_up.SRHL.TOTAL->Fill(i-32, alpha_up); 
+        //else              p_alpha_alt_up.SRLL.TOTAL->Fill(i-58, alpha_up); 
+        //if      (i <= 32) p_alpha_alt_dn.SRHH.TOTAL->Fill(i,    alpha_dn); 
+        //else if (i <= 58) p_alpha_alt_dn.SRHL.TOTAL->Fill(i-32, alpha_dn); 
+        //else              p_alpha_alt_dn.SRLL.TOTAL->Fill(i-58, alpha_dn); 
       }
     }
 
@@ -3781,32 +3781,32 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         pdfDn->Write();
       }
 
-      //signal alpha
-      if (isFastSimSignal) {
-	    TH1F* plot_alt = 0;
-        if      (kinRegs[kr] == "hihi")   plot_alt = p_alpha_alt_up.SRHH.TOTAL;
-        else if (kinRegs[kr] == "hilow")  plot_alt = p_alpha_alt_up.SRHL.TOTAL;
-        else if (kinRegs[kr] == "lowlow") plot_alt = p_alpha_alt_up.SRLL.TOTAL;
-        else exit(1);
-        for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
-          plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1+plot_alt->GetBinContent(bin))); 
-        }
-        TH1F* alphaUp = (TH1F*) plot_alt->Clone("alphaUp");
-        avoidNegativeYields(alphaUp);
-        alphaUp->Scale(h_sr->Integral()/alphaUp->Integral());
-        alphaUp->Write();
-        if      (kinRegs[kr] == "hihi")   plot_alt = p_alpha_alt_dn.SRHH.TOTAL;
-        else if (kinRegs[kr] == "hilow")  plot_alt = p_alpha_alt_dn.SRHL.TOTAL;
-        else if (kinRegs[kr] == "lowlow") plot_alt = p_alpha_alt_dn.SRLL.TOTAL;
-        else exit(1);
-        for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
-          plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1-plot_alt->GetBinContent(bin))); 
-        }
-        TH1F* alphaDn = (TH1F*) plot_alt->Clone("alphaDown");
-        avoidNegativeYields(alphaDn);
-        alphaDn->Scale(h_sr->Integral()/alphaDn->Integral());
-        alphaDn->Write();
-      }
+      ////signal alpha
+      //if (isFastSimSignal) {
+	  //  TH1F* plot_alt = 0;
+      //  if      (kinRegs[kr] == "hihi")   plot_alt = p_alpha_alt_up.SRHH.TOTAL;
+      //  else if (kinRegs[kr] == "hilow")  plot_alt = p_alpha_alt_up.SRHL.TOTAL;
+      //  else if (kinRegs[kr] == "lowlow") plot_alt = p_alpha_alt_up.SRLL.TOTAL;
+      //  else exit(1);
+      //  for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
+      //    plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1+plot_alt->GetBinContent(bin))); 
+      //  }
+      //  TH1F* alphaUp = (TH1F*) plot_alt->Clone("alphaUp");
+      //  avoidNegativeYields(alphaUp);
+      //  alphaUp->Scale(h_sr->Integral()/alphaUp->Integral());
+      //  alphaUp->Write();
+      //  if      (kinRegs[kr] == "hihi")   plot_alt = p_alpha_alt_dn.SRHH.TOTAL;
+      //  else if (kinRegs[kr] == "hilow")  plot_alt = p_alpha_alt_dn.SRHL.TOTAL;
+      //  else if (kinRegs[kr] == "lowlow") plot_alt = p_alpha_alt_dn.SRLL.TOTAL;
+      //  else exit(1);
+      //  for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
+      //    plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1-plot_alt->GetBinContent(bin))); 
+      //  }
+      //  TH1F* alphaDn = (TH1F*) plot_alt->Clone("alphaDown");
+      //  avoidNegativeYields(alphaDn);
+      //  alphaDn->Scale(h_sr->Integral()/alphaDn->Integral());
+      //  alphaDn->Write();
+      //}
 
       //fakes ewk
       if (doFakes == 1) {
