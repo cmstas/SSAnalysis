@@ -13,14 +13,16 @@ void outreachPlots(){
 
   //Define Chain
   TChain *chain = new TChain("t"); 
-  chain->Add("/home/users/cgeorge/SSAnalysis/outreach/babymaker/smallbaby.root"); 
+  chain->Add("/home/users/cgeorge/SSAnalysis/outreach/babymaker/outreachbaby.root"); 
 
   //Define output plots
   float xbins[] = { 10, 15, 20, 25, 30, 40, 50, 65, 80, 100, 120 }; 
+  //float xbins[] = { 10, 25, 120 }; 
   TH1F *elec_numer = new TH1F("elec_numer", "elec_numer", 10, xbins); 
   TH1F *elec_denom = new TH1F("elec_denom", "elec_denom", 10, xbins); 
   TH1F *muon_numer = new TH1F("muon_numer", "muon_numer", 10, xbins); 
   TH1F *muon_denom = new TH1F("muon_denom", "muon_denom", 10, xbins); 
+  TH1F *dr_plot    = new TH1F("dr_plot"   , "dr_plot"   , 102, 0, 0.102); 
 
   //Do errors properly
   elec_numer->Sumw2();
@@ -71,11 +73,20 @@ void outreachPlots(){
       if (abs(out::genLep2_id()) == 11) elec_denom->Fill(out::genLep2_p4().pt()); 
       if (abs(out::genLep2_id()) == 13) muon_denom->Fill(out::genLep2_p4().pt()); 
 
+      //Reject the ones that aren't reconstructed (as a lepton)
+      if (abs(out::genLep1_id()) != 11 && abs(out::genLep1_id()) != 13) continue;
+      if (abs(out::genLep2_id()) != 11 && abs(out::genLep2_id()) != 13) continue;
+
       //If it passes ID, should go in the numerator
       if (out::lep1_passID() && abs(out::genLep1_id()) == 11) elec_numer->Fill(out::genLep1_p4().pt()); 
       if (out::lep1_passID() && abs(out::genLep1_id()) == 13) muon_numer->Fill(out::genLep1_p4().pt()); 
       if (out::lep2_passID() && abs(out::genLep2_id()) == 11) elec_numer->Fill(out::genLep2_p4().pt()); 
       if (out::lep2_passID() && abs(out::genLep2_id()) == 13) muon_numer->Fill(out::genLep2_p4().pt()); 
+
+      //delta-R between reco and gen
+      dr_plot->Fill(DeltaR(out::genLep1_p4(), out::recoLep1_p4())); 
+      dr_plot->Fill(DeltaR(out::genLep2_p4(), out::recoLep2_p4())); 
+      cout << out::genLep1_id() << " " << out::genLep1_p4().pt() << " " << out::recoLep1_p4().pt() << endl;
  
     }//event loop
 
@@ -91,5 +102,10 @@ void outreachPlots(){
   vector <Color_t> colors = { kBlue, kRed }; 
   TH1F* null = new TH1F("","",1,0,1);
   dataMCplotMaker(null, bkgds, titles, "Lepton Efficiency", "SS Baseline", "--outputName lepeff --yAxisLabel Efficiency --xAxisLabel p_{T}^{gen} --isLinear --noStack --noLumi --drawDots --noOverflow --setMaximum 1.0 --outOfFrame --legendUp -0.4", std::vector<TH1F*>(), std::vector<string>(), colors); 
+
+  //Now make the dr plot 
+  bkgds = { dr_plot }; 
+  titles = { "#Delta R" }; 
+  dataMCplotMaker(null, bkgds, titles, "#Delta R(gen, reco)", "SS Baseline, T1tttt", "--outputName dr --yAxisLabel Number --xAxisLabel #Delta R --isLinear --drawDots --noOverflow --outOfFrame --noLegend"); 
 
 }
