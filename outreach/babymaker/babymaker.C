@@ -566,6 +566,8 @@ void babymaker(){
 
       //Trigger stuff
       if (genHyp.first.id != 0){
+        fired_trigger_1 = false;
+        fired_trigger_2 = false;
         int lep1_id = id1_reco;
         int lep2_id = id2_reco;
         int lep1_idx = idx1_reco;
