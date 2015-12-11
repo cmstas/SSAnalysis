@@ -228,6 +228,16 @@ void OUT::Init(TTree *tree) {
 		idx2_reco_branch = tree->GetBranch("idx2_reco");
 		if (idx2_reco_branch) {idx2_reco_branch->SetAddress(&idx2_reco_);}
 	}
+	fired_trigger_1_branch = 0;
+	if (tree->GetBranch("fired_trigger_1") != 0) {
+		fired_trigger_1_branch = tree->GetBranch("fired_trigger_1");
+		if (fired_trigger_1_branch) {fired_trigger_1_branch->SetAddress(&fired_trigger_1_);}
+	}
+	fired_trigger_2_branch = 0;
+	if (tree->GetBranch("fired_trigger_2") != 0) {
+		fired_trigger_2_branch = tree->GetBranch("fired_trigger_2");
+		if (fired_trigger_2_branch) {fired_trigger_2_branch->SetAddress(&fired_trigger_2_);}
+	}
   tree->SetMakeClass(0);
 }
 void OUT::GetEntry(unsigned int idx) 
@@ -279,6 +289,8 @@ void OUT::GetEntry(unsigned int idx)
 		id2_reco_isLoaded = false;
 		idx1_reco_isLoaded = false;
 		idx2_reco_isLoaded = false;
+		fired_trigger_1_isLoaded = false;
+		fired_trigger_2_isLoaded = false;
 	}
 
 void OUT::LoadAllBranches() 
@@ -329,6 +341,8 @@ void OUT::LoadAllBranches()
 	if (id2_reco_branch != 0) id2_reco();
 	if (idx1_reco_branch != 0) idx1_reco();
 	if (idx2_reco_branch != 0) idx2_reco();
+	if (fired_trigger_1_branch != 0) fired_trigger_1();
+	if (fired_trigger_2_branch != 0) fired_trigger_2();
 }
 
 	const vector<int> &OUT::genLep_id()
@@ -916,6 +930,32 @@ void OUT::LoadAllBranches()
 		}
 		return idx2_reco_;
 	}
+	const bool &	OUT::fired_trigger_1()
+	{
+		if (not fired_trigger_1_isLoaded) {
+			if (fired_trigger_1_branch != 0) {
+				fired_trigger_1_branch->GetEntry(index);
+			} else { 
+				printf("branch fired_trigger_1_branch does not exist!\n");
+				exit(1);
+			}
+			fired_trigger_1_isLoaded = true;
+		}
+		return fired_trigger_1_;
+	}
+	const bool &	OUT::fired_trigger_2()
+	{
+		if (not fired_trigger_2_isLoaded) {
+			if (fired_trigger_2_branch != 0) {
+				fired_trigger_2_branch->GetEntry(index);
+			} else { 
+				printf("branch fired_trigger_2_branch does not exist!\n");
+				exit(1);
+			}
+			fired_trigger_2_isLoaded = true;
+		}
+		return fired_trigger_2_;
+	}
 
   void OUT::progress( int nEventsTotal, int nEventsChain ){
     int period = 1000;
@@ -983,4 +1023,6 @@ namespace out {
 	const int &id2_reco() { return outreach.id2_reco(); }
 	const int &idx1_reco() { return outreach.idx1_reco(); }
 	const int &idx2_reco() { return outreach.idx2_reco(); }
+	const bool &fired_trigger_1() { return outreach.fired_trigger_1(); }
+	const bool &fired_trigger_2() { return outreach.fired_trigger_2(); }
 }

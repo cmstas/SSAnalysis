@@ -156,6 +156,12 @@ protected:
 	int	idx2_reco_;
 	TBranch *idx2_reco_branch;
 	bool idx2_reco_isLoaded;
+	bool	fired_trigger_1_;
+	TBranch *fired_trigger_1_branch;
+	bool fired_trigger_1_isLoaded;
+	bool	fired_trigger_2_;
+	TBranch *fired_trigger_2_branch;
+	bool fired_trigger_2_isLoaded;
 public: 
 void Init(TTree *tree);
 void GetEntry(unsigned int idx); 
@@ -205,6 +211,8 @@ void LoadAllBranches();
 	const int &id2_reco();
 	const int &idx1_reco();
 	const int &idx2_reco();
+	const bool &	fired_trigger_1();
+	const bool &	fired_trigger_2();
 
   static void progress( int nEventsTotal, int nEventsChain );
 };
@@ -259,5 +267,7 @@ namespace out {
 	const int &id2_reco();
 	const int &idx1_reco();
 	const int &idx2_reco();
+	const bool &fired_trigger_1();
+	const bool &fired_trigger_2();
 }
 #endif

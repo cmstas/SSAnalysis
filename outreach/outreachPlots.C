@@ -73,15 +73,15 @@ void outreachPlots(){
       if (abs(out::genLep2_id()) == 11) elec_denom->Fill(out::genLep2_p4().pt()); 
       if (abs(out::genLep2_id()) == 13) muon_denom->Fill(out::genLep2_p4().pt()); 
 
-      //Reject the ones that aren't reconstructed (as a lepton)
+      //Just for convenience, reject these
       if (abs(out::genLep1_id()) != 11 && abs(out::genLep1_id()) != 13) continue;
       if (abs(out::genLep2_id()) != 11 && abs(out::genLep2_id()) != 13) continue;
 
       //If it passes ID, should go in the numerator
-      if (out::lep1_passID() && abs(out::genLep1_id()) == 11) elec_numer->Fill(out::genLep1_p4().pt()); 
-      if (out::lep1_passID() && abs(out::genLep1_id()) == 13) muon_numer->Fill(out::genLep1_p4().pt()); 
-      if (out::lep2_passID() && abs(out::genLep2_id()) == 11) elec_numer->Fill(out::genLep2_p4().pt()); 
-      if (out::lep2_passID() && abs(out::genLep2_id()) == 13) muon_numer->Fill(out::genLep2_p4().pt()); 
+      if (out::fired_trigger_1() && out::lep1_passID() && abs(out::genLep1_id()) == 11) elec_numer->Fill(out::genLep1_p4().pt()); 
+      if (out::fired_trigger_1() && out::lep1_passID() && abs(out::genLep1_id()) == 13) muon_numer->Fill(out::genLep1_p4().pt()); 
+      if (out::fired_trigger_2() && out::lep2_passID() && abs(out::genLep2_id()) == 11) elec_numer->Fill(out::genLep2_p4().pt()); 
+      if (out::fired_trigger_2() && out::lep2_passID() && abs(out::genLep2_id()) == 13) muon_numer->Fill(out::genLep2_p4().pt()); 
 
       //delta-R between reco and gen
       dr_plot->Fill(DeltaR(out::genLep1_p4(), out::recoLep1_p4())); 
