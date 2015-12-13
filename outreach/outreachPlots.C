@@ -66,6 +66,7 @@ void outreachPlots(){
       //If we fail genHT, nJets cuts, done
       if (out::nGenJets() < 2) continue;
       if (out::htGen() < 200) continue;
+      if (out::ht() < 300) continue;
 
       //If we get here, we have something, fill the denominator
       if (abs(out::genLep1_id()) == 11) elec_denom->Fill(out::genLep1_p4().pt()); 

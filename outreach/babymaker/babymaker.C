@@ -582,68 +582,54 @@ void babymaker(){
         //Electron Trigger Stuff
         if (abs(lep1_id) == 11 && lep1_idx >= 0){
           //Double electron triggers
-          if (tas::passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v"))) {
-            if (tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
-          }
-          if (tas::passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v")) || tas::passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"))) { 
+          if (tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", "hltEle17Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;
             if (matchToHLTFilter("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", "hltEle17Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;
           }
           //Mu-El triggers
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v"))) {
-            if (tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
-          }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))) {
+          if (tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
           }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
           }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
           }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
           }
         }
         if (abs(lep2_id) == 11 && lep2_idx >= 0){
           //Double electron triggers
-          if (tas::passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v"))) {
             if (tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
-          }
-          if (tas::passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v")) || tas::passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v"))) { 
+          { 
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", "hltEle17Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;
             if (matchToHLTFilter("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", "hltEle17Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;
           }
           //Mu-El triggers
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v"))) {
-            //cout << __LINE__ << endl;
-            //cout << lep2_idx << endl;
-            //cout << lep2_id << endl;
-            //cout << tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().size() << endl;
-            //cout << tas::els_p4().size() << endl;
-            if (tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
-          }
-            //cout << __LINE__ << endl;
-          if (tas::passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))) {
+          if (tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
           }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
           }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
           }      
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
           }      
@@ -652,56 +638,48 @@ void babymaker(){
         //Muon trigger stuff
         if (abs(lep1_id) == 13 && lep1_idx >= 0){
           //Double muon triggers
-          if (tas::passHLTTrigger(triggerName("HLT_DoubleMu8_Mass8_PFHT300_v"))) {
-            if (tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
-          }
+          if (tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
           if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"), lep1_p4) > 0)             lep1_trigMatch_isoReq = true;
           if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"), lep1_p4) > 0)           lep1_trigMatch_isoReq = true;
           //Mu-El triggers
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v"))) {
-            if (tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
-          }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))) {
+          if (tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
           }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
           }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
           }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
           }
         }
         if (abs(lep2_id) == 13 && lep2_idx >= 0){
           //Double muon triggers
-          if (tas::passHLTTrigger(triggerName("HLT_DoubleMu8_Mass8_PFHT300_v"))) {
-            if (tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
-          }
+          if (tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
           if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"), lep2_p4) > 0)             lep2_trigMatch_isoReq = true;
           if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"), lep2_p4) > 0)           lep2_trigMatch_isoReq = true;
           //Mu-El triggers
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v"))) {
-            if (tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
-          }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))) {
+          if (tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
           }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
           }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
           }
-          if (tas::passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"))) {
+          {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
           }
