@@ -549,7 +549,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     babyErrorStruct.cs_scale_no += tas::genweights().at(0);
     babyErrorStruct.cs_scale_up += tas::genweights().at(4);
     babyErrorStruct.cs_scale_dn += tas::genweights().at(8);
-    for (int i = 0; i < 102; i++) babyErrorStruct.cs_pdf[i] = tas::genweights().at(i+9);  
+    for (int i = 0; i < 100; i++) babyErrorStruct.cs_pdf[i] = tas::genweights().at(i+10);  
   }
 
   //If data, check filter list

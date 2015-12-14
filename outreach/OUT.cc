@@ -37,6 +37,26 @@ void OUT::Init(TTree *tree) {
 		recoElectrons_branch = tree->GetBranch("recoElectrons");
 		if (recoElectrons_branch) {recoElectrons_branch->SetAddress(&recoElectrons_);}
 	}
+	genLep1_p4_branch = 0;
+	if (tree->GetBranch("genLep1_p4") != 0) {
+		genLep1_p4_branch = tree->GetBranch("genLep1_p4");
+		if (genLep1_p4_branch) {genLep1_p4_branch->SetAddress(&genLep1_p4_);}
+	}
+	genLep2_p4_branch = 0;
+	if (tree->GetBranch("genLep2_p4") != 0) {
+		genLep2_p4_branch = tree->GetBranch("genLep2_p4");
+		if (genLep2_p4_branch) {genLep2_p4_branch->SetAddress(&genLep2_p4_);}
+	}
+	recoLep1_p4_branch = 0;
+	if (tree->GetBranch("recoLep1_p4") != 0) {
+		recoLep1_p4_branch = tree->GetBranch("recoLep1_p4");
+		if (recoLep1_p4_branch) {recoLep1_p4_branch->SetAddress(&recoLep1_p4_);}
+	}
+	recoLep2_p4_branch = 0;
+	if (tree->GetBranch("recoLep2_p4") != 0) {
+		recoLep2_p4_branch = tree->GetBranch("recoLep2_p4");
+		if (recoLep2_p4_branch) {recoLep2_p4_branch->SetAddress(&recoLep2_p4_);}
+	}
   tree->SetMakeClass(1);
 	genLep_id_branch = 0;
 	if (tree->GetBranch("genLep_id") != 0) {
@@ -168,6 +188,56 @@ void OUT::Init(TTree *tree) {
 		pfjets_ID_branch = tree->GetBranch("pfjets_ID");
 		if (pfjets_ID_branch) {pfjets_ID_branch->SetAddress(&pfjets_ID_);}
 	}
+	genLep1_id_branch = 0;
+	if (tree->GetBranch("genLep1_id") != 0) {
+		genLep1_id_branch = tree->GetBranch("genLep1_id");
+		if (genLep1_id_branch) {genLep1_id_branch->SetAddress(&genLep1_id_);}
+	}
+	genLep2_id_branch = 0;
+	if (tree->GetBranch("genLep2_id") != 0) {
+		genLep2_id_branch = tree->GetBranch("genLep2_id");
+		if (genLep2_id_branch) {genLep2_id_branch->SetAddress(&genLep2_id_);}
+	}
+	lep1_passID_branch = 0;
+	if (tree->GetBranch("lep1_passID") != 0) {
+		lep1_passID_branch = tree->GetBranch("lep1_passID");
+		if (lep1_passID_branch) {lep1_passID_branch->SetAddress(&lep1_passID_);}
+	}
+	lep2_passID_branch = 0;
+	if (tree->GetBranch("lep2_passID") != 0) {
+		lep2_passID_branch = tree->GetBranch("lep2_passID");
+		if (lep2_passID_branch) {lep2_passID_branch->SetAddress(&lep2_passID_);}
+	}
+	id1_reco_branch = 0;
+	if (tree->GetBranch("id1_reco") != 0) {
+		id1_reco_branch = tree->GetBranch("id1_reco");
+		if (id1_reco_branch) {id1_reco_branch->SetAddress(&id1_reco_);}
+	}
+	id2_reco_branch = 0;
+	if (tree->GetBranch("id2_reco") != 0) {
+		id2_reco_branch = tree->GetBranch("id2_reco");
+		if (id2_reco_branch) {id2_reco_branch->SetAddress(&id2_reco_);}
+	}
+	idx1_reco_branch = 0;
+	if (tree->GetBranch("idx1_reco") != 0) {
+		idx1_reco_branch = tree->GetBranch("idx1_reco");
+		if (idx1_reco_branch) {idx1_reco_branch->SetAddress(&idx1_reco_);}
+	}
+	idx2_reco_branch = 0;
+	if (tree->GetBranch("idx2_reco") != 0) {
+		idx2_reco_branch = tree->GetBranch("idx2_reco");
+		if (idx2_reco_branch) {idx2_reco_branch->SetAddress(&idx2_reco_);}
+	}
+	fired_trigger_1_branch = 0;
+	if (tree->GetBranch("fired_trigger_1") != 0) {
+		fired_trigger_1_branch = tree->GetBranch("fired_trigger_1");
+		if (fired_trigger_1_branch) {fired_trigger_1_branch->SetAddress(&fired_trigger_1_);}
+	}
+	fired_trigger_2_branch = 0;
+	if (tree->GetBranch("fired_trigger_2") != 0) {
+		fired_trigger_2_branch = tree->GetBranch("fired_trigger_2");
+		if (fired_trigger_2_branch) {fired_trigger_2_branch->SetAddress(&fired_trigger_2_);}
+	}
   tree->SetMakeClass(0);
 }
 void OUT::GetEntry(unsigned int idx) 
@@ -207,6 +277,20 @@ void OUT::GetEntry(unsigned int idx)
 		pfjets_match_isLoaded = false;
 		pfjets_matchb_isLoaded = false;
 		pfjets_ID_isLoaded = false;
+		genLep1_p4_isLoaded = false;
+		genLep2_p4_isLoaded = false;
+		recoLep1_p4_isLoaded = false;
+		recoLep2_p4_isLoaded = false;
+		genLep1_id_isLoaded = false;
+		genLep2_id_isLoaded = false;
+		lep1_passID_isLoaded = false;
+		lep2_passID_isLoaded = false;
+		id1_reco_isLoaded = false;
+		id2_reco_isLoaded = false;
+		idx1_reco_isLoaded = false;
+		idx2_reco_isLoaded = false;
+		fired_trigger_1_isLoaded = false;
+		fired_trigger_2_isLoaded = false;
 	}
 
 void OUT::LoadAllBranches() 
@@ -245,6 +329,20 @@ void OUT::LoadAllBranches()
 	if (pfjets_match_branch != 0) pfjets_match();
 	if (pfjets_matchb_branch != 0) pfjets_matchb();
 	if (pfjets_ID_branch != 0) pfjets_ID();
+	if (genLep1_p4_branch != 0) genLep1_p4();
+	if (genLep2_p4_branch != 0) genLep2_p4();
+	if (recoLep1_p4_branch != 0) recoLep1_p4();
+	if (recoLep2_p4_branch != 0) recoLep2_p4();
+	if (genLep1_id_branch != 0) genLep1_id();
+	if (genLep2_id_branch != 0) genLep2_id();
+	if (lep1_passID_branch != 0) lep1_passID();
+	if (lep2_passID_branch != 0) lep2_passID();
+	if (id1_reco_branch != 0) id1_reco();
+	if (id2_reco_branch != 0) id2_reco();
+	if (idx1_reco_branch != 0) idx1_reco();
+	if (idx2_reco_branch != 0) idx2_reco();
+	if (fired_trigger_1_branch != 0) fired_trigger_1();
+	if (fired_trigger_2_branch != 0) fired_trigger_2();
 }
 
 	const vector<int> &OUT::genLep_id()
@@ -676,6 +774,188 @@ void OUT::LoadAllBranches()
 		}
 		return *pfjets_ID_;
 	}
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &OUT::genLep1_p4()
+	{
+		if (not genLep1_p4_isLoaded) {
+			if (genLep1_p4_branch != 0) {
+				genLep1_p4_branch->GetEntry(index);
+			} else { 
+				printf("branch genLep1_p4_branch does not exist!\n");
+				exit(1);
+			}
+			genLep1_p4_isLoaded = true;
+		}
+		return *genLep1_p4_;
+	}
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &OUT::genLep2_p4()
+	{
+		if (not genLep2_p4_isLoaded) {
+			if (genLep2_p4_branch != 0) {
+				genLep2_p4_branch->GetEntry(index);
+			} else { 
+				printf("branch genLep2_p4_branch does not exist!\n");
+				exit(1);
+			}
+			genLep2_p4_isLoaded = true;
+		}
+		return *genLep2_p4_;
+	}
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &OUT::recoLep1_p4()
+	{
+		if (not recoLep1_p4_isLoaded) {
+			if (recoLep1_p4_branch != 0) {
+				recoLep1_p4_branch->GetEntry(index);
+			} else { 
+				printf("branch recoLep1_p4_branch does not exist!\n");
+				exit(1);
+			}
+			recoLep1_p4_isLoaded = true;
+		}
+		return *recoLep1_p4_;
+	}
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &OUT::recoLep2_p4()
+	{
+		if (not recoLep2_p4_isLoaded) {
+			if (recoLep2_p4_branch != 0) {
+				recoLep2_p4_branch->GetEntry(index);
+			} else { 
+				printf("branch recoLep2_p4_branch does not exist!\n");
+				exit(1);
+			}
+			recoLep2_p4_isLoaded = true;
+		}
+		return *recoLep2_p4_;
+	}
+	const int &OUT::genLep1_id()
+	{
+		if (not genLep1_id_isLoaded) {
+			if (genLep1_id_branch != 0) {
+				genLep1_id_branch->GetEntry(index);
+			} else { 
+				printf("branch genLep1_id_branch does not exist!\n");
+				exit(1);
+			}
+			genLep1_id_isLoaded = true;
+		}
+		return genLep1_id_;
+	}
+	const int &OUT::genLep2_id()
+	{
+		if (not genLep2_id_isLoaded) {
+			if (genLep2_id_branch != 0) {
+				genLep2_id_branch->GetEntry(index);
+			} else { 
+				printf("branch genLep2_id_branch does not exist!\n");
+				exit(1);
+			}
+			genLep2_id_isLoaded = true;
+		}
+		return genLep2_id_;
+	}
+	const bool &	OUT::lep1_passID()
+	{
+		if (not lep1_passID_isLoaded) {
+			if (lep1_passID_branch != 0) {
+				lep1_passID_branch->GetEntry(index);
+			} else { 
+				printf("branch lep1_passID_branch does not exist!\n");
+				exit(1);
+			}
+			lep1_passID_isLoaded = true;
+		}
+		return lep1_passID_;
+	}
+	const bool &	OUT::lep2_passID()
+	{
+		if (not lep2_passID_isLoaded) {
+			if (lep2_passID_branch != 0) {
+				lep2_passID_branch->GetEntry(index);
+			} else { 
+				printf("branch lep2_passID_branch does not exist!\n");
+				exit(1);
+			}
+			lep2_passID_isLoaded = true;
+		}
+		return lep2_passID_;
+	}
+	const int &OUT::id1_reco()
+	{
+		if (not id1_reco_isLoaded) {
+			if (id1_reco_branch != 0) {
+				id1_reco_branch->GetEntry(index);
+			} else { 
+				printf("branch id1_reco_branch does not exist!\n");
+				exit(1);
+			}
+			id1_reco_isLoaded = true;
+		}
+		return id1_reco_;
+	}
+	const int &OUT::id2_reco()
+	{
+		if (not id2_reco_isLoaded) {
+			if (id2_reco_branch != 0) {
+				id2_reco_branch->GetEntry(index);
+			} else { 
+				printf("branch id2_reco_branch does not exist!\n");
+				exit(1);
+			}
+			id2_reco_isLoaded = true;
+		}
+		return id2_reco_;
+	}
+	const int &OUT::idx1_reco()
+	{
+		if (not idx1_reco_isLoaded) {
+			if (idx1_reco_branch != 0) {
+				idx1_reco_branch->GetEntry(index);
+			} else { 
+				printf("branch idx1_reco_branch does not exist!\n");
+				exit(1);
+			}
+			idx1_reco_isLoaded = true;
+		}
+		return idx1_reco_;
+	}
+	const int &OUT::idx2_reco()
+	{
+		if (not idx2_reco_isLoaded) {
+			if (idx2_reco_branch != 0) {
+				idx2_reco_branch->GetEntry(index);
+			} else { 
+				printf("branch idx2_reco_branch does not exist!\n");
+				exit(1);
+			}
+			idx2_reco_isLoaded = true;
+		}
+		return idx2_reco_;
+	}
+	const bool &	OUT::fired_trigger_1()
+	{
+		if (not fired_trigger_1_isLoaded) {
+			if (fired_trigger_1_branch != 0) {
+				fired_trigger_1_branch->GetEntry(index);
+			} else { 
+				printf("branch fired_trigger_1_branch does not exist!\n");
+				exit(1);
+			}
+			fired_trigger_1_isLoaded = true;
+		}
+		return fired_trigger_1_;
+	}
+	const bool &	OUT::fired_trigger_2()
+	{
+		if (not fired_trigger_2_isLoaded) {
+			if (fired_trigger_2_branch != 0) {
+				fired_trigger_2_branch->GetEntry(index);
+			} else { 
+				printf("branch fired_trigger_2_branch does not exist!\n");
+				exit(1);
+			}
+			fired_trigger_2_isLoaded = true;
+		}
+		return fired_trigger_2_;
+	}
 
   void OUT::progress( int nEventsTotal, int nEventsChain ){
     int period = 1000;
@@ -731,4 +1011,18 @@ namespace out {
 	const vector<int> &pfjets_match() { return outreach.pfjets_match(); }
 	const vector<bool> &pfjets_matchb() { return outreach.pfjets_matchb(); }
 	const vector<bool> &pfjets_ID() { return outreach.pfjets_ID(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &genLep1_p4() { return outreach.genLep1_p4(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &genLep2_p4() { return outreach.genLep2_p4(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &recoLep1_p4() { return outreach.recoLep1_p4(); }
+	const ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > &recoLep2_p4() { return outreach.recoLep2_p4(); }
+	const int &genLep1_id() { return outreach.genLep1_id(); }
+	const int &genLep2_id() { return outreach.genLep2_id(); }
+	const bool &lep1_passID() { return outreach.lep1_passID(); }
+	const bool &lep2_passID() { return outreach.lep2_passID(); }
+	const int &id1_reco() { return outreach.id1_reco(); }
+	const int &id2_reco() { return outreach.id2_reco(); }
+	const int &idx1_reco() { return outreach.idx1_reco(); }
+	const int &idx2_reco() { return outreach.idx2_reco(); }
+	const bool &fired_trigger_1() { return outreach.fired_trigger_1(); }
+	const bool &fired_trigger_2() { return outreach.fired_trigger_2(); }
 }

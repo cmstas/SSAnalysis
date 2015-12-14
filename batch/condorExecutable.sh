@@ -120,6 +120,8 @@ if [ "$WHICH" == "10041" ] ; then WHICH_SMALL="t1tttt_875to900_1to650"      ; fi
 if [ "$WHICH" == "10042" ] ; then WHICH_SMALL="t1tttt_950to975_350to725"    ; fi
 if [ "$WHICH" == "10043" ] ; then WHICH_SMALL="t1tttt_975_600to750"         ; fi
 if [ "$WHICH" == "10044" ] ; then WHICH_SMALL="t1tttt_1375_950to1150"       ; fi
+if [ "$WHICH" == "10045" ] ; then WHICH_SMALL="t1tttt_1000to1050_1to800"    ; fi
+if [ "$WHICH" == "10046" ] ; then WHICH_SMALL="t1tttt_1000_1to700"          ; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 

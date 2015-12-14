@@ -1,14 +1,16 @@
 #include "TChain.h"
 #include "TFile.h"
+#include "TString.h"
 #include "TTree.h"
 #include "TColor.h"
 #include "TH1F.h"
-#include "/home/users/cgeorge/software/makeCMS3ClassFiles/SS.h"
 #include "../CORE/Tools/utils.h"
 #include "../CORE/SSSelections.h"
 #include "../CORE/MCSelections.h"
 #include "../CORE/CMS3.h"
 #include "babymaker.h"
+
+//bool tas::passHLTTrigger(TString trigName) { return cms3.tas::passHLTTrigger(trigName); }
 
 hyp_type_t getHypType(int id1, int id2){
         
@@ -84,7 +86,7 @@ std::pair<GenParticleStruct, GenParticleStruct> getGenHyp(float min_pt_elec, flo
     vector <pair<GenParticleStruct, GenParticleStruct> > glepPairs = makeGenHyps();
     unsigned int npairs = glepPairs.size();
 
-    GenParticleStruct gp = {0, 999999, 0., 0., 0, 999999, 0., 0.};
+    GenParticleStruct gp = {0, -999999, 0., 0., 0, -999999, 0., 0.};
     pair<GenParticleStruct, GenParticleStruct> good_gen_hyp = make_pair(gp, gp);
     hyp_type_t good_hyp_type = UNASSIGNED;
                 
@@ -211,41 +213,69 @@ void babymaker(){
   vector <int> pfjets_match; 
   vector <bool> pfjets_matchb; 
   vector <bool> pfjets_ID; 
+  LorentzVector genLep1_p4;
+  LorentzVector genLep2_p4;
+  LorentzVector recoLep1_p4;
+  LorentzVector recoLep2_p4;
+  int genLep1_id; 
+  int genLep2_id; 
+  bool lep1_passID; 
+  bool lep2_passID; 
+  int id1_reco;
+  int id2_reco;
+  int idx1_reco;
+  int idx2_reco;
+  bool fired_trigger_1; 
+  bool fired_trigger_2; 
 
   //Baby branches
-  BabyTree->Branch("genLep_id"         , &genLep_id        );
-  BabyTree->Branch("genLep_idx"        , &genLep_idx       );
-  BabyTree->Branch("htGen"             , &htGen            );
-  BabyTree->Branch("ht"                , &ht               );
-  BabyTree->Branch("genJets"           , &genJets          );
-  BabyTree->Branch("genJets_isb"       , &genJets_isb      );
-  BabyTree->Branch("recoJets"          , &recoJets         );
-  BabyTree->Branch("nGenJets"          , &nGenJets         );
-  BabyTree->Branch("genmet"            , &genmet           );
-  BabyTree->Branch("met"               , &met              );
-  BabyTree->Branch("lep_passID"        , &lep_passID       );
-  BabyTree->Branch("lep_passID_loose"  , &lep_passID_loose );
-  BabyTree->Branch("id_reco"           , &id_reco          );
-  BabyTree->Branch("idx_reco"          , &idx_reco         );
-  BabyTree->Branch("genLep_p4"         , &genLep_p4        );
-  BabyTree->Branch("recoLep_p4"        , &recoLep_p4       );
-  BabyTree->Branch("genJets_matched"   , &genJets_matched  );
-  BabyTree->Branch("genJets_matched_tob", &genJets_matched_tob  );
-  BabyTree->Branch("genJets_matchedID" , &genJets_matchedID);
-  BabyTree->Branch("pfjets_p4"         , &pfjets_p4        );
-  BabyTree->Branch("pfjets_isClean"         , &pfjets_isClean        );
-  BabyTree->Branch("pfjets_isb"        , &pfjets_isb       );
-  BabyTree->Branch("recoMuons"         , &recoMuons        );
-  BabyTree->Branch("recoElectrons"     , &recoElectrons    );
-  BabyTree->Branch("recoMuonsMatch"    , &recoMuonsMatch   ); 
-  BabyTree->Branch("recoMuonsID"       , &recoMuonsID      );
-  BabyTree->Branch("recoMuonsID_loose"       , &recoMuonsID_loose      );
-  BabyTree->Branch("recoElectronsMatch", &recoElectronsMatch); 
-  BabyTree->Branch("recoElectronsID"   , &recoElectronsID  ); 
-  BabyTree->Branch("recoElectronsID_loose"   , &recoElectronsID_loose  ); 
-  BabyTree->Branch("pfjets_match"      , &pfjets_match     );  
-  BabyTree->Branch("pfjets_matchb"      , &pfjets_matchb     );  
-  BabyTree->Branch("pfjets_ID"         , &pfjets_ID        );  
+  BabyTree->Branch("genLep_id"             , &genLep_id             );
+  BabyTree->Branch("genLep_idx"            , &genLep_idx            );
+  BabyTree->Branch("htGen"                 , &htGen                 );
+  BabyTree->Branch("ht"                    , &ht                    );
+  BabyTree->Branch("genJets"               , &genJets               );
+  BabyTree->Branch("genJets_isb"           , &genJets_isb           );
+  BabyTree->Branch("recoJets"              , &recoJets              );
+  BabyTree->Branch("nGenJets"              , &nGenJets              );
+  BabyTree->Branch("genmet"                , &genmet                );
+  BabyTree->Branch("met"                   , &met                   );
+  BabyTree->Branch("lep_passID"            , &lep_passID            );
+  BabyTree->Branch("lep_passID_loose"      , &lep_passID_loose      );
+  BabyTree->Branch("id_reco"               , &id_reco               );
+  BabyTree->Branch("idx_reco"              , &idx_reco              );
+  BabyTree->Branch("genLep_p4"             , &genLep_p4             );
+  BabyTree->Branch("recoLep_p4"            , &recoLep_p4            );
+  BabyTree->Branch("genJets_matched"       , &genJets_matched       );
+  BabyTree->Branch("genJets_matched_tob"   , &genJets_matched_tob   );
+  BabyTree->Branch("genJets_matchedID"     , &genJets_matchedID     );
+  BabyTree->Branch("pfjets_p4"             , &pfjets_p4             );
+  BabyTree->Branch("pfjets_isClean"        , &pfjets_isClean        );
+  BabyTree->Branch("pfjets_isb"            , &pfjets_isb            );
+  BabyTree->Branch("recoMuons"             , &recoMuons             );
+  BabyTree->Branch("recoElectrons"         , &recoElectrons         );
+  BabyTree->Branch("recoMuonsMatch"        , &recoMuonsMatch        );
+  BabyTree->Branch("recoMuonsID"           , &recoMuonsID           );
+  BabyTree->Branch("recoMuonsID_loose"     , &recoMuonsID_loose     );
+  BabyTree->Branch("recoElectronsMatch"    , &recoElectronsMatch    );
+  BabyTree->Branch("recoElectronsID"       , &recoElectronsID       );
+  BabyTree->Branch("recoElectronsID_loose" , &recoElectronsID_loose );
+  BabyTree->Branch("pfjets_match"          , &pfjets_match          );
+  BabyTree->Branch("pfjets_matchb"         , &pfjets_matchb         );
+  BabyTree->Branch("pfjets_ID"             , &pfjets_ID             );
+  BabyTree->Branch("genLep1_p4"            , &genLep1_p4            );
+  BabyTree->Branch("genLep2_p4"            , &genLep2_p4            );
+  BabyTree->Branch("recoLep1_p4"           , &recoLep1_p4           );
+  BabyTree->Branch("recoLep2_p4"           , &recoLep2_p4           );
+  BabyTree->Branch("genLep1_id"            , &genLep1_id            );
+  BabyTree->Branch("genLep2_id"            , &genLep2_id            );
+  BabyTree->Branch("lep1_passID"           , &lep1_passID           );
+  BabyTree->Branch("lep2_passID"           , &lep2_passID           );
+  BabyTree->Branch("id1_reco"              , &id1_reco              );
+  BabyTree->Branch("id2_reco"              , &id2_reco              );
+  BabyTree->Branch("idx1_reco"             , &idx1_reco             );
+  BabyTree->Branch("idx2_reco"             , &idx2_reco             );
+  BabyTree->Branch("fired_trigger_1"       , &fired_trigger_1       );
+  BabyTree->Branch("fired_trigger_2"       , &fired_trigger_2       );
 
   //MVA function
   createAndInitMVA("../CORE", true);
@@ -313,6 +343,56 @@ void babymaker(){
       pfjets_matchb.clear(); 
       pfjets_ID.clear();
       genJets_isb.clear(); 
+      genLep1_p4 = {0,0,0,0};
+      genLep2_p4 = {0,0,0,0};
+      recoLep1_p4 = {0,0,0,0};
+      recoLep2_p4 = {0,0,0,0};
+      lep1_passID = 0; 
+      lep2_passID = 0; 
+      genLep1_id = 0;
+      genLep2_id = 0;
+
+      //Find Gen pair
+      std::pair<GenParticleStruct, GenParticleStruct> genHyp = getGenHyp(15, 10);  
+      if (genHyp.first.id != 0){
+        //Particles
+        GenParticleStruct GenParticle1 = genHyp.first;
+        GenParticleStruct GenParticle2 = genHyp.second;
+        genLep1_id  = (abs(GenParticle1.id) == 15) ? GenParticle1.did : GenParticle1.id;
+        genLep2_id  = (abs(GenParticle2.id) == 15) ? GenParticle2.did : GenParticle2.id;
+        int genLep1_idx = (abs(GenParticle1.id) == 15) ? GenParticle1.didx : GenParticle1.idx;
+        int genLep2_idx = (abs(GenParticle2.id) == 15) ? GenParticle2.didx : GenParticle2.idx;
+        genLep1_p4  = tas::genps_p4().at(genLep1_idx);
+        genLep2_p4  = tas::genps_p4().at(genLep2_idx);
+        genLep1_id  = genHyp.first.id; 
+        genLep2_id  = genHyp.second.id; 
+        id1_reco    = -1;
+        id2_reco    = -1;     
+        idx1_reco   = -1;
+        idx2_reco   = -1;     
+
+        //See if gen pair is reconstructed
+        float dR_best_1 = 0.1; 
+        float dR_best_2 = 0.1; 
+        for (size_t ilep = 0; ilep < tas::els_p4().size(); ilep++){
+          float dR_1 = DeltaR(tas::els_p4().at(ilep), tas::genps_p4().at(genLep1_idx)); 
+          float dR_2 = DeltaR(tas::els_p4().at(ilep), tas::genps_p4().at(genLep2_idx)); 
+          if (dR_1 < dR_best_1){ dR_best_1 = dR_1; idx1_reco = ilep; id1_reco = -11*tas::els_charge().at(ilep); } 
+          if (dR_2 < dR_best_2){ dR_best_2 = dR_2; idx2_reco = ilep; id2_reco = -11*tas::els_charge().at(ilep); } 
+        }
+        for (size_t ilep = 0; ilep < tas::mus_p4().size(); ilep++){
+          float dR_1 = DeltaR(tas::mus_p4().at(ilep), tas::genps_p4().at(genLep1_idx)); 
+          float dR_2 = DeltaR(tas::mus_p4().at(ilep), tas::genps_p4().at(genLep2_idx)); 
+          if (dR_1 < dR_best_1){ dR_best_1 = dR_1; idx1_reco = ilep; id1_reco = -13*tas::mus_charge().at(ilep); } ;
+          if (dR_2 < dR_best_2){ dR_best_2 = dR_2; idx2_reco = ilep; id2_reco = -13*tas::mus_charge().at(ilep); } ;
+        }
+        lep1_passID = (idx1_reco >= 0 && isGoodLepton(id1_reco, idx1_reco));
+        lep2_passID = (idx2_reco >= 0 && isGoodLepton(id2_reco, idx2_reco));
+        if (abs(id1_reco) == 11) recoLep1_p4 = tas::els_p4().at(idx1_reco); 
+        if (abs(id2_reco) == 11) recoLep2_p4 = tas::els_p4().at(idx2_reco); 
+        if (abs(id1_reco) == 13) recoLep1_p4 = tas::mus_p4().at(idx1_reco); 
+        if (abs(id2_reco) == 13) recoLep2_p4 = tas::mus_p4().at(idx2_reco); 
+      }
 
       //Find gen particles, jets
       vector <GenParticleStruct> genParticles = makeGenParticles();
@@ -482,6 +562,132 @@ void babymaker(){
           if (ROOT::Math::VectorUtil::DeltaR(vjet, tas::genps_p4().at(iGen)) < 0.1){ jetisClean = false; break; }
         }   
         pfjets_isClean.push_back(jetisClean); 
+      }
+
+      //Trigger stuff
+      if (genHyp.first.id != 0){
+        fired_trigger_1 = false;
+        fired_trigger_2 = false;
+        int lep1_id = id1_reco;
+        int lep2_id = id2_reco;
+        int lep1_idx = idx1_reco;
+        int lep2_idx = idx2_reco;
+        LorentzVector lep1_p4 = recoLep1_p4;
+        LorentzVector lep2_p4 = recoLep2_p4;
+        bool lep1_trigMatch_isoReq = 0;
+        bool lep2_trigMatch_isoReq = 0;
+        bool lep1_trigMatch_noIsoReq = 0;
+        bool lep2_trigMatch_noIsoReq = 0;
+  
+        //Electron Trigger Stuff
+        if (abs(lep1_id) == 11 && lep1_idx >= 0){
+          //Double electron triggers
+          if (tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", "hltEle17Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;
+            if (matchToHLTFilter("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", "hltEle17Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;
+          }
+          //Mu-El triggers
+          if (tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
+          }
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
+          }
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
+          }
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
+          }
+        }
+        if (abs(lep2_id) == 11 && lep2_idx >= 0){
+          //Double electron triggers
+            if (tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
+          { 
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", "hltEle17Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;
+            if (matchToHLTFilter("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", "hltEle17Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;
+          }
+          //Mu-El triggers
+          if (tas::els_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
+          }
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
+          }
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
+          }      
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
+          }      
+        }
+
+        //Muon trigger stuff
+        if (abs(lep1_id) == 13 && lep1_idx >= 0){
+          //Double muon triggers
+          if (tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
+          if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"), lep1_p4) > 0)             lep1_trigMatch_isoReq = true;
+          if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"), lep1_p4) > 0)           lep1_trigMatch_isoReq = true;
+          //Mu-El triggers
+          if (tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
+          }
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
+          }
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
+          }
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;		
+          }
+        }
+        if (abs(lep2_id) == 13 && lep2_idx >= 0){
+          //Double muon triggers
+          if (tas::mus_HLT_DoubleMu8_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
+          if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v"), lep2_p4) > 0)             lep2_trigMatch_isoReq = true;
+          if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v"), lep2_p4) > 0)           lep2_trigMatch_isoReq = true;
+          //Mu-El triggers
+          if (tas::mus_HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_MuonLeg().at(lep2_idx) > 0) lep2_trigMatch_noIsoReq = true;
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu17TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
+          }
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v", "hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered17", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
+          }
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
+          }
+          {
+            float dummypt = 0.;
+            if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
+          }
+        }
+        if (ht < 300 && lep1_trigMatch_isoReq) fired_trigger_1 = true; 
+        if (ht < 300 && lep2_trigMatch_isoReq) fired_trigger_2 = true; 
+        if (ht > 300 && lep1_trigMatch_noIsoReq) fired_trigger_1 = true; 
+        if (ht > 300 && lep2_trigMatch_noIsoReq) fired_trigger_2 = true; 
       }
 
       BabyTree->Fill();

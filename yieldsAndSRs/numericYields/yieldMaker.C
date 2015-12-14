@@ -762,6 +762,37 @@ void getyields(){
   TChain *fs_t1tttt_1375_1150_chain = new TChain("t","fs_t1tttt_m1375_m1150");
   TChain *fs_t1tttt_1375_1050_chain = new TChain("t","fs_t1tttt_m1375_m1050");
   TChain *fs_t1tttt_1375_950_chain = new TChain("t","fs_t1tttt_m1375_m950");
+  TChain *fs_t1tttt_1025_700_chain = new TChain("t","fs_t1tttt_m1025_m700");
+  TChain *fs_t1tttt_1025_725_chain = new TChain("t","fs_t1tttt_m1025_m725");
+  TChain *fs_t1tttt_1025_775_chain = new TChain("t","fs_t1tttt_m1025_m775");
+  TChain *fs_t1tttt_1050_0_chain = new TChain("t","fs_t1tttt_m1050_m0");
+  TChain *fs_t1tttt_1025_750_chain = new TChain("t","fs_t1tttt_m1025_m750");
+  TChain *fs_t1tttt_1025_800_chain = new TChain("t","fs_t1tttt_m1025_m800");
+  TChain *fs_t1tttt_1050_100_chain = new TChain("t","fs_t1tttt_m1050_m100");
+  TChain *fs_t1tttt_1000_725_chain = new TChain("t","fs_t1tttt_m1000_m725");
+  TChain *fs_t1tttt_1025_600_chain = new TChain("t","fs_t1tttt_m1025_m600");
+  TChain *fs_t1tttt_1025_625_chain = new TChain("t","fs_t1tttt_m1025_m625");
+  TChain *fs_t1tttt_1000_750_chain = new TChain("t","fs_t1tttt_m1000_m750");
+  TChain *fs_t1tttt_1000_775_chain = new TChain("t","fs_t1tttt_m1000_m775");
+  TChain *fs_t1tttt_1025_650_chain = new TChain("t","fs_t1tttt_m1025_m650");
+  TChain *fs_t1tttt_1025_675_chain = new TChain("t","fs_t1tttt_m1025_m675");
+  TChain *fs_t1tttt_1000_0_chain = new TChain("t","fs_t1tttt_m1000_m0");
+  TChain *fs_t1tttt_1000_350_chain = new TChain("t","fs_t1tttt_m1000_m350");
+  TChain *fs_t1tttt_1000_450_chain = new TChain("t","fs_t1tttt_m1000_m450");
+  TChain *fs_t1tttt_1000_500_chain = new TChain("t","fs_t1tttt_m1000_m500");
+  TChain *fs_t1tttt_1000_550_chain = new TChain("t","fs_t1tttt_m1000_m550");
+  TChain *fs_t1tttt_1000_600_chain = new TChain("t","fs_t1tttt_m1000_m600");
+  TChain *fs_t1tttt_1000_50_chain = new TChain("t","fs_t1tttt_m1000_m50");
+  TChain *fs_t1tttt_1000_675_chain = new TChain("t","fs_t1tttt_m1000_m675");
+  TChain *fs_t1tttt_1000_150_chain = new TChain("t","fs_t1tttt_m1000_m150");
+  TChain *fs_t1tttt_1000_250_chain = new TChain("t","fs_t1tttt_m1000_m250");
+  TChain *fs_t1tttt_1000_400_chain = new TChain("t","fs_t1tttt_m1000_m400");
+  TChain *fs_t1tttt_1000_300_chain = new TChain("t","fs_t1tttt_m1000_m300");
+  TChain *fs_t1tttt_1000_100_chain = new TChain("t","fs_t1tttt_m1000_m100");
+  TChain *fs_t1tttt_1000_625_chain = new TChain("t","fs_t1tttt_m1000_m625");
+  TChain *fs_t1tttt_1000_650_chain = new TChain("t","fs_t1tttt_m1000_m650");
+  TChain *fs_t1tttt_1000_200_chain = new TChain("t","fs_t1tttt_m1000_m200");
+  TChain *fs_t1tttt_1000_700_chain = new TChain("t","fs_t1tttt_m1000_m700");
   
   //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
@@ -1508,7 +1539,37 @@ void getyields(){
   fs_t1tttt_1375_1150_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1375_950to1150.root", tag.c_str()));
   fs_t1tttt_1375_1050_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1375_950to1150.root", tag.c_str()));
   fs_t1tttt_1375_950_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1375_950to1150.root", tag.c_str()));
-
+  fs_t1tttt_1025_700_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1025_725_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1025_775_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1050_0_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1025_750_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1025_800_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1050_100_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1000_725_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1025_600_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1025_625_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1000_750_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1000_775_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1025_650_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1025_675_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000to1050_1to800.root", tag.c_str()));
+  fs_t1tttt_1000_0_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_350_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_450_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_500_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_550_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_600_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_50_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_675_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_150_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_250_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_400_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_300_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_100_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_625_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_650_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
+  fs_t1tttt_1000_700_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-fs/T1TTTT_1000_1to700.root", tag.c_str()));
 
   //Get yields
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
@@ -2225,6 +2286,37 @@ void getyields(){
   pair<yields_t, plots_t> results_fs_t1tttt_1400_100 = run(fs_t1tttt_1400_100_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_fs_t1tttt_1400_1000 = run(fs_t1tttt_1400_1000_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_fs_t1tttt_1400_1100 = run(fs_t1tttt_1400_1100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1025_700 = run(fs_t1tttt_1025_700_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1025_725 = run(fs_t1tttt_1025_725_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1025_775 = run(fs_t1tttt_1025_775_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1050_0 = run(fs_t1tttt_1050_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1025_750 = run(fs_t1tttt_1025_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1025_800 = run(fs_t1tttt_1025_800_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1050_100 = run(fs_t1tttt_1050_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_725 = run(fs_t1tttt_1000_725_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1025_600 = run(fs_t1tttt_1025_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1025_625 = run(fs_t1tttt_1025_625_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_750 = run(fs_t1tttt_1000_750_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_775 = run(fs_t1tttt_1000_775_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1025_650 = run(fs_t1tttt_1025_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1025_675 = run(fs_t1tttt_1025_675_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_0 = run(fs_t1tttt_1000_0_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_350 = run(fs_t1tttt_1000_350_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_450 = run(fs_t1tttt_1000_450_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_500 = run(fs_t1tttt_1000_500_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_550 = run(fs_t1tttt_1000_550_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_600 = run(fs_t1tttt_1000_600_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_50 = run(fs_t1tttt_1000_50_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_675 = run(fs_t1tttt_1000_675_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_150 = run(fs_t1tttt_1000_150_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_250 = run(fs_t1tttt_1000_250_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_400 = run(fs_t1tttt_1000_400_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_300 = run(fs_t1tttt_1000_300_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_100 = run(fs_t1tttt_1000_100_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_625 = run(fs_t1tttt_1000_625_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_650 = run(fs_t1tttt_1000_650_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_200 = run(fs_t1tttt_1000_200_chain, 0, 0, 0, 0, 1);
+  pair<yields_t, plots_t> results_fs_t1tttt_1000_700 = run(fs_t1tttt_1000_700_chain, 0, 0, 0, 0, 1);
 
   yields_t& ttbar    = results_ttbar.first;
   yields_t& ttbar_ff = results_ttbar_ff.first;
@@ -3112,8 +3204,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   plots_t p_scale_alt_dn;
   plots_t p_pdf_alt_up;
   plots_t p_pdf_alt_dn;
-  plots_t p_alpha_alt_up;
-  plots_t p_alpha_alt_dn;
+  //plots_t p_alpha_alt_up;
+  //plots_t p_alpha_alt_dn;
   if (isFastSimSignal) {
     p_scale_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRHH_SCALE_UP_TOTAL_%s", chainTitleCh), 32, 1, 33); p_scale_alt_up.SRHH.TOTAL->Sumw2();
     p_scale_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRHL_SCALE_UP_TOTAL_%s", chainTitleCh), 26, 1, 27); p_scale_alt_up.SRHL.TOTAL->Sumw2();
@@ -3127,12 +3219,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     p_pdf_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRHH_PDF_DN_TOTAL_%s", chainTitleCh), 32, 1, 33); p_pdf_alt_dn.SRHH.TOTAL->Sumw2();
     p_pdf_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRHL_PDF_DN_TOTAL_%s", chainTitleCh), 26, 1, 27); p_pdf_alt_dn.SRHL.TOTAL->Sumw2();
     p_pdf_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRLL_PDF_DN_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_pdf_alt_dn.SRLL.TOTAL->Sumw2();
-    p_alpha_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), 32, 1, 33); p_alpha_alt_up.SRHH.TOTAL->Sumw2();
-    p_alpha_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), 26, 1, 27); p_alpha_alt_up.SRHL.TOTAL->Sumw2();
-    p_alpha_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_alpha_alt_up.SRLL.TOTAL->Sumw2();
-    p_alpha_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRHH_ALPHA_DN_TOTAL_%s", chainTitleCh), 32, 1, 33); p_alpha_alt_dn.SRHH.TOTAL->Sumw2();
-    p_alpha_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRHL_ALPHA_DN_TOTAL_%s", chainTitleCh), 26, 1, 27); p_alpha_alt_dn.SRHL.TOTAL->Sumw2();
-    p_alpha_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRLL_ALPHA_DN_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_alpha_alt_dn.SRLL.TOTAL->Sumw2();
+    //p_alpha_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), 32, 1, 33); p_alpha_alt_up.SRHH.TOTAL->Sumw2();
+    //p_alpha_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), 26, 1, 27); p_alpha_alt_up.SRHL.TOTAL->Sumw2();
+    //p_alpha_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_alpha_alt_up.SRLL.TOTAL->Sumw2();
+    //p_alpha_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRHH_ALPHA_DN_TOTAL_%s", chainTitleCh), 32, 1, 33); p_alpha_alt_dn.SRHH.TOTAL->Sumw2();
+    //p_alpha_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRHL_ALPHA_DN_TOTAL_%s", chainTitleCh), 26, 1, 27); p_alpha_alt_dn.SRHL.TOTAL->Sumw2();
+    //p_alpha_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_ALPHA_DN_TOTAL_%s", chainTitleCh), Form("SRLL_ALPHA_DN_TOTAL_%s", chainTitleCh), 8 , 1, 9);  p_alpha_alt_dn.SRLL.TOTAL->Sumw2();
   } 
   else {
     p_scale_alt_up.SRHH.TOTAL = 0;
@@ -3147,12 +3239,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     p_pdf_alt_dn.SRHH.TOTAL = 0;
     p_pdf_alt_dn.SRHL.TOTAL = 0;
     p_pdf_alt_dn.SRLL.TOTAL = 0;
-    p_alpha_alt_up.SRHH.TOTAL = 0;
-    p_alpha_alt_up.SRHL.TOTAL = 0;
-    p_alpha_alt_up.SRLL.TOTAL = 0;
-    p_alpha_alt_dn.SRHH.TOTAL = 0;
-    p_alpha_alt_dn.SRHL.TOTAL = 0;
-    p_alpha_alt_dn.SRLL.TOTAL = 0;
+    //p_alpha_alt_up.SRHH.TOTAL = 0;
+    //p_alpha_alt_up.SRHL.TOTAL = 0;
+    //p_alpha_alt_up.SRLL.TOTAL = 0;
+    //p_alpha_alt_dn.SRHH.TOTAL = 0;
+    //p_alpha_alt_dn.SRHL.TOTAL = 0;
+    //p_alpha_alt_dn.SRLL.TOTAL = 0;
   }
 
   //nEvents in chain
@@ -3203,8 +3295,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         float nominal  = cs_hist->GetBinContent(200+i); 
         float scale_up = nominal > 0 ? fabs(1-cs_hist->GetBinContent(300+i)/nominal)  : 0; 
         float scale_dn = nominal > 0 ? fabs(1-cs_hist->GetBinContent(400+i)/nominal)  : 0; 
-        float alpha_up = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7600+i)/nominal) : 0; 
-        float alpha_dn = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7700+i)/nominal) : 0; 
+        //float alpha_up = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7600+i)/nominal) : 0; 
+        //float alpha_dn = nominal > 0 ? fabs(1-cs_hist->GetBinContent(7700+i)/nominal) : 0; 
         TH1F *h_pdf = new TH1F("pdf", "pdf", 10000, 0, 1000); 
         for (int j = 0; j < 100; j++){
           h_pdf->Fill(cs_hist->GetBinContent(1000+100*(i-1)+j)); 
@@ -3223,12 +3315,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if      (i <= 32) p_pdf_alt_dn.SRHH.TOTAL->Fill(i,    pdf); 
         else if (i <= 58) p_pdf_alt_dn.SRHL.TOTAL->Fill(i-32, pdf); 
         else              p_pdf_alt_dn.SRLL.TOTAL->Fill(i-58, pdf); 
-        if      (i <= 32) p_alpha_alt_up.SRHH.TOTAL->Fill(i,    alpha_up); 
-        else if (i <= 58) p_alpha_alt_up.SRHL.TOTAL->Fill(i-32, alpha_up); 
-        else              p_alpha_alt_up.SRLL.TOTAL->Fill(i-58, alpha_up); 
-        if      (i <= 32) p_alpha_alt_dn.SRHH.TOTAL->Fill(i,    alpha_dn); 
-        else if (i <= 58) p_alpha_alt_dn.SRHL.TOTAL->Fill(i-32, alpha_dn); 
-        else              p_alpha_alt_dn.SRLL.TOTAL->Fill(i-58, alpha_dn); 
+        //if      (i <= 32) p_alpha_alt_up.SRHH.TOTAL->Fill(i,    alpha_up); 
+        //else if (i <= 58) p_alpha_alt_up.SRHL.TOTAL->Fill(i-32, alpha_up); 
+        //else              p_alpha_alt_up.SRLL.TOTAL->Fill(i-58, alpha_up); 
+        //if      (i <= 32) p_alpha_alt_dn.SRHH.TOTAL->Fill(i,    alpha_dn); 
+        //else if (i <= 58) p_alpha_alt_dn.SRHL.TOTAL->Fill(i-32, alpha_dn); 
+        //else              p_alpha_alt_dn.SRLL.TOTAL->Fill(i-58, alpha_dn); 
       }
     }
 
@@ -3788,32 +3880,32 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         pdfDn->Write();
       }
 
-      //signal alpha
-      if (isFastSimSignal) {
-	TH1F* plot_alt = 0;
-        if      (kinRegs[kr] == "hihi")   plot_alt = p_alpha_alt_up.SRHH.TOTAL;
-        else if (kinRegs[kr] == "hilow")  plot_alt = p_alpha_alt_up.SRHL.TOTAL;
-        else if (kinRegs[kr] == "lowlow") plot_alt = p_alpha_alt_up.SRLL.TOTAL;
-        else exit(1);
-        for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
-          plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1+plot_alt->GetBinContent(bin))); 
-        }
-        TH1F* alphaUp = (TH1F*) plot_alt->Clone("alphaUp");
-        avoidNegativeYields(alphaUp);
-        alphaUp->Scale(h_sr->Integral()/alphaUp->Integral());
-        alphaUp->Write();
-        if      (kinRegs[kr] == "hihi")   plot_alt = p_alpha_alt_dn.SRHH.TOTAL;
-        else if (kinRegs[kr] == "hilow")  plot_alt = p_alpha_alt_dn.SRHL.TOTAL;
-        else if (kinRegs[kr] == "lowlow") plot_alt = p_alpha_alt_dn.SRLL.TOTAL;
-        else exit(1);
-        for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
-          plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1-plot_alt->GetBinContent(bin))); 
-        }
-        TH1F* alphaDn = (TH1F*) plot_alt->Clone("alphaDown");
-        avoidNegativeYields(alphaDn);
-        alphaDn->Scale(h_sr->Integral()/alphaDn->Integral());
-        alphaDn->Write();
-      }
+      ////signal alpha
+      //if (isFastSimSignal) {
+	  //  TH1F* plot_alt = 0;
+      //  if      (kinRegs[kr] == "hihi")   plot_alt = p_alpha_alt_up.SRHH.TOTAL;
+      //  else if (kinRegs[kr] == "hilow")  plot_alt = p_alpha_alt_up.SRHL.TOTAL;
+      //  else if (kinRegs[kr] == "lowlow") plot_alt = p_alpha_alt_up.SRLL.TOTAL;
+      //  else exit(1);
+      //  for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
+      //    plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1+plot_alt->GetBinContent(bin))); 
+      //  }
+      //  TH1F* alphaUp = (TH1F*) plot_alt->Clone("alphaUp");
+      //  avoidNegativeYields(alphaUp);
+      //  alphaUp->Scale(h_sr->Integral()/alphaUp->Integral());
+      //  alphaUp->Write();
+      //  if      (kinRegs[kr] == "hihi")   plot_alt = p_alpha_alt_dn.SRHH.TOTAL;
+      //  else if (kinRegs[kr] == "hilow")  plot_alt = p_alpha_alt_dn.SRHL.TOTAL;
+      //  else if (kinRegs[kr] == "lowlow") plot_alt = p_alpha_alt_dn.SRLL.TOTAL;
+      //  else exit(1);
+      //  for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
+      //    plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1-plot_alt->GetBinContent(bin))); 
+      //  }
+      //  TH1F* alphaDn = (TH1F*) plot_alt->Clone("alphaDown");
+      //  avoidNegativeYields(alphaDn);
+      //  alphaDn->Scale(h_sr->Integral()/alphaDn->Integral());
+      //  alphaDn->Write();
+      //}
 
       //fakes ewk
       if (doFakes == 1) {
