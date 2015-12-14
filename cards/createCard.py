@@ -13,7 +13,7 @@ import math
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
-lumi = "2.1"
+lumi = "2.2"
 
 pseudoData = 0
 
@@ -26,8 +26,8 @@ class Process:
         self.lumi  = "-"
         self.jes  = "-"
         self.isr  = "-"
-        self.xsec  = "-"
-        self.norm  = "-"
+        self.scale  = "-"
+        #self.norm  = "-"
         self.fs_lep_hh  = "-"
         self.fs_lep_hl  = "-"
         self.fs_lep_ll  = "-"
@@ -95,7 +95,37 @@ def writeStatForProcess(dir, card, kine, process, processes):
                 else:  card.write("%-15s " % ("-"))
             card.write("\n")
     else: 
-        print self.plot+" not found in "+self.rootf
+        print hup.GetName()+" not found in "+process.rootf
+        return 0
+    f.Close()
+
+def writeDummyPdfForSignal(dir, card, kine, process, processes):
+    if process.name.find("fs_") == -1: return 0
+    f = ROOT.TFile(dir+"/"+process.rootf,"UPDATE")
+    h = f.Get("sr")
+    hup = f.Get("pdf_flatUp")
+    hdn = f.Get("pdf_flatDown")
+    if hup:
+        for bin in range(1,hup.GetNbinsX()+1):
+            card.write ("%-40s %-5s " % (("%s%s%s%s" % (process.name,"_pdf_",kine,bin)), "shape") )
+            for myprocess in processes: 
+                if myprocess.count == process.count: 
+                    card.write("%-15s " % "1")
+                    hupnewtest = f.Get("%s%s%s%sUp" % (process.name,"_pdf_",kine,bin))
+                    if not hupnewtest:
+                        hupnew = h.Clone("%s%s%s%sUp" % (process.name,"_pdf_",kine,bin))
+                        hupnew.SetBinContent(bin,hup.GetBinContent(bin))
+                        hupnew.Write()
+                    hdnnewtest = f.Get("%s%s%s%sDown" % (process.name,"_pdf_",kine,bin))
+                    if not hdnnewtest:
+                        hdnnew = h.Clone("%s%s%s%sDown" % (process.name,"_pdf_",kine,bin))
+                        if hdn.GetBinContent(bin) > 0: hdnnew.SetBinContent(bin,hdn.GetBinContent(bin))
+                        else: hdnnew.SetBinContent(bin,0)
+                        hdnnew.Write()
+                else:  card.write("%-15s " % ("-"))
+            card.write("\n")
+    else: 
+        print hup.GetName()+" not found in "+process.rootf
         return 0
     f.Close()
     
@@ -147,14 +177,16 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("isr","shape"))
     for process in processes: card.write("%-15s " % (process.isr))
     card.write("\n")
-    #nuisance xsec
-    card.write("%-40s %-5s " % ("xsec","shape"))
-    for process in processes: card.write("%-15s " % (process.xsec))
+    #nuisance scale
+    card.write("%-40s %-5s " % ("scale","shape"))
+    for process in processes: card.write("%-15s " % (process.scale))
     card.write("\n")
+    #nuisance pdf_flat
+    for process in processes: writeDummyPdfForSignal(dir,card,kine,process,processes)
     #nuisance norm
-    card.write("%-40s %-5s " % ("norm","lnN"))
-    for process in processes: card.write("%-15s " % (process.norm))
-    card.write("\n")
+    #card.write("%-40s %-5s " % ("norm","lnN"))
+    #for process in processes: card.write("%-15s " % (process.norm))
+    #card.write("\n")
     #nuisance fs_lep_hh
     card.write("%-40s %-5s " % ("fs_lep_hh","lnN"))
     for process in processes: card.write("%-15s " % (process.fs_lep_hh))
@@ -288,28 +320,28 @@ def writeOneCard(dir, signal, kine, plot, output):
     fakes = Process(7,"fakes","fakes_histos_"+kine+"_"+lumi+"ifb.root",plot)
     flips = Process(8,"flips","flips_histos_"+kine+"_"+lumi+"ifb.root",plot)
     #overwrite nuisances
-    signal.lumi  = "1.12"
+    signal.lumi  = "1.046"
     signal.jes  = "1"
-    fxsec = ROOT.TFile("xsec_susy_13tev.root")
-    hxsec = fxsec.Get("h_xsec_gluino")
-    normunc = 1.
+    #fxsec = ROOT.TFile("xsec_susy_13tev.root")
+    #hxsec = fxsec.Get("h_xsec_gluino")
+    #normunc = 1.
     if signal.name.find("fs_") != -1:
         #these are only for fast sim
-        signal.xsec  = "1"
-        signal.fs_hlt     = "1.05"
+        signal.scale  = "1"
+        signal.fs_hlt = "1.05"
         if kine is "hihi": signal.fs_lep_hh  = "1.08"
         if kine is "hilow": signal.fs_lep_hl  = "1.15"
         if kine is "lowlow": signal.fs_lep_ll  = "1.20"
         if signal.name.find("t1tttt") != -1:
             signal.isr  = "1"
-            mglu = signal.name.split("_")[2][1:]
-            normunc = 1 + hxsec.GetBinError(hxsec.FindBin(float(mglu)))/hxsec.GetBinContent(hxsec.FindBin(float(mglu)))
-    else: 
-        if signal.name.find("t1tttt") != -1:
-            mglu = signal.name.split("_")[1]
-            normunc = 1 + hxsec.GetBinError(hxsec.FindBin(float(mglu)))/hxsec.GetBinContent(hxsec.FindBin(float(mglu)))
-    signal.norm  = ("%.2f" % normunc)
-    fxsec.Close()
+            #mglu = signal.name.split("_")[2][1:]
+            #normunc = 1 + hxsec.GetBinError(hxsec.FindBin(float(mglu)))/hxsec.GetBinContent(hxsec.FindBin(float(mglu)))
+    #else: 
+        #if signal.name.find("t1tttt") != -1:
+            #mglu = signal.name.split("_")[1]
+            #normunc = 1 + hxsec.GetBinError(hxsec.FindBin(float(mglu)))/hxsec.GetBinContent(hxsec.FindBin(float(mglu)))
+    #signal.norm  = ("%.2f" % normunc)
+    #fxsec.Close()
     signal.lepeff  = "1.04"
     signal.lephlt  = "1.02"
     signal.hthlt  = "1"
@@ -317,7 +349,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     signal.btag = "1"
     signal.pu = "1"
     TTW.TTW          = "1.13"
-    TTW.lumi         = "1.12"
+    TTW.lumi         = "1.046"
     TTW.ttw_pdf      = "1.04"
     TTW.ttw_extr_hth = "1"
     TTW.ttw_extr_htl = "1"
@@ -330,7 +362,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTW.btag = "1"
     TTW.pu = "1"
     TTZH.TTZH          = "1.11"
-    TTZH.lumi          = "1.12"
+    TTZH.lumi          = "1.046"
     TTZH.ttzh_pdf      = "1.04"
     TTZH.ttzh_extr_hth = "1"
     TTZH.ttzh_extr_htl = "1"
@@ -347,7 +379,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     WZ.btag = "1"
     WZ.pu = "1"
     WW.WW = "1.30"
-    WW.lumi = "1.12"
+    WW.lumi = "1.046"
     WW.jes  = "1"
     WW.lepeff  = "1.04"
     WW.lephlt  = "1.02"
@@ -356,7 +388,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     WW.btag = "1"
     WW.pu = "1"
     XG.XG = "1.50"
-    XG.lumi = "1.12"
+    XG.lumi = "1.046"
     XG.jes  = "1"
     XG.lepeff  = "1.04"
     XG.lephlt  = "1.02"
@@ -365,7 +397,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     XG.btag = "1"
     XG.pu = "1"
     rares.RARES = "1.30"
-    rares.lumi = "1.12"
+    rares.lumi = "1.046"
     rares.jes  = "1"
     rares.lepeff  = "1.04"
     rares.lephlt  = "1.02"
