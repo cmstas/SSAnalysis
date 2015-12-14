@@ -13,7 +13,7 @@ void outreachPlots(){
 
   //Define Chain
   TChain *chain = new TChain("t"); 
-  chain->Add("/home/users/cgeorge/SSAnalysis/outreach/babymaker/outreachbaby.root"); 
+  chain->Add("/home/users/cgeorge/SSAnalysis/outreach/babymaker/outreachbaby_ttbar.root"); 
 
   //Define output plots
   float xbins[] = { 10, 15, 20, 25, 30, 40, 50, 65, 80, 100, 120 }; 
@@ -87,7 +87,6 @@ void outreachPlots(){
       //delta-R between reco and gen
       dr_plot->Fill(DeltaR(out::genLep1_p4(), out::recoLep1_p4())); 
       dr_plot->Fill(DeltaR(out::genLep2_p4(), out::recoLep2_p4())); 
-      cout << out::genLep1_id() << " " << out::genLep1_p4().pt() << " " << out::recoLep1_p4().pt() << endl;
  
     }//event loop
 

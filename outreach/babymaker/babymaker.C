@@ -10,8 +10,6 @@
 #include "../CORE/CMS3.h"
 #include "babymaker.h"
 
-//bool tas::passHLTTrigger(TString trigName) { return cms3.tas::passHLTTrigger(trigName); }
-
 hyp_type_t getHypType(int id1, int id2){
         
     if (abs(id1) != 11 && abs(id1) != 13) return UNASSIGNED;
@@ -172,10 +170,11 @@ vector<LorentzVector> getGenJets(float pt_cut, float eta_cut, float muon_pt_cut,
 void babymaker(){
 
   TChain *chain = new TChain("Events"); 
-  chain->Add("/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2/SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/V07-04-11/merged_ntuple_*.root"); 
+//  chain->Add("/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2/SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/V07-04-11/merged_ntuple_*.root"); 
+  chain->Add("/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/V07-04-11/merged_ntuple_1[5-8].root");
 
   //Baby tree
-  TFile* BabyFile = new TFile("outreachbaby.root", "RECREATE");
+  TFile* BabyFile = new TFile("outreachbaby_ttbar.root", "RECREATE");
   BabyFile->cd();
   TTree* BabyTree = new TTree("t", "SS2015 Outreach Ntuple");
 
@@ -582,7 +581,9 @@ void babymaker(){
         //Electron Trigger Stuff
         if (abs(lep1_id) == 11 && lep1_idx >= 0){
           //Double electron triggers
-          if (tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0) lep1_trigMatch_noIsoReq = true;
+          if (tas::els_HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_ElectronLeg().at(lep1_idx) > 0){ 
+            lep1_trigMatch_noIsoReq = true;
+          }
           {
             float dummypt = 0.;
             if (matchToHLTFilter("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v", "hltEle17Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter", lep1_p4, 0.1, &dummypt)) lep1_trigMatch_isoReq = true;
