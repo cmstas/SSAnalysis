@@ -978,7 +978,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 		  if (isSyncFile) {
 
-		    cout << Form("%1llu %6.2f %6.2f %5.2f %.2f %.2f %5.2f %1i %6.0f",evt_event() , p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,weight) << endl;
+		    cout << Form("%1llu %7.3f %7.3f %6.3f %6.3f %6.3f %6.3f %1i %6.3f %6.3f %6.0f",evt_event() , p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,evt_met,evt_mt,weight) << endl;
 		  }
 
 		  njets40_histo->Fill(njets40, weight);
