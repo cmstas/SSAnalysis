@@ -14,6 +14,7 @@
 #include "TStyle.h"
 #include "TLegend.h"
 #include "TString.h"
+#include "TPaveText.h"
 #include "../../CORE/SSSelections.h"
 #include "../../CORE/Tools/utils.h"
 #include "../../CORE/Tools/dorky/dorky.cc"
@@ -29,6 +30,7 @@ CTable electrons;
 CTable muons;
 
 bool doLatex = true;
+bool doRatio = false;
 
 TH1D * evtCounter = new TH1D("","",1000,0,1000); 
 map<TString, int> evtBinMap;
@@ -125,45 +127,88 @@ void DrawPlots(TH1F *pred, TH1F *obs, TH2D **pred_err2_mu, TH2D **pred_err2_el, 
   pred->SetLineWidth(2);
   obs->SetLineWidth(2);
 
-  pad_h->Draw();
-  pad_r->Draw();
+  if (doRatio) {
+    pad_h->Draw();
+    pad_r->Draw();
+  }
 
   //Overlaid histos
-  pad_h->cd();
+  if (doRatio) pad_h->cd();
   pred->SetMarkerStyle(kFullCircle);
   obs->SetFillColor(kYellow);
   obs->GetYaxis()->SetRangeUser(0.,1.1*std::max(obs->GetMaximum(),pred->GetMaximum()));
+  obs->SetTitle("");
+  TH1F* obse =  (TH1F*) obs->Clone("obse");
+  obse->SetFillColor(kBlack);
+  obse->SetFillStyle(3005);
   obs->Draw("HIST");
+  obse->Draw("sameE2");
   pred->Draw("samePE");
 
   //legend
   leg->Clear();
   leg->SetLineColor(kWhite);
   leg->SetTextFont(42); 
-  leg->SetTextSize(0.06);
+  leg->SetTextSize(0.05);
   leg->SetShadowColor(kWhite); 
   leg->SetFillColor(kWhite); 
   TString predname = pred->GetName();
   TString obsname = obs->GetName();
-  leg->AddEntry(predname,"Predicted","p");
+  leg->AddEntry(predname,"Predicted","pe");
   leg->AddEntry(obsname,"Observed","f");  
   leg->Draw();
 
-  //ratio histo
-  pad_r->cd();
-  TH1F *ratio = (TH1F*) pred->Clone("ratio");
-  ratio->Divide(ratio, obs);
-  ratio->GetYaxis()->SetRangeUser(0,2);
-  ratio->GetYaxis()->SetNdivisions(4);
-  ratio->GetYaxis()->SetLabelSize(0.12);
-  ratio->GetYaxis()->SetTitle("pred/obs");
-  ratio->GetYaxis()->SetTitleSize(0.15);
-  ratio->GetYaxis()->SetTitleOffset(0.2);
-  ratio->GetXaxis()->SetLabelSize(0.);
-  ratio->GetXaxis()->SetTitle("");
-  ratio->SetTitle("");
-  pad_r->SetGridy();
-  ratio->Draw();
+  TPaveText* labelcms  = new TPaveText(0.75,0.90,0.89,0.99,"NDCNB");
+  labelcms->SetTextAlign(33);
+  labelcms->SetTextSize(1.2*0.035);
+  labelcms->SetTextFont(42);
+  labelcms->SetFillColor(kWhite);
+  labelcms->AddText(Form("%.1f fb^{-1} (13 TeV)",2.2));
+  labelcms->SetBorderSize(0);
+  labelcms->SetLineWidth(2);
+  labelcms->Draw();
+
+  TLatex latex;
+  latex.SetNDC();
+  latex.SetTextAngle(0);
+  latex.SetTextColor(kBlack);    
+  latex.SetTextFont(61);
+  latex.SetTextSize(1.2*0.044);
+  latex.SetTextAlign(11);
+  latex.DrawLatex(0.13, 0.91, "CMS");
+  latex.SetTextFont(52);
+  latex.SetTextAlign(11);
+  latex.SetTextSize(1.2*0.044*0.75);
+  latex.DrawLatex(0.24, 0.91, "Simulation");
+
+  latex.SetTextFont(42);
+  latex.SetTextAlign(11);
+  latex.SetTextSize(1.4*0.035);
+  latex.DrawLatex(0.60, 0.60, "t#bar{t} MC");
+  if (pred_err2_mu[0]!=0 && pred_err2_el[0]==0) latex.DrawLatex(0.60, 0.55, "Muon Fakes");
+  if (pred_err2_mu[0]==0 && pred_err2_el[0]!=0) latex.DrawLatex(0.60, 0.55, "Electron Fakes");
+
+  if (pred->GetNbinsX()==32) latex.DrawLatex(0.13, 0.83, "HH SRs");
+  else if (pred->GetNbinsX()==26) latex.DrawLatex(0.13, 0.83, "HL SRs");
+  else if (pred->GetNbinsX()==8) latex.DrawLatex(0.13, 0.83, "LL SRs");
+
+  if (doRatio) {
+    //ratio histo
+    pad_r->cd();
+    TH1F *ratio = (TH1F*) pred->Clone("ratio");
+    ratio->Divide(ratio, obs);
+    ratio->GetYaxis()->SetRangeUser(0,2);
+    ratio->GetYaxis()->SetNdivisions(4);
+    ratio->GetYaxis()->SetLabelSize(0.12);
+    ratio->GetYaxis()->SetTitle("pred/obs");
+    ratio->GetYaxis()->SetTitleSize(0.15);
+    ratio->GetYaxis()->SetTitleOffset(0.2);
+    ratio->GetXaxis()->SetLabelSize(0.);
+    ratio->GetXaxis()->SetTitle("");
+    ratio->SetTitle("");
+    pad_r->SetGridy();
+    ratio->Draw();
+  }
 
   bool print = pred->GetNbinsX() < 10;
   if (print) number++;
@@ -289,7 +334,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   bool doLowHT = option.Contains("IsoTrigs") ? true : false;
   bool doHighHT = option.Contains("HTTrigs") ? true : false;
 
-  float luminosity = doData ? getLumi() : 3.;
+  float luminosity = doData ? getLumi() : 2.2;
 
   //Dir
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
@@ -649,9 +694,9 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
       //Determine SR and BR
       anal_type_t ac_base = analysisCategory(ss::lep1_id(), ss::lep2_id(), lep1_pT, lep2_pT);
-      int br = baselineRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), lep1_pT, lep2_pT); 
+      int br = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), lep1_pT, lep2_pT);
       if (br<0) continue;
-      int sr = signalRegion(ss::njets_corr(), ss::nbtags_corr(), ss::corrMET(), ss::ht_corr(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pT, lep2_pT);
+      int sr = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pT, lep2_pT);
 
       //lepton pT selection
       if(highhigh && ac_base!=HighHigh) continue;
@@ -1127,7 +1172,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   TPad *pad_r3 = new TPad("pad_r3","Ratio Pad3",0., 0.0, 1., 0.2);
   pad_h3->Draw();
   pad_r3->Draw();
-  TLegend *leg3 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
+  TLegend *leg3 = new TLegend(0.60, 0.70, 0.80, 0.85); //(0.78, 0.63, 0.87, 0.89)
   if (!doLatex) cout << "\ndump BR all" << endl;
   else cout << "\\hline \\multicolumn{5}{c}{all} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred")], hists[getHist("Npn_histo_br_obs")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el, rate_histo_mu, rate_histo_e, c3, pad_h3, pad_r3, leg3);
@@ -1139,7 +1184,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   TPad *pad_r4 = new TPad("pad_r4","Ratio Pad4",0., 0.0, 1., 0.2);
   pad_h4->Draw();
   pad_r4->Draw();
-  TLegend *leg4 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
+  TLegend *leg4 = new TLegend(0.60, 0.70, 0.80, 0.85); //(0.78, 0.63, 0.87, 0.89)
   if (!doLatex) cout << "\ndump BR mu" << endl;
   else cout << "\\hline \\multicolumn{5}{c}{muons} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred_mu")], hists[getHist("Npn_histo_br_obs_mu")], Npn_histo_br_err2_pred_mu, nullarr, rate_histo_mu, rate_histo_e, c4, pad_h4, pad_r4, leg4);
@@ -1149,7 +1194,7 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   TPad *pad_r5 = new TPad("pad_r5","Ratio Pad5",0., 0.0, 1., 0.2);
   pad_h5->Draw();
   pad_r5->Draw();
-  TLegend *leg5 = new TLegend(0.65, 0.70, 0.85, 0.85); //(0.78, 0.63, 0.87, 0.89)
+  TLegend *leg5 = new TLegend(0.60, 0.70, 0.80, 0.85); //(0.78, 0.63, 0.87, 0.89)
   if (!doLatex) cout << "\ndump BR ele" << endl;
   else cout << "\\hline \\multicolumn{5}{c}{electrons} \\\\ \\hline" << endl;
   DrawPlots(hists[getHist("Npn_histo_br_pred_el")], hists[getHist("Npn_histo_br_obs_el")], nullarr, Npn_histo_br_err2_pred_el, rate_histo_mu, rate_histo_e, c5, pad_h5, pad_r5, leg5);

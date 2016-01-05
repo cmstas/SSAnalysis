@@ -11,8 +11,8 @@ void makeTable() {
     pm  = "+/-";
   }
 
-  TString lumi = "2.1";
-  TString dir = "v5.06";
+  TString lumi = "2.2";
+  TString dir = "v5.07-statunc";
 
   TString procs[] = {"ttw","ttzh","wz","ww","xg","rares","flips","fakes"};
 
@@ -251,7 +251,7 @@ pair<float, float> dumpCardForOneSR(TString process, TString kine, int sr, TStri
   float xg = pow(0.50,2);
   float rares = pow(0.50,2);
   float lepeff = pow(0.04,2)+pow(0.02,2);//both offline and hlt
-  float luminosity = pow(0.12,2);
+  float luminosity = pow(0.046,2);
 
   float error = 0.;
   if (process=="ttw"  ) error = ttw+lepeff+luminosity;
@@ -277,7 +277,7 @@ pair<float, float> dumpCardForOneSR(TString process, TString kine, int sr, TStri
     TString name = h->GetName();
     bool isUp = name.Contains(up.Data());
     if ( isUp ) {
-      if (name.Contains("stat") && name.Contains(Form("%i",sr))==0) continue;
+      if (name.Contains("stat_")) continue;
       error += pow( h->GetBinContent(sr)-yield ,2);
       //cout << process << " " << h->GetBinContent(sr)-yield << endl;
       // if (process=="fakes" && sr==28) cout << process << " " << h->GetBinContent(sr)-yield << endl;

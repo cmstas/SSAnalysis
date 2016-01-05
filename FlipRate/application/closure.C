@@ -62,9 +62,9 @@ void closure(){
   clos_mll_MC->Sumw2();
   clos_mll_MCp->Sumw2();
 
-  TH1F* clos_leppt_MC   = new TH1F("clos_leppt_plot_MC"  , "clos_leppt_plot_MC"  , 30, 0, 150); 
-  TH1F* clos_leppt_MCp  = new TH1F("clos_leppt_plot_MCp" , "clos_leppt_plot_MCp" , 30, 0, 150); 
-  TH1F* clos_leppt_data = new TH1F("clos_leppt_plot_data", "clos_leppt_plot_data", 30, 0, 150); 
+  TH1F* clos_leppt_MC   = new TH1F("clos_leppt_plot_MC"  , "clos_leppt_plot_MC"  , 20, 0, 100); 
+  TH1F* clos_leppt_MCp  = new TH1F("clos_leppt_plot_MCp" , "clos_leppt_plot_MCp" , 20, 0, 100); 
+  TH1F* clos_leppt_data = new TH1F("clos_leppt_plot_data", "clos_leppt_plot_data", 20, 0, 100); 
   clos_leppt_MC->Sumw2();
   clos_leppt_MCp->Sumw2();
 
@@ -315,13 +315,13 @@ void closure(){
   vector <string> sigTit; 
   sigTit.push_back("MC Same-Sign Events");
   titles.push_back("Predicted Same-Sign Events"); 
-  dataMCplotMaker(clos_mll_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure.pdf --xAxisLabel M_{ll} --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);// --sigError
+  dataMCplotMaker(clos_mll_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure.pdf --xAxisLabel M_{ll} --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendUp 0.12 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred --errHistAtBottom", lumiAG), vector <TH1F*>(), vector <string>());//signals, sigTit
 
   bkgd.clear();
   bkgd.push_back(clos_leppt_MC); 
   signals.clear();
   signals.push_back(clos_leppt_MCp); 
-  dataMCplotMaker(clos_leppt_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure_leppt.pdf --xAxisLabel Lepton p_{T}  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
+  dataMCplotMaker(clos_leppt_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure_leppt.pdf --xAxisLabel Lepton p_{T}  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendUp 0.12 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred --errHistAtBottom", lumiAG),  vector <TH1F*>(), vector <string>());//signals, sigTit
 
   bkgd.clear();
   bkgd.push_back(clos_lepeta_MC); 
@@ -351,7 +351,7 @@ void closure(){
   bkgd.push_back(clos_njets_MC); 
   signals.clear();
   signals.push_back(clos_njets_MCp); 
-  dataMCplotMaker(clos_njets_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure_njets.pdf --xAxisLabel Njets --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
+  dataMCplotMaker(clos_njets_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure_njets.pdf --xAxisLabel Njets --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendUp 0.12 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred --errHistAtBottom", lumiAG), vector <TH1F*>(), vector <string>());//signals, sigTit
 
   bkgd.clear();
   bkgd.push_back(clos_nbtags_MC); 
