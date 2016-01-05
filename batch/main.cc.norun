@@ -201,6 +201,18 @@ int main(int argc, char *argv[]){
       tag="V07-04-11";
       shortname="wzmg";
       break;
+    case WGMG:
+      name="WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"; 
+      tag="V07-04-12"; 
+      shortname="wgmg";
+      break; 
+    case TTHtoNonBBext:
+      name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2_ext1-v1";
+      tag="V07-04-12";
+      shortname="tthtononbbext";
+      break;
+
+    //Signal
     case T1TTTT_1500:
       name="SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       shortname="t1tttt_1500";

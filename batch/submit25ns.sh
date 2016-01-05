@@ -39,7 +39,7 @@ FASTSIM="T1TTTT_1000to1050_1to800 T1TTTT_1000_1to700 T1TTTT_1400_1to1175 T1TTTT_
 
 #Then submit jobs
 nIter=0
-for sname in $FASTSIM # "WWZ" "TG" "TTG"  "WZ"  "GGHtoZZto4L" "TTBAR" "TTW" "WJets_LO"  "ZG" "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5QQQQWWDeg_1000_315_300" "T5ttttDeg_1000_300_285_280" "T6TTWW_600_425_50" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ"  "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DataMuonEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DataMuonEGD_v4" "WJets" "TTZL" "DY_high" "DY_low" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH"  "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DataMuonEGC_05oct" "TTZlow" "WZMG"
+for sname in "TTHtoNonBBext" # "WGMG" # $FASTSIM # "WWZ" "TG" "TTG"  "WZ"  "GGHtoZZto4L" "TTBAR" "TTW" "WJets_LO"  "ZG" "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5QQQQWWDeg_1000_315_300" "T5ttttDeg_1000_300_285_280" "T6TTWW_600_425_50" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ"  "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DataMuonEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DataMuonEGD_v4" "WJets" "TTZL" "DY_high" "DY_low" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH"  "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DataMuonEGC_05oct" "TTZlow" "WZMG"
 do
   isSignal=0 
   path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
@@ -176,6 +176,14 @@ do
   then name="WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
     tag=V07-04-11
     nameNu=31
+  elif [ $sname == "WGMG" ] 
+  then name="WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    tag=V07-04-12
+    nameNu=32
+  elif [ $sname == "TTHtoNonBBext" ] 
+  then name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2_ext1-v1"
+    tag=V07-04-12 
+    nameNu=33
 
   #data
   elif [ $sname == "DataDoubleEGC_05oct"    ]; 

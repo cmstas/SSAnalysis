@@ -1,6 +1,6 @@
 {
 
-  TFile *file = new TFile("T1TTTT_1375_950to1150.root"); 
+  TFile *file = new TFile("T1TTTT_1000_1to700.root");
   for (auto&& keyAsObj : *file->GetListOfKeys()){
    auto key = (TKey*) keyAsObj;
    TH1F *hist = (TH1F*)key->ReadObj(); 

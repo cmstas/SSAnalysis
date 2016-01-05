@@ -50,6 +50,7 @@ path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 #hadd TTZLOW.root                      $path/ttzlow_*.root
 #hadd GGHtoZZto4L.root                 $path/gghtozzto4l_*.root
 #hadd WZMG.root                        $path/wzmg_*.root
+hadd WGMG.root                        $path/wgmg_*.root
 #hadd T1TTTT_1950_700to950.root        $path/t1tttt_1950_700to950_*.root
 #hadd T1TTTT_1100_1to775.root          $path/t1tttt_1100_1to775_*.root
 #hadd T1TTTT_1175_950.root             $path/t1tttt_1175_950_*.root
@@ -93,5 +94,7 @@ path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 #hadd T1TTTT_875to900_1to650.root      $path/t1tttt_875to900_1to650_*.root
 #hadd T1TTTT_950to975_350to725.root    $path/t1tttt_950to975_350to725_*.root
 #hadd T1TTTT_975_600to750.root         $path/t1tttt_975_600to750_*.root
-hadd T1TTTT_1375_950to1150.root        $path/t1tttt_1375_950to1150_*.root
+#hadd T1TTTT_1375_950to1150.root        $path/t1tttt_1375_950to1150_*.root
 #hadd T1TTTT_1400_1to1175.root          $path/t1tttt_1400_1to1175_*.root
+#hadd T1TTTT_1000to1050_1to800.root     $path/t1tttt_1000to1050_1to800_*.root
+#hadd T1TTTT_1000_1to700.root           $path/t1tttt_1000_1to700_*.root

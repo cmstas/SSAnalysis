@@ -54,6 +54,8 @@ if [ "$WHICH" == "28" ]; then WHICH_SMALL="vhtononbb"; fi
 if [ "$WHICH" == "29" ]; then WHICH_SMALL="ttzlow"; fi
 if [ "$WHICH" == "30" ]; then WHICH_SMALL="gghtozzto4l"; fi
 if [ "$WHICH" == "31" ]; then WHICH_SMALL="wzmg"; fi
+if [ "$WHICH" == "32" ]; then WHICH_SMALL="wgmg"; fi
+if [ "$WHICH" == "33" ]; then WHICH_SMALL="tthtononbbext"; fi
 
 #signals
 if [ "$WHICH" == "100" ]; then WHICH_SMALL="t1tttt_1500"; fi
