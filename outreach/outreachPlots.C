@@ -9,6 +9,8 @@
 #include "../CORE/MCSelections.h"
 #include "../software/dataMCplotMaker/dataMCplotMaker.h"
 
+bool noTrigger = false;
+
 void outreachPlots(){
 
   //Define Chain
@@ -50,6 +52,18 @@ void outreachPlots(){
     TTree *tree = (TTree*)file->Get("t");
     outreach.Init(tree);
 
+    //Cases
+    int case1 = 0;
+    int case2 = 0;
+    int case3 = 0;
+    int case4 = 0;
+    int casea = 0;
+    int caseb = 0;
+    int casec = 0;
+    int cased = 0;
+    if ( noTrigger) cout << "No trigger requirement!" << endl;
+    if (!noTrigger) cout << "Trigger requirement!" << endl;
+
     //Loop over Events in current file
     for(unsigned int event = 0; event < tree->GetEntries(); event++){
 
@@ -69,26 +83,31 @@ void outreachPlots(){
       if (out::ht() < 300) continue;
 
       //If we get here, we have something, fill the denominator
-      if (abs(out::genLep1_id()) == 11) elec_denom->Fill(out::genLep1_p4().pt()); 
-      if (abs(out::genLep1_id()) == 13) muon_denom->Fill(out::genLep1_p4().pt()); 
-      if (abs(out::genLep2_id()) == 11) elec_denom->Fill(out::genLep2_p4().pt()); 
-      if (abs(out::genLep2_id()) == 13) muon_denom->Fill(out::genLep2_p4().pt()); 
+      if (abs(out::genLep1_id()) == 11){ elec_denom->Fill(out::genLep1_p4().pt()); casea++; } 
+      if (abs(out::genLep1_id()) == 13){ muon_denom->Fill(out::genLep1_p4().pt()); caseb++; } 
+      if (abs(out::genLep2_id()) == 11){ elec_denom->Fill(out::genLep2_p4().pt()); casec++; } 
+      if (abs(out::genLep2_id()) == 13){ muon_denom->Fill(out::genLep2_p4().pt()); cased++; } 
 
       //Just for convenience, reject these
       if (abs(out::genLep1_id()) != 11 && abs(out::genLep1_id()) != 13) continue;
       if (abs(out::genLep2_id()) != 11 && abs(out::genLep2_id()) != 13) continue;
 
       //If it passes ID, should go in the numerator
-      if (out::fired_trigger_1() && out::lep1_passID() && abs(out::genLep1_id()) == 11) elec_numer->Fill(out::genLep1_p4().pt()); 
-      if (out::fired_trigger_1() && out::lep1_passID() && abs(out::genLep1_id()) == 13) muon_numer->Fill(out::genLep1_p4().pt()); 
-      if (out::fired_trigger_2() && out::lep2_passID() && abs(out::genLep2_id()) == 11) elec_numer->Fill(out::genLep2_p4().pt()); 
-      if (out::fired_trigger_2() && out::lep2_passID() && abs(out::genLep2_id()) == 13) muon_numer->Fill(out::genLep2_p4().pt()); 
+      if ((noTrigger || out::fired_trigger_1()) && out::lep1_passID() && abs(out::genLep1_id()) == 11){ elec_numer->Fill(out::genLep1_p4().pt()); case1++; }
+      if ((noTrigger || out::fired_trigger_1()) && out::lep1_passID() && abs(out::genLep1_id()) == 13){ muon_numer->Fill(out::genLep1_p4().pt()); case2++; }
+      if ((noTrigger || out::fired_trigger_2()) && out::lep2_passID() && abs(out::genLep2_id()) == 11){ elec_numer->Fill(out::genLep2_p4().pt()); case3++; }
+      if ((noTrigger || out::fired_trigger_2()) && out::lep2_passID() && abs(out::genLep2_id()) == 13){ muon_numer->Fill(out::genLep2_p4().pt()); case4++; }
 
       //delta-R between reco and gen
       dr_plot->Fill(DeltaR(out::genLep1_p4(), out::recoLep1_p4())); 
       dr_plot->Fill(DeltaR(out::genLep2_p4(), out::recoLep2_p4())); 
  
     }//event loop
+
+    cout << 1.0*case1/casea << endl;
+    cout << 1.0*case2/caseb << endl;
+    cout << 1.0*case3/casec << endl;
+    cout << 1.0*case4/cased << endl;
 
   }//file loop
 
