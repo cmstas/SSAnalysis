@@ -21,6 +21,9 @@ class OUT {
 private: 
 protected: 
 	unsigned int index;
+	unsigned long long	event_;
+	TBranch *event_branch;
+	bool event_isLoaded;
 	vector<int> *genLep_id_;
 	TBranch *genLep_id_branch;
 	bool genLep_id_isLoaded;
@@ -166,6 +169,7 @@ public:
 void Init(TTree *tree);
 void GetEntry(unsigned int idx); 
 void LoadAllBranches(); 
+	const unsigned long long &event();
 	const vector<int> &genLep_id();
 	const vector<int> &genLep_idx();
 	const float &htGen();
@@ -222,6 +226,7 @@ extern OUT outreach;
 #endif
 
 namespace out {
+	const unsigned long long &event();
 	const vector<int> &genLep_id();
 	const vector<int> &genLep_idx();
 	const float &htGen();

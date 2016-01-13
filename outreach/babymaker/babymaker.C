@@ -30,12 +30,16 @@ vector <GenParticleStruct> makeGenParticles(){
     int   id  = tas::genps_id().at(iGen);
     float pt  = tas::genps_p4().at(iGen).pt();
     float eta = tas::genps_p4().at(iGen).eta();
+    int  stat = tas::genps_status().at(iGen); 
 
     //Require that it is from a W
     if (abs(tas::genps_id_mother().at(iGen)) != 24) continue;
 
     //Eta cut
     if (fabs(eta) > 2.4) continue;
+
+    //Status cut
+    if (!tas::genps_isHardProcess().at(iGen)) continue;
 
     //Electrons and Muons
     if (abs(id) == 11 || abs(id) == 13) {
@@ -64,7 +68,7 @@ vector <GenParticleStruct> makeGenParticles(){
 
 }
 
-vector <pair<GenParticleStruct, GenParticleStruct> > makeGenHyps(){
+vector <pair<GenParticleStruct, GenParticleStruct> > makeGenHypsAG(){
 
   vector <GenParticleStruct> gleps = makeGenParticles(); 
 
@@ -79,9 +83,9 @@ vector <pair<GenParticleStruct, GenParticleStruct> > makeGenHyps(){
   return glepPairs;
 }
 
-std::pair<GenParticleStruct, GenParticleStruct> getGenHyp(float min_pt_elec, float min_pt_muon){
+std::pair<GenParticleStruct, GenParticleStruct> getGenHypAG(float min_pt_elec, float min_pt_muon){
                 
-    vector <pair<GenParticleStruct, GenParticleStruct> > glepPairs = makeGenHyps();
+    vector <pair<GenParticleStruct, GenParticleStruct> > glepPairs = makeGenHypsAG();
     unsigned int npairs = glepPairs.size();
 
     GenParticleStruct gp = {0, -999999, 0., 0., 0, -999999, 0., 0.};
@@ -128,6 +132,7 @@ std::pair<GenParticleStruct, GenParticleStruct> getGenHyp(float min_pt_elec, flo
             }
         }
     }// end loop over gen hyps
+
     return good_gen_hyp;
 }
 
@@ -170,11 +175,12 @@ vector<LorentzVector> getGenJets(float pt_cut, float eta_cut, float muon_pt_cut,
 void babymaker(){
 
   TChain *chain = new TChain("Events"); 
-//  chain->Add("/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2/SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/V07-04-11/merged_ntuple_*.root"); 
-  chain->Add("/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/V07-04-11/merged_ntuple_1[5-8].root");
+  chain->Add("/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2/SMS-T1tttt_mGluino-1200_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/V07-04-11/merged_ntuple_*.root"); 
+  //chain->Add("/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/V07-04-11/merged_ntuple_1[5-8].root");
+  //chain->Add("/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/V07-04-11/merged_ntuple_1[5-8].root");
 
   //Baby tree
-  TFile* BabyFile = new TFile("outreachbaby_ttbar.root", "RECREATE");
+  TFile* BabyFile = new TFile("outreachbaby.root", "RECREATE");
   BabyFile->cd();
   TTree* BabyTree = new TTree("t", "SS2015 Outreach Ntuple");
 
@@ -226,8 +232,10 @@ void babymaker(){
   int idx2_reco;
   bool fired_trigger_1; 
   bool fired_trigger_2; 
+  ULong64_t event; 
 
   //Baby branches
+  BabyTree->Branch("event"                 , &event                 );
   BabyTree->Branch("genLep_id"             , &genLep_id             );
   BabyTree->Branch("genLep_idx"            , &genLep_idx            );
   BabyTree->Branch("htGen"                 , &htGen                 );
@@ -305,10 +313,10 @@ void babymaker(){
     cms3.Init(tree);
 
     //Loop over Events in current file
-    for(unsigned int event = 0; event < tree->GetEntries(); event++){
+    for(unsigned int eventAG = 0; eventAG < tree->GetEntries(); eventAG++){
 
       //Get Event Content
-      cms3.GetEntry(event);
+      cms3.GetEntry(eventAG);
       nEventsTotal++;
 
       //Progress
@@ -350,9 +358,10 @@ void babymaker(){
       lep2_passID = 0; 
       genLep1_id = 0;
       genLep2_id = 0;
+      event = tas::evt_event(); 
 
       //Find Gen pair
-      std::pair<GenParticleStruct, GenParticleStruct> genHyp = getGenHyp(15, 10);  
+      std::pair<GenParticleStruct, GenParticleStruct> genHyp = getGenHypAG(15, 10);  
       if (genHyp.first.id != 0){
         //Particles
         GenParticleStruct GenParticle1 = genHyp.first;

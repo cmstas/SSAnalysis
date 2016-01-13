@@ -58,6 +58,11 @@ void OUT::Init(TTree *tree) {
 		if (recoLep2_p4_branch) {recoLep2_p4_branch->SetAddress(&recoLep2_p4_);}
 	}
   tree->SetMakeClass(1);
+	event_branch = 0;
+	if (tree->GetBranch("event") != 0) {
+		event_branch = tree->GetBranch("event");
+		if (event_branch) {event_branch->SetAddress(&event_);}
+	}
 	genLep_id_branch = 0;
 	if (tree->GetBranch("genLep_id") != 0) {
 		genLep_id_branch = tree->GetBranch("genLep_id");
@@ -244,6 +249,7 @@ void OUT::GetEntry(unsigned int idx)
 	// this only marks branches as not loaded, saving a lot of time
 	{
 		index = idx;
+		event_isLoaded = false;
 		genLep_id_isLoaded = false;
 		genLep_idx_isLoaded = false;
 		htGen_isLoaded = false;
@@ -296,6 +302,7 @@ void OUT::GetEntry(unsigned int idx)
 void OUT::LoadAllBranches() 
 	// load all branches
 {
+	if (event_branch != 0) event();
 	if (genLep_id_branch != 0) genLep_id();
 	if (genLep_idx_branch != 0) genLep_idx();
 	if (htGen_branch != 0) htGen();
@@ -345,6 +352,19 @@ void OUT::LoadAllBranches()
 	if (fired_trigger_2_branch != 0) fired_trigger_2();
 }
 
+	const unsigned long long &OUT::event()
+	{
+		if (not event_isLoaded) {
+			if (event_branch != 0) {
+				event_branch->GetEntry(index);
+			} else { 
+				printf("branch event_branch does not exist!\n");
+				exit(1);
+			}
+			event_isLoaded = true;
+		}
+		return event_;
+	}
 	const vector<int> &OUT::genLep_id()
 	{
 		if (not genLep_id_isLoaded) {
@@ -978,6 +998,7 @@ void OUT::LoadAllBranches()
   }
   
 namespace out {
+	const unsigned long long &event() { return outreach.event(); }
 	const vector<int> &genLep_id() { return outreach.genLep_id(); }
 	const vector<int> &genLep_idx() { return outreach.genLep_idx(); }
 	const float &htGen() { return outreach.htGen(); }
