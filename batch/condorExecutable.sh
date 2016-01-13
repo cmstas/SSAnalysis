@@ -124,6 +124,30 @@ if [ "$WHICH" == "10043" ] ; then WHICH_SMALL="t1tttt_975_600to750"         ; fi
 if [ "$WHICH" == "10044" ] ; then WHICH_SMALL="t1tttt_1375_950to1150"       ; fi
 if [ "$WHICH" == "10045" ] ; then WHICH_SMALL="t1tttt_1000to1050_1to800"    ; fi
 if [ "$WHICH" == "10046" ] ; then WHICH_SMALL="t1tttt_1000_1to700"          ; fi
+if [ "$WHICH" == "10047" ] ; then WHICH_SMALL="t1tttt_1050_50to775"         ; fi  
+if [ "$WHICH" == "10048" ] ; then WHICH_SMALL="t1tttt_1050to1075_650to850"  ; fi  
+if [ "$WHICH" == "10049" ] ; then WHICH_SMALL="t1tttt_1225to1250_1to1025"   ; fi  
+if [ "$WHICH" == "10050" ] ; then WHICH_SMALL="t1tttt_1550to1575_500to1175" ; fi  
+if [ "$WHICH" == "10051" ] ; then WHICH_SMALL="t1tttt_600_1to225"           ; fi  
+if [ "$WHICH" == "10052" ] ; then WHICH_SMALL="t1tttt_600to625_250to375"    ; fi  
+if [ "$WHICH" == "10053" ] ; then WHICH_SMALL="t1tttt_900to950_200to700"    ; fi  
+if [ "$WHICH" == "11000" ] ; then WHICH_SMALL="t5qqqqvv_1000to1075_1to950"  ; fi  
+if [ "$WHICH" == "11001" ] ; then WHICH_SMALL="t5qqqqvv_1100to1175_1to1050" ; fi  
+if [ "$WHICH" == "11002" ] ; then WHICH_SMALL="t5qqqqvv_1200to1275_1to1150" ; fi  
+if [ "$WHICH" == "11003" ] ; then WHICH_SMALL="t5qqqqvv_1300to1375_1to1250" ; fi  
+if [ "$WHICH" == "11004" ] ; then WHICH_SMALL="t5qqqqvv_1400to1550_1to1275" ; fi  
+if [ "$WHICH" == "11005" ] ; then WHICH_SMALL="t5qqqqvv_1600to1750_1to950"  ; fi  
+if [ "$WHICH" == "11006" ] ; then WHICH_SMALL="t5qqqqvv_600to675_1to550"    ; fi  
+if [ "$WHICH" == "11007" ] ; then WHICH_SMALL="t5qqqqvv_700to775_1to650"    ; fi  
+if [ "$WHICH" == "11008" ] ; then WHICH_SMALL="t5qqqqvv_800to975_1to850"    ; fi  
+if [ "$WHICH" == "12000" ] ; then WHICH_SMALL="t6ttww_50_300to600_225to575" ; fi  
+if [ "$WHICH" == "12001" ] ; then WHICH_SMALL="t6ttww_50_300to600_75to125"  ; fi  
+if [ "$WHICH" == "12002" ] ; then WHICH_SMALL="t6ttww_50_350to600_150to400" ; fi  
+if [ "$WHICH" == "12003" ] ; then WHICH_SMALL="t6ttww_50_625to950_500to850" ; fi  
+if [ "$WHICH" == "12004" ] ; then WHICH_SMALL="t6ttww_50_625to950_550to875" ; fi  
+if [ "$WHICH" == "12005" ] ; then WHICH_SMALL="t6ttww_50_625to950_75to125"  ; fi  
+if [ "$WHICH" == "12006" ] ; then WHICH_SMALL="t6ttww_50_650to950_150to750" ; fi  
+if [ "$WHICH" == "12007" ] ; then WHICH_SMALL="t6ttww_50_300to600_150to500" ; fi  
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
