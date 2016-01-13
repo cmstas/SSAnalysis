@@ -95,7 +95,35 @@ path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 #hadd T1TTTT_875to900_1to650.root      $path/t1tttt_875to900_1to650_*.root
 #hadd T1TTTT_950to975_350to725.root    $path/t1tttt_950to975_350to725_*.root
 #hadd T1TTTT_975_600to750.root         $path/t1tttt_975_600to750_*.root
-hadd T1TTTT_1375_950to1150.root        $path/t1tttt_1375_950to1150_*.root
-#hadd T1TTTT_1400_1to1175.root          $path/t1tttt_1400_1to1175_*.root
-#hadd T1TTTT_1000to1050_1to800.root     $path/t1tttt_1000to1050_1to800_*.root
-#hadd T1TTTT_1000_1to700.root           $path/t1tttt_1000_1to700_*.root
+#hadd T1TTTT_1375_950to1150.root       $path/t1tttt_1375_950to1150_*.root
+#hadd T1TTTT_1400_1to1175.root         $path/t1tttt_1400_1to1175_*.root
+#hadd T1TTTT_1000to1050_1to800.root    $path/t1tttt_1000to1050_1to800_*.root
+#hadd T1TTTT_1000_1to700.root          $path/t1tttt_1000_1to700_*.root
+
+hadd T1TTTT_1050_50to775.root          $path/T1TTTT_1050_50to775_*.root
+hadd T1TTTT_1050to1075_650to850.root   $path/T1TTTT_1050to1075_650to850_*.root
+hadd T1TTTT_1225to1250_1to1025.root    $path/T1TTTT_1225to1250_1to1025_*.root
+hadd T1TTTT_1550to1575_500to1175.root  $path/T1TTTT_1550to1575_500to1175_*.root
+hadd T1TTTT_600_1to225.root            $path/T1TTTT_600_1to225_*.root
+hadd T1TTTT_600to625_250to375.root     $path/T1TTTT_600to625_250to375_*.root
+hadd T1TTTT_900to950_200to700.root     $path/T1TTTT_900to950_200to700_*.root
+hadd T1TTTT_975_600to750.root          $path/T1TTTT_975_600to750_*.root
+
+hadd T5QQQQVV_1000To1075_1To950.root   $path/T5QQQQVV_1000To1075_1To950_*.root
+hadd T5QQQQVV_1100To1175_1to1050.root  $path/T5QQQQVV_1100To1175_1to1050_*.root
+hadd T5QQQQVV_1200To1275_1to1150.root  $path/T5QQQQVV_1200To1275_1to1150_*.root
+hadd T5QQQQVV_1300To1375_1to1250.root  $path/T5QQQQVV_1300To1375_1to1250_*.root
+hadd T5QQQQVV_1400To1550_1To1275.root  $path/T5QQQQVV_1400To1550_1To1275_*.root
+hadd T5QQQQVV_1600To1750_1To950.root   $path/T5QQQQVV_1600To1750_1To950_*.root
+hadd T5QQQQVV_600To675_1to550.root     $path/T5QQQQVV_600To675_1to550_*.root
+hadd T5QQQQVV_700To775_1To650.root     $path/T5QQQQVV_700To775_1To650_*.root
+hadd T5QQQQVV_800To975_1To850.root     $path/T5QQQQVV_800To975_1To850_*.root
+
+hadd T6TTWW_50_300to600_225to575.root  $path/T6TTWW_50_300to600_225to575_*.root
+hadd T6TTWW_50_300to600_75to125.root   $path/T6TTWW_50_300to600_75to125_*.root
+hadd T6TTWW_50_350to600_150to400.root  $path/T6TTWW_50_350to600_150to400_*.root
+hadd T6TTWW_50_625to950_500to850.root  $path/T6TTWW_50_625to950_500to850_*.root
+hadd T6TTWW_50_625to950_550to875.root  $path/T6TTWW_50_625to950_550to875_*.root
+hadd T6TTWW_50_625to950_75to125.root   $path/T6TTWW_50_625to950_75to125_*.root
+hadd T6TTWW_50_650to950_150to750.root  $path/T6TTWW_50_650to950_150to750_*.root
+hadd T6TTWW_50_300to600_150to500.root  $path/T6TTWW_50_300to600_150to500_*.root

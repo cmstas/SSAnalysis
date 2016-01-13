@@ -39,7 +39,7 @@ FASTSIM="T1TTTT_1000to1050_1to800 T1TTTT_1000_1to700 T1TTTT_1400_1to1175 T1TTTT_
 
 #Then submit jobs
 nIter=0
-for sname in "TTHtoNonBBext" # "WGMG" # $FASTSIM # "WWZ" "TG" "TTG"  "WZ"  "GGHtoZZto4L" "TTBAR" "TTW" "WJets_LO"  "ZG" "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5QQQQWWDeg_1000_315_300" "T5ttttDeg_1000_300_285_280" "T6TTWW_600_425_50" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ"  "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DataMuonEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DataMuonEGD_v4" "WJets" "TTZL" "DY_high" "DY_low" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH"  "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DataMuonEGC_05oct" "TTZlow" "WZMG"
+for sname in "T1TTTT_1375_950to1150" # "TTHtoNonBBext" # "WGMG" # $FASTSIM # "WWZ" "TG" "TTG"  "WZ"  "GGHtoZZto4L" "TTBAR" "TTW" "WJets_LO"  "ZG" "T1TTTT_1200" "T1TTTT_1500" "TG"  "T5QQQQWW_1200_1000_800" "T5QQQQWWDeg_1000_315_300" "T5ttttDeg_1000_300_285_280" "T6TTWW_600_425_50" "T6TTWW_650_150_50"  "SINGLETOP1" "SINGLETOP2" "SINGLETOP3" "SINGLETOP4" "SINGLETOP5" "TTWQQ" "TTZQ"  "ZZ" "QQWW" "TTBAR"  "DataDoubleMuonD_05oct" "DataDoubleEGD_05oct" "DataMuonEGD_05oct" "DataDoubleMuonD_v4" "DataDoubleEGD_v4" "DataMuonEGD_v4" "WJets" "TTZL" "DY_high" "DY_low" "WGToLNuG" "TTG" "TTHtoNonBB" "VHtoNonBB"  "TZQ"  "TTTT"  "WWDPS" "WZZ" "TTBAR_PH"  "DataDoubleMuonC_05oct" "DataDoubleEGC_05oct" "DataMuonEGC_05oct" "TTZlow" "WZMG"
 do
   isSignal=0 
   path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
@@ -503,6 +503,111 @@ do
     name="SMS-T1tttt_mGluino-1000_mLSP-1to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
     isSignal=1
     nameNu=10046
+
+  #---------
+
+  elif [ $sname == "T1TTTT_1050_50to775" ]
+    name="SMS-T1tttt_mGluino-1050_mLSP-50to775_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10047
+  elif [ $sname == "T1TTTT_1050to1075_650to850"  ]
+    name="SMS-T1tttt_mGluino-1050to1075_mLSP-650to850_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10048 
+  elif [ $sname == "T1TTTT_1225to1250_1to1025"   ]
+    name="SMS-T1tttt_mGluino-1225to1250_mLSP-1to1025_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10049
+  elif [ $sname == "T1TTTT_1550to1575_500to1175" ]
+    name="SMS-T1tttt_mGluino-1550to1575_mLSP-500to1175_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10050
+  elif [ $sname == "T1TTTT_600_1to225"           ]
+    name="SMS-T1tttt_mGluino-600_mLSP-1to225_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10051
+  elif [ $sname == "T1TTTT_600to625_250to375"    ]
+    name="SMS-T1tttt_mGluino-600to625_mLSP-250to375_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10052
+  elif [ $sname == "T1TTTT_900to950_200to700"    ]
+    name="SMS-T1tttt_mGluino-900to950_mLSP-200to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10053
+  elif [ $sname == "T1TTTT_975_600to750"         ]
+    name="SMS-T1tttt_mGluino-975_mLSP-600to750_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=10054
+
+  elif [ $sname == "T5QQQQVV_1000To1075_1To950"  ]
+    name="SMS-T5qqqqVV_mGluino-1000To1075_mLSP-1To950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=11000
+  elif [ $sname == "T5QQQQVV_1100To1175_1to1050" ]
+    name="SMS-T5qqqqVV_mGluino-1100To1175_mLSP-1to1050_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=11001
+  elif [ $sname == "T5QQQQVV_1200To1275_1to1150" ]
+    name="SMS-T5qqqqVV_mGluino-1200To1275_mLSP-1to1150_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=11002
+  elif [ $sname == "T5QQQQVV_1300To1375_1to1250" ]
+    name="SMS-T5qqqqVV_mGluino-1300To1375_mLSP-1to1250_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=11003
+  elif [ $sname == "T5QQQQVV_1400To1550_1To1275" ]
+    name="SMS-T5qqqqVV_mGluino-1400To1550_mLSP-1To1275_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=11004
+  elif [ $sname == "T5QQQQVV_1600To1750_1To950"  ]
+    name="SMS-T5qqqqVV_mGluino-1600To1750_mLSP-1To950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=11005
+  elif [ $sname == "T5QQQQVV_600To675_1to550"    ]
+    name="SMS-T5qqqqVV_mGluino-600To675_mLSP-1to550_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=11006
+  elif [ $sname == "T5QQQQVV_700To775_1To650"    ]
+    name="SMS-T5qqqqVV_mGluino-700To775_mLSP-1To650_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=11007
+  elif [ $sname == "T5QQQQVV_800To975_1To850"    ]
+    name="SMS-T5qqqqVV_mGluino-800To975_mLSP-1To850_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=11008
+
+  elif [ $sname == "T6TTWW_50_300to600_225to575" ]
+    name="SMS-T6ttWW_mLSP50_mSbottom-300to600_mChargino-225to575_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=12000
+  elif [ $sname == "T6TTWW_50_300to600_75to125"  ]
+    name="SMS-T6ttWW_mLSP50_mSbottom-300to600_mChargino-75to125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=12001
+  elif [ $sname == "T6TTWW_50_350to600_150to400" ]
+    name="SMS-T6ttWW_mLSP50_mSbottom-350to600_mChargino-150to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=12002
+  elif [ $sname == "T6TTWW_50_625to950_500to850" ]
+    name="SMS-T6ttWW_mLSP50_mSbottom-625to950_mChargino-500to850_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=12003
+  elif [ $sname == "T6TTWW_50_625to950_550to875" ]
+    name="SMS-T6ttWW_mLSP50_mSbottom-625to950_mChargino-550to875_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=12004
+  elif [ $sname == "T6TTWW_50_625to950_75to125"  ]
+    name="SMS-T6ttWW_mLSP50_mSbottom-625to950_mChargino-75to125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=12005
+  elif [ $sname == "T6TTWW_50_650to950_150to750" ]
+    name="SMS-T6ttWW_mLSP50_mSbottom-650to950_mChargino-150to750_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=12006
+  elif [ $sname == "T6TTWW_50_300to600_150to500" ]
+    name="SMS-T6ttWW_mLSP50_mSbottom-300to600_mChargino-150to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1
+    nameNu=12007
 
   #default
   else 
