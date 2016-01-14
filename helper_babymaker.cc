@@ -859,7 +859,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   }
   
   //Determine and save jet and b-tag variables, raw
-  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 2);
+  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 2, isFastsim);
   vector <LorentzVector> jets_raw;
   vector <LorentzVector> btags_raw;
   vector <float> jets_undoJEC_raw;
