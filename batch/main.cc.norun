@@ -704,7 +704,7 @@ int main(int argc, char *argv[]){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  set_goodrun_file("final2015_golden_25ns2p11fb.txt");
+  set_goodrun_file("final2015_golden_25ns2p26fb.txt");
 
   //Make Jet Energy Uncertainties
   JetCorrectionUncertainty *jecUnc = 0;

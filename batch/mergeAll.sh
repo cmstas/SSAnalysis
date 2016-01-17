@@ -2,15 +2,16 @@
 
 path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 
-#hadd DataDoubleEGC_05oct.root         $path/datadoubleegc_05oct_*.root     
-#hadd DataDoubleMuonC_05oct.root       $path/datadoublemuonc_05oct_*.root   
-#hadd DataMuonEGC_05oct.root           $path/datamuonegc_05oct_*.root   
-#hadd DataDoubleEGD_05oct.root         $path/datadoubleegd_05oct_*.root     
-#hadd DataDoubleMuonD_05oct.root       $path/datadoublemuond_05oct_*.root   
-#hadd DataMuonEGD_05oct.root           $path/datamuonegd_05oct_*.root   
-#hadd DataDoubleEGD_v4.root            $path/datadoubleegd_v4_*.root     
-#hadd DataDoubleMuonD_v4.root          $path/datadoublemuond_v4_*.root   
-#hadd DataMuonEGD_v4.root              $path/datamuonegd_v4_*.root   
+hadd DataDoubleEGC_05oct.root         $path/datadoubleegc_05oct_*.root     
+hadd DataDoubleMuonC_05oct.root       $path/datadoublemuonc_05oct_*.root   
+hadd DataMuonEGC_05oct.root           $path/datamuonegc_05oct_*.root   
+hadd DataDoubleEGD_05oct.root         $path/datadoubleegd_05oct_*.root     
+hadd DataDoubleMuonD_05oct.root       $path/datadoublemuond_05oct_*.root   
+hadd DataMuonEGD_05oct.root           $path/datamuonegd_05oct_*.root   
+hadd DataDoubleEGD_v4.root            $path/datadoubleegd_v4_*.root     
+hadd DataDoubleMuonD_v4.root          $path/datadoublemuond_v4_*.root   
+hadd DataMuonEGD_v4.root              $path/datamuonegd_v4_*.root   
+
 #hadd DY_high.root                     $path/dy_high_*.root          
 #hadd DY_low.root                      $path/dy_low_*.root           
 #hadd TTBAR.root                       $path/ttbar_[0-9]*.root            
@@ -52,6 +53,7 @@ path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies
 #hadd GGHtoZZto4L.root                 $path/gghtozzto4l_*.root
 #hadd WZMG.root                        $path/wzmg_*.root
 #hadd WGMG.root                        $path/wgmg_*.root
+
 #hadd T1TTTT_1950_700to950.root        $path/t1tttt_1950_700to950_*.root
 #hadd T1TTTT_1100_1to775.root          $path/t1tttt_1100_1to775_*.root
 #hadd T1TTTT_1175_950.root             $path/t1tttt_1175_950_*.root
@@ -119,11 +121,11 @@ hadd T5QQQQVV_600To675_1to550.root     $path/T5QQQQVV_600To675_1to550_*.root
 hadd T5QQQQVV_700To775_1To650.root     $path/T5QQQQVV_700To775_1To650_*.root
 hadd T5QQQQVV_800To975_1To850.root     $path/T5QQQQVV_800To975_1To850_*.root
 
-hadd T6TTWW_50_300to600_225to575.root  $path/T6TTWW_50_300to600_225to575_*.root
-hadd T6TTWW_50_300to600_75to125.root   $path/T6TTWW_50_300to600_75to125_*.root
-hadd T6TTWW_50_350to600_150to400.root  $path/T6TTWW_50_350to600_150to400_*.root
-hadd T6TTWW_50_625to950_500to850.root  $path/T6TTWW_50_625to950_500to850_*.root
-hadd T6TTWW_50_625to950_550to875.root  $path/T6TTWW_50_625to950_550to875_*.root
-hadd T6TTWW_50_625to950_75to125.root   $path/T6TTWW_50_625to950_75to125_*.root
-hadd T6TTWW_50_650to950_150to750.root  $path/T6TTWW_50_650to950_150to750_*.root
-hadd T6TTWW_50_300to600_150to500.root  $path/T6TTWW_50_300to600_150to500_*.root
+#hadd T6TTWW_50_300to600_225to575.root  $path/T6TTWW_50_300to600_225to575_*.root
+#hadd T6TTWW_50_300to600_75to125.root   $path/T6TTWW_50_300to600_75to125_*.root
+#hadd T6TTWW_50_350to600_150to400.root  $path/T6TTWW_50_350to600_150to400_*.root
+#hadd T6TTWW_50_625to950_500to850.root  $path/T6TTWW_50_625to950_500to850_*.root
+#hadd T6TTWW_50_625to950_550to875.root  $path/T6TTWW_50_625to950_550to875_*.root
+#hadd T6TTWW_50_625to950_75to125.root   $path/T6TTWW_50_625to950_75to125_*.root
+#hadd T6TTWW_50_650to950_150to750.root  $path/T6TTWW_50_650to950_150to750_*.root
+#hadd T6TTWW_50_300to600_150to500.root  $path/T6TTWW_50_300to600_150to500_*.root
