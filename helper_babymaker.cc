@@ -556,7 +556,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (is_real_data){
     string filterFile = "CORE/Tools/filterLists/csc2015_Dec01.txt";
     string checkMe = Form("%i:%i:%llu", tas::evt_run(), tas::evt_lumiBlock(), tas::evt_event());
-    int blah = system(("grep -r " + checkMe + filterFile).c_str());
+    int blah = system(("grep -r " + checkMe + " " + filterFile).c_str());
     if (blah == 0) passedFilterList = false;
     else passedFilterList = true;
   }
