@@ -304,30 +304,34 @@ pair <int, int> LesyasLepMotherID(Lep lep){
   //First, see if CMS3 matches the particle to the right type, or can't match it at all.  If it does, just use that
   int gen_idx = (abs(id_reco) == 11) ? tas::els_mc3idx().at(idx_reco) : tas::mus_mc3idx().at(idx_reco); 
   int ourID = (gen_idx >= 0) ? tas::genps_id().at(gen_idx) : -9999;
-  if ((abs(ourID) == abs(id_reco)) || ourID == -9999) return make_pair(lepMotherID(lep), ourID);
-
-  //Otherwise, have to loop over gen using Lesya's method
   int idx = -1;
   int id = -1; 
-  bool goodOne = false;
-  float dR_best = 1000;
-  for (unsigned int iGen = 0; iGen < tas::genps_p4().size(); iGen++){
-    float dR = DeltaR(tas::genps_p4().at(iGen), recop4);  
-    //First see if this one is closer than alternatives
-    if (dR < dR_best && goodOne == false){ 
-      dR_best = dR; 
-      idx = iGen;
-      id = tas::genps_id().at(iGen); 
-    }
-    //Now regardless of that, see if we can get a "good" match
-    if (dR > 0.2) continue;
-    if (abs(tas::genps_id().at(iGen)) != abs(id_reco)) continue;
-    if (abs(tas::genps_status().at(iGen)) != 1) continue; 
-    if (dR < dR_best || !goodOne){
-      goodOne = true;
-      dR_best = dR; 
-      idx = iGen;
-      id = tas::genps_id().at(iGen); 
+  if ((abs(ourID) == abs(id_reco)) || ourID == -9999){
+    idx = gen_idx;
+    id = ourID; 
+  }
+  else {
+    //Otherwise, have to loop over gen using Lesya's method
+    bool goodOne = false;
+    float dR_best = 1000;
+    for (unsigned int iGen = 0; iGen < tas::genps_p4().size(); iGen++){
+      float dR = DeltaR(tas::genps_p4().at(iGen), recop4);  
+      //First see if this one is closer than alternatives
+      if (dR < dR_best && goodOne == false){ 
+        dR_best = dR; 
+        idx = iGen;
+        id = tas::genps_id().at(iGen); 
+      }
+      //Now regardless of that, see if we can get a "good" match
+      if (dR > 0.2) continue;
+      if (abs(tas::genps_id().at(iGen)) != abs(id_reco)) continue;
+      if (abs(tas::genps_status().at(iGen)) != 1) continue; 
+      if (dR < dR_best || !goodOne){
+        goodOne = true;
+        dR_best = dR; 
+        idx = iGen;
+        id = tas::genps_id().at(iGen); 
+      }
     }
   }
 
@@ -336,7 +340,6 @@ pair <int, int> LesyasLepMotherID(Lep lep){
   int grandma_id = tas::genps_id_mother().at(tas::genps_idx_mother().at(idx));  
 
   //Now we have the closest gen match, see where we are
-  if (abs(id) != abs(id_reco)) return make_pair(0, id); 
   else if (tas::evt_isRealData()) return make_pair(1, id);
   else if (tas::genps_isPromptFinalState().at(idx) || tas::genps_isHardProcess().at(idx) || ((abs(id) == abs(id_reco) || abs(id) == abs(id_reco)) && (abs(mother_id) == 24 || abs(mother_id) == 23 || abs(mother_id) == 1000024 || (abs(mother_id) == 15 && (abs(grandma_id) == 24 || abs(grandma_id) == 23 || abs(grandma_id) == 1000024))))){
     if (sgn(id_reco) == sgn(id)) return make_pair(1, id);
