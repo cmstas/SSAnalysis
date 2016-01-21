@@ -630,8 +630,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (lep3_idx >= 0 && (abs(lep3_id) == 11 || abs(lep3_id) == 13)){
     lep3_p4 = thirdLepton.first.p4();
     if (!is_real_data){
-      lep3_mcid = thirdLepton.first.mc_id();
-      lep3_mcidx = thirdLepton.first.mcidx();
+      pair <int, int> lep3_parentage = lepMotherID_v2(thirdLepton.first); 
+      lep3_mcidx = lep3_parentage.second;
+      lep3_mcid = lep3_mcidx >= 0 ? tas::genps_id().at(lep3_mcidx) : -9999; 
     }
   }
   lep3_quality = thirdLepton.second;
@@ -641,8 +642,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (lep4_idx >= 0 && (abs(lep4_id) == 11 || abs(lep4_id) == 13)){
     lep4_p4 = fourthLepton.p4();
     if (!is_real_data){
-      lep4_mcid = fourthLepton.mc_id();
-      lep4_mcidx = fourthLepton.mcidx();
+      pair <int, int> lep4_parentage = lepMotherID_v2(fourthLepton); 
+      lep4_mcidx = lep4_parentage.second;
+      lep4_mcid = lep4_mcidx >= 0 ? tas::genps_id().at(lep4_mcidx) : -9999; 
     }
   }
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
@@ -677,30 +679,34 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
   //Lepton MC variables
   if (!is_real_data){
-    lep1_mc_id                                              = lep1.mc_id();
-    lep2_mc_id                                              = lep2.mc_id();
-    lep1_isPrompt                                           = (lep1.mc3idx() < 0) ? 0 : tas::genps_isPromptFinalState().at(lep1.mc3idx());
-    lep1_isStat3                                            = (lep1.mc3idx() < 0) ? 0 : tas::genps_isMostlyLikePythia6Status3().at(lep1.mc3idx());
-    lep1_isDirectPrompt                                     = (lep1.mc3idx() < 0) ? 0 : tas::genps_isDirectPromptTauDecayProductFinalState().at(lep1.mc3idx());
-    lep1_genps_isHardProcess                                = (lep1.mc3idx() < 0) ? 0 : tas::genps_isHardProcess().at(lep1.mc3idx());
-    lep1_genps_fromHardProcessFinalState                    = (lep1.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessFinalState().at(lep1.mc3idx());
-    lep1_genps_fromHardProcessDecayed                       = (lep1.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessDecayed().at(lep1.mc3idx());
-    lep1_genps_isDirectHardProcessTauDecayProductFinalState = (lep1.mc3idx() < 0) ? 0 : tas::genps_isDirectHardProcessTauDecayProductFinalState().at(lep1.mc3idx());
-    lep1_genps_fromHardProcessBeforeFSR                     = (lep1.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessBeforeFSR().at(lep1.mc3idx());
-    lep1_genps_isLastCopy                                   = (lep1.mc3idx() < 0) ? 0 : tas::genps_isLastCopy().at(lep1.mc3idx());
-    lep1_genps_isLastCopyBeforeFSR                          = (lep1.mc3idx() < 0) ? 0 : tas::genps_isLastCopyBeforeFSR().at(lep1.mc3idx());
-    lep1_motherID                                           = lepMotherID(lep1);
-    lep2_motherID                                           = lepMotherID(lep2);
-    lep2_isPrompt                                           = (lep2.mc3idx() < 0) ? 0 : tas::genps_isPromptFinalState().at(lep2.mc3idx());
-    lep2_isDirectPrompt                                     = (lep2.mc3idx() < 0) ? 0 : tas::genps_isDirectPromptTauDecayProductFinalState().at(lep2.mc3idx());
-    lep2_isStat3                                            = (lep2.mc3idx() < 0) ? 0 : tas::genps_isMostlyLikePythia6Status3().at(lep2.mc3idx());
-    lep2_genps_isHardProcess                                = (lep2.mc3idx() < 0) ? 0 : tas::genps_isHardProcess().at(lep2.mc3idx());
-    lep2_genps_fromHardProcessFinalState                    = (lep2.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessFinalState().at(lep2.mc3idx());
-    lep2_genps_fromHardProcessDecayed                       = (lep2.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessDecayed().at(lep2.mc3idx());
-    lep2_genps_isDirectHardProcessTauDecayProductFinalState = (lep2.mc3idx() < 0) ? 0 : tas::genps_isDirectHardProcessTauDecayProductFinalState().at(lep2.mc3idx());
-    lep2_genps_fromHardProcessBeforeFSR                     = (lep2.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessBeforeFSR().at(lep2.mc3idx());
-    lep2_genps_isLastCopy                                   = (lep2.mc3idx() < 0) ? 0 : tas::genps_isLastCopy().at(lep2.mc3idx());
-    lep2_genps_isLastCopyBeforeFSR                          = (lep2.mc3idx() < 0) ? 0 : tas::genps_isLastCopyBeforeFSR().at(lep2.mc3idx());
+    pair <int, int> lep1_parentage                          = lepMotherID_v2(lep1); 
+    pair <int, int> lep2_parentage                          = lepMotherID_v2(lep2); 
+    int lep1_mc3idx                                         = lep1_parentage.second;
+    int lep2_mc3idx                                         = lep2_parentage.second;
+    lep1_mc_id                                              = (lep1_mc3idx < 0) ? 0 : tas::genps_id().at(lep1_mc3idx); 
+    lep2_mc_id                                              = (lep2_mc3idx < 0) ? 0 : tas::genps_id().at(lep2_mc3idx); 
+    lep1_isPrompt                                           = (lep1_mc3idx < 0) ? 0 : tas::genps_isPromptFinalState().at(lep1_mc3idx);
+    lep1_isStat3                                            = (lep1_mc3idx < 0) ? 0 : tas::genps_isMostlyLikePythia6Status3().at(lep1_mc3idx);
+    lep1_isDirectPrompt                                     = (lep1_mc3idx < 0) ? 0 : tas::genps_isDirectPromptTauDecayProductFinalState().at(lep1_mc3idx);
+    lep1_genps_isHardProcess                                = (lep1_mc3idx < 0) ? 0 : tas::genps_isHardProcess().at(lep1_mc3idx);
+    lep1_genps_fromHardProcessFinalState                    = (lep1_mc3idx < 0) ? 0 : tas::genps_fromHardProcessFinalState().at(lep1_mc3idx);
+    lep1_genps_fromHardProcessDecayed                       = (lep1_mc3idx < 0) ? 0 : tas::genps_fromHardProcessDecayed().at(lep1_mc3idx);
+    lep1_genps_isDirectHardProcessTauDecayProductFinalState = (lep1_mc3idx < 0) ? 0 : tas::genps_isDirectHardProcessTauDecayProductFinalState().at(lep1_mc3idx);
+    lep1_genps_fromHardProcessBeforeFSR                     = (lep1_mc3idx < 0) ? 0 : tas::genps_fromHardProcessBeforeFSR().at(lep1_mc3idx);
+    lep1_genps_isLastCopy                                   = (lep1_mc3idx < 0) ? 0 : tas::genps_isLastCopy().at(lep1_mc3idx);
+    lep1_genps_isLastCopyBeforeFSR                          = (lep1_mc3idx < 0) ? 0 : tas::genps_isLastCopyBeforeFSR().at(lep1_mc3idx);
+    lep1_motherID                                           = lep1_parentage.first;
+    lep2_motherID                                           = lep2_parentage.first;
+    lep2_isPrompt                                           = (lep2_mc3idx < 0) ? 0 : tas::genps_isPromptFinalState().at(lep2_mc3idx);
+    lep2_isDirectPrompt                                     = (lep2_mc3idx < 0) ? 0 : tas::genps_isDirectPromptTauDecayProductFinalState().at(lep2_mc3idx);
+    lep2_isStat3                                            = (lep2_mc3idx < 0) ? 0 : tas::genps_isMostlyLikePythia6Status3().at(lep2_mc3idx);
+    lep2_genps_isHardProcess                                = (lep2_mc3idx < 0) ? 0 : tas::genps_isHardProcess().at(lep2_mc3idx);
+    lep2_genps_fromHardProcessFinalState                    = (lep2_mc3idx < 0) ? 0 : tas::genps_fromHardProcessFinalState().at(lep2_mc3idx);
+    lep2_genps_fromHardProcessDecayed                       = (lep2_mc3idx < 0) ? 0 : tas::genps_fromHardProcessDecayed().at(lep2_mc3idx);
+    lep2_genps_isDirectHardProcessTauDecayProductFinalState = (lep2_mc3idx < 0) ? 0 : tas::genps_isDirectHardProcessTauDecayProductFinalState().at(lep2_mc3idx);
+    lep2_genps_fromHardProcessBeforeFSR                     = (lep2_mc3idx < 0) ? 0 : tas::genps_fromHardProcessBeforeFSR().at(lep2_mc3idx);
+    lep2_genps_isLastCopy                                   = (lep2_mc3idx < 0) ? 0 : tas::genps_isLastCopy().at(lep2_mc3idx);
+    lep2_genps_isLastCopyBeforeFSR                          = (lep2_mc3idx < 0) ? 0 : tas::genps_isLastCopyBeforeFSR().at(lep2_mc3idx);
   }
 
   //Electron trigger stuff
