@@ -111,6 +111,12 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool isFastsim){
   BabyTree->Branch("lep2_passes_id"                                          , &lep2_passes_id                                          );
   BabyTree->Branch("lep3_passes_id"                                          , &lep3_passes_id                                          );
   BabyTree->Branch("lep4_passes_id"                                          , &lep4_passes_id                                          );
+  BabyTree->Branch("lep1_tight"                                              , &lep1_tight                                              );
+  BabyTree->Branch("lep1_veto"                                               , &lep1_veto                                               );
+  BabyTree->Branch("lep1_fo"                                                 , &lep1_fo                                                 );
+  BabyTree->Branch("lep2_tight"                                              , &lep2_tight                                              );
+  BabyTree->Branch("lep2_veto"                                               , &lep2_veto                                               );
+  BabyTree->Branch("lep2_fo"                                                 , &lep2_fo                                                 );
   BabyTree->Branch("lep3_tight"                                              , &lep3_tight                                              );
   BabyTree->Branch("lep3_veto"                                               , &lep3_veto                                               );
   BabyTree->Branch("lep3_fo"                                                 , &lep3_fo                                                 );
@@ -383,6 +389,12 @@ void babyMaker::InitBabyNtuple(){
     lep2_passes_id = false;
     lep3_passes_id = false;
     lep4_passes_id = false;
+    lep1_tight = false;
+    lep1_veto = false;
+    lep1_fo = false;
+    lep2_tight = false;
+    lep2_veto = false;
+    lep2_fo = false;
     lep3_tight = false;
     lep3_veto = false;
     lep3_fo = false;
@@ -663,6 +675,23 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx);
   lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
   lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
+
+  //More First lepton stuff
+  if (abs(lep1_id) == 11 || abs(lep1_id) == 13){
+    lep1_passes_id = isGoodLepton(lep1_id, lep1_idx);
+    lep1_tight = abs(lep1_id) == 11 ? isGoodElectron(lep1_idx) : isGoodMuon(lep1_idx);
+    lep1_veto = abs(lep1_id) == 11 ? isGoodVetoElectron(lep1_idx) : isGoodVetoMuon(lep1_idx);
+    lep1_fo = abs(lep1_id) == 11 ? isFakableElectron(lep1_idx) : isFakableMuon(lep1_idx);
+  }
+
+
+  //More Second lepton stuff
+  if (abs(lep2_id) == 11 || abs(lep2_id) == 13){
+    lep2_passes_id = isGoodLepton(lep2_id, lep2_idx);
+    lep2_tight = abs(lep2_id) == 11 ? isGoodElectron(lep2_idx) : isGoodMuon(lep2_idx);
+    lep2_veto = abs(lep2_id) == 11 ? isGoodVetoElectron(lep2_idx) : isGoodVetoMuon(lep2_idx);
+    lep2_fo = abs(lep2_id) == 11 ? isFakableElectron(lep2_idx) : isFakableMuon(lep2_idx);
+  }
 
   //More Third lepton stuff
   if (abs(lep3_id) == 11 || abs(lep3_id) == 13){
