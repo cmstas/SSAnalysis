@@ -222,7 +222,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool isFastsim){
   BabyTree->Branch("lep1_genps_fromHardProcessBeforeFSR"                     , &lep1_genps_fromHardProcessBeforeFSR                     );
   BabyTree->Branch("lep1_genps_isLastCopy"                                   , &lep1_genps_isLastCopy                                   );
   BabyTree->Branch("lep1_genps_isLastCopyBeforeFSR"                          , &lep1_genps_isLastCopyBeforeFSR                          );
-
+  BabyTree->Branch("lep1_mc3idx"                                             , &lep1_mc3idx                                             );
+  BabyTree->Branch("lep2_mc3idx"                                             , &lep2_mc3idx                                             );
   BabyTree->Branch("is_fastsim", &is_fastsim); 
 
   //InSituFR
@@ -517,6 +518,8 @@ void babyMaker::InitBabyNtuple(){
     isr_unc = -1; 
     gl1_p4 = { 0, 0, 0, 0 };
     gl2_p4 = { 0, 0, 0, 0 };
+    lep1_mc3idx = -1;
+    lep2_mc3idx = -1; 
 } 
 
 //Main function
@@ -681,8 +684,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (!is_real_data){
     pair <int, int> lep1_parentage                          = lepMotherID_v2(lep1); 
     pair <int, int> lep2_parentage                          = lepMotherID_v2(lep2); 
-    int lep1_mc3idx                                         = lep1_parentage.second;
-    int lep2_mc3idx                                         = lep2_parentage.second;
+    lep1_mc3idx                                             = lep1_parentage.second;
+    lep2_mc3idx                                             = lep2_parentage.second;
     lep1_mc_id                                              = (lep1_mc3idx < 0) ? 0 : tas::genps_id().at(lep1_mc3idx); 
     lep2_mc_id                                              = (lep2_mc3idx < 0) ? 0 : tas::genps_id().at(lep2_mc3idx); 
     lep1_isPrompt                                           = (lep1_mc3idx < 0) ? 0 : tas::genps_isPromptFinalState().at(lep1_mc3idx);

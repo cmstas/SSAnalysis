@@ -177,8 +177,8 @@ class babyMaker {
     bool lep1_genps_fromHardProcessBeforeFSR;
     bool lep1_genps_isLastCopy;
     bool lep1_genps_isLastCopyBeforeFSR; 
-
-    
+    int lep1_mc3idx = -1;
+    int lep2_mc3idx = -1; 
 
     //Leptons
     LorentzVector lep1_p4;
