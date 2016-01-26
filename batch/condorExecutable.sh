@@ -41,7 +41,6 @@ if [ "$WHICH" == "15" ]; then WHICH_SMALL="qqww"; fi
 if [ "$WHICH" == "16" ]; then WHICH_SMALL="tttt"; fi
 if [ "$WHICH" == "17" ]; then WHICH_SMALL="wwdps"; fi
 if [ "$WHICH" == "18" ]; then WHICH_SMALL="ttbar_ph"; fi
-if [ "$WHICH" == "19" ]; then WHICH_SMALL="wjets_lo"; fi
 if [ "$WHICH" == "20" ]; then WHICH_SMALL="wwz"; fi
 if [ "$WHICH" == "21" ]; then WHICH_SMALL="zz"; fi
 if [ "$WHICH" == "22" ]; then WHICH_SMALL="tg"; fi
@@ -152,7 +151,7 @@ if [ "$WHICH" == "12007" ] ; then WHICH_SMALL="t6ttww_50_300to600_150to500" ; fi
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
 #This stuff to get output back
-export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}
+export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}/v6.01
 
 #Untar the zip dir
 tar xzvf CORE.tar.gz

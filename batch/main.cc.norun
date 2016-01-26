@@ -62,7 +62,7 @@ int main(int argc, char *argv[]){
       break;
     case DY_low:
       name="DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag = "V07-04-11";
+      tag = "V07-04-12";
       shortname="dy_low";
       break;
     case DY_high:
@@ -133,12 +133,7 @@ int main(int argc, char *argv[]){
     case TTBAR_PH: 
       name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"; 
       shortname="ttbar_ph";
-      tag="V07-04-11";
-      break;
-    case WJets_LO:
-      name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      shortname="wjets_lo";
-      tag="V07-04-11";
+      tag="V07-04-12";
       break;
     case WWZ:
       name="WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
@@ -157,7 +152,7 @@ int main(int argc, char *argv[]){
       break;
     case ZG:
       name="ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-11";
+      tag="V07-04-12";
       shortname="zg";
       break;
     case WZZ:
@@ -207,7 +202,7 @@ int main(int argc, char *argv[]){
       shortname="wgmg";
       break; 
     case TTHtoNonBBext:
-      name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2_ext1-v1";
+      name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2_ext1-v1";
       tag="V07-04-12";
       shortname="tthtononbbext";
       break;

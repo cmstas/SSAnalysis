@@ -21,8 +21,7 @@ enum sample_t {
   QQWW = 15,
   TTTT = 16,
   WWDPS = 17, 
-  TTBAR_PH = 18,
-  WJets_LO = 19, 
+  TTBAR_PH = 18, //19 removed
   WWZ = 20,
   ZZ = 21,
   TG = 22,
