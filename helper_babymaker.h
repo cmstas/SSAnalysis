@@ -267,6 +267,16 @@ class babyMaker {
     bool lep3_passes_id;
     bool lep4_passes_id;
 
+    //Lep1 IDISO
+    bool lep1_tight;
+    bool lep1_veto;
+    bool lep1_fo;
+
+    //Lep2 IDISO
+    bool lep2_tight;
+    bool lep2_veto;
+    bool lep2_fo;
+
     //Lep3 IDISO
     bool lep3_tight;
     bool lep3_veto;
