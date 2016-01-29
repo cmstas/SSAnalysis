@@ -111,6 +111,12 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool isFastsim){
   BabyTree->Branch("lep2_passes_id"                                          , &lep2_passes_id                                          );
   BabyTree->Branch("lep3_passes_id"                                          , &lep3_passes_id                                          );
   BabyTree->Branch("lep4_passes_id"                                          , &lep4_passes_id                                          );
+  BabyTree->Branch("lep1_tight"                                              , &lep1_tight                                              );
+  BabyTree->Branch("lep1_veto"                                               , &lep1_veto                                               );
+  BabyTree->Branch("lep1_fo"                                                 , &lep1_fo                                                 );
+  BabyTree->Branch("lep2_tight"                                              , &lep2_tight                                              );
+  BabyTree->Branch("lep2_veto"                                               , &lep2_veto                                               );
+  BabyTree->Branch("lep2_fo"                                                 , &lep2_fo                                                 );
   BabyTree->Branch("lep3_tight"                                              , &lep3_tight                                              );
   BabyTree->Branch("lep3_veto"                                               , &lep3_veto                                               );
   BabyTree->Branch("lep3_fo"                                                 , &lep3_fo                                                 );
@@ -222,7 +228,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool isFastsim){
   BabyTree->Branch("lep1_genps_fromHardProcessBeforeFSR"                     , &lep1_genps_fromHardProcessBeforeFSR                     );
   BabyTree->Branch("lep1_genps_isLastCopy"                                   , &lep1_genps_isLastCopy                                   );
   BabyTree->Branch("lep1_genps_isLastCopyBeforeFSR"                          , &lep1_genps_isLastCopyBeforeFSR                          );
-
+  BabyTree->Branch("lep1_mc3idx"                                             , &lep1_mc3idx                                             );
+  BabyTree->Branch("lep2_mc3idx"                                             , &lep2_mc3idx                                             );
   BabyTree->Branch("is_fastsim", &is_fastsim); 
 
   //InSituFR
@@ -382,6 +389,12 @@ void babyMaker::InitBabyNtuple(){
     lep2_passes_id = false;
     lep3_passes_id = false;
     lep4_passes_id = false;
+    lep1_tight = false;
+    lep1_veto = false;
+    lep1_fo = false;
+    lep2_tight = false;
+    lep2_veto = false;
+    lep2_fo = false;
     lep3_tight = false;
     lep3_veto = false;
     lep3_fo = false;
@@ -517,6 +530,8 @@ void babyMaker::InitBabyNtuple(){
     isr_unc = -1; 
     gl1_p4 = { 0, 0, 0, 0 };
     gl2_p4 = { 0, 0, 0, 0 };
+    lep1_mc3idx = -1;
+    lep2_mc3idx = -1; 
 } 
 
 //Main function
@@ -556,7 +571,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (is_real_data){
     string filterFile = "CORE/Tools/filterLists/csc2015_Dec01.txt";
     string checkMe = Form("%i:%i:%llu", tas::evt_run(), tas::evt_lumiBlock(), tas::evt_event());
-    int blah = system(("grep -r " + checkMe + filterFile).c_str());
+    int blah = system(("grep -r " + checkMe + " " + filterFile).c_str());
     if (blah == 0) passedFilterList = false;
     else passedFilterList = true;
   }
@@ -630,8 +645,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (lep3_idx >= 0 && (abs(lep3_id) == 11 || abs(lep3_id) == 13)){
     lep3_p4 = thirdLepton.first.p4();
     if (!is_real_data){
-      lep3_mcid = thirdLepton.first.mc_id();
-      lep3_mcidx = thirdLepton.first.mcidx();
+      pair <int, int> lep3_parentage = lepMotherID_v2(thirdLepton.first); 
+      lep3_mcidx = lep3_parentage.second;
+      lep3_mcid = lep3_mcidx >= 0 ? tas::genps_id().at(lep3_mcidx) : -9999; 
     }
   }
   lep3_quality = thirdLepton.second;
@@ -641,8 +657,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (lep4_idx >= 0 && (abs(lep4_id) == 11 || abs(lep4_id) == 13)){
     lep4_p4 = fourthLepton.p4();
     if (!is_real_data){
-      lep4_mcid = fourthLepton.mc_id();
-      lep4_mcidx = fourthLepton.mcidx();
+      pair <int, int> lep4_parentage = lepMotherID_v2(fourthLepton); 
+      lep4_mcidx = lep4_parentage.second;
+      lep4_mcid = lep4_mcidx >= 0 ? tas::genps_id().at(lep4_mcidx) : -9999; 
     }
   }
   lep1_iso = abs(lep1_id) == 11 ? eleRelIso03(lep1_idx, SS) :  muRelIso03(lep1_idx, SS);
@@ -658,6 +675,23 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx);
   lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
   lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
+
+  //More First lepton stuff
+  if (abs(lep1_id) == 11 || abs(lep1_id) == 13){
+    lep1_passes_id = isGoodLepton(lep1_id, lep1_idx);
+    lep1_tight = abs(lep1_id) == 11 ? isGoodElectron(lep1_idx) : isGoodMuon(lep1_idx);
+    lep1_veto = abs(lep1_id) == 11 ? isGoodVetoElectron(lep1_idx) : isGoodVetoMuon(lep1_idx);
+    lep1_fo = abs(lep1_id) == 11 ? isFakableElectron(lep1_idx) : isFakableMuon(lep1_idx);
+  }
+
+
+  //More Second lepton stuff
+  if (abs(lep2_id) == 11 || abs(lep2_id) == 13){
+    lep2_passes_id = isGoodLepton(lep2_id, lep2_idx);
+    lep2_tight = abs(lep2_id) == 11 ? isGoodElectron(lep2_idx) : isGoodMuon(lep2_idx);
+    lep2_veto = abs(lep2_id) == 11 ? isGoodVetoElectron(lep2_idx) : isGoodVetoMuon(lep2_idx);
+    lep2_fo = abs(lep2_id) == 11 ? isFakableElectron(lep2_idx) : isFakableMuon(lep2_idx);
+  }
 
   //More Third lepton stuff
   if (abs(lep3_id) == 11 || abs(lep3_id) == 13){
@@ -677,30 +711,34 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
   //Lepton MC variables
   if (!is_real_data){
-    lep1_mc_id                                              = lep1.mc_id();
-    lep2_mc_id                                              = lep2.mc_id();
-    lep1_isPrompt                                           = (lep1.mc3idx() < 0) ? 0 : tas::genps_isPromptFinalState().at(lep1.mc3idx());
-    lep1_isStat3                                            = (lep1.mc3idx() < 0) ? 0 : tas::genps_isMostlyLikePythia6Status3().at(lep1.mc3idx());
-    lep1_isDirectPrompt                                     = (lep1.mc3idx() < 0) ? 0 : tas::genps_isDirectPromptTauDecayProductFinalState().at(lep1.mc3idx());
-    lep1_genps_isHardProcess                                = (lep1.mc3idx() < 0) ? 0 : tas::genps_isHardProcess().at(lep1.mc3idx());
-    lep1_genps_fromHardProcessFinalState                    = (lep1.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessFinalState().at(lep1.mc3idx());
-    lep1_genps_fromHardProcessDecayed                       = (lep1.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessDecayed().at(lep1.mc3idx());
-    lep1_genps_isDirectHardProcessTauDecayProductFinalState = (lep1.mc3idx() < 0) ? 0 : tas::genps_isDirectHardProcessTauDecayProductFinalState().at(lep1.mc3idx());
-    lep1_genps_fromHardProcessBeforeFSR                     = (lep1.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessBeforeFSR().at(lep1.mc3idx());
-    lep1_genps_isLastCopy                                   = (lep1.mc3idx() < 0) ? 0 : tas::genps_isLastCopy().at(lep1.mc3idx());
-    lep1_genps_isLastCopyBeforeFSR                          = (lep1.mc3idx() < 0) ? 0 : tas::genps_isLastCopyBeforeFSR().at(lep1.mc3idx());
-    lep1_motherID                                           = lepMotherID(lep1);
-    lep2_motherID                                           = lepMotherID(lep2);
-    lep2_isPrompt                                           = (lep2.mc3idx() < 0) ? 0 : tas::genps_isPromptFinalState().at(lep2.mc3idx());
-    lep2_isDirectPrompt                                     = (lep2.mc3idx() < 0) ? 0 : tas::genps_isDirectPromptTauDecayProductFinalState().at(lep2.mc3idx());
-    lep2_isStat3                                            = (lep2.mc3idx() < 0) ? 0 : tas::genps_isMostlyLikePythia6Status3().at(lep2.mc3idx());
-    lep2_genps_isHardProcess                                = (lep2.mc3idx() < 0) ? 0 : tas::genps_isHardProcess().at(lep2.mc3idx());
-    lep2_genps_fromHardProcessFinalState                    = (lep2.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessFinalState().at(lep2.mc3idx());
-    lep2_genps_fromHardProcessDecayed                       = (lep2.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessDecayed().at(lep2.mc3idx());
-    lep2_genps_isDirectHardProcessTauDecayProductFinalState = (lep2.mc3idx() < 0) ? 0 : tas::genps_isDirectHardProcessTauDecayProductFinalState().at(lep2.mc3idx());
-    lep2_genps_fromHardProcessBeforeFSR                     = (lep2.mc3idx() < 0) ? 0 : tas::genps_fromHardProcessBeforeFSR().at(lep2.mc3idx());
-    lep2_genps_isLastCopy                                   = (lep2.mc3idx() < 0) ? 0 : tas::genps_isLastCopy().at(lep2.mc3idx());
-    lep2_genps_isLastCopyBeforeFSR                          = (lep2.mc3idx() < 0) ? 0 : tas::genps_isLastCopyBeforeFSR().at(lep2.mc3idx());
+    pair <int, int> lep1_parentage                          = lepMotherID_v2(lep1); 
+    pair <int, int> lep2_parentage                          = lepMotherID_v2(lep2); 
+    lep1_mc3idx                                             = lep1_parentage.second;
+    lep2_mc3idx                                             = lep2_parentage.second;
+    lep1_mc_id                                              = (lep1_mc3idx < 0) ? 0 : tas::genps_id().at(lep1_mc3idx); 
+    lep2_mc_id                                              = (lep2_mc3idx < 0) ? 0 : tas::genps_id().at(lep2_mc3idx); 
+    lep1_isPrompt                                           = (lep1_mc3idx < 0) ? 0 : tas::genps_isPromptFinalState().at(lep1_mc3idx);
+    lep1_isStat3                                            = (lep1_mc3idx < 0) ? 0 : tas::genps_isMostlyLikePythia6Status3().at(lep1_mc3idx);
+    lep1_isDirectPrompt                                     = (lep1_mc3idx < 0) ? 0 : tas::genps_isDirectPromptTauDecayProductFinalState().at(lep1_mc3idx);
+    lep1_genps_isHardProcess                                = (lep1_mc3idx < 0) ? 0 : tas::genps_isHardProcess().at(lep1_mc3idx);
+    lep1_genps_fromHardProcessFinalState                    = (lep1_mc3idx < 0) ? 0 : tas::genps_fromHardProcessFinalState().at(lep1_mc3idx);
+    lep1_genps_fromHardProcessDecayed                       = (lep1_mc3idx < 0) ? 0 : tas::genps_fromHardProcessDecayed().at(lep1_mc3idx);
+    lep1_genps_isDirectHardProcessTauDecayProductFinalState = (lep1_mc3idx < 0) ? 0 : tas::genps_isDirectHardProcessTauDecayProductFinalState().at(lep1_mc3idx);
+    lep1_genps_fromHardProcessBeforeFSR                     = (lep1_mc3idx < 0) ? 0 : tas::genps_fromHardProcessBeforeFSR().at(lep1_mc3idx);
+    lep1_genps_isLastCopy                                   = (lep1_mc3idx < 0) ? 0 : tas::genps_isLastCopy().at(lep1_mc3idx);
+    lep1_genps_isLastCopyBeforeFSR                          = (lep1_mc3idx < 0) ? 0 : tas::genps_isLastCopyBeforeFSR().at(lep1_mc3idx);
+    lep1_motherID                                           = lep1_parentage.first;
+    lep2_motherID                                           = lep2_parentage.first;
+    lep2_isPrompt                                           = (lep2_mc3idx < 0) ? 0 : tas::genps_isPromptFinalState().at(lep2_mc3idx);
+    lep2_isDirectPrompt                                     = (lep2_mc3idx < 0) ? 0 : tas::genps_isDirectPromptTauDecayProductFinalState().at(lep2_mc3idx);
+    lep2_isStat3                                            = (lep2_mc3idx < 0) ? 0 : tas::genps_isMostlyLikePythia6Status3().at(lep2_mc3idx);
+    lep2_genps_isHardProcess                                = (lep2_mc3idx < 0) ? 0 : tas::genps_isHardProcess().at(lep2_mc3idx);
+    lep2_genps_fromHardProcessFinalState                    = (lep2_mc3idx < 0) ? 0 : tas::genps_fromHardProcessFinalState().at(lep2_mc3idx);
+    lep2_genps_fromHardProcessDecayed                       = (lep2_mc3idx < 0) ? 0 : tas::genps_fromHardProcessDecayed().at(lep2_mc3idx);
+    lep2_genps_isDirectHardProcessTauDecayProductFinalState = (lep2_mc3idx < 0) ? 0 : tas::genps_isDirectHardProcessTauDecayProductFinalState().at(lep2_mc3idx);
+    lep2_genps_fromHardProcessBeforeFSR                     = (lep2_mc3idx < 0) ? 0 : tas::genps_fromHardProcessBeforeFSR().at(lep2_mc3idx);
+    lep2_genps_isLastCopy                                   = (lep2_mc3idx < 0) ? 0 : tas::genps_isLastCopy().at(lep2_mc3idx);
+    lep2_genps_isLastCopyBeforeFSR                          = (lep2_mc3idx < 0) ? 0 : tas::genps_isLastCopyBeforeFSR().at(lep2_mc3idx);
   }
 
   //Electron trigger stuff
@@ -859,7 +897,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   }
   
   //Determine and save jet and b-tag variables, raw
-  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 2);
+  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 2, isFastsim);
   vector <LorentzVector> jets_raw;
   vector <LorentzVector> btags_raw;
   vector <float> jets_undoJEC_raw;
@@ -1122,10 +1160,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (verbose) cout << "met: " << met << endl;
 
   //Make sure one of our triggers fired
-  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")) 
-     /*|| passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v"))*/)  (triggers |= 1<<1); 
-  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")) 
-     /* || passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"))*/)  (triggers |= 1<<2); 
+  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")))  (triggers |= 1<<1); 
+  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
   if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")))              (triggers |= 1<<3); 
   if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))            (triggers |= 1<<4); 
   if (passHLTTrigger(triggerName("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v")) || 
@@ -1139,7 +1175,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
       if ( hyp_type==0 && ((triggers & 1<<3)==(1<<3) || (triggers & 1<<4)==(1<<4)) ) fired_trigger = true;
       if ( hyp_type==3 && (triggers & 1<<6)==(1<<6) ) fired_trigger = true;
       if ( (hyp_type==1 || hyp_type==2) && ((triggers & 1<<1)==(1<<1) || (triggers & 1<<2)==(1<<2)) ) fired_trigger = true;
-    } else {
+    } 
+    else {
       if ( hyp_type==0 && (triggers & 1<<7)==(1<<7) ) fired_trigger = true;
       if ( hyp_type==3 && (triggers & 1<<5)==(1<<5) ) fired_trigger = true;
       if ( (hyp_type==1 || hyp_type==2) && (triggers & 1<<0)==(1<<0) ) fired_trigger = true;
@@ -1210,7 +1247,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (categ > 1) SR += 26; 
 
   babyErrorStruct.SR = SR;
-  if (hyp_class == 3 && fired_trigger) babyErrorStruct.isGood = true;
+  if (hyp_class == 3) babyErrorStruct.isGood = true;
 
   return babyErrorStruct; 
 

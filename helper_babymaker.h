@@ -177,8 +177,8 @@ class babyMaker {
     bool lep1_genps_fromHardProcessBeforeFSR;
     bool lep1_genps_isLastCopy;
     bool lep1_genps_isLastCopyBeforeFSR; 
-
-    
+    int lep1_mc3idx = -1;
+    int lep2_mc3idx = -1; 
 
     //Leptons
     LorentzVector lep1_p4;
@@ -266,6 +266,16 @@ class babyMaker {
     bool lep2_passes_id;
     bool lep3_passes_id;
     bool lep4_passes_id;
+
+    //Lep1 IDISO
+    bool lep1_tight;
+    bool lep1_veto;
+    bool lep1_fo;
+
+    //Lep2 IDISO
+    bool lep2_tight;
+    bool lep2_veto;
+    bool lep2_fo;
 
     //Lep3 IDISO
     bool lep3_tight;

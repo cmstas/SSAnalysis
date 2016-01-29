@@ -1,7 +1,7 @@
 {
     gROOT->ProcessLine(".L ../software/dataMCplotMaker/dataMCplotMaker.cc+");
     gSystem->Load("../CORE/CMS3_CORE.so");
-    gROOT->ProcessLine(".L ../classFiles/v4.05/SS.cc+");
+    gROOT->ProcessLine(".L ../classFiles/v6.02/SS.cc+");
 
     gROOT->ProcessLine(".L scan.C+");
     scan();

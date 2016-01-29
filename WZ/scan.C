@@ -12,7 +12,7 @@
 #include "TChain.h"
 
 //Class files
-#include "../classFiles/v4.05/SS.h"
+#include "../classFiles/v6.02/SS.h"
 
 #include "utils.C"
 #include "../commonUtils.h"
@@ -28,11 +28,11 @@ int scan(){
 
     TString tag = getTag();
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");  titles.push_back("Fakes");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");  titles.push_back("Fakes"); // FIXME v6.00
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP*.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_high.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_low.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets_LO.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets.root");
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZL.root");    titles.push_back("ttZH");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZLOW.root");
@@ -147,20 +147,20 @@ int scan(){
         TTree *tree = (TTree*)file->Get("t");
         samesign.Init(tree);
 
-        TString filename(currentFile->GetTitle());
+        TString filename_(currentFile->GetTitle());
 
-        int iSample = -1;
+        int iSample_ = -1;
 
-        if(filename.Contains("TTBAR") || filename.Contains("SINGLETOP")  || filename.Contains("DY_")  || filename.Contains("WJets") )                          { filename = "Fakes"; iSample = 0; }
-        else if(filename.Contains("TTZL") || filename.Contains("TTZLOW") || filename.Contains("TTHtoNonBB"))                                                   { filename = "TTZ";   iSample = 1; }
-        else if(filename.Contains("TTW"))                                                                                                                      { filename = "TTW";   iSample = 2; }
-        else if(filename.Contains("/ZZ.root") || filename.Contains("/GGHtoZZto4L.root") || filename.Contains("/WWZ.root") || filename.Contains("/WZZ.root") || //filename.Contains("/T6TTWW_600_425_50.root") ||
-		filename.Contains("/WWDPS.root") || filename.Contains("/VHtoNonBB.root") || filename.Contains("/TTTT.root") || filename.Contains("/TZQ.root") ) { filename = "Rares"; iSample = 3; }
-        else if(filename.Contains("QQWW.root"))                                                                                                                { filename = "WW";    iSample = 4; }
-        else if(filename.Contains("/WGToLNuG.root") || filename.Contains("/ZG.root") || filename.Contains("/TG.root") || filename.Contains("/TTG.root"))       { filename = "XG";    iSample = 5; }
-        else if(filename.Contains("/WZ.root"))                                                                                                                 { filename = "WZ";    iSample = 6; }
-        else if(filename.Contains("Data"))                                                                                                                     { filename = "Data";  iSample = 7; }
-        else { std::cout << "ERROR: I don't know what " << filename << " is! Skipping file " << filename << std::endl; continue; }
+        // if(filename_.Contains("TTBAR") || filename_.Contains("SINGLETOP")  || filename_.Contains("DY_")  || filename_.Contains("WJets") )                          { filename_ = "Fakes"; iSample_ = 0; }
+             if(filename_.Contains("TTZL") || filename_.Contains("TTZLOW") || filename_.Contains("TTHtoNonBB"))                                                   { filename_ = "TTZ";   iSample_ = 1; }
+        else if(filename_.Contains("TTW"))                                                                                                                      { filename_ = "TTW";   iSample_ = 2; }
+        else if(filename_.Contains("/ZZ.root") || filename_.Contains("/GGHtoZZto4L.root") || filename_.Contains("/WWZ.root") || filename_.Contains("/WZZ.root") || //filename_.Contains("/T6TTWW_600_425_50.root") ||
+                filename_.Contains("/WWDPS.root") || filename_.Contains("/VHtoNonBB.root") || filename_.Contains("/TTTT.root") || filename_.Contains("/TZQ.root") ) { filename_ = "Rares"; iSample_ = 3; }
+        else if(filename_.Contains("QQWW.root"))                                                                                                                { filename_ = "WW";    iSample_ = 4; }
+        else if(filename_.Contains("/WGToLNuG.root") || filename_.Contains("/ZG.root") || filename_.Contains("/TG.root") || filename_.Contains("/TTG.root"))       { filename_ = "XG";    iSample_ = 5; }
+        else if(filename_.Contains("/WZ.root"))                                                                                                                 { filename_ = "WZ";    iSample_ = 6; }
+        else if(filename_.Contains("Data"))                                                                                                                     { filename_ = "Data";  iSample_ = 7; }
+        else { std::cout << "ERROR: I don't know what " << filename_ << " is! Skipping file " << filename_ << std::endl; continue; }
 
         // Loop over Events in current file
         for( unsigned int event = 0; event < tree->GetEntriesFast(); ++event) {
@@ -174,48 +174,32 @@ int scan(){
 
             float scale = 1.0;
             if(!ss::is_real_data()) {
-	        scale = ss::scale1fb() * luminosity * getTruePUw(ss::trueNumInt()[0]);
+                scale = ss::scale1fb() * luminosity * getTruePUw(ss::trueNumInt()[0]);
             } else {
                 DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
                 if (is_duplicate(id) ) continue;
             }
 
+            TString filename = filename_;
+            int iSample = iSample_;
+
             // fill these before making cuts
             fill(h1D_hyp_class_vec.at(iSample), ss::hyp_class(), scale);
 
-	    if (!ss::fired_trigger()) continue;
-	    if (ss::is_real_data()) {
-		if (!ss::passedFilterList()) continue;
-		if (!ss::passes_met_filters()) continue;
-	      }
+            if (!ss::fired_trigger()) continue;
+            if (ss::is_real_data()) {
+                if (!ss::passedFilterList()) continue;
+                if (!ss::passes_met_filters()) continue;
+            }
 
             // this guarantees that the third lepton makes a Z with one of the first two leptons
             // if( ! (ss::hyp_class() == 6 && ss::madeExtraZ()) ) continue;
             if( ! (ss::hyp_class() == 6) ) continue;
 
-            if( !(ss::lep1_passes_id() && 
-                  ss::lep2_passes_id() && 
-                  // ss::lep3_veto()     ) ) continue; // looser selection for third lepton
-                  ss::lep3_passes_id()) ) continue;
-
-	    //this is what santiago is doing:
-	    // if (ss::lep1_id()*ss::lep2_id()<0) continue;
-
-            // figure out which pair has inv mass closest to Z
-            float zmass23 = ss::lep2_id() == -ss::lep3_id() ? (ss::lep2_p4()+ss::lep3_p4()).mass() : -1.0;
-            float zmass31 = ss::lep3_id() == -ss::lep1_id() ? (ss::lep3_p4()+ss::lep1_p4()).mass() : -1.0;
-
-            float zmass;
-            if( fabs(zmass31 - 91.2) < fabs(zmass23 - 91.2) ) zmass = zmass31;
-            else zmass = zmass23;
-
-            // require a Z
-            if (fabs(zmass-91.2) > 15.0) continue;
-
-            // if MET < 50 or Njets <= 2 then we don't care about considering it at all, even in the N-1 plots, so exclude it
-            // if(ss::met() < 50.0) continue;
             if(ss::met() < 30.0) continue;//relax to 30 for low lumi
             if(ss::njets() < 2) continue;
+
+
 
             // all 4 of these define the CR
             bool goodBtags = ss::nbtags() < 1;
@@ -224,83 +208,147 @@ int scan(){
             bool goodHH = ss::lep1_p4().pt() > 25.0 && ss::lep2_p4().pt() > 25.0;
             bool goodMtmin = true;//ss::mtmin() < 120;
 
-            // Actually ignore the MET and MTMIN boundaries for more statistics
-            // goodMet = true;
-            // goodMtmin = true;
 
-	    // if (ss::is_real_data() && goodBtags && goodNjets && goodHH) {
-	    //   cout << Form("%1d\t%9d\t%llu\t%+2d\t%5.1f\t%+2d\t%5.1f\t%+2d\t%5.1f\t%d\t%2d\t%5.1f\t%6.1f\n", ss::run(), ss::lumi(), ss::event(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::lep3_id(), ss::lep3_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht());
-	    // }
+            int whichNotZ = 1; // find lep not from Z
+            float zmass;
+            float zmass23 = ss::lep2_id() == -ss::lep3_id() ? (ss::lep2_p4()+ss::lep3_p4()).mass() : -999.0;
+            float zmass31 = ss::lep3_id() == -ss::lep1_id() ? (ss::lep3_p4()+ss::lep1_p4()).mass() : -999.0;
 
-            if(filename.Contains("/WZ.root"))    {
-                h2D_ptlep1_ptlep2_wz->Fill(ss::lep2_p4().pt(),ss::lep1_p4().pt());
-                h2D_ht_njets_wz->Fill(ss::ht(),ss::njets());
-                h2D_ht_sumleppt_wz->Fill( ss::ht(), ss::lep2_p4().pt()+ss::lep1_p4().pt() );
-                h2D_njets_nbtags_wz->Fill(ss::nbtags(),ss::njets());
-                h2D_met_mtmin_wz->Fill(ss::mtmin(),ss::met());
-            }
-
-            if(goodNjets && goodMet && goodHH && goodMtmin)  {
-                if(ss::nbtags() < 1)  addToCounter("2:nbtags<1_" +filename,scale);
-                if(ss::nbtags() >= 1) addToCounter("2:nbtags>=1_"+filename,scale);
-                fill(h1D_nbtags_vec.at(iSample), ss::nbtags(), scale);
-            }
-
-
-            if(goodBtags && goodNjets && goodMet && goodMtmin)  {
-	      anal_type_t categ = analysisCategory(abs(ss::lep1_id()),abs(ss::lep2_id()),ss::lep1_p4().pt(), ss::lep2_p4().pt());  
-                if(categ == HighHigh) addToCounter("6:HH_" +filename,scale);
-                if(categ == HighLow)  addToCounter("6:HL_" +filename,scale);
-                fill(h1D_lep1pt_vec.at(iSample),ss::lep1_p4().pt(), scale);
-                fill(h1D_lep2pt_vec.at(iSample),ss::lep2_p4().pt(), scale);
-            }
-
-            if(goodBtags && goodNjets && goodMet && goodHH)  {
-                if(ss::mtmin() < 120)  addToCounter("5:mtmin<120_" +filename,scale);
-                if(ss::mtmin() >= 120) addToCounter("5:mtmin>=120_"+filename,scale);
-                fill(h1D_mtmin_vec.at(iSample),ss::mtmin(), scale);
-            }
-
-
-            if(goodBtags && goodMet && goodHH && goodMtmin)  {
-                if(ss::njets() < 5)  addToCounter("1:njets<5_" +filename,scale);
-                if(ss::njets() >= 5) addToCounter("1:njets>=5_"+filename,scale);
-                fill(h1D_njets_vec.at(iSample),ss::njets(), scale);
-            }
-
-            if(goodBtags && goodNjets && goodHH && goodMtmin)  {
-                if(ss::met() < 200)  addToCounter("3:met<200_" +filename,scale);
-                if(ss::met() >= 200) addToCounter("3:met>=200_"+filename,scale);
-                fill(h1D_met_vec.at(iSample),ss::met(), scale);
-            }
-
-
-            if(! (goodBtags && goodNjets && goodMet && goodHH && goodMtmin) ) continue;
-            // now we are in the CR
-            //
-            fill(h1D_zmass_vec.at(iSample),zmass, scale); 
-
-            if(ss::ht() < 300)  addToCounter("4:ht<300_" +filename,scale);
-            if(ss::ht() >= 300) addToCounter("4:ht>=300_"+filename,scale);
-            fill(h1D_ht_vec.at(iSample),ss::ht(), scale);
-
-            // fill(h1D_mt_vec.at(iSample),ss::mt(), scale);
-            // fill(h1D_zmass_vec.at(iSample),zmass, scale); 
-
-
-            addToCounter(filename, scale);
-            if(!ss::is_real_data()) {
-                nGoodEvents++;
-                nGoodEventsWeighted+=scale;
+            if( fabs(zmass31 - 91.2) < fabs(zmass23 - 91.2) )  {
+                whichNotZ = 2;
+                zmass = zmass31;
             } else {
-                nGoodEventsData++;
+                zmass = zmass23;
             }
+
+            if (fabs(zmass-91.2) > 15) {
+                continue;
+            }
+
+            float fr = 0.0;
+            bool lep1_loose_not_tight = ss::lep1_fo() && !ss::lep1_tight();
+            bool lep2_loose_not_tight = ss::lep2_fo() && !ss::lep2_tight();
+            bool lep3_loose_not_tight = ss::lep3_fo() && !ss::lep3_tight();
+
+            bool zlep_loose_not_tight;
+            bool wlep_loose_not_tight;
+            if(whichNotZ == 1) {
+                wlep_loose_not_tight = lep1_loose_not_tight;
+                zlep_loose_not_tight = lep2_loose_not_tight;
+            } else {
+                wlep_loose_not_tight = lep2_loose_not_tight;
+                zlep_loose_not_tight = lep1_loose_not_tight;
+            }
+
+            // if(ss::is_real_data()) {
+            //     addToCounter("zlepLooseNotTight",zlep_loose_not_tight);
+            //     addToCounter("wlepLooseNotTight",wlep_loose_not_tight);
+            //     addToCounter("lep3LooseNotTight",lep3_loose_not_tight);
+            // }
+
+            bool fillingForFakes = false;
+
+
+            // if(ss::is_real_data() && lep1_loose_not_tight) { fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(),ss::lep1_p4().eta(),ss::ht()); fillingForFakes = true; }
+            // if(ss::is_real_data() && lep2_loose_not_tight) { fr = fakeRate(ss::lep2_id(),ss::lep2_p4().pt(),ss::lep2_p4().eta(),ss::ht()); fillingForFakes = true; }
+            if(ss::is_real_data() && lep3_loose_not_tight) { fr = fakeRate(ss::lep3_id(),ss::lep3_p4().pt(),ss::lep3_p4().eta(),ss::ht()); fillingForFakes = true; }
+            float eff = fr / (1-fr);
+
+            // if(ss::is_real_data() && whichNotZ == 1 && lep1_loose_not_tight) { fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(),ss::lep1_p4().eta(),ss::ht()); fillingForFakes = true; }
+            // else if(ss::is_real_data() && whichNotZ == 2 && lep2_loose_not_tight) { fr = fakeRate(ss::lep2_id(),ss::lep2_p4().pt(),ss::lep2_p4().eta(),ss::ht()); fillingForFakes = true; }
+            // float eff = fr / (1-fr);
+
+            if( !(  fillingForFakes || (ss::lep1_passes_id() && ss::lep2_passes_id() && ss::lep3_passes_id())  ) ) continue;
+
+            //this is what santiago is doing:
+            // if (ss::lep1_id()*ss::lep2_id()<0) continue;
+
+            // if (ss::is_real_data() && goodBtags && goodNjets && goodHH) {
+            //   cout << Form("%1d\t%9d\t%llu\t%+2d\t%5.1f\t%+2d\t%5.1f\t%+2d\t%5.1f\t%d\t%2d\t%5.1f\t%6.1f\n", ss::run(), ss::lumi(), ss::event(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::lep3_id(), ss::lep3_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht());
+            // }
+            //
+
+            // loop once to fill regularly, or twice if second fill is to put data-driven fake rate into MC
+            for(int ifill = 0; ifill < 1+fillingForFakes; ifill++) {
+
+                if(ifill == 1) {
+                    filename = "Fakes";
+                    iSample = 0;
+                    scale = eff;
+                } else {
+                    if( !(  ss::lep1_passes_id() && ss::lep2_passes_id() && ss::lep3_passes_id()  ) ) continue;
+                }
+
+                if(filename.Contains("/WZ.root"))    {
+                    h2D_ptlep1_ptlep2_wz->Fill(ss::lep2_p4().pt(),ss::lep1_p4().pt());
+                    h2D_ht_njets_wz->Fill(ss::ht(),ss::njets());
+                    h2D_ht_sumleppt_wz->Fill( ss::ht(), ss::lep2_p4().pt()+ss::lep1_p4().pt() );
+                    h2D_njets_nbtags_wz->Fill(ss::nbtags(),ss::njets());
+                    h2D_met_mtmin_wz->Fill(ss::mtmin(),ss::met());
+                }
+
+                if(goodNjets && goodMet && goodHH && goodMtmin)  {
+                    if(ss::nbtags() < 1)  addToCounter("2:nbtags<1_" +filename,scale);
+                    if(ss::nbtags() >= 1) addToCounter("2:nbtags>=1_"+filename,scale);
+                    fill(h1D_nbtags_vec.at(iSample), ss::nbtags(), scale);
+                }
+
+
+                if(goodBtags && goodNjets && goodMet && goodMtmin)  {
+                    anal_type_t categ = analysisCategory(abs(ss::lep1_id()),abs(ss::lep2_id()),ss::lep1_p4().pt(), ss::lep2_p4().pt());  
+                    if(categ == HighHigh) addToCounter("6:HH_" +filename,scale);
+                    if(categ == HighLow)  addToCounter("6:HL_" +filename,scale);
+                    fill(h1D_lep1pt_vec.at(iSample),ss::lep1_p4().pt(), scale);
+                    fill(h1D_lep2pt_vec.at(iSample),ss::lep2_p4().pt(), scale);
+                }
+
+                if(goodBtags && goodNjets && goodMet && goodHH)  {
+                    if(ss::mtmin() < 120)  addToCounter("5:mtmin<120_" +filename,scale);
+                    if(ss::mtmin() >= 120) addToCounter("5:mtmin>=120_"+filename,scale);
+                    fill(h1D_mtmin_vec.at(iSample),ss::mtmin(), scale);
+                }
+
+
+                if(goodBtags && goodMet && goodHH && goodMtmin)  {
+                    if(ss::njets() < 5)  addToCounter("1:njets<5_" +filename,scale);
+                    if(ss::njets() >= 5) addToCounter("1:njets>=5_"+filename,scale);
+                    fill(h1D_njets_vec.at(iSample),ss::njets(), scale);
+                }
+
+                if(goodBtags && goodNjets && goodHH && goodMtmin)  {
+                    if(ss::met() < 200)  addToCounter("3:met<200_" +filename,scale);
+                    if(ss::met() >= 200) addToCounter("3:met>=200_"+filename,scale);
+                    fill(h1D_met_vec.at(iSample),ss::met(), scale);
+                }
+
+
+                if(! (goodBtags && goodNjets && goodMet && goodHH && goodMtmin) ) continue;
+
+                // now we are in the CR
+
+                if(ss::ht() < 300)  addToCounter("4:ht<300_" +filename,scale);
+                if(ss::ht() >= 300) addToCounter("4:ht>=300_"+filename,scale);
+
+                fill(h1D_zmass_vec.at(iSample),zmass, scale); 
+                fill(h1D_ht_vec.at(iSample),ss::ht(), scale);
+
+                addToCounter(filename, scale);
+
+                if( (!ss::is_real_data()) ) {
+                    nGoodEvents++;
+                    nGoodEventsWeighted+=scale;
+                } else {
+                    nGoodEventsData++;
+                }
+
+            }
+
 
         }//event loop
 
+        delete file; // does this fix the uaf crashes via plugging memory leak?
     }//file loop MCMC
 
-    // nGoodEventsWeighted nGoodEvents nGoodEventsData nEventsTotal
     std::cout << " nGoodEventsWeighted: " << nGoodEventsWeighted << " nGoodEvents: " << nGoodEvents << " nGoodEventsData: " << nGoodEventsData << " nEventsTotal: " << nEventsTotal << std::endl;
     printCounter(true);
 
