@@ -3867,16 +3867,17 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         avoidNegativeYields(pdfUp);
         pdfUp->Scale(h_sr->Integral()/pdfUp->Integral());
         pdfUp->Write();
-        if      (kinRegs[kr] == "hihi")   plot_alt = p_pdf_alt_dn.SRHH.TOTAL;
-        else if (kinRegs[kr] == "hilow")  plot_alt = p_pdf_alt_dn.SRHL.TOTAL;
-        else if (kinRegs[kr] == "lowlow") plot_alt = p_pdf_alt_dn.SRLL.TOTAL;
-        else exit(1);
-        for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
-          plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1-plot_alt->GetBinContent(bin))); 
-        }
+        // if      (kinRegs[kr] == "hihi")   plot_alt = p_pdf_alt_dn.SRHH.TOTAL;
+        // else if (kinRegs[kr] == "hilow")  plot_alt = p_pdf_alt_dn.SRHL.TOTAL;
+        // else if (kinRegs[kr] == "lowlow") plot_alt = p_pdf_alt_dn.SRLL.TOTAL;
+        // else exit(1);
+        // for (int bin = 0; bin < plot_alt->GetNbinsX(); bin++){
+        //   plot_alt->SetBinContent(bin, h_sr->GetBinContent(bin)*(1-plot_alt->GetBinContent(bin))); 
+        // }
         TH1F* pdfDn = (TH1F*) plot_alt->Clone("pdfDown");
+        fillDownMirrorUp(h_sr,pdfUp,pdfDn);
         avoidNegativeYields(pdfDn);
-        pdfDn->Scale(h_sr->Integral()/pdfDn->Integral());
+        //pdfDn->Scale(h_sr->Integral()/pdfDn->Integral());
         pdfDn->Write();
       }
 
