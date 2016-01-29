@@ -1,64 +1,167 @@
-#pragma GCC diagnostic ignored "-Wwrite-strings"
-
-#include "../software/dataMCplotMaker/dataMCplotMaker.h"
-
-//Regular includes
+#include "/home/users/cgeorge/software/dataMCplotMaker/dataMCplotMaker.h"
+#include "/home/users/cgeorge/SSAnalysis/classFiles/v5.04/SS.h"
+#include "/home/users/cgeorge/CORE/Tools/dorky/dorky.h"
+#include "/home/users/cgeorge/software/tableMaker/CTable.h"
+#include "/home/users/cgeorge/SSAnalysis/lepton_sf.h"
+#include "/home/users/cgeorge/SSAnalysis/lepton_sf_fastsim.h"
+#include "/home/users/cgeorge/SSAnalysis/pu_weights.h"
+#include "TChain.h"
+#include "TColor.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "TCut.h"
-#include "TColor.h"
-#include "TCanvas.h"
-#include "TH2F.h"
-#include "TH1.h"
-#include "TChain.h"
-
-//Class files
-#include "SS.h"
+#include "TH1F.h"
 
 //Namespace
 using namespace std;
 
 //Path
-string path = "../v1.09";
+const char* path = "/nfs-7/userdata/ss2015/ssBabies/v6.00/";
+
+//Lumi
+float lumiAG = 2.26;
+
+//Data or Signal
+enum type_ag { DATA, SIGNAL }; 
+type_ag type = SIGNAL; 
+bool useSFs = true;
 
 //Global Definitions
-vector <TH1F*> makePlots(TChain *chain);
-void drawPlot(int which, string title = "", string subtitle = "", string xaxis = "quantity");
-vector <TH1F*> ttz_plots;
-vector <TH1F*> ttw_plots;   
-vector <TH1F*> wz_plots;    
-vector <TH1F*> ttbar_plots; 
+pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain);
+void drawPlot(int which, string title = "", string subtitle = "", string xaxis = "quantity", string name2 = "blah", string options = "");
+pair <vector <TH1F*>, vector <float> > data_plots;
+pair <vector <TH1F*>, vector <float> > t1tttt_high_plots;
+pair <vector <TH1F*>, vector <float> > t1tttt_low_plots;
+pair <vector <TH1F*>, vector <float> > ttx_plots;
+pair <vector <TH1F*>, vector <float> > ttz_plots;
+pair <vector <TH1F*>, vector <float> > ttw_plots;
+pair <vector <TH1F*>, vector <float> > wz_plots;    
+pair <vector <TH1F*>, vector <float> > ttbar_plots; 
+pair <vector <TH1F*>, vector <float> > st_plots; 
+pair <vector <TH1F*>, vector <float> > dy_plots;
+pair <vector <TH1F*>, vector <float> > wjets_plots;
+pair <vector <TH1F*>, vector <float> > mb_plots;
+pair <vector <TH1F*>, vector <float> > wzz_plots;
+pair <vector <TH1F*>, vector <float> > zz_plots;
+pair <vector <TH1F*>, vector <float> > qqww_plots; 
 
 //Main function
 void plots(){
 
   //Declare chains
-  TChain *ttz   = new TChain("t"); ttz  ->Add(Form("%s/TTZ_multiIso.root"  , path.c_str())); 
-  TChain *ttw   = new TChain("t"); ttw  ->Add(Form("%s/TTW_multiIso.root"  , path.c_str())); 
-  TChain *wz    = new TChain("t"); wz   ->Add(Form("%s/WZ_multiIso.root"   , path.c_str())); 
-  TChain *ttbar = new TChain("t"); ttbar->Add(Form("%s/TTBAR_multiIso.root", path.c_str())); 
+  TChain *t1tttt_high = new TChain("t", "data"); t1tttt_high->Add("/nfs-7/userdata/ss2015/ssBabies/v6.01-fs/T1TTTT_1100_1to775.root");
+  TChain *t1tttt_low = new TChain("t", "data");  t1tttt_low->Add("/nfs-7/userdata/ss2015/ssBabies/v6.01-fs/T1TTTT_875to900_1to650.root");
+  TChain *data  = new TChain("t", "data"); data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataMuonEGD_05oct.root"    );
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleEGC_05oct.root"  );  
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleEGD_v4.root"     );        
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleMuonD_05oct.root");  
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataMuonEGC_05oct.root"    );   
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataMuonEGD_v4.root"       ); 
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleEGD_05oct.root"  );   
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleMuonC_05oct.root");  
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleMuonD_v4.root"   );     
+  TChain *ttz   = new TChain("t"); ttz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/TTZL.root"      ); 
+                                   ttz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/TTZLOW.root"    ); 
+  TChain *ttx   = new TChain("t"); ttx  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/TTW.root"       ); 
+  TChain *ttw   = new TChain("t"); ttw  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/TTHtoNonBB.root"); 
+  TChain *wz    = new TChain("t"); wz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/WZ.root"        ); 
+  TChain *ttbar = new TChain("t"); ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/TTBAR.root"     ); 
+  TChain *st    = new TChain("t"); st   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/SINGLETOP*.root"); 
+  TChain *dy    = new TChain("t"); dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DY_high.root"   ); 
+                                   dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v5.07/DY_low.root"    ); 
+  TChain *wjets = new TChain("t"); wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/WJets.root"     ); 
+  TChain *mb    = new TChain("t"); mb   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/WWZ.root"       ); 
+  TChain *wzz   = new TChain("t"); wzz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/WZZ.root"       ); 
+  TChain *zz    = new TChain("t"); zz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/ZZ.root"        ); 
+  TChain *qqww  = new TChain("t"); qqww ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/QQWW.root"      ); 
 
   //Make plots
+  if (type == SIGNAL) t1tttt_high_plots = makePlots(t1tttt_high);
+  if (type == SIGNAL) t1tttt_low_plots  = makePlots(t1tttt_low);
+  if (type == DATA) data_plots = makePlots(data);
   ttz_plots   = makePlots(ttz);
   ttw_plots   = makePlots(ttw);
+  ttx_plots   = makePlots(ttx);
+  for (unsigned int i = 0; i < ttx_plots.first.size(); i++) ttx_plots.first[i]->Add(ttz_plots.first[i]); 
+  for (unsigned int i = 0; i < ttx_plots.first.size(); i++) ttx_plots.first[i]->Add(ttw_plots.first[i]); 
   wz_plots    = makePlots(wz);
   ttbar_plots = makePlots(ttbar);
+  st_plots    = makePlots(st);
+  wzz_plots    = makePlots(wzz);
+  zz_plots    = makePlots(zz);
+  mb_plots    = makePlots(mb);
+  for (unsigned int i = 0; i < mb_plots.first.size(); i++) mb_plots.first[i]->Add(mb_plots.first[i]); 
+  for (unsigned int i = 0; i < ttbar_plots.first.size(); i++) ttbar_plots.first[i]->Add(st_plots.first[i]); 
+  dy_plots    = makePlots(dy);
+  wjets_plots = makePlots(wjets);
+  qqww_plots  = makePlots(qqww);
+
+  string sig = (type == DATA) ? "OS" : "SS"; 
 
   //Draw plots
-  drawPlot(0, "MET PHYS14 multiIso", "p_{T} 25/25, #geq 2 jets"          , "MET"   );
-  drawPlot(1, "HT PHYS14 multiIso" , "p_{T} 25/25, MET > 50, #geq 2 jets", "HT"    );
+  drawPlot(0 , Form("MET in %s dilepton pairs"        , sig.c_str()) , "#geq 2 jets"                         , "MET"        , "MET"         , "--yTitleOffset -0.10"                                 ); 
+  drawPlot(1 , Form("HT in %s dilepton pairs"         , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "HT"         , "HT"          , "--yTitleOffset -0.10"                                 );
+  drawPlot(2 , Form("M_{ll} in %s dilepton pairs"     , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "M_{ll}"     , "MLL"         , "--yTitleOffset -0.10"                                 );
+  drawPlot(3 , Form("M_{T}^{min} in %s dilepton pairs", sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "M_{T}^{min}", "MTMIN"       , "--yTitleOffset -0.10"                                 );
+  drawPlot(4 , Form("N_{jets} in %s dilepton pairs"   , sig.c_str()) , "(MET > 30 OR HT > 500)"              , "N_{jets}"   , "NJETS"       , "--nDivisions 6 --noDivisionLabel --yTitleOffset -0.10");
+  drawPlot(5 , Form("N_{b-tags} in %s dilepton pairs" , sig.c_str()) , "(MET > 30 OR HT > 500)"              , "N_{b-tags}" , "NBTAGS"      , "--nDivisions 4 --noDivisionLabel --yTitleOffset -0.10");
+  drawPlot(6 , Form("lep p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "p_{T}"      , "PT"          , "--yTitleOffset -0.10");
+  drawPlot(7 , Form("#eta in %s dilepton pairs"       , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "#eta"       , "ETA"         , "--yTitleOffset -0.10 --setMaximum 10000000 --setMinimum 1");
+  drawPlot(8 , Form("jet p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500)"              , "p_{T}"      , "JETPT"       , "--yTitleOffset -0.10");
+
+  //Print yields
+  vector <float> total = {0,0,0,0}; 
+  for (int i = 0; i < 4; i++) total.at(i) += ttbar_plots.second.at(i);
+  for (int i = 0; i < 4; i++) total.at(i) += st_plots.second.at(i);
+  for (int i = 0; i < 4; i++) total.at(i) += dy_plots.second.at(i);
+  for (int i = 0; i < 4; i++) total.at(i) += wz_plots.second.at(i);
+  for (int i = 0; i < 4; i++) total.at(i) += ttx_plots.second.at(i);
+  for (int i = 0; i < 4; i++) total.at(i) += ttz_plots.second.at(i);
+  for (int i = 0; i < 4; i++) total.at(i) += ttw_plots.second.at(i);
+  for (int i = 0; i < 4; i++) total.at(i) += wjets_plots.second.at(i);
+  for (int i = 0; i < 4; i++) total.at(i) += mb_plots.second.at(i);
+  for (int i = 0; i < 4; i++) total.at(i) += wzz_plots.second.at(i);
+  for (int i = 0; i < 4; i++) total.at(i) += zz_plots.second.at(i);
+  for (int i = 0; i < 4; i++) total.at(i) += qqww_plots.second.at(i);
+
+  CTable table;
+  table.setPrecision(2);
+  table.setTable() ( "ee", "em", "mm", "total" ) 
+                   ("ttbar", ttbar_plots.second.at(0), ttbar_plots.second.at(1), ttbar_plots.second.at(2), ttbar_plots.second.at(3))
+                   ("st", st_plots.second.at(0), st_plots.second.at(1), st_plots.second.at(2), st_plots.second.at(3))
+                   ("dy", dy_plots.second.at(0), dy_plots.second.at(1), dy_plots.second.at(2), dy_plots.second.at(3))
+                   ("wz", wz_plots.second.at(0), wz_plots.second.at(1), wz_plots.second.at(2), wz_plots.second.at(3))
+                   ("tth", ttx_plots.second.at(0), ttx_plots.second.at(1), ttx_plots.second.at(2), ttx_plots.second.at(3))
+                   ("ttz", ttz_plots.second.at(0), ttz_plots.second.at(1), ttz_plots.second.at(2), ttz_plots.second.at(3))
+                   ("ttw", ttw_plots.second.at(0), ttw_plots.second.at(1), ttw_plots.second.at(2), ttw_plots.second.at(3))
+                   ("wjets", wjets_plots.second.at(0), wjets_plots.second.at(1), wjets_plots.second.at(2), wjets_plots.second.at(3))
+                   ("wwz", mb_plots.second.at(0), mb_plots.second.at(1), mb_plots.second.at(2), mb_plots.second.at(3))
+                   ("wzz", wzz_plots.second.at(0), wzz_plots.second.at(1), wzz_plots.second.at(2), wzz_plots.second.at(3))
+                   ("zz", zz_plots.second.at(0), zz_plots.second.at(1), zz_plots.second.at(2), zz_plots.second.at(3))
+                   ("qqww", qqww_plots.second.at(0), qqww_plots.second.at(1), qqww_plots.second.at(2), qqww_plots.second.at(3))
+                   ("total MC", total.at(0), total.at(1), total.at(2), total.at(3))
+                   ("t1tttt_high MC", t1tttt_high_plots.second.at(0), t1tttt_high_plots.second.at(1), t1tttt_high_plots.second.at(2), t1tttt_high_plots.second.at(3))
+                   ("t1tttt_low MC", t1tttt_low_plots.second.at(0), t1tttt_low_plots.second.at(1), t1tttt_low_plots.second.at(2), t1tttt_low_plots.second.at(3));
+//                 ("data", data_plots.second.at(0), data_plots.second.at(1), data_plots.second.at(2), data_plots.second.at(3));
+ table.print(); 
+ table.saveTex("table.tex"); 
 
 }
 
 //Fill plot function
-vector <TH1F*> makePlots(TChain *chain){
+pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
 
   //Declare plots
-  TH1F *met = new TH1F("met", "met",  80, 0, 400); 
-  TH1F *ht  = new TH1F("ht" , "ht" , 100, 0, 800); 
+  TH1F *met    = new TH1F("met"    , "met"    , 50  ,   0, 500);
+  TH1F *ht     = new TH1F("ht"     , "ht"     , 100 ,   0, 800);
+  TH1F *mll    = new TH1F("mll"    , "mll"    , 60  ,   0, 300);
+  TH1F *mtmin  = new TH1F("mtmin"  , "mtmin"  , 60  ,   0, 300);
+  TH1F *njets  = new TH1F("njets"  , "njets"  , 6  ,    0, 6  );
+  TH1F *nbtags = new TH1F("nbtags" , "nbtags" , 4  ,    0, 4  );
+  TH1F *pt     = new TH1F("pt"     , "pt"     , 50 ,    0, 300);
+  TH1F *eta    = new TH1F("eta"    , "eta"    , 50 , -3.2, 3.2);
+  TH1F *jetpt  = new TH1F("jetpt"  , "jetpt"  , 50 ,    0, 300);
 
-  //Lumi
-  float lumi = 10.0;
+  vector <float> counts = {0, 0, 0, 0};
  
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -87,28 +190,57 @@ vector <TH1F*> makePlots(TChain *chain){
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
 
+      //Reject duplicates 
+      if (ss::is_real_data()){
+        duplicate_removal::DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
+        if (duplicate_removal::is_duplicate(id)) continue; 
+      }
+
+      //SUSY cuts
+      if (ss::sparms().size() > 0 && !(ss::sparms().at(0) != 1100 || ss::sparms().at(1) != 1) && !(ss::sparms().at(0) != 900 || ss::sparms().at(1) != 600)) continue;
+
       //Essential Cuts
-      if (ss::hyp_class() != 3) continue;
+      if (type == DATA && ss::hyp_class() != 4 && ss::hyp_class() != 6) continue;
+      if (type == SIGNAL && ss::hyp_class() != 3) continue;
+      if (!ss::lep1_passes_id()) continue;
+      if (!ss::lep2_passes_id()) continue;
+      if (!ss::fired_trigger())      continue;
+      if (!ss::passedFilterList())   continue;
+      if (!ss::passes_met_filters()) continue;
 
-      //Make lepton plots here
-
-      //Lepton cuts 
+      //Lepton pT cuts
       if (ss::lep1_p4().pt() < 25) continue;
       if (ss::lep2_p4().pt() < 25) continue;
 
-      //Make jet plots here
-
-      //Jet cuts
-      if (ss::njets() < 2) continue;
+      //Calculate weight
+      float weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
+      weight *= ss::is_real_data() ? 1 : (ss::sparms().size() > 0 ? eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht()) : eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices())); 
 
       //Make met plots here
-      met->Fill(ss::met(), ss::scale1fb()*lumi);  
+      if (ss::njets() >= 2) met->Fill(ss::met(), weight);  
 
-      //Met cuts
-      if (ss::met() < 50) continue;
-   
       //Make all other plots
-      ht->Fill(ss::ht(), ss::scale1fb()*lumi);  
+      if (ss::met() > 30 || ss::ht() > 500) ht->Fill(ss::ht(), weight);  
+      if (ss::met() > 30 || ss::ht() > 500) njets->Fill(ss::njets(), weight);  
+      if (ss::met() > 30 || ss::ht() > 500) nbtags->Fill(ss::nbtags(), weight);  
+      if (ss::met() > 30 || ss::ht() > 500) for (unsigned int i = 0; i < ss::jet_pt().size(); i++) jetpt->Fill(ss::jet_pt().at(i), weight);
+
+      //Full cuts
+      if (ss::njets() < 2) continue;
+      if (ss::met() < 30 && ss::ht() < 500) continue;
+      mll->Fill(ss::dilep_p4().M() , weight);
+      mtmin->Fill(ss::mtmin()      , weight);
+      pt->Fill(ss::lep1_p4().pt()  , weight);
+      pt->Fill(ss::lep2_p4().pt()  , weight);
+      eta->Fill(ss::lep1_p4().eta(), weight);
+      eta->Fill(ss::lep2_p4().eta(), weight);
+  
+      //Counts
+      if (ss::dilep_p4().M() < 30) continue; 
+      if (ss::hyp_type() == 0)      counts[2] += weight; 
+      else if (ss::hyp_type() == 3) counts[0] += weight; 
+      else                          counts[1] += weight;
+                                    counts[3] += weight; 
 
     }//event loop
   }//file loop
@@ -116,32 +248,61 @@ vector <TH1F*> makePlots(TChain *chain){
   vector <TH1F*> results;
   results.push_back(met);
   results.push_back(ht);
+  results.push_back(mll);
+  results.push_back(mtmin);
+  results.push_back(njets);
+  results.push_back(nbtags);
+  results.push_back(pt);
+  results.push_back(eta);
+  results.push_back(jetpt);
 
-  return results;
+  return make_pair(results, counts);
 
 }
 
-void drawPlot(int which, string title, string subtitle, string xaxis){
+void drawPlot(int which, string title, string subtitle, string xaxis, string title2, string options){
   
   //Vector of backgrounds
   vector <TH1F*> backgrounds;
-  backgrounds.push_back(ttz_plots.at(which));
-  backgrounds.push_back(ttw_plots.at(which));   
-  backgrounds.push_back(wz_plots.at(which));    
-  backgrounds.push_back(ttbar_plots.at(which)); 
+  backgrounds.push_back(ttx_plots.first.at(which));
+  backgrounds.push_back(wz_plots.first.at(which));    
+  backgrounds.push_back(ttbar_plots.first.at(which)); 
+  backgrounds.push_back(dy_plots.first.at(which)); 
+  backgrounds.push_back(wjets_plots.first.at(which)); 
+  backgrounds.push_back(mb_plots.first.at(which)); 
+  backgrounds.push_back(qqww_plots.first.at(which)); 
 
   //Vector of background titles
   vector <string> titles;
-  titles.push_back("ttZ");
-  titles.push_back("ttW");
+  titles.push_back("ttX");
   titles.push_back("WZ");
   titles.push_back("ttbar");
+  titles.push_back("DY");
+  titles.push_back("W+Jets");
+  titles.push_back("MultiBoson");
+  titles.push_back("qqWW");
 
   //Null plot
   TH1F* null = new TH1F("","",1,0,1);
 
-  //Make plots
-  dataMCplotMaker(null, backgrounds, titles, title, subtitle, Form("--outputName %s --xAxisLabel %s", xaxis.c_str(), xaxis.c_str())); 
+  //Vector of signals
+  vector <TH1F*> signals;
+  if (type == SIGNAL){
+    signals.push_back(t1tttt_high_plots.first.at(which));
+    signals.push_back( t1tttt_low_plots.first.at(which));
+  }
+
+  //Vector of signal titles
+  vector <string> titles2;
+  titles2.push_back("T1tttt (1100,0)");
+  titles2.push_back("T1tttt (900,600)");
+
+  //Color vector
+  vector <Color_t> colors = { kGreen+3, kMagenta-8, kOrange+10, kYellow-7, kCyan, kBlue-2, kRed, kBlack, kBlack }; 
+
+  //Make plots -- data
+  if (type == DATA) dataMCplotMaker(data_plots.first.at(which), backgrounds, titles, title, subtitle, Form("--dontShowZeroRatios --outputName %s --xAxisLabel %s --lumi %f --outOfFrame %s", title2.c_str(), xaxis.c_str(), lumiAG, options.c_str())); 
+  if (type == SIGNAL) dataMCplotMaker(null, backgrounds, titles, title, subtitle, Form("--dontShowZeroRatios --outputName %s --xAxisLabel %s --lumi %f --outOfFrame %s --legendRight -0.03 --blackSignals", title2.c_str(), xaxis.c_str(), lumiAG, options.c_str()), signals, titles2, colors); 
   
 }
 
