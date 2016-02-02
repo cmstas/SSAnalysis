@@ -58,6 +58,10 @@ print "NONWZ"
 print "non-wz = %.2f pm %.2f" % (nonWZcount, nonWZerr)
 
 print
+print "WZpurity"
+print "purity = %.2f" % (100.0*WZcount/(WZcount+nonWZcount))
+
+print
 print "SCALE FACTOR"
 sf = (datacount-nonWZcount)/WZcount
 sferr = (1.0/WZcount)*math.sqrt(dataerr**2 + nonWZerr**2 + sf**2 * WZerr**2)
