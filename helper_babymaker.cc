@@ -1027,8 +1027,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
   if (isFastsim > 0){
     for (unsigned int i = 0; i < tas::genps_status().size(); i++){
-      if (isFastsim  < 3 && tas::genps_id().at(i) != 1000021) continue;
-      if (isFastsim == 3 && tas::genps_id().at(i) != 1000005) continue;
+      if (isFastsim  < 3 && abs(tas::genps_id().at(i)) != 1000021) continue;
+      if (isFastsim == 3 && abs(tas::genps_id().at(i)) != 1000005) continue;
       if (tas::genps_status().at(i) != 22) continue; 
       if (gl1_p4.pt() <= 0){ gl1_p4 = tas::genps_p4().at(i); continue; }
       if (gl2_p4.pt() <= 0){ gl2_p4 = tas::genps_p4().at(i); break; }
