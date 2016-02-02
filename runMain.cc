@@ -82,6 +82,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
   TChain *chain_sync_DoubleEG                                                   = new TChain("Events");
   TChain *chain_sync_MuonEG                                                     = new TChain("Events");
   TChain *chain_sync_TTW                                                        = new TChain("Events");
+  TChain *chain_sync_TTG                                                        = new TChain("Events");
 
   TChain *chain_TTJets_50ns = new TChain("Events");
   chain_TTJets_50ns->Add("/hadoop/cms/store/group/snt/run2_50ns/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt50ns_MCRUN2_74_V9A-v1/V07-04-03/merged_ntuple_*.root");
@@ -173,6 +174,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     //chain_sync_MuonEG    ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-08/MuonEG_MINIAOD_PromptReco-v3_000_257_531_00000_D62608D5-FB65-E511-B031-02163E0145C1.root");
     chain_sync_MuonEG    ->Add("/hadoop/cms/store/group/snt/run2_data/Run2015D_MuonEG_MINIAOD_PromptReco-v4/merged/V07-04-11/merged_ntuple_24.root"); 
     chain_sync_TTW       ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-10/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_MINIAODSIM_74X_mcRun2_asymptotic_v2-v1_10000_3A2285C7-CA6D-E511-B68F-0CC47A13D09C.root");
+    chain_sync_TTG       ->Add("/nfs-7/userdata/ss2015/sync_files_new/V07-04-11/TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_MINIAODSIM_74X_mcRun2_asymptotic_v2-v1_60000_0235B538-676E-E511-8A03-001E67E6F855.root");
 
     //Private samples
     TString private_dir = "/nfs-7/userdata/ss2015/signalSamples/V07-02-08/";
@@ -292,6 +294,7 @@ int runMain(bool useSkim, bool skimAll, bool runAll, bool runLepEff, bool runSyn
     if (babiesToMake[41] == 1) l->ScanChain(chain_sync_DoubleEG            , "sync_DoubleEG"            , "baby", 1, "MakeBaby", -1);
     if (babiesToMake[42] == 1) l->ScanChain(chain_sync_MuonEG              , "sync_MuonEG"              , "baby", 1, "MakeBaby", -1);
     if (babiesToMake[43] == 1) l->ScanChain(chain_sync_TTW                 , "sync_TTW"                 , "baby", 0, "MakeBaby", -1);
+    if (babiesToMake[44] == 1) l->ScanChain(chain_sync_TTG                 , "sync_TTG"                 , "baby", 0, "MakeBaby", -1);
 
 
   }
