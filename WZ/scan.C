@@ -28,7 +28,7 @@ int scan(){
 
     TString tag = getTag();
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");  titles.push_back("Fakes"); // FIXME v6.00
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");  titles.push_back("Fakes");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP*.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_high.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_low.root");
@@ -193,171 +193,139 @@ int scan(){
             }
 
             // this guarantees that the third lepton makes a Z with one of the first two leptons
-            // if( ! (ss::hyp_class() == 6 && ss::madeExtraZ()) ) continue;
             if( ! (ss::hyp_class() == 6) ) continue;
 
             if(ss::met() < 30.0) continue;//relax to 30 for low lumi
             if(ss::njets() < 2) continue;
+            
+            // if MC and leptons are not prompt, skip
+            if (!ss::is_real_data()) {
+                if (ss::lep1_motherID()==2) continue;
+                if (ss::lep2_motherID()==2) continue;
+                if (ss::lep1_motherID()!=1 && ss::lep1_isPrompt()!=1 && ss::lep1_isDirectPrompt()!=1) continue;
+                if (ss::lep2_motherID()!=1 && ss::lep2_isPrompt()!=1 && ss::lep2_isDirectPrompt()!=1) continue;
+                if (ss::lep2_motherID()!=1 && ss::lep2_isPrompt()!=1 && ss::lep2_isDirectPrompt()!=1) continue;
+                if (!(abs(ss::lep3_mcid()) == 11 || abs(ss::lep3_mcid()) == 13)) continue;
+
+                scale *=  triggerScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::ht())
+                        * leptonScaleFactor( ss::lep1_id(), ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht())
+                        * leptonScaleFactor( ss::lep2_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::ht())
+                        * leptonScaleFactor( ss::lep3_id(), ss::lep3_p4().pt(), ss::lep3_p4().eta(), ss::ht());
+            }
+
+            float zmass;
+            float zmass23 = ss::lep2_id() == -ss::lep3_id() ? (ss::lep2_p4()+ss::lep3_p4()).mass() : -999.0;
+            float zmass31 = ss::lep3_id() == -ss::lep1_id() ? (ss::lep3_p4()+ss::lep1_p4()).mass() : -999.0;
+
+            if( fabs(zmass31 - 91.2) < fabs(zmass23 - 91.2) ) zmass = zmass31;
+            else zmass = zmass23;
+
+            if (fabs(zmass-91.2) > 15) continue;
 
 
+            float fr = 0.0;
+            bool isDataFake = false;
+            if(ss::is_real_data() && (ss::lep3_fo() && !ss::lep3_tight())) {  // lep3 fake
+                fr = fakeRate(ss::lep3_id(),ss::lep3_p4().pt(),ss::lep3_p4().eta(),ss::ht()); isDataFake = true;
+            }
+            float eff = fr / (1-fr);
+
+            if( !(  isDataFake || (ss::lep1_passes_id() && ss::lep2_passes_id() && ss::lep3_passes_id())  ) ) continue;
+
+            //this is what santiago is doing:
+            // if (ss::lep1_id()*ss::lep2_id()<0) continue;
+
+            // if this is a data event with a fake lepton, fill it instead as a "Fakes" MC event with weight given by fr efficiency
+            if(isDataFake) {
+                filename = "Fakes";
+                iSample = 0;
+                scale = eff;
+            }
 
             // all 4 of these define the CR
             bool goodBtags = ss::nbtags() < 1;
             bool goodNjets = ss::njets() < 5;
             bool goodMet = true;//ss::met() < 200.0;
-            bool goodHH = ss::lep1_p4().pt() > 25.0 && ss::lep2_p4().pt() > 25.0;
+            bool goodHH = ss::lep1_p4().pt() > 25.0 && ss::lep2_p4().pt() > 20.0;
             bool goodMtmin = true;//ss::mtmin() < 120;
 
+            if(filename.Contains("/WZ.root"))    {
+                h2D_ptlep1_ptlep2_wz->Fill(ss::lep2_p4().pt(),ss::lep1_p4().pt());
+                h2D_ht_njets_wz->Fill(ss::ht(),ss::njets());
+                h2D_ht_sumleppt_wz->Fill( ss::ht(), ss::lep2_p4().pt()+ss::lep1_p4().pt() );
+                h2D_njets_nbtags_wz->Fill(ss::nbtags(),ss::njets());
+                h2D_met_mtmin_wz->Fill(ss::mtmin(),ss::met());
+            }
 
-            int whichNotZ = 1; // find lep not from Z
-            float zmass;
-            float zmass23 = ss::lep2_id() == -ss::lep3_id() ? (ss::lep2_p4()+ss::lep3_p4()).mass() : -999.0;
-            float zmass31 = ss::lep3_id() == -ss::lep1_id() ? (ss::lep3_p4()+ss::lep1_p4()).mass() : -999.0;
+            if(goodNjets && goodMet && goodHH && goodMtmin)  {
+                if(ss::nbtags() < 1)  addToCounter("2:nbtags<1_" +filename,scale);
+                if(ss::nbtags() >= 1) addToCounter("2:nbtags>=1_"+filename,scale);
+                fill(h1D_nbtags_vec.at(iSample), ss::nbtags(), scale);
+            }
 
-            if( fabs(zmass31 - 91.2) < fabs(zmass23 - 91.2) )  {
-                whichNotZ = 2;
-                zmass = zmass31;
+
+            if(goodBtags && goodNjets && goodMet && goodMtmin)  {
+                anal_type_t categ = analysisCategory(abs(ss::lep1_id()),abs(ss::lep2_id()),ss::lep1_p4().pt(), ss::lep2_p4().pt());  
+                if(categ == HighHigh) addToCounter("6:HH_" +filename,scale);
+                if(categ == HighLow)  addToCounter("6:HL_" +filename,scale);
+                fill(h1D_lep1pt_vec.at(iSample),ss::lep1_p4().pt(), scale);
+                fill(h1D_lep2pt_vec.at(iSample),ss::lep2_p4().pt(), scale);
+            }
+
+            if(goodBtags && goodNjets && goodMet && goodHH)  {
+                if(ss::mtmin() < 120)  addToCounter("5:mtmin<120_" +filename,scale);
+                if(ss::mtmin() >= 120) addToCounter("5:mtmin>=120_"+filename,scale);
+                fill(h1D_mtmin_vec.at(iSample),ss::mtmin(), scale);
+            }
+
+
+            if(goodBtags && goodMet && goodHH && goodMtmin)  {
+                if(ss::njets() < 5)  addToCounter("1:njets<5_" +filename,scale);
+                if(ss::njets() >= 5) addToCounter("1:njets>=5_"+filename,scale);
+                fill(h1D_njets_vec.at(iSample),ss::njets(), scale);
+            }
+
+            if(goodBtags && goodNjets && goodHH && goodMtmin)  {
+                if(ss::met() < 200)  addToCounter("3:met<200_" +filename,scale);
+                if(ss::met() >= 200) addToCounter("3:met>=200_"+filename,scale);
+                fill(h1D_met_vec.at(iSample),ss::met(), scale);
+            }
+
+
+            if(! (goodBtags && goodNjets && goodMet && goodHH && goodMtmin) ) continue;
+
+            // now we are in the CR
+
+            if(ss::ht() < 300)  addToCounter("4:ht<300_" +filename,scale);
+            if(ss::ht() >= 300) addToCounter("4:ht>=300_"+filename,scale);
+
+            fill(h1D_zmass_vec.at(iSample),zmass, scale); 
+            fill(h1D_ht_vec.at(iSample),ss::ht(), scale);
+
+            addToCounter(filename, scale);
+
+            if( (!ss::is_real_data()) ) {
+                nGoodEvents++;
+                nGoodEventsWeighted+=scale;
             } else {
-                zmass = zmass23;
+                nGoodEventsData++;
             }
 
-            if (fabs(zmass-91.2) > 15) {
-                continue;
-            }
 
-            float fr = 0.0;
-            bool lep1_loose_not_tight = ss::lep1_fo() && !ss::lep1_tight();
-            bool lep2_loose_not_tight = ss::lep2_fo() && !ss::lep2_tight();
-            bool lep3_loose_not_tight = ss::lep3_fo() && !ss::lep3_tight();
-
-            bool zlep_loose_not_tight;
-            bool wlep_loose_not_tight;
-            if(whichNotZ == 1) {
-                wlep_loose_not_tight = lep1_loose_not_tight;
-                zlep_loose_not_tight = lep2_loose_not_tight;
-            } else {
-                wlep_loose_not_tight = lep2_loose_not_tight;
-                zlep_loose_not_tight = lep1_loose_not_tight;
-            }
-
-            // if(ss::is_real_data()) {
-            //     addToCounter("zlepLooseNotTight",zlep_loose_not_tight);
-            //     addToCounter("wlepLooseNotTight",wlep_loose_not_tight);
-            //     addToCounter("lep3LooseNotTight",lep3_loose_not_tight);
-            // }
-
-            bool fillingForFakes = false;
-
-
-            // if(ss::is_real_data() && lep1_loose_not_tight) { fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(),ss::lep1_p4().eta(),ss::ht()); fillingForFakes = true; }
-            // if(ss::is_real_data() && lep2_loose_not_tight) { fr = fakeRate(ss::lep2_id(),ss::lep2_p4().pt(),ss::lep2_p4().eta(),ss::ht()); fillingForFakes = true; }
-            if(ss::is_real_data() && lep3_loose_not_tight) { fr = fakeRate(ss::lep3_id(),ss::lep3_p4().pt(),ss::lep3_p4().eta(),ss::ht()); fillingForFakes = true; }
-            float eff = fr / (1-fr);
-
-            // if(ss::is_real_data() && whichNotZ == 1 && lep1_loose_not_tight) { fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(),ss::lep1_p4().eta(),ss::ht()); fillingForFakes = true; }
-            // else if(ss::is_real_data() && whichNotZ == 2 && lep2_loose_not_tight) { fr = fakeRate(ss::lep2_id(),ss::lep2_p4().pt(),ss::lep2_p4().eta(),ss::ht()); fillingForFakes = true; }
-            // float eff = fr / (1-fr);
-
-            if( !(  fillingForFakes || (ss::lep1_passes_id() && ss::lep2_passes_id() && ss::lep3_passes_id())  ) ) continue;
-
-            //this is what santiago is doing:
-            // if (ss::lep1_id()*ss::lep2_id()<0) continue;
-
-            // if (ss::is_real_data() && goodBtags && goodNjets && goodHH) {
-            //   cout << Form("%1d\t%9d\t%llu\t%+2d\t%5.1f\t%+2d\t%5.1f\t%+2d\t%5.1f\t%d\t%2d\t%5.1f\t%6.1f\n", ss::run(), ss::lumi(), ss::event(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::lep3_id(), ss::lep3_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht());
-            // }
-            //
-
-            // loop once to fill regularly, or twice if second fill is to put data-driven fake rate into MC
-            for(int ifill = 0; ifill < 1+fillingForFakes; ifill++) {
-
-                if(ifill == 1) {
-                    filename = "Fakes";
-                    iSample = 0;
-                    scale = eff;
-                } else {
-                    if( !(  ss::lep1_passes_id() && ss::lep2_passes_id() && ss::lep3_passes_id()  ) ) continue;
-                }
-
-                if(filename.Contains("/WZ.root"))    {
-                    h2D_ptlep1_ptlep2_wz->Fill(ss::lep2_p4().pt(),ss::lep1_p4().pt());
-                    h2D_ht_njets_wz->Fill(ss::ht(),ss::njets());
-                    h2D_ht_sumleppt_wz->Fill( ss::ht(), ss::lep2_p4().pt()+ss::lep1_p4().pt() );
-                    h2D_njets_nbtags_wz->Fill(ss::nbtags(),ss::njets());
-                    h2D_met_mtmin_wz->Fill(ss::mtmin(),ss::met());
-                }
-
-                if(goodNjets && goodMet && goodHH && goodMtmin)  {
-                    if(ss::nbtags() < 1)  addToCounter("2:nbtags<1_" +filename,scale);
-                    if(ss::nbtags() >= 1) addToCounter("2:nbtags>=1_"+filename,scale);
-                    fill(h1D_nbtags_vec.at(iSample), ss::nbtags(), scale);
-                }
-
-
-                if(goodBtags && goodNjets && goodMet && goodMtmin)  {
-                    anal_type_t categ = analysisCategory(abs(ss::lep1_id()),abs(ss::lep2_id()),ss::lep1_p4().pt(), ss::lep2_p4().pt());  
-                    if(categ == HighHigh) addToCounter("6:HH_" +filename,scale);
-                    if(categ == HighLow)  addToCounter("6:HL_" +filename,scale);
-                    fill(h1D_lep1pt_vec.at(iSample),ss::lep1_p4().pt(), scale);
-                    fill(h1D_lep2pt_vec.at(iSample),ss::lep2_p4().pt(), scale);
-                }
-
-                if(goodBtags && goodNjets && goodMet && goodHH)  {
-                    if(ss::mtmin() < 120)  addToCounter("5:mtmin<120_" +filename,scale);
-                    if(ss::mtmin() >= 120) addToCounter("5:mtmin>=120_"+filename,scale);
-                    fill(h1D_mtmin_vec.at(iSample),ss::mtmin(), scale);
-                }
-
-
-                if(goodBtags && goodMet && goodHH && goodMtmin)  {
-                    if(ss::njets() < 5)  addToCounter("1:njets<5_" +filename,scale);
-                    if(ss::njets() >= 5) addToCounter("1:njets>=5_"+filename,scale);
-                    fill(h1D_njets_vec.at(iSample),ss::njets(), scale);
-                }
-
-                if(goodBtags && goodNjets && goodHH && goodMtmin)  {
-                    if(ss::met() < 200)  addToCounter("3:met<200_" +filename,scale);
-                    if(ss::met() >= 200) addToCounter("3:met>=200_"+filename,scale);
-                    fill(h1D_met_vec.at(iSample),ss::met(), scale);
-                }
-
-
-                if(! (goodBtags && goodNjets && goodMet && goodHH && goodMtmin) ) continue;
-
-                // now we are in the CR
-
-                if(ss::ht() < 300)  addToCounter("4:ht<300_" +filename,scale);
-                if(ss::ht() >= 300) addToCounter("4:ht>=300_"+filename,scale);
-
-                fill(h1D_zmass_vec.at(iSample),zmass, scale); 
-                fill(h1D_ht_vec.at(iSample),ss::ht(), scale);
-
-                addToCounter(filename, scale);
-
-                if( (!ss::is_real_data()) ) {
-                    nGoodEvents++;
-                    nGoodEventsWeighted+=scale;
-                } else {
-                    nGoodEventsData++;
-                }
-
-            }
 
 
         }//event loop
 
-        delete file; // does this fix the uaf crashes via plugging memory leak?
-    }//file loop MCMC
+        delete file;
+    }//file loop
 
     std::cout << " nGoodEventsWeighted: " << nGoodEventsWeighted << " nGoodEvents: " << nGoodEvents << " nGoodEventsData: " << nGoodEventsData << " nEventsTotal: " << nEventsTotal << std::endl;
     printCounter(true);
 
-    // TH1F* null = new TH1F("","",1,0,1);
     TH1F* data;
     TString comt = Form(" --errHistAtBottom --doCounts --colorTitle --lumi %.2f --lumiUnit fb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/",getLumi());
     std::string com = comt.Data();
     std::string pct = " --showPercentage ";
-    // std::string spec = "SR1-8";
     std::string spec = "";
 
     std::string HHbins = " --xAxisVerticalBinLabels --xAxisBinLabels 1A,2A,3A,4A,5A,6A,7A,8A,9A,10A,11A,12A,13A,14A,15A,16A,17A,18A,19A,20A,21A,22A,23A,24A,25A,26A,27A,28A,29A,30A,31A,32A";
@@ -365,9 +333,6 @@ int scan(){
     std::string LLbins = " --xAxisVerticalBinLabels --xAxisBinLabels 1C,2C,3C,4C,5C,6C,7C,8C";
 
     data = h1D_njets_vec.back(); h1D_njets_vec.pop_back(); dataMCplotMaker(data,h1D_njets_vec    ,titles,"Njets",spec,com+"h1D_njets.pdf           --isLinear --vLine 5 --xAxisOverride njets");
-    // data = h1D_ht_vec.back(); h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec             ,titles,"H_{T}",spec,com+"h1D_ht.pdf              --isLinear --vLine 300 --xAxisOverride [GeV]");
-    // data = h1D_mtmin_vec.back(); h1D_mtmin_vec.pop_back(); dataMCplotMaker(data,h1D_mtmin_vec    ,titles,"m_{T,min}",spec,com+"h1D_mtmin.pdf       --isLinear --vLine 120 --xAxisOverride [GeV]");
-    // data = h1D_met_vec.back(); h1D_met_vec.pop_back(); dataMCplotMaker(data,h1D_met_vec          ,titles,"#slash{E}_{T}",spec,com+"h1D_met.pdf     --isLinear --vLine 200 --xAxisOverride [GeV]");
     data = h1D_ht_vec.back(); h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec             ,titles,"H_{T}",spec,com+"h1D_ht.pdf              --isLinear             --xAxisOverride H_{T} [GeV]");
     data = h1D_mtmin_vec.back(); h1D_mtmin_vec.pop_back(); dataMCplotMaker(data,h1D_mtmin_vec    ,titles,"m_{T,min}",spec,com+"h1D_mtmin.pdf       --isLinear             --xAxisOverride m_{T,min} [GeV]");
     data = h1D_met_vec.back(); h1D_met_vec.pop_back(); dataMCplotMaker(data,h1D_met_vec          ,titles,"#slash{E}_{T}",spec,com+"h1D_met.pdf     --isLinear             --xAxisOverride #slash{E}_{T} [GeV]");
@@ -376,26 +341,11 @@ int scan(){
     data = h1D_lep1pt_vec.back(); h1D_lep1pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep1pt_vec ,titles,"p_{T}(lep_{1})",spec,com+"h1D_lep1pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{1}) [GeV]");
     data = h1D_lep2pt_vec.back(); h1D_lep2pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep2pt_vec ,titles,"p_{T}(lep_{2})",spec,com+"h1D_lep2pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{2}) [GeV]");
 
-
     drawHist2D(h2D_ht_sumleppt_wz , "pdfs/h2D_ht_sumleppt_wz.pdf" , "--logscale --title WZ: p_{T}(lep_{1})+p_{T}(lep_{2}) vs H_{T} --xlabel  sum H_{T} --ylabel leppt");
     drawHist2D(h2D_ht_njets_wz , "pdfs/h2D_ht_njets_wz.pdf" , "--logscale --title WZ: Njets vs H_{T} --xlabel  H_{T} --ylabel Njets");
     drawHist2D(h2D_ptlep1_ptlep2_wz , "pdfs/h2D_ptlep1_ptlep2_wz.pdf" , "--logscale --title WZ: p_{T}(lep_{1}) vs p_{T}(lep_{2}) --xlabel  ptlep2 --ylabel ptlep1");
     drawHist2D(h2D_njets_nbtags_wz  , "pdfs/h2D_njets_nbtags_wz.pdf"  , "--logscale --title WZ: Njets vs Nbtags --xlabel  nbtags --ylabel njets");
     drawHist2D(h2D_met_mtmin_wz     , "pdfs/h2D_met_mtmin_wz.pdf"     , "--logscale --title WZ: #slash{E}_{T} vs m_{T,min} --xlabel  mtmin --ylabel met");
-
-    // data = h1D_yields_HH_vec.back(); h1D_yields_HH_vec.pop_back();
-    // dataMCplotMaker(data,h1D_yields_HH_vec ,titles,"HH yields",spec,com+"h1D_yields_HH.pdf --isLinear --xAxisOverride SR "+HHbins);
-
-    // data = h1D_yields_HL_vec.back(); h1D_yields_HL_vec.pop_back();
-    // dataMCplotMaker(data,h1D_yields_HL_vec ,titles,"HL yields",spec,com+"h1D_yields_HL.pdf --isLinear --xAxisOverride SR "+HLbins+pct);
-
-    // data = h1D_yields_LL_vec.back(); h1D_yields_LL_vec.pop_back();
-    // dataMCplotMaker(data,h1D_yields_LL_vec ,titles,"LL yields",spec,com+"h1D_yields_LL.pdf --isLinear --xAxisOverride SR "+LLbins);
-
-    data = h1D_zmass_vec.back(); h1D_zmass_vec.pop_back();
-    dataMCplotMaker(data,h1D_zmass_vec     ,titles,"m_{ll}",spec,com+"h1D_zmass.pdf                   --isLinear --xAxisOverride m_{ll} [GeV]");
-
-    // dataMCplotMaker(null,h1D_hyp_class_vec ,titles,"hyp_class (no cuts)",spec,com+"h1D_hyp_class.pdf            --xAxisOverride id    "+pct);
 
     return 0;
 }
