@@ -9,7 +9,7 @@ using namespace tas;
 const bool applyBtagSFs = true;
 
 //Main functions
-void babyMaker::MakeBabyNtuple(const char* output_name, bool isFastsim){
+void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
 
   //Create Baby
   BabyFile = new TFile(Form("%s/%s.root", path.Data(), output_name), "RECREATE");
@@ -279,8 +279,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, bool isFastsim){
 
     // get btag efficiencies
     TFile* f_btag_eff = 0;
-    if (!isFastsim) f_btag_eff = new TFile("btagsf/btageff__ttbar_powheg_pythia8_25ns.root");
-    if ( isFastsim) f_btag_eff = new TFile("CORE/Tools/btagsf/data/run2_fastsim/btageff__SMS-T1bbbb-T1qqqq_fastsim.root");
+    if (isFastsim == 0) f_btag_eff = new TFile("btagsf/btageff__ttbar_powheg_pythia8_25ns.root");
+    if (isFastsim >  0 ) f_btag_eff = new TFile("CORE/Tools/btagsf/data/run2_fastsim/btageff__SMS-T1bbbb-T1qqqq_fastsim.root");
     TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
     TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
     TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
@@ -535,7 +535,7 @@ void babyMaker::InitBabyNtuple(){
 } 
 
 //Main function
-csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty* jecUnc, int file, bool isFastsim){
+csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty* jecUnc, int file, int isFastsim){
 
   //Initialize variables
   InitBabyNtuple();
@@ -591,12 +591,14 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     genweights = tas::genweights(); 
     genweightsID = tas::genweightsID(); 
     scale1fb = tas::evt_scale1fb(); 
-    if (isFastsim){
+    if (isFastsim > 0){
       sparms = tas::sparm_values();  
       sparmNames = tas::sparm_names(); 
-      xsec = go_xsec(sparms[0]).xsec;
-      xsec_error = go_xsec(sparms[0]).percErr;
-      scale1fb = 1000*xsec/nPoints(1, sparms[0], sparms[1]);
+      if (isFastsim < 3 ) xsec = go_xsec(sparms[0]).xsec;
+      if (isFastsim == 3) xsec = stop_xsec(sparms[0]).xsec; 
+      if (isFastsim < 3 ) xsec_error = go_xsec(sparms[0]).percErr;
+      if (isFastsim == 3) xsec_error = stop_xsec(sparms[0]).percErr;
+      scale1fb = 1000*xsec/nPoints(isFastsim, sparms[0], sparms[1]);
       is_fastsim = 1; 
     }
   }
@@ -897,7 +899,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   }
   
   //Determine and save jet and b-tag variables, raw
-  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 2, isFastsim);
+  std::pair <vector <Jet>, vector <Jet> > jet_results = SSJetsCalculator(jetCorr, 2, (isFastsim > 0));
   vector <LorentzVector> jets_raw;
   vector <LorentzVector> btags_raw;
   vector <float> jets_undoJEC_raw;
@@ -980,7 +982,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
        weight_UP      = reader_heavy_UP->eval(flavor, jet_eta, pt_cutoff);
        weight_DN      = reader_heavy_DN->eval(flavor, jet_eta, pt_cutoff);
      }
-     if (isFastsim){
+     if (isFastsim > 0){
        weight_cent *= reader_fastsim->eval(flavor, jet_eta, pt_cutoff);
        weight_UP   *= reader_fastsim_UP->eval(flavor, jet_eta, pt_cutoff);
        weight_DN   *= reader_fastsim_DN->eval(flavor, jet_eta, pt_cutoff);
@@ -1023,9 +1025,10 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   weight_btagsf_UP = weight_btagsf + (sqrt(pow(btagprob_err_heavy_UP,2) + pow(btagprob_err_light_UP,2)) * weight_btagsf);
   weight_btagsf_DN = weight_btagsf - (sqrt(pow(btagprob_err_heavy_DN,2) + pow(btagprob_err_light_DN,2)) * weight_btagsf);
 
-  if (isFastsim){
+  if (isFastsim > 0){
     for (unsigned int i = 0; i < tas::genps_status().size(); i++){
-      if (tas::genps_id().at(i) != 1000021) continue;
+      if (isFastsim  < 3 && tas::genps_id().at(i) != 1000021) continue;
+      if (isFastsim == 3 && tas::genps_id().at(i) != 1000005) continue;
       if (tas::genps_status().at(i) != 22) continue; 
       if (gl1_p4.pt() <= 0){ gl1_p4 = tas::genps_p4().at(i); continue; }
       if (gl2_p4.pt() <= 0){ gl2_p4 = tas::genps_p4().at(i); break; }
@@ -1236,7 +1239,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   metphi3p0 = MET3p0_.second;
 
   //MET filters
-  passes_met_filters = isFastsim ? 1 : passesMETfilterv2();
+  passes_met_filters = (isFastsim > 0) ? 1 : passesMETfilterv2();
 
   //Fill Baby
   BabyTree->Fill();

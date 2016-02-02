@@ -89,7 +89,8 @@ void plots(){
   wzz_plots    = makePlots(wzz);
   zz_plots    = makePlots(zz);
   mb_plots    = makePlots(mb);
-  for (unsigned int i = 0; i < mb_plots.first.size(); i++) mb_plots.first[i]->Add(mb_plots.first[i]); 
+  for (unsigned int i = 0; i < mb_plots.first.size(); i++) mb_plots.first[i]->Add(zz_plots.first[i]); 
+  for (unsigned int i = 0; i < mb_plots.first.size(); i++) mb_plots.first[i]->Add(wzz_plots.first[i]); 
   for (unsigned int i = 0; i < ttbar_plots.first.size(); i++) ttbar_plots.first[i]->Add(st_plots.first[i]); 
   dy_plots    = makePlots(dy);
   wjets_plots = makePlots(wjets);
@@ -139,9 +140,9 @@ void plots(){
                    ("zz", zz_plots.second.at(0), zz_plots.second.at(1), zz_plots.second.at(2), zz_plots.second.at(3))
                    ("qqww", qqww_plots.second.at(0), qqww_plots.second.at(1), qqww_plots.second.at(2), qqww_plots.second.at(3))
                    ("total MC", total.at(0), total.at(1), total.at(2), total.at(3))
-                   ("t1tttt_high MC", t1tttt_high_plots.second.at(0), t1tttt_high_plots.second.at(1), t1tttt_high_plots.second.at(2), t1tttt_high_plots.second.at(3))
-                   ("t1tttt_low MC", t1tttt_low_plots.second.at(0), t1tttt_low_plots.second.at(1), t1tttt_low_plots.second.at(2), t1tttt_low_plots.second.at(3));
-//                 ("data", data_plots.second.at(0), data_plots.second.at(1), data_plots.second.at(2), data_plots.second.at(3));
+//                   ("t1tttt_high MC", t1tttt_high_plots.second.at(0), t1tttt_high_plots.second.at(1), t1tttt_high_plots.second.at(2), t1tttt_high_plots.second.at(3))
+//                   ("t1tttt_low MC", t1tttt_low_plots.second.at(0), t1tttt_low_plots.second.at(1), t1tttt_low_plots.second.at(2), t1tttt_low_plots.second.at(3));
+                   ("data", data_plots.second.at(0), data_plots.second.at(1), data_plots.second.at(2), data_plots.second.at(3));
  table.print(); 
  table.saveTex("table.tex"); 
 
@@ -214,7 +215,7 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
 
       //Calculate weight
       float weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
-      weight *= ss::is_real_data() ? 1 : (ss::sparms().size() > 0 ? eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht()) : eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices())); 
+      weight *= ss::is_real_data() ? 1 : (ss::sparms().size() == 0 ? eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht()) : eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices())); 
 
       //Make met plots here
       if (ss::njets() >= 2) met->Fill(ss::met(), weight);  
@@ -236,7 +237,7 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       eta->Fill(ss::lep2_p4().eta(), weight);
   
       //Counts
-      if (ss::dilep_p4().M() < 30) continue; 
+      //if (ss::dilep_p4().M() < 30) continue; 
       if (ss::hyp_type() == 0)      counts[2] += weight; 
       else if (ss::hyp_type() == 3) counts[0] += weight; 
       else                          counts[1] += weight;
