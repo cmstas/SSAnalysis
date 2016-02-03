@@ -10,11 +10,13 @@ function run () {
     then 
       echo "$2 already exists, done."
     else 
-      nohup nice -n 19 root -b -q merge.C\(\"${1}\",\"$2\"\) >& /dev/null
+      nohup nice -n 19 root -b -q merge.C\(\"${1}\",\"$2\"\) >> nohub.txt & 
     fi
 }
 
 if [ ! -d /nfs-7/userdata/ss2015/ssBabies/$tag ]; then mkdir -p /nfs-7/userdata/ss2015/ssBabies/$tag; fi
+
+rm nohub.txt
 
 #run $path/datadoubleegc_05oct                     $tag/DataDoubleEGC_05oct.root         
 #run $path/datadoublemuonc_05oct                   $tag/DataDoubleMuonC_05oct.root       

@@ -5,8 +5,6 @@
   //TFile *file = new TFile("/nfs-7/userdata/ss2015/ssBabies/v6.02-fs/T5QQQQVV_1200to1275_1to1150.root");
   TChain *chain = new TChain("t"); 
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02-fs/T5QQQQVV_*_*.root"); 
-  unsigned int nEventsTotal = 0;
-  unsigned int nEventsChain = chain->GetEntries();
   TObjArray *listOfFiles = chain->GetListOfFiles();
   TIter fileIter(listOfFiles);
   TFile *currentFile = 0;
