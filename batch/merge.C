@@ -7,7 +7,7 @@ void merge(const TString& in, const TString& out) {
   TChain *chain = new TChain("t");
   chain->SetMaxTreeSize(15000000000LL); //default is 100000000000LL
   if (verbose) std::cout << "Merging files from dir: " << in << std::endl << "Ouputting to: " << out << std::endl;
-  chain->Add(in + "_[7-8]*.root");
+  chain->Add(in + "_*.root");
   TObjArray *listOfFiles = chain->GetListOfFiles();
   TIter fileIter(listOfFiles);
   TFile *currentFile = 0;
