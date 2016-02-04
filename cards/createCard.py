@@ -13,7 +13,7 @@ import math
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
-lumi = "2.2"
+lumi = "2.3"
 
 pseudoData = 0
 
@@ -182,7 +182,7 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     for process in processes: card.write("%-15s " % (process.scale))
     card.write("\n")
     #nuisance pdf_flat
-    for process in processes: writeDummyPdfForSignal(dir,card,kine,process,processes)
+    #for process in processes: writeDummyPdfForSignal(dir,card,kine,process,processes)
     #nuisance norm
     #card.write("%-40s %-5s " % ("norm","lnN"))
     #for process in processes: card.write("%-15s " % (process.norm))
@@ -322,9 +322,6 @@ def writeOneCard(dir, signal, kine, plot, output):
     #overwrite nuisances
     signal.lumi  = "1.046"
     signal.jes  = "1"
-    #fxsec = ROOT.TFile("xsec_susy_13tev.root")
-    #hxsec = fxsec.Get("h_xsec_gluino")
-    #normunc = 1.
     if signal.name.find("fs_") != -1:
         #these are only for fast sim
         signal.scale  = "1"
@@ -332,16 +329,7 @@ def writeOneCard(dir, signal, kine, plot, output):
         if kine is "hihi": signal.fs_lep_hh  = "1.08"
         if kine is "hilow": signal.fs_lep_hl  = "1.15"
         if kine is "lowlow": signal.fs_lep_ll  = "1.20"
-        if signal.name.find("t1tttt") != -1:
-            signal.isr  = "1"
-            #mglu = signal.name.split("_")[2][1:]
-            #normunc = 1 + hxsec.GetBinError(hxsec.FindBin(float(mglu)))/hxsec.GetBinContent(hxsec.FindBin(float(mglu)))
-    #else: 
-        #if signal.name.find("t1tttt") != -1:
-            #mglu = signal.name.split("_")[1]
-            #normunc = 1 + hxsec.GetBinError(hxsec.FindBin(float(mglu)))/hxsec.GetBinContent(hxsec.FindBin(float(mglu)))
-    #signal.norm  = ("%.2f" % normunc)
-    #fxsec.Close()
+    signal.isr  = "1"
     signal.lepeff  = "1.04"
     signal.lephlt  = "1.02"
     signal.hthlt  = "1"

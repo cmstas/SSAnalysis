@@ -11,8 +11,8 @@ void makeTable() {
     pm  = "+/-";
   }
 
-  TString lumi = "2.2";
-  TString dir = "v5.07-statunc";
+  TString lumi = "2.3";
+  TString dir = "v6.02";
 
   TString procs[] = {"ttw","ttzh","wz","ww","xg","rares","flips","fakes"};
 
