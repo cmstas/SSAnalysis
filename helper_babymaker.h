@@ -1,7 +1,7 @@
 #ifndef SSBABYMAKER_H
 #define SSBABYMAKER_H
 
-#include "go_xsec.h"
+#include "xsec.h"
 #include "TChain.h"
 #include "TFile.h"
 #include "TTree.h"
@@ -43,10 +43,10 @@ class babyMaker {
       verbose = debug;
       evt_cut = 0;
     }
-    void MakeBabyNtuple(const char* output_name, bool isFastsim);
+    void MakeBabyNtuple(const char* output_name, int isFastsim);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
-    csErr_t ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, int file = -1, bool isFastsim = 0);
+    csErr_t ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, int file = -1, int isFastsim = 0);
 
   protected:
     TFile* BabyFile;

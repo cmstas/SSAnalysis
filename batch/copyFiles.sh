@@ -43,9 +43,7 @@ if [ ! -d CORE/Tools/filterLists ]
 then
   mkdir -p CORE/Tools/filterLists
 fi
-cp -r /nfs-6/userdata/mt2utils/DoubleEG_csc2015.txt CORE/Tools/filterLists/
-cp -r /nfs-6/userdata/mt2utils/DoubleMuon_csc2015.txt CORE/Tools/filterLists/
-cp -r /nfs-6/userdata/mt2utils/MuonEG_csc2015.txt CORE/Tools/filterLists/
+cp -r /nfs-6/userdata/mt2utils/csc2015_Dec01.txt CORE/Tools/filterLists/
 tar -czf btagsf.tar.gz btagsf
 
 #And goodrun list directory 
