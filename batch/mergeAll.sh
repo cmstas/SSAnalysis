@@ -10,7 +10,7 @@ function run () {
     then 
       echo "$2 already exists, done."
     else 
-      nohup nice -n 19 root -b -q merge.C\(\"${1}\",\"$2\"\) >> nohub.txt & 
+      nohup nice -n 19 root -b -q merge.C\(\"${1}\",\"$2\"\) >> nohub.txt 
     fi
 }
 
