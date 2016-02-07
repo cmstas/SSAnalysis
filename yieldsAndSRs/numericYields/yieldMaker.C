@@ -359,6 +359,7 @@ void getyields(){
     cout << "\\begin{document}" << endl;
   }
 
+
   cout << endl;
   if (doLatex) {
     cout << "\\begin{landscape}" << endl;
@@ -371,27 +372,45 @@ void getyields(){
   }
   cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   if (doLatex) cout << "\\hline\\hline" << endl;
-  for (int bin=1;bin<=p_ttw.SRHH.TOTAL->GetNbinsX(); ++bin) {
+
+  //Set up Alex Tables
+  CTable HH_alex_table;
+  CTable HL_alex_table;
+  CTable LL_alex_table;
+  vector <CTable*> alexTables = { &HH_alex_table, &HL_alex_table, &LL_alex_table }; 
+  for (unsigned int i = 0; i < 3; i++){
+    alexTables.at(i)->setPrecision(2); 
+    alexTables.at(i)->setTitle("Yields in HH Region"); 
+    alexTables.at(i)->useTitle(); 
+    alexTables.at(i)->setTable() ("Rare", "Fake", "Flip", "Total", "Data");
+  }
+
+  //Print high-high tables
+  for (int bin=1;bin<=p_ttw.SRHH.TOTAL->GetNbinsX(); ++bin){
+    float SM = (p_ttw.SRHH.TOTAL->GetBinContent(bin)+p_ttzh.SRHH.TOTAL->GetBinContent(bin)+p_wz.SRHH.TOTAL->GetBinContent(bin)+p_ww.SRHH.TOTAL->GetBinContent(bin)+p_xg.SRHH.TOTAL->GetBinContent(bin)+p_rares.SRHH.TOTAL->GetBinContent(bin));
+    float SM_err = sqrt(pow(p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,2)+pow(p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,2)+pow(p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,2));
+    float fake = p_fakes.SRHH.TOTAL->GetBinContent(bin);
+    float fake_err = p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH;
+    float flip = p_flips.SRHH.TOTAL->GetBinContent(bin);
+    float flip_err = p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS;
+    float total = SM + fake + flip; 
+    float total_err = sqrt( pow(SM_err, 2) + pow(fake_err, 2) + pow(flip_err, 2) ); 
+    int data = p_data.SRHH.TOTAL->GetBinContent(bin);
     cout << Form(HHline.Data(),bin,
-    	 p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,
-    	 p_ttzh.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,
-    	 p_wz.SRHH.TOTAL->GetBinContent(bin),p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,
-    	 p_ww.SRHH.TOTAL->GetBinContent(bin),p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,
-    	 p_xg.SRHH.TOTAL->GetBinContent(bin),p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,
-    	 p_rares.SRHH.TOTAL->GetBinContent(bin),p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,
-    	 p_flips.SRHH.TOTAL->GetBinContent(bin),p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,
-    	 p_fakes.SRHH.TOTAL->GetBinContent(bin),p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,
-    	 (p_ttw.SRHH.TOTAL->GetBinContent(bin)+p_ttzh.SRHH.TOTAL->GetBinContent(bin)+p_wz.SRHH.TOTAL->GetBinContent(bin)+
-    	  p_ww.SRHH.TOTAL->GetBinContent(bin)+p_xg.SRHH.TOTAL->GetBinContent(bin)+
-    	  p_rares.SRHH.TOTAL->GetBinContent(bin)+p_flips.SRHH.TOTAL->GetBinContent(bin)+p_fakes.SRHH.TOTAL->GetBinContent(bin)),
-    	 sqrt(pow(p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
-    	  pow(p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,2)+
-    	  pow(p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHH.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
-    	      pow(p_fakes.SRHH.TOTAL->GetBinContent(bin)*roughSystFAKESHH,2)),
-    	 p_data.SRHH.TOTAL->GetBinContent(bin),
-    	 p_t1tttt_1200.SRHH.TOTAL->GetBinContent(bin)
-    	 )
-     << endl;
+    p_ttw.SRHH.TOTAL->GetBinContent(bin),p_ttw.SRHH.TOTAL->GetBinContent(bin)*roughSystTTW,
+    p_ttzh.SRHH.TOTAL->GetBinContent(bin),p_ttzh.SRHH.TOTAL->GetBinContent(bin)*roughSystTTZH,
+    p_wz.SRHH.TOTAL->GetBinContent(bin),p_wz.SRHH.TOTAL->GetBinContent(bin)*roughSystWZ,
+    p_ww.SRHH.TOTAL->GetBinContent(bin),p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,
+    p_xg.SRHH.TOTAL->GetBinContent(bin),p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,
+    p_rares.SRHH.TOTAL->GetBinContent(bin),p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,
+    flip, flip_err, fake, fake_err, total, total_err, data,
+    p_t1tttt_1200.SRHH.TOTAL->GetBinContent(bin)) << endl;
+    HH_alex_table.setCell(Form("%.2f $\\pm$ %.2f",    SM,    SM_err), bin-1, 0); 
+    HH_alex_table.setCell(Form("%.2f $\\pm$ %.2f",  fake,  fake_err), bin-1, 1); 
+    HH_alex_table.setCell(Form("%.2f $\\pm$ %.2f",  flip,  flip_err), bin-1, 2); 
+    HH_alex_table.setCell(Form("%.2f $\\pm$ %.2f", total, total_err), bin-1, 3); 
+    HH_alex_table.setCell(Form("%i",  data), bin-1, 4); 
+    HH_alex_table.setRowLabel(Form("%i",  bin), bin-1); 
   }
   if (doLatex) {
     cout << "\\hline" << endl;
@@ -414,26 +433,31 @@ void getyields(){
   cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   if (doLatex) cout << "\\hline\\hline" << endl;
   for (int bin=1;bin<=p_ttw.SRHL.TOTAL->GetNbinsX(); ++bin) {
+    float SM = (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+p_wz.SRHL.TOTAL->GetBinContent(bin)+p_ww.SRHL.TOTAL->GetBinContent(bin)+p_xg.SRHL.TOTAL->GetBinContent(bin)+p_rares.SRHL.TOTAL->GetBinContent(bin));
+    float SM_err = sqrt(pow(p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+pow(p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,2)+pow(p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,2));
+    float fake = p_fakes.SRHL.TOTAL->GetBinContent(bin);
+    float fake_err = p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL;
+    float flip = p_flips.SRHL.TOTAL->GetBinContent(bin);
+    float flip_err = p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS;
+    float total = SM + fake + flip; 
+    float total_err = sqrt( pow(SM_err, 2) + pow(fake_err, 2) + pow(flip_err, 2) ); 
+    int data = p_data.SRHL.TOTAL->GetBinContent(bin);
     cout << Form(HLline.Data(),bin,
-    	 p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,
-    	 p_ttzh.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,
-    	 p_wz.SRHL.TOTAL->GetBinContent(bin),p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,
-    	 p_ww.SRHL.TOTAL->GetBinContent(bin),p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,
-    	 p_xg.SRHL.TOTAL->GetBinContent(bin),p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,
-    	 p_rares.SRHL.TOTAL->GetBinContent(bin),p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,
-    	 p_flips.SRHL.TOTAL->GetBinContent(bin),p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
-    	 p_fakes.SRHL.TOTAL->GetBinContent(bin),p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
-    	 (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+p_wz.SRHL.TOTAL->GetBinContent(bin)+
-    	  p_ww.SRHL.TOTAL->GetBinContent(bin)+p_xg.SRHL.TOTAL->GetBinContent(bin)+
-    	  p_rares.SRHL.TOTAL->GetBinContent(bin)+p_flips.SRHL.TOTAL->GetBinContent(bin)+p_fakes.SRHL.TOTAL->GetBinContent(bin)),
-    	 sqrt(pow(p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
-    	  pow(p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
-    	  pow(p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRHL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
-    	      pow(p_fakes.SRHL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
-    	 p_data.SRHL.TOTAL->GetBinContent(bin),
-    	 p_t1tttt_1200.SRHL.TOTAL->GetBinContent(bin)
-    	 )
-     << endl;
+    p_ttw.SRHL.TOTAL->GetBinContent(bin),p_ttw.SRHL.TOTAL->GetBinContent(bin)*roughSystTTW,
+    p_ttzh.SRHL.TOTAL->GetBinContent(bin),p_ttzh.SRHL.TOTAL->GetBinContent(bin)*roughSystTTZH,
+    p_wz.SRHL.TOTAL->GetBinContent(bin),p_wz.SRHL.TOTAL->GetBinContent(bin)*roughSystWZ,
+    p_ww.SRHL.TOTAL->GetBinContent(bin),p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,
+    p_xg.SRHL.TOTAL->GetBinContent(bin),p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,
+    p_rares.SRHL.TOTAL->GetBinContent(bin),p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,
+    flip, flip_err, fake, fake_err, total, total_err, data,
+    p_t1tttt_1200.SRHL.TOTAL->GetBinContent(bin)
+    ) << endl;
+    HL_alex_table.setCell(Form("%.2f $\\pm$ %.2f",    SM,    SM_err), bin-1, 0); 
+    HL_alex_table.setCell(Form("%.2f $\\pm$ %.2f",  fake,  fake_err), bin-1, 1); 
+    HL_alex_table.setCell(Form("%.2f $\\pm$ %.2f",  flip,  flip_err), bin-1, 2); 
+    HL_alex_table.setCell(Form("%.2f $\\pm$ %.2f", total, total_err), bin-1, 3); 
+    HL_alex_table.setCell(Form("%i",  data), bin-1, 4); 
+    HL_alex_table.setRowLabel(Form("%i",  bin), bin-1); 
   }
   if (doLatex) {
     cout << "\\hline" << endl;
@@ -456,26 +480,32 @@ void getyields(){
   cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   if (doLatex) cout << "\\hline\\hline" << endl;
   for (int bin=1;bin<=p_ttw.SRLL.TOTAL->GetNbinsX(); ++bin) {
+    float SM = (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+p_wz.SRLL.TOTAL->GetBinContent(bin)+p_ww.SRLL.TOTAL->GetBinContent(bin)+p_xg.SRLL.TOTAL->GetBinContent(bin)+p_rares.SRLL.TOTAL->GetBinContent(bin));
+    float SM_err = sqrt(pow(p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+pow(p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,2)+pow(p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,2));
+    float fake = p_fakes.SRLL.TOTAL->GetBinContent(bin);
+    float fake_err = p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL;
+    float flip = p_flips.SRLL.TOTAL->GetBinContent(bin);
+    float flip_err = p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS;
+    float total = SM + fake + flip; 
+    float total_err = sqrt( pow(SM_err, 2) + pow(fake_err, 2) + pow(flip_err, 2) ); 
+    int data = p_data.SRLL.TOTAL->GetBinContent(bin);
     cout << Form(LLline.Data(),bin,
-    	 p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,
-    	 p_ttzh.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,
-    	 p_wz.SRLL.TOTAL->GetBinContent(bin),p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,
-    	 p_ww.SRLL.TOTAL->GetBinContent(bin),p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,
-    	 p_xg.SRLL.TOTAL->GetBinContent(bin),p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,
-    	 p_rares.SRLL.TOTAL->GetBinContent(bin),p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,
-    	 p_flips.SRLL.TOTAL->GetBinContent(bin),p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,
-    	 p_fakes.SRLL.TOTAL->GetBinContent(bin),p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,
-    	 (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+p_wz.SRLL.TOTAL->GetBinContent(bin)+
-    	  p_ww.SRLL.TOTAL->GetBinContent(bin)+p_xg.SRLL.TOTAL->GetBinContent(bin)+
-    	  p_rares.SRLL.TOTAL->GetBinContent(bin)+p_flips.SRLL.TOTAL->GetBinContent(bin)+p_fakes.SRLL.TOTAL->GetBinContent(bin)),
-    	 sqrt(pow(p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,2)+
-    	  pow(p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,2)+
-    	  pow(p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,2)+pow(p_flips.SRLL.TOTAL->GetBinContent(bin)*roughSystFLIPS,2)+
-    	      pow(p_fakes.SRLL.TOTAL->GetBinContent(bin)*roughSystFAKESXL,2)),
-    	 p_data.SRLL.TOTAL->GetBinContent(bin),
-    	 p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
-    	 )
-     << endl;
+    p_ttw.SRLL.TOTAL->GetBinContent(bin),p_ttw.SRLL.TOTAL->GetBinContent(bin)*roughSystTTW,
+    p_ttzh.SRLL.TOTAL->GetBinContent(bin),p_ttzh.SRLL.TOTAL->GetBinContent(bin)*roughSystTTZH,
+    p_wz.SRLL.TOTAL->GetBinContent(bin),p_wz.SRLL.TOTAL->GetBinContent(bin)*roughSystWZ,
+    p_ww.SRLL.TOTAL->GetBinContent(bin),p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,
+    p_xg.SRLL.TOTAL->GetBinContent(bin),p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,
+    p_rares.SRLL.TOTAL->GetBinContent(bin),p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,
+    flip, flip_err, fake, fake_err, total, total_err, data,
+    p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
+    )
+    << endl;
+    LL_alex_table.setCell(Form("%.2f $\\pm$ %.2f",    SM,    SM_err), bin-1, 0); 
+    LL_alex_table.setCell(Form("%.2f $\\pm$ %.2f",  fake,  fake_err), bin-1, 1); 
+    LL_alex_table.setCell(Form("%.2f $\\pm$ %.2f",  flip,  flip_err), bin-1, 2); 
+    LL_alex_table.setCell(Form("%.2f $\\pm$ %.2f", total, total_err), bin-1, 3); 
+    LL_alex_table.setCell(Form("%i",  data), bin-1, 4); 
+    LL_alex_table.setRowLabel(Form("%i",  bin), bin-1); 
   }
   if (doLatex) {
     cout << "\\hline" << endl;
@@ -483,9 +513,10 @@ void getyields(){
     cout << "\\end{center}" << endl;
     cout << "\\end{table}" << endl;
     cout << "\\end{landscape}" << endl;
-
     cout << "\\end{document}" << endl;
   }
+
+  for (unsigned int i = 0; i < 3; i++) alexTables.at(i)->saveTex(Form("alex%stable.tex", i == 0 ? "HH" : i == 1 ? "HL" : "LL")); 
 
   //SR plots
   vector<pair<TH1F*, float> > SRHH_plots;
