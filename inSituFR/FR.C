@@ -1,7 +1,7 @@
 #include "../software/dataMCplotMaker/PlotMaker2D.h"
 #include "../software/tableMaker/CTable.h"
 #include "../commonUtils.h"
-#include "../classFiles/v4.00/SS.h"
+#include "../classFiles/v6.02/SS.h"
 #include "TH2D.h"
 #include "TCanvas.h"
 #include "TChain.h"
@@ -76,7 +76,7 @@ void FR(){
   nBinsX = 5; 
   int nBinsY = 1; 
   float xbins[] = { 10, 15, 25, 35, 50, 70 }; 
-  //float ybins[] = { 0, 1, 2, 2.4 }; 
+  //float ybins[] = { 0, 0.8, 1.479, 2.5 }; 
   float ybins[] = { 0, 2.4 }; 
   numer  = new TH2D("numer" , "numer" , nBinsX, xbins, nBinsY, ybins);
   denom  = new TH2D("denom" , "denom" , nBinsX, xbins, nBinsY, ybins);
@@ -102,9 +102,15 @@ void FR(){
   TChain *chain = new TChain("t");
   int fo2_suffix = 0;
   if (doData){
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleEGD.root",   tag.c_str()));
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataDoubleMuonD.root", tag.c_str()));
-    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s-data848p7ipb/DataMuonEGD.root",     tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGC_05oct.root"  , tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_05oct.root"  , tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_v4.root"     , tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonC_05oct.root", tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_05oct.root", tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_v4.root"   , tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGC_05oct.root"    , tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_05oct.root"    , tag.c_str()));
+    chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_v4.root"       , tag.c_str()));
   }
   else if (!doData){
     chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR.root", tag.c_str()));
@@ -151,19 +157,24 @@ void FR(){
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
 
+      if (ss::run() > 258750) continue;
+
       //Event Selection
       // relax cuts for low lumi
-      //if (ss::njets_corr() < 2) continue;
-      //if (ss::ht_corr() < 80) continue;
-      //if (ss::corrMET() < 30 && ss::ht() < 500) continue;
+      //if (ss::njets() < 2) continue;
+      //if (ss::ht() < 80) continue;
+      //if (ss::met() < 30 && ss::ht() < 500) continue;
       if (ss::hyp_class() == 4 || ss::hyp_class() == 6) continue;
       if (!ss::fired_trigger()) continue; 
+
+      //Non-isolated only
+      //if (ss::ht() < 300) continue;
 
       //SS Z veto
       if (ssZveto && fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15) continue;
 
       //Must pass tight MVA
-      if (!passesNumeratorMVA(1) && !passesNumeratorMVA(2)) continue;
+      //if (!passesNumeratorMVA(1) && !passesNumeratorMVA(2)) continue;
  
       //Various variables
       float ptrel_cut_1    = (abs(ss::lep1_id()) == 11 ? 7.20 : 7.20);

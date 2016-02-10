@@ -73,3 +73,7 @@ FakeRate/app_region/*.txt
 FakeRate/measurement_region/log*
 FakeRate/measurement_region/*.txt
 WZ/*.txt
+analysisNote/
+outreach/doThesis.C
+plots/plotsFromBabies/table.tex
+sync/TMtest/
