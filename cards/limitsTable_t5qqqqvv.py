@@ -36,7 +36,9 @@ def smooth(g,h):
             if ybin>xbin+ybinsfirstxbin: 
                 h.SetBinContent(xbin,ybin,h.GetBinContent(xbin,ybin-1))
     #smooth
-    h.Smooth()
+    h.Smooth(1,"k5b")
+    h.Smooth(1,"k5b")
+    h.Smooth(1,"k5b")
     #now cleanup above the diagonal
     for xbin in range(1,h.GetNbinsX()+1):
         for ybin in range(1,h.GetNbinsY()+1):
@@ -150,6 +152,12 @@ for sig in sigs:
 #print h_xsec_test.GetXaxis().GetBinLowEdge(1), h_xsec_test.GetXaxis().GetBinUpEdge(1)
 #c1.SaveAs("xsec_test.pdf")
 
+#c1.SetLogz(0)
+#h_sobs_test.GetZaxis().SetRangeUser(0.1,2)
+#h_sobs_test.Draw("colz")
+#print h_sobs_test.GetXaxis().GetBinLowEdge(1), h_sobs_test.GetXaxis().GetBinUpEdge(1)
+#c1.SaveAs("sobs_test.pdf")
+
 g_xsec = ROOT.TGraph2D("g_xsec","",count,mglus,mlsps,v_xsec)
 g_sexp = ROOT.TGraph2D("g_sexp","",count,mglus,mlsps,v_sexp)
 g_ssm1 = ROOT.TGraph2D("g_ssm1","",count,mglus,mlsps,v_ssm1)
@@ -258,6 +266,7 @@ for i in range(0,len(cobslist)):
     if n_points > max_points:
         cobs = cobslist[i]
         max_points = n_points
+
 cobs.SetLineWidth(4)
 cobs.SetLineStyle(1)
 cobs.SetLineColor(ROOT.kBlack)
