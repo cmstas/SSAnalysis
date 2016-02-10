@@ -225,6 +225,11 @@ for i in range(0,len(cexplist)):
 cexp.SetLineWidth(4)
 cexp.SetLineStyle(2)
 cexp.SetLineColor(ROOT.kRed)
+#smooth it by hand
+cexp.RemovePoint(18)
+cexp.RemovePoint(17)
+cexp.RemovePoint(14)
+#cexp.Print()
 cexp.Draw("L same");
 
 csm1list = k_ssm1.GetContourList(1.)
@@ -237,6 +242,9 @@ for i in range(0,len(csm1list)):
 csm1.SetLineWidth(2)
 csm1.SetLineStyle(2)
 csm1.SetLineColor(ROOT.kRed)
+#smooth it by hand
+csm1.RemovePoint(14)
+#csm1.Print()
 csm1.Draw("L same");
 
 csp1list = k_ssp1.GetContourList(1.)
@@ -249,6 +257,10 @@ for i in range(0,len(csp1list)):
 csp1.SetLineWidth(2)
 csp1.SetLineStyle(2)
 csp1.SetLineColor(ROOT.kRed)
+#smooth it by hand
+csp1.RemovePoint(14)
+csp1.RemovePoint(11)
+#csp1.Print()
 csp1.Draw("L same");
 
 cobslist = k_sobs.GetContourList(1.)
@@ -261,6 +273,9 @@ for i in range(0,len(cobslist)):
 cobs.SetLineWidth(4)
 cobs.SetLineStyle(1)
 cobs.SetLineColor(ROOT.kBlack)
+#smooth it by hand
+cobs.RemovePoint(44)
+cobs.RemovePoint(46)
 #cobs.Print()
 cobs.Draw("L same");
 
@@ -274,6 +289,11 @@ for i in range(0,len(com1list)):
 com1.SetLineWidth(2)
 com1.SetLineStyle(1)
 com1.SetLineColor(ROOT.kBlack)
+#smooth it by hand
+com1.RemovePoint(11)
+com1.RemovePoint(13)
+com1.RemovePoint(14)
+#com1.Print()
 com1.Draw("L same");
 
 cop1list = k_sop1.GetContourList(1.)
@@ -286,6 +306,12 @@ for i in range(0,len(cop1list)):
 cop1.SetLineWidth(2)
 cop1.SetLineStyle(1)
 cop1.SetLineColor(ROOT.kBlack)
+#smooth it by hand
+cop1.RemovePoint(40)
+cop1.RemovePoint(42)
+cop1.RemovePoint(44)
+cop1.RemovePoint(37)
+#cop1.Print()
 cop1.Draw("L same");
 
 l1 = ROOT.TLegend(0.15, 0.70, 0.83, 0.90)
