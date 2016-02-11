@@ -296,9 +296,9 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     for process in processes: card.write("%-15s " % (process.flips))
     card.write("\n")
 
-    #for process in processes: writeStatForProcess(dir,card,kine,process,processes)
+    for process in processes: writeStatForProcess(dir,card,kine,process,processes)
     #print "warning: using correlated statistical uncertainties"
-    for process in processes: writeStatForProcessCorrelated(card,process,processes)
+    #or process in processes: writeStatForProcessCorrelated(card,process,processes)
 
     return
 
