@@ -170,6 +170,7 @@ for final,loc in samples:
             os.system("hadd -k %s %s > haddlog.txt" % (outfile, args))
         print "[%s] Making final file: %s.root" % (final,final)
         os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(mergedChunks)))
+        os.system("rm %s_chunk*.root" % (final))
     else:
         print "[%s] Making final file: %s.root" % (final,final)
         os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(chunks[0])))

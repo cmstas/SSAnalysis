@@ -157,11 +157,12 @@ if [ "$WHICH" == "14001" ] ; then WHICH_SMALL="t1ttbb_1225to1400_0to1050"   ; fi
 if [ "$WHICH" == "14002" ] ; then WHICH_SMALL="t1ttbb_1425to1600_0to1250"   ; fi
 if [ "$WHICH" == "14003" ] ; then WHICH_SMALL="t1ttbb_1425to1600_1100to1350"; fi
 if [ "$WHICH" == "14004" ] ; then WHICH_SMALL="t1ttbb_600to800_275to575"    ; fi
+if [ "$WHICH" == "15001" ] ; then WHICH_SMALL="t5ttttdm175_825to1000_500to725"    ; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
 #This stuff to get output back
-export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}
+export COPYDIR=/hadoop/cms/store/user/namin/condor/${DIRNAME}
 
 #Untar the zip dir
 tar xzvf CORE.tar.gz
