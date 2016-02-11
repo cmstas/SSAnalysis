@@ -1,10 +1,8 @@
 #include "/home/users/cgeorge/software/dataMCplotMaker/dataMCplotMaker.h"
-#include "/home/users/cgeorge/SSAnalysis/classFiles/v5.04/SS.h"
+#include "/home/users/cgeorge/SSAnalysis/classFiles/v6.02/SS.h"
 #include "/home/users/cgeorge/CORE/Tools/dorky/dorky.h"
 #include "/home/users/cgeorge/software/tableMaker/CTable.h"
-#include "/home/users/cgeorge/SSAnalysis/lepton_sf.h"
-#include "/home/users/cgeorge/SSAnalysis/lepton_sf_fastsim.h"
-#include "/home/users/cgeorge/SSAnalysis/pu_weights.h"
+#include "/home/users/cgeorge/SSAnalysis/commonUtils.h"
 #include "TChain.h"
 #include "TColor.h"
 #include "TFile.h"
@@ -15,14 +13,14 @@
 using namespace std;
 
 //Path
-const char* path = "/nfs-7/userdata/ss2015/ssBabies/v6.00/";
+const char* path = "/nfs-7/userdata/ss2015/ssBabies/v6.02/";
 
 //Lumi
 float lumiAG = 2.26;
 
 //Data or Signal
 enum type_ag { DATA, SIGNAL }; 
-type_ag type = SIGNAL; 
+type_ag type = DATA; 
 bool useSFs = true;
 
 //Global Definitions
@@ -43,36 +41,37 @@ pair <vector <TH1F*>, vector <float> > mb_plots;
 pair <vector <TH1F*>, vector <float> > wzz_plots;
 pair <vector <TH1F*>, vector <float> > zz_plots;
 pair <vector <TH1F*>, vector <float> > qqww_plots; 
+pair <vector <TH1F*>, vector <float> > fake_plots; 
 
 //Main function
 void plots(){
 
   //Declare chains
-  TChain *t1tttt_high = new TChain("t", "data"); t1tttt_high->Add("/nfs-7/userdata/ss2015/ssBabies/v6.01-fs/T1TTTT_1100_1to775.root");
-  TChain *t1tttt_low = new TChain("t", "data");  t1tttt_low->Add("/nfs-7/userdata/ss2015/ssBabies/v6.01-fs/T1TTTT_875to900_1to650.root");
-  TChain *data  = new TChain("t", "data"); data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataMuonEGD_05oct.root"    );
-                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleEGC_05oct.root"  );  
-                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleEGD_v4.root"     );        
-                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleMuonD_05oct.root");  
-                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataMuonEGC_05oct.root"    );   
-                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataMuonEGD_v4.root"       ); 
-                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleEGD_05oct.root"  );   
-                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleMuonC_05oct.root");  
-                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DataDoubleMuonD_v4.root"   );     
-  TChain *ttz   = new TChain("t"); ttz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/TTZL.root"      ); 
-                                   ttz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/TTZLOW.root"    ); 
-  TChain *ttx   = new TChain("t"); ttx  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/TTW.root"       ); 
-  TChain *ttw   = new TChain("t"); ttw  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/TTHtoNonBB.root"); 
-  TChain *wz    = new TChain("t"); wz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/WZ.root"        ); 
-  TChain *ttbar = new TChain("t"); ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/TTBAR.root"     ); 
-  TChain *st    = new TChain("t"); st   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/SINGLETOP*.root"); 
-  TChain *dy    = new TChain("t"); dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/DY_high.root"   ); 
-                                   dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v5.07/DY_low.root"    ); 
-  TChain *wjets = new TChain("t"); wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/WJets.root"     ); 
-  TChain *mb    = new TChain("t"); mb   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/WWZ.root"       ); 
-  TChain *wzz   = new TChain("t"); wzz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/WZZ.root"       ); 
-  TChain *zz    = new TChain("t"); zz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/ZZ.root"        ); 
-  TChain *qqww  = new TChain("t"); qqww ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.00/QQWW.root"      ); 
+  TChain *t1tttt_high = new TChain("t", "data"); t1tttt_high->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02-fs/T1TTTT_1100_1to775.root");
+  TChain *t1tttt_low = new TChain("t", "data");  t1tttt_low->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02-fs/T1TTTT_875to900_1to650.root");
+  TChain *data  = new TChain("t", "data"); data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataMuonEGD_05oct.root"    );
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataDoubleEGC_05oct.root"  );  
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataDoubleEGD_v4.root"     );        
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataDoubleMuonD_05oct.root");  
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataMuonEGC_05oct.root"    );   
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataMuonEGD_v4.root"       ); 
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataDoubleEGD_05oct.root"  );   
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataDoubleMuonC_05oct.root");  
+                                           data ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataDoubleMuonD_v4.root"   );     
+  TChain *ttz   = new TChain("t"); ttz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTZL.root"      ); 
+                                   ttz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTZLOW.root"    ); 
+  TChain *ttx   = new TChain("t"); ttx  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTW.root"       ); 
+  TChain *ttw   = new TChain("t"); ttw  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTHtoNonBB.root"); 
+  TChain *wz    = new TChain("t"); wz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/WZ.root"        ); 
+  TChain *ttbar = new TChain("t"); ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTBAR_PH.root"  ); 
+  TChain *st    = new TChain("t"); st   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/SINGLETOP*.root"); 
+  TChain *dy    = new TChain("t"); dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DY_high.root"   ); 
+                                   dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DY_low.root"    ); 
+  TChain *wjets = new TChain("t"); wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/WJets.root"     ); 
+  TChain *mb    = new TChain("t"); mb   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/WWZ.root"       ); 
+  TChain *wzz   = new TChain("t"); wzz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/WZZ.root"       ); 
+  TChain *zz    = new TChain("t"); zz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/ZZ.root"        ); 
+  TChain *qqww  = new TChain("t"); qqww ->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/QQWW.root"      ); 
 
   //Make plots
   if (type == SIGNAL) t1tttt_high_plots = makePlots(t1tttt_high);
@@ -107,7 +106,9 @@ void plots(){
   drawPlot(5 , Form("N_{b-tags} in %s dilepton pairs" , sig.c_str()) , "(MET > 30 OR HT > 500)"              , "N_{b-tags}" , "NBTAGS"      , "--nDivisions 4 --noDivisionLabel --yTitleOffset -0.10");
   drawPlot(6 , Form("lep p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "p_{T}"      , "PT"          , "--yTitleOffset -0.10");
   drawPlot(7 , Form("#eta in %s dilepton pairs"       , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "#eta"       , "ETA"         , "--yTitleOffset -0.10 --setMaximum 10000000 --setMinimum 1");
+  cout << __LINE__ << endl;
   drawPlot(8 , Form("jet p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500)"              , "p_{T}"      , "JETPT"       , "--yTitleOffset -0.10");
+  cout << __LINE__ << endl;
 
   //Print yields
   vector <float> total = {0,0,0,0}; 
@@ -124,8 +125,12 @@ void plots(){
   for (int i = 0; i < 4; i++) total.at(i) += zz_plots.second.at(i);
   for (int i = 0; i < 4; i++) total.at(i) += qqww_plots.second.at(i);
 
+  cout << __LINE__ << endl;
   CTable table;
   table.setPrecision(2);
+  cout << __LINE__ << endl;
+  cout << data_plots.second.size(); 
+  cout << fake_plots.second.size(); 
   table.setTable() ( "ee", "em", "mm", "total" ) 
                    ("ttbar", ttbar_plots.second.at(0), ttbar_plots.second.at(1), ttbar_plots.second.at(2), ttbar_plots.second.at(3))
                    ("st", st_plots.second.at(0), st_plots.second.at(1), st_plots.second.at(2), st_plots.second.at(3))
@@ -143,6 +148,7 @@ void plots(){
 //                   ("t1tttt_high MC", t1tttt_high_plots.second.at(0), t1tttt_high_plots.second.at(1), t1tttt_high_plots.second.at(2), t1tttt_high_plots.second.at(3))
 //                   ("t1tttt_low MC", t1tttt_low_plots.second.at(0), t1tttt_low_plots.second.at(1), t1tttt_low_plots.second.at(2), t1tttt_low_plots.second.at(3));
                    ("data", data_plots.second.at(0), data_plots.second.at(1), data_plots.second.at(2), data_plots.second.at(3));
+  cout << __LINE__ << endl;
  table.print(); 
  table.saveTex("table.tex"); 
 
@@ -237,7 +243,7 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       eta->Fill(ss::lep2_p4().eta(), weight);
   
       //Counts
-      //if (ss::dilep_p4().M() < 30) continue; 
+      if (ss::dilep_p4().M() < 30) continue; 
       if (ss::hyp_type() == 0)      counts[2] += weight; 
       else if (ss::hyp_type() == 3) counts[0] += weight; 
       else                          counts[1] += weight;
@@ -272,6 +278,7 @@ void drawPlot(int which, string title, string subtitle, string xaxis, string tit
   backgrounds.push_back(wjets_plots.first.at(which)); 
   backgrounds.push_back(mb_plots.first.at(which)); 
   backgrounds.push_back(qqww_plots.first.at(which)); 
+  backgrounds.push_back(fake_plots.first.at(which)); 
 
   //Vector of background titles
   vector <string> titles;

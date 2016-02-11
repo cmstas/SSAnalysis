@@ -166,7 +166,7 @@ int getHist(string name){
   return -1;
 }
 
-int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString ptRegion = "HH", bool doData = false, int nEvents = -1){
+int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool doData = false, int nEvents = -1){
 
   initCounter();
 
@@ -268,9 +268,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
   TH2D *pTrelvsMiniIso_histo_el = new TH2D("pTrelvsMiniIso_histo_el", "pTrel vs MiniIso (Electrons)", 10, 0., 1., 15, 0., 30.);
 
   //Make rate histo (for shape only)
-  TFile *InputFile = new TFile(fakeratefile,"read");
-  cout << "using FR file=" << fakeratefile << endl;
-
   float xbins[6] = {10, 15, 25, 35, 50, 1000};
   float ybinse[4] = {0, 0.8, 1.479, 2.5}; 
   float ybinsm[4] = {0, 1.2, 2.1, 2.4}; 
@@ -768,16 +765,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
               if (!(ptratiocor > 0.68 || lep2_ptrel_v1 > 6.7)) continue;
             }
           }
-          if (highlow && jetCorr){
-            if (ss::lep2_p4().pt()>25.){
-              rate_histo_e = (TH2D*) InputFile->Get("rate_jet_highpt_histo_e");
-              rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_highpt_histo_mu");
-            } 
-            else {
-              rate_histo_e = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_e");
-              rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_mu");
-            }
-          }
 
           if (abs(ss::lep2_id()) == 11){  
             e2 = getFakeRate(11, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht(), false, doData );
@@ -862,16 +849,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
             else {
               float ptratiocor = lep1_closejetpt>0. ? ss::lep1_p4().pt()*(1+std::max(0.,ss::lep1_miniIso()-0.14))/lep1_closejetpt : 1.;
               if (!(ptratiocor > 0.68 || lep1_ptrel_v1 > 6.7)) continue;
-            }
-          }
-          if (highlow && jetCorr){
-            if (ss::lep1_p4().pt()>25.){
-              rate_histo_e = (TH2D*) InputFile->Get("rate_jet_highpt_histo_e");
-              rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_highpt_histo_mu");
-            } 
-            else {
-              rate_histo_e = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_e");
-              rate_histo_mu = (TH2D*) InputFile->Get("rate_jet_lowpt_histo_mu");
             }
           }
 
@@ -990,14 +967,6 @@ int ScanChain( TChain* chain, TString fakeratefile, TString option = "", TString
 
   gStyle->SetOptStat(0);
   gStyle->SetPaintTextFormat("1.3f");
-
-  //Plot fake rate histos
-  TCanvas *c1=new TCanvas("c1","Fake Rate vs Pt, eta (electron)",800,800);
-  c1->cd();
-  rate_histo_e->Draw("colz,texte");
-  TCanvas *c2=new TCanvas("c2","Fake Rate vs Pt, eta (muon)",800,800);
-  c2->cd();
-  rate_histo_mu->Draw("colz,texte");
 
   //redefine option to save also ptRegion in output files
   option=option+"_"+ptRegion;

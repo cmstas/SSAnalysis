@@ -49,7 +49,7 @@ ALL="$T1FASTSIM $T5FASTSIM $T6FASTSIM"
 
 #Then submit jobs
 nIter=0
-for sname in "T5ttttDM175_825to1000_500to725"
+for sname in $T5WFASTSIM $T1TTBBFASTSIM
 do
   isSignal=0 
   path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"

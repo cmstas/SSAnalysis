@@ -1,7 +1,7 @@
 import os, ROOT, array
 
 mydir = "v6.02-statunc"
-mylumi = "2.3"
+mylumi = "2.26"
 
 #the first time you need to make both cards and limits
 #if you no not delete logs, then next time you can skip cards and limits
