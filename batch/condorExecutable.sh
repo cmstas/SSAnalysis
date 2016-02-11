@@ -157,7 +157,16 @@ if [ "$WHICH" == "14001" ] ; then WHICH_SMALL="t1ttbb_1225to1400_0to1050"   ; fi
 if [ "$WHICH" == "14002" ] ; then WHICH_SMALL="t1ttbb_1425to1600_0to1250"   ; fi
 if [ "$WHICH" == "14003" ] ; then WHICH_SMALL="t1ttbb_1425to1600_1100to1350"; fi
 if [ "$WHICH" == "14004" ] ; then WHICH_SMALL="t1ttbb_600to800_275to575"    ; fi
-if [ "$WHICH" == "15001" ] ; then WHICH_SMALL="t5ttttdm175_825to1000_500to725"    ; fi
+if [ "$WHICH" == "14005" ] ; then WHICH_SMALL="t1ttbb_1225to1400_900to1175" ; fi      
+if [ "$WHICH" == "14006" ] ; then WHICH_SMALL="t1ttbb_1650to2000_0to1450"   ; fi        
+if [ "$WHICH" == "14007" ] ; then WHICH_SMALL="t1ttbb_825to1000_500to775"   ; fi        
+if [ "$WHICH" == "15001" ] ; then WHICH_SMALL="t5ttttdm175_825to1000_500to725"   ; fi
+if [ "$WHICH" == "15002" ] ; then WHICH_SMALL="t5ttttdm175_1025to1200_700to925"  ; fi  
+if [ "$WHICH" == "15003" ] ; then WHICH_SMALL="t5ttttdm175_1225to1400_0to1050"   ; fi   
+if [ "$WHICH" == "15004" ] ; then WHICH_SMALL="t5ttttdm175_1225to1400_900to1125" ; fi 
+if [ "$WHICH" == "15005" ] ; then WHICH_SMALL="t5ttttdm175_1425to1625_1100to1300"; fi
+if [ "$WHICH" == "15006" ] ; then WHICH_SMALL="t5ttttdm175_600to800_275to525"    ; fi    
+if [ "$WHICH" == "15007" ] ; then WHICH_SMALL="t5ttttdm175_825to1000_0to650"     ; fi      
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
