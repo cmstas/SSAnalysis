@@ -162,7 +162,7 @@ if [ "$WHICH" == "15001" ] ; then WHICH_SMALL="t5ttttdm175_825to1000_500to725"  
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
 #This stuff to get output back
-export COPYDIR=/hadoop/cms/store/user/namin/condor/${DIRNAME}
+export COPYDIR=/hadoop/cms/store/user/$USER/condor/${DIRNAME}
 
 #Untar the zip dir
 tar xzvf CORE.tar.gz
