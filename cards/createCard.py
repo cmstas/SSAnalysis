@@ -384,7 +384,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     XG.bshlt  = "1"
     XG.btag = "1"
     XG.pu = "1"
-    rares.RARES = "1.30"
+    rares.rares = "1.50"
     rares.lumi = "1.046"
     rares.jes  = "1"
     rares.lepeff  = "1.04"
