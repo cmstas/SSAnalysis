@@ -254,7 +254,7 @@ int main(int argc, char *argv[]){
       path="/store/group/snt/run2_fastsim/";
       shortname="t5ttttdm175_825to1000_500to725";
       tag="V07-04-12";
-      isSignal=5;
+      isSignal=6;
       break;
 
     //Data
@@ -723,6 +723,21 @@ int main(int argc, char *argv[]){
      shortname="t1ttbb_600to800_275to575";
      isSignal=5;
      name="SMS-T1ttbb_mGl-600to800_mLSP-275to575_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+     break;
+   case T1TTBB_1225to1400_900to1175:
+     shortname="t1ttbb_1225to1400_900to1175";
+     name="SMS-T1ttbb_mGl-1225to1400_mLSP-900to1175_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1/";
+     isSignal=5;
+     break;
+   case T1TTBB_1650to2000_0to1450:
+     shortname="t1ttbb_1650to2000_0to1450";
+     name="SMS-T1ttbb_mGl-1650to2000_mLSP-0to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1/";
+     isSignal=5;
+     break;
+   case T1TTBB_825to1000_500to775:
+     shortname="t1ttbb_825to1000_500to775";
+     name="SMS-T1ttbb_mGl-825to1000_mLSP-500to775_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1/";
+     isSignal=5;
      break;
 
   default:

@@ -685,6 +685,22 @@ do
      nameNu=14004;
      isSignal=1
      name="SMS-T1ttbb_mGl-600to800_mLSP-275to575_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+   elif [ $sname == "T1TTBB_1225to1400_900to1175" ]      
+   then
+     name="SMS-T1ttbb_mGl-1225to1400_mLSP-900to1175_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1/";
+     isSignal=1;
+     nameNu=14005;
+   elif [ $sname == "T1TTBB_1650to2000_0to1450" ]      
+   then
+     name="SMS-T1ttbb_mGl-1650to2000_mLSP-0to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1/";
+     isSignal=1;
+     nameNu=14006;
+   elif [ $sname == "T1TTBB_825to1000_500to775" ]      
+   then
+     name="SMS-T1ttbb_mGl-825to1000_mLSP-500to775_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1/";
+     isSignal=1;
+     nameNu=14007;
+
    elif [ $sname == "T5ttttDM175_825to1000_500to725" ]      
    then
      nameNu=15001;
