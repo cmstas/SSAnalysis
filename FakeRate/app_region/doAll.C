@@ -9,13 +9,13 @@
   gROOT->ProcessLine(".L ../../commonUtils.h");
 
   TString tag1 = getTag();
-  TString tag2 = getTag();
+  TString tag2 = "v5.01"; //no fake rate babies past v5.01 yet
 
   bool doData = false;
 
   bool doInSitu = 0;
 
-  bool highhigh   = 1;
+  bool highhigh   = 0;
   bool highlow    = 0;
   bool lowlow     = 0;
 
@@ -39,7 +39,6 @@
   bool ssZ          = 0;
   bool PCssZ        = 0;
 
-  TString fakeratefile = "";
   TString option = "";
 
   if (doLooseEMVA) option+="_LooseEMVA";
@@ -50,7 +49,6 @@
     if (doConly) option+="_doConly";
     if (doLightonly) option+="_doLightonly";
     if (doIsoTrigs) option+="_IsoTrigs";
-    fakeratefile = "../measurement_region/rate_histos_qcd"+option+".root";//not used anymore, now we use functions in commonUtils
     if (doHTTrigs) option+="_HTTrigs";
   }
   else {
@@ -58,12 +56,6 @@
     if (PC) option += "_PC";
     if (ssZ) option += "_ssZ";
     if (PCssZ) option += "_PCssZ";
-    if (soup) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_soup.root";
-    else if (PC) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_PC.root";
-    else if (ssZ) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_ssZ.root";
-    else if (PCssZ) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_PCssZ.root";
-    else if (doLooseEMVA) fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_FO2pFO4.root";
-    else fakeratefile = "../../inSituFR/inSituFR_cone_FR_histos_normal.root";
     option += "_inSitu"; 
   }
 
@@ -90,7 +82,7 @@
     // if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
     else ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root"); // FIXME
   }
-  ScanChain(ch, fakeratefile, option, ptRegion, doData); 
+  ScanChain(ch, option, ptRegion, doData); 
 
   //TChain *ch_wjets = new TChain("t"); 
   //ch_wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v1.04/Wjets_baby.root"); //this one!

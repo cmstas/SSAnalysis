@@ -1,6 +1,6 @@
 #!/bin/bash
 
-path="/hadoop/cms/store/user/${USER}/condor/ss_13_babies/v6.01"
+path="/hadoop/cms/store/user/${USER}/condor/ss_13_babies/"
 
 samples = [
 
@@ -14,8 +14,8 @@ samples = [
 # ["DataDoubleMuonD_v4","datadoublemuond_v4_*.root"],
 # ["DataMuonEGD_v4","datamuonegd_v4_*.root"],
 
-["DY_high","dy_high_*.root"],
-["DY_low","dy_low_*.root"],
+#["DY_high","dy_high_*.root"],
+#["DY_low","dy_low_*.root"],
 # ["TTBAR","ttbar_[0-9]*.root"],
 # ["WWZ","wwz_*.root"],
 # ["ZZ","zz_*.root"],
@@ -32,7 +32,7 @@ samples = [
 # ["VHtoNonBB","vhtononbb_*.root"],
 # ["TZQ","tzq_*.root"],
 # ["TTTT","tttt_*.root"],
-# ["TTBAR_PH","ttbar_ph_*.root"],
+ ["TTBAR_PH","ttbar_ph_*.root"],
 # ["ttbar-ph_merged1","ttbar_ph_1*root"],
 # ["ttbar-ph_merged2","ttbar_ph_2*root"],
 # ["ttbar-ph_merged3","ttbar_ph_[3-9]*root"],
@@ -61,7 +61,7 @@ samples = [
 # ["WGMG","wgmg_*.root"],
 # ["T1TTTT_1950_700to950","t1tttt_1950_700to950_*.root"],
 # ["T1TTTT_1100_1to775","t1tttt_1100_1to775_*.root"],
-["T1TTTT_1175_950","t1tttt_1175_950_*.root"],
+# ["T1TTTT_1175_950","t1tttt_1175_950_*.root"],
 # ["T1TTTT_1275_900to975","t1tttt_1275_900to975_*.root"],
 # ["T1TTTT_1300_1to1075","t1tttt_1300_1to1075_*.root"],
 # ["T1TTTT_1300to1325_700to1100","t1tttt_1300to1325_700to1100_*.root"],
@@ -131,6 +131,16 @@ samples = [
 # ["T6TTWW_50_625to950_75to125","t6ttww_50_625to950_75to125_*.root"],
 # ["T6TTWW_50_650to950_150to750","t6ttww_50_650to950_150to750_*.root"],
 # ["T6TTWW_50_300to600_150to500","t6ttww_50_300to600_150to500_*.root"],
+#  ["T5QQQQWW_1025to1200_0to1175",  "t5qqqqww_1025to1200_0to1175_*.root"], 
+#  ["T5QQQQWW_1225to1400_0to1175",  "t5qqqqww_1225to1400_0to1175_*.root"], 
+#  ["T5QQQQWW_1425to1600_0to1175",  "t5qqqqww_1425to1600_0to1175_*.root"], 
+#  ["T5QQQQWW_1650to1700_0to1150",  "t5qqqqww_1650to1700_0to1150_*.root"], 
+#  ["T5QQQQWW_600to800_0to725",     "t5qqqqww_600to800_0to725_*.root"],    
+#  ["T5QQQQWW_825to1000_0to925",    "t5qqqqww_825to1000_0to925_*.root"],   
+#  ["T1TTBB_1225to1400_0to1050",    "t1ttbb_1225to1400_0to1050_*.root"],   
+#  ["T1TTBB_1425to1600_0to1250",    "t1ttbb_1425to1600_0to1250_*.root"],   
+#  ["T1TTBB_1425to1600_1100to1350", "t1ttbb_1425to1600_1100to1350_*.root"],
+#  ["T1TTBB_600to800_275to575",     "t1ttbb_600to800_275to575_*.root"]    
 
 ]
 
@@ -160,6 +170,7 @@ for final,loc in samples:
             os.system("hadd -k %s %s > haddlog.txt" % (outfile, args))
         print "[%s] Making final file: %s.root" % (final,final)
         os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(mergedChunks)))
+        os.system("rm %s_chunk*.root" % (final))
     else:
         print "[%s] Making final file: %s.root" % (final,final)
         os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(chunks[0])))

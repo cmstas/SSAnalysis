@@ -147,11 +147,31 @@ if [ "$WHICH" == "12004" ] ; then WHICH_SMALL="t6ttww_50_625to950_550to875" ; fi
 if [ "$WHICH" == "12005" ] ; then WHICH_SMALL="t6ttww_50_625to950_75to125"  ; fi  
 if [ "$WHICH" == "12006" ] ; then WHICH_SMALL="t6ttww_50_650to950_150to750" ; fi  
 if [ "$WHICH" == "12007" ] ; then WHICH_SMALL="t6ttww_50_300to600_150to500" ; fi  
+if [ "$WHICH" == "13001" ] ; then WHICH_SMALL="t5qqqqww_1025to1200_0to1175" ; fi
+if [ "$WHICH" == "13002" ] ; then WHICH_SMALL="t5qqqqww_1225to1400_0to1175" ; fi
+if [ "$WHICH" == "13003" ] ; then WHICH_SMALL="t5qqqqww_1425to1600_0to1175" ; fi
+if [ "$WHICH" == "13004" ] ; then WHICH_SMALL="t5qqqqww_1650to1700_0to1150" ; fi
+if [ "$WHICH" == "13005" ] ; then WHICH_SMALL="t5qqqqww_600to800_0to725"    ; fi
+if [ "$WHICH" == "13006" ] ; then WHICH_SMALL="t5qqqqww_825to1000_0to925"   ; fi
+if [ "$WHICH" == "14001" ] ; then WHICH_SMALL="t1ttbb_1225to1400_0to1050"   ; fi
+if [ "$WHICH" == "14002" ] ; then WHICH_SMALL="t1ttbb_1425to1600_0to1250"   ; fi
+if [ "$WHICH" == "14003" ] ; then WHICH_SMALL="t1ttbb_1425to1600_1100to1350"; fi
+if [ "$WHICH" == "14004" ] ; then WHICH_SMALL="t1ttbb_600to800_275to575"    ; fi
+if [ "$WHICH" == "14005" ] ; then WHICH_SMALL="t1ttbb_1225to1400_900to1175" ; fi      
+if [ "$WHICH" == "14006" ] ; then WHICH_SMALL="t1ttbb_1650to2000_0to1450"   ; fi        
+if [ "$WHICH" == "14007" ] ; then WHICH_SMALL="t1ttbb_825to1000_500to775"   ; fi        
+if [ "$WHICH" == "15001" ] ; then WHICH_SMALL="t5ttttdm175_825to1000_500to725"   ; fi
+if [ "$WHICH" == "15002" ] ; then WHICH_SMALL="t5ttttdm175_1025to1200_700to925"  ; fi  
+if [ "$WHICH" == "15003" ] ; then WHICH_SMALL="t5ttttdm175_1225to1400_0to1050"   ; fi   
+if [ "$WHICH" == "15004" ] ; then WHICH_SMALL="t5ttttdm175_1225to1400_900to1125" ; fi 
+if [ "$WHICH" == "15005" ] ; then WHICH_SMALL="t5ttttdm175_1425to1625_1100to1300"; fi
+if [ "$WHICH" == "15006" ] ; then WHICH_SMALL="t5ttttdm175_600to800_275to525"    ; fi    
+if [ "$WHICH" == "15007" ] ; then WHICH_SMALL="t5ttttdm175_825to1000_0to650"     ; fi      
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
 #This stuff to get output back
-export COPYDIR=/hadoop/cms/store/user/cgeorge/condor/${DIRNAME}
+export COPYDIR=/hadoop/cms/store/user/$USER/condor/${DIRNAME}
 
 #Untar the zip dir
 tar xzvf CORE.tar.gz

@@ -1,6 +1,6 @@
 import os, ROOT, array
 
-mydir = "v6.02-statunc"
+mydir = "v6.02"
 mylumi = "2.3"
 
 #the first time you need to make both cards and limits
