@@ -4,6 +4,8 @@ scan = "T1TTTT"
 #scan = "T6TTWW_50"
 #scan = "T5QQQQVV"
 #scan = "T5QQQQWW"
+#scan = "T1TTBB"
+#scan = "T5ttttDM175"
 
 files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/v6.02-fs/"+scan+"*.root")
 

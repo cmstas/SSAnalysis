@@ -222,6 +222,8 @@ void getyields(){
   //#include "fs_t6ttww_50.h"
   //#include "fs_t5qqqqvv.h"
   //#include "fs_t5qqqqww.h"
+  //#include "fs_t1ttbb.h"
+  //#include "fs_t5ttttdm175.h"
 
   yields_t& ttbar    = results_ttbar.first;
   yields_t& ttbar_ff = results_ttbar_ff.first;
