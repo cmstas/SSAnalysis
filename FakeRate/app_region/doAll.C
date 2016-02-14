@@ -3,7 +3,7 @@
   gROOT->ProcessLine(".L ../../software/dataMCplotMaker/dataMCplotMaker.cc+");
   gSystem->Load("../../software/tableMaker/libSimpleTable.so");
 
-  gROOT->ProcessLine(".L ../../classFiles/v4.00/SS.cc+");
+  gROOT->ProcessLine(".L ../../classFiles/v6.02/SS.cc+");
   gROOT->ProcessLine(".L ScanChain.C++");
 
   gROOT->ProcessLine(".L ../../commonUtils.h");
@@ -15,7 +15,7 @@
 
   bool doInSitu = 0;
 
-  bool highhigh   = 0;
+  bool highhigh   = 1;
   bool highlow    = 0;
   bool lowlow     = 0;
 
@@ -23,7 +23,7 @@
   bool doHTTrigs  = 0;
 
   //These are only for not-in-situ
-  bool doConeCorr   = 1;
+  bool doConeCorr   = 1; 
   bool doJetCorr    = 0;
   bool doPtRatioCor = 0;
   bool doBonly      = 0;
@@ -77,8 +77,12 @@
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/TTBAR.root");  
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WJets_LO.root"); 
   } else {
-    // if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets_LO.root");
-    if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");
+    if (doLooseEMVA){
+      //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets_LO.root");
+      ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");
+      //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DY_high.root");
+      //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DY_low.root");
+    }
     // if (doLooseEMVA) ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root");
     else ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR.root"); // FIXME
   }

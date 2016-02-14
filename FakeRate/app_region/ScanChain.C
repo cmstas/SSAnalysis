@@ -18,7 +18,7 @@
 #include "../../CORE/SSSelections.h"
 #include "../../CORE/Tools/utils.h"
 #include "../../CORE/Tools/dorky/dorky.cc"
-#include "../../classFiles/v4.00/SS.h"
+#include "../../classFiles/v6.02/SS.h"
 #include "../../software/tableMaker/CTable.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../../commonUtils.h"
