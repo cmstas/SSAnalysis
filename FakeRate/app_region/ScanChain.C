@@ -998,26 +998,6 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
   dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_mu")], { make_pair(hists[getHist("Npn_histo_sr_obs_mu")], hists[getHist("Npn_histo_sr_obs_mu")]) }, {"Observed"}, Form("%s SRs", typeAG.c_str()), "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"sr_mu"+option).Data()), {}, {}, { kYellow }); 
   dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_el")], { make_pair(hists[getHist("Npn_histo_sr_obs_el")], hists[getHist("Npn_histo_sr_obs_el")]) }, {"Observed"}, Form("%s SRs", typeAG.c_str()), "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"sr_el"+option).Data()), {}, {}, { kYellow }); 
 
-  //In Situ Results
-  //vector <float> inSituHH = { 9.97424, 1.84652, 0.256401, 0.430924, 0.181913, 0.0246336, 0.0482527, 0.0374424, 12.9551, 2.46352, 0.331973, 0.837056, 0.246251, 0.0339308, 0.0299353, 0.010848, 1.18539, 0.392416, 0.0100395, 0.15286, 0.0271989, 0.0109955, 0.0294046, 0.0313273, 0.0311339, 0.0728476, 0, 0.00150546, 0.00351734, 0, 0.136662, 0.12627  };
-  //vector <float> inSituHH_err = { 0.314452, 0.105977, 0.0412756, 0.0482389, 0.0322782, 0.0074721, 0.0142755, 0.0224836, 0.378991, 0.113455, 0.0559925, 0.0754986, 0.0388675, 0.00964147, 0.0117716, 0.00499288, 0.10882, 0.0457799, 0.0058067, 0.0303931, 0.0191418, 0.00692456, 0.0194019, 0.0141568, 0.0104337, 0.0215097, 0, 0.00150546, 0.00351734, 0, 0.0288038 };
-  //vector <float> inSituHL = { 14.5711, 2.70507, 0.218222, 0.610339, 0.375519, 0.0505852, 18.2535, 4.0649, 0.231672, 1.01319, 0.34244, 0.0502886, 2.15868, 0.73057, 0.00874982, 0.311526, 0.0924506, 0.0444423, 0.104002, 0.126052, 0, 0.0296082, 0.0215142, 0.0114836, 0.121183, 0.0607965 };
-  //vector <float> inSituHL_err = { 0.485064, 0.194398, 0.0547948, 0.086856, 0.0766845, 0.0222665, 0.538009, 0.238167, 0.0557138, 0.114735, 0.0667462, 0.0246189, 0.19475, 0.104234, 0.00666042, 0.0666576, 0.0356542, 0.0225364, 0.0348656, 0.0451272, 0, 0.0284689, 0.0120912, 0.0084833, 0.0316555 };
-  //vector <float> inSituLL = { 0.487053, 0.026808, 1.26359, 0.0951835, 0.195546, 0.000493411, 0.0170372, 0 };
-  //vector <float> inSituLL_err = {  0.0813895, 0.0101279, 0.15558, 0.0348969, 0.0552663, 0.000493411, 0.00745584, 0 };
-  //TH1F* hh = new TH1F("alex", "blah", 32, 1, 33); 
-  //for (unsigned int i = 0; i < inSituLL.size(); i++){
-  //  hh->SetBinContent(i+1, inSituLL[i]); 
-  //  hh->SetBinError(i+1, inSituLL_err[i]); 
-  //}
-  //dataMCplotMaker(hists[getHist("Npn_histo_sr_pred")], { make_pair(hists[getHist("Npn_histo_sr_obs")], GetErrorPlot(hists[getHist("Npn_histo_sr_obs")], hists[getHist("Npn_histo_sr_obs")], Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el)) }, {"Observed"}, Form("%s SRs", typeAG.c_str()), "t#bar{t} MC", Form("--outputName %s_ag --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --legendRight -0.1 --type Simulation --sigError --lumiPrec 1", (plotdir+"sr_all"+option).Data()), { hh }, { "Predicted (in situ)" }, { kYellow, kBlue }); 
-  cout << "vector <float> inSituHH = { "; 
-  for (int i = 1; i < hists[getHist("Npn_histo_sr_pred")]->GetNbinsX(); i++) cout << " " << hists[getHist("Npn_histo_sr_pred")]->GetBinContent(i) << ","; 
-  cout << " };"; 
-  cout << "vector <float> inSituHH_err = { "; 
-  for (int i = 1; i < hists[getHist("Npn_histo_sr_pred")]->GetNbinsX(); i++) cout << " " << hists[getHist("Npn_histo_sr_pred")]->GetBinError(i) << ","; 
-  cout << " };"; 
-
   //HT plots
   GetErrorPlot(hists[getHist("Npn_histo_HT_pred")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el);
   GetErrorPlot(hists[getHist("Npn_histo_HT_pred_mu")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el);
