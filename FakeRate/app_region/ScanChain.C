@@ -783,7 +783,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_MTMIN_pred_el")]->Fill(mtmin, w);
             hists[getHist("Npn_histo_L1PT_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
-            if (sr>=0) Npn_histo_sr_err2_pred_el[(ss::ht() > 300)][sr]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
+            if (sr>=0) Npn_histo_sr_err2_pred_el[(ss::ht() > 300)][sr-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_br_err2_pred_el[ss::ht() > 300][br]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_HT_err2_pred_el[(ss::ht() > 300)][hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_MET_err2_pred_el[ss::ht() > 300][hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::met())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
@@ -811,7 +811,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_MTMIN_pred_mu")]->Fill(mtmin, w);
             hists[getHist("Npn_histo_L1PT_pred_mu")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_mu")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
-            if (sr>=0) Npn_histo_sr_err2_pred_mu[(ss::ht() > 300)][sr]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
+            if (sr>=0) Npn_histo_sr_err2_pred_mu[(ss::ht() > 300)][sr-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_br_err2_pred_mu[ss::ht() > 300][br]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_HT_err2_pred_mu[ss::ht() > 300][hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_MET_err2_pred_mu[ss::ht() > 300][hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::met())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
@@ -872,7 +872,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_L1PT_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
 
-            if (sr>=0) Npn_histo_sr_err2_pred_el[(ss::ht() > 300)][sr]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
+            if (sr>=0) Npn_histo_sr_err2_pred_el[(ss::ht() > 300)][sr-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_br_err2_pred_el[ss::ht() > 300][br]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_HT_err2_pred_el[ss::ht() > 300][hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_MET_err2_pred_el[ss::ht() > 300][hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::met())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
@@ -901,7 +901,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_L1PT_pred_mu")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_mu")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
 
-            if (sr>=0) Npn_histo_sr_err2_pred_mu[(ss::ht() > 300)][sr]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
+            if (sr>=0) Npn_histo_sr_err2_pred_mu[(ss::ht() > 300)][sr-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_br_err2_pred_mu[ss::ht() > 300][br]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_HT_err2_pred_mu[(ss::ht() > 300)][hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_MET_err2_pred_mu[ss::ht() > 300][hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::met())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
