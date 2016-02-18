@@ -42,14 +42,15 @@ T1FASTSIM="T1TTTT_1050_50to775 T1TTTT_1050to1075_650to850 T1TTTT_1225to1250_1to1
 T5FASTSIM="T5QQQQVV_1000To1075_1To950 T5QQQQVV_1100To1175_1to1050 T5QQQQVV_1200To1275_1to1150 T5QQQQVV_1300To1375_1to1250 T5QQQQVV_1400To1550_1To1275 T5QQQQVV_1600To1750_1To950 T5QQQQVV_600To675_1to550 T5QQQQVV_700To775_1To650 T5QQQQVV_800To975_1To850 T5ttttDM175_825to1000_500to725"
 T6FASTSIM="T6TTWW_50_300to600_225to575 T6TTWW_50_300to600_75to125 T6TTWW_50_350to600_150to400 T6TTWW_50_625to950_500to850 T6TTWW_50_625to950_550to875 T6TTWW_50_625to950_75to125 T6TTWW_50_650to950_150to750 T6TTWW_50_300to600_150to500"
 T5WFASTSIM="T5QQQQWW_1025to1200_0to1175 T5QQQQWW_1225to1400_0to1175 T5QQQQWW_1425to1600_0to1175 T5QQQQWW_1650to1700_0to1150 T5QQQQWW_600to800_0to725 T5QQQQWW_825to1000_0to925"
-T1TTBBFASTSIM="T1TTBB_1225to1400_0to1050 T1TTBB_1425to1600_0to1250 T1TTBB_1425to1600_1100to1350 T1TTBB_600to800_275to575"
+T1TTBBFASTSIM="T1TTBB_1225to1400_0to1050 T1TTBB_1425to1600_0to1250 T1TTBB_1425to1600_1100to1350 T1TTBB_600to800_275to575 T1TTBB_1225to1400_900to1175 T1TTBB_1650to2000_0to1450 T1TTBB_825to1000_500to775"
+DMFASTSIM="T5ttttDM175_825to1000_500to725 T5ttttDM175_1025to1200_700to925 T5ttttDM175_1225to1400_0to1050 T5ttttDM175_1225to1400_900to1125 T5ttttDM175_1425to1625_1100to1300 T5ttttDM175_600to800_275to525 T5ttttDM175_825to1000_0to650"
 CENTRAL="TTHtoNonBBext WGMG WWZ TG TTG  WZ  GGHtoZZto4L TTBAR TTW ZG T1TTTT_1200 T1TTTT_1500 TG  T5QQQQWW_1200_1000_800 T5QQQQWWDeg_1000_315_300 T5ttttDeg_1000_300_285_280 T6TTWW_600_425_50 T6TTWW_650_150_50  SINGLETOP1 SINGLETOP2 SINGLETOP3 SINGLETOP4 SINGLETOP5 TTWQQ TTZQ  ZZ QQWW WJets TTZL DY_high DY_low WGToLNuG TTG TTHtoNonBB VHtoNonBB  TZQ  TTTT  WWDPS WZZ TTBAR_PH TTZlow WZMG"
 DATA="DataDoubleMuonD_05oct DataDoubleEGD_05oct DataMuonEGD_05oct DataDoubleMuonD_v4 DataDoubleEGD_v4 DataMuonEGD_v4 DataDoubleMuonC_05oct DataDoubleEGC_05oct DataMuonEGC_05oct" 
 ALL="$T1FASTSIM $T5FASTSIM $T6FASTSIM"
 
 #Then submit jobs
 nIter=0
-for sname in $T5WFASTSIM $T1TTBBFASTSIM
+for sname in $T1TTBBFASTSIM 
 do
   isSignal=0 
   path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
@@ -687,26 +688,75 @@ do
      name="SMS-T1ttbb_mGl-600to800_mLSP-275to575_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
    elif [ $sname == "T1TTBB_1225to1400_900to1175" ]      
    then
-     name="SMS-T1ttbb_mGl-1225to1400_mLSP-900to1175_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1/";
+     name="SMS-T1ttbb_mGl-1225to1400_mLSP-900to1175_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
      isSignal=1;
      nameNu=14005;
    elif [ $sname == "T1TTBB_1650to2000_0to1450" ]      
    then
-     name="SMS-T1ttbb_mGl-1650to2000_mLSP-0to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1/";
+     name="SMS-T1ttbb_mGl-1650to2000_mLSP-0to1450_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
      isSignal=1;
      nameNu=14006;
    elif [ $sname == "T1TTBB_825to1000_500to775" ]      
    then
-     name="SMS-T1ttbb_mGl-825to1000_mLSP-500to775_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1/";
+     name="SMS-T1ttbb_mGl-825to1000_mLSP-500to775_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
      isSignal=1;
      nameNu=14007;
-
    elif [ $sname == "T5ttttDM175_825to1000_500to725" ]      
    then
      nameNu=15001;
      isSignal=1
      name="SMS-T5ttttDM175_mGl-825to1000_mLSP-500to725_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-
+  elif [ $sname == "T5ttttDM175_1025to1200_700to925" ]    
+    then
+    nameNu=15002;
+    name="SMS-T5ttttDM175_mGl-1025to1200_mLSP-700to925_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"; 
+    isSignal=1;
+  elif [ $sname == "T5ttttDM175_1225to1400_0to1050" ]     
+    then
+    nameNu=15003;
+    name="SMS-T5ttttDM175_mGl-1225to1400_mLSP-0to1050_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"; 
+    isSignal=1;
+  elif [ $sname == "T5ttttDM175_1225to1400_900to1125" ]   
+    then
+    nameNu=15004;
+    name="SMS-T5ttttDM175_mGl-1225to1400_mLSP-900to1125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+    isSignal=1;
+  elif [ $sname == "T5ttttDM175_1425to1625_1100to1300" ]  
+    then
+    nameNu=15005
+    name="SMS-T5ttttDM175_mGl-1425to1625_mLSP-1100to1300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+    isSignal=1;
+  elif [ $sname == "T5ttttDM175_600to800_275to525" ]      
+    then
+    nameNu=15006;
+    name="SMS-T5ttttDM175_mGl-600to800_mLSP-275to525_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+    isSignal=1;
+  elif [ $sname == "T5ttttDM175_825to1000_0to650" ]       
+    then
+    nameNu=15007;
+    name="SMS-T5ttttDM175_mGl-825to1000_mLSP-0to650_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+    isSignal=1;
+  elif [ $sname == "T5tttt_degen_1225to1400_1075to1275" ]       
+    then
+    nameNu=16001;
+    name="SMS-T5tttt_degen_mGl-1225to1400_mLSP-1075to1275_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1;
+  elif [ $sname == "T5tttt_degen_1425to1600_1275to1475" ]       
+    then
+    nameNu=16002;
+    name="SMS-T5tttt_degen_mGl-1425to1600_mLSP-1275to1375_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1;
+  elif [ $sname == "T5tttt_degen_825to1000_0to825" ]       
+    then
+    nameNu=16003;
+    name="SMS-T5tttt_degen_mGl-825to1000_mLSP-0to825_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1;
+  elif [ $sname == "T5tttt_degen_825to1000_675to875" ]       
+    then
+    nameNu=16004;
+    name="SMS-T5tttt_degen_mGl-825to1000_mLSP-675to875_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1;
+  
   #default
   else 
     name=$sname 

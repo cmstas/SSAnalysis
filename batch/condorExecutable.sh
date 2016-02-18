@@ -167,6 +167,10 @@ if [ "$WHICH" == "15004" ] ; then WHICH_SMALL="t5ttttdm175_1225to1400_900to1125"
 if [ "$WHICH" == "15005" ] ; then WHICH_SMALL="t5ttttdm175_1425to1625_1100to1300"; fi
 if [ "$WHICH" == "15006" ] ; then WHICH_SMALL="t5ttttdm175_600to800_275to525"    ; fi    
 if [ "$WHICH" == "15007" ] ; then WHICH_SMALL="t5ttttdm175_825to1000_0to650"     ; fi      
+if [ "$WHICH" == "16001" ] ; then WHICH_SMALL="T5tttt_degen_1225to1400_1075to1275" ; fi
+if [ "$WHICH" == "16002" ] ; then WHICH_SMALL="T5tttt_degen_1425to1600_1275to1375" ; fi
+if [ "$WHICH" == "16003" ] ; then WHICH_SMALL="T5tttt_degen_825to1000_0to825" ; fi
+if [ "$WHICH" == "16004" ] ; then WHICH_SMALL="T5tttt_degen_825to1000_675to875" ; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 

@@ -152,7 +152,12 @@ enum sample_t {
   T5ttttDM175_1225to1400_900to1125  = 15004,
   T5ttttDM175_1425to1625_1100to1300 = 15005,
   T5ttttDM175_600to800_275to525     = 15006,
-  T5ttttDM175_825to1000_0to650      = 15007
+  T5ttttDM175_825to1000_0to650      = 15007,
+
+  T5tttt_degen_1225to1400_1075to1275 = 16001,
+  T5tttt_degen_1425to1600_1275to1375 = 16002,
+  T5tttt_degen_825to1000_0to825      = 16003,
+  T5tttt_degen_825to1000_675to875    = 16004
 
 
 };
