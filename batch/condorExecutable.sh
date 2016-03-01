@@ -192,6 +192,7 @@ if [ "$WHICH" == "17005" ] ; then WHICH_SMALL="t5ttcc_1225to1400_1075to1225" ; f
 if [ "$WHICH" == "17006" ] ; then WHICH_SMALL="t5ttcc_1225to1400_0to1225" ; fi      
 if [ "$WHICH" == "17007" ] ; then WHICH_SMALL="t5ttcc_1650to1700_0to1350" ; fi      
 if [ "$WHICH" == "17008" ] ; then WHICH_SMALL="t5ttcc_1425to1525_1275to1375" ; fi      
+if [ "$WHICH" == "17009" ] ; then WHICH_SMALL="t5ttcc_1025to1200_0to1025" ; fi      
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
