@@ -753,7 +753,7 @@ int main(int argc, char *argv[]){
     isSignal=5;
     break;
   case T1TTBB_1025to1200_0to850:
-    name="SMS-T1ttbb_mGl-1025to1200_mLSP-0to850_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15FSPremix-MCRUN2_74_V9-v1"
+    name="SMS-T1ttbb_mGl-1025to1200_mLSP-0to850_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15FSPremix-MCRUN2_74_V9-v1";
     shortname="t1ttbb_1025to1200_0to850";
     isSignal=5;
     break;
@@ -859,12 +859,12 @@ int main(int argc, char *argv[]){
       isSignal=7;
       break;
     case T5tttt_degen_600to800_0to625:
-      name="SMS-T5tttt_degen_mGl-600to800_mLSP-0to625_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+      name="SMS-T5tttt_degen_mGl-600to800_mLSP-0to625_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
       shortname="t5tttt_degen_600to800_0to625";
       isSignal=7;
       break;
     case T5tttt_degen_1025to1200_875to1075:
-      name="SMS-T5tttt_degen_mGl-1025to1200_mLSP-875to1075_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v2"
+      name="SMS-T5tttt_degen_mGl-1025to1200_mLSP-875to1075_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v2";
       shortname="t5tttt_degen_1025to1200_875to1075";
       isSignal=7;
       break;
