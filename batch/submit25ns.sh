@@ -52,7 +52,7 @@ ALL="$T1FASTSIM $T5FASTSIM $T6FASTSIM"
 
 #Then submit jobs
 nIter=0
-for sname in $DMFASTSIM $T5TTCC
+for sname in $T5TTCC
 do
   isSignal=0 
   path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
@@ -868,6 +868,21 @@ do
     then
     nameNu=14011
     name="SMS-T1ttbb_mGl-1025to1200_mLSP-700to975_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1;
+  elif [ $sname == "T5tttt_degen_600to800_0to625" ]
+    then
+    nameNu=16010;
+    name="SMS-T5tttt_degen_mGl-600to800_mLSP-0to625_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    isSignal=1;
+  elif [ $sname == "T5tttt_degen_1025to1200_875to1075" ]
+    then
+    nameNu=16011;
+    name="SMS-T5tttt_degen_mGl-1025to1200_mLSP-875to1075_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v2"
+    isSignal=1;
+  elif [ $sname == "T1TTBB_1025to1200_0to850" ]
+    then
+    nameNu=14012;
+    name="SMS-T1ttbb_mGl-1025to1200_mLSP-0to850_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15FSPremix-MCRUN2_74_V9-v1"
     isSignal=1;
 
   

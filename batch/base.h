@@ -149,6 +149,7 @@ enum sample_t {
   T1TTBB_825to1000_0to625       = 14009,
   T1TTBB_600to800_0to450        = 14010,
   T1TTBB_1025to1200_700to975    = 14011,
+  T1TTBB_1025to1200_0to850      = 14012,
 
   T5ttttDM175_825to1000_500to725    = 15001,
   T5ttttDM175_1025to1200_700to925   = 15002,
@@ -171,6 +172,8 @@ enum sample_t {
   T5tttt_degen_1425to1600_0to1350    = 16007,
   T5tttt_degen_1650to1700_0to1350    = 16008,
   T5tttt_degen_1025to1200_0to1025    = 16009,
+  T5tttt_degen_600to800_0to625       = 16010,
+  T5tttt_degen_1025to1200_875to1075  = 16011,
 
   T5ttcc_825to1000_675to875          = 17001,
   T5ttcc_1025to1200_875to1075        = 17002,
