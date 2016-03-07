@@ -32,7 +32,7 @@ int main(int argc, char *argv[]){
   string path = "/store/group/snt/run2_25ns_MiniAODv2/";
   string name = ""; 
   string shortname = ""; 
-  const char* filename = Form("merged_ntuple_%i.root", file);
+  char* filename = Form("merged_ntuple_%i.root", file);
   const char* suffix = file < 0 ? "" : Form("_%i", file);
   string tag = "V07-04-08";
   bool isData = false;
@@ -913,6 +913,21 @@ int main(int argc, char *argv[]){
       name="SMS-T5ttcc_mGl-1025to1200_mLSP-0to1025_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
       isSignal=8;
       break;
+    case ANA1:
+      shortname="ana1";
+      name="ana_test1";
+      isSignal=100;
+      break;
+    case ANA2:
+      shortname="ana2";
+      name="ana_test2";
+      isSignal=101;
+      break;
+    case ANA3:
+      shortname="ana3";
+      name="ana_test3";
+      isSignal=102;
+      break;
 
   default:
     name="dummy";
@@ -920,6 +935,7 @@ int main(int argc, char *argv[]){
     break;
 
   }
+  if (isSignal >= 100) filename = Form("ntuple_%i.root", file);
 
   //Path for signal
   if (isSignal > 0){
