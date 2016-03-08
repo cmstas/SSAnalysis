@@ -913,6 +913,18 @@ int main(int argc, char *argv[]){
       name="SMS-T5ttcc_mGl-1025to1200_mLSP-0to1025_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
       isSignal=8;
       break;
+
+    case T5ttcc_600to800_0to625:
+      shortname="t5ttcc_600to800_0to625";
+      name="SMS-T5ttcc_mGl-600to800_mLSP-0to625_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15FSPremix-MC";
+      isSignal=8;
+      break;
+    case T5ttcc_1425to1600_0to1350:
+      shortname="t5ttcc_1425to1600_0to1350";
+      name="SMS-T5ttcc_mGl-1425to1600_mLSP-0to1350_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15FSPremix-MCRUN2_74_V9-v1";
+      isSignal=8;
+      break;
+
     case ANA1:
       shortname="ana1";
       name="ana_test1";
