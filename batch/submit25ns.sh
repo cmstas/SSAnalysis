@@ -53,7 +53,7 @@ ALL="$T1FASTSIM $T5FASTSIM $T6FASTSIM"
 #Then submit jobs
 nIter=0
 # for sname in "T1TTBB_1025to1200_0to850" "T5tttt_degen_600to800_0to625" "T5tttt_degen_1025to1200_875to1075" "ANA1" "ANA2" "ANA3"
-for sname in "T5ttcc_600to800_0to625" "T5ttcc_1425to1600_0to1350"
+for sname in "T5ttcc_600to800_0to625" # "T5ttcc_1425to1600_0to1350"
 do
   isSignal=0 
   path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
@@ -849,7 +849,7 @@ do
     then
     nameNu=17010
     isSignal=1;
-    name="SMS-T5ttcc_mGl-600to800_mLSP-0to625_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15FSPremix-MC"
+    name="SMS-T5ttcc_mGl-600to800_mLSP-0to625_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15FSPremix-MCRUN2_74_V9-v1"
   elif [ $sname == "T5ttcc_1425to1600_0to1350" ] 
     then
     nameNu=17011
