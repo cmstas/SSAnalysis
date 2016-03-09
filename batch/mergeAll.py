@@ -177,9 +177,11 @@ samples = [
 #   ["T5ttttDM175_1625to1700_0to1300" , "t5ttttdm175_1625to1700_0to1300_*.root"] ,
 #   ["T5ttttDM175_600to800_0to450"    , "t5ttttdm175_600to800_0to450_*.root"   ] ,
 #   ["T1TTBB_1025to1200_700to975"     , "t1ttbb_1025to1200_700to975_*.root" ]    ,
-    ["T1TTBB_1025to1200_0to850"           , "t1ttbb_1025to1200_0to850_*.root" ] ,         
-    ["T5tttt_degen_600to800_0to625"       , "t5tttt_degen_600to800_0to625_*.root"],      
-    ["T5tttt_degen_1025to1200_875to1075"  , "t5tttt_degen_1025to1200_875to1075_*.root"],
+    # ["T1TTBB_1025to1200_0to850"           , "t1ttbb_1025to1200_0to850_*.root" ] ,         
+    # ["T5tttt_degen_600to800_0to625"       , "t5tttt_degen_600to800_0to625_*.root"],      
+    # ["T5tttt_degen_1025to1200_875to1075"  , "t5tttt_degen_1025to1200_875to1075_*.root"],
+    ["T5ttcc_600to800_0to625","t5ttcc_600to800_0to625_*.root"],
+    # ["T5ttcc_1425to1600_0to1350","t5ttcc_1425to1600_0to1350"],
  ]
 
 import os,glob
