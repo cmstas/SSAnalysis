@@ -196,6 +196,8 @@ if [ "$WHICH" == "17006" ] ; then WHICH_SMALL="t5ttcc_1225to1400_0to1225" ; fi
 if [ "$WHICH" == "17007" ] ; then WHICH_SMALL="t5ttcc_1650to1700_0to1350" ; fi      
 if [ "$WHICH" == "17008" ] ; then WHICH_SMALL="t5ttcc_1425to1525_1275to1375" ; fi      
 if [ "$WHICH" == "17009" ] ; then WHICH_SMALL="t5ttcc_1025to1200_0to1025" ; fi      
+if [ "$WHICH" == "17010" ] ; then WHICH_SMALL="t5ttcc_600to800_0to625" ; fi      
+if [ "$WHICH" == "17011" ] ; then WHICH_SMALL="t5ttcc_1425to1600_0to1350" ; fi      
 if [ "$WHICH" == "100000" ] ; then WHICH_SMALL="ana1"; fi
 if [ "$WHICH" == "100001" ] ; then WHICH_SMALL="ana2"; fi
 if [ "$WHICH" == "100002" ] ; then WHICH_SMALL="ana3"; fi
