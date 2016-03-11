@@ -71,6 +71,7 @@ def writeStatForProcessCorrelated(card,process,processes):
     card.write("\n")
 
 def writeStatForProcess(dir, card, kine, process, processes):
+    if process.name=="sig": return #fake signal for MI limits does not need stat unc.
     f = ROOT.TFile(dir+"/"+process.rootf,"UPDATE")
     h = f.Get("sr")
     hup = f.Get(("%s_statUp" % (process.name)))
@@ -320,24 +321,25 @@ def writeOneCard(dir, signal, kine, plot, output):
     fakes = Process(7,"fakes","fakes_histos_"+kine+"_"+lumi+"ifb.root",plot)
     flips = Process(8,"flips","flips_histos_"+kine+"_"+lumi+"ifb.root",plot)
     #overwrite nuisances
-    signal.lumi  = "1.046"
-    signal.jes  = "1"
-    if signal.name.find("fs_") != -1:
-        #these are only for fast sim
-        signal.scale  = "1"
-        signal.fs_hlt = "1.05"
-        if kine is "hihi": signal.fs_lep_hh  = "1.08"
-        if kine is "hilow": signal.fs_lep_hl  = "1.15"
-        if kine is "lowlow": signal.fs_lep_ll  = "1.20"
-    signal.isr  = "1"
-    signal.lepeff  = "1.04"
+    signal.lumi  = "1.027"
     signal.lephlt  = "1.02"
-    signal.hthlt  = "1"
-    signal.bshlt  = "1"
-    signal.btag = "1"
-    signal.pu = "1"
+    if signal.name!="sig":  #fake signal for MI limits does not need these
+        signal.jes  = "1"
+        if signal.name.find("fs_") != -1:
+            #these are only for fast sim
+            signal.scale  = "1"
+            signal.fs_hlt = "1.05"
+            if kine is "hihi": signal.fs_lep_hh  = "1.08"
+            if kine is "hilow": signal.fs_lep_hl  = "1.15"
+            if kine is "lowlow": signal.fs_lep_ll  = "1.20"
+            signal.isr  = "1" #fixme: this one we should have also for fullsim (need to update the yieldMaker)
+        signal.lepeff  = "1.04"
+        signal.hthlt  = "1"
+        signal.bshlt  = "1"
+        signal.btag = "1"
+        signal.pu = "1"
     TTW.TTW          = "1.13"
-    TTW.lumi         = "1.046"
+    TTW.lumi         = "1.027"
     TTW.ttw_pdf      = "1.04"
     TTW.ttw_extr_hth = "1"
     TTW.ttw_extr_htl = "1"
@@ -350,7 +352,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTW.btag = "1"
     TTW.pu = "1"
     TTZH.TTZH          = "1.11"
-    TTZH.lumi          = "1.046"
+    TTZH.lumi          = "1.027"
     TTZH.ttzh_pdf      = "1.04"
     TTZH.ttzh_extr_hth = "1"
     TTZH.ttzh_extr_htl = "1"
@@ -367,7 +369,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     WZ.btag = "1"
     WZ.pu = "1"
     WW.WW = "1.30"
-    WW.lumi = "1.046"
+    WW.lumi = "1.027"
     WW.jes  = "1"
     WW.lepeff  = "1.04"
     WW.lephlt  = "1.02"
@@ -376,7 +378,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     WW.btag = "1"
     WW.pu = "1"
     XG.XG = "1.50"
-    XG.lumi = "1.046"
+    XG.lumi = "1.027"
     XG.jes  = "1"
     XG.lepeff  = "1.04"
     XG.lephlt  = "1.02"
@@ -385,7 +387,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     XG.btag = "1"
     XG.pu = "1"
     rares.rares = "1.50"
-    rares.lumi = "1.046"
+    rares.lumi = "1.027"
     rares.jes  = "1"
     rares.lepeff  = "1.04"
     rares.lephlt  = "1.02"

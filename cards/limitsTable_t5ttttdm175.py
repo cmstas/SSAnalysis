@@ -16,11 +16,13 @@ miny = 0
 maxy = 1250+step
 minz = 1e-2
 maxz = 50
-maxyh = 1500
-ybinsfirstxbin = 19
+maxyh = 1700
+maxxh = 1700
+ybinsfirstxbin = 13 #17
 
 npx = (maxx-minx)/step
 npy = (maxy-miny)/step
+npxh = (maxxh-minx)/step
 npyh = (maxyh-miny)/step
 
 def smooth(g,h):
@@ -36,9 +38,9 @@ def smooth(g,h):
             if ybin>xbin+ybinsfirstxbin: 
                 h.SetBinContent(xbin,ybin,h.GetBinContent(xbin,ybin-1))
     #smooth
-    h.Smooth(1,"k5b")
-    h.Smooth(1,"k5b")
-    h.Smooth(1,"k5b")
+    h.Smooth(1,"")
+    #h.Smooth(1,"k5b")
+    #h.Smooth(1,"k5b")
     #now cleanup above the diagonal
     for xbin in range(1,h.GetNbinsX()+1):
         for ybin in range(1,h.GetNbinsY()+1):
@@ -48,9 +50,9 @@ sigs = []
 
 for mglu in range (minx,maxx,step):
     for mlsp in range (miny,maxy,step):
-        if os.path.isfile(("%s/fs_t5qqqqvv_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
-        #print "found sig = fs_t5qqqqvv_m%i_m%i" % (mglu,mlsp)
-        sigs.append(("fs_t5qqqqvv_m%i_m%i" % (mglu,mlsp)))
+        if os.path.isfile(("%s/fs_t5ttttdm175_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
+        #print "found sig = fs_t5ttttdm175_m%i_m%i" % (mglu,mlsp)
+        sigs.append(("fs_t5ttttdm175_m%i_m%i" % (mglu,mlsp)))
 
 limit_obs = []
 limit_exp = []
@@ -153,10 +155,11 @@ for sig in sigs:
 #c1.SaveAs("xsec_test.pdf")
 
 #c1.SetLogz(0)
-#h_sobs_test.GetZaxis().SetRangeUser(0.1,2)
+#h_sobs_test.GetZaxis().SetRangeUser(1,2)
 #h_sobs_test.Draw("colz")
-#print h_sobs_test.GetXaxis().GetBinLowEdge(1), h_sobs_test.GetXaxis().GetBinUpEdge(1)
+##print h_sobs_test.GetXaxis().GetBinLowEdge(1), h_sobs_test.GetXaxis().GetBinUpEdge(1)
 #c1.SaveAs("sobs_test.pdf")
+#exit(1)
 
 g_xsec = ROOT.TGraph2D("g_xsec","",count,mglus,mlsps,v_xsec)
 g_sexp = ROOT.TGraph2D("g_sexp","",count,mglus,mlsps,v_sexp)
@@ -181,6 +184,14 @@ g_som1.SetNpy(npy);
 g_sop1.SetNpx(npx);
 g_sop1.SetNpy(npy);
 
+#c1.SetLogz(0)
+#h_sobs_test = g_sobs.GetHistogram()
+#h_sobs_test.GetZaxis().SetRangeUser(1,2)
+#h_sobs_test.Draw("colz")
+#c1.SaveAs("sobs_test2.pdf")
+#exit(1)
+
+h_xsec_p = ROOT.TH2D("h_xsec_p","",npxh,minx,maxxh,npyh,miny,maxyh)
 h_xsec = ROOT.TH2D("h_xsec","",npx,minx,maxx,npyh,miny,maxyh)
 smooth(g_xsec,h_xsec)
 h_sexp = ROOT.TH2D("h_sexp","",npx,minx,maxx,npy,miny,maxy)
@@ -191,6 +202,11 @@ h_ssp1 = ROOT.TH2D("h_ssp1","",npx,minx,maxx,npy,miny,maxy)
 smooth(g_ssp1,h_ssp1)
 h_sobs = ROOT.TH2D("h_sobs","",npx,minx,maxx,npy,miny,maxy)
 smooth(g_sobs,h_sobs)
+#c1.SetLogz(0)
+#h_sobs.GetZaxis().SetRangeUser(1,2)
+#h_sobs.Draw("colz")
+#c1.SaveAs("sobs_test3.pdf")
+#exit(1)
 h_som1 = ROOT.TH2D("h_som1","",npx,minx,maxx,npy,miny,maxy)
 smooth(g_som1,h_som1)
 h_sop1 = ROOT.TH2D("h_sop1","",npx,minx,maxx,npy,miny,maxy)
@@ -209,19 +225,20 @@ j_som1 = k_som1.GetHistogram()
 k_sop1 = ROOT.TGraph2D(h_sop1)
 j_sop1 = k_sop1.GetHistogram()
 
-h_xsec.GetXaxis().SetLabelSize(0.035)
-h_xsec.GetYaxis().SetLabelSize(0.035)
-h_xsec.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
-h_xsec.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{0}} (GeV)")
+h_xsec_p.GetXaxis().SetLabelSize(0.035)
+h_xsec_p.GetYaxis().SetLabelSize(0.035)
+h_xsec_p.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
+h_xsec_p.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{0}} (GeV)")
+h_xsec_p.GetXaxis().SetTitleOffset(1.2)
+h_xsec_p.GetYaxis().SetTitleOffset(1.7)
+
 h_xsec.GetZaxis().SetTitle("95% CL upper limit on cross section (pb)")
 h_xsec.GetZaxis().SetLabelSize(0.035)
-h_xsec.GetXaxis().SetTitleOffset(1.2)
-h_xsec.GetYaxis().SetTitleOffset(1.7)
 h_xsec.GetZaxis().SetTitleOffset(1.6)
-
 h_xsec.GetZaxis().SetRangeUser(minz,maxz)
 
-h_xsec.Draw("colz")
+h_xsec_p.Draw()
+h_xsec.Draw("colz,same")
 
 cexplist = k_sexp.GetContourList(1.)
 max_points = -1
@@ -270,6 +287,7 @@ for i in range(0,len(cobslist)):
 cobs.SetLineWidth(4)
 cobs.SetLineStyle(1)
 cobs.SetLineColor(ROOT.kBlack)
+#for i in range(62,51,-1): cobs.RemovePoint(i)
 #cobs.Print()
 cobs.Draw("L same");
 
@@ -297,15 +315,15 @@ cop1.SetLineStyle(1)
 cop1.SetLineColor(ROOT.kBlack)
 cop1.Draw("L same");
 
-diag = ROOT.TLine(600,600,1300,1300)
+diag = ROOT.TLine(600,340,1700,1440)
 diag.SetLineWidth(1)
 diag.SetLineStyle(2)
 diag.Draw("same")
 
-diagtex = ROOT.TLatex(0.20,0.48, "m_{#tilde{g}} = m_{#tilde{#chi}_{1}^{0}}" )
+diagtex = ROOT.TLatex(0.20,0.32, "m_{#tilde{g}} - m_{#tilde{#chi}^{0}_{1}} = m_{t} + m_{W} + m_{b}" )
 diagtex.SetNDC()
 diagtex.SetTextSize(0.02)
-diagtex.SetTextAngle(40)
+diagtex.SetTextAngle(37)
 diagtex.SetLineWidth(2)
 diagtex.SetTextFont(42)
 diagtex.Draw()
@@ -315,7 +333,7 @@ l1.SetTextFont(42)
 l1.SetTextSize(0.036)
 l1.SetShadowColor(ROOT.kWhite)
 l1.SetFillColor(ROOT.kWhite)
-l1.SetHeader("pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow q#bar{q}'W#tilde{#chi}^{0}_{1}      NLO+NLL Exclusion")
+l1.SetHeader("pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow #tilde{t}_{1}#kern[0.3]{t}, #tilde{t}_{1}#rightarrow t#tilde{#chi}^{0}_{1}  NLO+NLL Exclusion")
 l1.AddEntry(cobs , "Observed #pm 1 #sigma_{theory}", "l")
 l1.AddEntry(cexp , "Expected #pm 1 #sigma_{experiment}", "l")
 
@@ -340,7 +358,7 @@ cmstexbold.Draw()
 #cmstexprel.SetTextFont(52)
 #cmstexprel.Draw()
 
-masstex = ROOT.TLatex(0.18,0.67, "m_{#tilde{#chi}^{#pm}_{1}} = 0.5(m_{#tilde{g}}+m_{#tilde{#chi}^{0}_{1}})" )
+masstex = ROOT.TLatex(0.18,0.67, "m_{#kern[0.5]{#tilde{t}_{1}}} = m_{#tilde{#chi}^{0}_{1}} + m_{#kern[0.3]{t}}" )
 masstex.SetNDC()
 masstex.SetTextSize(0.03)
 masstex.SetLineWidth(2)
@@ -358,8 +376,8 @@ LObsP.SetLineColor(ROOT.kBlack)
 LObsP.SetLineStyle(1)
 LObsP.SetLineWidth(2)
 LObsP.SetMarkerStyle(20)
-LObsP.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-1.10*(maxyh-miny)/100*10)
-LObsP.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-1.10*(maxyh-miny)/100*10)
+LObsP.SetPoint(0,minx+ 3.8*(maxxh-minx)/100, maxyh-1.10*(maxyh-miny)/100*10)
+LObsP.SetPoint(1,minx+21.2*(maxxh-minx)/100, maxyh-1.10*(maxyh-miny)/100*10)
 LObsP.Draw("LSAME")
 
 LObsM = ROOT.TGraph(2)
@@ -369,8 +387,8 @@ LObsM.SetLineColor(ROOT.kBlack)
 LObsM.SetLineStyle(1)
 LObsM.SetLineWidth(2)
 LObsM.SetMarkerStyle(20)
-LObsM.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-1.40*(maxyh-miny)/100*10)
-LObsM.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-1.40*(maxyh-miny)/100*10)
+LObsM.SetPoint(0,minx+ 3.8*(maxxh-minx)/100, maxyh-1.40*(maxyh-miny)/100*10)
+LObsM.SetPoint(1,minx+21.2*(maxxh-minx)/100, maxyh-1.40*(maxyh-miny)/100*10)
 LObsM.Draw("LSAME")
 
 LExpP = ROOT.TGraph(2)
@@ -380,8 +398,8 @@ LExpP.SetLineColor(ROOT.kRed)
 LExpP.SetLineStyle(2)
 LExpP.SetLineWidth(2)
 LExpP.SetMarkerStyle(20)
-LExpP.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-1.93*(maxyh-miny)/100*10)
-LExpP.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-1.93*(maxyh-miny)/100*10)
+LExpP.SetPoint(0,minx+ 3.8*(maxxh-minx)/100, maxyh-1.93*(maxyh-miny)/100*10)
+LExpP.SetPoint(1,minx+21.2*(maxxh-minx)/100, maxyh-1.93*(maxyh-miny)/100*10)
 LExpP.Draw("LSAME")
 
 LExpM = ROOT.TGraph(2)
@@ -391,11 +409,11 @@ LExpM.SetLineColor(ROOT.kRed)
 LExpM.SetLineStyle(2)
 LExpM.SetLineWidth(2)
 LExpM.SetMarkerStyle(20)
-LExpM.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
-LExpM.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
+LExpM.SetPoint(0,minx+ 3.8*(maxxh-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
+LExpM.SetPoint(1,minx+21.2*(maxxh-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.Draw("LSAME")
 
-c1.SaveAs("t5qqqqvv_scan_xsec.pdf")
+c1.SaveAs("t5ttttdm175_scan_xsec.pdf")
 
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
@@ -427,7 +445,7 @@ h_sexp.Draw("colz")
 cexp.Draw("samecont2");
 c1.SaveAs("sexp.pdf")
 
-fout = ROOT.TFile("ss_t5qqqqvv_scan_xsec.root","RECREATE")
+fout = ROOT.TFile("ss_t5ttttdm175_scan_xsec.root","RECREATE")
 cobswrite = cobs.Clone("ssobs")
 cobswrite.Write()
 com1write = com1.Clone("ssobs_m1s")

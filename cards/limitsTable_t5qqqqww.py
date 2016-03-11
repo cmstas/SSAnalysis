@@ -13,11 +13,11 @@ step = 25
 minx = 600
 maxx = 1700+step
 miny = 0
-maxy = 1250+step
+maxy = 1150+step
 minz = 1e-2
 maxz = 50
 maxyh = 1500
-ybinsfirstxbin = 19
+ybinsfirstxbin = 21
 
 npx = (maxx-minx)/step
 npy = (maxy-miny)/step
@@ -37,8 +37,8 @@ def smooth(g,h):
                 h.SetBinContent(xbin,ybin,h.GetBinContent(xbin,ybin-1))
     #smooth
     h.Smooth(1,"k5b")
-    h.Smooth(1,"k5b")
-    h.Smooth(1,"k5b")
+    #h.Smooth(1,"k5b")
+    #h.Smooth(1,"k5b")
     #now cleanup above the diagonal
     for xbin in range(1,h.GetNbinsX()+1):
         for ybin in range(1,h.GetNbinsY()+1):
@@ -48,9 +48,20 @@ sigs = []
 
 for mglu in range (minx,maxx,step):
     for mlsp in range (miny,maxy,step):
-        if os.path.isfile(("%s/fs_t5qqqqvv_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
-        #print "found sig = fs_t5qqqqvv_m%i_m%i" % (mglu,mlsp)
-        sigs.append(("fs_t5qqqqvv_m%i_m%i" % (mglu,mlsp)))
+        if os.path.isfile(("%s/fs_t5qqqqww_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
+        if mglu==1600 and mlsp==1100: continue
+        if mglu==1650 and mlsp==750 : continue
+        if mglu==1650 and mlsp==800 : continue
+        if mglu==1650 and mlsp==900 : continue
+        if mglu==1650 and mlsp==950 : continue
+        if mglu==1650 and mlsp==1050: continue
+        if mglu==1650 and mlsp==1100: continue
+        if mglu==1650 and mlsp==1150: continue
+        if mglu==1700 and mlsp==600: continue
+        if mglu==1700 and mlsp==700: continue
+        if mglu==1700 and mlsp>=800: continue
+        #print "found sig = fs_t5qqqqww_m%i_m%i" % (mglu,mlsp)
+        sigs.append(("fs_t5qqqqww_m%i_m%i" % (mglu,mlsp)))
 
 limit_obs = []
 limit_exp = []
@@ -221,6 +232,11 @@ h_xsec.GetZaxis().SetTitleOffset(1.6)
 
 h_xsec.GetZaxis().SetRangeUser(minz,maxz)
 
+#hack
+for xbin in range(43,47):
+    for ybin in range(32,49):
+        h_xsec.SetBinContent(xbin,ybin,2)
+
 h_xsec.Draw("colz")
 
 cexplist = k_sexp.GetContourList(1.)
@@ -270,6 +286,7 @@ for i in range(0,len(cobslist)):
 cobs.SetLineWidth(4)
 cobs.SetLineStyle(1)
 cobs.SetLineColor(ROOT.kBlack)
+#for i in range(62,51,-1): cobs.RemovePoint(i)
 #cobs.Print()
 cobs.Draw("L same");
 
@@ -340,7 +357,7 @@ cmstexbold.Draw()
 #cmstexprel.SetTextFont(52)
 #cmstexprel.Draw()
 
-masstex = ROOT.TLatex(0.18,0.67, "m_{#tilde{#chi}^{#pm}_{1}} = 0.5(m_{#tilde{g}}+m_{#tilde{#chi}^{0}_{1}})" )
+masstex = ROOT.TLatex(0.18,0.67, "m_{#tilde{#chi}^{#pm}_{1}} = m_{#tilde{#chi}^{0}_{1}} + 20 GeV" )
 masstex.SetNDC()
 masstex.SetTextSize(0.03)
 masstex.SetLineWidth(2)
@@ -395,7 +412,7 @@ LExpM.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.Draw("LSAME")
 
-c1.SaveAs("t5qqqqvv_scan_xsec.pdf")
+c1.SaveAs("t5qqqqww_scan_xsec.pdf")
 
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
@@ -427,7 +444,7 @@ h_sexp.Draw("colz")
 cexp.Draw("samecont2");
 c1.SaveAs("sexp.pdf")
 
-fout = ROOT.TFile("ss_t5qqqqvv_scan_xsec.root","RECREATE")
+fout = ROOT.TFile("ss_t5qqqqww_scan_xsec.root","RECREATE")
 cobswrite = cobs.Clone("ssobs")
 cobswrite.Write()
 com1write = com1.Clone("ssobs_m1s")
