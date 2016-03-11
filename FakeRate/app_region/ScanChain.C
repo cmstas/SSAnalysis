@@ -18,7 +18,7 @@
 #include "../../CORE/SSSelections.h"
 #include "../../CORE/Tools/utils.h"
 #include "../../CORE/Tools/dorky/dorky.cc"
-#include "../../classFiles/v4.00/SS.h"
+#include "../../classFiles/v6.02/SS.h"
 #include "../../software/tableMaker/CTable.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../../commonUtils.h"
@@ -92,17 +92,18 @@ float getFakeRate(int id, float pt, float eta, float ht, bool extrPtRel = false,
   else return qcdMCFakeRate(id, pt, eta, ht);
 }
 
-TH1F* GetErrorPlot(TH1F *pred, TH1F *obs, vector< vector<TH2D*> > pred_err2_mu, vector< vector<TH2D*> > pred_err2_el){
+float getFakeRate2(int id, float pt, float eta, float ht, bool extrPtRel = false, bool doData = false){
+  if (doData) return fakeRateNoCC(id, pt, eta, ht);
+  else return qcdMCFakeRateNoCC(id, pt, eta, ht);
+}
 
-  TH1F *alexHist = (TH1F*)pred->Clone(); 
+void GetErrorPlot(TH1F *pred, vector< vector<TH2D*> > pred_err2_mu, vector< vector<TH2D*> > pred_err2_el){
 
   for (int bin=1;bin<=pred->GetNbinsX();++bin) {
     int sr = bin-1;
     float p = pred->GetBinContent(bin);
-    float o = obs->GetBinContent(bin);
     //stat error on nFOs
     float pe = pred->GetBinError(bin);
-    float oe = obs->GetBinError(bin);
     float pefr2 = 0;
     //stat error on FR 
     for (unsigned int i = 0; i < 2; i++){
@@ -129,9 +130,8 @@ TH1F* GetErrorPlot(TH1F *pred, TH1F *obs, vector< vector<TH2D*> > pred_err2_mu, 
     }
     //now combine the two
     pe = sqrt(pe*pe + pefr2);
-    alexHist->SetBinError(bin, pe); 
+    pred->SetBinError(bin, pe); 
   }
-  return alexHist; 
 }
 
 //getPt and getEta need to stay on sync with meas region
@@ -197,7 +197,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
   bool doLowHT = option.Contains("IsoTrigs") ? true : false;
   bool doHighHT = option.Contains("HTTrigs") ? true : false;
 
-  float luminosity = doData ? getLumi() : 3.0;
+  float luminosity = doData ? getLumi() : 2.26;
 
   //Dir
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
@@ -389,7 +389,9 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
   float Nnn = 0.; //# of nonprompt-nonprompt tight-tight pairs
   //float e = 0.;  //rate = Nt/Nl
   float e1 = 0.;  //rate = Nt/Nl
+  float e1a = 0.;  //rate = Nt/Nl
   float e2 = 0.;  //rate = Nt/Nl
+  float e2a = 0.;  //rate = Nt/Nl
   //----------------
   int counter = 0;  
   float Bs_e = 0;
@@ -768,7 +770,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
 
           if (abs(ss::lep2_id()) == 11){  
             e2 = getFakeRate(11, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht(), false, doData );
-            w = (e2/(1-e2))*weight;
+            e2a = getFakeRate2(11, ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::ht(), false, doData); 
+            w = coneCorr ? (e2/(1-e2))*weight : (e2a/(1-e2a))*weight;
             if(subtractContamination) w = mult*weight;
 
             addToCounter(filename+Form("_pred_el_BR%i", br), w);
@@ -780,7 +783,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_MTMIN_pred_el")]->Fill(mtmin, w);
             hists[getHist("Npn_histo_L1PT_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
-            if (sr>=0) Npn_histo_sr_err2_pred_el[(ss::ht() > 300)][sr]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
+            if (sr>=0) Npn_histo_sr_err2_pred_el[(ss::ht() > 300)][sr-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_br_err2_pred_el[ss::ht() > 300][br]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_HT_err2_pred_el[(ss::ht() > 300)][hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_MET_err2_pred_el[ss::ht() > 300][hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::met())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
@@ -795,7 +798,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
           }
           else if (abs(ss::lep2_id()) == 13){ 
             e2 = getFakeRate(13, lep2_pT, fabs(ss::lep2_p4().eta()), ss::ht(), false, doData );
-            w = (e2/(1-e2))*weight;
+            e2a = getFakeRate2(13, ss::lep2_p4().pt(), fabs(ss::lep2_p4().eta()), ss::ht(), false, doData); 
+            w = coneCorr ? (e2/(1-e2))*weight : (e2a/(1-e2a))*weight;
             if(subtractContamination) w = mult*weight;
 
             addToCounter(filename+Form("_pred_mu_BR%i", br), w);
@@ -807,7 +811,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_MTMIN_pred_mu")]->Fill(mtmin, w);
             hists[getHist("Npn_histo_L1PT_pred_mu")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_mu")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
-            if (sr>=0) Npn_histo_sr_err2_pred_mu[(ss::ht() > 300)][sr]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
+            if (sr>=0) Npn_histo_sr_err2_pred_mu[(ss::ht() > 300)][sr-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_br_err2_pred_mu[ss::ht() > 300][br]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_HT_err2_pred_mu[ss::ht() > 300][hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_MET_err2_pred_mu[ss::ht() > 300][hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::met())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
@@ -854,7 +858,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
 
           if( abs(ss::lep1_id()) == 11 ){	//if el, use el rate.  FILL WITH NONPROMPT			  
             e1 = getFakeRate(11, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false, doData );
-            w = (e1/(1-e1))*weight;
+            e1a = getFakeRate2(11, ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::ht(), false, doData); 
+            w = coneCorr ? (e1/(1-e1))*weight : (e1a/(1-e1a))*weight;
             if(subtractContamination) w = mult*weight;
 
             addToCounter(filename+Form("_pred_el_BR%i", br), w);
@@ -867,7 +872,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_L1PT_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
 
-            if (sr>=0) Npn_histo_sr_err2_pred_el[(ss::ht() > 300)][sr]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
+            if (sr>=0) Npn_histo_sr_err2_pred_el[(ss::ht() > 300)][sr-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_br_err2_pred_el[ss::ht() > 300][br]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_HT_err2_pred_el[ss::ht() > 300][hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_MET_err2_pred_el[ss::ht() > 300][hists[getHist("Npn_histo_MET_pred_el")]->FindBin(ss::met())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
@@ -882,7 +887,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
           }
           else if( abs(ss::lep1_id()) == 13 ){ //if mu, use mu rate.  FILL WITH NONPROMPT				  
             e1 = getFakeRate(13, lep1_pT, fabs(ss::lep1_p4().eta()), ss::ht(), false, doData );
-            w = (e1/(1-e1))*weight;
+            e1a = getFakeRate2(13, ss::lep1_p4().pt(), fabs(ss::lep1_p4().eta()), ss::ht(), false, doData); 
+            w = coneCorr ? (e1/(1-e1))*weight : (e1a/(1-e1a))*weight;
             if(subtractContamination) w = mult*weight;
 
             addToCounter(filename+Form("_pred_mu_BR%i", br), w);
@@ -895,7 +901,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_L1PT_pred_mu")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_mu")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
 
-            if (sr>=0) Npn_histo_sr_err2_pred_mu[(ss::ht() > 300)][sr]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
+            if (sr>=0) Npn_histo_sr_err2_pred_mu[(ss::ht() > 300)][sr-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_br_err2_pred_mu[ss::ht() > 300][br]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_HT_err2_pred_mu[(ss::ht() > 300)][hists[getHist("Npn_histo_HT_pred_mu")]->FindBin(ss::ht())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
             Npn_histo_MET_err2_pred_mu[ss::ht() > 300][hists[getHist("Npn_histo_MET_pred_mu")]->FindBin(ss::met())-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
@@ -974,39 +980,63 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
   std::string plotdir="plots/";
 
   //BR plots
-  dataMCplotMaker(hists[getHist("Npn_histo_br_pred")], { make_pair(hists[getHist("Npn_histo_br_obs")], GetErrorPlot(hists[getHist("Npn_histo_br_obs")], hists[getHist("Npn_histo_br_obs")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"br_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_br_pred_mu")], { make_pair(hists[getHist("Npn_histo_br_obs_mu")], GetErrorPlot(hists[getHist("Npn_histo_br_obs_mu")], hists[getHist("Npn_histo_br_obs_mu")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"br_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_br_pred_el")], { make_pair(hists[getHist("Npn_histo_br_obs_el")], GetErrorPlot(hists[getHist("Npn_histo_br_obs_el")], hists[getHist("Npn_histo_br_obs_el")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"br_el"+option).Data()), {}, {}, { kYellow }); 
+  GetErrorPlot(hists[getHist("Npn_histo_br_pred")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_br_pred_mu")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_br_pred_el")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el);
+  dataMCplotMaker(hists[getHist("Npn_histo_br_pred")], { make_pair(hists[getHist("Npn_histo_br_obs")], hists[getHist("Npn_histo_br_obs")] ) }, {"Observed"}, "BRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Baseline Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"br_all"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_br_pred_mu")], { make_pair(hists[getHist("Npn_histo_br_obs_mu")], hists[getHist("Npn_histo_br_obs_mu")] ) }, {"Observed"}, "BRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Baseline Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"br_mu"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_br_pred_el")], { make_pair(hists[getHist("Npn_histo_br_obs_el")], hists[getHist("Npn_histo_br_obs_el")]) }, {"Observed"}, "BRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Baseline Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"br_el"+option).Data()), {}, {}, { kYellow }); 
 
   //SR plots
-  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred")], { make_pair(hists[getHist("Npn_histo_sr_obs")], GetErrorPlot(hists[getHist("Npn_histo_sr_obs")], hists[getHist("Npn_histo_sr_obs")], Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"sr_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_mu")], { make_pair(hists[getHist("Npn_histo_sr_obs_mu")], GetErrorPlot(hists[getHist("Npn_histo_sr_obs_mu")], hists[getHist("Npn_histo_sr_obs_mu")], Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"sr_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_el")], { make_pair(hists[getHist("Npn_histo_sr_obs_el")], GetErrorPlot(hists[getHist("Npn_histo_sr_obs_el")], hists[getHist("Npn_histo_sr_obs_el")], Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"sr_el"+option).Data()), {}, {}, { kYellow }); 
+  string typeAG = "HH";
+  if (highlow) typeAG = "HL";
+  if (lowlow)  typeAG = "LL";
+  GetErrorPlot(hists[getHist("Npn_histo_sr_pred")], Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_sr_pred_mu")], Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_sr_pred_el")], Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el);
+  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred")], { make_pair(hists[getHist("Npn_histo_sr_obs")], hists[getHist("Npn_histo_sr_obs")]) }, {"Observed"}, Form("%s SRs", typeAG.c_str()), "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"sr_all"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_mu")], { make_pair(hists[getHist("Npn_histo_sr_obs_mu")], hists[getHist("Npn_histo_sr_obs_mu")]) }, {"Observed"}, Form("%s SRs", typeAG.c_str()), "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"sr_mu"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_el")], { make_pair(hists[getHist("Npn_histo_sr_obs_el")], hists[getHist("Npn_histo_sr_obs_el")]) }, {"Observed"}, Form("%s SRs", typeAG.c_str()), "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"sr_el"+option).Data()), {}, {}, { kYellow }); 
 
   //HT plots
-  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred")], { make_pair(hists[getHist("Npn_histo_HT_obs")], GetErrorPlot(hists[getHist("Npn_histo_HT_obs")], hists[getHist("Npn_histo_HT_obs")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"HT_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred_mu")], { make_pair(hists[getHist("Npn_histo_HT_obs_mu")], GetErrorPlot(hists[getHist("Npn_histo_HT_obs_mu")], hists[getHist("Npn_histo_HT_obs_mu")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"HT_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred_el")], { make_pair(hists[getHist("Npn_histo_HT_obs_el")], GetErrorPlot(hists[getHist("Npn_histo_HT_obs_el")], hists[getHist("Npn_histo_HT_obs_el")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"HT_el"+option).Data()), {}, {}, { kYellow }); 
+  GetErrorPlot(hists[getHist("Npn_histo_HT_pred")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_HT_pred_mu")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_HT_pred_el")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el);
+  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred")], { make_pair(hists[getHist("Npn_histo_HT_obs")], hists[getHist("Npn_histo_HT_obs")]) }, {"Observed"}, "H_{T}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel H_{T} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"HT_all"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred_mu")], { make_pair(hists[getHist("Npn_histo_HT_obs_mu")], hists[getHist("Npn_histo_HT_obs_mu")]) }, {"Observed"}, "H_{T}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel H_{T} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"HT_mu"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred_el")], { make_pair(hists[getHist("Npn_histo_HT_obs_el")], hists[getHist("Npn_histo_HT_obs_el")]) }, {"Observed"}, "H_{T}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel H_{T} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"HT_el"+option).Data()), {}, {}, { kYellow }); 
 
   //MET plots
-  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred")], { make_pair(hists[getHist("Npn_histo_MET_obs")], GetErrorPlot(hists[getHist("Npn_histo_MET_obs")], hists[getHist("Npn_histo_MET_obs")], Npn_histo_MET_err2_pred_mu, Npn_histo_MET_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MET_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred_mu")], { make_pair(hists[getHist("Npn_histo_MET_obs_mu")], GetErrorPlot(hists[getHist("Npn_histo_MET_obs_mu")], hists[getHist("Npn_histo_MET_obs_mu")], Npn_histo_MET_err2_pred_mu, Npn_histo_MET_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MET_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred_el")], { make_pair(hists[getHist("Npn_histo_MET_obs_el")], GetErrorPlot(hists[getHist("Npn_histo_MET_obs_el")], hists[getHist("Npn_histo_MET_obs_el")], Npn_histo_MET_err2_pred_mu, Npn_histo_MET_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MET_el"+option).Data()), {}, {}, { kYellow }); 
+  GetErrorPlot(hists[getHist("Npn_histo_MET_pred")], Npn_histo_MET_err2_pred_mu, Npn_histo_MET_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_MET_pred_mu")], Npn_histo_MET_err2_pred_mu, Npn_histo_MET_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_MET_pred_el")], Npn_histo_MET_err2_pred_mu, Npn_histo_MET_err2_pred_el);
+  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred")], { make_pair(hists[getHist("Npn_histo_MET_obs")], hists[getHist("Npn_histo_MET_obs")]) }, {"Observed"}, "MET", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel MET --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MET_all"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred_mu")], { make_pair(hists[getHist("Npn_histo_MET_obs_mu")], hists[getHist("Npn_histo_MET_obs_mu")]) }, {"Observed"}, "MET", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel MET --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MET_mu"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred_el")], { make_pair(hists[getHist("Npn_histo_MET_obs_el")], hists[getHist("Npn_histo_MET_obs_el")]) }, {"Observed"}, "MET", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel MET --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MET_el"+option).Data()), {}, {}, { kYellow }); 
 
   //MTMIN plots
-  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred")], { make_pair(hists[getHist("Npn_histo_MTMIN_obs")], GetErrorPlot(hists[getHist("Npn_histo_MTMIN_obs")], hists[getHist("Npn_histo_MTMIN_obs")], Npn_histo_MTMIN_err2_pred_mu, Npn_histo_MTMIN_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MTMIN_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred_mu")], { make_pair(hists[getHist("Npn_histo_MTMIN_obs_mu")], GetErrorPlot(hists[getHist("Npn_histo_MTMIN_obs_mu")], hists[getHist("Npn_histo_MTMIN_obs_mu")], Npn_histo_MTMIN_err2_pred_mu, Npn_histo_MTMIN_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MTMIN_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred_el")], { make_pair(hists[getHist("Npn_histo_MTMIN_obs_el")], GetErrorPlot(hists[getHist("Npn_histo_MTMIN_obs_el")], hists[getHist("Npn_histo_MTMIN_obs_el")], Npn_histo_MTMIN_err2_pred_mu, Npn_histo_MTMIN_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MTMIN_el"+option).Data()), {}, {}, { kYellow }); 
+  GetErrorPlot(hists[getHist("Npn_histo_MTMIN_pred")], Npn_histo_MTMIN_err2_pred_mu, Npn_histo_MTMIN_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_MTMIN_pred_mu")], Npn_histo_MTMIN_err2_pred_mu, Npn_histo_MTMIN_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_MTMIN_pred_el")], Npn_histo_MTMIN_err2_pred_mu, Npn_histo_MTMIN_err2_pred_el);
+  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred")], { make_pair(hists[getHist("Npn_histo_MTMIN_obs")], hists[getHist("Npn_histo_MTMIN_obs")]) }, {"Observed"}, "M_{T}^{min}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel M_{T}^{min} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MTMIN_all"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred_mu")], { make_pair(hists[getHist("Npn_histo_MTMIN_obs_mu")], hists[getHist("Npn_histo_MTMIN_obs_mu")]) }, {"Observed"}, "M_{T}^{min}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel M_{T}^{min} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MTMIN_mu"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred_el")], { make_pair(hists[getHist("Npn_histo_MTMIN_obs_el")], hists[getHist("Npn_histo_MTMIN_obs_el")]) }, {"Observed"}, "M_{T}^{min}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel M_{T}^{min} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"MTMIN_el"+option).Data()), {}, {}, { kYellow }); 
 
   //L1PT plots
-  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred")], { make_pair(hists[getHist("Npn_histo_L1PT_obs")], GetErrorPlot(hists[getHist("Npn_histo_L1PT_obs")], hists[getHist("Npn_histo_L1PT_obs")], Npn_histo_L1PT_err2_pred_mu, Npn_histo_L1PT_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L1PT_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred_mu")], { make_pair(hists[getHist("Npn_histo_L1PT_obs_mu")], GetErrorPlot(hists[getHist("Npn_histo_L1PT_obs_mu")], hists[getHist("Npn_histo_L1PT_obs_mu")], Npn_histo_L1PT_err2_pred_mu, Npn_histo_L1PT_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L1PT_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred_el")], { make_pair(hists[getHist("Npn_histo_L1PT_obs_el")], GetErrorPlot(hists[getHist("Npn_histo_L1PT_obs_el")], hists[getHist("Npn_histo_L1PT_obs_el")], Npn_histo_L1PT_err2_pred_mu, Npn_histo_L1PT_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L1PT_el"+option).Data()), {}, {}, { kYellow }); 
+  GetErrorPlot(hists[getHist("Npn_histo_L1PT_pred")], Npn_histo_L1PT_err2_pred_mu, Npn_histo_L1PT_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_L1PT_pred_mu")], Npn_histo_L1PT_err2_pred_mu, Npn_histo_L1PT_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_L1PT_pred_el")], Npn_histo_L1PT_err2_pred_mu, Npn_histo_L1PT_err2_pred_el);
+  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred")], { make_pair(hists[getHist("Npn_histo_L1PT_obs")], hists[getHist("Npn_histo_L1PT_obs")]) }, {"Observed"}, "L1 p_{T}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel L1 p_{T} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L1PT_all"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred_mu")], { make_pair(hists[getHist("Npn_histo_L1PT_obs_mu")], hists[getHist("Npn_histo_L1PT_obs_mu")]) }, {"Observed"}, "L1 p_{T}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel L1 p_{T} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L1PT_mu"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred_el")], { make_pair(hists[getHist("Npn_histo_L1PT_obs_el")], hists[getHist("Npn_histo_L1PT_obs_el")]) }, {"Observed"}, "L1 p_{T}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel L1 p_{T} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L1PT_el"+option).Data()), {}, {}, { kYellow }); 
 
   //L2PT plots
-  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred")], { make_pair(hists[getHist("Npn_histo_L2PT_obs")], GetErrorPlot(hists[getHist("Npn_histo_L2PT_obs")], hists[getHist("Npn_histo_L2PT_obs")], Npn_histo_L2PT_err2_pred_mu, Npn_histo_L2PT_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L2PT_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred_mu")], { make_pair(hists[getHist("Npn_histo_L2PT_obs_mu")], GetErrorPlot(hists[getHist("Npn_histo_L2PT_obs_mu")], hists[getHist("Npn_histo_L2PT_obs_mu")], Npn_histo_L2PT_err2_pred_mu, Npn_histo_L2PT_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L2PT_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred_el")], { make_pair(hists[getHist("Npn_histo_L2PT_obs_el")], GetErrorPlot(hists[getHist("Npn_histo_L2PT_obs_el")], hists[getHist("Npn_histo_L2PT_obs_el")], Npn_histo_L2PT_err2_pred_mu, Npn_histo_L2PT_err2_pred_el)) }, {"Observed"}, "HH SRs", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel Signal Region --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L2PT_el"+option).Data()), {}, {}, { kYellow }); 
+  GetErrorPlot(hists[getHist("Npn_histo_L2PT_pred")], Npn_histo_L2PT_err2_pred_mu, Npn_histo_L2PT_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_L2PT_pred_mu")], Npn_histo_L2PT_err2_pred_mu, Npn_histo_L2PT_err2_pred_el);
+  GetErrorPlot(hists[getHist("Npn_histo_L2PT_pred_el")], Npn_histo_L2PT_err2_pred_mu, Npn_histo_L2PT_err2_pred_el);
+  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred")], { make_pair(hists[getHist("Npn_histo_L2PT_obs")], hists[getHist("Npn_histo_L2PT_obs")]) }, {"Observed"}, "L2 p_{T}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel L2 p_{T} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L2PT_all"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred_mu")], { make_pair(hists[getHist("Npn_histo_L2PT_obs_mu")], hists[getHist("Npn_histo_L2PT_obs_mu")]) }, {"Observed"}, "L2 p_{T}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel L2 p_{T} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L2PT_mu"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred_el")], { make_pair(hists[getHist("Npn_histo_L2PT_obs_el")], hists[getHist("Npn_histo_L2PT_obs_el")]) }, {"Observed"}, "L2 p_{T}", "t#bar{t} MC", Form("--outputName %s --outOfFrame --dataName Predicted --xAxisLabel L2 p_{T} --noDivisionLabel --noRatioPlot --isLinear --noOverflow --lumi 2.26 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1", (plotdir+"L2PT_el"+option).Data()), {}, {}, { kYellow }); 
 
   TH1F *total_BR_histo_e = (TH1F*)  hists[getHist("NBs_BR_histo_e")]->Clone("total_BR_histo_e");
   TH1F *total_BR_histo_mu = (TH1F*) hists[getHist("NBs_BR_histo_mu")]->Clone("total_BR_histo_mu");

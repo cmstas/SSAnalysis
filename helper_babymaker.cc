@@ -597,11 +597,11 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
       if (isFastsim <= 2) xsec = go_xsec(sparms[0]).xsec;
       if (isFastsim == 3) xsec = stop_xsec(sparms[0]).xsec; 
       if (isFastsim == 4) xsec = go_xsec(sparms[0]).xsec*0.104976; //dilepton filter
-      if (isFastsim == 5) xsec = go_xsec(sparms[0]).xsec;
-      if (isFastsim == 6) xsec = go_xsec(sparms[0]).xsec;
+      if (isFastsim >= 5) xsec = go_xsec(sparms[0]).xsec;
       if (isFastsim != 3) xsec_error = go_xsec(sparms[0]).percErr;
       if (isFastsim == 3) xsec_error = stop_xsec(sparms[0]).percErr;
-      scale1fb = 1000*xsec/nPoints(isFastsim, sparms[0], sparms[1]);
+      if (isFastsim <  100) scale1fb = 1000*xsec/nPoints(isFastsim, sparms[0], sparms[1]);
+      if (isFastsim == 102) scale1fb = 1000*xsec/59378;
       is_fastsim = 1; 
     }
   }

@@ -160,6 +160,11 @@ if [ "$WHICH" == "14004" ] ; then WHICH_SMALL="t1ttbb_600to800_275to575"    ; fi
 if [ "$WHICH" == "14005" ] ; then WHICH_SMALL="t1ttbb_1225to1400_900to1175" ; fi      
 if [ "$WHICH" == "14006" ] ; then WHICH_SMALL="t1ttbb_1650to2000_0to1450"   ; fi        
 if [ "$WHICH" == "14007" ] ; then WHICH_SMALL="t1ttbb_825to1000_500to775"   ; fi        
+if [ "$WHICH" == "14008" ] ; then WHICH_SMALL="t1ttbb_1650to1750_1350to1450" ; fi  
+if [ "$WHICH" == "14009" ] ; then WHICH_SMALL="t1ttbb_825to1000_0to625" ; fi  
+if [ "$WHICH" == "14010" ] ; then WHICH_SMALL="t1ttbb_600to800_0to450" ; fi  
+if [ "$WHICH" == "14011" ] ; then WHICH_SMALL="t1ttbb_1025to1200_700to975" ; fi
+if [ "$WHICH" == "14012" ] ; then WHICH_SMALL="t1ttbb_1025to1200_0to850" ; fi
 if [ "$WHICH" == "15001" ] ; then WHICH_SMALL="t5ttttdm175_825to1000_500to725"   ; fi
 if [ "$WHICH" == "15002" ] ; then WHICH_SMALL="t5ttttdm175_1025to1200_700to925"  ; fi  
 if [ "$WHICH" == "15003" ] ; then WHICH_SMALL="t5ttttdm175_1225to1400_0to1050"   ; fi   
@@ -167,6 +172,35 @@ if [ "$WHICH" == "15004" ] ; then WHICH_SMALL="t5ttttdm175_1225to1400_900to1125"
 if [ "$WHICH" == "15005" ] ; then WHICH_SMALL="t5ttttdm175_1425to1625_1100to1300"; fi
 if [ "$WHICH" == "15006" ] ; then WHICH_SMALL="t5ttttdm175_600to800_275to525"    ; fi    
 if [ "$WHICH" == "15007" ] ; then WHICH_SMALL="t5ttttdm175_825to1000_0to650"     ; fi      
+if [ "$WHICH" == "15008" ] ; then WHICH_SMALL="t5ttttdm175_1425to1600_0to1250"   ; fi
+if [ "$WHICH" == "15009" ] ; then WHICH_SMALL="t5ttttdm175_1025to1200_0to850"   ; fi
+if [ "$WHICH" == "15010" ] ; then WHICH_SMALL="t5ttttdm175_1625to1700_0to1300"   ; fi
+if [ "$WHICH" == "15011" ] ; then WHICH_SMALL="t5ttttdm175_600to800_0to450"   ; fi
+if [ "$WHICH" == "16001" ] ; then WHICH_SMALL="t5tttt_degen_1225to1400_1075to1275" ; fi
+if [ "$WHICH" == "16002" ] ; then WHICH_SMALL="t5tttt_degen_1425to1600_1275to1375" ; fi
+if [ "$WHICH" == "16003" ] ; then WHICH_SMALL="t5tttt_degen_825to1000_0to825" ; fi
+if [ "$WHICH" == "16004" ] ; then WHICH_SMALL="t5tttt_degen_825to1000_675to875" ; fi
+if [ "$WHICH" == "16005" ] ; then WHICH_SMALL="t5tttt_degen_1225to1400_0to1225" ; fi    
+if [ "$WHICH" == "16006" ] ; then WHICH_SMALL="t5tttt_degen_600to800_450to675" ; fi    
+if [ "$WHICH" == "16007" ] ; then WHICH_SMALL="t5tttt_degen_1425to1600_0to1350" ; fi    
+if [ "$WHICH" == "16008" ] ; then WHICH_SMALL="t5tttt_degen_1650to1700_0to1350" ; fi    
+if [ "$WHICH" == "16009" ] ; then WHICH_SMALL="t5tttt_degen_1025to1200_0to1025" ; fi    
+if [ "$WHICH" == "16010" ] ; then WHICH_SMALL="t5tttt_degen_600to800_0to625"    ; fi       
+if [ "$WHICH" == "16011" ] ; then WHICH_SMALL="t5tttt_degen_1025to1200_875to1075" ; fi 
+if [ "$WHICH" == "17001" ] ; then WHICH_SMALL="t5ttcc_825to1000_675to875" ; fi      
+if [ "$WHICH" == "17002" ] ; then WHICH_SMALL="t5ttcc_1025to1200_875to1075" ; fi      
+if [ "$WHICH" == "17003" ] ; then WHICH_SMALL="t5ttcc_825to1000_0to825" ; fi      
+if [ "$WHICH" == "17004" ] ; then WHICH_SMALL="t5ttcc_600to800_450to675" ; fi      
+if [ "$WHICH" == "17005" ] ; then WHICH_SMALL="t5ttcc_1225to1400_1075to1225" ; fi      
+if [ "$WHICH" == "17006" ] ; then WHICH_SMALL="t5ttcc_1225to1400_0to1225" ; fi      
+if [ "$WHICH" == "17007" ] ; then WHICH_SMALL="t5ttcc_1650to1700_0to1350" ; fi      
+if [ "$WHICH" == "17008" ] ; then WHICH_SMALL="t5ttcc_1425to1525_1275to1375" ; fi      
+if [ "$WHICH" == "17009" ] ; then WHICH_SMALL="t5ttcc_1025to1200_0to1025" ; fi      
+if [ "$WHICH" == "17010" ] ; then WHICH_SMALL="t5ttcc_600to800_0to625" ; fi      
+if [ "$WHICH" == "17011" ] ; then WHICH_SMALL="t5ttcc_1425to1600_0to1350" ; fi      
+if [ "$WHICH" == "100000" ] ; then WHICH_SMALL="ana1"; fi
+if [ "$WHICH" == "100001" ] ; then WHICH_SMALL="ana2"; fi
+if [ "$WHICH" == "100002" ] ; then WHICH_SMALL="ana3"; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 

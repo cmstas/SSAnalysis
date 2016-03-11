@@ -13,6 +13,7 @@ float getWZSF() { return 1.19; }
 #include "pu_weights.h"
 #include "flip_rates.h"
 #include "fake_rates.h"
+#include "fake_rates_noCC.h"
 #include "lepton_sf.h"
 #include "lepton_sf_fastsim.h"
 
@@ -129,5 +130,42 @@ bool passesNumeratorMVA(int id, float eta, float disc){
   if (aeta > 1.479) return disc > 0.17;
   return false;
 }
+
+float fakeRateNoCC(int id, float pt, float eta, float ht) { 
+  if (ht>300.) {
+    if (abs(id)==11) return electronFakeRateNoCC(pt,eta);
+    else if (abs(id)==13) return muonFakeRateNoCC(pt,eta);
+    else return 0.;
+  } else {
+    if (abs(id)==11) return electronFakeRate_IsoTrigsNoCC(pt,eta);
+    else if (abs(id)==13) return muonFakeRate_IsoTrigsNoCC(pt,eta);
+    else return 0.;
+  }
+}
+
+float fakeRateErrorNoCC(int id, float pt, float eta, float ht) { 
+  if (ht>300.) {
+    if (abs(id)==11) return electronFakeRateErrorNoCC(pt,eta);
+    else if (abs(id)==13) return muonFakeRateErrorNoCC(pt,eta);
+    else return 0.;
+  } else {
+    if (abs(id)==11) return electronFakeRateError_IsoTrigsNoCC(pt,eta);
+    else if (abs(id)==13) return muonFakeRateError_IsoTrigsNoCC(pt,eta);
+    else return 0.;
+  }
+}
+
+float qcdMCFakeRateNoCC(int id, float pt, float eta, float ht) { 
+  if (ht>300.) {
+    if (abs(id)==11) return electronQCDMCFakeRateNoCC(pt,eta);
+    else if (abs(id)==13) return muonQCDMCFakeRateNoCC(pt,eta);
+    else return 0.;
+  } else {
+    if (abs(id)==11) return electronQCDMCFakeRate_IsoTrigsNoCC(pt,eta);
+    else if (abs(id)==13) return muonQCDMCFakeRate_IsoTrigsNoCC(pt,eta);
+    else return 0.;
+  }
+}
+
 
 #endif

@@ -145,6 +145,11 @@ enum sample_t {
   T1TTBB_1225to1400_900to1175   = 14005,
   T1TTBB_1650to2000_0to1450     = 14006,
   T1TTBB_825to1000_500to775     = 14007,
+  T1TTBB_1650to1750_1350to1450  = 14008,
+  T1TTBB_825to1000_0to625       = 14009,
+  T1TTBB_600to800_0to450        = 14010,
+  T1TTBB_1025to1200_700to975    = 14011,
+  T1TTBB_1025to1200_0to850      = 14012,
 
   T5ttttDM175_825to1000_500to725    = 15001,
   T5ttttDM175_1025to1200_700to925   = 15002,
@@ -152,8 +157,39 @@ enum sample_t {
   T5ttttDM175_1225to1400_900to1125  = 15004,
   T5ttttDM175_1425to1625_1100to1300 = 15005,
   T5ttttDM175_600to800_275to525     = 15006,
-  T5ttttDM175_825to1000_0to650      = 15007
+  T5ttttDM175_825to1000_0to650      = 15007,
+  T5ttttDM175_1425to1600_0to1250    = 15008, 
+  T5ttttDM175_1025to1200_0to850     = 15009,
+  T5ttttDM175_1625to1700_0to1300    = 15010,
+  T5ttttDM175_600to800_0to450       = 15011,
 
+  T5tttt_degen_1225to1400_1075to1275 = 16001,
+  T5tttt_degen_1425to1600_1275to1375 = 16002,
+  T5tttt_degen_825to1000_0to825      = 16003,
+  T5tttt_degen_825to1000_675to875    = 16004,
+  T5tttt_degen_1225to1400_0to1225    = 16005,
+  T5tttt_degen_600to800_450to675     = 16006,
+  T5tttt_degen_1425to1600_0to1350    = 16007,
+  T5tttt_degen_1650to1700_0to1350    = 16008,
+  T5tttt_degen_1025to1200_0to1025    = 16009,
+  T5tttt_degen_600to800_0to625       = 16010,
+  T5tttt_degen_1025to1200_875to1075  = 16011,
+
+  T5ttcc_825to1000_675to875          = 17001,
+  T5ttcc_1025to1200_875to1075        = 17002,
+  T5ttcc_825to1000_0to825            = 17003,
+  T5ttcc_600to800_450to675           = 17004,
+  T5ttcc_1225to1400_1075to1225       = 17005,
+  T5ttcc_1225to1400_0to1225          = 17006,
+  T5ttcc_1650to1700_0to1350          = 17007,
+  T5ttcc_1425to1525_1275to1375       = 17008,
+  T5ttcc_1025to1200_0to1025          = 17009,
+  T5ttcc_600to800_0to625             = 17010,
+  T5ttcc_1425to1600_0to1350          = 17011,
+
+  ANA1                               = 100000,
+  ANA2                               = 100001,
+  ANA3                               = 100002,
 
 };
 
