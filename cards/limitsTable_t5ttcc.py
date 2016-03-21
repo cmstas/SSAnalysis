@@ -13,14 +13,16 @@ step = 25
 minx = 600
 maxx = 1700+step
 miny = 0
-maxy = 1250+step
+maxy = 1350+step
 minz = 1e-2
 maxz = 50
-maxyh = 1500
+maxyh = 1700
+maxxh = 1700
 ybinsfirstxbin = 19
 
 npx = (maxx-minx)/step
 npy = (maxy-miny)/step
+npxh = (maxxh-minx)/step
 npyh = (maxyh-miny)/step
 
 def smooth(g,h):
@@ -36,9 +38,7 @@ def smooth(g,h):
             if ybin>xbin+ybinsfirstxbin: 
                 h.SetBinContent(xbin,ybin,h.GetBinContent(xbin,ybin-1))
     #smooth
-    h.Smooth(1,"k5b")
-    h.Smooth(1,"k5b")
-    h.Smooth(1,"k5b")
+    h.Smooth(1,"")
     #now cleanup above the diagonal
     for xbin in range(1,h.GetNbinsX()+1):
         for ybin in range(1,h.GetNbinsY()+1):
@@ -48,9 +48,47 @@ sigs = []
 
 for mglu in range (minx,maxx,step):
     for mlsp in range (miny,maxy,step):
-        if os.path.isfile(("%s/fs_t5qqqqvv_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
-        #print "found sig = fs_t5qqqqvv_m%i_m%i" % (mglu,mlsp)
-        sigs.append(("fs_t5qqqqvv_m%i_m%i" % (mglu,mlsp)))
+        if mglu==600 and mlsp==425: continue
+        if mglu==625 and mlsp==450: continue
+        if mglu==650 and mlsp==475: continue
+        if mglu==675 and mlsp==500: continue
+        if mglu==700 and mlsp==525: continue
+        if mglu==725 and mlsp==550: continue
+        if mglu==750 and mlsp==575: continue
+        if mglu==775 and mlsp==600: continue
+        if mglu==800 and mlsp==625: continue
+        if mglu==1425 and mlsp==1250: continue
+        if mglu==1450 and mlsp==1275: continue
+        if mglu==1475 and mlsp==1300: continue
+        if mglu==1500 and mlsp==1325: continue
+        if mglu==1525 and mlsp==1350: continue
+        if mglu==825 and mlsp==650: continue
+        if mglu==850 and mlsp==675: continue
+        if mglu==875 and mlsp==700: continue
+        if mglu==900 and mlsp==725: continue
+        if mglu==925 and mlsp==750: continue
+        if mglu==950 and mlsp==775: continue
+        if mglu==975 and mlsp==800: continue
+        if mglu==1000 and mlsp==825: continue
+        if mglu==1225 and mlsp==1050: continue
+        if mglu==1250 and mlsp==1075: continue
+        if mglu==1275 and mlsp==1100: continue
+        if mglu==1300 and mlsp==1125: continue
+        if mglu==1325 and mlsp==1150: continue
+        if mglu==1350 and mlsp==1175: continue
+        if mglu==1375 and mlsp==1200: continue
+        if mglu==1400 and mlsp==1225: continue
+        if mglu==1025 and mlsp==850: continue
+        if mglu==1050 and mlsp==875: continue
+        if mglu==1075 and mlsp==900: continue
+        if mglu==1100 and mlsp==925: continue
+        if mglu==1125 and mlsp==950: continue
+        if mglu==1150 and mlsp==975: continue
+        if mglu==1175 and mlsp==1000: continue
+        if mglu==1200 and mlsp==1025: continue
+        if os.path.isfile(("%s/fs_t5ttcc_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
+        #print "found sig = fs_t5ttcc_m%i_m%i" % (mglu,mlsp)
+        sigs.append(("fs_t5ttcc_m%i_m%i" % (mglu,mlsp)))
 
 limit_obs = []
 limit_exp = []
@@ -153,10 +191,14 @@ for sig in sigs:
 #c1.SaveAs("xsec_test.pdf")
 
 #c1.SetLogz(0)
-#h_sobs_test.GetZaxis().SetRangeUser(0.1,2)
+#h_sobs_test.GetZaxis().SetRangeUser(0.1,10)
+#h_sobs_test.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
+#h_sobs_test.GetYaxis().SetTitle("m_{#tilde{#chi_{1}^{0}}} (GeV)")
+#h_sobs_test.GetZaxis().SetTitle("95% CL upper limit on signal strength")
 #h_sobs_test.Draw("colz")
-#print h_sobs_test.GetXaxis().GetBinLowEdge(1), h_sobs_test.GetXaxis().GetBinUpEdge(1)
-#c1.SaveAs("sobs_test.pdf")
+##print h_sobs_test.GetXaxis().GetBinLowEdge(1), h_sobs_test.GetXaxis().GetBinUpEdge(1)
+#c1.SaveAs("sobs_test_t5ttcc.pdf")
+#exit()
 
 g_xsec = ROOT.TGraph2D("g_xsec","",count,mglus,mlsps,v_xsec)
 g_sexp = ROOT.TGraph2D("g_sexp","",count,mglus,mlsps,v_sexp)
@@ -181,6 +223,7 @@ g_som1.SetNpy(npy);
 g_sop1.SetNpx(npx);
 g_sop1.SetNpy(npy);
 
+h_xsec_p = ROOT.TH2D("h_xsec_p","",npxh,minx,maxxh,npyh,miny,maxyh)
 h_xsec = ROOT.TH2D("h_xsec","",npx,minx,maxx,npyh,miny,maxyh)
 smooth(g_xsec,h_xsec)
 h_sexp = ROOT.TH2D("h_sexp","",npx,minx,maxx,npy,miny,maxy)
@@ -209,19 +252,21 @@ j_som1 = k_som1.GetHistogram()
 k_sop1 = ROOT.TGraph2D(h_sop1)
 j_sop1 = k_sop1.GetHistogram()
 
-h_xsec.GetXaxis().SetLabelSize(0.035)
-h_xsec.GetYaxis().SetLabelSize(0.035)
-h_xsec.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
-h_xsec.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{0}} (GeV)")
+h_xsec_p.GetXaxis().SetLabelSize(0.035)
+h_xsec_p.GetYaxis().SetLabelSize(0.035)
+h_xsec_p.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
+h_xsec_p.GetYaxis().SetTitle("m_{#tilde{#chi_{1}^{0}}} (GeV)")
+h_xsec_p.GetXaxis().SetTitleOffset(1.2)
+h_xsec_p.GetYaxis().SetTitleOffset(1.7)
+
 h_xsec.GetZaxis().SetTitle("95% CL upper limit on cross section (pb)")
 h_xsec.GetZaxis().SetLabelSize(0.035)
-h_xsec.GetXaxis().SetTitleOffset(1.2)
-h_xsec.GetYaxis().SetTitleOffset(1.7)
 h_xsec.GetZaxis().SetTitleOffset(1.6)
 
 h_xsec.GetZaxis().SetRangeUser(minz,maxz)
 
-h_xsec.Draw("colz")
+h_xsec_p.Draw()
+h_xsec.Draw("colz,same")
 
 cexplist = k_sexp.GetContourList(1.)
 max_points = -1
@@ -270,6 +315,7 @@ for i in range(0,len(cobslist)):
 cobs.SetLineWidth(4)
 cobs.SetLineStyle(1)
 cobs.SetLineColor(ROOT.kBlack)
+#for i in range(62,51,-1): cobs.RemovePoint(i)
 #cobs.Print()
 cobs.Draw("L same");
 
@@ -297,15 +343,15 @@ cop1.SetLineStyle(1)
 cop1.SetLineColor(ROOT.kBlack)
 cop1.Draw("L same");
 
-diag = ROOT.TLine(600,600,1300,1300)
+diag = ROOT.TLine(600,515,1600,1515)
 diag.SetLineWidth(1)
 diag.SetLineStyle(2)
 diag.Draw("same")
 
-diagtex = ROOT.TLatex(0.20,0.48, "m_{#tilde{g}} = m_{#tilde{#chi}_{1}^{0}}" )
+diagtex = ROOT.TLatex(0.20,0.40, "m_{#tilde{g}} - m_{#tilde{#chi}^{0}_{1}} = m_{W} + m_{b}" )
 diagtex.SetNDC()
 diagtex.SetTextSize(0.02)
-diagtex.SetTextAngle(40)
+diagtex.SetTextAngle(37)
 diagtex.SetLineWidth(2)
 diagtex.SetTextFont(42)
 diagtex.Draw()
@@ -315,7 +361,7 @@ l1.SetTextFont(42)
 l1.SetTextSize(0.036)
 l1.SetShadowColor(ROOT.kWhite)
 l1.SetFillColor(ROOT.kWhite)
-l1.SetHeader("pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow q#bar{q}'W#tilde{#chi}^{0}_{1}      NLO+NLL Exclusion")
+l1.SetHeader("pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow #tilde{t}_{1}#kern[0.3]{t}, #tilde{t}_{1}#rightarrow c#tilde{#chi}^{0}_{1}  NLO+NLL Exclusion")
 l1.AddEntry(cobs , "Observed #pm 1 #sigma_{theory}", "l")
 l1.AddEntry(cexp , "Expected #pm 1 #sigma_{experiment}", "l")
 
@@ -340,7 +386,7 @@ cmstexbold.Draw()
 #cmstexprel.SetTextFont(52)
 #cmstexprel.Draw()
 
-masstex = ROOT.TLatex(0.18,0.67, "m_{#tilde{#chi}^{#pm}_{1}} = 0.5(m_{#tilde{g}}+m_{#tilde{#chi}^{0}_{1}})" )
+masstex = ROOT.TLatex(0.18,0.67, "m_{#kern[0.5]{#tilde{t}_{1}}} = m_{#tilde{#chi}^{0}_{1}} + 20 GeV" )
 masstex.SetNDC()
 masstex.SetTextSize(0.03)
 masstex.SetLineWidth(2)
@@ -358,8 +404,8 @@ LObsP.SetLineColor(ROOT.kBlack)
 LObsP.SetLineStyle(1)
 LObsP.SetLineWidth(2)
 LObsP.SetMarkerStyle(20)
-LObsP.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-1.10*(maxyh-miny)/100*10)
-LObsP.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-1.10*(maxyh-miny)/100*10)
+LObsP.SetPoint(0,minx+ 3.8*(maxxh-minx)/100, maxyh-1.10*(maxyh-miny)/100*10)
+LObsP.SetPoint(1,minx+21.2*(maxxh-minx)/100, maxyh-1.10*(maxyh-miny)/100*10)
 LObsP.Draw("LSAME")
 
 LObsM = ROOT.TGraph(2)
@@ -369,8 +415,8 @@ LObsM.SetLineColor(ROOT.kBlack)
 LObsM.SetLineStyle(1)
 LObsM.SetLineWidth(2)
 LObsM.SetMarkerStyle(20)
-LObsM.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-1.40*(maxyh-miny)/100*10)
-LObsM.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-1.40*(maxyh-miny)/100*10)
+LObsM.SetPoint(0,minx+ 3.8*(maxxh-minx)/100, maxyh-1.40*(maxyh-miny)/100*10)
+LObsM.SetPoint(1,minx+21.2*(maxxh-minx)/100, maxyh-1.40*(maxyh-miny)/100*10)
 LObsM.Draw("LSAME")
 
 LExpP = ROOT.TGraph(2)
@@ -380,8 +426,8 @@ LExpP.SetLineColor(ROOT.kRed)
 LExpP.SetLineStyle(2)
 LExpP.SetLineWidth(2)
 LExpP.SetMarkerStyle(20)
-LExpP.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-1.93*(maxyh-miny)/100*10)
-LExpP.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-1.93*(maxyh-miny)/100*10)
+LExpP.SetPoint(0,minx+ 3.8*(maxxh-minx)/100, maxyh-1.93*(maxyh-miny)/100*10)
+LExpP.SetPoint(1,minx+21.2*(maxxh-minx)/100, maxyh-1.93*(maxyh-miny)/100*10)
 LExpP.Draw("LSAME")
 
 LExpM = ROOT.TGraph(2)
@@ -391,16 +437,16 @@ LExpM.SetLineColor(ROOT.kRed)
 LExpM.SetLineStyle(2)
 LExpM.SetLineWidth(2)
 LExpM.SetMarkerStyle(20)
-LExpM.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
-LExpM.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
+LExpM.SetPoint(0,minx+ 3.8*(maxxh-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
+LExpM.SetPoint(1,minx+21.2*(maxxh-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.Draw("LSAME")
 
-c1.SaveAs("t5qqqqvv_scan_xsec.pdf")
+c1.SaveAs("t5ttcc_scan_xsec.pdf")
 
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
 h_sobs.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
-h_sobs.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{0}} (GeV)")
+h_sobs.GetYaxis().SetTitle("m_{#tilde{#chi_{1}^{0}}} (GeV)")
 h_sobs.GetZaxis().SetTitle("95% CL observed upper limit on signal strength")
 #h_sobs.GetXaxis().SetRangeUser(600,1750)
 #h_sobs.GetYaxis().SetRangeUser(0,1200)
@@ -416,7 +462,7 @@ c1.SaveAs("sobs.pdf")
 h_sexp.GetXaxis().SetLabelSize(0.035)
 h_sexp.GetYaxis().SetLabelSize(0.035)
 h_sexp.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
-h_sexp.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{0}} (GeV)")
+h_sexp.GetYaxis().SetTitle("m_{#tilde{#chi_{1}^{0}}} (GeV)")
 h_sexp.GetZaxis().SetTitle("95% CL expected upper limit on signal strength")
 h_sexp.GetZaxis().SetRangeUser(0.01,10.0)
 h_sexp.GetZaxis().SetLabelSize(0.035)
@@ -427,7 +473,7 @@ h_sexp.Draw("colz")
 cexp.Draw("samecont2");
 c1.SaveAs("sexp.pdf")
 
-fout = ROOT.TFile("ss_t5qqqqvv_scan_xsec.root","RECREATE")
+fout = ROOT.TFile("ss_t5ttcc_scan_xsec.root","RECREATE")
 cobswrite = cobs.Clone("ssobs")
 cobswrite.Write()
 com1write = com1.Clone("ssobs_m1s")

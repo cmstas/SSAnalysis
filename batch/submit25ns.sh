@@ -20,16 +20,26 @@ fi
 make -j 10
 
 #Start by checking proxy, get path to proxy file
-voms-proxy-init -hours 168 -voms cms
-voms-proxy-info --all &> voms_status.txt
-if grep "Couldn't find a valid proxy." voms_status.txt &>/dev/null
-then 
-  echo "Error: couldn't find a valid proxy!  Aborting.  Create a proxy with voms-proxy-init."
-  rm voms_status.txt
-  return 1
+# voms-proxy-init -hours 168 -voms cms
+# voms-proxy-info --all &> voms_status.txt
+# if grep "Couldn't find a valid proxy." voms_status.txt &>/dev/null
+# then 
+#   echo "Error: couldn't find a valid proxy!  Aborting.  Create a proxy with voms-proxy-init."
+#   rm voms_status.txt
+#   return 1
+# fi
+# lineWithPath=`sed -n /path/= voms_status.txt`
+# pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
+
+certFile="/home/users/${USER}/.globus/proxy_for_${USER}.file"
+if [ ! -e $certFile ] ; then
+  echo "didn't find $certFile. making it"
+  voms-proxy-init -hours 9876543:0 -out=${certFile}
+else
+  echo "extending proxy in $certFile"
+  voms-proxy-init -q -voms cms -hours 120 -valid=120:0 -cert=${certFile}
 fi
-lineWithPath=`sed -n /path/= voms_status.txt`
-pathToProxy=`awk -v var="$lineWithPath" 'NR==var {print $3}' voms_status.txt`
+pathToProxy=`voms-proxy-info -path`
 
 #Change the username
 sed -i "s/cgeorge/$USER/" condorFileTemplate
@@ -53,7 +63,7 @@ ALL="$T1FASTSIM $T5FASTSIM $T6FASTSIM"
 #Then submit jobs
 nIter=0
 # for sname in "T1TTBB_1025to1200_0to850" "T5tttt_degen_600to800_0to625" "T5tttt_degen_1025to1200_875to1075" "ANA1" "ANA2" "ANA3"
-for sname in "T5ttcc_600to800_0to625" # "T5ttcc_1425to1600_0to1350"
+for sname in "T5ttcc_600to800_0to625" "T5ttcc_1425to1600_0to1350" "T1TTBB_1025to1200_0to850"
 do
   isSignal=0 
   path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"

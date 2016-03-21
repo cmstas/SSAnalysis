@@ -1,23 +1,23 @@
 import os, ROOT, array
 
-mydir = "v6.02"
+mydir = "v6.02-statunc"
 mylumi = "2.3"
 
 #the first time you need to make both cards and limits
 #if you no not delete logs, then next time you can skip cards and limits
-redocards = True
-redolimits = True
+redocards = False
+redolimits = False
 deletelogs = False
 
-minx = 700
-maxx = 1950
-miny = 0
-maxy = 1500
-minz = 1e-3
-maxz = 2
-maxyh = 1900
 step = 25
-ybinsfirstxbin = 19
+minx = 600
+maxx = 1700+step
+miny = 0
+maxy = 1450+step
+minz = 1e-2
+maxz = 50
+maxyh = 1700
+ybinsfirstxbin = 15 #19
 
 npx = (maxx-minx)/step
 npy = (maxy-miny)/step
@@ -206,7 +206,7 @@ j_sop1 = k_sop1.GetHistogram()
 h_xsec.GetXaxis().SetLabelSize(0.035)
 h_xsec.GetYaxis().SetLabelSize(0.035)
 h_xsec.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
-h_xsec.GetYaxis().SetTitle("m_{#tilde{#chi_{1}^{0}}} (GeV)")
+h_xsec.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{0}} (GeV)")
 h_xsec.GetZaxis().SetTitle("95% CL upper limit on cross section (pb)")
 h_xsec.GetZaxis().SetLabelSize(0.035)
 h_xsec.GetXaxis().SetTitleOffset(1.2)
@@ -214,6 +214,10 @@ h_xsec.GetYaxis().SetTitleOffset(1.7)
 h_xsec.GetZaxis().SetTitleOffset(1.6)
 
 h_xsec.GetZaxis().SetRangeUser(minz,maxz)
+
+#hack
+h_xsec.SetBinContent(35,50,h_xsec.GetBinContent(36,50))
+h_xsec.SetBinContent(36,51,h_xsec.GetBinContent(37,51))
 
 h_xsec.Draw("colz")
 
@@ -290,25 +294,25 @@ cop1.SetLineStyle(1)
 cop1.SetLineColor(ROOT.kBlack)
 cop1.Draw("L same");
 
-diag = ROOT.TLine(700,530,1700,1530)
+diag = ROOT.TLine(600,430,1700,1530)
 diag.SetLineWidth(1)
 diag.SetLineStyle(2)
 diag.Draw("same")
 
-diagtex = ROOT.TLatex(0.20,0.38, "m_{#tilde{g}}-m_{#tilde{#chi_{1}^{0}}} = 2 #upoint (m_{W} + m_{b})" )
+diagtex = ROOT.TLatex(0.20,0.36, "m_{#tilde{g}}-m_{#tilde{#chi}_{1}^{0}} = 2 #upoint (m_{W} + m_{b})" )
 diagtex.SetNDC()
 diagtex.SetTextSize(0.02)
-diagtex.SetTextAngle(38)
+diagtex.SetTextAngle(37)
 diagtex.SetLineWidth(2)
 diagtex.SetTextFont(42)
 diagtex.Draw()
 
 l1 = ROOT.TLegend(0.15, 0.70, 0.83, 0.90)
 l1.SetTextFont(42)
-l1.SetTextSize(0.038)
+l1.SetTextSize(0.036)
 l1.SetShadowColor(ROOT.kWhite)
 l1.SetFillColor(ROOT.kWhite)
-l1.SetHeader("pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow t#bar{t}#tilde{#chi}^{0}_{1}     NLO+NLL Exclusions")
+l1.SetHeader("pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow t#bar{t}#tilde{#chi}^{0}_{1}            NLO+NLL Exclusion")
 l1.AddEntry(cobs , "Observed #pm 1 #sigma_{theory}", "l")
 l1.AddEntry(cexp , "Expected #pm 1 #sigma_{experiment}", "l")
 
@@ -326,12 +330,12 @@ cmstexbold.SetLineWidth(2)
 cmstexbold.SetTextFont(61)
 cmstexbold.Draw()
 
-cmstexprel = ROOT.TLatex(0.26,0.91, "Preliminary" )
-cmstexprel.SetNDC()
-cmstexprel.SetTextSize(0.03)
-cmstexprel.SetLineWidth(2)
-cmstexprel.SetTextFont(52)
-cmstexprel.Draw()
+#cmstexprel = ROOT.TLatex(0.26,0.91, "Preliminary" )
+#cmstexprel.SetNDC()
+#cmstexprel.SetTextSize(0.03)
+#cmstexprel.SetLineWidth(2)
+#cmstexprel.SetTextFont(52)
+#cmstexprel.Draw()
 
 padt.Update()
 padt.RedrawAxis();
@@ -386,7 +390,7 @@ c1.SaveAs("t1tttt_scan_xsec.pdf")
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
 h_sobs.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
-h_sobs.GetYaxis().SetTitle("m_{#tilde{#chi_{1}^{0}}} (GeV)")
+h_sobs.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{0}} (GeV)")
 h_sobs.GetZaxis().SetTitle("95% CL observed upper limit on signal strength")
 #h_sobs.GetXaxis().SetRangeUser(600,1750)
 #h_sobs.GetYaxis().SetRangeUser(0,1200)
@@ -402,7 +406,7 @@ c1.SaveAs("sobs.pdf")
 h_sexp.GetXaxis().SetLabelSize(0.035)
 h_sexp.GetYaxis().SetLabelSize(0.035)
 h_sexp.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
-h_sexp.GetYaxis().SetTitle("m_{#tilde{#chi_{1}^{0}}} (GeV)")
+h_sexp.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{0}} (GeV)")
 h_sexp.GetZaxis().SetTitle("95% CL expected upper limit on signal strength")
 h_sexp.GetZaxis().SetRangeUser(0.01,10.0)
 h_sexp.GetZaxis().SetLabelSize(0.035)

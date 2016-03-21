@@ -5,17 +5,17 @@ mylumi = "2.3"
 
 #the first time you need to make both cards and limits
 #if you no not delete logs, then next time you can skip cards and limits
-redocards = True
-redolimits = True
+redocards = False
+redolimits = False
 deletelogs = False
 
+step = 25
 minx = 300
-maxx = 975
+maxx = 950+step
 miny = 75
-maxy = 900
+maxy = 875+step
 minz = 1e-2
 maxz = 10
-step = 25
 maxyh = 1175
 ybinsfirstxbin = 8
 
@@ -203,7 +203,7 @@ j_sop1 = k_sop1.GetHistogram()
 
 h_xsec.GetXaxis().SetLabelSize(0.035)
 h_xsec.GetYaxis().SetLabelSize(0.035)
-h_xsec.GetXaxis().SetTitle("m_{#tilde{b}} (GeV)")
+h_xsec.GetXaxis().SetTitle("m_{#tilde{b}_{1}} (GeV)")
 h_xsec.GetYaxis().SetTitle("m_{#tilde{#chi_{1}^{#pm}}} (GeV)")
 h_xsec.GetZaxis().SetTitle("95% CL upper limit on cross section (pb)")
 h_xsec.GetZaxis().SetLabelSize(0.035)
@@ -226,9 +226,8 @@ cexp.SetLineWidth(4)
 cexp.SetLineStyle(2)
 cexp.SetLineColor(ROOT.kRed)
 #smooth it by hand
-cexp.RemovePoint(18)
-cexp.RemovePoint(17)
 cexp.RemovePoint(14)
+cexp.RemovePoint(11)
 #cexp.Print()
 cexp.Draw("L same");
 
@@ -243,7 +242,8 @@ csm1.SetLineWidth(2)
 csm1.SetLineStyle(2)
 csm1.SetLineColor(ROOT.kRed)
 #smooth it by hand
-csm1.RemovePoint(14)
+csm1.RemovePoint(12)
+csm1.RemovePoint(13)
 #csm1.Print()
 csm1.Draw("L same");
 
@@ -274,8 +274,10 @@ cobs.SetLineWidth(4)
 cobs.SetLineStyle(1)
 cobs.SetLineColor(ROOT.kBlack)
 #smooth it by hand
-cobs.RemovePoint(44)
-cobs.RemovePoint(46)
+cobs.RemovePoint(11)
+cobs.RemovePoint(8)
+cobs.RemovePoint(14)
+cobs.RemovePoint(12)
 #cobs.Print()
 cobs.Draw("L same");
 
@@ -290,8 +292,6 @@ com1.SetLineWidth(2)
 com1.SetLineStyle(1)
 com1.SetLineColor(ROOT.kBlack)
 #smooth it by hand
-com1.RemovePoint(11)
-com1.RemovePoint(13)
 com1.RemovePoint(14)
 #com1.Print()
 com1.Draw("L same");
@@ -307,19 +307,31 @@ cop1.SetLineWidth(2)
 cop1.SetLineStyle(1)
 cop1.SetLineColor(ROOT.kBlack)
 #smooth it by hand
-cop1.RemovePoint(40)
-cop1.RemovePoint(42)
-cop1.RemovePoint(44)
+cop1.RemovePoint(34)
 cop1.RemovePoint(37)
+cop1.RemovePoint(39)
 #cop1.Print()
 cop1.Draw("L same");
 
+diag = ROOT.TLine(300,300,900,910)
+diag.SetLineWidth(1)
+diag.SetLineStyle(2)
+diag.Draw("same")
+
+diagtex = ROOT.TLatex(0.20,0.32, "m_{#tilde{b}_{1}} = m_{#tilde{#chi_{1}^{#pm}}}" )
+diagtex.SetNDC()
+diagtex.SetTextSize(0.02)
+diagtex.SetTextAngle(38)
+diagtex.SetLineWidth(2)
+diagtex.SetTextFont(42)
+diagtex.Draw()
+
 l1 = ROOT.TLegend(0.15, 0.70, 0.83, 0.90)
 l1.SetTextFont(42)
-l1.SetTextSize(0.038)
+l1.SetTextSize(0.036)
 l1.SetShadowColor(ROOT.kWhite)
 l1.SetFillColor(ROOT.kWhite)
-l1.SetHeader("pp #rightarrow #tilde{b}_{1}#tilde{b}_{1}#lower[0.7]{#kern[-0.7]{^{*}}}, #tilde{b}_{1}#rightarrow tW#tilde{#chi}^{0}_{1}  NLO+NLL Exclusions")
+l1.SetHeader("pp #rightarrow #tilde{b}_{1}#tilde{b}_{1}#lower[0.7]{#kern[-0.7]{^{*}}}, #tilde{b}_{1}#rightarrow tW#tilde{#chi}^{0}_{1}      NLO+NLL Exclusion")
 l1.AddEntry(cobs , "Observed #pm 1 #sigma_{theory}", "l")
 l1.AddEntry(cexp , "Expected #pm 1 #sigma_{experiment}", "l")
 
@@ -337,12 +349,12 @@ cmstexbold.SetLineWidth(2)
 cmstexbold.SetTextFont(61)
 cmstexbold.Draw()
 
-cmstexprel = ROOT.TLatex(0.26,0.91, "Preliminary" )
-cmstexprel.SetNDC()
-cmstexprel.SetTextSize(0.03)
-cmstexprel.SetLineWidth(2)
-cmstexprel.SetTextFont(52)
-cmstexprel.Draw()
+#cmstexprel = ROOT.TLatex(0.26,0.91, "Preliminary" )
+#cmstexprel.SetNDC()
+#cmstexprel.SetTextSize(0.03)
+#cmstexprel.SetLineWidth(2)
+#cmstexprel.SetTextFont(52)
+#cmstexprel.Draw()
 
 masstex = ROOT.TLatex(0.18,0.67, "m_{#tilde{#chi}^{0}_{1}} = 50 GeV" )
 masstex.SetNDC()
@@ -404,7 +416,7 @@ c1.SaveAs("t6ttww_scan_xsec.pdf")
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
 h_sobs.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
-h_sobs.GetYaxis().SetTitle("m_{#tilde{#chi_{1}^{0}}} (GeV)")
+h_sobs.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{0}} (GeV)")
 h_sobs.GetZaxis().SetTitle("95% CL observed upper limit on signal strength")
 #h_sobs.GetXaxis().SetRangeUser(600,1750)
 #h_sobs.GetYaxis().SetRangeUser(0,1200)
@@ -420,7 +432,7 @@ c1.SaveAs("sobs.pdf")
 h_sexp.GetXaxis().SetLabelSize(0.035)
 h_sexp.GetYaxis().SetLabelSize(0.035)
 h_sexp.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
-h_sexp.GetYaxis().SetTitle("m_{#tilde{#chi_{1}^{0}}} (GeV)")
+h_sexp.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{0}} (GeV)")
 h_sexp.GetZaxis().SetTitle("95% CL expected upper limit on signal strength")
 h_sexp.GetZaxis().SetRangeUser(0.01,10.0)
 h_sexp.GetZaxis().SetLabelSize(0.035)
