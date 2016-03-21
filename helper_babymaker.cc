@@ -296,6 +296,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep4_mu_ip3d"            , &lep4_mu_ip3d            );
   BabyTree->Branch("lep4_mu_dzPV"            , &lep4_mu_dzPV            );
   BabyTree->Branch("lep4_mu_ptErr"           , &lep4_mu_ptErr           );
+  BabyTree->Branch("lep3_isTrigSafeNoIsov1"  , &lep3_isTrigSafeNoIsov1  ); 
+  BabyTree->Branch("lep3_isTrigSafev1"       , &lep3_isTrigSafev1       ); 
+  BabyTree->Branch("lep4_isTrigSafeNoIsov1"  , &lep4_isTrigSafeNoIsov1  ); 
+  BabyTree->Branch("lep4_isTrigSafev1"       , &lep4_isTrigSafev1       ); 
 
   if (applyBtagSFs) {
     // setup btag calibration readers
@@ -602,6 +606,10 @@ void babyMaker::InitBabyNtuple(){
     lep4_mu_ip3d = 0;
     lep4_mu_dzPV = 0;
     lep4_mu_ptErr = 0;
+    lep3_isTrigSafeNoIsov1 = 0;
+    lep3_isTrigSafev1 = 0;
+    lep4_isTrigSafeNoIsov1 = 0;
+    lep4_isTrigSafev1 = 0; 
 } 
 
 //Main function
@@ -790,7 +798,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
         lep3_iso_RA7             = passMultiIso(11, lep3_idx, 0.16, 0.76, 7.2, 1, 2);
         lep3_isTrigSafeNoIsov1   = isTriggerSafenoIso_v1(lep3_idx);
         lep3_isTrigSafev1        = isTriggerSafe_v1(lep3_idx);
-        lep3_passes_RA5 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_threeChargeAgree && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_iso_RA5 && (lep3_isTrigSafeNoIsov1 && (ht > 300 || lep3_isTrigSafev1));
+        lep3_passes_RA5 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_threeChargeAgree && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_iso_RA5 && lep3_isTrigSafeNoIsov1 && (ht > 300 || lep3_isTrigSafev1));
         lep3_passes_RA7 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_iso_RA7 & lep3_isTrigSafeNoIsov1);
       }
       if (abs(lep3_id) == 13){
@@ -826,8 +834,10 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
         lep4_el_MVA              = ((etaSC < 0.8) ? (lep4_el_MVA_value > 0.87) : ((etaSC <= 1.479) ? (lep4_el_MVA_value > 0.60) : (lep4_el_MVA_value > 0.17)));
         lep4_iso_RA5             = passMultiIso(11, lep4_idx, 0.16, 0.76, 7.2, 1, 2);
         lep4_iso_RA7             = passMultiIso(11, lep4_idx, 0.12, 0.80, 7.2, 1, 2);
-        lep4_passes_RA5 = (lep4_el_etaSC && lep4_el_conv_vtx_flag && lep4_el_exp_innerlayers && lep4_el_threeChargeAgree && lep4_el_dxyPV && lep4_el_ip3d && lep4_el_dzPV && lep4_el_MVA && lep4_iso_RA5);
-        lep4_passes_RA7 = (lep4_el_etaSC && lep4_el_conv_vtx_flag && lep4_el_exp_innerlayers && lep4_el_dxyPV && lep4_el_ip3d && lep4_el_dzPV && lep4_el_MVA && lep4_iso_RA7);
+        lep4_isTrigSafeNoIsov1   = isTriggerSafenoIso_v1(lep4_idx);
+        lep4_isTrigSafev1        = isTriggerSafe_v1(lep4_idx);
+        lep4_passes_RA5 = (lep4_el_etaSC && lep4_el_conv_vtx_flag && lep4_el_exp_innerlayers && lep4_el_threeChargeAgree && lep4_el_dxyPV && lep4_el_ip3d && lep4_el_dzPV && lep4_el_MVA && lep4_iso_RA5 && lep4_isTrigSafeNoIsov1 && (ht > 300 || lep4_isTrigSafev1));
+        lep4_passes_RA7 = (lep4_el_etaSC && lep4_el_conv_vtx_flag && lep4_el_exp_innerlayers && lep4_el_dxyPV && lep4_el_ip3d && lep4_el_dzPV && lep4_el_MVA && lep4_iso_RA7 & lep4_isTrigSafeNoIsov1);
       }
       if (abs(lep4_id) == 13){
         lep4_mu_dxyPV = (fabs(mus_dxyPV().at(lep4_idx)) <= 0.05);

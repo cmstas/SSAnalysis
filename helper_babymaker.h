@@ -418,6 +418,8 @@ class babyMaker {
     bool lep3_mu_ip3d;
     bool lep3_mu_dzPV;
     bool lep3_mu_ptErr;
+    bool lep3_isTrigSafeNoIsov1;
+    bool lep3_isTrigSafev1;
 
     //Lep 4 stuff
     bool lep4_el_etaSC;
@@ -437,6 +439,8 @@ class babyMaker {
     bool lep4_mu_ip3d;
     bool lep4_mu_dzPV;
     bool lep4_mu_ptErr;
+    bool lep4_isTrigSafeNoIsov1;
+    bool lep4_isTrigSafev1;
 
 };
 
