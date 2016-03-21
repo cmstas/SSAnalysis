@@ -253,13 +253,49 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("weight_btagsf_UP"                                        , &weight_btagsf_UP                                                                        );
   BabyTree->Branch("weight_btagsf_DN"                                        , &weight_btagsf_DN                                                                        );
 
+  //SUSY stuff
   BabyTree->Branch("gl1_p4" , &gl1_p4 );
   BabyTree->Branch("gl2_p4" , &gl2_p4 );
   BabyTree->Branch("glglpt" , &glglpt );
   BabyTree->Branch("isr_unc", &isr_unc);
 
+  //Lep3 stuff
+  BabyTree->Branch("lep3_el_etaSC"           , &lep3_el_etaSC           );
+  BabyTree->Branch("lep3_el_conv_vtx_flag"   , &lep3_el_conv_vtx_flag   );
+  BabyTree->Branch("lep3_el_exp_innerlayers" , &lep3_el_exp_innerlayers );
+  BabyTree->Branch("lep3_el_threeChargeAgree", &lep3_el_threeChargeAgree);
+  BabyTree->Branch("lep3_el_dxyPV"           , &lep3_el_dxyPV           );
+  BabyTree->Branch("lep3_el_ip3d"            , &lep3_el_ip3d            );
+  BabyTree->Branch("lep3_el_dzPV"            , &lep3_el_dzPV            );
+  BabyTree->Branch("lep3_el_MVA_value"       , &lep3_el_MVA_value       );
+  BabyTree->Branch("lep3_el_MVA"             , &lep3_el_MVA             );
+  BabyTree->Branch("lep3_iso_RA5"            , &lep3_iso_RA5            );
+  BabyTree->Branch("lep3_iso_RA7"            , &lep3_iso_RA7            );
+  BabyTree->Branch("lep3_passes_RA5"         , &lep3_passes_RA5         );
+  BabyTree->Branch("lep3_passes_RA7"         , &lep3_passes_RA7         );
+  BabyTree->Branch("lep3_mu_dxyPV"           , &lep3_mu_dxyPV           );
+  BabyTree->Branch("lep3_mu_ip3d"            , &lep3_mu_ip3d            );
+  BabyTree->Branch("lep3_mu_dzPV"            , &lep3_mu_dzPV            );
+  BabyTree->Branch("lep3_mu_ptErr"           , &lep3_mu_ptErr           );
 
-
+  //Lep 4 stuff
+  BabyTree->Branch("lep4_el_etaSC"           , &lep4_el_etaSC           );
+  BabyTree->Branch("lep4_el_conv_vtx_flag"   , &lep4_el_conv_vtx_flag   );
+  BabyTree->Branch("lep4_el_exp_innerlayers" , &lep4_el_exp_innerlayers );
+  BabyTree->Branch("lep4_el_threeChargeAgree", &lep4_el_threeChargeAgree);
+  BabyTree->Branch("lep4_el_dxyPV"           , &lep4_el_dxyPV           );
+  BabyTree->Branch("lep4_el_ip3d"            , &lep4_el_ip3d            );
+  BabyTree->Branch("lep4_el_dzPV"            , &lep4_el_dzPV            );
+  BabyTree->Branch("lep4_el_MVA_value"       , &lep4_el_MVA_value       );
+  BabyTree->Branch("lep4_el_MVA"             , &lep4_el_MVA             );
+  BabyTree->Branch("lep4_iso_RA5"            , &lep4_iso_RA5            );
+  BabyTree->Branch("lep4_iso_RA7"            , &lep4_iso_RA7            );
+  BabyTree->Branch("lep4_passes_RA5"         , &lep4_passes_RA5         );
+  BabyTree->Branch("lep4_passes_RA7"         , &lep4_passes_RA7         );
+  BabyTree->Branch("lep4_mu_dxyPV"           , &lep4_mu_dxyPV           );
+  BabyTree->Branch("lep4_mu_ip3d"            , &lep4_mu_ip3d            );
+  BabyTree->Branch("lep4_mu_dzPV"            , &lep4_mu_dzPV            );
+  BabyTree->Branch("lep4_mu_ptErr"           , &lep4_mu_ptErr           );
 
   if (applyBtagSFs) {
     // setup btag calibration readers
@@ -532,6 +568,40 @@ void babyMaker::InitBabyNtuple(){
     gl2_p4 = { 0, 0, 0, 0 };
     lep1_mc3idx = -1;
     lep2_mc3idx = -1; 
+    lep3_el_etaSC = 0;
+    lep3_el_conv_vtx_flag = 0;
+    lep3_el_exp_innerlayers = 0;
+    lep3_el_threeChargeAgree = 0;
+    lep3_el_dxyPV = 0;
+    lep3_el_ip3d = 0;
+    lep3_el_dzPV = 0;
+    lep3_el_MVA_value = 0;
+    lep3_el_MVA = 0;
+    lep3_iso_RA5 = 0;
+    lep3_iso_RA7 = 0;
+    lep3_passes_RA5 = 0;
+    lep3_passes_RA7 = 0;
+    lep3_mu_dxyPV = 0;
+    lep3_mu_ip3d = 0;
+    lep3_mu_dzPV = 0;
+    lep3_mu_ptErr = 0;
+    lep4_el_etaSC = 0;
+    lep4_el_conv_vtx_flag = 0;
+    lep4_el_exp_innerlayers = 0;
+    lep4_el_threeChargeAgree = 0;
+    lep4_el_dxyPV = 0;
+    lep4_el_ip3d = 0;
+    lep4_el_dzPV = 0;
+    lep4_el_MVA_value = 0;
+    lep4_el_MVA = 0;
+    lep4_iso_RA5 = 0;
+    lep4_iso_RA7 = 0;
+    lep4_passes_RA5 = 0;
+    lep4_passes_RA7 = 0;
+    lep4_mu_dxyPV = 0;
+    lep4_mu_ip3d = 0;
+    lep4_mu_dzPV = 0;
+    lep4_mu_ptErr = 0;
 } 
 
 //Main function
@@ -704,6 +774,33 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep3_tight = abs(lep3_id) == 11 ? isGoodElectron(lep3_idx) : isGoodMuon(lep3_idx);
     lep3_veto = abs(lep3_id) == 11 ? isGoodVetoElectron(lep3_idx) : isGoodVetoMuon(lep3_idx);
     lep3_fo = abs(lep3_id) == 11 ? isFakableElectron(lep3_idx) : isFakableMuon(lep3_idx);
+    if (lep3_veto){
+      if (abs(lep3_id) == 11){
+        lep3_el_etaSC            = (fabs(els_etaSC().at(elIdx)) <= 2.5);
+        lep3_el_conv_vtx_flag    = (!(els_conv_vtx_flag().at(elIdx)));
+        lep3_el_exp_innerlayers  = (els_exp_innerlayers().at(elIdx) <= 0);
+        lep3_el_threeChargeAgree = (threeChargeAgree(elIdx));
+        lep3_el_dxyPV            = (fabs(els_dxyPV().at(elIdx)) <= 0.05);
+        lep3_el_ip3d             = (fabs(els_ip3d().at(elIdx))/els_ip3derr().at(elIdx) < 4);
+        lep3_el_dzPV             = (fabs(els_dzPV().at(elIdx)) < 0.1);
+        lep3_el_MVA_value        = getMVAoutput(lep3_idx);
+        lep3_el_MVA              = globalEleMVAreader->passesElectronMVAid(elIdx, SS_medium_v5);
+        lep3_iso_RA5             = passMultiIso(11, elIdx, 0.12, 0.80, 7.2, 1, 2);
+        lep3_iso_RA7             = passMultiIso(11, elIdx, 0.16, 0.76, 7.2, 1, 2);
+        lep3_passes_RA5 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_threeChargeAgree && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_el_iso_RA5);
+        lep3_passes_RA7 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_el_iso_RA7);
+      }
+      if (abs(lep3_id) == 11){
+        lep3_mu_dxyPV = (fabs(mus_dxyPV().at(muIdx)) <= 0.05);
+        lep3_mu_ip3d  = (fabs(mus_ip3d().at(muIdx))/mus_ip3derr().at(muIdx) < 4);
+        lep3_mu_dzPV  = (fabs(mus_dzPV().at(muIdx)) <= 0.1);
+        lep3_mu_ptErr = (mus_ptErr().at(muIdx)/mus_trk_p4().at(muIdx).pt() < 0.2);
+        lep3_iso_RA5  = passMultiIso(13, muIdx, 0.12, 0.80, 7.2, 1, 2);
+        lep3_iso_RA7  = passMultiIso(13, muIdx, 0.16, 0.76, 7.2, 1, 2);
+        lep3_passes_RA5 = (lep3_mu_dxyPV && lep3_mu_ip3d && lep3_mu_dzPV && lep3_mu_ptErr && lep3_iso_RA5); 
+        lep3_passes_RA7 = (lep3_mu_dxyPV && lep3_mu_ip3d && lep3_mu_dzPV && lep3_iso_RA7); 
+      }
+    }
   }
 
   //More Fourth lepton stuff
