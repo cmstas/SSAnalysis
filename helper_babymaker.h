@@ -88,6 +88,7 @@ class babyMaker {
     int run;
     bool is_real_data;
     bool is_fastsim; 
+    bool is_miniaodv1; 
     float scale1fb;     
     float xsec;         
     float xsec_error;         

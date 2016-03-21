@@ -637,6 +637,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   run = tas::evt_run();
   is_real_data = tas::evt_isRealData();
 
+  is_miniaodv1 = filename.find("MCRUN2_74_V9") != std::string::npos;
+  std::cout << "IS THIS miniaodv1? " << is_miniaodv1 << endl;
+
   //These c-s errors
   if (!is_real_data && tas::genweights().size()>110) {
     babyErrorStruct.cs_scale_no += tas::genweights().at(0);
@@ -655,7 +658,12 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   }
 
   //Corrected MET
-  pair <float, float> T1CHSMET = getT1CHSMET_fromMINIAOD(jetCorr);
+  pair <float, float> T1CHSMET;
+  if(is_miniaodv1) {
+    T1CHSMET = getT1CHSMET_fromMINIAOD( jetCorr, NULL, 0, true );
+  } else {
+    T1CHSMET = getT1CHSMET_fromMINIAOD(jetCorr);
+  }
   met = T1CHSMET.first;
   metPhi = T1CHSMET.second;
 
@@ -1252,10 +1260,17 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     if (mostJets_disc.at(i) < btagCut) continue;
     if (jet_pt_dn > 25) nbtags_unc_dn++; 
   }
-  met_unc_up = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 1).first;
-  met_unc_dn = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 0).first;
-  metPhi_unc_up = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 1).second;
-  metPhi_unc_dn = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 0).second;
+  if(is_miniaodv1) {
+    met_unc_up = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 1, true).first;
+    met_unc_dn = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 0, true).first;
+    metPhi_unc_up = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 1, true).second;
+    metPhi_unc_dn = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 0, true).second;
+  } else {
+    met_unc_up = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 1).first;
+    met_unc_dn = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 0).first;
+    metPhi_unc_up = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 1).second;
+    metPhi_unc_dn = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 0).second;
+  }
    
   //Verbose for jets
   if (verbose){
