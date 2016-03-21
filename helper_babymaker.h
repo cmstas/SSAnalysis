@@ -400,6 +400,44 @@ class babyMaker {
     float glglpt; 
     float isr_unc;
 
+    //Lep 3 stuff
+    bool lep3_el_etaSC;
+    bool lep3_el_conv_vtx_flag;
+    bool lep3_el_exp_innerlayers;
+    bool lep3_el_threeChargeAgree;
+    bool lep3_el_dxyPV;
+    bool lep3_el_ip3d;
+    bool lep3_el_dzPV;
+    float lep3_el_MVA_value;
+    bool lep3_el_MVA;
+    bool lep3_iso_RA5;
+    bool lep3_iso_RA7;
+    bool lep3_passes_RA5;
+    bool lep3_passes_RA7;
+    bool lep3_mu_dxyPV;
+    bool lep3_mu_ip3d;
+    bool lep3_mu_dzPV;
+    bool lep3_mu_ptErr;
+
+    //Lep 4 stuff
+    bool lep4_el_etaSC;
+    bool lep4_el_conv_vtx_flag;
+    bool lep4_el_exp_innerlayers;
+    bool lep4_el_threeChargeAgree;
+    bool lep4_el_dxyPV;
+    bool lep4_el_ip3d;
+    bool lep4_el_dzPV;
+    float lep4_el_MVA_value;
+    bool lep4_el_MVA;
+    bool lep4_iso_RA5;
+    bool lep4_iso_RA7;
+    bool lep4_passes_RA5;
+    bool lep4_passes_RA7;
+    bool lep4_mu_dxyPV;
+    bool lep4_mu_ip3d;
+    bool lep4_mu_dzPV;
+    bool lep4_mu_ptErr;
+
 };
 
 #endif
