@@ -799,7 +799,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
         lep3_isTrigSafeNoIsov1   = isTriggerSafenoIso_v1(lep3_idx);
         lep3_isTrigSafev1        = isTriggerSafe_v1(lep3_idx);
         lep3_passes_RA5 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_threeChargeAgree && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_iso_RA5 && lep3_isTrigSafeNoIsov1 && (ht > 300 || lep3_isTrigSafev1));
-        lep3_passes_RA7 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_iso_RA7 & lep3_isTrigSafeNoIsov1);
+        lep3_passes_RA7 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_iso_RA7 && lep3_isTrigSafeNoIsov1);
       }
       if (abs(lep3_id) == 13){
         lep3_mu_dxyPV = (fabs(mus_dxyPV().at(lep3_idx)) <= 0.05);
