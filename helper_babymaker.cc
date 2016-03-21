@@ -776,39 +776,68 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep3_fo = abs(lep3_id) == 11 ? isFakableElectron(lep3_idx) : isFakableMuon(lep3_idx);
     if (lep3_veto){
       if (abs(lep3_id) == 11){
-        lep3_el_etaSC            = (fabs(els_etaSC().at(elIdx)) <= 2.5);
-        lep3_el_conv_vtx_flag    = (!(els_conv_vtx_flag().at(elIdx)));
-        lep3_el_exp_innerlayers  = (els_exp_innerlayers().at(elIdx) <= 0);
-        lep3_el_threeChargeAgree = (threeChargeAgree(elIdx));
-        lep3_el_dxyPV            = (fabs(els_dxyPV().at(elIdx)) <= 0.05);
-        lep3_el_ip3d             = (fabs(els_ip3d().at(elIdx))/els_ip3derr().at(elIdx) < 4);
-        lep3_el_dzPV             = (fabs(els_dzPV().at(elIdx)) < 0.1);
+        float etaSC              = fabs(els_etaSC().at(lep3_idx));
+        lep3_el_etaSC            = (etaSC <= 2.5);
+        lep3_el_conv_vtx_flag    = (!(els_conv_vtx_flag().at(lep3_idx)));
+        lep3_el_exp_innerlayers  = (els_exp_innerlayers().at(lep3_idx) <= 0);
+        lep3_el_threeChargeAgree = (threeChargeAgree(lep3_idx));
+        lep3_el_dxyPV            = (fabs(els_dxyPV().at(lep3_idx)) <= 0.05);
+        lep3_el_ip3d             = (fabs(els_ip3d().at(lep3_idx))/els_ip3derr().at(lep3_idx) < 4);
+        lep3_el_dzPV             = (fabs(els_dzPV().at(lep3_idx)) < 0.1);
         lep3_el_MVA_value        = getMVAoutput(lep3_idx);
-        lep3_el_MVA              = globalEleMVAreader->passesElectronMVAid(elIdx, SS_medium_v5);
-        lep3_iso_RA5             = passMultiIso(11, elIdx, 0.12, 0.80, 7.2, 1, 2);
-        lep3_iso_RA7             = passMultiIso(11, elIdx, 0.16, 0.76, 7.2, 1, 2);
-        lep3_passes_RA5 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_threeChargeAgree && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_el_iso_RA5);
-        lep3_passes_RA7 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_el_iso_RA7);
+        lep3_el_MVA              = ((etaSC < 0.8) ? (lep3_el_MVA_value > 0.87) : ((etaSC <= 1.479) ? (lep3_el_MVA_value > 0.60) : (lep3_el_MVA_value > 0.17)));
+        lep3_iso_RA5             = passMultiIso(11, lep3_idx, 0.12, 0.80, 7.2, 1, 2);
+        lep3_iso_RA7             = passMultiIso(11, lep3_idx, 0.16, 0.76, 7.2, 1, 2);
+        lep3_passes_RA5 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_threeChargeAgree && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_iso_RA5);
+        lep3_passes_RA7 = (lep3_el_etaSC && lep3_el_conv_vtx_flag && lep3_el_exp_innerlayers && lep3_el_dxyPV && lep3_el_ip3d && lep3_el_dzPV && lep3_el_MVA && lep3_iso_RA7);
       }
-      if (abs(lep3_id) == 11){
-        lep3_mu_dxyPV = (fabs(mus_dxyPV().at(muIdx)) <= 0.05);
-        lep3_mu_ip3d  = (fabs(mus_ip3d().at(muIdx))/mus_ip3derr().at(muIdx) < 4);
-        lep3_mu_dzPV  = (fabs(mus_dzPV().at(muIdx)) <= 0.1);
-        lep3_mu_ptErr = (mus_ptErr().at(muIdx)/mus_trk_p4().at(muIdx).pt() < 0.2);
-        lep3_iso_RA5  = passMultiIso(13, muIdx, 0.12, 0.80, 7.2, 1, 2);
-        lep3_iso_RA7  = passMultiIso(13, muIdx, 0.16, 0.76, 7.2, 1, 2);
+      if (abs(lep3_id) == 13){
+        lep3_mu_dxyPV = (fabs(mus_dxyPV().at(lep3_idx)) <= 0.05);
+        lep3_mu_ip3d  = (fabs(mus_ip3d().at(lep3_idx))/mus_ip3derr().at(lep3_idx) < 4);
+        lep3_mu_dzPV  = (fabs(mus_dzPV().at(lep3_idx)) <= 0.1);
+        lep3_mu_ptErr = (mus_ptErr().at(lep3_idx)/mus_trk_p4().at(lep3_idx).pt() < 0.2);
+        lep3_iso_RA5  = passMultiIso(13, lep3_idx, 0.16, 0.76, 7.2, 1, 2);
+        lep3_iso_RA7  = passMultiIso(13, lep3_idx, 0.12, 0.80, 7.2, 1, 2);
         lep3_passes_RA5 = (lep3_mu_dxyPV && lep3_mu_ip3d && lep3_mu_dzPV && lep3_mu_ptErr && lep3_iso_RA5); 
         lep3_passes_RA7 = (lep3_mu_dxyPV && lep3_mu_ip3d && lep3_mu_dzPV && lep3_iso_RA7); 
       }
     }
   }
 
-  //More Fourth lepton stuff
+  //More fourth lepton stuff
   if (abs(lep4_id) == 11 || abs(lep4_id) == 13){
-    lep4_passes_id = isGoodLepton(lep4_id, lep4_idx);
-    lep4_tight = abs(lep4_id) == 11 ? isGoodElectron(lep4_idx) : isGoodMuon(lep4_idx);
-    lep4_veto = abs(lep4_id) == 11 ? isGoodVetoElectron(lep4_idx) : isGoodVetoMuon(lep4_idx);
-    lep4_fo = abs(lep4_id) == 11 ? isFakableElectron(lep4_idx) : isFakableMuon(lep4_idx);
+    if (lep4_veto){
+      lep4_passes_id = isGoodLepton(lep4_id, lep4_idx);
+      lep4_tight = abs(lep4_id) == 11 ? isGoodElectron(lep4_idx) : isGoodMuon(lep4_idx);
+      lep4_veto = abs(lep4_id) == 11 ? isGoodVetoElectron(lep4_idx) : isGoodVetoMuon(lep4_idx);
+      lep4_fo = abs(lep4_id) == 11 ? isFakableElectron(lep4_idx) : isFakableMuon(lep4_idx);
+      if (abs(lep4_id) == 11){
+        float etaSC              = fabs(els_etaSC().at(lep4_idx));
+        lep4_el_etaSC            = (etaSC <= 2.5);
+        lep4_el_conv_vtx_flag    = (!(els_conv_vtx_flag().at(lep4_idx)));
+        lep4_el_exp_innerlayers  = (els_exp_innerlayers().at(lep4_idx) <= 0);
+        lep4_el_threeChargeAgree = (threeChargeAgree(lep4_idx));
+        lep4_el_dxyPV            = (fabs(els_dxyPV().at(lep4_idx)) <= 0.05);
+        lep4_el_ip3d             = (fabs(els_ip3d().at(lep4_idx))/els_ip3derr().at(lep4_idx) < 4);
+        lep4_el_dzPV             = (fabs(els_dzPV().at(lep4_idx)) < 0.1);
+        lep4_el_MVA_value        = getMVAoutput(lep4_idx);
+        lep4_el_MVA              = ((etaSC < 0.8) ? (lep4_el_MVA_value > 0.87) : ((etaSC <= 1.479) ? (lep4_el_MVA_value > 0.60) : (lep4_el_MVA_value > 0.17)));
+        lep4_iso_RA5             = passMultiIso(11, lep4_idx, 0.12, 0.80, 7.2, 1, 2);
+        lep4_iso_RA7             = passMultiIso(11, lep4_idx, 0.16, 0.76, 7.2, 1, 2);
+        lep4_passes_RA5 = (lep4_el_etaSC && lep4_el_conv_vtx_flag && lep4_el_exp_innerlayers && lep4_el_threeChargeAgree && lep4_el_dxyPV && lep4_el_ip3d && lep4_el_dzPV && lep4_el_MVA && lep4_iso_RA5);
+        lep4_passes_RA7 = (lep4_el_etaSC && lep4_el_conv_vtx_flag && lep4_el_exp_innerlayers && lep4_el_dxyPV && lep4_el_ip3d && lep4_el_dzPV && lep4_el_MVA && lep4_iso_RA7);
+      }
+      if (abs(lep4_id) == 13){
+        lep4_mu_dxyPV = (fabs(mus_dxyPV().at(lep4_idx)) <= 0.05);
+        lep4_mu_ip3d  = (fabs(mus_ip3d().at(lep4_idx))/mus_ip3derr().at(lep4_idx) < 4);
+        lep4_mu_dzPV  = (fabs(mus_dzPV().at(lep4_idx)) <= 0.1);
+        lep4_mu_ptErr = (mus_ptErr().at(lep4_idx)/mus_trk_p4().at(lep4_idx).pt() < 0.2);
+        lep4_iso_RA5  = passMultiIso(13, lep4_idx, 0.12, 0.80, 7.2, 1, 2);
+        lep4_iso_RA7  = passMultiIso(13, lep4_idx, 0.16, 0.76, 7.2, 1, 2);
+        lep4_passes_RA5 = (lep4_mu_dxyPV && lep4_mu_ip3d && lep4_mu_dzPV && lep4_mu_ptErr && lep4_iso_RA5); 
+        lep4_passes_RA7 = (lep4_mu_dxyPV && lep4_mu_ip3d && lep4_mu_dzPV && lep4_iso_RA7); 
+      }
+    }
   }
 
   //Lepton MC variables
