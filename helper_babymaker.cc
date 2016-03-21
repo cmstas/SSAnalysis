@@ -822,8 +822,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
         lep4_el_dzPV             = (fabs(els_dzPV().at(lep4_idx)) < 0.1);
         lep4_el_MVA_value        = getMVAoutput(lep4_idx);
         lep4_el_MVA              = ((etaSC < 0.8) ? (lep4_el_MVA_value > 0.87) : ((etaSC <= 1.479) ? (lep4_el_MVA_value > 0.60) : (lep4_el_MVA_value > 0.17)));
-        lep4_iso_RA5             = passMultiIso(11, lep4_idx, 0.12, 0.80, 7.2, 1, 2);
-        lep4_iso_RA7             = passMultiIso(11, lep4_idx, 0.16, 0.76, 7.2, 1, 2);
+        lep4_iso_RA5             = passMultiIso(11, lep4_idx, 0.16, 0.76, 7.2, 1, 2);
+        lep4_iso_RA7             = passMultiIso(11, lep4_idx, 0.12, 0.80, 7.2, 1, 2);
         lep4_passes_RA5 = (lep4_el_etaSC && lep4_el_conv_vtx_flag && lep4_el_exp_innerlayers && lep4_el_threeChargeAgree && lep4_el_dxyPV && lep4_el_ip3d && lep4_el_dzPV && lep4_el_MVA && lep4_iso_RA5);
         lep4_passes_RA7 = (lep4_el_etaSC && lep4_el_conv_vtx_flag && lep4_el_exp_innerlayers && lep4_el_dxyPV && lep4_el_ip3d && lep4_el_dzPV && lep4_el_MVA && lep4_iso_RA7);
       }
