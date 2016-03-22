@@ -95,7 +95,7 @@ class babyMaker {
     vector <TString> sparmNames; 
     vector <float> sparms; 
     float kfactor;      
-    TString filename;
+    string filename;
     int filenumber; 
     vector <float> genweights;
     vector <string> genweightsID;
