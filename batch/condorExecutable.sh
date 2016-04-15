@@ -66,12 +66,12 @@ if [ "$WHICH" == "105" ]; then WHICH_SMALL="t6ttww_600_425_50"; fi
 if [ "$WHICH" == "106" ]; then WHICH_SMALL="t6ttww_650_150_50"; fi
 
 #data
-if [ "$WHICH" == "1000" ]; then WHICH_SMALL="datadoubleegc_05oct"; fi
-if [ "$WHICH" == "1001" ]; then WHICH_SMALL="datadoublemuonc_05oct"; fi
-if [ "$WHICH" == "1002" ]; then WHICH_SMALL="datamuonegc_05oct"; fi
-if [ "$WHICH" == "1003" ]; then WHICH_SMALL="datadoubleegd_05oct"; fi
-if [ "$WHICH" == "1004" ]; then WHICH_SMALL="datadoublemuond_05oct"; fi
-if [ "$WHICH" == "1005" ]; then WHICH_SMALL="datamuonegd_05oct"; fi
+if [ "$WHICH" == "1000" ]; then WHICH_SMALL="datadoubleegc"; fi
+if [ "$WHICH" == "1001" ]; then WHICH_SMALL="datadoublemuonc"; fi
+if [ "$WHICH" == "1002" ]; then WHICH_SMALL="datamuonegc"; fi
+if [ "$WHICH" == "1003" ]; then WHICH_SMALL="datadoubleegd"; fi
+if [ "$WHICH" == "1004" ]; then WHICH_SMALL="datadoublemuond"; fi
+if [ "$WHICH" == "1005" ]; then WHICH_SMALL="datamuonegd"; fi
 if [ "$WHICH" == "1006" ]; then WHICH_SMALL="datadoubleegd_v4"; fi
 if [ "$WHICH" == "1007" ]; then WHICH_SMALL="datadoublemuond_v4"; fi
 if [ "$WHICH" == "1008" ]; then WHICH_SMALL="datamuonegd_v4"; fi

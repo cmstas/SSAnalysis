@@ -4,7 +4,14 @@ xrootdbroken="1"
 
 nSubmitted=0
 
-SPPATH=""
+SPPATH="76x"
+
+DOCOMPILE="1"
+if [ $# -gt 0 ]; then
+    if [[ $1 == *fast* ]]; then 
+      DOCOMPILE="0"
+    fi
+fi
 
 #Source this stupid thing
 pushd ..
@@ -17,7 +24,10 @@ if [ "$xrootdbroken" == "1" ]
 then
   sed -i 's,Open(Form("root://cmsxrootd.fnal.gov//%s/%s/%s/%s,Open(Form("/hadoop/cms/%s/%s/%s/%s,' main.cc
 fi
-make -j 10
+
+if [ "$DOCOMPILE" == "1" ]; then
+  make -j 10
+fi
 
 #Start by checking proxy, get path to proxy file
 # voms-proxy-init -hours 168 -voms cms
@@ -63,6 +73,7 @@ DATA="DataDoubleMuonD DataDoubleEGD DataMuonEGD DataDoubleMuonC DataDoubleEGC Da
 ALL="$DATA $CENTRAL"
 # ALL="$DATA $CENTRAL $CENTRAL2"
 
+ALL="WZ"
 
 
 #Then submit jobs
@@ -77,201 +88,201 @@ do
   #Get Name
   if   [ $sname == "TTBAR" ] ; then 
     name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/V07-06-03_MC/"
-    path="/store/group/snt/run2_25ns_76MiniAODv2/";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
     tag=V07-06-03_MC
     nameNu=0
   elif [ $sname == "TTW" ]; then 
-      name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+    name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
     nameNu=1
   elif [ $sname == "TTZL" ]; then 
-      name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+    name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
     nameNu=2
   elif [ $sname == "WZ" ]; then 
-      name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
-      tag="CMS3_V07-06-03";
+    name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+    tag="CMS3_V07-06-03";
     nameNu=3
   elif [ $sname == "DY_low" ]; then 
-      name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/V/";
+    name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/V/";
     nameNu=4
   elif [ $sname == "DY_high" ]; then 
-      name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"; 
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/V/";
+    name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"; 
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/V/";
     nameNu=5
-  elif [ $sname == "WJets" ]; ;then 
-      name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/";
-      tag="V07-06-03_MC";
+  elif [ $sname == "WJets" ]; then 
+    name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
+    tag="V07-06-03_MC";
     nameNu=6
   elif [ $sname == "TTWQQ" ]; then 
-      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+    name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
     nameNu=7
   elif [ $sname == "TTZQ" ]; then 
-      name="TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+    name="TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
     nameNu=8
   elif [ $sname == "TTG" ] ;then 
-      name="TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
-      tag="CMS3_V07-06-03";
+    name="TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+    tag="CMS3_V07-06-03";
     nameNu=9
-  elif [ $sname == "SINGLETOP1"    ]; ;then 
-      name="ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
-      tag="CMS3_V07-06-03";
+  elif [ $sname == "SINGLETOP1"    ]; then 
+    name="ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+    tag="CMS3_V07-06-03";
     nameNu=10
-  elif [ $sname == "SINGLETOP2"    ]; ;then 
-      name="ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+  elif [ $sname == "SINGLETOP2"    ]; then 
+    name="ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
     nameNu=11
-  elif [ $sname == "SINGLETOP3"    ]; ;then 
+  elif [ $sname == "SINGLETOP3"    ]; then 
     name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-        # FIXME
+    # FIXME
     tag=V07-04-11
     nameNu=12
-  elif [ $sname == "SINGLETOP4"    ]; ;then 
+  elif [ $sname == "SINGLETOP4"    ]; then 
     name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v2"
-        # FIXME
+    # FIXME
     tag=V07-04-11
     nameNu=13
-  elif [ $sname == "SINGLETOP5"    ]; ;then 
+  elif [ $sname == "SINGLETOP5"    ]; then 
     name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-        # FIXME
+    # FIXME
     tag=V07-04-11
     nameNu=14
   elif [ $sname == "QQWW" ]; then 
-      name="WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+    name="WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
     nameNu=15
   elif [ $sname == "TTTT" ] ;then 
     name="TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-      # FIXME
+    # FIXME
     tag=V07-04-11
     nameNu=16
   elif [ $sname == "WWDPS" ] ;then 
-      name="WW_DoubleScattering_13TeV-pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+    name="WW_DoubleScattering_13TeV-pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
     nameNu=17
   elif [ $sname == "TTBAR_PH" ] ;then 
-      name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext4-v1"; 
-      tag="V07-06-03_MC";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/";
+    name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext4-v1"; 
+    tag="V07-06-03_MC";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
     nameNu=18
   elif [ $sname == "WWZ" ]; then 
     name="WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-      # FIXME
+    # FIXME
     tag=V07-04-11
     nameNu=20
   elif [ $sname == "ZZ" ]; then 
-      name="ZZTo4L_13TeV_powheg_pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+    name="ZZTo4L_13TeV_powheg_pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
     nameNu=21
-  elif [ $sname == "TG" ]; ;then 
+  elif [ $sname == "TG" ]; then 
     name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-        # FIXME
+    # FIXME
     tag=V07-04-11
     nameNu=22
   elif [ $sname == "ZG" ]; then 
-      name="ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+    name="ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
     nameNu=23
   elif [ $sname == "WZZ" ] ;then 
-      name="WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+    name="WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
     nameNu=24
   elif [ $sname == "WGToLNuG" ] ;then 
-      name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+    name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
     nameNu=25
   elif [ $sname == "TZQ" ] ;then 
     name="tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-      # FIXME
+    # FIXME
     tag=V07-04-11
     nameNu=26
   elif [ $sname == "TTHtoNonBB" ] ;then 
     name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-      # FIXME
+    # FIXME
     tag=V07-04-11
     nameNu=27
   elif [ $sname == "VHtoNonBB" ] ;then 
     name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-      # FIXME
+    # FIXME
     tag=V07-04-11
     nameNu=28
   elif [ $sname == "TTZlow" ]; then 
     name="TTZ_lowMM_petrucc"
-      # FIXME
+    # FIXME
     tag="V07-04-11"
     path="/hadoop/cms/store/group/snt/run2_25ns_privateMiniAOD"
     nameNu=29
   elif [ $sname == "GGHtoZZto4L" ] ; then
-      name="GluGluHToWWTo2L2Nu_M125_13TeV_powheg_JHUgen_pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/H/";
+    name="GluGluHToWWTo2L2Nu_M125_13TeV_powheg_JHUgen_pythia8";
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/H/";
     nameNu=30
   elif [ $sname == "WZMG" ] ; then
-  name="WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
+    name="WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
     # FIXME
     tag=V07-04-11
     nameNu=31
   elif [ $sname == "WGMG" ] ; then
-      name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"; 
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+    name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"; 
+    tag="CMS3_V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
     nameNu=32
   elif [ $sname == "TTHtoNonBBext" ] ; then
-  name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2_ext1-v1"
+    name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2_ext1-v1"
     # FIXME
     tag=V07-04-12 
     nameNu=33
 
-  #data
-  elif [ $sname == "DataDoubleEGC"    ]; ;then 
-    name="Run2015C_25ns_DoubleEG_MINIAOD_05Oct2015-v1";
-    path="/hadoop/cms/store/group/snt/run2_data"
-    tag=V07-04-11
+    #data
+  elif [ $sname == "DataDoubleEGC"    ]; then 
+    name="DoubleEG_Run2015C_25ns-16Dec2015-v1";
+    tag="CMS3_V07-06-03";
+    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1000
-  elif [ $sname == "DataDoubleMuonC"  ]; ;then 
-    name="Run2015C_25ns_DoubleMuon_MINIAOD_05Oct2015-v1";
-    path="/hadoop/cms/store/group/snt/run2_data"
-    tag=V07-04-11
+  elif [ $sname == "DataDoubleMuonC"  ]; then 
+    name="DoubleMuon_Run2015C_25ns-16Dec2015-v1";
+    tag="CMS3_V07-06-03";
+    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1001
-  elif [ $sname == "DataMuonEGC"    ]; ;then 
-    name="Run2015C_25ns_MuonEG_MINIAOD_05Oct2015-v1";
-    path="/hadoop/cms/store/group/snt/run2_data"
-    tag=V07-04-11
+  elif [ $sname == "DataMuonEGC"    ]; then 
+    name="MuonEG_Run2015C_25ns-16Dec2015-v1";
+    tag="CMS3_V07-06-03";
+    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1002
-  elif [ $sname == "DataDoubleEGD"    ]; ;then 
-    name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v1";
-    path="/hadoop/cms/store/group/snt/run2_data"
-    tag=V07-04-11
+  elif [ $sname == "DataDoubleEGD"    ]; then 
+    name="DoubleEG_Run2015D-16Dec2015-v2";
+    tag="CMS3_V07-06-03";
+    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1003
-  elif [ $sname == "DataDoubleMuonD"  ]; ;then 
-    name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1";
-    path="/hadoop/cms/store/group/snt/run2_data"
-    tag=V07-04-11
+  elif [ $sname == "DataDoubleMuonD"  ]; then 
+    name="DoubleMuon_Run2015D-16Dec2015-v1";
+    tag="CMS3_V07-06-03";
+    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1004
-  elif [ $sname == "DataMuonEGD"    ]; ;then 
-    name="Run2015D_MuonEG_MINIAOD_05Oct2015-v2";
-    path="/hadoop/cms/store/group/snt/run2_data"
-    tag=V07-04-11
+  elif [ $sname == "DataMuonEGD"    ]; then 
+    name="MuonEG_Run2015D-16Dec2015-v1";
+    tag="CMS3_V07-06-03";
+    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1005
   # elif [ $sname == "DataDoubleEGD_v4"    ]; 
   #   then name="Run2015D_DoubleEG_MINIAOD_PromptReco-v4";

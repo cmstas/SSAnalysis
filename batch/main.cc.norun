@@ -1,4 +1,3 @@
-# vim: set ft=cpp:
 
 #include "./CORE/CMS3.h"
 #include "./CORE/SSSelections.h"
@@ -15,10 +14,15 @@ int main(int argc, char *argv[]){
 
   int which_in = 0;
   int file = 2;
+  unsigned int nevents_max = 0;
 
   if (argc > 2) {
      which_in = atoi(argv[1]);
      file     = atoi(argv[2]);
+
+     if (argc > 3) {
+         nevents_max = atoi(argv[3]);
+     }
   } 
   else { 
     cout << "not enough arguments!" << endl;  
@@ -261,44 +265,43 @@ int main(int argc, char *argv[]){
     case DataDoubleEGC:
       shortname="datadoubleegc";
       name="DoubleEG_Run2015C_25ns-16Dec2015-v1";
-      isData = true;
       tag="CMS3_V07-06-03";
       path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      isData = true;
       break;
     case DataDoubleMuonC:
-      name="DoubleMuon_Run2015C_25ns-16Dec2015-v1";
       shortname="datadoublemuonc";
-      isData = true;
+      name="DoubleMuon_Run2015C_25ns-16Dec2015-v1";
       tag="CMS3_V07-06-03";
       path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      isData = true;
       break;
     case DataMuonEGC:
-      shortname="datamuonegc";
       name="MuonEG_Run2015C_25ns-16Dec2015-v1";
-      isData = true;
       tag="CMS3_V07-06-03";
       path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      isData = true;
       break;
     case DataDoubleEGD:
       shortname="datadoubleegd";
       name="DoubleEG_Run2015D-16Dec2015-v2";
-      isData = true;
       tag="CMS3_V07-06-03";
       path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      isData = true;
       break;
     case DataDoubleMuonD:
-      name="DoubleMuon_Run2015D-16Dec2015-v1";
       shortname="datadoublemuond";
-      isData = true;
+      name="DoubleMuon_Run2015D-16Dec2015-v1";
       tag="CMS3_V07-06-03";
       path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      isData = true;
       break;
     case DataMuonEGD:
       shortname="datamuonegd";
       name="MuonEG_Run2015D-16Dec2015-v1";
-      isData = true;
       tag="CMS3_V07-06-03";
       path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      isData = true;
       break;
 
     case T1TTTT_1950_700to950:
@@ -1002,6 +1005,8 @@ int main(int argc, char *argv[]){
 
   //Event Loop
   for(unsigned int eventAG=0; eventAG < nEvents; eventAG++){
+
+    if ((nevents_max > 0) && (eventAG > nevents_max)) break;
  
     //Get Event Content
     cms3.GetEntry(eventAG);
@@ -1095,3 +1100,4 @@ int main(int argc, char *argv[]){
   return 0;
 
 }
+/* vim: set ft=cpp: */

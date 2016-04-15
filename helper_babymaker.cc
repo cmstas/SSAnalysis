@@ -638,7 +638,6 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   is_real_data = tas::evt_isRealData();
 
   is_miniaodv1 = filename.find("MCRUN2_74_V9") != std::string::npos;
-  std::cout << "IS THIS miniaodv1? " << is_miniaodv1 << endl;
 
   //These c-s errors
   if (!is_real_data && tas::genweights().size()>110) {
@@ -1222,7 +1221,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     if (rawpt*JEC*(1-jetUnc) > 40 && isLoosePFJet_50nsV1(i)) mostJets_jet_dn.push_back(Jet(i, JEC)); 
     else                                                     mostJets_jet_dn.push_back(Jet(-1, -9999)); 
     mostJets_rawp4.push_back(jet*tas::pfjets_undoJEC().at(i)); 
-    mostJets_disc.push_back(tas::pfjets_pfCombinedInclusiveSecondaryVertexV2BJetTag().at(i)); 
+    // mostJets_disc.push_back(tas::pfjets_pfCombinedInclusiveSecondaryVertexV2BJetTag().at(i)); 
+    mostJets_disc.push_back(tas::getbtagvalue("pfCombinedInclusiveSecondaryVertexV2BJetTags", i)); 
     mostJets_unc.push_back(jetUnc); 
     mostJets_JEC.push_back(JEC); 
     mostJets_undoJEC.push_back(tas::pfjets_undoJEC().at(i)); 
