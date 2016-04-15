@@ -194,9 +194,10 @@ int main(int argc, char *argv[]){
       tag="V07-04-11";
       shortname="tthtononbb";
       break;
-    case VHtoNonBB: // FIXME
-      name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-11";
+    case VHtoNonBB:
+      name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
+      tag="V07-06-03";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/";
       shortname="vhtononbb";
       break;
     case TTZlow: // FIXME -- private. don't care.

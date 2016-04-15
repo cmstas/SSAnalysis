@@ -64,8 +64,8 @@ T6FASTSIM="T6TTWW_50_300to600_225to575 T6TTWW_50_300to600_75to125 T6TTWW_50_350t
 T5WFASTSIM="T5QQQQWW_1025to1200_0to1175 T5QQQQWW_1225to1400_0to1175 T5QQQQWW_1425to1600_0to1175 T5QQQQWW_1650to1700_0to1150 T5QQQQWW_600to800_0to725 T5QQQQWW_825to1000_0to925"
 T1TTBBFASTSIM="T1TTBB_1225to1400_0to1050 T1TTBB_1425to1600_0to1250 T1TTBB_1425to1600_1100to1350 T1TTBB_600to800_275to575 T1TTBB_1225to1400_900to1175 T1TTBB_1650to2000_0to1450 T1TTBB_825to1000_500to775 T1TTBB_1650to1750_1350to1450 T1TTBB_825to1000_0to625 T1TTBB_600to800_0to450 T1TTBB_1025to1200_700to975 T1TTBB_1025to1200_0to850"
 DMFASTSIM="T5ttttDM175_825to1000_500to725 T5ttttDM175_1025to1200_700to925 T5ttttDM175_1225to1400_0to1050 T5ttttDM175_1225to1400_900to1125 T5ttttDM175_1425to1625_1100to1300 T5ttttDM175_600to800_275to525 T5ttttDM175_825to1000_0to650 T5ttttDM175_1425to1600_0to1250 T5ttttDM175_1025to1200_0to850 T5ttttDM175_1625to1700_0to1300 T5ttttDM175_600to800_0to450"
-CENTRAL="WGMG WZ  GGHtoZZto4L TTBAR TTW ZG SINGLETOP1 SINGLETOP2 TTWQQ TTZQ  ZZ QQWW WJets TTZL DY_high DY_low WGToLNuG TTG WWDPS WZZ TTBAR_PH"
-CENTRAL2="SINGLETOP3 SINGLETOP4 SINGLETOP5 TTTT TG TZQ TTHtoNonBB VHtoNonBB"
+CENTRAL="WGMG WZ  GGHtoZZto4L TTBAR TTW ZG SINGLETOP1 SINGLETOP2 TTWQQ TTZQ  ZZ QQWW WJets TTZL DY_high DY_low WGToLNuG TTG WWDPS WZZ TTBAR_PH VHtoNonBB"
+CENTRAL2="SINGLETOP3 SINGLETOP4 SINGLETOP5 TTTT TG TZQ TTHtoNonBB"
 T5TTTTDEG="T5tttt_degen_1225to1400_1075to1275 T5tttt_degen_1425to1600_1275to1375 T5tttt_degen_825to1000_0to825 T5tttt_degen_825to1000_675to875 T5tttt_degen_1225to1400_0to1225 T5tttt_degen_600to800_450to675 T5tttt_degen_1425to1600_0to1350 T5tttt_degen_1650to1700_0to1350 T5tttt_degen_1025to1200_0to1025 T5tttt_degen_600to800_0to625 T5tttt_degen_1025to1200_875to1075"
 T5TTCC="T5ttcc_825to1000_675to875 T5ttcc_1025to1200_875to1075 T5ttcc_825to1000_0to825 T5ttcc_600to800_450to675 T5ttcc_1225to1400_1075to1225 T5ttcc_1225to1400_0to1225 T5ttcc_1650to1700_0to1350 T5ttcc_1425to1525_1275to1375 T5ttcc_1025to1200_0to1025 T5ttcc_600to800_0to625 T5ttcc_1425to1600_0to1350"
 DATA="DataDoubleMuonD DataDoubleEGD DataMuonEGD DataDoubleMuonC DataDoubleEGC DataMuonEGC" 
@@ -73,7 +73,7 @@ DATA="DataDoubleMuonD DataDoubleEGD DataMuonEGD DataDoubleMuonC DataDoubleEGC Da
 ALL="$DATA $CENTRAL"
 # ALL="$DATA $CENTRAL $CENTRAL2"
 
-ALL="WZ"
+# ALL="DataDoubleMuonD"
 
 
 #Then submit jobs
@@ -222,9 +222,9 @@ do
     tag=V07-04-11
     nameNu=27
   elif [ $sname == "VHtoNonBB" ] ;then 
-    name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-    # FIXME
-    tag=V07-04-11
+    name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1"
+    tag="V07-06-03";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
     nameNu=28
   elif [ $sname == "TTZlow" ]; then 
     name="TTZ_lowMM_petrucc"
@@ -255,34 +255,40 @@ do
 
     #data
   elif [ $sname == "DataDoubleEGC"    ]; then 
+    isData="1"
     name="DoubleEG_Run2015C_25ns-16Dec2015-v1";
     tag="CMS3_V07-06-03";
-    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1000
   elif [ $sname == "DataDoubleMuonC"  ]; then 
+    isData="1"
     name="DoubleMuon_Run2015C_25ns-16Dec2015-v1";
     tag="CMS3_V07-06-03";
-    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1001
   elif [ $sname == "DataMuonEGC"    ]; then 
+    isData="1"
     name="MuonEG_Run2015C_25ns-16Dec2015-v1";
     tag="CMS3_V07-06-03";
-    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1002
   elif [ $sname == "DataDoubleEGD"    ]; then 
+    isData="1"
     name="DoubleEG_Run2015D-16Dec2015-v2";
     tag="CMS3_V07-06-03";
-    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1003
   elif [ $sname == "DataDoubleMuonD"  ]; then 
+    isData="1"
     name="DoubleMuon_Run2015D-16Dec2015-v1";
     tag="CMS3_V07-06-03";
-    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1004
   elif [ $sname == "DataMuonEGD"    ]; then 
+    isData="1"
     name="MuonEG_Run2015D-16Dec2015-v1";
     tag="CMS3_V07-06-03";
-    path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
     nameNu=1005
   # elif [ $sname == "DataDoubleEGD_v4"    ]; 
   #   then name="Run2015D_DoubleEG_MINIAOD_PromptReco-v4";
@@ -980,20 +986,20 @@ do
   #fastsim path
   if [ "$isSignal" == "1" ]; then path="/hadoop/cms/store/group/snt/run2_fastsim"; tag="V07-04-12"; fi
 
-  #Data vs. MC variables
-  if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]
-  then 
-    infix="merged/"
-    isData="1"
-  else 
-    infix="" 
-    isData="0"
-  fi
+  # #Data vs. MC variables
+  # if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]
+  # then 
+  #   infix="merged/"
+  #   isData="1"
+  # else 
+  #   infix="" 
+  #   isData="0"
+  # fi
 
   #Get number of files
-  numberOfFiles=$((`ls -l $path/$name/$infix$tag/merged_ntuple_*.root | wc -l`))
+  numberOfFiles=$((`ls -l $path/$name/$tag/merged_ntuple_*.root | wc -l`))
   echo "number of files: $numberOfFiles"
-  echo "dir: $path/$name/$infix$tag"
+  echo "dir: $path/$name/$tag"
   
   #Submit all of them
   for (( i=0; i<$numberOfFiles; i++))
