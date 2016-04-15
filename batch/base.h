@@ -47,15 +47,15 @@ enum sample_t {
   T6TTWW_650_150_50 = 106,
 
   //Data
-  DataDoubleEGC_05oct = 1000,
-  DataDoubleMuonC_05oct = 1001,
-  DataMuonEGC_05oct = 1002,
-  DataDoubleEGD_05oct = 1003,
-  DataDoubleMuonD_05oct = 1004,
-  DataMuonEGD_05oct = 1005,
-  DataDoubleEGD_v4 = 1006,
-  DataDoubleMuonD_v4 = 1007,
-  DataMuonEGD_v4 = 1008,
+  DataDoubleEGC = 1000,
+  DataDoubleMuonC = 1001,
+  DataMuonEGC = 1002,
+  DataDoubleEGD = 1003,
+  DataDoubleMuonD = 1004,
+  DataMuonEGD = 1005,
+  // DataDoubleEGD_v4 = 1006,
+  // DataDoubleMuonD_v4 = 1007,
+  // DataMuonEGD_v4 = 1008,
 
   //Fastsim
   T1TTTT_1950_700to950        = 10001,

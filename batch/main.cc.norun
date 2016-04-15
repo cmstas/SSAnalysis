@@ -31,12 +31,12 @@ int main(int argc, char *argv[]){
   babyMaker *mylooper = new babyMaker();
 
   //Path, filename, suffix
-  string path = "/store/group/snt/run2_25ns_MiniAODv2/";
+  string path="/store/group/snt/run2_25ns_MiniAODv2/";
   string name = ""; 
   string shortname = ""; 
   char* filename = Form("merged_ntuple_%i.root", file);
   const char* suffix = file < 0 ? "" : Form("_%i", file);
-  string tag = "V07-04-08";
+  string tag="V07-04-08";
   bool isData = false;
   int isSignal = 0; 
 
@@ -44,94 +44,94 @@ int main(int argc, char *argv[]){
   switch (which){
     case TTBAR:
       name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/V07-06-03_MC/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/";
+      tag="V07-06-03_MC";
       shortname="ttbar";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/";
-      tag = "V07-06-03_MC";
       break;
     case TTW:
       name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
-      tag = "CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+      tag="CMS3_V07-06-03";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       shortname="ttw";
       break;
     case TTZL:
       name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
-      tag = "CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+      tag="CMS3_V07-06-03";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       shortname="ttzl";
       break;
     case WZ:
       name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8";
-      shortname="wz";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      shortname="wz";
       break;
     case DY_low:
       name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/V/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/V/";
       shortname="dy_low";
       break;
     case DY_high:
       name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"; 
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/V/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/V/";
       shortname="dy_high";
       break;
     case WJets:
       name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/";
-      tag = "V07-06-03_MC";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/";
+      tag="V07-06-03_MC";
       shortname="wjets";
       break;
     case TTZQ:
       name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       shortname="ttzq";
       break;
     case TTWQQ:
       name="TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       shortname="ttwqq";
       break;
     case TTG:
       name="TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
-      shortname="ttg";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+      shortname="ttg";
       break;
     case SINGLETOP1:
       name="ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1";
-      shortname="singletop1";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+      shortname="singletop1";
       break;
     case SINGLETOP2:
       name="ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       break;
     case SINGLETOP3: // FIXME
       name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag = "V07-04-11";
+      tag="V07-04-11";
       shortname="singletop3";
       break;
     case SINGLETOP4: // FIXME
       name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v2";
-      tag = "V07-04-11";
+      tag="V07-04-11";
       shortname="singletop4";
       break;
     case SINGLETOP5: // FIXME
       name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag = "V07-04-11";
+      tag="V07-04-11";
       shortname="singletop5";
       break;
     case QQWW:
       name="WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="qqww";
       break;
     case TTTT: // FIXME
@@ -142,19 +142,19 @@ int main(int argc, char *argv[]){
     case WWDPS:
       name="WW_DoubleScattering_13TeV-pythia8";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="wwdps";
       break;
     case TTBAR_PH:
       name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext4-v1"; 
-      shortname="ttbar_ph";
       tag="V07-06-03_MC";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/";
+      shortname="ttbar_ph";
       break;
     case ZZ:
       name="ZZTo4L_13TeV_powheg_pythia8";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="zz"; 
       break;
     case TG:    // FIXME
@@ -165,20 +165,20 @@ int main(int argc, char *argv[]){
     case ZG:
       name="ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="zg";
       break;
     case WZZ:
       name="WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="wzz";
       break;
     case WGToLNuG:
       name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
-      shortname="wgtolnug";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      shortname="wgtolnug";
       break;
     case TZQ: // FIXME
       name="tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
@@ -204,13 +204,13 @@ int main(int argc, char *argv[]){
     case GGHtoZZto4L:
       name="GluGluHToWWTo2L2Nu_M125_13TeV_powheg_JHUgen_pythia8";
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/H/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/H/";
       shortname="gghtozzto4l";
       break;
     case WGMG:
       name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"; 
       tag="CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="wgmg";
       break; 
 
@@ -262,43 +262,43 @@ int main(int argc, char *argv[]){
       shortname="datadoubleegc";
       name="DoubleEG_Run2015C_25ns-16Dec2015-v1";
       isData = true;
-      tag = "CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      tag="CMS3_V07-06-03";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
     case DataDoubleMuonC:
       name="DoubleMuon_Run2015C_25ns-16Dec2015-v1";
       shortname="datadoublemuonc";
       isData = true;
-      tag = "CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      tag="CMS3_V07-06-03";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
     case DataMuonEGC:
       shortname="datamuonegc";
       name="MuonEG_Run2015C_25ns-16Dec2015-v1";
       isData = true;
-      tag = "CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      tag="CMS3_V07-06-03";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
     case DataDoubleEGD:
       shortname="datadoubleegd";
       name="DoubleEG_Run2015D-16Dec2015-v2";
       isData = true;
-      tag = "CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      tag="CMS3_V07-06-03";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
     case DataDoubleMuonD:
       name="DoubleMuon_Run2015D-16Dec2015-v1";
       shortname="datadoublemuond";
       isData = true;
-      tag = "CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      tag="CMS3_V07-06-03";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
     case DataMuonEGD:
       shortname="datamuonegd";
       name="MuonEG_Run2015D-16Dec2015-v1";
       isData = true;
-      tag = "CMS3_V07-06-03";
-      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+      tag="CMS3_V07-06-03";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
 
     case T1TTTT_1950_700to950:
@@ -929,7 +929,7 @@ int main(int argc, char *argv[]){
 
   default:
     name="dummy";
-    path = "/store/group/snt/run2_25ns/";
+    path="/store/group/snt/run2_25ns/";
     break;
 
   }
@@ -1001,7 +1001,7 @@ int main(int argc, char *argv[]){
   vector <csErr_info_t> csErr_info_v; 
 
   //Event Loop
-  for(unsigned int eventAG = 0; eventAG < nEvents; eventAG++){
+  for(unsigned int eventAG=0; eventAG < nEvents; eventAG++){
  
     //Get Event Content
     cms3.GetEntry(eventAG);
