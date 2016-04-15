@@ -117,7 +117,7 @@ void getyields(){
   xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZG.root"             , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZZ.root"             , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/GGHtoZZto4L.root"    , tag.c_str()));
-  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"            , tag.c_str()));
+  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"            , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"            , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
@@ -126,34 +126,18 @@ void getyields(){
   tttt_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
 
   //data
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGC_05oct.root"    , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonC_05oct.root"  , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGC_05oct.root"      , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_05oct.root"    , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_05oct.root"  , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_05oct.root"      , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_v4.root"       , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_v4.root"     , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_v4.root"         , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str()));
 
   //flips
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGC_05oct.root"   , tag.c_str()));
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGC_05oct.root"     , tag.c_str()));
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_05oct.root"   , tag.c_str()));
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_05oct.root"     , tag.c_str()));
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_v4.root"      , tag.c_str()));
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_v4.root"        , tag.c_str()));
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"     , tag.c_str()));
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"      , tag.c_str()));
 
   //fakes
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGC_05oct.root"   , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonC_05oct.root" , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGC_05oct.root"     , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_05oct.root"   , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_05oct.root" , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_05oct.root"     , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_v4.root"      , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_v4.root"    , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_v4.root"        , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str()));
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"                   , tag.c_str()));
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"                  , tag.c_str()));
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"                    , tag.c_str()));

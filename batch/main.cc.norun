@@ -1,3 +1,5 @@
+# vim: set ft=cpp:
+
 #include "./CORE/CMS3.h"
 #include "./CORE/SSSelections.h"
 #include "TTree.h"
@@ -41,171 +43,176 @@ int main(int argc, char *argv[]){
   //Info for each sample
   switch (which){
     case TTBAR:
-      name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
+      name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/V07-06-03_MC/";
       shortname="ttbar";
-      tag = "V07-04-11";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/";
+      tag = "V07-06-03_MC";
       break;
     case TTW:
-      name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag = "V07-04-11";
+      name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
+      tag = "CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       shortname="ttw";
       break;
     case TTZL:
-      name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v2";
-      tag = "V07-04-11";
+      name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
+      tag = "CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       shortname="ttzl";
       break;
     case WZ:
-      name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
+      name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8";
       shortname="wz";
-      tag="V07-04-11";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       break;
     case DY_low:
-      name="DYJetsToLL_M-5to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag = "V07-04-12";
+      name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/V/";
       shortname="dy_low";
       break;
     case DY_high:
-      name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"; 
-      tag = "V07-04-11";
+      name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"; 
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/V/";
       shortname="dy_high";
       break;
     case WJets:
-      name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag = "V07-04-11";
+      name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/";
+      tag = "V07-06-03_MC";
       shortname="wjets";
       break;
     case TTZQ:
-      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag = "V07-04-11";
+      name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       shortname="ttzq";
       break;
     case TTWQQ:
-      name="TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag = "V07-04-11";
+      name="TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       shortname="ttwqq";
       break;
-    case TTG: 
-      name="TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
+    case TTG:
+      name="TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
       shortname="ttg";
-      tag="V07-04-11";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       break;
     case SINGLETOP1:
-      name="ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
+      name="ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1";
       shortname="singletop1";
-      tag = "V07-04-11";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       break;
     case SINGLETOP2:
-      name="ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag = "V07-04-11";
-      shortname="singletop2";
+      name="ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
       break;
-    case SINGLETOP3:
+    case SINGLETOP3: // FIXME
       name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       tag = "V07-04-11";
       shortname="singletop3";
       break;
-    case SINGLETOP4:
+    case SINGLETOP4: // FIXME
       name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v2";
       tag = "V07-04-11";
       shortname="singletop4";
       break;
-    case SINGLETOP5:
+    case SINGLETOP5: // FIXME
       name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       tag = "V07-04-11";
       shortname="singletop5";
       break;
-    case QQWW:    
-      name="WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-11";
+    case QQWW:
+      name="WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="qqww";
       break;
-    case TTTT:
+    case TTTT: // FIXME
       name="TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       tag="V07-04-11";
       shortname="tttt";
       break;
     case WWDPS:
-      name="WW_DoubleScattering_13TeV-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-11";
+      name="WW_DoubleScattering_13TeV-pythia8";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="wwdps";
       break;
-    case TTBAR_PH: 
-      name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2_ext3-v1"; 
+    case TTBAR_PH:
+      name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext4-v1"; 
       shortname="ttbar_ph";
-      tag="V07-04-11";
-      break;
-    case WWZ:
-      name="WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-11";
-      shortname="wwz";
+      tag="V07-06-03_MC";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/";
       break;
     case ZZ:
-      name="ZZTo4L_13TeV_powheg_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v2";
-      tag="V07-04-11";
+      name="ZZTo4L_13TeV_powheg_pythia8";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="zz"; 
       break;
-    case TG:   
+    case TG:    // FIXME
       name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       tag="V07-04-11";
       shortname="tg";
       break;
     case ZG:
-      name="ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-12";
+      name="ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="zg";
       break;
     case WZZ:
-      name="WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-11";
+      name="WZZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="wzz";
       break;
-    case WGToLNuG: 
-      name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
+    case WGToLNuG:
+      name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
       shortname="wgtolnug";
-      tag="V07-04-11";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       break;
-    case TZQ:
+    case TZQ: // FIXME
       name="tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       tag="V07-04-11";
       shortname="tzq";
       break;
-    case TTHtoNonBB:
+    case TTHtoNonBB: // FIXME
       name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       tag="V07-04-11";
       shortname="tthtononbb";
       break;
-    case VHtoNonBB:
+    case VHtoNonBB: // FIXME
       name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
       tag="V07-04-11";
       shortname="vhtononbb";
       break;
-    case TTZlow:
+    case TTZlow: // FIXME -- private. don't care.
       name="TTZ_lowMM_petrucc";
       tag="V07-04-11";
       path="/store/group/snt/run2_25ns_privateMiniAOD";
       shortname="ttzlow"; 
       break;
     case GGHtoZZto4L:
-      name="GluGluHToZZTo4L_M125_13TeV_powheg_JHUgen_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-11";
+      name="GluGluHToWWTo2L2Nu_M125_13TeV_powheg_JHUgen_pythia8";
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/H/";
       shortname="gghtozzto4l";
       break;
-    case WZMG:
-      name="WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-11";
-      shortname="wzmg";
-      break;
     case WGMG:
-      name="WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"; 
-      tag="V07-04-12"; 
+      name="WGToLNuG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"; 
+      tag="CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="wgmg";
       break; 
-    case TTHtoNonBBext:
-      name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2_ext1-v1";
-      tag="V07-04-12";
-      shortname="tthtononbbext";
-      break;
 
     //Signal
     case T1TTTT_1500:
@@ -251,68 +258,47 @@ int main(int argc, char *argv[]){
 
 
     //Data
-    case DataDoubleEGC_05oct:
-      shortname="datadoubleegc_05oct";
-      name="Run2015C_25ns_DoubleEG_MINIAOD_05Oct2015-v1/merged";
+    case DataDoubleEGC:
+      shortname="datadoubleegc";
+      name="DoubleEG_Run2015C_25ns-16Dec2015-v1";
       isData = true;
-      path="/store/group/snt/run2_data";
-      tag="V07-04-11";
+      tag = "CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
-    case DataDoubleMuonC_05oct:
-      name="Run2015C_25ns_DoubleMuon_MINIAOD_05Oct2015-v1/merged";
-      shortname="datadoublemuonc_05oct";
+    case DataDoubleMuonC:
+      name="DoubleMuon_Run2015C_25ns-16Dec2015-v1";
+      shortname="datadoublemuonc";
       isData = true;
-      path="/store/group/snt/run2_data";
-      tag="V07-04-11";
+      tag = "CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
-    case DataMuonEGC_05oct:
-      shortname="datamuonegc_05oct";
-      name="Run2015C_25ns_MuonEG_MINIAOD_05Oct2015-v1/merged";
-      path="/store/group/snt/run2_data";
+    case DataMuonEGC:
+      shortname="datamuonegc";
+      name="MuonEG_Run2015C_25ns-16Dec2015-v1";
       isData = true;
-      tag="V07-04-11";
+      tag = "CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
-    case DataDoubleEGD_05oct:
-      shortname="datadoubleegd_05oct";
-      name="Run2015D_DoubleEG_MINIAOD_05Oct2015-v1/merged";
+    case DataDoubleEGD:
+      shortname="datadoubleegd";
+      name="DoubleEG_Run2015D-16Dec2015-v2";
       isData = true;
-      path="/store/group/snt/run2_data";
-      tag="V07-04-11";
+      tag = "CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
-    case DataDoubleMuonD_05oct:
-      name="Run2015D_DoubleMuon_MINIAOD_05Oct2015-v1/merged";
-      shortname="datadoublemuond_05oct";
+    case DataDoubleMuonD:
+      name="DoubleMuon_Run2015D-16Dec2015-v1";
+      shortname="datadoublemuond";
       isData = true;
-      path="/store/group/snt/run2_data";
-      tag="V07-04-11";
+      tag = "CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
-    case DataMuonEGD_05oct:
-      shortname="datamuonegd_05oct";
-      name="Run2015D_MuonEG_MINIAOD_05Oct2015-v2/merged";
-      path="/store/group/snt/run2_data";
+    case DataMuonEGD:
+      shortname="datamuonegd";
+      name="MuonEG_Run2015D-16Dec2015-v1";
       isData = true;
-      tag="V07-04-11";
-      break;
-    case DataDoubleEGD_v4:
-      shortname="datadoubleegd_v4";
-      name="Run2015D_DoubleEG_MINIAOD_PromptReco-v4/merged";
-      isData = true;
-      path="/store/group/snt/run2_data";
-      tag="V07-04-11";
-      break;
-    case DataDoubleMuonD_v4:
-      name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v4/merged";
-      shortname="datadoublemuond_v4";
-      isData = true;
-      path="/store/group/snt/run2_data";
-      tag="V07-04-11";
-      break;
-    case DataMuonEGD_v4:
-      shortname="datamuonegd_v4";
-      name="Run2015D_MuonEG_MINIAOD_PromptReco-v4/merged";
-      path="/store/group/snt/run2_data";
-      isData = true;
-      tag="V07-04-11";
+      tag = "CMS3_V07-06-03";
+      path = "/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
       break;
 
     case T1TTTT_1950_700to950:
