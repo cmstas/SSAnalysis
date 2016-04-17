@@ -4,7 +4,7 @@ xrootdbroken="1"
 
 nSubmitted=0
 
-SPPATH="76x"
+SPPATH=""
 
 DOCOMPILE="1"
 if [ $# -gt 0 ]; then
@@ -64,8 +64,8 @@ T6FASTSIM="T6TTWW_50_300to600_225to575 T6TTWW_50_300to600_75to125 T6TTWW_50_350t
 T5WFASTSIM="T5QQQQWW_1025to1200_0to1175 T5QQQQWW_1225to1400_0to1175 T5QQQQWW_1425to1600_0to1175 T5QQQQWW_1650to1700_0to1150 T5QQQQWW_600to800_0to725 T5QQQQWW_825to1000_0to925"
 T1TTBBFASTSIM="T1TTBB_1225to1400_0to1050 T1TTBB_1425to1600_0to1250 T1TTBB_1425to1600_1100to1350 T1TTBB_600to800_275to575 T1TTBB_1225to1400_900to1175 T1TTBB_1650to2000_0to1450 T1TTBB_825to1000_500to775 T1TTBB_1650to1750_1350to1450 T1TTBB_825to1000_0to625 T1TTBB_600to800_0to450 T1TTBB_1025to1200_700to975 T1TTBB_1025to1200_0to850"
 DMFASTSIM="T5ttttDM175_825to1000_500to725 T5ttttDM175_1025to1200_700to925 T5ttttDM175_1225to1400_0to1050 T5ttttDM175_1225to1400_900to1125 T5ttttDM175_1425to1625_1100to1300 T5ttttDM175_600to800_275to525 T5ttttDM175_825to1000_0to650 T5ttttDM175_1425to1600_0to1250 T5ttttDM175_1025to1200_0to850 T5ttttDM175_1625to1700_0to1300 T5ttttDM175_600to800_0to450"
-CENTRAL="WGMG WZ  GGHtoZZto4L TTBAR TTW ZG SINGLETOP1 SINGLETOP2 TTWQQ TTZQ  ZZ QQWW WJets TTZL DY_high DY_low WGToLNuG TTG WWDPS WZZ TTBAR_PH VHtoNonBB"
-CENTRAL2="SINGLETOP3 SINGLETOP4 SINGLETOP5 TTTT TG TZQ TTHtoNonBB"
+CENTRAL="WGMG WZ  GGHtoZZto4L TTBAR TTW ZG SINGLETOP1 SINGLETOP2 TTWQQ TTZQ  ZZ QQWW WJets TTZL DY_high DY_low WGToLNuG TTG WWDPS WZZ TTBAR_PH VHtoNonBB TG TZQ SINGLETOP4 SINGLETOP5"
+CENTRAL2="SINGLETOP3 TTTT TTHtoNonBB"
 T5TTTTDEG="T5tttt_degen_1225to1400_1075to1275 T5tttt_degen_1425to1600_1275to1375 T5tttt_degen_825to1000_0to825 T5tttt_degen_825to1000_675to875 T5tttt_degen_1225to1400_0to1225 T5tttt_degen_600to800_450to675 T5tttt_degen_1425to1600_0to1350 T5tttt_degen_1650to1700_0to1350 T5tttt_degen_1025to1200_0to1025 T5tttt_degen_600to800_0to625 T5tttt_degen_1025to1200_875to1075"
 T5TTCC="T5ttcc_825to1000_675to875 T5ttcc_1025to1200_875to1075 T5ttcc_825to1000_0to825 T5ttcc_600to800_450to675 T5ttcc_1225to1400_1075to1225 T5ttcc_1225to1400_0to1225 T5ttcc_1650to1700_0to1350 T5ttcc_1425to1525_1275to1375 T5ttcc_1025to1200_0to1025 T5ttcc_600to800_0to625 T5ttcc_1425to1600_0to1350"
 DATA="DataDoubleMuonD DataDoubleEGD DataMuonEGD DataDoubleMuonC DataDoubleEGC DataMuonEGC" 
@@ -87,9 +87,9 @@ do
 
   #Get Name
   if   [ $sname == "TTBAR" ] ; then 
-    name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/V07-06-03_MC/"
+    name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/"
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
-    tag=V07-06-03_MC
+    tag="V07-06-03_MC"
     nameNu=0
   elif [ $sname == "TTW" ]; then 
     name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
@@ -107,12 +107,12 @@ do
     tag="CMS3_V07-06-03";
     nameNu=3
   elif [ $sname == "DY_low" ]; then 
-    name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
+    name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/v1/";
     tag="CMS3_V07-06-03";
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/V/";
     nameNu=4
   elif [ $sname == "DY_high" ]; then 
-    name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8"; 
+    name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/v1/"; 
     tag="CMS3_V07-06-03";
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/V/";
     nameNu=5
@@ -127,9 +127,9 @@ do
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
     nameNu=7
   elif [ $sname == "TTZQ" ]; then 
-    name="TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+    name="tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
+    tag="V07-06-03";
+    path="/store/group/snt/run2_25ns_76MiniAODv2/";
     nameNu=8
   elif [ $sname == "TTG" ] ;then 
     name="TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
@@ -138,13 +138,13 @@ do
     nameNu=9
   elif [ $sname == "SINGLETOP1"    ]; then 
     name="ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/T/";
     tag="CMS3_V07-06-03";
     nameNu=10
   elif [ $sname == "SINGLETOP2"    ]; then 
     name="ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1";
     tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/T/";
     nameNu=11
   elif [ $sname == "SINGLETOP3"    ]; then 
     name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
@@ -152,14 +152,14 @@ do
     tag=V07-04-11
     nameNu=12
   elif [ $sname == "SINGLETOP4"    ]; then 
-    name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v2"
-    # FIXME
-    tag=V07-04-11
+    name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
+    tag="V07-06-03";
+    path="/store/group/snt/run2_25ns_76MiniAODv2/";
     nameNu=13
   elif [ $sname == "SINGLETOP5"    ]; then 
-    name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-    # FIXME
-    tag=V07-04-11
+    name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
+    tag="V07-06-03";
+    path="/store/group/snt/run2_25ns_76MiniAODv2/";
     nameNu=14
   elif [ $sname == "QQWW" ]; then 
     name="WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8";
@@ -192,9 +192,9 @@ do
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
     nameNu=21
   elif [ $sname == "TG" ]; then 
-    name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
-    # FIXME
-    tag=V07-04-11
+    name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext1-v1";
+    tag="V07-06-03";
+    path="/store/group/snt/run2_25ns_76MiniAODv2/";
     nameNu=22
   elif [ $sname == "ZG" ]; then 
     name="ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";
@@ -223,7 +223,7 @@ do
     nameNu=27
   elif [ $sname == "VHtoNonBB" ] ;then 
     name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1"
-    tag="V07-06-03";
+    tag="V07-06-03_MC";
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
     nameNu=28
   elif [ $sname == "TTZlow" ]; then 
