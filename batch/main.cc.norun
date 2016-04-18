@@ -116,6 +116,7 @@ int main(int argc, char *argv[]){
       name="ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1";
       tag="CMS3_V07-06-03";
       path="/store/group/snt/run2_25ns_76MiniAODv2/T/";
+      shortname="singletop2";
       break;
     case SINGLETOP3: // FIXME
       name="ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
@@ -124,13 +125,13 @@ int main(int argc, char *argv[]){
       break;
     case SINGLETOP4:
       name="ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
-      tag="V07-06-03";
+      tag="V07-06-03_MC";
       path="/store/group/snt/run2_25ns_76MiniAODv2/";
       shortname="singletop4";
       break;
     case SINGLETOP5:
       name="ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
-      tag="V07-06-03";
+      tag="V07-06-03_MC";
       path="/store/group/snt/run2_25ns_76MiniAODv2/";
       shortname="singletop5";
       break;
@@ -140,9 +141,10 @@ int main(int argc, char *argv[]){
       path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
       shortname="qqww";
       break;
-    case TTTT: // FIXME
-      name="TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-11";
+    case TTTT:
+      name="TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext1-v1";
+      tag="V07-06-03_MC";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/";
       shortname="tttt";
       break;
     case WWDPS:
@@ -165,7 +167,7 @@ int main(int argc, char *argv[]){
       break;
     case TG:
       name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext1-v1";
-      tag="V07-06-03";
+      tag="V07-06-03_MC";
       path="/store/group/snt/run2_25ns_76MiniAODv2/";
       shortname="tg";
       break;
@@ -189,18 +191,19 @@ int main(int argc, char *argv[]){
       break;
     case TZQ:
       name="tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
-      tag="V07-06-03";
+      tag="V07-06-03_MC";
       path="/store/group/snt/run2_25ns_76MiniAODv2/";
       shortname="tzq";
       break;
-    case TTHtoNonBB: // FIXME
-      name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
-      tag="V07-04-11";
+    case TTHtoNonBB:
+      name="ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
+      tag="V07-06-03_MC";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/";
       shortname="tthtononbb";
       break;
     case VHtoNonBB:
       name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
-      tag="V07-06-03";
+      tag="V07-06-03_MC";
       path="/store/group/snt/run2_25ns_76MiniAODv2/";
       shortname="vhtononbb";
       break;
