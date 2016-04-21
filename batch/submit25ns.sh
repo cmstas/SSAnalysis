@@ -52,8 +52,8 @@ fi
 pathToProxy=`voms-proxy-info -path`
 
 #Change the username
-sed -i "s/cgeorge/$USER/" condorFileTemplate
-sed -i "s/cgeorge/$USER/" condorExecutable.sh
+sed -i "s/namin/$USER/" condorFileTemplate
+sed -i "s/namin/$USER/" condorExecutable.sh
 
 #Make some directories that will be used
 mkdir -p /data/tmp/${USER}/logs/
