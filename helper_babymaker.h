@@ -207,10 +207,12 @@ class babyMaker {
 
     //Electron-specific
     bool lep1_el_conv_vtx_flag;
+    bool lep1_el_exp_innerlayers;
     bool lep1_nPixelMiss;
     bool lep1_tightCharge;
 
     bool lep2_el_conv_vtx_flag;
+    bool lep2_el_exp_innerlayers;
     bool lep2_nPixelMiss;
     bool lep2_tightCharge;
 

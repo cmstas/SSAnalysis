@@ -82,9 +82,9 @@ void yields(){
                   ss::lep1_ptrel_v1(),
                   (std::abs(ss::lep1_id())==11)?ss::lep1_MVA():0,
                   (std::abs(ss::lep1_id())==11)?ss::lep1_el_conv_vtx_flag():0, // els_conv_vtx_flag().at(elIdx) in CMS3
-                  (std::abs(ss::lep1_id())==11)?ss::lep1_nPixelMiss():0, // els_lost_pixelhits().at(elIdx) in CMS3
+                  (std::abs(ss::lep1_id())==11)?ss::lep1_el_exp_innerlayers():0,
                   ss::lep1_tightCharge(), // tightChargeEle() in CORE/ElectronSelections.cc
-                  ss::lep1_motherID() > 0, // "lep1_MCTruthMatched"  (function returns 0 if fails matching)
+                  ss::lep1_motherID() == 1, // "lep1_MCTruthMatched"  (function returns 0 if fails matching)
                   ss::lep2_p4().pt(),
                   ss::lep2_p4().eta(),
                   ss::lep2_p4().phi(),
@@ -98,9 +98,9 @@ void yields(){
                   ss::lep2_ptrel_v1(),
                   (std::abs(ss::lep2_id())==11)?ss::lep2_MVA():0,
                   (std::abs(ss::lep2_id())==11)?ss::lep2_el_conv_vtx_flag():0,
-                  (std::abs(ss::lep2_id())==11)?ss::lep2_nPixelMiss():0,
+                  (std::abs(ss::lep2_id())==11)?ss::lep2_el_exp_innerlayers():0,
                   ss::lep2_tightCharge(),
-                  ss::lep2_motherID() > 0);
+                  ss::lep2_motherID() == 1);
 
           textfile_jets << Form("%5.1f\t%5.1f\t%5.1f\t%5.1f\t%1d\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%1d\n",
                   ss::jets().at(0).pt(),
