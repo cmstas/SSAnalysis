@@ -46,6 +46,12 @@ int main(int argc, char *argv[]){
 
   //Info for each sample
   switch (which){
+    case SYNCH_TTW:
+      name="TTW76_TTW76-SSDL2016-forSynch_Private76X";
+      path="/store/group/snt/run2_ss_synch/";
+      tag="V07-06-03_MC";
+      shortname="synch_ttw";
+      break;
     case TTBAR:
       name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/";
       path="/store/group/snt/run2_25ns_76MiniAODv2/";

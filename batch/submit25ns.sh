@@ -7,9 +7,13 @@ nSubmitted=0
 SPPATH=""
 
 DOCOMPILE="1"
+NOSUBMIT="0"
 if [ $# -gt 0 ]; then
     if [[ $1 == *fast* ]]; then 
       DOCOMPILE="0"
+    fi
+    if [[ $1 == *test* ]]; then 
+      NOSUBMIT="1"
     fi
 fi
 
@@ -27,6 +31,9 @@ fi
 
 if [ "$DOCOMPILE" == "1" ]; then
   make -j 10
+fi
+if [ "$NOSUBMIT" == "1" ]; then
+  return
 fi
 
 #Start by checking proxy, get path to proxy file
@@ -86,7 +93,12 @@ do
   nIter=$(( $nIter + 1 ))
 
   #Get Name
-  if   [ $sname == "TTBAR" ] ; then 
+  if   [ $sname == "SYNCH_TTW" ] ; then 
+    name="TTW76_TTW76-SSDL2016-forSynch_Private76X";
+    path="/hadoop/cms/store/group/snt/run2_ss_synch/";
+    tag="V07-06-03_MC";
+    nameNu=101010
+  elif   [ $sname == "TTBAR" ] ; then 
     name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/"
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
     tag="V07-06-03_MC"
@@ -234,6 +246,7 @@ do
     nameNu=29
   elif [ $sname == "GGHtoZZto4L" ] ; then
     name="GluGluHToWWTo2L2Nu_M125_13TeV_powheg_JHUgen_pythia8";
+    # FIXME
     tag="CMS3_V07-06-03";
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/H/";
     nameNu=30

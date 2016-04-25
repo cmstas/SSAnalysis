@@ -15,7 +15,7 @@ samples = [
 ["DataMuonEGD","datamuonegd_*.root"],
 
 ["DY_high","dy_high_*.root"],
-["TTBAR","ttbar_*.root"],
+["TTBAR","ttbar_[0-9]*.root"],
 ["WWZ","wwz_*.root"],
 ["ZZ","zz_*.root"],
 ["TTZL","ttzl_*.root"],

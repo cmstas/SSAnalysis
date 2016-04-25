@@ -191,6 +191,8 @@ enum sample_t {
   ANA2                               = 100001,
   ANA3                               = 100002,
 
+  SYNCH_TTW                          = 101010,
+
 };
 
 #endif
