@@ -236,6 +236,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep2_el_conv_vtx_flag"   , &lep2_el_conv_vtx_flag   );
   BabyTree->Branch("lep1_nPixelMiss"   , &lep1_nPixelMiss   );
   BabyTree->Branch("lep2_nPixelMiss"   , &lep2_nPixelMiss   );
+  BabyTree->Branch("lep1_tightCharge"   , &lep1_tightCharge   );
+  BabyTree->Branch("lep2_tightCharge"   , &lep2_tightCharge   );
   
   BabyTree->Branch("is_fastsim", &is_fastsim); 
 
@@ -389,9 +391,11 @@ void babyMaker::InitBabyNtuple(){
     lep2_idx = -1;
     jets.clear();
     btags_disc.clear();
+    btags_disc_mva.clear();
     jet_pt.clear(); 
     ht_raw = -1;
     jets_disc.clear();
+    jets_disc_mva.clear();
     jets_JEC.clear();
     btags_JEC.clear();
     jets_undoJEC.clear();
@@ -462,7 +466,7 @@ void babyMaker::InitBabyNtuple(){
     lep2_ip3d_err = -999998;
     lep2_el_conv_vtx_flag = 0;
     lep2_nPixelMiss = -1;
-    lep2_tightCharge = -1;
+    lep1_tightCharge = -1;
     lep2_el_conv_vtx_flag = 0;
     lep2_nPixelMiss = -1;
     lep2_tightCharge = -1;
@@ -787,7 +791,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep1_fo = abs(lep1_id) == 11 ? isFakableElectron(lep1_idx) : isFakableMuon(lep1_idx);
     lep1_el_conv_vtx_flag = abs(lep1_id) == 11 ? (!(els_conv_vtx_flag().at(lep1_idx))) : 0;
     lep1_nPixelMiss = abs(lep1_id) == 11 ? (!(els_lost_pixelhits().at(lep1_idx))) : -1;
-    lep1_tightCharge = abs(lep1_id) == 11 ? tightChargeEle().at(lep1_idx) : -1;
+    lep1_tightCharge = abs(lep1_id) == 11 ? tightChargeEle(lep1_idx) : -1;
   }
 
 
@@ -799,7 +803,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep2_fo = abs(lep2_id) == 11 ? isFakableElectron(lep2_idx) : isFakableMuon(lep2_idx);
     lep2_el_conv_vtx_flag = abs(lep2_id) == 11 ? (!(els_conv_vtx_flag().at(lep2_idx))) : 0;
     lep2_nPixelMiss = abs(lep2_id) == 11 ? (!(els_lost_pixelhits().at(lep2_idx))) : -1;
-    lep2_tightCharge = abs(lep2_id) == 11 ? tightChargeEle().at(lep2_idx) : -1;
+    lep2_tightCharge = abs(lep2_id) == 11 ? tightChargeEle(lep2_idx) : -1;
   }
 
   //More Third lepton stuff
