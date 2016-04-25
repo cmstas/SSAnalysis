@@ -66,7 +66,9 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep2_idx"                                                , &lep2_idx                                                );
   BabyTree->Branch("jets"                                                    , &jets                                                    );
   BabyTree->Branch("btags_disc"                                              , &btags_disc                                              );
+  BabyTree->Branch("btags_disc_mva"                                          , &btags_disc_mva                                          );
   BabyTree->Branch("jets_disc"                                               , &jets_disc                                               );
+  BabyTree->Branch("jets_disc_mva"                                           , &jets_disc_mva                                           );
   BabyTree->Branch("jets_JEC"                                                , &jets_JEC                                                );
   BabyTree->Branch("btags_JEC"                                               , &btags_JEC                                               );
   BabyTree->Branch("jets_undoJEC"                                            , &jets_undoJEC                                            );
@@ -230,6 +232,11 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep1_genps_isLastCopyBeforeFSR"                          , &lep1_genps_isLastCopyBeforeFSR                          );
   BabyTree->Branch("lep1_mc3idx"                                             , &lep1_mc3idx                                             );
   BabyTree->Branch("lep2_mc3idx"                                             , &lep2_mc3idx                                             );
+  BabyTree->Branch("lep1_el_conv_vtx_flag"   , &lep1_el_conv_vtx_flag   );
+  BabyTree->Branch("lep2_el_conv_vtx_flag"   , &lep2_el_conv_vtx_flag   );
+  BabyTree->Branch("lep1_nPixelMiss"   , &lep1_nPixelMiss   );
+  BabyTree->Branch("lep2_nPixelMiss"   , &lep2_nPixelMiss   );
+  
   BabyTree->Branch("is_fastsim", &is_fastsim); 
 
   //InSituFR
@@ -453,6 +460,12 @@ void babyMaker::InitBabyNtuple(){
     lep2_MVA = -999998;
     lep1_ip3d_err = -999998;
     lep2_ip3d_err = -999998;
+    lep2_el_conv_vtx_flag = 0;
+    lep2_nPixelMiss = -1;
+    lep2_tightCharge = -1;
+    lep2_el_conv_vtx_flag = 0;
+    lep2_nPixelMiss = -1;
+    lep2_tightCharge = -1;
     nVetoElectrons7 = 0;
     nVetoElectrons10 = 0;
     nVetoElectrons25 = 0;
@@ -772,6 +785,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep1_tight = abs(lep1_id) == 11 ? isGoodElectron(lep1_idx) : isGoodMuon(lep1_idx);
     lep1_veto = abs(lep1_id) == 11 ? isGoodVetoElectron(lep1_idx) : isGoodVetoMuon(lep1_idx);
     lep1_fo = abs(lep1_id) == 11 ? isFakableElectron(lep1_idx) : isFakableMuon(lep1_idx);
+    lep1_el_conv_vtx_flag = abs(lep1_id) == 11 ? (!(els_conv_vtx_flag().at(lep1_idx))) : 0;
+    lep1_nPixelMiss = abs(lep1_id) == 11 ? (!(els_lost_pixelhits().at(lep1_idx))) : -1;
+    lep1_tightCharge = abs(lep1_id) == 11 ? tightChargeEle().at(lep1_idx) : -1;
   }
 
 
@@ -781,6 +797,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep2_tight = abs(lep2_id) == 11 ? isGoodElectron(lep2_idx) : isGoodMuon(lep2_idx);
     lep2_veto = abs(lep2_id) == 11 ? isGoodVetoElectron(lep2_idx) : isGoodVetoMuon(lep2_idx);
     lep2_fo = abs(lep2_id) == 11 ? isFakableElectron(lep2_idx) : isFakableMuon(lep2_idx);
+    lep2_el_conv_vtx_flag = abs(lep2_id) == 11 ? (!(els_conv_vtx_flag().at(lep2_idx))) : 0;
+    lep2_nPixelMiss = abs(lep2_id) == 11 ? (!(els_lost_pixelhits().at(lep2_idx))) : -1;
+    lep2_tightCharge = abs(lep2_id) == 11 ? tightChargeEle().at(lep2_idx) : -1;
   }
 
   //More Third lepton stuff
@@ -1074,7 +1093,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets.push_back(jet_results.first.at(i).p4());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags.push_back(jet_results.second.at(i).p4());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_disc.push_back(jet_results.first.at(i).csv());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_disc_mva.push_back(jet_results.first.at(i).csvmva());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc.push_back(jet_results.second.at(i).csv());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc_mva.push_back(jet_results.second.at(i).csvmva());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_JEC.push_back(jet_results.first.at(i).jec());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_JEC.push_back(jet_results.second.at(i).jec());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_undoJEC.push_back(jet_results.first.at(i).undo_jec());
