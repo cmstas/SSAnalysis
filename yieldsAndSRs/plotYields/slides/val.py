@@ -44,12 +44,23 @@ ratio_types = [
         ["HH ratio"          , "high_yields_comparison_mc.pdf"],
         ["HL ratio"          , "hl_yields_comparison_mc.pdf"],
         ["$H_T$ ratio"       , "kinem_ht__comparison_mc.pdf"],
+        ["Raw $H_T$ ratio"       , "kinem_ht_raw__comparison_mc.pdf"],
         ["Lep1 $\\pt$ ratio" , "kinem_lep1pt__comparison_mc.pdf"],
         ["Lep2 $\\pt$ ratio" , "kinem_lep2pt__comparison_mc.pdf"],
         ["$\\met$ ratio"     , "kinem_met__comparison_mc.pdf"],
+        ["Raw $\\met$ ratio"     , "kinem_rawmet__comparison_mc.pdf"],
         ["$\\mtmin$ ratio"   , "kinem_mtmin__comparison_mc.pdf"],
         ["Njets ratio"      , "kinem_njets__comparison_mc.pdf"],
+        ["Raw Njets ratio"      , "kinem_njets_raw__comparison_mc.pdf"],
         ["Nbtags ratio"       , "kinem_nbtags__comparison_mc.pdf"],
+        ["Raw Nbtags ratio"       , "kinem_nbtags_raw_comparison_mc.pdf"],
+]
+
+ratio_types_base = [
+        ["Base: Raw $H_T$ ratio"       , "kinem_base_ht_raw__comparison_mc.pdf"],
+        ["Base: Raw $\\met$ ratio"     , "kinem_base_rawmet__comparison_mc.pdf"],
+        ["Base: Raw Njets ratio"      , "kinem_base_njets_raw__comparison_mc.pdf"],
+        ["Base: Raw Nbtags ratio"       , "kinem_base_nbtags_raw_comparison_mc.pdf"],
 ]
 
 sm.addObject("left7","text",(0.27,0.91),width=0.3, text="74X", color="red", size=1, bold=True)
@@ -58,9 +69,6 @@ sm.addObject("right7","text",(0.74,0.91),width=0.3, text="76X", color="red", siz
 sm.addObject("leftDMC","text",(0.27,0.91),width=0.3, text="MC", color="red", size=1, bold=True)
 sm.addObject("rightDMC","text",(0.74,0.91),width=0.3, text="Data", color="red", size=1, bold=True)
 
-# print files
-# qcuts = sorted(list(set(map(lambda x: int(x.split("_")[1]), files))))
-# print qcuts
 
 sm.addSlide(title="Overview", text="""
         - Kinematic plots are of events falling into HH, HL, or LL SRs
@@ -71,27 +79,10 @@ for label, plot74, plot76 in plot_types:
 for label, ratioplot in ratio_types:
     sm.addSlide(title=label, p1=ratioplot, p2=ratioplot.replace("_mc.pdf","_data.pdf"), objects=["leftDMC","rightDMC"])
 
-# for iplot_type,plot_type in enumerate(plot_types):
-#     for sample in samples:
-#         plots = sorted([f for f in files if sample in f])
+sm.addSlide(title="base", text="- base = all hyp\\_class==3 events (no requirement that it falls into a SR)")
 
-#         if "TChiChi" in sample and plot_type == "chargino daughters": continue
-#         if "TChiNeu" in sample and plot_type == "W daughters": continue
-
-#     # print plots
-#     # for plot_type,plot in zip(plot_types,plots):
-#         title = "[%s] %s" % (plot_type, sample.replace("-","").replace("_","\\_"))
-#         print title
-#         sm.addSlide(title=title, p1=plots[iplot_type])
-
-# # for qcut in qcuts:
-# #     plots = sorted([f for f in files if "_"+str(qcut)+"_" in f])
-# #     print plots
-
-# #     if len(plots) == 1:
-# #         sm.addSlide(title="qcut = %i" % qcut, p1=plots[0])
-# #     else:
-# #         sm.addSlide(title="qcut = %i" % qcut, plots=plots)
+for label, ratioplot in ratio_types_base:
+    sm.addSlide(title=label, p1=ratioplot, p2=ratioplot.replace("_mc.pdf","_data.pdf"), objects=["leftDMC","rightDMC"])
 
 
-sm.writeSlides("SScomparison7476_Apr20.tex", opts="--compile --copy --dump")
+sm.writeSlides("SScomparison7476_Apr25.tex", opts="--compile --copy --dump")

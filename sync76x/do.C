@@ -6,4 +6,7 @@
   // gROOT->ProcessLine(".L ../CORE/Tools/dorky/dorky.cc+");
   gROOT->ProcessLine(".L yields.C+");
   gROOT->ProcessLine("yields()");
+
+  // gROOT->ProcessLine(".L compare_74_76.C+");
+  // gROOT->ProcessLine("compare()");
 }

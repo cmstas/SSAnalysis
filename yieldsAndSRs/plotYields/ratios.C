@@ -14,11 +14,21 @@ struct results_t {
     TH1F* hh;
     TH1F* hl;
     TH1F* ll; 
+
+    TH1F* base_njets_raw;
+    TH1F* base_nbtags_raw;
+    TH1F* base_rawmet;
+    TH1F* base_ht_raw;
+
     TH1F* njets;
+    TH1F* njets_raw;
     TH1F* nbtags;
+    TH1F* nbtags_raw;
     TH1F* mtmin;
     TH1F* met;
+    TH1F* rawmet;
     TH1F* ht;
+    TH1F* ht_raw;
     TH1F* lep1pt;
     TH1F* lep2pt;
 }; 
@@ -31,11 +41,20 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
   TH1F *HighLowPlot  = new TH1F(Form("%s_hl", name.c_str()), Form("%s_hl", name.c_str()), 26, 1, 27); 
   TH1F *LowLowPlot   = new TH1F(Form("%s_ll", name.c_str()), Form("%s_ll", name.c_str()),  8, 1,  9); 
 
+  TH1F *base_Njets_raw   = new TH1F(Form("%s_base_njets_raw", name.c_str()), Form("%s_base_njets_raw", name.c_str()),  8, 0,  8); 
+  TH1F *base_Nbtags_raw   = new TH1F(Form("%s_base_nbtags_raw", name.c_str()), Form("%s_base_nbtags_raw", name.c_str()),  8, 0,  8); 
+  TH1F *base_rawMET   = new TH1F(Form("%s_base_rawmet", name.c_str()), Form("%s_base_rawmet", name.c_str()),  20, 0,  400); 
+  TH1F *base_HT_raw   = new TH1F(Form("%s_bas_basee_ht_raw", name.c_str()), Form("%s_base_ht_raw", name.c_str()),  20, 0,  600); 
+
   TH1F *Njets   = new TH1F(Form("%s_njets", name.c_str()), Form("%s_njets", name.c_str()),  8, 0,  8); 
+  TH1F *Njets_raw   = new TH1F(Form("%s_njets_raw", name.c_str()), Form("%s_njets_raw", name.c_str()),  8, 0,  8); 
   TH1F *Nbtags   = new TH1F(Form("%s_nbtags", name.c_str()), Form("%s_nbtags", name.c_str()),  8, 0,  8); 
+  TH1F *Nbtags_raw   = new TH1F(Form("%s_nbtags_raw", name.c_str()), Form("%s_nbtags_raw", name.c_str()),  8, 0,  8); 
   TH1F *Mtmin   = new TH1F(Form("%s_mtmin", name.c_str()), Form("%s_mtmin", name.c_str()),  20, 0,  200); 
   TH1F *MET   = new TH1F(Form("%s_met", name.c_str()), Form("%s_met", name.c_str()),  20, 0,  400); 
+  TH1F *rawMET   = new TH1F(Form("%s_rawmet", name.c_str()), Form("%s_rawmet", name.c_str()),  20, 0,  400); 
   TH1F *HT   = new TH1F(Form("%s_ht", name.c_str()), Form("%s_ht", name.c_str()),  20, 0,  600); 
+  TH1F *HT_raw   = new TH1F(Form("%s_ht_raw", name.c_str()), Form("%s_ht_raw", name.c_str()),  20, 0,  600); 
   TH1F *Lep1pt   = new TH1F(Form("%s_lep1pt", name.c_str()), Form("%s_lep1pt", name.c_str()),  20, 0,  150); 
   TH1F *Lep2pt   = new TH1F(Form("%s_lep2pt", name.c_str()), Form("%s_lep2pt", name.c_str()),  20, 0,  150); 
 
@@ -98,6 +117,10 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
       float mt2 = MT(ss::lep2_p4().pt(), ss::lep2_p4().phi(), ss::met(), ss::metPhi());
       float mtmin = mt1 > mt2 ? mt2 : mt1; 
 
+      base_Njets_raw->Fill(ss::njets_raw(),weight);
+      base_Nbtags_raw->Fill(ss::nbtags_raw(),weight);
+      base_rawMET->Fill(ss::rawmet(),weight);
+      base_HT_raw->Fill(ss::ht_raw(),weight);
        
       //Figure out region, fill plot
       anal_type_t categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());  
@@ -108,10 +131,14 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
 
       if (SR > 0) {
           Njets->Fill(ss::njets(),weight);
+          Njets_raw->Fill(ss::njets_raw(),weight);
           Nbtags->Fill(ss::nbtags(),weight);
+          Nbtags_raw->Fill(ss::nbtags_raw(),weight);
           Mtmin->Fill(ss::mtmin(),weight);
           MET->Fill(ss::met(),weight);
+          rawMET->Fill(ss::rawmet(),weight);
           HT->Fill(ss::ht(),weight);
+          HT_raw->Fill(ss::ht_raw(),weight);
           Lep1pt->Fill(ss::lep1_p4().pt(),weight);
           Lep2pt->Fill(ss::lep2_p4().pt(),weight);
       }
@@ -123,14 +150,22 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
  
   //Return hists
   results_t result; 
+  result.base_njets_raw = base_Njets_raw;
+  result.base_nbtags_raw = base_Nbtags_raw;
+  result.base_rawmet = base_rawMET;
+  result.base_ht_raw = base_HT_raw;
   result.hh = HighHighPlot;
   result.hl = HighLowPlot;
   result.ll = LowLowPlot;
   result.njets = Njets;
+  result.njets_raw = Njets_raw;
   result.nbtags = Nbtags;
+  result.nbtags_raw = Nbtags_raw;
   result.mtmin = Mtmin;
   result.met = MET;
+  result.rawmet = rawMET;
   result.ht = HT;
+  result.ht_raw = HT_raw;
   result.lep1pt = Lep1pt;
   result.lep2pt = Lep2pt;
 
@@ -155,9 +190,9 @@ void ratios(bool data){
       c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataDoubleMuon*.root"  );
       c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataMuonEG*.root"      );
 
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/DataDoubleEG*.root"    );
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/DataDoubleMuon*.root"  );
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/DataMuonEG*.root"      );
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/DataDoubleEG*.root"    );
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/DataDoubleMuon*.root"  );
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/DataMuonEG*.root"      );
   } else {
       c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTBAR.root");
       c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/SINGLETOP*.root");
@@ -169,15 +204,15 @@ void ratios(bool data){
       c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DY_high.root");
       c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DY_low.root");
 
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/TTBAR.root");
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/SINGLETOP*.root");
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/TTW.root");
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/TTZL.root");
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/WZ.root");
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/WJets.root");
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/WGToLNuG.root");
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/DY_high.root");
-      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00/DY_low.root");
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/TTBAR.root");
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/SINGLETOP*.root");
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/TTW.root");
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/TTZL.root");
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/WZ.root");
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/WJets.root");
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/WGToLNuG.root");
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/DY_high.root");
+      c76->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/DY_low.root");
   }
 
   results_t c74_graphs       = run(c74      , "c74"      );
@@ -193,11 +228,20 @@ void ratios(bool data){
   vector <TH1F*> background_low; background_low.push_back(c74_graphs.ll);
 
   //Kinematic distributions
+  vector <TH1F*> background_base_njets_raw  ; background_base_njets_raw.push_back(c74_graphs.base_njets_raw)   ;
+  vector <TH1F*> background_base_nbtags_raw ; background_base_nbtags_raw.push_back(c74_graphs.base_nbtags_raw) ;
+  vector <TH1F*> background_base_rawmet     ; background_base_rawmet.push_back(c74_graphs.base_rawmet)         ;
+  vector <TH1F*> background_base_ht_raw     ; background_base_ht_raw.push_back(c74_graphs.base_ht_raw)         ;
+
   vector <TH1F*> background_njets; background_njets.push_back(c74_graphs.njets);
+  vector <TH1F*> background_njets_raw; background_njets_raw.push_back(c74_graphs.njets_raw);
   vector <TH1F*> background_nbtags; background_nbtags.push_back(c74_graphs.nbtags);
+  vector <TH1F*> background_nbtags_raw; background_nbtags_raw.push_back(c74_graphs.nbtags_raw);
   vector <TH1F*> background_mtmin; background_mtmin.push_back(c74_graphs.mtmin);
   vector <TH1F*> background_ht; background_ht.push_back(c74_graphs.ht);
+  vector <TH1F*> background_ht_raw; background_ht_raw.push_back(c74_graphs.ht_raw);
   vector <TH1F*> background_met; background_met.push_back(c74_graphs.met);
+  vector <TH1F*> background_rawmet; background_rawmet.push_back(c74_graphs.rawmet);
   vector <TH1F*> background_lep1pt; background_lep1pt.push_back(c74_graphs.lep1pt);
   vector <TH1F*> background_lep2pt; background_lep2pt.push_back(c74_graphs.lep2pt);
 
@@ -218,14 +262,24 @@ void ratios(bool data){
 
 
   //Make plots -- sample
-  dataMCplotMaker(c76_graphs.hh     , background_high   , titles , "H-H"    , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots/high_yields%s --noDivisionLabel --xAxisLabel   --energy 13 --lumi %.2f --lumiUnit fb --nDivisions 210 --legendUp -0.1 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear %s --xAxisVerticalBinLabels --xAxisBinLabels 1HH         , 2HH             , 3HH       , 4HH               , 5HH , 6HH , 7HH , 8HH , 9HH , 10HH , 11HH , 12HH , 13HH , 14HH , 15HH , 16HH , 17HH , 18HH , 19HH , 20HH , 21HH , 22HH , 23HH , 24HH , 25HH , 26HH  , 27HH            , 28HH      , 29HH              , 30HH , 31HH , 32HH" , type.c_str(), postfix.c_str() , getLumi() , extra.c_str() ));
-  dataMCplotMaker(c76_graphs.hl     , background_hl     , titles , "H-L"    , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots//hl_yields%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --nDivisions 210 --legendUp -0.1 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear %s --xAxisVerticalBinLabels --xAxisBinLabels 1HL , 2HL             , 3HL       , 4HL               , 5HL , 6HL , 7HL , 8HL , 9HL , 10HL , 11HL , 12HL , 13HL , 14HL , 15HL , 16HL , 17HL , 18HL , 19HL , 20HL , 21HL , 22HL , 23HL , 24HL , 25HL , 26HL" , type.c_str(), postfix.c_str() , getLumi() , extra.c_str() ));
-  dataMCplotMaker(c76_graphs.njets  , background_njets  , titles , "Njets"  , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_njets_%s --noDivisionLabel --xAxisLabel   --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear %s "                                                                                                                , type.c_str(), postfix.c_str() , getLumi() , extra.c_str() ));
-  dataMCplotMaker(c76_graphs.nbtags , background_nbtags , titles , "Nbtags" , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_nbtags_%s --noDivisionLabel --xAxisLabel   --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit  --legendTextSize 0.0325 --isLinear %s "                                                                                                               , type.c_str(), postfix.c_str() , getLumi() , extra.c_str() ));
-  dataMCplotMaker(c76_graphs.mtmin  , background_mtmin  , titles , "mtmin"  , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_mtmin_%s --xAxisLabel mtmin  --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                            , type.c_str(), postfix.c_str() , getLumi() , extra.c_str() ));
-  dataMCplotMaker(c76_graphs.met    , background_met    , titles , "met"    , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_met_%s --xAxisLabel MET  --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                , type.c_str(), postfix.c_str() , getLumi() , extra.c_str() ));
-  dataMCplotMaker(c76_graphs.ht     , background_ht     , titles , "ht"     , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_ht_%s --xAxisLabel HT  --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                  , type.c_str(), postfix.c_str() , getLumi() , extra.c_str() ));
-  dataMCplotMaker(c76_graphs.lep1pt , background_lep1pt , titles , "lep1pt" , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_lep1pt_%s --xAxisLabel lep1pt --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                           , type.c_str(), postfix.c_str() , getLumi() , extra.c_str() ));
-  dataMCplotMaker(c76_graphs.lep2pt , background_lep2pt , titles , "lep2pt" , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_lep2pt_%s --xAxisLabel lep2pt --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                           , type.c_str(), postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.base_njets_raw  , background_base_njets_raw  , titles , "base Njets_raw"  , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_base_njets_raw_%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                              , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.base_nbtags_raw , background_base_nbtags_raw , titles , "base Nbtags_raw" , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_base_nbtags_raw%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                              , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.base_ht_raw     , background_base_ht_raw     , titles , "base ht_raw"     , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_base_ht_raw_%s --xAxisLabel ht_raw --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.base_rawmet     , background_base_rawmet     , titles , "base rawmet"     , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_base_rawmet_%s --xAxisLabel rawmet --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+
+ dataMCplotMaker(c76_graphs.hh         , background_high       , titles , "H-H"        , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots/high_yields%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --nDivisions 210 --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s --xAxisVerticalBinLabels --xAxisBinLabels 1HH,2HH,3HH,4HH,5HH,6HH,7HH,8HH,9HH,10HH,11HH,12HH,13HH,14HH,15HH,16HH,17HH,18HH,19HH,20HH,21HH,22HH,23HH,24HH,25HH,26HH,27HH,28HH,29HH,30HH,31HH,32HH" , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.hl         , background_hl         , titles , "H-L"        , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots//hl_yields%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --nDivisions 210 --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s --xAxisVerticalBinLabels --xAxisBinLabels 1HL,2HL,3HL,4HL,5HL,6HL,7HL,8HL,9HL,10HL,11HL,12HL,13HL,14HL,15HL,16HL,17HL,18HL,19HL,20HL,21HL,22HL,23HL,24HL,25HL,26HL" , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+
+ dataMCplotMaker(c76_graphs.njets      , background_njets      , titles , "Njets"      , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_njets_%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                  , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.njets_raw  , background_njets_raw  , titles , "Njets_raw"  , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_njets_raw_%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                              , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.nbtags     , background_nbtags     , titles , "Nbtags"     , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_nbtags_%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                 , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.nbtags_raw , background_nbtags_raw , titles , "Nbtags_raw" , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_nbtags_raw%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                              , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.mtmin      , background_mtmin      , titles , "mtmin"      , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_mtmin_%s --xAxisLabel mtmin --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                            , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.met        , background_met        , titles , "met"        , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_met_%s --xAxisLabel MET --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.rawmet     , background_rawmet     , titles , "rawmet"     , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_rawmet_%s --xAxisLabel rawmet --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.ht         , background_ht         , titles , "ht"         , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_ht_%s --xAxisLabel HT --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                  , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.ht_raw     , background_ht_raw     , titles , "ht_raw"     , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_ht_raw_%s --xAxisLabel ht_raw --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.lep1pt     , background_lep1pt     , titles , "lep1pt"     , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_lep1pt_%s --xAxisLabel lep1pt --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
+ dataMCplotMaker(c76_graphs.lep2pt     , background_lep2pt     , titles , "lep2pt"     , "" , Form("--topYaxisTitle 76X/74X --dataName 76X %s --outputName yield_plots/kinem_lep2pt_%s --xAxisLabel lep2pt --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , getLumi() , extra.c_str() ));
 
 }
