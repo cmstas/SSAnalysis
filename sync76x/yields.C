@@ -8,6 +8,8 @@
 
 struct results_t { TH1F* hh; TH1F* hl; TH1F* ll; }; 
 
+bool jetptsort (int i, int j) { return ss::jet_pt().at(i)>ss::jet_pt().at(j); }
+
 int MCclass(int lepMotherID) {
     // map lepMotherID_v2 to sync format
     // prompt -> 0
@@ -72,20 +74,8 @@ void yields(){
       // Reject non-SS
       if (
           ss::hyp_class() != 3 
-       // && ss::hyp_class() != 5
-       && ss::hyp_class() != 6
+       && ss::hyp_class() != 6 // note that class 6 must require that both leptons are tight and are SS (but fail the zveto)
        ) continue;
-
-      if(ss::lep1_id()*ss::lep2_id() < 0) continue;
-
-      // if( ss::hyp_class() == 6) {
-      //     // if it's a class 6, ignore events that don't have one lepton being tight and the other loose
-      //     if (!((ss::lep1_tight() == 1 && ss::lep2_fo() == 0) || (ss::lep2_tight() == 1 && ss::lep1_fo() == 0))) {
-      //         continue;
-      //     }
-      // }
-
-
 
       // Ignore events with <2 jets
       if (ss::njets() < 2) continue;
@@ -94,14 +84,12 @@ void yields(){
       anal_type_t categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());  
       int SR = max(0, signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt()));
 
-      // int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
-      
       // HH has 32 SRs and HL has 26, so add to unify the SR nums
       if(categ == HighLow && SR > 0) SR += 32;
       if(categ == LowLow  && SR > 0) SR += 32+26;
 
       textfile_global << Form("%1d%9d%12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", 
-              ss::run(), ss::lumi(), ss::event(), 
+              ss::run(), ss::lumi(), (int)ss::event(), 
               ss::nVetoElectrons7()+ss::nVetoMuons5(),
               ss::lep1_id(), ss::lep1_p4().pt(), 
               ss::lep2_id(), ss::lep2_p4().pt(), 
@@ -109,7 +97,7 @@ void yields(){
 
 
       textfile_leptons << Form("%1d%9d%12d\t%5.1f\t%5.1f\t%5.1f\t%+2d\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%1d\t%1d\t%1d\t%1d\t%5.1f\t%5.1f\t%5.1f\t%+2d\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%1d\t%1d\t%1d\t%1d\n",
-              ss::run(), ss::lumi(), ss::event(), 
+              ss::run(), ss::lumi(), (int)ss::event(), 
               ss::lep1_p4().pt(),
               ss::lep1_p4().eta(),
               ss::lep1_p4().phi(),
@@ -143,27 +131,33 @@ void yields(){
               (std::abs(ss::lep2_id())==11)?ss::lep2_el_threeChargeAgree():ss::lep2_mu_ptErr(),
               MCclass(ss::lep2_motherID()));
 
-      // reorder jets if second one has higher pt
+      // reorder jets using corrected pt
+      // yes, there is one more case (where 2 overtakes 0), but that never happened in the synch
       int idx_l = 0;
       int idx_t = 1;
       if(ss::jet_pt().at(1) > ss::jet_pt().at(0)) {
           idx_l = 1;
           idx_t = 0;
       }
+      if(ss::jet_pt().size() > 2) {
+          if(ss::jet_pt().at(2) > ss::jet_pt().at(1)) {
+              idx_t = 2;
+          }
+      }
       textfile_jets << Form("%1d%9d%12d\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%1d\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%1d\n",
-              ss::run(), ss::lumi(), ss::event(), 
+              ss::run(), ss::lumi(), (int)ss::event(), 
 
               ss::jet_pt().at(idx_l),
               ss::jets().at(idx_l).eta(),
               ss::jets().at(idx_l).phi(),
               ss::jets_disc_ivf().at(idx_l), // "jet1_btagCSVmva"
-              ss::jets_disc().at(idx_l) > 0.800, // "jet1_btagCSVMedium". medium WP
+              ss::jets_disc_ivf().at(idx_l) > 0.800, // "jet1_btagCSVMedium". medium WP
 
               ss::jet_pt().at(idx_t),
               ss::jets().at(idx_t).eta(),
               ss::jets().at(idx_t).phi(),
               ss::jets_disc_ivf().at(idx_t),
-              ss::jets_disc().at(idx_t) > 0.800
+              ss::jets_disc_ivf().at(idx_t) > 0.800
               );
 
 
