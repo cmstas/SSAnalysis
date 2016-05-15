@@ -1059,7 +1059,7 @@ do
     cp condorFileTemplate condorFile
     if [ "$xrootdbroken" == "1" ]
     then
-      sed -i 's/T2_US_UCSD,T2_US_WISCONSIN,T2_US_FLORIDA,T2_US_PURDUE,T2_US_NEBRASKA,T2_US_CALTECH/T2_US_UCSD/' condorFile
+      sed -i 's/T2_US_UCSD,T2_US_Wisconsin,T2_US_Florida,T2_US_Purdue,T2_US_Nebraska,T2_US_Caltech/T2_US_UCSD/' condorFile
     fi
   
     #submit it
