@@ -137,6 +137,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep2_ip3d"                                               , &lep2_ip3d                                               );
   BabyTree->Branch("lep1_MVA"                                                , &lep1_MVA                                                );
   BabyTree->Branch("lep2_MVA"                                                , &lep2_MVA                                                );
+  BabyTree->Branch("lep1_MVA_miniaod"                                        , &lep1_MVA_miniaod                                        );
+  BabyTree->Branch("lep2_MVA_miniaod"                                        , &lep2_MVA_miniaod                                        );
   BabyTree->Branch("lep1_ip3d_err"                                           , &lep1_ip3d_err                                           );
   BabyTree->Branch("lep2_ip3d_err"                                           , &lep2_ip3d_err                                           );
   BabyTree->Branch("nVetoElectrons7"                                         , &nVetoElectrons7                                         );
@@ -471,6 +473,8 @@ void babyMaker::InitBabyNtuple(){
     lep2_ip3d = -999998;
     lep1_MVA = -999998;
     lep2_MVA = -999998;
+    lep1_MVA_miniaod = -999998;
+    lep2_MVA_miniaod = -999998;
     lep1_ip3d_err = -999998;
     lep2_ip3d_err = -999998;
     lep1_el_conv_vtx_flag = 0;
@@ -653,7 +657,10 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   csErr_t babyErrorStruct; 
 
   //Debug mode
-  if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return babyErrorStruct;
+  // if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return babyErrorStruct;
+  verbose = true;
+  // if (tas::evt_event() != 174125) return babyErrorStruct;
+  if (tas::evt_event() != 79290) return babyErrorStruct;
 
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return babyErrorStruct;
@@ -797,6 +804,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx);
   lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
   lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
+  lep1_MVA_miniaod = abs(lep1_id) == 11 ? els_VIDNonTrigMvaValue().at(lep1_idx) : -9999; 
+  lep2_MVA_miniaod = abs(lep2_id) == 11 ? els_VIDNonTrigMvaValue().at(lep2_idx) : -9999; 
 
   //More First lepton stuff
   if (abs(lep1_id) == 11 || abs(lep1_id) == 13){

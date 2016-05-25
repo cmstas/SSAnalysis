@@ -202,6 +202,8 @@ if [ "$WHICH" == "100000" ] ; then WHICH_SMALL="ana1"; fi
 if [ "$WHICH" == "100001" ] ; then WHICH_SMALL="ana2"; fi
 if [ "$WHICH" == "100002" ] ; then WHICH_SMALL="ana3"; fi
 
+if [ "$WHICH" == "101012" ] ; then WHICH_SMALL="dy_high_LO"; fi
+
 export OUTPUT=${WHICH_SMALL}_${FILE}
 
 #This stuff to get output back

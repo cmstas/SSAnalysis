@@ -77,7 +77,8 @@ T5TTTTDEG="T5tttt_degen_1225to1400_1075to1275 T5tttt_degen_1425to1600_1275to1375
 T5TTCC="T5ttcc_825to1000_675to875 T5ttcc_1025to1200_875to1075 T5ttcc_825to1000_0to825 T5ttcc_600to800_450to675 T5ttcc_1225to1400_1075to1225 T5ttcc_1225to1400_0to1225 T5ttcc_1650to1700_0to1350 T5ttcc_1425to1525_1275to1375 T5ttcc_1025to1200_0to1025 T5ttcc_600to800_0to625 T5ttcc_1425to1600_0to1350"
 DATA="DataDoubleMuonD DataDoubleEGD DataMuonEGD DataDoubleMuonC DataDoubleEGC DataMuonEGC" 
 # ALL="$DATA $T1FASTSIM $T5FASTSIM $T6FASTSIM $T5WFASTSIM $T1TTBBFASTSIM $DMFASTSIM $CENTRAL $T5TTTTDEG $T5TTCC"
-ALL="$DATA $CENTRAL"
+# ALL="$DATA $CENTRAL"
+ALL="DY_high_LO"
 # ALL="$DATA $CENTRAL $CENTRAL2"
 
 # ALL="DataDoubleMuonD"
@@ -98,6 +99,11 @@ do
     path="/hadoop/cms/store/group/snt/run2_ss_synch/";
     tag="V07-06-03_MC";
     nameNu=101010
+  elif   [ $sname == "SYNCH_TTW80" ] ; then 
+    name="TTW80_TTW80-SSDL2016-forSynch_Private80X";
+    path="/hadoop/cms/store/group/snt/run2_ss_synch/";
+    tag="V08-00-01";
+    nameNu=101011
   elif   [ $sname == "TTBAR" ] ; then 
     name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/"
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
@@ -128,6 +134,11 @@ do
     tag="CMS3_V07-06-03";
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/V/";
     nameNu=5
+  elif [ $sname == "DY_high_LO" ]; then 
+    name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1"; 
+    tag="V07-06-03_MC";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
+    nameNu=101012
   elif [ $sname == "WJets" ]; then 
     name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
@@ -1068,6 +1079,7 @@ do
     sed -i s/ARG3/$USER/g condorFile
     sed -i "s,USER_PROXY,$pathToProxy,g" condorFile
     condor_submit condorFile
+
   done
 done
 

@@ -192,6 +192,8 @@ enum sample_t {
   ANA3                               = 100002,
 
   SYNCH_TTW                          = 101010,
+  SYNCH_TTW80                        = 101011,
+  DY_high_LO                         = 101012,
 
 };
 

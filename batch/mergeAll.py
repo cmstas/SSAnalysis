@@ -6,15 +6,16 @@ samples = [
 
 # ["WJets","wjets_*.root"],
 # ["DY_low","dy_low_*.root"],
+["DY_high_LO","dy_high_LO_*.root"],
 
-["DataDoubleEGC","datadoubleegc_*.root"],
-["DataDoubleMuonC","datadoublemuonc_*.root"],
-["DataMuonEGC","datamuonegc_*.root"],
-["DataDoubleEGD","datadoubleegd_*.root"],
-["DataDoubleMuonD","datadoublemuond_*.root"],
-["DataMuonEGD","datamuonegd_*.root"],
+# ["DataDoubleEGC","datadoubleegc_*.root"],
+# ["DataDoubleMuonC","datadoublemuonc_*.root"],
+# ["DataMuonEGC","datamuonegc_*.root"],
+# ["DataDoubleEGD","datadoubleegd_*.root"],
+# ["DataDoubleMuonD","datadoublemuond_*.root"],
+# ["DataMuonEGD","datamuonegd_*.root"],
 
-# ["DY_high","dy_high_*.root"],
+# ["DY_high","dy_high_[0-9]*.root"],
 # ["TTBAR","ttbar_[0-9]*.root"],
 # ["WWZ","wwz_*.root"],
 # ["ZZ","zz_*.root"],

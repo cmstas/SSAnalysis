@@ -52,6 +52,12 @@ int main(int argc, char *argv[]){
       tag="V07-06-03_MC";
       shortname="synch_ttw";
       break;
+    case SYNCH_TTW80:
+      name="TTW80_TTW80-SSDL2016-forSynch_Private80X";
+      path="/store/group/snt/run2_ss_synch/";
+      tag="V08-00-01";
+      shortname="synch_ttw_80";
+      break;
     case TTBAR:
       name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/";
       path="/store/group/snt/run2_25ns_76MiniAODv2/";
@@ -87,6 +93,12 @@ int main(int argc, char *argv[]){
       tag="CMS3_V07-06-03";
       path="/store/group/snt/run2_25ns_76MiniAODv2/V/";
       shortname="dy_high";
+      break;
+    case DY_high_LO:
+      name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1"; 
+      tag="V07-06-03_MC";
+      path="/store/group/snt/run2_25ns_76MiniAODv2/";
+      shortname="dy_high_LO";
       break;
     case WJets:
       name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";

@@ -21,6 +21,14 @@
 #include "CORE/Tools/jetcorr/SimpleJetCorrectionUncertainty.h"
 #include "TROOT.h"
 #include <vector>
+#include "Math/Vector4D.h" 
+#include "Math/LorentzVector.h" 
+
+#ifdef __MAKECINT__
+#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+;
+#pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
+#pragma link C++ typedef ROOT::Math::XYZTVectorF;
+#endif
 
 int nPoints(int sample, int mgl, int mlsp);
 
@@ -317,6 +325,8 @@ class babyMaker {
     float lep1_ip3d;
     float lep1_MVA;
     float lep2_MVA;
+    float lep1_MVA_miniaod;
+    float lep2_MVA_miniaod;
     float lep1_ip3d_err;
     float lep2_ip3d;
     float lep2_ip3d_err;
