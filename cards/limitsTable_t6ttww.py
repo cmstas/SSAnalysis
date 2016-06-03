@@ -15,7 +15,7 @@ maxx = 950+step
 miny = 75
 maxy = 875+step
 minz = 1e-2
-maxz = 10
+maxz = 5
 maxyh = 1175
 ybinsfirstxbin = 8
 
@@ -86,6 +86,8 @@ for sig in sigs:
     if deletelogs: os.system("rm "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log")
     if not foundObs: print "obs not found for", sig
 
+if redocards==True and redolimits==False: exit()
+
 ROOT.gStyle.SetOptStat(0)
 #"Official" SUSY palette
 mypalette = array.array('i')
@@ -104,7 +106,7 @@ c1 = ROOT.TCanvas("c1", "", 800, 800)
 c1.cd()
 padt = ROOT.TPad("p_tex", "p_tex", 0.0, 0.0, 1.0, 1.0);
 padt.SetTopMargin(0.1)
-padt.SetBottomMargin(0.1)
+padt.SetBottomMargin(0.105)
 padt.SetRightMargin(0.17)
 padt.SetLeftMargin(0.15)
 padt.Draw()
@@ -201,15 +203,18 @@ j_som1 = k_som1.GetHistogram()
 k_sop1 = ROOT.TGraph2D(h_sop1)
 j_sop1 = k_sop1.GetHistogram()
 
-h_xsec.GetXaxis().SetLabelSize(0.035)
-h_xsec.GetYaxis().SetLabelSize(0.035)
+h_xsec.GetXaxis().SetLabelSize(0.04)
+h_xsec.GetYaxis().SetLabelSize(0.04)
+h_xsec.GetZaxis().SetLabelSize(0.04)
+h_xsec.GetXaxis().SetTitleSize(0.045)
+h_xsec.GetYaxis().SetTitleSize(0.045)
+h_xsec.GetZaxis().SetTitleSize(0.045)
 h_xsec.GetXaxis().SetTitle("m_{#tilde{b}_{1}} (GeV)")
-h_xsec.GetYaxis().SetTitle("m_{#tilde{#chi_{1}^{#pm}}} (GeV)")
+h_xsec.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{#pm}} (GeV)")
 h_xsec.GetZaxis().SetTitle("95% CL upper limit on cross section (pb)")
-h_xsec.GetZaxis().SetLabelSize(0.035)
-h_xsec.GetXaxis().SetTitleOffset(1.2)
-h_xsec.GetYaxis().SetTitleOffset(1.7)
-h_xsec.GetZaxis().SetTitleOffset(1.6)
+h_xsec.GetXaxis().SetTitleOffset(1.0)
+h_xsec.GetYaxis().SetTitleOffset(1.6)
+h_xsec.GetZaxis().SetTitleOffset(1.3)
 
 h_xsec.GetZaxis().SetRangeUser(minz,maxz)
 
@@ -293,6 +298,9 @@ com1.SetLineStyle(1)
 com1.SetLineColor(ROOT.kBlack)
 #smooth it by hand
 com1.RemovePoint(14)
+com1.RemovePoint(17)
+com1.RemovePoint(14)
+com1.RemovePoint(11)
 #com1.Print()
 com1.Draw("L same");
 
@@ -310,6 +318,7 @@ cop1.SetLineColor(ROOT.kBlack)
 cop1.RemovePoint(34)
 cop1.RemovePoint(37)
 cop1.RemovePoint(39)
+cop1.RemovePoint(34)
 #cop1.Print()
 cop1.Draw("L same");
 
@@ -318,9 +327,9 @@ diag.SetLineWidth(1)
 diag.SetLineStyle(2)
 diag.Draw("same")
 
-diagtex = ROOT.TLatex(0.20,0.32, "m_{#tilde{b}_{1}} = m_{#tilde{#chi_{1}^{#pm}}}" )
+diagtex = ROOT.TLatex(0.20,0.325, "m_{#tilde{b}_{1}} = m_{#tilde{#chi}_{1}^{#pm}}" )
 diagtex.SetNDC()
-diagtex.SetTextSize(0.02)
+diagtex.SetTextSize(0.03)
 diagtex.SetTextAngle(38)
 diagtex.SetLineWidth(2)
 diagtex.SetTextFont(42)
@@ -331,7 +340,7 @@ l1.SetTextFont(42)
 l1.SetTextSize(0.036)
 l1.SetShadowColor(ROOT.kWhite)
 l1.SetFillColor(ROOT.kWhite)
-l1.SetHeader("pp #rightarrow #tilde{b}_{1}#tilde{b}_{1}#lower[0.7]{#kern[-0.7]{^{*}}}, #tilde{b}_{1}#rightarrow tW#tilde{#chi}^{0}_{1}      NLO+NLL Exclusion")
+l1.SetHeader("pp #rightarrow #tilde{b}_{1}#bar{#tilde{b}}_{1}, #tilde{b}_{1}#rightarrow tW#tilde{#chi}^{0}_{1}        NLO+NLL exclusion")
 l1.AddEntry(cobs , "Observed #pm 1 #sigma_{theory}", "l")
 l1.AddEntry(cexp , "Expected #pm 1 #sigma_{experiment}", "l")
 
@@ -344,7 +353,7 @@ cmstex.Draw()
 
 cmstexbold = ROOT.TLatex(0.17,0.91, "CMS" )
 cmstexbold.SetNDC()
-cmstexbold.SetTextSize(0.04)
+cmstexbold.SetTextSize(0.05)
 cmstexbold.SetLineWidth(2)
 cmstexbold.SetTextFont(61)
 cmstexbold.Draw()
@@ -443,7 +452,12 @@ h_sexp.Draw("colz")
 cexp.Draw("samecont2");
 c1.SaveAs("sexp.pdf")
 
-fout = ROOT.TFile("ss_t6ttww_scan_xsec.root","RECREATE")
+fout = ROOT.TFile("SUS15008_t6ttww.root","RECREATE")
+hxsecwrite = h_xsec.Clone("xsec")
+for xbin in range(1,hxsecwrite.GetNbinsX()+1):
+    for ybin in range(1,hxsecwrite.GetNbinsY()+1):
+        if hxsecwrite.GetYaxis().GetBinUpEdge(ybin)>900: hxsecwrite.SetBinContent(xbin,ybin,0)
+hxsecwrite.Write()
 cobswrite = cobs.Clone("ssobs")
 cobswrite.Write()
 com1write = com1.Clone("ssobs_m1s")
