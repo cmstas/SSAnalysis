@@ -13,7 +13,7 @@
 
   bool doData = false;
 
-  bool doInSitu = 1; //we should remove this or fix this; the function does not handle inSitu properly
+  bool doInSitu = 0; //we should remove this or fix this; the function does not handle inSitu properly
 
   bool highhigh   = 1;
   bool highlow    = 0;
