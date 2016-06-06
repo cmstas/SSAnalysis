@@ -620,7 +620,7 @@ void getyields(){
   type_plots.push_back(pair<TH1F*, float>(p_rares.h_type, roughSystRARES ));
   type_plots.push_back(pair<TH1F*, float>(p_flips.h_type, roughSystFLIPS ));
   type_plots.push_back(pair<TH1F*, float>(p_fakes.h_type, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_type, type_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName type_all_SS.pdf --xAxisLabel type (mm, me, em, ee) --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred. --dataName Data --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_type, type_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName type_all_SS.pdf --xAxisLabel type (mm, me, em, ee) --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --systInclStat --topYaxisTitle Data/Pred. --dataName Data --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep1_miniIso_plots;
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_miniIso  , roughSystTTW   ));
@@ -776,7 +776,7 @@ void getyields(){
   BR_plots.push_back(pair<TH1F*, float>(p_rares.BR, roughSystRARES ));
   BR_plots.push_back(pair<TH1F*, float>(p_flips.BR, roughSystFLIPS ));
   BR_plots.push_back(pair<TH1F*, float>(p_fakes.BR, roughSystFAKES ));
-  dataMCplotMaker(p_data.BR, BR_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName BR_all_SS.pdf --xAxisLabel BR  --noXaxisUnit --isLinear --legendUp -.15 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred. --outOfFrame --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.BR, BR_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName BR_all_SS.pdf --xAxisLabel BR  --noXaxisUnit --isLinear --legendUp -.15 --systInclStat --topYaxisTitle Data/Pred. --outOfFrame --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > ht_plots;
   ht_plots.push_back(pair<TH1F*, float>(p_ttw.h_ht  , roughSystTTW   ));
@@ -787,7 +787,7 @@ void getyields(){
   ht_plots.push_back(pair<TH1F*, float>(p_rares.h_ht, roughSystRARES ));
   ht_plots.push_back(pair<TH1F*, float>(p_flips.h_ht, roughSystFLIPS ));
   ht_plots.push_back(pair<TH1F*, float>(p_fakes.h_ht, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_ht, ht_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName ht_all_SS.pdf --xAxisLabel H_{T} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
+  dataMCplotMaker(p_data.h_ht, ht_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName ht_all_SS.pdf --xAxisLabel H_{T} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
 
   vector<pair<TH1F*, float> > met_plots;
   met_plots.push_back(pair<TH1F*, float>(p_ttw.h_met  , roughSystTTW   ));
@@ -798,7 +798,7 @@ void getyields(){
   met_plots.push_back(pair<TH1F*, float>(p_rares.h_met, roughSystRARES ));
   met_plots.push_back(pair<TH1F*, float>(p_flips.h_met, roughSystFLIPS ));
   met_plots.push_back(pair<TH1F*, float>(p_fakes.h_met, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_met, met_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName met_all_SS.pdf --xAxisLabel E_{T}^{miss} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
+  dataMCplotMaker(p_data.h_met, met_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName met_all_SS.pdf --xAxisLabel E_{T}^{miss} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
 
   vector<pair<TH1F*, float> > dxy_plots;
   dxy_plots.push_back(pair<TH1F*, float>(p_ttw.h_dxy  , roughSystTTW   ));
@@ -853,7 +853,7 @@ void getyields(){
   mll_plots.push_back(pair<TH1F*, float>(p_rares.h_mll, roughSystRARES ));
   mll_plots.push_back(pair<TH1F*, float>(p_flips.h_mll, roughSystFLIPS ));
   mll_plots.push_back(pair<TH1F*, float>(p_fakes.h_mll, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mll, mll_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName mll_all_SS.pdf --xAxisLabel M_{LL} --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred. --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_mll, mll_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName mll_all_SS.pdf --xAxisLabel M_{LL} --isLinear --legendUp -.05 --systInclStat --topYaxisTitle Data/Pred. --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > mtmin_plots;
   mtmin_plots.push_back(pair<TH1F*, float>(p_ttw.h_mtmin  , roughSystTTW   ));
@@ -864,7 +864,7 @@ void getyields(){
   mtmin_plots.push_back(pair<TH1F*, float>(p_rares.h_mtmin, roughSystRARES ));
   mtmin_plots.push_back(pair<TH1F*, float>(p_flips.h_mtmin, roughSystFLIPS ));
   mtmin_plots.push_back(pair<TH1F*, float>(p_fakes.h_mtmin, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mtmin, mtmin_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName mtmin_all_SS.pdf --xAxisLabel M_{T}^{min} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred.  --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);//--outOfFrame
+  dataMCplotMaker(p_data.h_mtmin, mtmin_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName mtmin_all_SS.pdf --xAxisLabel M_{T}^{min} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred.  --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);//--outOfFrame
 
   vector<pair<TH1F*, float> > njets_plots;
   njets_plots.push_back(pair<TH1F*, float>(p_ttw.h_njets  , roughSystTTW   ));
@@ -875,7 +875,7 @@ void getyields(){
   njets_plots.push_back(pair<TH1F*, float>(p_rares.h_njets, roughSystRARES ));
   njets_plots.push_back(pair<TH1F*, float>(p_flips.h_njets, roughSystFLIPS ));
   njets_plots.push_back(pair<TH1F*, float>(p_fakes.h_njets, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_njets, njets_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName njets_all_SS.pdf --xAxisLabel N_{jet} --noXaxisUnit --nDivisions 6 --noDivisionLabel --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);//  --outOfFrame
+  dataMCplotMaker(p_data.h_njets, njets_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName njets_all_SS.pdf --xAxisLabel N_{jet} --noXaxisUnit --nDivisions 6 --noDivisionLabel --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);//  --outOfFrame
 
   vector<pair<TH1F*, float> > nbtags_plots;
   nbtags_plots.push_back(pair<TH1F*, float>(p_ttw.h_nbtags  , roughSystTTW   ));
@@ -886,7 +886,7 @@ void getyields(){
   nbtags_plots.push_back(pair<TH1F*, float>(p_rares.h_nbtags, roughSystRARES ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_flips.h_nbtags, roughSystFLIPS ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_fakes.h_nbtags, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_nbtags, nbtags_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName nbtags_all_SS.pdf --noDivisionLabel --noXaxisUnit --xAxisLabel N_{b} --nDivisions 4 --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred.  --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
+  dataMCplotMaker(p_data.h_nbtags, nbtags_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName nbtags_all_SS.pdf --noDivisionLabel --noXaxisUnit --xAxisLabel N_{b} --nDivisions 4 --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred.  --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
 
   //lep1 pt plots
   vector<pair<TH1F*, float> > l1pt_plots;
@@ -898,7 +898,7 @@ void getyields(){
   l1pt_plots.push_back(pair<TH1F*, float>(p_rares.h_l1pt, roughSystRARES ));
   l1pt_plots.push_back(pair<TH1F*, float>(p_flips.h_l1pt, roughSystFLIPS ));
   l1pt_plots.push_back(pair<TH1F*, float>(p_fakes.h_l1pt, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_l1pt, l1pt_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName l1pt_all_SS.pdf --xAxisLabel Leading Lepton p_{T} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --type Supplementary --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
+  dataMCplotMaker(p_data.h_l1pt, l1pt_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName l1pt_all_SS.pdf --xAxisLabel Leading Lepton p_{T} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --type Supplementary --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
 
   vector <TH1F* > l1pt_plotsMC;
   l1pt_plotsMC.push_back(p_ttw.h_l1pt  );
@@ -923,7 +923,7 @@ void getyields(){
   l2pt_plots.push_back(pair<TH1F*, float>(p_rares.h_l2pt, roughSystRARES ));
   l2pt_plots.push_back(pair<TH1F*, float>(p_flips.h_l2pt, roughSystFLIPS ));
   l2pt_plots.push_back(pair<TH1F*, float>(p_fakes.h_l2pt, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_l2pt, l2pt_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName l2pt_all_SS.pdf --xAxisLabel Subleading Lepton p_{T} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --type Supplementary --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
+  dataMCplotMaker(p_data.h_l2pt, l2pt_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName l2pt_all_SS.pdf --xAxisLabel Subleading Lepton p_{T} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --type Supplementary --dataName Data --noTextBetweenPads", lumiAG), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
 
   vector <TH1F*> l2pt_plotsMC;
   l2pt_plotsMC.push_back(p_ttw.h_l2pt  );
@@ -948,7 +948,7 @@ void getyields(){
   l1eta_plots.push_back(pair<TH1F*, float>(p_rares.h_l1eta, roughSystRARES ));
   l1eta_plots.push_back(pair<TH1F*, float>(p_flips.h_l1eta, roughSystFLIPS ));
   l1eta_plots.push_back(pair<TH1F*, float>(p_fakes.h_l1eta, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_l1eta, l1eta_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName l1eta_all_SS.pdf --xAxisLabel Leading Lepton #eta --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred. --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_l1eta, l1eta_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName l1eta_all_SS.pdf --xAxisLabel Leading Lepton #eta --isLinear --legendUp -.05 --systInclStat --topYaxisTitle Data/Pred. --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector <TH1F* > l1eta_plotsMC;
   l1eta_plotsMC.push_back(p_ttw.h_l1eta  );
@@ -973,7 +973,7 @@ void getyields(){
   l2eta_plots.push_back(pair<TH1F*, float>(p_rares.h_l2eta, roughSystRARES ));
   l2eta_plots.push_back(pair<TH1F*, float>(p_flips.h_l2eta, roughSystFLIPS ));
   l2eta_plots.push_back(pair<TH1F*, float>(p_fakes.h_l2eta, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_l2eta, l2eta_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName l2eta_all_SS.pdf --xAxisLabel Subleading Lepton #eta --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred. --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_l2eta, l2eta_plots, titles, "Baseline selection", "", Form("--lumi %.2f --outputName l2eta_all_SS.pdf --xAxisLabel Subleading Lepton #eta --isLinear --legendUp -.05 --systInclStat --topYaxisTitle Data/Pred. --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors);
 
   vector <TH1F*> l2eta_plotsMC;
   l2eta_plotsMC.push_back(p_ttw.h_l2eta  );
@@ -999,7 +999,7 @@ void getyields(){
   nleps_plotsMC.push_back(p_dy_ff.h_nleps);
   nleps_plotsMC.push_back(p_wjets_ff.h_nleps);
   nleps_plotsMC.push_back(p_st_ff.h_nleps);
-  dataMCplotMaker(p_data.h_nleps, nleps_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName nleps_all_SSMC.pdf --xAxisLabel N_{leptons} --isLinear --legendUp -.05 --systInclStat --dontShowZeroRatios --topYaxisTitle Data/Pred. --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
+  dataMCplotMaker(p_data.h_nleps, nleps_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.2f --outputName nleps_all_SSMC.pdf --xAxisLabel N_{leptons} --isLinear --legendUp -.05 --systInclStat --topYaxisTitle Data/Pred. --dataName Data", lumiAG), vector <TH1F*>(), vector <string>(), colors2);
 
 
 }
