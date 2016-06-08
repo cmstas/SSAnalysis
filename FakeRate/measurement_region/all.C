@@ -7,6 +7,7 @@
     gROOT->ProcessLine(".L plotEWKCorFR.C");
 
     TString tag = getTag();
+  tag = "v1.09FR_80X"; // FIXME
     cout << "using tag=" << tag << endl;
     float intlumi = getLumi();
     cout << "intlumi=" << intlumi << "/fb" << endl;
@@ -27,8 +28,8 @@
     plotEWKCorFR(zsfEl, zsfMu, mtsfEl, mtsfMu, false);
 
     gROOT->ProcessLine(".x plotFR.C");
-    gROOT->ProcessLine(".x trigStudyEl.C");
-    gROOT->ProcessLine(".x trigStudyMu.C");
+    // gROOT->ProcessLine(".x trigStudyEl.C");
+    // gROOT->ProcessLine(".x trigStudyMu.C");
 
     cout << "isolated triggers" << endl;
 

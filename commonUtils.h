@@ -1,7 +1,7 @@
 #ifndef _commonUtils_h_
 #define _commonUtils_h_
 
-float getLumi() { return 2.32; }
+float getLumi() { return 0.8042; }
 float getLumiUnblind() { return getLumi(); }
 bool isUnblindRun(int run) { return true; }
 

@@ -74,6 +74,43 @@ void plotEWKCorFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
   num_data_zp->SetTitle("Alternative EWK-corrected "+lepname+" fake rate");
   num_data_zp->Write();
   out.Close();
+
+  den_wj->SetTitle("WJets "+lepname+" denominator");
+  den_wj->GetXaxis()->SetTitle(""+lepname+" p_{T}^{corr.} [GeV]");
+  den_wj->GetYaxis()->SetTitle(""+lepname+" |#eta|");
+  den_wj->GetYaxis()->SetTitleOffset(1.2);
+  den_wj->GetZaxis()->SetLabelSize(0.025);
+  den_wj->SetMarkerSize(1.5);
+  den_wj->Draw("textecolz");
+  c1.SaveAs("pdfs/den_wj_"+lepname+suffix+".pdf");
+
+  den_dy->SetTitle("DY "+lepname+" denominator");
+  den_dy->GetXaxis()->SetTitle(""+lepname+" p_{T}^{corr.} [GeV]");
+  den_dy->GetYaxis()->SetTitle(""+lepname+" |#eta|");
+  den_dy->GetYaxis()->SetTitleOffset(1.2);
+  den_dy->GetZaxis()->SetLabelSize(0.025);
+  den_dy->SetMarkerSize(1.5);
+  den_dy->Draw("textecolz");
+  c1.SaveAs("pdfs/den_dy_"+lepname+suffix+".pdf");
+
+  num_wj->SetTitle("WJets "+lepname+" numerator");
+  num_wj->GetXaxis()->SetTitle(""+lepname+" p_{T}^{corr.} [GeV]");
+  num_wj->GetYaxis()->SetTitle(""+lepname+" |#eta|");
+  num_wj->GetYaxis()->SetTitleOffset(1.2);
+  num_wj->GetZaxis()->SetLabelSize(0.025);
+  num_wj->SetMarkerSize(1.5);
+  num_wj->Draw("textecolz");
+  c1.SaveAs("pdfs/num_wj_"+lepname+suffix+".pdf");
+
+  num_dy->SetTitle("DY "+lepname+" numerator");
+  num_dy->GetXaxis()->SetTitle(""+lepname+" p_{T}^{corr.} [GeV]");
+  num_dy->GetYaxis()->SetTitle(""+lepname+" |#eta|");
+  num_dy->GetYaxis()->SetTitleOffset(1.2);
+  num_dy->GetZaxis()->SetLabelSize(0.025);
+  num_dy->SetMarkerSize(1.5);
+  num_dy->Draw("textecolz");
+  c1.SaveAs("pdfs/num_dy_"+lepname+suffix+".pdf");
+
   }
 
 }

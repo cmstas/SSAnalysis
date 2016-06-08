@@ -6,7 +6,7 @@ samples = [
 
 # ["WJets","wjets_*.root"],
 # ["DY_low","dy_low_*.root"],
-["DY_high_LO","dy_high_LO_*.root"],
+# ["DY_high_LO","dy_high_LO_*.root"],
 
 # ["DataDoubleEGC","datadoubleegc_*.root"],
 # ["DataDoubleMuonC","datadoublemuonc_*.root"],
@@ -40,7 +40,7 @@ samples = [
 # ["SINGLETOP4","singletop4_*.root"],
 # ["SINGLETOP5","singletop5_*.root"],
 # ["QQWW","qqww_*.root"],
-# ["TG","tg_*.root"],
+["TG","tg_*.root"],
 # ["ZG","zg_*.root"],
 # ["GGHtoZZto4L","gghtozzto4l_*.root"],
 # ["WGMG","wgmg_*.root"],

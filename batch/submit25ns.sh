@@ -81,12 +81,47 @@ DATA="DataDoubleMuonD DataDoubleEGD DataMuonEGD DataDoubleMuonC DataDoubleEGC Da
 ALL="DY_high_LO"
 # ALL="$DATA $CENTRAL $CENTRAL2"
 
+# FORSYNC="TTBAR DY_high WZ TTW QQWW TG"
+FORSYNC="TG"
+
+CENTRAL_V2="WGMG WZ  TTW ZG QQWW ZZpythia WJets TTZ DY_high DY_low WGToLNuG TTG WWDPS WZZ VHtoNonBB TG TZQ TTTT TTHtoNonBB"
+# WGMG WZpowheg ttWJetsMG ZG WpWpJJ
+# GGHtoZZto4L (missing in v1 v2)
+# Zpythia (until we get ZZto4L -- mising in v1 v2)
+# WJets (use MLM in v1)
+# TTZ
+# DY_high
+# DY_low (fix cross section)
+# WGToLNuG
+# TTG
+# WWDPS
+# WZZ
+# VHtoNonBB
+# TG (ext1)
+# TZQ
+# TTTT
+# TTHtoNonBB (powheg v1)
+# TTBAR_powheg (missing in v1 and v2, but v1 will finish crab)
+
+CENTRAL_V1="TTHtoNonBB"
+# WZ use powheg
+# GGHtoZZto4L missing in v1, v2
+# TTW - ttWJets madgraphMLM
+# ZZ to 4L missing in v1, v2
+# add "ZZpythia" to list -- ZZ_TuneCUET*pythia* on twiki
+# TTZ - ttZJets madgraphMLM and rename TTZL to TTZ
+# DY_low seee what's going on with cross section (10to50)
+# TTBAR_PH missing -- running on ext4 in the maodv1 autotwopler right now 
+# TG - use ext1
+# TTHtoNonBB missing in v2. in v1 use _ powheg one _ 
+
+
 # ALL="DataDoubleMuonD"
 
 
 #Then submit jobs
 nIter=0
-for sname in $ALL
+for sname in $FORSYNC
 do
   isSignal=0 
   path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
@@ -105,14 +140,14 @@ do
     tag="V08-00-01";
     nameNu=101011
   elif   [ $sname == "TTBAR" ] ; then 
-    name="TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/"
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
-    tag="V07-06-03_MC"
+    name="TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v2"
+    path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
+    tag="V08-00-01"
     nameNu=0
   elif [ $sname == "TTW" ]; then 
-    name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+    name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1";
+    path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
+    tag="V08-00-01"
     nameNu=1
   elif [ $sname == "TTZL" ]; then 
     name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
@@ -120,9 +155,9 @@ do
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
     nameNu=2
   elif [ $sname == "WZ" ]; then 
-    name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
-    tag="CMS3_V07-06-03";
+    name="WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1";
+    path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
+    tag="V08-00-01"
     nameNu=3
   elif [ $sname == "DY_low" ]; then 
     name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/v1/";
@@ -130,9 +165,9 @@ do
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/V/";
     nameNu=4
   elif [ $sname == "DY_high" ]; then 
-    name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/v1/"; 
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/V/";
+    name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1"; 
+    path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
+    tag="V08-00-01"
     nameNu=5
   elif [ $sname == "DY_high_LO" ]; then 
     name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1"; 
@@ -146,8 +181,8 @@ do
     nameNu=6
   elif [ $sname == "TTWQQ" ]; then 
     name="TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/TTV/";
+    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
+    tag="V07-06-03_MC";
     nameNu=7
   elif [ $sname == "TTZQ" ]; then 
     name="tZq_ll_4f_13TeV-amcatnlo-pythia8_TuneCUETP8M1_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
@@ -185,9 +220,9 @@ do
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
     nameNu=14
   elif [ $sname == "QQWW" ]; then 
-    name="WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+    name="WpWpJJ_EWK-QCD_TuneCUETP8M1_13TeV-madgraph-pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1";
+    path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
+    tag="V08-00-01"
     nameNu=15
   elif [ $sname == "TTTT" ] ;then 
     name="TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext1-v1";
@@ -215,9 +250,9 @@ do
     path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
     nameNu=21
   elif [ $sname == "TG" ]; then 
-    name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext1-v1";
-    tag="V07-06-03_MC";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
+    name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1";
+    tag="V08-00-01";
+    path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
     nameNu=22
   elif [ $sname == "ZG" ]; then 
     name="ZGTo2LG_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8";

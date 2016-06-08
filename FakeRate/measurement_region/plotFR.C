@@ -1,5 +1,6 @@
 {
   for(int i = 0; i < 3; i++) {
+      for(int doIso = 0; doIso < 2; doIso++) {
 
   gROOT->Reset();
   gStyle->SetOptStat(0);
@@ -17,7 +18,7 @@
 
   TString postfix = "";
   postfix+="_LooseEMVA";
-  // postfix+="_IsoTrigs";
+  if(doIso) postfix+="_IsoTrigs";
   // postfix+="_PtRatioCor";
   // postfix+="_doBonly";
   // postfix+="_doLightonly";
@@ -111,5 +112,6 @@
 
   }
 
+      }
   }
 }

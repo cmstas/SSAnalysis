@@ -657,10 +657,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   csErr_t babyErrorStruct; 
 
   //Debug mode
-  // if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return babyErrorStruct;
-  verbose = true;
-  // if (tas::evt_event() != 174125) return babyErrorStruct;
-  if (tas::evt_event() != 79290) return babyErrorStruct;
+  if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return babyErrorStruct;
 
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return babyErrorStruct;
