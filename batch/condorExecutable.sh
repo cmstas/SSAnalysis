@@ -24,7 +24,7 @@ export WHICH_SMALL=`echo ${WHICH,,}`
 #backgrounds
 if [ "$WHICH" == "0" ]; then WHICH_SMALL="ttbar"; fi
 if [ "$WHICH" == "1" ]; then WHICH_SMALL="ttw"; fi
-if [ "$WHICH" == "2" ]; then WHICH_SMALL="ttzl"; fi
+if [ "$WHICH" == "2" ]; then WHICH_SMALL="ttz"; fi
 if [ "$WHICH" == "3" ]; then WHICH_SMALL="wz"; fi
 if [ "$WHICH" == "4" ]; then WHICH_SMALL="dy_low"; fi
 if [ "$WHICH" == "5" ]; then WHICH_SMALL="dy_high"; fi
@@ -55,6 +55,8 @@ if [ "$WHICH" == "30" ]; then WHICH_SMALL="gghtozzto4l"; fi
 if [ "$WHICH" == "31" ]; then WHICH_SMALL="wzmg"; fi
 if [ "$WHICH" == "32" ]; then WHICH_SMALL="wgmg"; fi
 if [ "$WHICH" == "33" ]; then WHICH_SMALL="tthtononbbext"; fi
+if [ "$WHICH" == "34" ]; then WHICH_SMALL="zzz"; fi
+if [ "$WHICH" == "35" ]; then WHICH_SMALL="www"; fi
 
 #signals
 if [ "$WHICH" == "100" ]; then WHICH_SMALL="t1tttt_1500"; fi

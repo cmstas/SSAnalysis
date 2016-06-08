@@ -19,7 +19,7 @@ samples = [
 # ["TTBAR","ttbar_[0-9]*.root"],
 # ["WWZ","wwz_*.root"],
 # ["ZZ","zz_*.root"],
-# ["TTZL","ttzl_*.root"],
+# ["TTZ","ttz_*.root"],
 # ["TTW","ttw_*.root"],
 # ["TTWQQ","ttwqq_*.root"],
 # ["WZ","wz_*.root"],

@@ -5,7 +5,7 @@ enum sample_t {
   //Backgrounds
   TTBAR = 0,
   TTW = 1,
-  TTZL = 2,
+  TTZ = 2,
   WZ = 3,
   DY_low = 4,
   DY_high = 5,
@@ -36,6 +36,8 @@ enum sample_t {
   WZMG = 31,
   WGMG = 32,
   TTHtoNonBBext = 33,
+  ZZZ = 34,
+  WWW = 35,
 
   //Signals
   T1TTTT_1500 = 100,
