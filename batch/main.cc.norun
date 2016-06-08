@@ -1006,7 +1006,7 @@ int main(int argc, char *argv[]){
   set_goodrun_file("final2015_golden_25ns2p26fb.txt");
   
   // string jecEra = "Fall15_25nsV2";
-  string jecEra = "Spring16_25nsV1";
+  string jecEra = "Spring16_25nsV3";
 
   //Make Jet Energy Uncertainties
   JetCorrectionUncertainty *jecUnc = 0;
