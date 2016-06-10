@@ -402,6 +402,7 @@ void babyMaker::InitBabyNtuple(){
     jets.clear();
     btags_disc.clear();
     btags_disc_mva.clear();
+    btags_disc_ivf.clear();
     jet_pt.clear(); 
     ht_raw = -1;
     jets_disc.clear();
