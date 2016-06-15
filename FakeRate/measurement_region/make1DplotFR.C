@@ -163,14 +163,14 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
   elf_data_zp->Divide(eln1d_data_zp,eld1d_data_zp,1,1,"B");
 
   TH1D *muf_data_syst = (TH1D*) muf_data->Clone("rate_histo_mu_syst");
-  muf_data_syst->SetFillColor(kBlack);
-  muf_data_syst->SetFillStyle(3001);
+  muf_data_syst->SetFillColor(kGray+1);
+  muf_data_syst->SetFillStyle(3644);
   for (int bin=1;bin<=muf_data_syst->GetNbinsX();++bin) {
     muf_data_syst->SetBinError(bin,fabs(muf_data->GetBinContent(bin)-muf_data_zp->GetBinContent(bin)));
   }
   TH1D *elf_data_syst = (TH1D*) elf_data->Clone("rate_histo_el_syst");
-  elf_data_syst->SetFillColor(kBlack);
-  elf_data_syst->SetFillStyle(3001);
+  elf_data_syst->SetFillColor(kGray+1);
+  elf_data_syst->SetFillStyle(3644);
   for (int bin=1;bin<=elf_data_syst->GetNbinsX();++bin) {
     elf_data_syst->SetBinError(bin,fabs(elf_data->GetBinContent(bin)-elf_data_zp->GetBinContent(bin)));
   }
@@ -201,8 +201,8 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
   dataMCplotMaker(elf_data_copy, el_qcd_vec, Titles, "", "", Form("--outputName el_1dfr%s%s --png --noStack --isLinear --drawDots --lumi 0.040 --xAxisLabel electron p_{T}^{corr.} --xAxisUnit GeV --setMaximum 0.5 --errHistAtBottom",var.Data(),postfix.Data()));//, std::vector<TH1F*>(), std::vector<string>(), std::vector<Color_t>()
   */
 
-  TString xname = (doPt ? "p_{T} [GeV]" : "|#eta|");
-  if (var=="_cone"&&doPt) xname = "p_{T}^{corr.} [GeV]";
+  TString xname = (doPt ? "p_{T} (GeV)" : "|#eta|");
+  if (var=="_cone"&&doPt) xname = "p_{T}^{corr.} (GeV)";
 
   muf_qcd->SetTitle("");
   muf_qcd->GetXaxis()->SetTitleSize(1.2*0.035);
@@ -215,11 +215,12 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
   muf_qcd->GetYaxis()->SetLabelFont(42);
   muf_qcd->GetYaxis()->SetTitleOffset(1.20);
   muf_qcd->GetXaxis()->SetTitleOffset(1.10);
-  muf_qcd->GetYaxis()->SetTitle("Muon Fake Rate");
+  muf_qcd->GetYaxis()->SetNdivisions(505);
+  muf_qcd->GetYaxis()->SetTitle("Muon #epsilon_{TL}");
   muf_qcd->GetXaxis()->SetTitle("Muon "+xname);
   if (var=="_jet"&&doPt) muf_qcd->GetXaxis()->SetTitle("jet "+xname);
   TCanvas c1("c1","c1",600,600);
-  muf_qcd->GetYaxis()->SetRangeUser(0,0.7);
+  muf_qcd->GetYaxis()->SetRangeUser(0,0.5);
   muf_qcd->SetMarkerStyle(21);
   muf_qcd->SetMarkerSize(1.5);
   muf_qcd->SetMarkerColor(kRed);
@@ -229,14 +230,14 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
   muf_data->Draw("PEsame");
   c1.RedrawAxis();
 
-  TLegend* leg = new TLegend(0.62,0.78,0.89,0.89);
+  TLegend* leg = new TLegend(0.62,0.75,0.89,0.87);
   leg->SetFillColor(kWhite);
   leg->SetLineColor(kWhite);
   leg->SetTextFont(42);
   leg->SetTextSize(1.2*0.035);
   leg->SetTextAlign(12);
   leg->AddEntry(muf_data,"Data","ple");
-  leg->AddEntry(muf_qcd,"QCD MC","ple");
+  leg->AddEntry(muf_qcd,"Multijet MC","ple");
   leg->Draw();
 
   TPaveText* labelcms  = new TPaveText(0.75,0.90,0.89,0.99,"NDCNB");
@@ -256,11 +257,11 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
   latex.SetTextFont(61);
   latex.SetTextSize(1.2*0.044);
   latex.SetTextAlign(11);
-  latex.DrawLatex(0.14, 0.84, "CMS");
+  latex.DrawLatex(0.12, 0.91, "CMS");
   latex.SetTextFont(52);
   latex.SetTextAlign(11);
   latex.SetTextSize(1.2*0.044*0.75);
-  latex.DrawLatex(0.14, 0.84 - 1.2*0.040, "Preliminary");
+  latex.DrawLatex(0.24, 0.91, "Supplementary");
 
   elf_qcd->SetTitle("");
   elf_qcd->GetXaxis()->SetTitleSize(1.2*0.035);
@@ -273,11 +274,12 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
   elf_qcd->GetYaxis()->SetLabelFont(42);
   elf_qcd->GetYaxis()->SetTitleOffset(1.20);
   elf_qcd->GetXaxis()->SetTitleOffset(1.10);
-  elf_qcd->GetYaxis()->SetTitle("Electron Fake Rate");
+  elf_qcd->GetYaxis()->SetNdivisions(505);
+  elf_qcd->GetYaxis()->SetTitle("Electron #epsilon_{TL}");
   elf_qcd->GetXaxis()->SetTitle("Electron "+xname);
   if (var=="_jet"&&doPt) elf_qcd->GetXaxis()->SetTitle("jet "+xname);
   TCanvas c2("c2","c2",600,600);
-  elf_qcd->GetYaxis()->SetRangeUser(0,0.7);
+  elf_qcd->GetYaxis()->SetRangeUser(0,0.5);
   elf_qcd->SetMarkerStyle(21);
   elf_qcd->SetMarkerSize(1.5);
   elf_qcd->SetMarkerColor(kRed);
@@ -291,11 +293,11 @@ void make1DplotFR(float elSF_zp,float muSF_zp,float elSF_mt, float muSF_mt, bool
   latex.SetTextFont(61);
   latex.SetTextSize(1.2*0.044);
   latex.SetTextAlign(11);
-  latex.DrawLatex(0.14, 0.84, "CMS");
+  latex.DrawLatex(0.12, 0.91, "CMS");
   latex.SetTextFont(52);
   latex.SetTextAlign(11);
   latex.SetTextSize(1.2*0.044*0.75);
-  latex.DrawLatex(0.14, 0.84 - 1.2*0.040, "Preliminary");
+  latex.DrawLatex(0.24, 0.91, "Supplementary");
 
   c1.SaveAs("pdfs/mu_1dfr"+var+postfix+(doPt ? "" : "_eta")+".pdf");
   c2.SaveAs("pdfs/el_1dfr"+var+postfix+(doPt ? "" : "_eta")+".pdf");

@@ -17,6 +17,8 @@ lumi = "2.3"
 
 pseudoData = 0
 
+doComb = False
+
 class Process:
     def __init__(self, mycount, myname, myrootf, myplot):
         self.count = mycount
@@ -28,11 +30,10 @@ class Process:
         self.isr  = "-"
         self.scale  = "-"
         #self.norm  = "-"
-        self.fs_lep_hh  = "-"
-        self.fs_lep_hl  = "-"
-        self.fs_lep_ll  = "-"
+        self.fs_lep  = "-"
         self.fs_hlt  = "-"
         self.lepeff  = "-"
+        self.hlt  = "-"
         self.lephlt  = "-"
         self.hthlt  = "-"
         self.bshlt  = "-"
@@ -78,18 +79,20 @@ def writeStatForProcess(dir, card, kine, process, processes):
     hdn = f.Get(("%s_statDown" % (process.name)))
     if hup:
         for bin in range(1,hup.GetNbinsX()+1):
-            card.write ("%-40s %-5s " % (("%s%s%s%s" % (process.name,"_stat_",kine,bin)), "shape") )
+            ra5 = ""
+            if doComb: ra5 = "ra5_"
+            card.write ("%-40s %-5s " % (("%s%s%s%s%s" % (ra5,process.name,"_stat_",kine,bin)), "shape") )
             for myprocess in processes: 
                 if myprocess.count == process.count: 
                     card.write("%-15s " % "1")
-                    hupnewtest = f.Get("%s%s%s%sUp" % (process.name,"_stat_",kine,bin))
+                    hupnewtest = f.Get("%s%s%s%s%sUp" % (ra5,process.name,"_stat_",kine,bin))
                     if not hupnewtest:
-                        hupnew = h.Clone("%s%s%s%sUp" % (process.name,"_stat_",kine,bin))
+                        hupnew = h.Clone("%s%s%s%s%sUp" % (ra5,process.name,"_stat_",kine,bin))
                         hupnew.SetBinContent(bin,hup.GetBinContent(bin))
                         hupnew.Write()
-                    hdnnewtest = f.Get("%s%s%s%sDown" % (process.name,"_stat_",kine,bin))
+                    hdnnewtest = f.Get("%s%s%s%s%sDown" % (ra5,process.name,"_stat_",kine,bin))
                     if not hdnnewtest:
-                        hdnnew = h.Clone("%s%s%s%sDown" % (process.name,"_stat_",kine,bin))
+                        hdnnew = h.Clone("%s%s%s%s%sDown" % (ra5,process.name,"_stat_",kine,bin))
                         if hdn.GetBinContent(bin) > 0: hdnnew.SetBinContent(bin,hdn.GetBinContent(bin))
                         else: hdnnew.SetBinContent(bin,0)
                         hdnnew.Write()
@@ -188,17 +191,9 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     #card.write("%-40s %-5s " % ("norm","lnN"))
     #for process in processes: card.write("%-15s " % (process.norm))
     #card.write("\n")
-    #nuisance fs_lep_hh
-    card.write("%-40s %-5s " % ("fs_lep_hh","lnN"))
-    for process in processes: card.write("%-15s " % (process.fs_lep_hh))
-    card.write("\n")
-    #nuisance fs_lep_hl
-    card.write("%-40s %-5s " % ("fs_lep_hl","lnN"))
-    for process in processes: card.write("%-15s " % (process.fs_lep_hl))
-    card.write("\n")
-    #nuisance fs_lep_ll
-    card.write("%-40s %-5s " % ("fs_lep_ll","lnN"))
-    for process in processes: card.write("%-15s " % (process.fs_lep_ll))
+    #nuisance fs_lep
+    card.write("%-40s %-5s " % ("fs_lep","lnN"))
+    for process in processes: card.write("%-15s " % (process.fs_lep))
     card.write("\n")
     #nuisance fs_hlt
     card.write("%-40s %-5s " % ("fs_hlt","lnN"))
@@ -208,18 +203,24 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("lepeff","lnN"))
     for process in processes: card.write("%-15s " % (process.lepeff))
     card.write("\n")
-    #nuisance lephlt
-    card.write("%-40s %-5s " % ("lephlt","lnN"))
-    for process in processes: card.write("%-15s " % (process.lephlt))
-    card.write("\n")
-    #nuisance hthlt
-    card.write("%-40s %-5s " % ("hthlt","shape"))
-    for process in processes: card.write("%-15s " % (process.hthlt))
-    card.write("\n")
-    #nuisance bshlt
-    card.write("%-40s %-5s " % ("bshlt","shape"))
-    for process in processes: card.write("%-15s " % (process.bshlt))
-    card.write("\n")
+    if doComb == True:
+        #nuisance hlt
+        card.write("%-40s %-5s " % ("hlt","lnN"))
+        for process in processes: card.write("%-15s " % (process.hlt))
+        card.write("\n")
+    else:
+        #nuisance lephlt
+        card.write("%-40s %-5s " % ("lephlt","lnN"))
+        for process in processes: card.write("%-15s " % (process.lephlt))
+        card.write("\n")
+        #nuisance hthlt
+        card.write("%-40s %-5s " % ("hthlt","shape"))
+        for process in processes: card.write("%-15s " % (process.hthlt))
+        card.write("\n")
+        #nuisance bshlt
+        card.write("%-40s %-5s " % ("bshlt","shape"))
+        for process in processes: card.write("%-15s " % (process.bshlt))
+        card.write("\n")
     #nuisance btag
     card.write("%-40s %-5s " % ("btag","shape"))
     for process in processes: card.write("%-15s " % (process.btag))
@@ -232,6 +233,10 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     #nuisance TTW
     card.write("%-40s %-5s " % ("TTW","lnN"))
     for process in processes: card.write("%-15s " % (process.TTW))
+    card.write("\n")
+    #nuisance TTW pdf
+    card.write("%-40s %-5s " % ("ttw_pdf","lnN"))
+    for process in processes: card.write("%-15s " % (process.ttw_pdf))
     card.write("\n")
     #nuisance TTW extr_hth
     card.write("%-40s %-5s " % ("ttw_extr_hth","shape"))
@@ -250,6 +255,10 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("TTZH","lnN"))
     for process in processes: card.write("%-15s " % (process.TTZH))
     card.write("\n")
+    #nuisance TTZH pdf
+    card.write("%-40s %-5s " % ("ttzh_pdf","lnN"))
+    for process in processes: card.write("%-15s " % (process.ttzh_pdf))
+    card.write("\n")
     #nuisance TTZH extr_hth
     card.write("%-40s %-5s " % ("ttzh_extr_hth","shape"))
     for process in processes: card.write("%-15s " % (process.ttzh_extr_hth))
@@ -264,7 +273,10 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("\n")
 
     #nuisance WZ
-    card.write("%-40s %-5s " % ("WZ","lnN"))
+    if doComb == True:
+        card.write("%-40s %-5s " % ("ra5_WZ","lnN"))
+    else:
+        card.write("%-40s %-5s " % ("WZ","lnN"))
     for process in processes: card.write("%-15s " % (process.WZ))
     card.write("\n")
 
@@ -323,15 +335,16 @@ def writeOneCard(dir, signal, kine, plot, output):
     #overwrite nuisances
     signal.lumi  = "1.027"
     signal.lephlt  = "1.02"
+    signal.hlt  = "1.03"
     if signal.name!="sig":  #fake signal for MI limits does not need these
         signal.jes  = "1"
         if signal.name.find("fs_") != -1:
             #these are only for fast sim
             signal.scale  = "1"
             signal.fs_hlt = "1.05"
-            if kine is "hihi": signal.fs_lep_hh  = "1.08"
-            if kine is "hilow": signal.fs_lep_hl  = "1.15"
-            if kine is "lowlow": signal.fs_lep_ll  = "1.20"
+            if kine is "hihi": signal.fs_lep  = "1.08"
+            if kine is "hilow": signal.fs_lep  = "1.15"
+            if kine is "lowlow": signal.fs_lep  = "1.20"
             signal.isr  = "1" #fixme: this one we should have also for fullsim (need to update the yieldMaker)
         signal.lepeff  = "1.04"
         signal.hthlt  = "1"
@@ -347,6 +360,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTW.jes  = "1"
     TTW.lepeff  = "1.04"
     TTW.lephlt  = "1.02"
+    TTW.hlt  = "1.03"
     TTW.hthlt  = "1"
     TTW.bshlt  = "1"
     TTW.btag = "1"
@@ -360,6 +374,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTZH.jes  = "1"
     TTZH.lepeff  = "1.04"
     TTZH.lephlt  = "1.02"
+    TTZH.hlt  = "1.03"
     TTZH.hthlt  = "1"
     TTZH.bshlt  = "1"
     TTZH.btag = "1"
@@ -373,6 +388,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     WW.jes  = "1"
     WW.lepeff  = "1.04"
     WW.lephlt  = "1.02"
+    WW.hlt  = "1.03"
     WW.hthlt  = "1"
     WW.bshlt  = "1"
     WW.btag = "1"
@@ -382,6 +398,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     XG.jes  = "1"
     XG.lepeff  = "1.04"
     XG.lephlt  = "1.02"
+    XG.hlt  = "1.03"
     XG.hthlt  = "1"
     XG.bshlt  = "1"
     XG.btag = "1"
@@ -391,6 +408,7 @@ def writeOneCard(dir, signal, kine, plot, output):
     rares.jes  = "1"
     rares.lepeff  = "1.04"
     rares.lephlt  = "1.02"
+    rares.hlt  = "1.03"
     rares.hthlt  = "1"
     rares.bshlt  = "1"
     rares.btag = "1"

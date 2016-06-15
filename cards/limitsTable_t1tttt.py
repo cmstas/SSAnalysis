@@ -47,7 +47,7 @@ sigs = []
 for mglu in range (minx,maxx,step):
     for mlsp in range (miny,maxy,step):
         if os.path.isfile(("%s/fs_t1tttt_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
-        #print "found sig = fs_t1tttt_m%i_m%i" % (mglu,mlsp)
+        print "found sig = fs_t1tttt_m%i_m%i" % (mglu,mlsp)
         sigs.append(("fs_t1tttt_m%i_m%i" % (mglu,mlsp)))
 
 limit_obs = []
@@ -87,6 +87,8 @@ for sig in sigs[:]:
     if not foundObs: 
         print "obs not found for", sig
         sigs.remove(sig)
+
+if redocards==True and redolimits==False: exit()
 
 ROOT.gStyle.SetOptStat(0)
 #"Official" SUSY palette
@@ -203,21 +205,31 @@ j_som1 = k_som1.GetHistogram()
 k_sop1 = ROOT.TGraph2D(h_sop1)
 j_sop1 = k_sop1.GetHistogram()
 
-h_xsec.GetXaxis().SetLabelSize(0.035)
-h_xsec.GetYaxis().SetLabelSize(0.035)
+h_xsec.GetXaxis().SetLabelSize(0.04)
+h_xsec.GetYaxis().SetLabelSize(0.04)
+h_xsec.GetZaxis().SetLabelSize(0.04)
+h_xsec.GetXaxis().SetTitleSize(0.045)
+h_xsec.GetYaxis().SetTitleSize(0.045)
+h_xsec.GetZaxis().SetTitleSize(0.045)
 h_xsec.GetXaxis().SetTitle("m_{#tilde{g}} (GeV)")
 h_xsec.GetYaxis().SetTitle("m_{#tilde{#chi}_{1}^{0}} (GeV)")
 h_xsec.GetZaxis().SetTitle("95% CL upper limit on cross section (pb)")
-h_xsec.GetZaxis().SetLabelSize(0.035)
-h_xsec.GetXaxis().SetTitleOffset(1.2)
-h_xsec.GetYaxis().SetTitleOffset(1.7)
-h_xsec.GetZaxis().SetTitleOffset(1.6)
+h_xsec.GetXaxis().SetTitleOffset(1.0)
+h_xsec.GetYaxis().SetTitleOffset(1.6)
+h_xsec.GetZaxis().SetTitleOffset(1.3)
 
 h_xsec.GetZaxis().SetRangeUser(minz,maxz)
 
-#hack
-h_xsec.SetBinContent(35,50,h_xsec.GetBinContent(36,50))
-h_xsec.SetBinContent(36,51,h_xsec.GetBinContent(37,51))
+#hack to fix smoothing issues
+h_xsec.SetBinContent(34,49,0.2)
+h_xsec.SetBinContent(35,50,0.2)
+h_xsec.SetBinContent(36,51,0.2)
+h_xsec.SetBinContent(35,49,0.18)
+h_xsec.SetBinContent(36,50,0.18)
+h_xsec.SetBinContent(37,51,0.18)
+h_xsec.SetBinContent(36,49,0.15)
+h_xsec.SetBinContent(37,50,0.15)
+h_xsec.SetBinContent(38,51,0.15)
 
 h_xsec.Draw("colz")
 
@@ -299,9 +311,9 @@ diag.SetLineWidth(1)
 diag.SetLineStyle(2)
 diag.Draw("same")
 
-diagtex = ROOT.TLatex(0.20,0.36, "m_{#tilde{g}}-m_{#tilde{#chi}_{1}^{0}} = 2 #upoint (m_{W} + m_{b})" )
+diagtex = ROOT.TLatex(0.20,0.365, "m_{#tilde{g}}-m_{#tilde{#chi}_{1}^{0}} = 2 #upoint (m_{W} + m_{b})" )
 diagtex.SetNDC()
-diagtex.SetTextSize(0.02)
+diagtex.SetTextSize(0.03)
 diagtex.SetTextAngle(37)
 diagtex.SetLineWidth(2)
 diagtex.SetTextFont(42)
@@ -312,7 +324,7 @@ l1.SetTextFont(42)
 l1.SetTextSize(0.036)
 l1.SetShadowColor(ROOT.kWhite)
 l1.SetFillColor(ROOT.kWhite)
-l1.SetHeader("pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow t#bar{t}#tilde{#chi}^{0}_{1}            NLO+NLL Exclusion")
+l1.SetHeader("pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow t#bar{t}#tilde{#chi}^{0}_{1}            NLO+NLL exclusion")
 l1.AddEntry(cobs , "Observed #pm 1 #sigma_{theory}", "l")
 l1.AddEntry(cexp , "Expected #pm 1 #sigma_{experiment}", "l")
 
@@ -325,7 +337,7 @@ cmstex.Draw()
 
 cmstexbold = ROOT.TLatex(0.17,0.91, "CMS" )
 cmstexbold.SetNDC()
-cmstexbold.SetTextSize(0.04)
+cmstexbold.SetTextSize(0.05)
 cmstexbold.SetLineWidth(2)
 cmstexbold.SetTextFont(61)
 cmstexbold.Draw()
@@ -417,7 +429,12 @@ h_sexp.Draw("colz")
 cexp.Draw("samecont2");
 c1.SaveAs("sexp.pdf")
 
-fout = ROOT.TFile("ss_t1tttt_scan_xsec.root","RECREATE")
+fout = ROOT.TFile("SUS15008_t1tttt.root","RECREATE")
+hxsecwrite = h_xsec.Clone("xsec")
+for xbin in range(1,hxsecwrite.GetNbinsX()+1):
+    for ybin in range(1,hxsecwrite.GetNbinsY()+1):
+        if hxsecwrite.GetYaxis().GetBinUpEdge(ybin)>1275: hxsecwrite.SetBinContent(xbin,ybin,0)
+hxsecwrite.Write()
 cobswrite = cobs.Clone("ssobs")
 cobswrite.Write()
 com1write = com1.Clone("ssobs_m1s")

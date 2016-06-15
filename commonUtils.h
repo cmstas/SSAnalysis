@@ -5,10 +5,11 @@ float getLumi() { return 0.8042; }
 float getLumiUnblind() { return 0.8042; }
 bool isUnblindRun(int run) { return run <= 274240; }
 
-// TString getTag() { return "v5.07"; }
-// TString getTag() { return "v6.02"; }
-// TString getTag() { return "v8.00-fix"; }
+TString getTag() { return "v6.02"; }
 TString getTag() { return "v8.02"; }
+//TString getTag() { return "v7.00"; }
+
+bool applyThirdLeptonVeto() { return false; }
 
 float getWZSF() { return 0.85; }
 
