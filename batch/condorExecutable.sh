@@ -18,7 +18,7 @@ eval `scramv1 runtime -sh`
 popd
 
 #Specify name of output file and name of dierctory in /hadoop/...
-export DIRNAME=ss_babies_June9
+export DIRNAME=ss_babies_June10 # FIXME match submit25ns
 export WHICH_SMALL=`echo ${WHICH,,}`
 
 #backgrounds
@@ -68,15 +68,18 @@ if [ "$WHICH" == "105" ]; then WHICH_SMALL="t6ttww_600_425_50"; fi
 if [ "$WHICH" == "106" ]; then WHICH_SMALL="t6ttww_650_150_50"; fi
 
 #data
-if [ "$WHICH" == "1000" ]; then WHICH_SMALL="datadoubleegc"; fi
-if [ "$WHICH" == "1001" ]; then WHICH_SMALL="datadoublemuonc"; fi
-if [ "$WHICH" == "1002" ]; then WHICH_SMALL="datamuonegc"; fi
-if [ "$WHICH" == "1003" ]; then WHICH_SMALL="datadoubleegd"; fi
-if [ "$WHICH" == "1004" ]; then WHICH_SMALL="datadoublemuond"; fi
-if [ "$WHICH" == "1005" ]; then WHICH_SMALL="datamuonegd"; fi
-if [ "$WHICH" == "1006" ]; then WHICH_SMALL="datadoubleegd_v4"; fi
-if [ "$WHICH" == "1007" ]; then WHICH_SMALL="datadoublemuond_v4"; fi
-if [ "$WHICH" == "1008" ]; then WHICH_SMALL="datamuonegd_v4"; fi
+if [ "$WHICH" == "1000" ]; then WHICH_SMALL="datadoubleegv1"; fi
+if [ "$WHICH" == "1001" ]; then WHICH_SMALL="datadoublemuonv1"; fi
+if [ "$WHICH" == "1002" ]; then WHICH_SMALL="datamuonegv1"; fi
+if [ "$WHICH" == "1003" ]; then WHICH_SMALL="datadoubleegv2"; fi
+if [ "$WHICH" == "1004" ]; then WHICH_SMALL="datadoublemuonv2"; fi
+if [ "$WHICH" == "1005" ]; then WHICH_SMALL="datamuonegv2"; fi
+# if [ "$WHICH" == "1003" ]; then WHICH_SMALL="datadoubleegd"; fi
+# if [ "$WHICH" == "1004" ]; then WHICH_SMALL="datadoublemuond"; fi
+# if [ "$WHICH" == "1005" ]; then WHICH_SMALL="datamuonegd"; fi
+# if [ "$WHICH" == "1006" ]; then WHICH_SMALL="datadoubleegd_v4"; fi
+# if [ "$WHICH" == "1007" ]; then WHICH_SMALL="datadoublemuond_v4"; fi
+# if [ "$WHICH" == "1008" ]; then WHICH_SMALL="datamuonegd_v4"; fi
 
 #signal
 if [ "$WHICH" == "10001" ] ; then WHICH_SMALL="t1tttt_1950_700to950"        ; fi

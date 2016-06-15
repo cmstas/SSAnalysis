@@ -28,46 +28,45 @@ int scan(){
 
     TString tag = getTag();
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");  titles.push_back("Fakes");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP*.root");
+    std::vector<TString> files;
+
+
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");  titles.push_back("Fakes"); files.push_back("Fakes");
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP*.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_high.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_low.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets.root");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZL.root");    titles.push_back("ttZH");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZLOW.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZ.root");    titles.push_back("ttZH"); files.push_back("ttZH");
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZLOW.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTHtoNonBB.root");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");   titles.push_back("ttW");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");   titles.push_back("ttW"); files.push_back("TTW");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");     titles.push_back("Rares");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root"); titles.push_back("Rares"); files.push_back("Rares");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/GGHtoZZto4L.root");
+
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWZ.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZZ.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWW.root");
+
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWDPS.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/VHtoNonBB.root");
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/VHtoNonBB.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTTT.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TZQ.root");
     //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/T6TTWW_600_425_50.root ");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/QQWW.root");     titles.push_back("WW");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/QQWW.root");     titles.push_back("WW"); files.push_back("WW");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WGToLNuG.root");     titles.push_back("XG");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WGToLNuG.root");     titles.push_back("XG"); files.push_back("XG");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZG.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TG.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTG.root");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ.root");     titles.push_back("WZ");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ.root");     titles.push_back("WZ"); files.push_back("WZ");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGC_05oct.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGD_05oct.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleEGD_v4.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonC_05oct.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonD_05oct.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataDoubleMuonD_v4.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGC_05oct.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGD_05oct.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DataMuonEGD_v4.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/Data*.root"); files.push_back("Data");
 
     int nEventsTotal = 0;
     int nEventsChain = ch->GetEntries();
@@ -102,12 +101,11 @@ int scan(){
     TH2F* h2D_ht_njets_wz = new TH2F("ht_njets_wz", "", 20,0,1000, 7,0,7);
     TH2F* h2D_ht_sumleppt_wz = new TH2F("ht_sumleppt_wz", "", 20,0,1000, 40,0,400);
 
-    vector<TString> files = {"Fakes","ttZH","TTW","Rares","WW","XG","WZ","Data"}; 
     for(int i = 0; i < files.size(); i++) {
 
         TH1F* h1D_njets_file = new TH1F("njets"+files.at(i), "Njets;;Entries", 10, 0, 10);
         TH1F* h1D_ht_file = new TH1F("ht"+files.at(i), "H_{T};GeV;Entries", 20, 0, 1000); 
-        TH1F* h1D_met_file = new TH1F("met"+files.at(i), "#slash{E}_{T};GeV;Entries", 20, 0, 300); 
+        TH1F* h1D_met_file = new TH1F("met"+files.at(i), "#slash{E}_{T};GeV;Entries", 8, 0, 200); 
         TH1F* h1D_mt_file = new TH1F("mt"+files.at(i), "M_{T};GeV;Entries", 20, 0, 450); 
         TH1F* h1D_zmass_file = new TH1F("zmass"+files.at(i), "Z Mass;GeV;Entries", 42, 70, 112); 
         TH1F* h1D_hyp_class_file = new TH1F("hypclass"+files.at(i), "hyp_class;ID;Entries", 7, 0, 7); 
@@ -148,13 +146,14 @@ int scan(){
         samesign.Init(tree);
 
         TString filename_(currentFile->GetTitle());
+        std::cout << " filename_: " << filename_ << std::endl;
 
         int iSample_ = -1;
 
         // if(filename_.Contains("TTBAR") || filename_.Contains("SINGLETOP")  || filename_.Contains("DY_")  || filename_.Contains("WJets") )                          { filename_ = "Fakes"; iSample_ = 0; }
-             if(filename_.Contains("TTZL") || filename_.Contains("TTZLOW") || filename_.Contains("TTHtoNonBB"))                                                   { filename_ = "TTZ";   iSample_ = 1; }
+             if(filename_.Contains("TTZ") || filename_.Contains("TTZLOW") || filename_.Contains("TTHtoNonBB"))                                                   { filename_ = "TTZ";   iSample_ = 1; }
         else if(filename_.Contains("TTW"))                                                                                                                      { filename_ = "TTW";   iSample_ = 2; }
-        else if(filename_.Contains("/ZZ.root") || filename_.Contains("/GGHtoZZto4L.root") || filename_.Contains("/WWZ.root") || filename_.Contains("/WZZ.root") || //filename_.Contains("/T6TTWW_600_425_50.root") ||
+        else if(filename_.Contains("/ZZ.root") || filename_.Contains("/GGHtoZZto4L.root") || filename_.Contains("/WWZ.root") || filename_.Contains("/WZZ.root") || filename_.Contains("/WWW.root") ||
                 filename_.Contains("/WWDPS.root") || filename_.Contains("/VHtoNonBB.root") || filename_.Contains("/TTTT.root") || filename_.Contains("/TZQ.root") ) { filename_ = "Rares"; iSample_ = 3; }
         else if(filename_.Contains("QQWW.root"))                                                                                                                { filename_ = "WW";    iSample_ = 4; }
         else if(filename_.Contains("/WGToLNuG.root") || filename_.Contains("/ZG.root") || filename_.Contains("/TG.root") || filename_.Contains("/TTG.root"))       { filename_ = "XG";    iSample_ = 5; }
@@ -174,7 +173,8 @@ int scan(){
 
             float scale = 1.0;
             if(!ss::is_real_data()) {
-                scale = ss::scale1fb() * luminosity * getTruePUw(ss::trueNumInt()[0]);
+                // scale = ss::scale1fb() * luminosity * getTruePUw(ss::trueNumInt()[0]);
+                scale = ss::scale1fb() * luminosity; // FIXME
             } else {
                 DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
                 if (is_duplicate(id) ) continue;
@@ -186,7 +186,7 @@ int scan(){
             // fill these before making cuts
             fill(h1D_hyp_class_vec.at(iSample), ss::hyp_class(), scale);
 
-            if (!ss::fired_trigger()) continue;
+            if (!ss::fired_trigger() && ss::is_real_data()) continue;
             if (ss::is_real_data()) {
                 if (!ss::passedFilterList()) continue;
                 if (!ss::passes_met_filters()) continue;
@@ -207,10 +207,12 @@ int scan(){
                 if (ss::lep2_motherID()!=1 && ss::lep2_isPrompt()!=1 && ss::lep2_isDirectPrompt()!=1) continue;
                 if (!(abs(ss::lep3_mcid()) == 11 || abs(ss::lep3_mcid()) == 13)) continue;
 
-                scale *=  triggerScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::ht())
-                        * leptonScaleFactor( ss::lep1_id(), ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht())
-                        * leptonScaleFactor( ss::lep2_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::ht())
-                        * leptonScaleFactor( ss::lep3_id(), ss::lep3_p4().pt(), ss::lep3_p4().eta(), ss::ht());
+                // FIXME
+                // scale *=  triggerScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::ht())
+                //         * leptonScaleFactor( ss::lep1_id(), ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht())
+                //         * leptonScaleFactor( ss::lep2_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::ht())
+                //         * leptonScaleFactor( ss::lep3_id(), ss::lep3_p4().pt(), ss::lep3_p4().eta(), ss::ht());
+
             }
 
             float zmass;
@@ -224,11 +226,24 @@ int scan(){
 
 
             float fr = 0.0;
+            float eff = 1.0;
             bool isDataFake = false;
-            if(ss::is_real_data() && (ss::lep3_fo() && !ss::lep3_tight())) {  // lep3 fake
+            if(ss::is_real_data() && (ss::lep3_fo() && !ss::lep3_tight()) && ss::lep1_passes_id() && ss::lep2_passes_id()) {  // lep3 fake
                 fr = fakeRate(ss::lep3_id(),ss::lep3_p4().pt(),ss::lep3_p4().eta(),ss::ht()); isDataFake = true;
+                eff *= fr / (1-fr);
             }
-            float eff = fr / (1-fr);
+            if(ss::is_real_data() && (ss::lep2_fo() && !ss::lep2_tight()) && ss::lep1_passes_id() && ss::lep3_passes_id()) {  // lep2 fake
+                fr = fakeRate(ss::lep2_id(),ss::lep2_p4().pt(),ss::lep2_p4().eta(),ss::ht()); isDataFake = true;
+                eff *= fr / (1-fr);
+            }
+            if(ss::is_real_data() && (ss::lep1_fo() && !ss::lep1_tight()) && ss::lep2_passes_id() && ss::lep3_passes_id()) {  // lep1 fake
+                fr = fakeRate(ss::lep1_id(),ss::lep1_p4().pt(),ss::lep1_p4().eta(),ss::ht()); isDataFake = true;
+                eff *= fr / (1-fr);
+            }
+
+            if(ss::is_real_data()) {
+                std::cout << " isDataFake: " << isDataFake << " ss::lep1_passes_id(): " << ss::lep1_passes_id()  << " ss::lep2_passes_id(): " << ss::lep2_passes_id()  << " ss::lep3_passes_id(): " << ss::lep3_passes_id() << std::endl;
+            }
 
             if( !(  isDataFake || (ss::lep1_passes_id() && ss::lep2_passes_id() && ss::lep3_passes_id())  ) ) continue;
 
@@ -241,6 +256,7 @@ int scan(){
                 iSample = 0;
                 scale = eff;
             }
+
 
             // all 4 of these define the CR
             bool goodBtags = ss::nbtags() < 1;
@@ -318,6 +334,18 @@ int scan(){
 
         delete file;
     }//file loop
+    
+  //Titles for legend
+
+  vector <Color_t> colors; // want this to match yieldMaker.C
+  colors.push_back(18);  // fakes
+  colors.push_back(kGreen-6);  // ttzh
+  colors.push_back(kGreen+3);  // tw
+  colors.push_back(kMagenta-7);  // rares
+  colors.push_back(kOrange-3);  // ww
+  colors.push_back(kViolet+2);  // xg
+  colors.push_back(kOrange); // wz
+
 
     std::cout << " nGoodEventsWeighted: " << nGoodEventsWeighted << " nGoodEvents: " << nGoodEvents << " nGoodEventsData: " << nGoodEventsData << " nEventsTotal: " << nEventsTotal << std::endl;
     printCounter(true);
@@ -332,20 +360,20 @@ int scan(){
     std::string HLbins = " --xAxisVerticalBinLabels --xAxisBinLabels 1B,2B,3B,4B,5B,6B,7B,8B,9B,10B,11B,12B,13B,14B,15B,16B,17B,18B,19B,20B,21B,22B,23B,24B,25B,26B";
     std::string LLbins = " --xAxisVerticalBinLabels --xAxisBinLabels 1C,2C,3C,4C,5C,6C,7C,8C";
 
-    data = h1D_njets_vec.back(); h1D_njets_vec.pop_back(); dataMCplotMaker(data,h1D_njets_vec    ,titles,"Njets",spec,com+"h1D_njets.pdf           --isLinear --vLine 5 --xAxisOverride njets");
-    data = h1D_ht_vec.back(); h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec             ,titles,"H_{T}",spec,com+"h1D_ht.pdf              --isLinear             --xAxisOverride H_{T} [GeV]");
-    data = h1D_mtmin_vec.back(); h1D_mtmin_vec.pop_back(); dataMCplotMaker(data,h1D_mtmin_vec    ,titles,"m_{T,min}",spec,com+"h1D_mtmin.pdf       --isLinear             --xAxisOverride m_{T,min} [GeV]");
-    data = h1D_met_vec.back(); h1D_met_vec.pop_back(); dataMCplotMaker(data,h1D_met_vec          ,titles,"#slash{E}_{T}",spec,com+"h1D_met.pdf     --isLinear             --xAxisOverride #slash{E}_{T} [GeV]");
+    data = h1D_njets_vec.back(); h1D_njets_vec.pop_back(); dataMCplotMaker(data,h1D_njets_vec ,titles,"Njets",spec,com+"h1D_njets.pdf --isLinear --vLine 5 --xAxisOverride njets", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_ht_vec.back(); h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec ,titles,"H_{T}",spec,com+"h1D_ht.pdf --isLinear --xAxisOverride H_{T} [GeV]", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_mtmin_vec.back(); h1D_mtmin_vec.pop_back(); dataMCplotMaker(data,h1D_mtmin_vec ,titles,"m_{T,min}",spec,com+"h1D_mtmin.pdf --isLinear --xAxisOverride m_{T,min} [GeV]", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_met_vec.back(); h1D_met_vec.pop_back(); dataMCplotMaker(data,h1D_met_vec ,titles,"#slash{E}_{T}",spec,com+"h1D_met.pdf --isLinear --xAxisOverride #slash{E}_{T} [GeV]", vector <TH1F*>(), vector<string>(), colors);
 
-    data = h1D_nbtags_vec.back(); h1D_nbtags_vec.pop_back(); dataMCplotMaker(data,h1D_nbtags_vec ,titles,"Nbtags",spec,com+"h1D_nbtags.pdf         --isLinear --vLine 1 --xAxisOverride nbtags");
-    data = h1D_lep1pt_vec.back(); h1D_lep1pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep1pt_vec ,titles,"p_{T}(lep_{1})",spec,com+"h1D_lep1pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{1}) [GeV]");
-    data = h1D_lep2pt_vec.back(); h1D_lep2pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep2pt_vec ,titles,"p_{T}(lep_{2})",spec,com+"h1D_lep2pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{2}) [GeV]");
+    data = h1D_nbtags_vec.back(); h1D_nbtags_vec.pop_back(); dataMCplotMaker(data,h1D_nbtags_vec ,titles,"Nbtags",spec,com+"h1D_nbtags.pdf --isLinear --vLine 1 --xAxisOverride nbtags", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_lep1pt_vec.back(); h1D_lep1pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep1pt_vec ,titles,"p_{T}(lep_{1})",spec,com+"h1D_lep1pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{1}) [GeV]", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_lep2pt_vec.back(); h1D_lep2pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep2pt_vec ,titles,"p_{T}(lep_{2})",spec,com+"h1D_lep2pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{2}) [GeV]", vector <TH1F*>(), vector<string>(), colors);
 
-    drawHist2D(h2D_ht_sumleppt_wz , "pdfs/h2D_ht_sumleppt_wz.pdf" , "--logscale --title WZ: p_{T}(lep_{1})+p_{T}(lep_{2}) vs H_{T} --xlabel  sum H_{T} --ylabel leppt");
-    drawHist2D(h2D_ht_njets_wz , "pdfs/h2D_ht_njets_wz.pdf" , "--logscale --title WZ: Njets vs H_{T} --xlabel  H_{T} --ylabel Njets");
-    drawHist2D(h2D_ptlep1_ptlep2_wz , "pdfs/h2D_ptlep1_ptlep2_wz.pdf" , "--logscale --title WZ: p_{T}(lep_{1}) vs p_{T}(lep_{2}) --xlabel  ptlep2 --ylabel ptlep1");
-    drawHist2D(h2D_njets_nbtags_wz  , "pdfs/h2D_njets_nbtags_wz.pdf"  , "--logscale --title WZ: Njets vs Nbtags --xlabel  nbtags --ylabel njets");
-    drawHist2D(h2D_met_mtmin_wz     , "pdfs/h2D_met_mtmin_wz.pdf"     , "--logscale --title WZ: #slash{E}_{T} vs m_{T,min} --xlabel  mtmin --ylabel met");
+    // drawHist2D(h2D_ht_sumleppt_wz , "pdfs/h2D_ht_sumleppt_wz.pdf" , "--logscale --title WZ: p_{T}(lep_{1})+p_{T}(lep_{2}) vs H_{T} --xlabel  sum H_{T} --ylabel leppt");
+    // drawHist2D(h2D_ht_njets_wz , "pdfs/h2D_ht_njets_wz.pdf" , "--logscale --title WZ: Njets vs H_{T} --xlabel  H_{T} --ylabel Njets");
+    // drawHist2D(h2D_ptlep1_ptlep2_wz , "pdfs/h2D_ptlep1_ptlep2_wz.pdf" , "--logscale --title WZ: p_{T}(lep_{1}) vs p_{T}(lep_{2}) --xlabel  ptlep2 --ylabel ptlep1");
+    // drawHist2D(h2D_njets_nbtags_wz  , "pdfs/h2D_njets_nbtags_wz.pdf"  , "--logscale --title WZ: Njets vs Nbtags --xlabel  nbtags --ylabel njets");
+    // drawHist2D(h2D_met_mtmin_wz     , "pdfs/h2D_met_mtmin_wz.pdf"     , "--logscale --title WZ: #slash{E}_{T} vs m_{T,min} --xlabel  mtmin --ylabel met");
 
     return 0;
 }

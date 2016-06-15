@@ -4,7 +4,7 @@ xrootdbroken="1"
 
 nSubmitted=0
 
-SPPATH=""
+SPPATH="ss_babies_June10" # FIXME must match with DIRNAME in condorExecutable
 
 DOCOMPILE="1"
 NOSUBMIT="0"
@@ -58,6 +58,8 @@ else
 fi
 pathToProxy=`voms-proxy-info -path`
 
+condor_q -w $USER | grep "condorExecutable" > submittedjobs.txt
+
 #Change the username
 sed -i "s/namin/$USER/" condorFileTemplate
 sed -i "s/namin/$USER/" condorExecutable.sh
@@ -75,7 +77,7 @@ CENTRAL="WGMG WZ  GGHtoZZto4L TTBAR TTW ZG SINGLETOP1 SINGLETOP2 TTWQQ TTZQ  ZZ 
 CENTRAL2="SINGLETOP3"
 T5TTTTDEG="T5tttt_degen_1225to1400_1075to1275 T5tttt_degen_1425to1600_1275to1375 T5tttt_degen_825to1000_0to825 T5tttt_degen_825to1000_675to875 T5tttt_degen_1225to1400_0to1225 T5tttt_degen_600to800_450to675 T5tttt_degen_1425to1600_0to1350 T5tttt_degen_1650to1700_0to1350 T5tttt_degen_1025to1200_0to1025 T5tttt_degen_600to800_0to625 T5tttt_degen_1025to1200_875to1075"
 T5TTCC="T5ttcc_825to1000_675to875 T5ttcc_1025to1200_875to1075 T5ttcc_825to1000_0to825 T5ttcc_600to800_450to675 T5ttcc_1225to1400_1075to1225 T5ttcc_1225to1400_0to1225 T5ttcc_1650to1700_0to1350 T5ttcc_1425to1525_1275to1375 T5ttcc_1025to1200_0to1025 T5ttcc_600to800_0to625 T5ttcc_1425to1600_0to1350"
-DATA="DataDoubleMuonD DataDoubleEGD DataMuonEGD DataDoubleMuonC DataDoubleEGC DataMuonEGC" 
+# DATA="DataDoubleMuonD DataDoubleEGD DataMuonEGD DataDoubleMuonC DataDoubleEGC DataMuonEGC" 
 # ALL="$DATA $T1FASTSIM $T5FASTSIM $T6FASTSIM $T5WFASTSIM $T1TTBBFASTSIM $DMFASTSIM $CENTRAL $T5TTTTDEG $T5TTCC"
 # ALL="$DATA $CENTRAL"
 # ALL="$DATA $CENTRAL $CENTRAL2"
@@ -83,12 +85,17 @@ DATA="DataDoubleMuonD DataDoubleEGD DataMuonEGD DataDoubleMuonC DataDoubleEGC Da
 # FORSYNC="TTBAR DY_high WZ TTW QQWW TG"
 FORSYNC="TG"
 
-CENTRAL_NEW="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT GGHtoZZto4L WJets DY_high"
-NOT_YET="ZZ TTZlow TTBAR_PH"
+DATA="DataDoubleMuonv1 DataDoubleEGv1 DataMuonEGv1 DataDoubleMuonv2 DataDoubleEGv2 DataMuonEGv2"
+CENTRAL_NEW="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ TTBAR_PH GGHtoZZto4L"
+NOT_YET="TTZlow"
+
+# ALL="$CENTRAL_NEW $DATA"
+ALL="GGHtoZZto4L"
+
 
 #Then submit jobs
 nIter=0
-for sname in $CENTRAL_NEW
+for sname in $ALL
 do
   isSignal=0 
   path="/hadoop/cms/store/group/snt/run2_25ns_MiniAODv2"
@@ -127,9 +134,9 @@ do
       tag="V08-00-05";
     nameNu=3
   elif [ $sname == "DY_low" ]; then 
-    name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/v1/";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/V/";
+    name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+      path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2/";
+      tag="V08-00-05";
     nameNu=4
   elif [ $sname == "DY_high" ]; then 
       name="DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1";
@@ -201,9 +208,9 @@ do
       tag="V08-00-05";
     nameNu=17
   elif [ $sname == "TTBAR_PH" ] ;then 
-    name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext4-v1"; 
-    tag="V07-06-03_MC";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
+    name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext4-v1";
+    tag="V08-00-01";
+    path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
     nameNu=18
   elif [ $sname == "WWZ" ]; then 
       name="WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
@@ -211,9 +218,9 @@ do
       tag="V08-00-05";
     nameNu=20
   elif [ $sname == "ZZ" ]; then 
-    name="ZZTo4L_13TeV_powheg_pythia8";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      name="ZZTo4L_13TeV_powheg_pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+      path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2/";
+      tag="V08-00-05";
     nameNu=21
   elif [ $sname == "TG" ]; then 
       name="TGJets_TuneCUETP8M1_13TeV_amcatnlo_madspin_pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1";
@@ -256,9 +263,9 @@ do
     path="/hadoop/cms/store/group/snt/run2_25ns_privateMiniAOD"
     nameNu=29
   elif [ $sname == "GGHtoZZto4L" ] ; then
-    name="GluGluHToWWTo2L2Nu_M125_13TeV_powheg_JHUgen_pythia8";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/H/";
+    name="GluGluHToZZTo4L_M125_13TeV_powheg2_JHUgenV6_pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1";
+    tag="V08-00-01";
+    path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
     nameNu=30
   elif [ $sname == "WZMG" ] ; then
     name="WZJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"
@@ -285,57 +292,43 @@ do
     nameNu=35
 
     #data
-  elif [ $sname == "DataDoubleEGC"    ]; then 
+  elif [ $sname == "DataDoubleEGv1"    ]; then 
     isData="1"
-    name="DoubleEG_Run2015C_25ns-16Dec2015-v1";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    name="Run2016B_DoubleEG_MINIAOD_PromptReco-v1/merged/";
+    tag="V08-00-04";
+    path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1000
-  elif [ $sname == "DataDoubleMuonC"  ]; then 
+  elif [ $sname == "DataDoubleMuonv1"  ]; then 
     isData="1"
-    name="DoubleMuon_Run2015C_25ns-16Dec2015-v1";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    name="Run2016B_DoubleMuon_MINIAOD_PromptReco-v1/merged/";
+    tag="V08-00-04";
+    path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1001
-  elif [ $sname == "DataMuonEGC"    ]; then 
+  elif [ $sname == "DataMuonEGv1"    ]; then 
     isData="1"
-    name="MuonEG_Run2015C_25ns-16Dec2015-v1";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    name="Run2016B_MuonEG_MINIAOD_PromptReco-v1/merged/";
+    tag="V08-00-04";
+    path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1002
-  elif [ $sname == "DataDoubleEGD"    ]; then 
+
+  elif [ $sname == "DataDoubleEGv2"    ]; then 
     isData="1"
-    name="DoubleEG_Run2015D-16Dec2015-v2";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    name="Run2016B_DoubleEG_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-04";
+    path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1003
-  elif [ $sname == "DataDoubleMuonD"  ]; then 
+  elif [ $sname == "DataDoubleMuonv2"  ]; then 
     isData="1"
-    name="DoubleMuon_Run2015D-16Dec2015-v1";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    name="Run2016B_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-04";
+    path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1004
-  elif [ $sname == "DataMuonEGD"    ]; then 
+  elif [ $sname == "DataMuonEGv2"    ]; then 
     isData="1"
-    name="MuonEG_Run2015D-16Dec2015-v1";
-    tag="CMS3_V07-06-03";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    name="Run2016B_MuonEG_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-04";
+    path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1005
-  # elif [ $sname == "DataDoubleEGD_v4"    ]; 
-  #   then name="Run2015D_DoubleEG_MINIAOD_PromptReco-v4";
-  #   path="/hadoop/cms/store/group/snt/run2_data"
-  #   tag=V07-04-11
-  #   nameNu=1006
-  # elif [ $sname == "DataDoubleMuonD_v4"  ]; 
-  #   then name="Run2015D_DoubleMuon_MINIAOD_PromptReco-v4";
-  #   path="/hadoop/cms/store/group/snt/run2_data"
-  #   tag=V07-04-11
-  #   nameNu=1007
-  # elif [ $sname == "DataMuonEGD_v4"    ]; 
-  #   then name="Run2015D_MuonEG_MINIAOD_PromptReco-v4";
-  #   path="/hadoop/cms/store/group/snt/run2_data"
-  #   tag=V07-04-11
-  #   nameNu=1008
 
   #Signals
   elif [ $sname == "T1TTTT_1500" ] 
@@ -1039,37 +1032,51 @@ do
     number=$(( $i + 1 ))
 
     #Except they've finished
-    if [ -e /hadoop/cms/store/user/$USER/condor/ss_13_babies/$SPPATH/${sname_lower}_${number}.root ] 
+    if [ -e /hadoop/cms/store/user/$USER/condor/$SPPATH/${sname_lower}_${number}.root ] 
     then 
       continue
     fi
 
     echo "-------------"
     echo "Working on $sname $number"
-  
-    #Or if they're still running
-    if [ -e /data/tmp/${USER}/logs/condorLog_${nameNu}_${number}.log ] 
-    then
-      while read line
-      do
-        if [ `echo $line | awk '{ print $1 }'` == "Cluster" ] 
-        then
-          cluster=`echo $line | awk '{ print $3 }'`
-        elif [ `echo $line | awk '{ print $1 }'` == "Proc" ] 
-        then
-          process=`echo $line | awk '{ print $3 }'`
-        fi
-      done < /data/tmp/${USER}/logs/condorLog_${nameNu}_${number}.log
-      jobid="$cluster.$process"
-      condor_q $jobid > temp.txt
-      result=`more temp.txt | awk 'END{print $1}'`
-      if [ "$result" == "$jobid" ] 
-      then
-        echo "already submitted!"
+
+
+    # Or if they're still running
+    result=$( grep " ${nameNu} ${number} ${USER}" submittedjobs.txt | wc -l )
+    if [ "$result" == "1" ] ; then
+        if [ "$verbose" == "true" ]; then echo "already submitted!"; fi
         let "nSubmitted=$nSubmitted+1"
         continue
-      fi
     fi
+    # condorExecutable.sh 2 147 namin
+    # condorExecutable.sh 1003 116 namin
+
+
+  
+    # #Or if they're still running
+    # if [ -e /data/tmp/${USER}/logs/condorLog_${nameNu}_${number}.log ] 
+    # then
+    #   while read line
+    #   do
+    #     if [ `echo $line | awk '{ print $1 }'` == "Cluster" ] 
+    #     then
+    #       cluster=`echo $line | awk '{ print $3 }'`
+    #     elif [ `echo $line | awk '{ print $1 }'` == "Proc" ] 
+    #     then
+    #       process=`echo $line | awk '{ print $3 }'`
+    #     fi
+    #   done < /data/tmp/${USER}/logs/condorLog_${nameNu}_${number}.log
+    #   jobid="$cluster.$process"
+    #   condor_q $jobid > temp.txt
+    #   result=`more temp.txt | awk 'END{print $1}'`
+    #   if [ "$result" == "$jobid" ] 
+    #   then
+    #     echo "already submitted!"
+    #     let "nSubmitted=$nSubmitted+1"
+    #     continue
+    #   fi
+    # fi
+
     echo "submitting..."
     let "nSubmitted=$nSubmitted+1"
 

@@ -1,21 +1,40 @@
 #!/bin/bash
 
-path="/hadoop/cms/store/user/${USER}/condor/ss_13_babies/"
+# path="/hadoop/cms/store/user/${USER}/condor/ss_13_babies/"
+path="/hadoop/cms/store/user/${USER}/condor/ss_babies_June10/"
 
 samples = [
 
 # ["WJets","wjets_*.root"],
-# ["DY_low","dy_low_*.root"],
-# ["DY_high_LO","dy_high_LO_*.root"],
-
-# ["DataDoubleEGC","datadoubleegc_*.root"],
-# ["DataDoubleMuonC","datadoublemuonc_*.root"],
-# ["DataMuonEGC","datamuonegc_*.root"],
-# ["DataDoubleEGD","datadoubleegd_*.root"],
-# ["DataDoubleMuonD","datadoublemuond_*.root"],
-# ["DataMuonEGD","datamuonegd_*.root"],
-
 # ["DY_high","dy_high_[0-9]*.root"],
+# ["DY_low","dy_low_*.root"],
+# ["DataDoubleEG","datadoubleeg*.root"],
+# ["DataDoubleMuon","datadoublemuon*.root"],
+# ["DataMuonEG","datamuoneg*.root"],
+# ["WWZ","wwz_*.root"],
+# ["WWW","www_*.root"],
+# ["TTZ","ttz_*.root"],
+# ["TTW","ttw_*.root"],
+# ["WZ","wz_*.root"],
+# ["WGToLNuG","wgtolnug_*.root"],
+# ["TTG","ttg_*.root"],
+# ["TTHtoNonBB","tthtononbb_*.root"],
+# ["TZQ","tzq_*.root"],
+# ["TTTT","tttt_*.root"],
+# ["VHtoNonBB","vhtononbb_*.root"],
+# ["WZZ","wzz_*.root"],
+# ["WWDPS","wwdps_*.root"],
+# ["QQWW","qqww_*.root"],
+# ["TG","tg_*.root"],
+# ["ZG","zg_*.root"],
+# ["ZZ","zz_*.root"],
+# ["TTBAR_PH","ttbar_ph_*.root"],
+["GGHtoZZto4L","gghtozzto4l_*.root"],
+
+
+
+
+# ["DY_high_LO","dy_high_LO_*.root"],
 # ["TTBAR","ttbar_[0-9]*.root"],
 # ["WWZ","wwz_*.root"],
 # ["ZZ","zz_*.root"],
@@ -40,7 +59,7 @@ samples = [
 # ["SINGLETOP4","singletop4_*.root"],
 # ["SINGLETOP5","singletop5_*.root"],
 # ["QQWW","qqww_*.root"],
-["TG","tg_*.root"],
+# ["TG","tg_*.root"],
 # ["ZG","zg_*.root"],
 # ["GGHtoZZto4L","gghtozzto4l_*.root"],
 # ["WGMG","wgmg_*.root"],
@@ -194,6 +213,7 @@ for final,loc in samples:
     files = glob.glob("%s/%s" % (path,loc))
 
     if(len(files) < 1): continue
+
     if os.path.isfile(final+".root"):
         print "%s.root already in here, skipping" % final
         continue

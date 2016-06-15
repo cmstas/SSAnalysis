@@ -620,7 +620,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       int nbtags = 0;
       for(unsigned int i=0; i<jets_recorr.size(); i++)  {
 	if(ROOT::Math::VectorUtil::DeltaR(jets_recorr[i], p4()) < 1.) continue; //0.4 in babymaker
-	if(jets_disc()[i] > 0.800) nbtags++;
+	if(jets_disc()[i] > 0.800) nbtags++; // FIXME
 	if(jets_recorr[i].pt() > 40.) {
 	  ht += jets_recorr[i].pt();
 	  njets40++;
@@ -652,8 +652,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       //trigger selection
       if (debug) cout << "check hlt HLT_Mu8=" << HLT_Mu8() << " HLT_Mu17=" << HLT_Mu17() << " HLT_Ele12_CaloIdM_TrackIdM_PFJet30=" << HLT_Ele12_CaloIdM_TrackIdM_PFJet30() << endl;
-      //electron trigger messed up in 80X MC?
-      if (abs(id())==11 && (isData || isQCD)) {
+      if (abs(id())==11 && (isData)) {
 	// ele12 for 2015D
 	if (useIsoTrigs) {
 	  if (HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()<=0
@@ -661,19 +660,18 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
               ) continue;
 	} else {
 	  if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<=0
-	   && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()<=0) continue;
+	   && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()<=0
+       ) continue;
 	}
       }
-      if (abs(id())==13 && (isData || isQCD)) {
+      if (abs(id())==13 && (isData)) {
 	// mu8 or mu17 for 2015D
 	if (useIsoTrigs) {
 	  if (HLT_Mu8_TrkIsoVVL()<=0 &&
 	      HLT_Mu17_TrkIsoVVL()<=0) continue;
-	  // if ( HLT_Mu17_TrkIsoVVL()<=0) continue; // FIXME delete this and uncomment the prev 2 lines
 	} else {
 	  if (HLT_Mu8()<=0 &&
 	      HLT_Mu17()<=0) continue;
-	  // if ( HLT_Mu17()<=0) continue; // FIXME delete this and uncomment the prev 2 lines
 	}
 	
       }	
@@ -681,11 +679,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (debug) cout << "check pt range of triggers" << endl; 
       //check prescales, apply cuts on the pT range depending on the trigger
       int prescale = -1;
-      if(!isData && !isQCD) prescale = 1; // triggers messed up in 80X MC
-      if (abs(id())==11 && (isData || isQCD)) {	 // electron triggers messed up in 80X MC?
-	// use ele12
+      if(!isData) prescale = 1; // triggers messed up in 80X MC
+      if (abs(id())==11 && (isData)) {
 	if (useIsoTrigs) {
-	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
+	  if (p4().pt() >= 10 && HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
           prescale = HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30();
           prescale = e8i; // FIXME
       }
@@ -696,7 +693,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (prescale>0) weight *= prescale;
 	  else continue;	  
 	} else {
-	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0) {
+	  if (p4().pt() >= 10 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0) {
           prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
           prescale = e8; // FIXME
       }
@@ -708,12 +705,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  else continue;	  
 	}
       }
-      if (abs(id())==13 && (isData || isQCD)) {	
+      if (abs(id())==13 && (isData)) {	
 	// use mu8+mu17
 	if (useIsoTrigs) {
-	  // if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) prescale = HLT_Mu8_TrkIsoVVL();
-	  // else if (p4().pt()>=25 && HLT_Mu17_TrkIsoVVL()>0) prescale = HLT_Mu17_TrkIsoVVL();	
-
 	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) {
           prescale = HLT_Mu8_TrkIsoVVL();
           prescale = m8i; // FIXME
@@ -727,9 +721,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (prescale>0) weight *= prescale;
 	  else continue;
 	} else {
-	  // if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0) prescale = HLT_Mu8();
-	  // else if (p4().pt()>=25 && HLT_Mu17()>0) prescale = HLT_Mu17();	
-
 	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0)
       {
           prescale = HLT_Mu8();

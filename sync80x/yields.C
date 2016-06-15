@@ -69,7 +69,7 @@ void yields(){
   // Make chains, histograms
   TChain* chain = new TChain("t");
 
-  bool doSingleFile = false;
+  bool doSingleFile = true;
 
   if(doSingleFile) {
       chain->Add("synch_ttw_80_1.root"); 
@@ -150,7 +150,7 @@ void yields(){
 
       // textfile_leptons << Form("%1d%9d%12d\t%5.1f\t%5.1f\t%5.1f\t%+2d\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.3f\t%1d\t%1d\t%1d\t%1d\t%5.1f\t%5.1f\t%5.1f\t%+2d\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.3f\t%1d\t%1d\t%1d\t%1d\n",
       if(doSingleFile)
-          textfile_leptons << Form("%1d%9d%12d\t%5.3f\t%5.3f\t%5.3f\t%+2d\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%1d\t%1d\t%1d\t%1d\t%5.3f\t%5.3f\t%5.3f\t%+2d\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%1d\t%1d\t%1d\t%1d\n",
+          textfile_leptons << Form("%1d%9d%12d\t%5.3f\t%5.3f\t%5.3f\t%+2d\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%1d\t%1d\t%1d\t%1d\t%5.3f\t%5.3f\t%5.3f\t%+2d\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%5.3f\t%1d\t%1d\t%1d\t%1d\t%5.3f\t%5.3f\n",
               ss::run(), ss::lumi(), (int)ss::event(), 
               ss::lep1_p4().pt(),
               ss::lep1_p4().eta(),
@@ -183,7 +183,10 @@ void yields(){
               (std::abs(ss::lep2_id())==11)?ss::lep2_el_conv_vtx_flag():0,
               (std::abs(ss::lep2_id())==11)?1-ss::lep2_el_exp_innerlayers():0,
               (std::abs(ss::lep2_id())==11)?ss::lep2_el_threeChargeAgree():ss::lep2_mu_ptErr(),
-              MCclass(ss::lep2_motherID()));
+              MCclass(ss::lep2_motherID()),
+              ss::lep1_tkIso(),
+              ss::lep2_tkIso()
+                  );
 
       // reorder jets using corrected pt
       // yes, there is one more case (where 2 overtakes 0), but that never happened in the synch

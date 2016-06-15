@@ -68,15 +68,15 @@ void closure(){
   clos_leppt_MC->Sumw2();
   clos_leppt_MCp->Sumw2();
 
-  TH1F* clos_lepeta_MC   = new TH1F("clos_lepeta_plot_MC"  , "clos_lepeta_plot_MC"  , 12, -3, 3); 
-  TH1F* clos_lepeta_MCp  = new TH1F("clos_lepeta_plot_MCp" , "clos_lepeta_plot_MCp" , 12, -3, 3); 
-  TH1F* clos_lepeta_data = new TH1F("clos_lepeta_plot_data", "clos_lepeta_plot_data", 12, -3, 3); 
+  TH1F* clos_lepeta_MC   = new TH1F("clos_lepeta_plot_MC"  , "clos_lepeta_plot_MC"  , 25, -2.5, 2.5); 
+  TH1F* clos_lepeta_MCp  = new TH1F("clos_lepeta_plot_MCp" , "clos_lepeta_plot_MCp" , 25, -2.5, 2.5); 
+  TH1F* clos_lepeta_data = new TH1F("clos_lepeta_plot_data", "clos_lepeta_plot_data", 25, -2.5, 2.5); 
   clos_lepeta_MC->Sumw2();
   clos_lepeta_MCp->Sumw2();
 
-  TH1F* clos_lepphi_MC   = new TH1F("clos_lepphi_plot_MC"  , "clos_lepphi_plot_MC"  , 14, -4, 4); 
-  TH1F* clos_lepphi_MCp  = new TH1F("clos_lepphi_plot_MCp" , "clos_lepphi_plot_MCp" , 14, -4, 4); 
-  TH1F* clos_lepphi_data = new TH1F("clos_lepphi_plot_data", "clos_lepphi_plot_data", 14, -4, 4); 
+  TH1F* clos_lepphi_MC   = new TH1F("clos_lepphi_plot_MC"  , "clos_lepphi_plot_MC"  , 30, -3.14, 3.14); 
+  TH1F* clos_lepphi_MCp  = new TH1F("clos_lepphi_plot_MCp" , "clos_lepphi_plot_MCp" , 30, -3.14, 3.14); 
+  TH1F* clos_lepphi_data = new TH1F("clos_lepphi_plot_data", "clos_lepphi_plot_data", 30, -3.14, 3.14); 
   clos_lepphi_MC->Sumw2();
   clos_lepphi_MCp->Sumw2();
 
@@ -104,6 +104,12 @@ void closure(){
   clos_nbtags_MC->Sumw2();
   clos_nbtags_MCp->Sumw2();
 
+  TH1F* clos_SR_MC   = new TH1F("clos_SR_plot_MC"  , "clos_SR_plot_MC"  , 32, 1, 33); 
+  TH1F* clos_SR_MCp  = new TH1F("clos_SR_plot_MCp" , "clos_SR_plot_MCp" , 32, 1, 33); 
+  TH1F* clos_SR_data = new TH1F("clos_SR_plot_data", "clos_SR_plot_data", 32, 1, 33); 
+  clos_SR_MC->Sumw2();
+  clos_SR_MCp->Sumw2();
+
   //Errors -- keep track of number of events in each FR bin so we can get the error 
   int nBinsX = rate->GetNbinsX(); 
   int nBinsY = rate->GetNbinsY(); 
@@ -129,12 +135,13 @@ void closure(){
 
   //Set up chains
   TChain *chain = new TChain("t");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DataDoubleEGC_05oct.root");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DataDoubleEGD_05oct.root");
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DataDoubleEGD_v4.root");
-
-  //chain->Add("./Data_DoubleEG2015D.root");
+  // chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DataDoubleEGC_05oct.root");
+  // chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DataDoubleEGD_05oct.root");
+  // chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DataDoubleEGD_v4.root");
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DataDoubleEG*.root");
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_high.root");
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_low.root");
+  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/TTBAR_PH.root");
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -164,7 +171,7 @@ void closure(){
       SSAG::progress(nEventsTotal, nEventsChain);
 
       //Reject not triggered
-      if (!fired_trigger()) continue;
+      if (!fired_trigger() && ss::is_real_data()) continue;
 
       //Reject duplicates
       if (ss::is_real_data()){
@@ -172,12 +179,12 @@ void closure(){
         if (duplicate_removal::is_duplicate(id)) { reject++; continue; }
       }
 
-      // if (!isUnblindRun(ss::run())) continue;
+      if (!isUnblindRun(ss::run())) continue;
 
       //MET filters
       // if (!ss::passes_met_filters()) continue;
 
-      if (ss::met()>50.) continue; 
+      // if (ss::met()>50.) continue; 
 
       //Throw away unneeded events
       if (hyp_class() != 3 && hyp_class() != 4) continue;
@@ -185,12 +192,21 @@ void closure(){
       //Keep only electron-electron events
       if (abs(lep1_id()) != 11 || abs(lep2_id()) != 11) continue;
 
+      if(ss::nbtags() > 0) continue;
+
       //Figure out if SS
       bool isSS = false;
       if (hyp_class() == 3) isSS = true;
 
       //Weight
       float weight = 1.0;
+
+      float mtmin = ss::mt() > ss::mt_l2() ? ss::mt_l2() : ss::mt();
+      int sr = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, abs(ss::lep1_id()), abs(ss::lep2_id()), ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      // if(sr > 0) {
+      //         std::cout << " sr: " << sr << " ss::is_real_data(): " << ss::is_real_data() << " ss::njets(): " << ss::njets() << " ss::nbtags(): " << ss::nbtags() << " ss::met(): " << ss::met() << " ss::ht(): " << ss::ht() << " mtmin: " << mtmin << " abs(ss::lep1_id()): " << abs(ss::lep1_id()) << " abs(ss::lep2_id()): " << abs(ss::lep2_id()) << " ss::lep1_p4().pt(): " << ss::lep1_p4().pt() << " ss::lep2_p4().pt(): " << ss::lep2_p4().pt() << std::endl;
+      // }
+
 
       //Observation
       if (isSS){
@@ -202,30 +218,33 @@ void closure(){
 	    clos_leppt_data->Fill(lep1_p4().pt(), weight); 
 	    clos_leppt_data->Fill(lep2_p4().pt(), weight); 
 	    clos_lepeta_data->Fill(lep1_p4().eta(), weight); 
-	    clos_lepeta_data->Fill(lep2_p4().eta(), weight); 
-	    if (lep1_p4().eta()<-1.5) clos_lepphi_data->Fill(lep1_p4().phi(), weight); 
-	    if (lep2_p4().eta()<-1.5) clos_lepphi_data->Fill(lep2_p4().phi(), weight); 
+	    // clos_lepeta_data->Fill(lep2_p4().eta(), weight);
+	    clos_lepphi_data->Fill(lep1_p4().phi(), weight); 
+	    clos_lepphi_data->Fill(lep2_p4().phi(), weight);  
 	    clos_ht_data->Fill(ss::ht(), weight); 
 	    clos_met_data->Fill(ss::met(), weight); 
 	    clos_njets_data->Fill(ss::njets(), weight); 
 	    clos_nbtags_data->Fill(ss::nbtags(), weight); 
 	  }
+    clos_SR_data->Fill(sr, weight); 
 	} else {
-	  weight = scale1fb()*lumiAG*getPUwECO(ss::nGoodVertices());
+	  // weight = scale1fb()*lumiAG*getPUwECO(ss::nGoodVertices());
+	  weight = scale1fb()*lumiAG; // FIXME pu reweighting
 	  clos_mll_MCp->Fill(mll, weight); 
 	  if (mll > 80 && mll < 100) {
 	    nObsMC += weight; 
 	    clos_leppt_MCp->Fill(lep1_p4().pt(), weight); 
 	    clos_leppt_MCp->Fill(lep2_p4().pt(), weight); 
 	    clos_lepeta_MCp->Fill(lep1_p4().eta(), weight); 
-	    clos_lepeta_MCp->Fill(lep2_p4().eta(), weight); 
-	    if (lep1_p4().eta()<-1.5) clos_lepphi_MCp->Fill(lep1_p4().phi(), weight); 
-	    if (lep2_p4().eta()<-1.5) clos_lepphi_MCp->Fill(lep2_p4().phi(), weight); 
+	    // clos_lepeta_MCp->Fill(lep2_p4().eta(), weight); 
+	    clos_lepphi_MCp->Fill(lep1_p4().phi(), weight); 
+	    clos_lepphi_MCp->Fill(lep2_p4().phi(), weight); 
 	    clos_ht_MCp->Fill(ss::ht(), weight); 
 	    clos_met_MCp->Fill(ss::met(), weight); 
 	    clos_njets_MCp->Fill(ss::njets(), weight); 
 	    clos_nbtags_MCp->Fill(ss::nbtags(), weight); 
 	  }
+    clos_SR_MCp->Fill(sr, weight); 
 	}
       } 
 
@@ -258,14 +277,15 @@ void closure(){
 	  clos_leppt_MC->Fill(lep1_p4().pt(), ff*weight); 
 	  clos_leppt_MC->Fill(lep2_p4().pt(), ff*weight); 
 	  clos_lepeta_MC->Fill(lep1_p4().eta(), ff*weight); 
-	  clos_lepeta_MC->Fill(lep2_p4().eta(), ff*weight); 
-	  if (lep1_p4().eta()<-1.5) clos_lepphi_MC->Fill(lep1_p4().phi(), ff*weight); 
-	  if (lep2_p4().eta()<-1.5) clos_lepphi_MC->Fill(lep2_p4().phi(), ff*weight); 
+	  // clos_lepeta_MC->Fill(lep2_p4().eta(), ff*weight); 
+	  clos_lepphi_MC->Fill(lep1_p4().phi(), ff*weight); 
+	  clos_lepphi_MC->Fill(lep2_p4().phi(), ff*weight); 
 	  clos_ht_MC->Fill(ss::ht(), ff*weight); 
 	  clos_met_MC->Fill(ss::met(), ff*weight); 
 	  clos_njets_MC->Fill(ss::njets(), ff*weight); 
 	  clos_nbtags_MC->Fill(ss::nbtags(), ff*weight); 
 	}
+  clos_SR_MC->Fill(sr, ff*weight); 
       }
       
     }//event loop
@@ -315,49 +335,55 @@ void closure(){
   vector <string> sigTit; 
   sigTit.push_back("MC Same-Sign Events");
   titles.push_back("Predicted Same-Sign Events"); 
-  dataMCplotMaker(clos_mll_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure.pdf --xAxisLabel M_{ll} --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendUp 0.12 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred --errHistAtBottom", lumiAG), vector <TH1F*>(), vector <string>());//signals, sigTit
+  dataMCplotMaker(clos_mll_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure.pdf --xAxisLabel M_{ll} --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendUp 0.12 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred --errHistAtBottom", lumiAG), vector <TH1F*>(), vector <string>());//signals, sigTit
 
   bkgd.clear();
   bkgd.push_back(clos_leppt_MC); 
   signals.clear();
   signals.push_back(clos_leppt_MCp); 
-  dataMCplotMaker(clos_leppt_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure_leppt.pdf --xAxisLabel Lepton p_{T}  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendUp 0.12 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred --errHistAtBottom", lumiAG),  vector <TH1F*>(), vector <string>());//signals, sigTit
+  dataMCplotMaker(clos_leppt_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_leppt.pdf --xAxisLabel Lepton p_{T}  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendUp 0.12 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred --errHistAtBottom", lumiAG),  vector <TH1F*>(), vector <string>());//signals, sigTit
 
   bkgd.clear();
   bkgd.push_back(clos_lepeta_MC); 
   signals.clear();
   signals.push_back(clos_lepeta_MCp); 
-  dataMCplotMaker(clos_lepeta_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure_lepeta.pdf --xAxisLabel Lepton #eta --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
+  dataMCplotMaker(clos_lepeta_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_lepeta.pdf --xAxisLabel Lepton1 #eta --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_lepphi_MC); 
   signals.clear();
   signals.push_back(clos_lepphi_MCp); 
-  dataMCplotMaker(clos_lepphi_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure_lepphi.pdf --xAxisLabel Lepton #phi --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
+  dataMCplotMaker(clos_lepphi_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_lepphi.pdf --xAxisLabel Lepton #phi --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_ht_MC); 
   signals.clear();
   signals.push_back(clos_ht_MCp); 
-  dataMCplotMaker(clos_ht_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure_ht.pdf --xAxisLabel HT  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
+  dataMCplotMaker(clos_ht_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_ht.pdf --xAxisLabel HT  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_met_MC); 
   signals.clear();
   signals.push_back(clos_met_MCp); 
-  dataMCplotMaker(clos_met_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure_met.pdf --xAxisLabel MET  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
+  dataMCplotMaker(clos_met_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_met.pdf --xAxisLabel MET  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_njets_MC); 
   signals.clear();
   signals.push_back(clos_njets_MCp); 
-  dataMCplotMaker(clos_njets_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure_njets.pdf --xAxisLabel Njets --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendUp 0.12 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred --errHistAtBottom", lumiAG), vector <TH1F*>(), vector <string>());//signals, sigTit
+  dataMCplotMaker(clos_njets_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_njets.pdf --xAxisLabel Njets --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendUp 0.12 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred --errHistAtBottom", lumiAG), vector <TH1F*>(), vector <string>());//signals, sigTit
 
   bkgd.clear();
   bkgd.push_back(clos_nbtags_MC); 
   signals.clear();
   signals.push_back(clos_nbtags_MCp); 
-  dataMCplotMaker(clos_nbtags_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName flip_closure_nbtags.pdf --xAxisLabel Nbtags --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
+  dataMCplotMaker(clos_nbtags_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_nbtags.pdf --xAxisLabel Nbtags --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
+
+  bkgd.clear();
+  bkgd.push_back(clos_SR_MC); 
+  signals.clear();
+  signals.push_back(clos_SR_MCp); 
+  dataMCplotMaker(clos_SR_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_SR.pdf --xAxisLabel SR --noXaxisUnit  --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendBox --legendUp 0.03 --largeLabels --yTitleOffset -0.2 --topYaxisTitle data/Pred", lumiAG), signals, sigTit);
 
   TCanvas cosee;
   osee_data->Draw("hist,goff");

@@ -83,9 +83,9 @@ int main(int argc, char *argv[]){
       shortname="wz";
       break;
     case DY_low:
-      name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/v1/";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/V/";
+    name="DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+      path="/store/group/snt/run2_25ns_80MiniAODv2/";
+      tag="V08-00-05";
       shortname="dy_low";
       break;
     case DY_high:
@@ -172,15 +172,15 @@ int main(int argc, char *argv[]){
       shortname="wwdps";
       break;
     case TTBAR_PH:
-      name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12_ext4-v1"; 
-      tag="V07-06-03_MC";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/";
+    name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext4-v1";
+    tag="V08-00-01";
+    path="/store/group/snt/run2_25ns_80MiniAODv1/";
       shortname="ttbar_ph";
       break;
     case ZZ:
-      name="ZZTo4L_13TeV_powheg_pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/VV/";
+      name="ZZTo4L_13TeV_powheg_pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+      path="/store/group/snt/run2_25ns_80MiniAODv2/";
+      tag="V08-00-05";
       shortname="zz"; 
       break;
     case TG:
@@ -206,6 +206,7 @@ int main(int argc, char *argv[]){
       path="/store/group/snt/run2_25ns_80MiniAODv2/";
       tag="V08-00-05";
       shortname="wwz";
+      break;
     case WGToLNuG:
       name="WGToLNuG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
       path="/store/group/snt/run2_25ns_80MiniAODv2/";
@@ -221,7 +222,7 @@ int main(int argc, char *argv[]){
     case TTHtoNonBB:
       name="ttHToNonbb_M125_13TeV_powheg_pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1";
       tag="V08-00-01";
-      path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
+      path="/store/group/snt/run2_25ns_80MiniAODv1/";
       shortname="tthtononbb";
       break;
     case VHtoNonBB:
@@ -237,9 +238,9 @@ int main(int argc, char *argv[]){
       shortname="ttzlow"; 
       break;
     case GGHtoZZto4L:
-      name="GluGluHToWWTo2L2Nu_M125_13TeV_powheg_JHUgen_pythia8";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/H/";
+    name="GluGluHToZZTo4L_M125_13TeV_powheg2_JHUgenV6_pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1";
+    tag="V08-00-01";
+    path="/store/group/snt/run2_25ns_80MiniAODv1/";
       shortname="gghtozzto4l";
       break;
     case WGMG:
@@ -305,45 +306,47 @@ int main(int argc, char *argv[]){
 
 
     //Data
-    case DataDoubleEGC:
-      shortname="datadoubleegc";
-      name="DoubleEG_Run2015C_25ns-16Dec2015-v1";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    case DataDoubleEGv1:
+      name="Run2016B_DoubleEG_MINIAOD_PromptReco-v1/merged/";
+      tag="V08-00-04";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegv1";
       isData = true;
       break;
-    case DataDoubleMuonC:
-      shortname="datadoublemuonc";
-      name="DoubleMuon_Run2015C_25ns-16Dec2015-v1";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    case DataDoubleMuonv1:
+      name="Run2016B_DoubleMuon_MINIAOD_PromptReco-v1/merged/";
+      tag="V08-00-04";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonv1";
       isData = true;
       break;
-    case DataMuonEGC:
-      name="MuonEG_Run2015C_25ns-16Dec2015-v1";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    case DataMuonEGv1:
+      name="Run2016B_MuonEG_MINIAOD_PromptReco-v1/merged/";
+      tag="V08-00-04";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegv1";
       isData = true;
       break;
-    case DataDoubleEGD:
-      shortname="datadoubleegd";
-      name="DoubleEG_Run2015D-16Dec2015-v2";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+
+    case DataDoubleEGv2:
+      name="Run2016B_DoubleEG_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-04";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegv2";
       isData = true;
       break;
-    case DataDoubleMuonD:
-      shortname="datadoublemuond";
-      name="DoubleMuon_Run2015D-16Dec2015-v1";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    case DataDoubleMuonv2:
+      name="Run2016B_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-04";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonv2";
       isData = true;
       break;
-    case DataMuonEGD:
-      shortname="datamuonegd";
-      name="MuonEG_Run2015D-16Dec2015-v1";
-      tag="CMS3_V07-06-03";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/DATA/";
+    case DataMuonEGv2:
+      name="Run2016B_MuonEG_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-04";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegv2";
       isData = true;
       break;
 
@@ -1003,7 +1006,7 @@ int main(int argc, char *argv[]){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  set_goodrun_file("final2015_golden_25ns2p26fb.txt");
+  set_goodrun_file("goldenJson_2016_804p2.txt");
   
   // string jecEra = "Fall15_25nsV2";
   string jecEra = "Spring16_25nsV3";
