@@ -105,6 +105,17 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   float etabins_mu[4] = {0., 1.2, 2.1, 2.4};
   float etabins_el[4] = {0., 0.8, 1.479, 2.5};
 
+  // handmade "prescales" from normalizeToZPeak.C
+  float e8i = 1767.61;
+  float e17i = 84.5516;
+  float e8 = 1767.61;
+  float e17 = 85.1862;
+
+  float m8i = 238.145;
+  float m17i = 28.3003;
+  float m8 = 496.07;
+  float m17 = 13.1493;
+
   if (false) {
     //this should be ok as long as there are less bins in the extrPtRel case
     ptbins[0] = 10.;
@@ -444,6 +455,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
     bool isDataFromFileName = TString(currentFile->GetTitle()).Contains("2015C") || TString(currentFile->GetTitle()).Contains("2015D") || 
                               TString(currentFile->GetTitle()).Contains("DoubleMu") || TString(currentFile->GetTitle()).Contains("DoubleEG");
     bool isDoubleMuon = TString(currentFile->GetTitle()).Contains("DoubleMu");
+    bool isQCD = TString(currentFile->GetTitle()).Contains("QCD");
 
     if (isDataFromFileName){
       jet_corrector_pfL1 = jet_corrector_25ns_DATA_pfL1;
@@ -532,7 +544,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       // Analysis Code
       float lumi = getLumi();//in /fb
-      float puw = getPUw(nvtx());
+      // float puw = getPUw(nvtx());
+      float puw = 1.0; //FIXME
       float weight = scale1fb()*lumi*puw;
       if (isData) weight = 1.;
 
@@ -556,9 +569,17 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  /QCD_Pt-20toInf_MuEnrichedPt15 22.926769
 	  */
 	  if (debug) cout << "check qcd" << endl;
-	  if (p4().pt()<15. &&  scale1fb() > 22.9 && scale1fb() < 23.0 ) continue;  //take only Mu15 above pT=15
-	  if (p4().pt()>15. && (scale1fb() < 22.9 || scale1fb() > 23.0)) continue;  //take only Mu5 below pT=15
-	  if (scale1fb() < 5.0 || scale1fb() > 600.) continue; //avoid extreme ranges and weights
+
+      // 76X
+     if (p4().pt()<15. &&  scale1fb() > 14.2 && scale1fb() < 14.3 ) continue;  //take only Mu15 above pT=15
+     if (p4().pt()>15. && (scale1fb() < 14.2 || scale1fb() > 14.3)) continue;  //take only Mu5 below pT=15
+     if (scale1fb() < 1.2 || scale1fb() > 851.) continue; //avoid extreme ranges and weights
+
+ // // 74X
+	  // if (p4().pt()<15. &&  scale1fb() > 22.9 && scale1fb() < 23.0 ) continue;  //take only Mu15 above pT=15
+	  // if (p4().pt()>15. && (scale1fb() < 22.9 || scale1fb() > 23.0)) continue;  //take only Mu5 below pT=15
+	  // if (scale1fb() < 5.0 || scale1fb() > 600.) continue; //avoid extreme ranges and weights
+
 	}	
 	
 	if (abs(id())==11) {
@@ -599,7 +620,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       int nbtags = 0;
       for(unsigned int i=0; i<jets_recorr.size(); i++)  {
 	if(ROOT::Math::VectorUtil::DeltaR(jets_recorr[i], p4()) < 1.) continue; //0.4 in babymaker
-	if(jets_disc()[i] > 0.814) nbtags++;
+	if(jets_disc()[i] > 0.800) nbtags++; // FIXME
 	if(jets_recorr[i].pt() > 40.) {
 	  ht += jets_recorr[i].pt();
 	  njets40++;
@@ -631,15 +652,19 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       //trigger selection
       if (debug) cout << "check hlt HLT_Mu8=" << HLT_Mu8() << " HLT_Mu17=" << HLT_Mu17() << " HLT_Ele12_CaloIdM_TrackIdM_PFJet30=" << HLT_Ele12_CaloIdM_TrackIdM_PFJet30() << endl;
-      if (abs(id())==11) {
+      if (abs(id())==11 && (isData)) {
 	// ele12 for 2015D
 	if (useIsoTrigs) {
-	  if (HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30()<=0) continue;
+	  if (HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()<=0
+       && HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30()<=0
+              ) continue;
 	} else {
-	  if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()<=0) continue;
+	  if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<=0
+	   && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()<=0
+       ) continue;
 	}
       }
-      if (abs(id())==13) {
+      if (abs(id())==13 && (isData)) {
 	// mu8 or mu17 for 2015D
 	if (useIsoTrigs) {
 	  if (HLT_Mu8_TrkIsoVVL()<=0 &&
@@ -654,28 +679,60 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (debug) cout << "check pt range of triggers" << endl; 
       //check prescales, apply cuts on the pT range depending on the trigger
       int prescale = -1;
-      if (abs(id())==11) {	
-	// use ele12
+      if(!isData) prescale = 1; // triggers messed up in 80X MC
+      if (abs(id())==11 && (isData)) {
 	if (useIsoTrigs) {
-	  if (p4().pt() >= 10 && HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) prescale = HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30();
+	  if (p4().pt() >= 10 && HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
+          prescale = HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30();
+          prescale = e8i; // FIXME
+      }
+	  if (p4().pt() >= 25 && HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
+          prescale = HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30();
+          prescale = e17i; // FIXME
+      }
 	  if (prescale>0) weight *= prescale;
 	  else continue;	  
 	} else {
-	  if (p4().pt() >= 10 && HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) prescale = HLT_Ele12_CaloIdM_TrackIdM_PFJet30();
+	  if (p4().pt() >= 10 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0) {
+          prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
+          prescale = e8; // FIXME
+      }
+	  if (p4().pt() >= 25 && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()>0) {
+          prescale = HLT_Ele17_CaloIdM_TrackIdM_PFJet30();
+          prescale = e17; // FIXME
+      }
 	  if (prescale>0) weight *= prescale;
 	  else continue;	  
 	}
       }
-      if (abs(id())==13) {	
+      if (abs(id())==13 && (isData)) {	
 	// use mu8+mu17
 	if (useIsoTrigs) {
-	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) prescale = HLT_Mu8_TrkIsoVVL();
-	  else if (p4().pt()>=25 && HLT_Mu17_TrkIsoVVL()>0) prescale = HLT_Mu17_TrkIsoVVL();	
+	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) {
+          prescale = HLT_Mu8_TrkIsoVVL();
+          prescale = m8i; // FIXME
+      }
+
+	  if (p4().pt()>=25 && HLT_Mu17_TrkIsoVVL()>0) {
+          prescale = HLT_Mu17_TrkIsoVVL();
+          prescale = m17i; // FIXME
+      }
+
 	  if (prescale>0) weight *= prescale;
 	  else continue;
 	} else {
-	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0) prescale = HLT_Mu8();
-	  else if (p4().pt()>=25 && HLT_Mu17()>0) prescale = HLT_Mu17();	
+	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0)
+      {
+          prescale = HLT_Mu8();
+          prescale = m8; // FIXME
+      }
+
+	  if (p4().pt()>=25 && HLT_Mu17()>0)
+      {
+          prescale = HLT_Mu17();
+          prescale = m17; // FIXME
+      }
+
 	  if (prescale>0) weight *= prescale;
 	  else continue;
 	}
@@ -790,7 +847,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	if (abs(id())==11) {
 	  if (HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el34->Fill(p4().pt(),HLT_Ele33_CaloIdM_TrackIdM_PFJet30());
 	  if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el24->Fill(p4().pt(),HLT_Ele23_CaloIdM_TrackIdM_PFJet30());
-	  if (HLT_Ele18_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el17->Fill(p4().pt(),HLT_Ele18_CaloIdM_TrackIdM_PFJet30());
+	  if (HLT_Ele17_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el17->Fill(p4().pt(),HLT_Ele17_CaloIdM_TrackIdM_PFJet30());
 	  if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el12->Fill(p4().pt(),HLT_Ele12_CaloIdM_TrackIdM_PFJet30());
 	  if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 ) histo_pt_el8->Fill(p4().pt() ,HLT_Ele8_CaloIdM_TrackIdM_PFJet30() );
 	  histo_pt_el->Fill(p4().pt(), prescale );
@@ -934,7 +991,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 		  if (isSyncFile) {
 		    cout << Form("Electron FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f isNum=%1i met=%5.2f mt=%5.2f event %i",
-				 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns(),passId,evt_met,evt_mt,evt_event()) << endl;
+				 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns(),passId,evt_met,evt_mt,(int)evt_event()) << endl;
 		  }
 
 		  njets40_histo->Fill(njets40, weight);
@@ -978,7 +1035,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 		  if (isSyncFile) {
 
-		    cout << Form("%1llu %7.3f %7.3f %6.3f %6.3f %6.3f %6.3f %1i %6.3f %6.3f %6.0f",evt_event() , p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,evt_met,evt_mt,weight) << endl;
+		    cout << Form("%1llu %7.3f %7.3f %6.3f %6.3f %6.3f %6.3f %1i %6.3f %6.3f %6.0f",(unsigned long long)evt_event() , p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,evt_met,evt_mt,weight) << endl;
 		  }
 
 		  njets40_histo->Fill(njets40, weight);

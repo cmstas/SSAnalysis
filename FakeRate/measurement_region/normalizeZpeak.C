@@ -1,4 +1,4 @@
-pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig) {
+pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bool do8=false /*default is false*/) {
 
   // we want to output the MTCR SFs so we can lazily chain the macros together
   float sfel, sfmu;
@@ -8,30 +8,59 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig) {
   for(int doMu = 0; doMu < 2; doMu++) {
   gROOT->Reset();
 
-  TString hlt = (doMu ? "HLT_Mu17" : "HLT_Ele12_CaloIdM_TrackIdM_PFJet30");
-  if (useIsoTrig) hlt = (doMu ? "HLT_Mu17_TrkIsoVVL" : "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30");
+  TString hlt = (doMu ? "HLT_Mu17" : "HLT_Ele17_CaloIdM_TrackIdM_PFJet30");
+  if (useIsoTrig) hlt = (doMu ? "HLT_Mu17_TrkIsoVVL" : "HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30");
+
+  if(do8) {
+      hlt = (doMu ? "HLT_Mu8" : "HLT_Ele8_CaloIdM_TrackIdM_PFJet30");
+      if (useIsoTrig) hlt = (doMu ? "HLT_Mu8_TrkIsoVVL" : "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30");
+  }
+
+
+  float mult = 1.0;
+
+  float e8i = 1767.61;
+  float e17i = 84.5516;
+  float e8 = 1767.61;
+  float e17 = 85.1862;
+
+  float m8i = 238.145;
+  float m17i = 28.3003;
+  float m8 = 496.07;
+  float m17 = 13.1493;
+
+  if(do8) {
+      if(useIsoTrig) mult = (doMu ? m8i : e8i);
+      else mult = (doMu ? m8 : e8);
+  } else {
+      if(useIsoTrig) mult = (doMu ? m17i : e17i);
+      else mult = (doMu ? m17 : e17);
+  }
+
 
   TString suffix = (useIsoTrig ? "_IsoTrigs" : "");
 
   int idlep = (doMu ? 13 : 11); 
 
-  TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleMuon.root" : "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleEG.root");
-  TString dyf = "/nfs-7/userdata/leptonTree/"+tag+"/DY_madgraph.root";
+  TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/"+tag+"/2016DoubleMu*.root" : "/nfs-7/userdata/leptonTree/"+tag+"/2016DoubleEG.root");
+  TString dyf = "/nfs-7/userdata/leptonTree/"+tag+"/DY_madgraph*.root";
 
-  TString leptype = (doMu ? "Mu17" : "Ele12");
+  TString leptype = (doMu ? "Mu17" : "Ele17");
 
-  TFile *_file_data = TFile::Open(dataf);
-  TFile *_file_dy = TFile::Open(dyf);
-
-  TTree* t_data = (TTree*) _file_data->Get("t");
-  TTree* t_dy = (TTree*) _file_dy->Get("t");
+  TChain* t_data = new TChain("t");
+  TChain* t_dy = new TChain("t");
+  t_data->Add(dataf);
+  t_dy->Add(dyf);
 
   TH1F* mll_data = new TH1F("mll_data","mll_data",80,0,200);
   TH1F* mll_dy = new TH1F("mll_dy","mll_dy",80,0,200);
   mll_data->Sumw2();  
   mll_dy->Sumw2();
 
-  t_data->Draw("dilep_mass>>mll_data",Form("%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",hlt.Data(),idlep,hlt.Data()),"goff");
+  t_data->Draw("dilep_mass>>mll_data",Form("%f*%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",mult,hlt.Data(),idlep,hlt.Data()),"goff");
+  // t_dy->Draw("dilep_mass>>mll_dy",Form("%f*scale1fb*%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",intlumi,hlt.Data(),idlep,hlt.Data()),"goff");
+  // NO electron triggers in 80X MC?
+  hlt = "1";
   t_dy->Draw("dilep_mass>>mll_dy",Form("%f*scale1fb*%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",intlumi,hlt.Data(),idlep,hlt.Data()),"goff");
 
   float mc_zpeak   = mll_dy->Integral(mll_dy->FindBin(75),mll_dy->FindBin(105));

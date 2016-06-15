@@ -1,16 +1,17 @@
 #ifndef _commonUtils_h_
 #define _commonUtils_h_
 
-float getLumi() { return 2.32; }
-float getLumiUnblind() { return getLumi(); }
-bool isUnblindRun(int run) { return true; }
+float getLumi() { return 0.8042; }
+float getLumiUnblind() { return 0.8042; }
+bool isUnblindRun(int run) { return run <= 274240; }
 
 TString getTag() { return "v6.02"; }
+TString getTag() { return "v8.02"; }
 //TString getTag() { return "v7.00"; }
 
 bool applyThirdLeptonVeto() { return false; }
 
-float getWZSF() { return 1.19; }
+float getWZSF() { return 0.85; }
 
 #include "pu_weights.h"
 #include "flip_rates.h"

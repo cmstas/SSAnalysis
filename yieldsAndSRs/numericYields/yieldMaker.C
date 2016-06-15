@@ -18,10 +18,11 @@ bool makeRootFiles = 1;
 float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
 
-bool doNoData   = false;
+bool doNoData   = true;
 bool testFakeSR = false;
 
-float scaleLumi = 1.;//3.0/1.264;//careful!!!
+// float scaleLumi = 1.;//3.0/1.264;//careful!!!
+float scaleLumi = 2.30/0.804;//careful!!!
 
 bool doLatex = 0;
 
@@ -65,7 +66,8 @@ static float roughSystFAKESXL = 0.30;
 
 void getyields(){
 
-  if (doNoData) lumiAG = scaleLumi*getLumi();
+    // FIXME -- bug? we will end up multiplying by scaleLumi^2
+  // if (doNoData) lumiAG = scaleLumi*getLumi();
 
   cout << "Running with lumi=" << lumiAG << endl;
 
@@ -88,91 +90,68 @@ void getyields(){
   TChain *flips_chain   = new TChain("t","flips"); 
   TChain *fakes_chain   = new TChain("t","fakes");
   //signals full sim
-  TChain *t1tttt_1200_chain = new TChain("t","t1tttt_1200"); 
-  TChain *t1tttt_1500_chain = new TChain("t","t1tttt_1500"); 
-  TChain *t2ttww_600_chain = new TChain("t","t6ttww_600"); 
-  TChain *t5qqqq_1200_chain = new TChain("t", "t5qqqq_1200"); 
-  TChain *t5tttt_deg_chain = new TChain("t","t5tttt_deg"); 
-  TChain *t6ttww_650_chain = new TChain("t","t6ttww_650"); 
-  TChain *t6ttww_600_chain = new TChain("t","t6ttww_600"); 
-  TChain *t5qqqqww_1200_chain = new TChain("t","t5qqqqww_1200"); 
-  TChain *t5qqqqww_deg_chain = new TChain("t","t5qqqqww_deg"); 
+
+  // TChain *t1tttt_1200_chain = new TChain("t","t1tttt_1200"); 
+  // TChain *t1tttt_1500_chain = new TChain("t","t1tttt_1500"); 
+  // TChain *t2ttww_600_chain = new TChain("t","t6ttww_600"); 
+  // TChain *t5qqqq_1200_chain = new TChain("t", "t5qqqq_1200"); 
+  // TChain *t5tttt_deg_chain = new TChain("t","t5tttt_deg"); 
+  // TChain *t6ttww_650_chain = new TChain("t","t6ttww_650"); 
+  // TChain *t6ttww_600_chain = new TChain("t","t6ttww_600"); 
+  // TChain *t5qqqqww_1200_chain = new TChain("t","t5qqqqww_1200"); 
+  // TChain *t5qqqqww_deg_chain = new TChain("t","t5qqqqww_deg"); 
   
   //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
-  st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP1.root"     , tag.c_str()));
-  st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP2.root"     , tag.c_str()));
-  st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP3.root"     , tag.c_str()));
-  st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP4.root"     , tag.c_str()));
-  st_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/SINGLETOP5.root"     , tag.c_str()));
   wjets_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root"       , tag.c_str()));
   dy_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_high.root"        , tag.c_str()));
   dy_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_low.root"         , tag.c_str()));
-
   ttw_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
-  ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"           , tag.c_str())); 
-  ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZLOW.root"         , tag.c_str())); 
+  ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ.root"           , tag.c_str())); 
+  // ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZLOW.root"         , tag.c_str())); 
   ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
   wz_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"             , tag.c_str()));
   ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
   xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TG.root"             , tag.c_str()));
   xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTG.root"            , tag.c_str()));
-  xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGMG.root"           , tag.c_str()));
+  xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"           , tag.c_str()));
   xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZG.root"             , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZZ.root"             , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/GGHtoZZto4L.root"    , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"            , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"            , tag.c_str()));
-  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWW.root"            , tag.c_str()));
+  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWDPS.root"          , tag.c_str()));
   tttt_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
-
   //data
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGC_05oct.root"    , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonC_05oct.root"  , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGC_05oct.root"      , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_05oct.root"    , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_05oct.root"  , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_05oct.root"      , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_v4.root"       , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_v4.root"     , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_v4.root"         , tag.c_str()));
-
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str()));
   //flips
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGC_05oct.root"   , tag.c_str()));
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGC_05oct.root"     , tag.c_str()));
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_05oct.root"   , tag.c_str()));
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_05oct.root"     , tag.c_str()));
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_v4.root"      , tag.c_str()));
-  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_v4.root"        , tag.c_str()));
-
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"     , tag.c_str()));
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"      , tag.c_str()));
   //fakes
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGC_05oct.root"   , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonC_05oct.root" , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGC_05oct.root"     , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_05oct.root"   , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_05oct.root" , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_05oct.root"     , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEGD_v4.root"      , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuonD_v4.root"    , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEGD_v4.root"        , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str()));
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"                   , tag.c_str()));
-  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZL.root"                  , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ.root"                  , tag.c_str()));
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"                    , tag.c_str()));
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"            , tag.c_str()));
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"                  , tag.c_str()));
 
-  //signals fullsim
-  t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root"              , tag.c_str()));
-  t1tttt_1500_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1500.root"              , tag.c_str()));
-  t5tttt_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5ttttDeg_1000_300_285_280.root", tag.c_str()));
-  t5qqqq_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWW_1200_1000_800.root"     , tag.c_str()));
-  t6ttww_650_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_650_150_50.root"         , tag.c_str()));
-  t6ttww_600_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_600_425_50.root"         , tag.c_str()));
-  t5qqqqww_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWW_1200_1000_800.root"   , tag.c_str()));
-  t5qqqqww_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWWDeg_1000_315_300.root"   , tag.c_str()));
+  // //signals fullsim
+  // t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root"              , tag.c_str()));
+  // t1tttt_1500_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1500.root"              , tag.c_str()));
+  // t5tttt_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5ttttDeg_1000_300_285_280.root", tag.c_str()));
+  // t5qqqq_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWW_1200_1000_800.root"     , tag.c_str()));
+  // t6ttww_650_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_650_150_50.root"         , tag.c_str()));
+  // t6ttww_600_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T6TTWW_600_425_50.root"         , tag.c_str()));
+  // t5qqqqww_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWW_1200_1000_800.root"   , tag.c_str()));
+  // t5qqqqww_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWWDeg_1000_315_300.root"   , tag.c_str()));
 
   //Get yields
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
@@ -215,14 +194,14 @@ void getyields(){
   fakes_chain->SetTitle("fakes_is");
   pair<yields_t, plots_t> results_fakes_is = run(fakes_chain, 1, 0, 2);
 
-  pair<yields_t, plots_t> results_t1tttt_1200 = run(t1tttt_1200_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t1tttt_1500 = run(t1tttt_1500_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t5tttt_deg  = run(t5tttt_deg_chain , 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t5qqqq_1200 = run(t5qqqq_1200_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t6ttww_650  = run(t6ttww_650_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t6ttww_600  = run(t6ttww_600_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t5qqqqww_1200 = run(t5qqqqww_1200_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t5qqqqww_deg  = run(t5qqqqww_deg_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t1tttt_1200 = run(t1tttt_1200_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t1tttt_1500 = run(t1tttt_1500_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t5tttt_deg  = run(t5tttt_deg_chain , 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t5qqqq_1200 = run(t5qqqq_1200_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t6ttww_650  = run(t6ttww_650_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t6ttww_600  = run(t6ttww_600_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t5qqqqww_1200 = run(t5qqqqww_1200_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t5qqqqww_deg  = run(t5qqqqww_deg_chain, 0, 0, 0, 0, 1);
 
   //signals fast sim
   //#include "fs_t1tttt.h"
@@ -258,8 +237,8 @@ void getyields(){
   yields_t& fakes_is = results_fakes_is.first;
   yields_t& fakes_mc = results_fakes_mc.first;
 
-  yields_t& t1tttt_1200   = results_t1tttt_1200.first;
-  yields_t& t6ttww_650    = results_t6ttww_650.first;
+  // yields_t& t1tttt_1200   = results_t1tttt_1200.first;
+  // yields_t& t6ttww_650    = results_t6ttww_650.first;
 
   //Make yield table
   CTable table; 
@@ -284,9 +263,9 @@ void getyields(){
                    ("ttbar_fl" , ttbar_fl.EE , ttbar_fl.EM , ttbar_fl.MM , ttbar_fl.TOTAL)
                    ("st"       , st.EE       , st.EM       , st.MM       , st.TOTAL     )
                    ("wjets"    , wjets.EE    , wjets.EM    , wjets.MM    , wjets.TOTAL  )
-                   ("dy"       , dy.EE       , dy.EM       , dy.MM       , dy.TOTAL     )
-                   ("t1tttt_1200"    , t1tttt_1200.EE    , t1tttt_1200.EM    , t1tttt_1200.MM    , t1tttt_1200.TOTAL  )
-                   ("t6ttww_650"    , t6ttww_650.EE    , t6ttww_650.EM    , t6ttww_650.MM    , t6ttww_650.TOTAL  );
+                   ("dy"       , dy.EE       , dy.EM       , dy.MM       , dy.TOTAL     );
+                   // ("t1tttt_1200"    , t1tttt_1200.EE    , t1tttt_1200.EM    , t1tttt_1200.MM    , t1tttt_1200.TOTAL  )
+                   // ("t6ttww_650"    , t6ttww_650.EE    , t6ttww_650.EM    , t6ttww_650.MM    , t6ttww_650.TOTAL  );
   table.print();
 
   plots_t& p_ttbar    = results_ttbar.second;
@@ -312,7 +291,7 @@ void getyields(){
   plots_t& p_fakes    = results_fakes.second;
   plots_t& p_fakes_is = results_fakes_is.second;
 
-  plots_t& p_t1tttt_1200 = results_t1tttt_1200.second;
+  // plots_t& p_t1tttt_1200 = results_t1tttt_1200.second;
 
   //Titles for legend
   vector <string> titles;
@@ -385,14 +364,15 @@ void getyields(){
     cout << "\\label{tab:yieldsHH}" << endl;
     cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
   }
-  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA"/*,"T1TTTT1200"*/) << endl;
   if (doLatex) cout << "\\hline\\hline" << endl;
 
   //Set up Alex Tables
   CTable HH_alex_table;
   CTable HL_alex_table;
   CTable LL_alex_table;
-  vector <CTable*> alexTables = { &HH_alex_table, &HL_alex_table, &LL_alex_table }; 
+  CTable BR_alex_table;
+  vector <CTable*> alexTables = { &HH_alex_table, &HL_alex_table, &LL_alex_table, &BR_alex_table }; 
   for (unsigned int i = 0; i < 3; i++){
     alexTables.at(i)->setPrecision(2); 
     alexTables.at(i)->setTitle("Yields in HH Region"); 
@@ -418,8 +398,8 @@ void getyields(){
     p_ww.SRHH.TOTAL->GetBinContent(bin),p_ww.SRHH.TOTAL->GetBinContent(bin)*roughSystWW,
     p_xg.SRHH.TOTAL->GetBinContent(bin),p_xg.SRHH.TOTAL->GetBinContent(bin)*roughSystXG,
     p_rares.SRHH.TOTAL->GetBinContent(bin),p_rares.SRHH.TOTAL->GetBinContent(bin)*roughSystRARES,
-    flip, flip_err, fake, fake_err, total, total_err, data,
-    p_t1tttt_1200.SRHH.TOTAL->GetBinContent(bin)) << endl;
+    flip, flip_err, fake, fake_err, total, total_err, data) << endl;
+    // p_t1tttt_1200.SRHH.TOTAL->GetBinContent(bin)) << endl;
     HH_alex_table.setCell(Form("%.2f $\\pm$ %.2f",    SM,    SM_err), bin-1, 0); 
     HH_alex_table.setCell(Form("%.2f $\\pm$ %.2f",  fake,  fake_err), bin-1, 1); 
     HH_alex_table.setCell(Form("%.2f $\\pm$ %.2f",  flip,  flip_err), bin-1, 2); 
@@ -445,7 +425,7 @@ void getyields(){
     cout << "\\label{tab:yieldsHL}" << endl;
     cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
   }
-  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA"/*,"T1TTTT1200"*/) << endl;
   if (doLatex) cout << "\\hline\\hline" << endl;
   for (int bin=1;bin<=p_ttw.SRHL.TOTAL->GetNbinsX(); ++bin) {
     float SM = (p_ttw.SRHL.TOTAL->GetBinContent(bin)+p_ttzh.SRHL.TOTAL->GetBinContent(bin)+p_wz.SRHL.TOTAL->GetBinContent(bin)+p_ww.SRHL.TOTAL->GetBinContent(bin)+p_xg.SRHL.TOTAL->GetBinContent(bin)+p_rares.SRHL.TOTAL->GetBinContent(bin));
@@ -464,8 +444,8 @@ void getyields(){
     p_ww.SRHL.TOTAL->GetBinContent(bin),p_ww.SRHL.TOTAL->GetBinContent(bin)*roughSystWW,
     p_xg.SRHL.TOTAL->GetBinContent(bin),p_xg.SRHL.TOTAL->GetBinContent(bin)*roughSystXG,
     p_rares.SRHL.TOTAL->GetBinContent(bin),p_rares.SRHL.TOTAL->GetBinContent(bin)*roughSystRARES,
-    flip, flip_err, fake, fake_err, total, total_err, data,
-    p_t1tttt_1200.SRHL.TOTAL->GetBinContent(bin)
+    flip, flip_err, fake, fake_err, total, total_err, data
+    // p_t1tttt_1200.SRHL.TOTAL->GetBinContent(bin)
     ) << endl;
     HL_alex_table.setCell(Form("%.2f $\\pm$ %.2f",    SM,    SM_err), bin-1, 0); 
     HL_alex_table.setCell(Form("%.2f $\\pm$ %.2f",  fake,  fake_err), bin-1, 1); 
@@ -492,7 +472,7 @@ void getyields(){
     cout << "\\label{tab:yieldsLL}" << endl;
     cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
   }
-  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA"/*,"T1TTTT1200"*/) << endl;
   if (doLatex) cout << "\\hline\\hline" << endl;
   for (int bin=1;bin<=p_ttw.SRLL.TOTAL->GetNbinsX(); ++bin) {
     float SM = (p_ttw.SRLL.TOTAL->GetBinContent(bin)+p_ttzh.SRLL.TOTAL->GetBinContent(bin)+p_wz.SRLL.TOTAL->GetBinContent(bin)+p_ww.SRLL.TOTAL->GetBinContent(bin)+p_xg.SRLL.TOTAL->GetBinContent(bin)+p_rares.SRLL.TOTAL->GetBinContent(bin));
@@ -511,8 +491,8 @@ void getyields(){
     p_ww.SRLL.TOTAL->GetBinContent(bin),p_ww.SRLL.TOTAL->GetBinContent(bin)*roughSystWW,
     p_xg.SRLL.TOTAL->GetBinContent(bin),p_xg.SRLL.TOTAL->GetBinContent(bin)*roughSystXG,
     p_rares.SRLL.TOTAL->GetBinContent(bin),p_rares.SRLL.TOTAL->GetBinContent(bin)*roughSystRARES,
-    flip, flip_err, fake, fake_err, total, total_err, data,
-    p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
+    flip, flip_err, fake, fake_err, total, total_err, data
+    // p_t1tttt_1200.SRLL.TOTAL->GetBinContent(bin)
     )
     << endl;
     LL_alex_table.setCell(Form("%.2f $\\pm$ %.2f",    SM,    SM_err), bin-1, 0); 
@@ -531,7 +511,36 @@ void getyields(){
     cout << "\\end{document}" << endl;
   }
 
+  for (int bin=1;bin<=p_ttw.BR->GetNbinsX(); ++bin) {
+    float SM = (p_ttw.BR->GetBinContent(bin)+p_ttzh.BR->GetBinContent(bin)+p_wz.BR->GetBinContent(bin)+p_ww.BR->GetBinContent(bin)+p_xg.BR->GetBinContent(bin)+p_rares.BR->GetBinContent(bin));
+    float SM_err = sqrt(pow(p_ttw.BR->GetBinContent(bin)*roughSystTTW,2)+pow(p_ttzh.BR->GetBinContent(bin)*roughSystTTZH,2)+pow(p_wz.BR->GetBinContent(bin)*roughSystWZ,2)+pow(p_ww.BR->GetBinContent(bin)*roughSystWW,2)+pow(p_xg.BR->GetBinContent(bin)*roughSystXG,2)+pow(p_rares.BR->GetBinContent(bin)*roughSystRARES,2));
+    float fake = p_fakes.BR->GetBinContent(bin);
+    float fake_err = p_fakes.BR->GetBinContent(bin)*roughSystFAKESXL;
+    float flip = p_flips.BR->GetBinContent(bin);
+    float flip_err = p_flips.BR->GetBinContent(bin)*roughSystFLIPS;
+    float total = SM + fake + flip; 
+    float total_err = sqrt( pow(SM_err, 2) + pow(fake_err, 2) + pow(flip_err, 2) ); 
+    int data = p_data.BR->GetBinContent(bin);
+    cout << Form(HLline.Data(),bin,
+    p_ttw.BR->GetBinContent(bin),p_ttw.BR->GetBinContent(bin)*roughSystTTW,
+    p_ttzh.BR->GetBinContent(bin),p_ttzh.BR->GetBinContent(bin)*roughSystTTZH,
+    p_wz.BR->GetBinContent(bin),p_wz.BR->GetBinContent(bin)*roughSystWZ,
+    p_ww.BR->GetBinContent(bin),p_ww.BR->GetBinContent(bin)*roughSystWW,
+    p_xg.BR->GetBinContent(bin),p_xg.BR->GetBinContent(bin)*roughSystXG,
+    p_rares.BR->GetBinContent(bin),p_rares.BR->GetBinContent(bin)*roughSystRARES,
+    flip, flip_err, fake, fake_err, total, total_err, data
+    // p_t1tttt_1200.BR->GetBinContent(bin)
+    ) << endl;
+    BR_alex_table.setCell(Form("%.2f $\\pm$ %.2f",    SM,    SM_err), bin-1, 0); 
+    BR_alex_table.setCell(Form("%.2f $\\pm$ %.2f",  fake,  fake_err), bin-1, 1); 
+    BR_alex_table.setCell(Form("%.2f $\\pm$ %.2f",  flip,  flip_err), bin-1, 2); 
+    BR_alex_table.setCell(Form("%.2f $\\pm$ %.2f", total, total_err), bin-1, 3); 
+    BR_alex_table.setCell(Form("%i",  data), bin-1, 4); 
+    BR_alex_table.setRowLabel(Form("%i",  bin), bin-1); 
+  }
+
   for (unsigned int i = 0; i < 3; i++) alexTables.at(i)->saveTex(Form("alex%stable.tex", i == 0 ? "HH" : i == 1 ? "HL" : "LL")); 
+  alexTables.at(3)->saveTex("alexBRtable.tex");
 
   //SR plots
   vector<pair<TH1F*, float> > SRHH_plots;
@@ -1413,19 +1422,25 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	}
       }
 
-      //Compute event weight
-      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
+      //Reject not triggered
+      if (!ss::fired_trigger() && ss::is_real_data()) continue;
+      if (!ss::passedFilterList()) continue;
+      if (!ss::passes_met_filters() && ss::is_real_data()) continue; // FIXME no met filters in miniaodv1 MC
+
+      // float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
+      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG; // FIXME don't have PUw and btagSF
       weight*=scaleLumi;
       if (isWZ) weight*=getWZSF();
 
       //apply lepton scale factors
-      if (ss::is_real_data()==0 && isWZ==0) {
-	weight*=eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht());
-	if (isFastSimSignal) {
-	  weight *= invFilterEff*eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices());
-	  if (chainTitle.Contains("fs_t5tttt_degen_test_m900_m700")) weight = weight * 1000. * 0.677478 / 117290. / ss::scale1fb();
-	}
-      }
+      // FIXME don't have lepton SF
+      // if (ss::is_real_data()==0 && isWZ==0) {
+	// weight*=eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht());
+	// if (isFastSimSignal) {
+	  // weight *= invFilterEff*eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices());
+	  // if (chainTitle.Contains("fs_t5tttt_degen_test_m900_m700")) weight = weight * 1000. * 0.677478 / 117290. / ss::scale1fb();
+	// }
+      // }
 
       if (isFastSimSignal && doCutFlowTable) {
 	cut_flow_count = 1;//reinitialize per event
@@ -1492,7 +1507,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       // if ( (triggerBits & (1<<7))==(1<<7) ) cout << "pass bit=" << 7 << endl;
 
       //Progress
-      //SSAG::progress(nEventsTotal, nEventsChain);
+      SSAG::progress(nEventsTotal, nEventsChain);
 
       // unsigned int triggerBits = ss::triggers();
       // if ( (triggerBits & (1<<0))!=(1<<0) and (triggerBits & (1<<5))!=(1<<5) and (triggerBits & (1<<7))!=(1<<7) ) continue;

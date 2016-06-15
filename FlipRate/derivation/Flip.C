@@ -12,25 +12,40 @@ float theLumi = 1.0;
 //DY only
 bool DYonly = false;
 
-void flip(){
+void flip(bool doMu=false){
 
   //Flip Rate Histograms
-  int nBinsX = 6; 
-  int nBinsY = 3; 
-  float xbins[] = { 15, 40, 60, 80, 100, 200, 300 }; 
-  float ybins[] = { 0, 0.8, 1.479, 2.5 }; 
-  // int nBinsX = 1; 
-  // int nBinsY = 1; 
-  // float xbins[] = { 0, 100 }; 
-  // float ybins[] = { 0, 3 }; 
-  TH2D* numer  = new TH2D("numer" , "numer" , nBinsX, xbins, nBinsY, ybins);
-  TH2D* denom  = new TH2D("denom" , "denom" , nBinsX, xbins, nBinsY, ybins);
+  TH2D* numer;
+  TH2D* denom;
+
+
+  if(doMu) {
+      // int nBinsX = 1; 
+      // int nBinsY = 1; 
+      // float xbins[] = { 0, 100 }; 
+      // float ybins[] = { 0, 3 }; 
+
+      int nBinsX = 2; 
+      int nBinsY = 2; 
+      float xbins[] = { 0, 100, 200 }; 
+      float ybins[] = { 0, 2, 3 }; 
+      numer  = new TH2D("numer" , "numer" , nBinsX, xbins, nBinsY, ybins);
+      denom  = new TH2D("denom" , "denom" , nBinsX, xbins, nBinsY, ybins);
+  } else {
+      int nBinsX = 6; 
+      int nBinsY = 3; 
+      float xbins[] = { 15, 40, 60, 80, 100, 200, 300 }; 
+      float ybins[] = { 0, 0.8, 1.479, 2.5 }; 
+      numer  = new TH2D("numer" , "numer" , nBinsX, xbins, nBinsY, ybins);
+      denom  = new TH2D("denom" , "denom" , nBinsX, xbins, nBinsY, ybins);
+  }
+
   numer->Sumw2();
   denom->Sumw2();
 
   //Set up chains
   TChain *chain = new TChain("t");
-  if (!DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/TTBAR.root"); 
+  if (!DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/TTBAR_PH.root"); 
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_low.root"); 
   chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_high.root"); 
 
@@ -62,7 +77,7 @@ void flip(){
       SSAG::progress(nEventsTotal, nEventsChain);
 
       //Reject not triggered
-      if (!ss::fired_trigger()) continue;
+      if (!ss::fired_trigger() && ss::is_real_data()) continue;
 
       //Consider only numerator events of either charge, without extra Z veto
       if (hyp_class() != 3 && hyp_class() != 4) continue;// && hyp_class() != 6
@@ -70,26 +85,27 @@ void flip(){
       //Hyp-6 events don't necessarily pass ID (in v1.26, to be fixed); impose that here
       if (!lep1_passes_id() || !lep2_passes_id()) continue;
 
-      //Only care about electrons
-      if (abs(lep1_id()) == 13 && abs(lep2_id()) == 13) continue;
-      // if (abs(lep1_id()) == 11 && abs(lep2_id()) == 11) continue;
+      if(doMu) {
+          if (abs(lep1_id()) == 11 && abs(lep2_id()) == 11) continue;
+      } else {
+          if (abs(lep1_id()) == 13 && abs(lep2_id()) == 13) continue;
+      }
+      int absLepId = doMu ? 13 : 11;
 
       //Weight
-      float weight = getPUw(ss::nGoodVertices());//scale1fb()*theLumi; 
+      // float weight = getPUw(ss::nGoodVertices());//scale1fb()*theLumi; 
+      float weight = scale1fb()*theLumi;  // FIXME put in PU reweighting
+      // float weight = 1.0;
 
       //If they make it this far, they are denominator events
-      if (abs(lep1_id()) == 11) denom->Fill(min(lep1_p4().pt(), float(299.)), fabs(lep1_p4().eta()), weight); 
-      if (abs(lep2_id()) == 11) denom->Fill(min(lep2_p4().pt(), float(299.)), fabs(lep2_p4().eta()), weight); 
-      // if (abs(lep1_id()) == 13) denom->Fill(lep1_p4().pt(), fabs(lep1_p4().eta()), weight); 
-      // if (abs(lep2_id()) == 13) denom->Fill(lep2_p4().pt(), fabs(lep2_p4().eta()), weight); 
+      if (abs(lep1_id()) == absLepId) denom->Fill(min(lep1_p4().pt(), float(299.)), fabs(lep1_p4().eta()), weight); 
+      if (abs(lep2_id()) == absLepId) denom->Fill(min(lep2_p4().pt(), float(299.)), fabs(lep2_p4().eta()), weight); 
 
       //Now require exactly one charge flip
       bool isCF1 = 0;
       bool isCF2 = 0;
-      if (abs(lep1_id()) == 11 && abs(lep1_mc_id()) == 11 && lep1_id() != lep1_mc_id()) isCF1 = 1;
-      if (abs(lep2_id()) == 11 && abs(lep2_mc_id()) == 11 && lep2_id() != lep2_mc_id()) isCF2 = 1;
-      // if (abs(lep1_id()) == 13 && abs(lep1_mc_id()) == 13 && lep1_id() != lep1_mc_id()) isCF1 = 1;
-      // if (abs(lep2_id()) == 13 && abs(lep2_mc_id()) == 13 && lep2_id() != lep2_mc_id()) isCF2 = 1;
+      if (abs(lep1_id()) == absLepId && abs(lep1_mc_id()) == absLepId && lep1_id() != lep1_mc_id()) isCF1 = 1;
+      if (abs(lep2_id()) == absLepId && abs(lep2_mc_id()) == absLepId && lep2_id() != lep2_mc_id()) isCF2 = 1;
       if (!isCF1 && !isCF2) continue;
       if ( isCF1 &&  isCF2) continue;
 
@@ -100,18 +116,25 @@ void flip(){
     }//event loop
   }//file loop
 
-  PlotMaker2D(numer, "--outputName flips_numer.pdf --noOverflow --setTitle flip rate numer --Xaxis elec p_{T} --Yaxis |#eta|"); 
-  PlotMaker2D(denom, "--outputName flips_denom.pdf --noOverflow --setTitle flip rate denom --Xaxis elec p_{T} --Yaxis |#eta|"); 
+  std::string lepStr = doMu ? "mu" : "el";
+
+  std::cout << "numer: " << numer->GetEntries() << " denom: " << denom->GetEntries() << std::endl;
+  std::cout << "Total flip rate for " << lepStr << ": " << numer->GetEntries()/denom->GetEntries() << std::endl;
+
+  PlotMaker2D(numer, "--outputName plots/flips_numer_"+lepStr+".pdf --noOverflow --setTitle flip rate numer ("+lepStr+") --Xaxis p_{T} --Yaxis |#eta| --color --text"); 
+  PlotMaker2D(denom, "--outputName plots/flips_denom_"+lepStr+".pdf --noOverflow --setTitle flip rate denom ("+lepStr+") --Xaxis p_{T} --Yaxis |#eta| --color --text"); 
 
   //Now make ratio plot
   numer->Divide(numer, denom, 1, 1, "b"); 
-  if (DYonly) PlotMaker2D(numer, "--outputName flips_rate_dy.pdf --noOverflow --setTitle flip rate DY only --Xaxis elec p_{T} --Yaxis |#eta| --sciNot .2 --color --text"); 
-  else PlotMaker2D(numer, "--outputName flips_rate.pdf --noOverflow --setTitle flip rate --Xaxis elec p_{T} --Yaxis |#eta| --color --text"); //--sciNot .6 
+  if (DYonly) PlotMaker2D(numer, "--outputName plots/flips_rate_dy_"+lepStr+".pdf --noOverflow --setTitle flip rate DY only ("+lepStr+") --Xaxis p_{T} --Yaxis |#eta| --sciNot .2 --color --text90"); 
+  else PlotMaker2D(numer, "--outputName plots/flips_rate_"+lepStr+".pdf --noOverflow --setTitle flip rate ("+lepStr+") --Xaxis p_{T} --Yaxis |#eta| --color --text90  --sciNot .1"); //--sciNot .6 
 
   //Save the histogram
-  TFile *file = new TFile("flip_rate.root", "RECREATE");
-  file->Write(); 
-  numer->Write("flips");
-  file->Close(); 
+  if(!doMu) {
+      TFile *file = new TFile("flip_rate.root", "RECREATE");
+      file->Write(); 
+      numer->Write("flips");
+      file->Close(); 
+  }
 
 }

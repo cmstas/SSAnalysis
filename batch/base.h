@@ -5,7 +5,7 @@ enum sample_t {
   //Backgrounds
   TTBAR = 0,
   TTW = 1,
-  TTZL = 2,
+  TTZ = 2,
   WZ = 3,
   DY_low = 4,
   DY_high = 5,
@@ -36,6 +36,8 @@ enum sample_t {
   WZMG = 31,
   WGMG = 32,
   TTHtoNonBBext = 33,
+  ZZZ = 34,
+  WWW = 35,
 
   //Signals
   T1TTTT_1500 = 100,
@@ -47,15 +49,18 @@ enum sample_t {
   T6TTWW_650_150_50 = 106,
 
   //Data
-  DataDoubleEGC_05oct = 1000,
-  DataDoubleMuonC_05oct = 1001,
-  DataMuonEGC_05oct = 1002,
-  DataDoubleEGD_05oct = 1003,
-  DataDoubleMuonD_05oct = 1004,
-  DataMuonEGD_05oct = 1005,
-  DataDoubleEGD_v4 = 1006,
-  DataDoubleMuonD_v4 = 1007,
-  DataMuonEGD_v4 = 1008,
+  DataDoubleEGv1 = 1000,
+  DataDoubleMuonv1 = 1001,
+  DataMuonEGv1 = 1002,
+  DataDoubleEGv2 = 1003,
+  DataDoubleMuonv2 = 1004,
+  DataMuonEGv2 = 1005,
+  // DataDoubleEGD = 1003,
+  // DataDoubleMuonD = 1004,
+  // DataMuonEGD = 1005,
+  // DataDoubleEGD_v4 = 1006,
+  // DataDoubleMuonD_v4 = 1007,
+  // DataMuonEGD_v4 = 1008,
 
   //Fastsim
   T1TTTT_1950_700to950        = 10001,
@@ -190,6 +195,10 @@ enum sample_t {
   ANA1                               = 100000,
   ANA2                               = 100001,
   ANA3                               = 100002,
+
+  SYNCH_TTW                          = 101010,
+  SYNCH_TTW80                        = 101011,
+  DY_high_LO                         = 101012,
 
 };
 

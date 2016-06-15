@@ -1,12 +1,21 @@
 #include "../../commonUtils.h"
-void trigStudyMu() {
+void trigStudyMu(bool doIso=false) {
 
   gROOT->Reset();
   gStyle->SetOptStat(0);
 
   TString tag = getTag();
-  TString dataf = "/nfs-7/userdata/leptonTree/"+tag+"/2015DDoubleMuon.root";
+  tag = "v1.09FR_80X"; // FIXME
+  TString dataf = "/nfs-7/userdata/leptonTree/"+tag+"/2016DoubleMuon.root";
   //dataf = "SyncDoubleMu.root";
+
+  TString mod = "";
+
+  if(doIso) {
+      mod = "_TrkIsoVVL";
+  } else {
+      mod = "";
+  }
 
   TFile *_file = TFile::Open(dataf);
 
@@ -42,30 +51,30 @@ void trigStudyMu() {
   TH1F* unw_fo_pt_Mu24 = (TH1F*) unw_fo_pt_Mu8->Clone("unw_fo_pt_Mu24");
   TH1F* unw_fo_pt_Mu34 = (TH1F*) unw_fo_pt_Mu8->Clone("unw_fo_pt_Mu34");
 
-  t->Draw("p4.pt()>>total_pt_Mu8" ,"HLT_Mu8*(HLT_Mu8>0  && abs(id)==13)","goff");// && passes_SS_tight_v5 && HLT_Mu24>0 && tag_p4.pt()>30. && p4.pt()>25.
-  t->Draw("p4.pt()>>total_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13)","goff");
-  t->Draw("p4.pt()>>total_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13)","goff");
-  t->Draw("p4.pt()>>total_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13)","goff");
+  t->Draw("p4.pt()>>total_pt_Mu8" ,"HLT_Mu8"+mod+"*(HLT_Mu8"+mod+">0  && abs(id)==13)","goff");// && passes_SS_tight_v5 && HLT_Mu24>0 && tag_p4.pt()>30. && p4.pt()>25.
+  t->Draw("p4.pt()>>total_pt_Mu17","HLT_Mu17"+mod+"*(HLT_Mu17"+mod+">0 && abs(id)==13)","goff");
+  t->Draw("p4.pt()>>total_pt_Mu24","HLT_Mu24"+mod+"*(HLT_Mu24"+mod+">0 && abs(id)==13)","goff");
+  t->Draw("p4.pt()>>total_pt_Mu34","HLT_Mu34"+mod+"*(HLT_Mu34"+mod+">0 && abs(id)==13)","goff");
   
-  t->Draw("p4.pt()>>fo_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_fo_v5)","goff");
-  t->Draw("p4.pt()>>fo_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_fo_v5)","goff");
-  t->Draw("p4.pt()>>fo_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_fo_v5)","goff");
-  t->Draw("p4.pt()>>fo_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_fo_v5)","goff");
+  t->Draw("p4.pt()>>fo_pt_Mu8" ,"HLT_Mu8"+mod+" *(HLT_Mu8"+mod+">0  && abs(id)==13 && passes_SS_fo_v5)","goff");
+  t->Draw("p4.pt()>>fo_pt_Mu17","HLT_Mu17"+mod+"*(HLT_Mu17"+mod+">0 && abs(id)==13 && passes_SS_fo_v5)","goff");
+  t->Draw("p4.pt()>>fo_pt_Mu24","HLT_Mu24"+mod+"*(HLT_Mu24"+mod+">0 && abs(id)==13 && passes_SS_fo_v5)","goff");
+  t->Draw("p4.pt()>>fo_pt_Mu34","HLT_Mu34"+mod+"*(HLT_Mu34"+mod+">0 && abs(id)==13 && passes_SS_fo_v5)","goff");
     
-  t->Draw("p4.pt()>>cuts_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
-  t->Draw("p4.pt()>>cuts_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Mu8" ,"HLT_Mu8"+mod+" *(HLT_Mu8"+mod+">0  && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Mu17","HLT_Mu17"+mod+"*(HLT_Mu17"+mod+">0 && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Mu24","HLT_Mu24"+mod+"*(HLT_Mu24"+mod+">0 && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>cuts_pt_Mu34","HLT_Mu34"+mod+"*(HLT_Mu34"+mod+">0 && abs(id)==13 && passes_SS_fo_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
 
-  t->Draw("p4.pt()>>tight_pt_Mu8" ,"HLT_Mu8 *(HLT_Mu8>0  && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
-  t->Draw("p4.pt()>>tight_pt_Mu17","HLT_Mu17*(HLT_Mu17>0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
-  t->Draw("p4.pt()>>tight_pt_Mu24","HLT_Mu24*(HLT_Mu24>0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
-  t->Draw("p4.pt()>>tight_pt_Mu34","HLT_Mu34*(HLT_Mu34>0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>tight_pt_Mu8" ,"HLT_Mu8"+mod+" *(HLT_Mu8"+mod+">0  && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>tight_pt_Mu17","HLT_Mu17"+mod+"*(HLT_Mu17"+mod+">0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>tight_pt_Mu24","HLT_Mu24"+mod+"*(HLT_Mu24"+mod+">0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
+  t->Draw("p4.pt()>>tight_pt_Mu34","HLT_Mu34"+mod+"*(HLT_Mu34"+mod+">0 && abs(id)==13 && passes_SS_tight_v5 && evt_pfmet<20 && mt<20 && nFOs_SS==1 && ht_SS>40)","goff");
   
-  t->Draw("p4.pt()>>unw_fo_pt_Mu8" ,"(HLT_Mu8>0  && abs(id)==13 && passes_SS_fo_v5)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Mu17","(HLT_Mu17>0 && abs(id)==13 && passes_SS_fo_v5)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Mu24","(HLT_Mu24>0 && abs(id)==13 && passes_SS_fo_v5)","goff");
-  t->Draw("p4.pt()>>unw_fo_pt_Mu34","(HLT_Mu34>0 && abs(id)==13 && passes_SS_fo_v5)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Mu8" ,"(HLT_Mu8"+mod+">0  && abs(id)==13 && passes_SS_fo_v5)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Mu17","(HLT_Mu17"+mod+">0 && abs(id)==13 && passes_SS_fo_v5)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Mu24","(HLT_Mu24"+mod+">0 && abs(id)==13 && passes_SS_fo_v5)","goff");
+  t->Draw("p4.pt()>>unw_fo_pt_Mu34","(HLT_Mu34"+mod+">0 && abs(id)==13 && passes_SS_fo_v5)","goff");
 
   TCanvas c1;
   c1.SetLogy();
@@ -116,7 +125,7 @@ void trigStudyMu() {
   label->SetTextColor(kGreen);   label->DrawLatexNDC(0.65,0.75, "pass FO+cuts");
   label->SetTextColor(kRed);     label->DrawLatexNDC(0.65,0.70, "pass Tight+cuts");
 
-  c1.SaveAs( "pdfs/paths_mu.pdf" );
+  c1.SaveAs( doIso ? "pdfs/iso_paths_mu.pdf" : "pdfs/paths_mu.pdf" );
 
   TCanvas c2;
   c2.SetLogy();
@@ -135,6 +144,26 @@ void trigStudyMu() {
   label->SetTextColor(kBlue); label->DrawLatexNDC(0.8,0.75, "Mu17");
   label->SetTextColor(kBlack); label->DrawLatexNDC(0.8,0.70, "Mu8");
 
-  c2.SaveAs( "pdfs/unw_pt_mu.pdf" );
+  c2.SaveAs( doIso ? "pdfs/iso_unw_pt_mu.pdf" : "pdfs/unw_pt_mu.pdf" );
+
+
+  TCanvas c3;
+  c3.SetLogy();
+  fo_pt_Mu8->SetLineColor(kBlack);
+  fo_pt_Mu17->SetLineColor(kBlue);
+  fo_pt_Mu24->SetLineColor(kRed);
+  fo_pt_Mu34->SetLineColor(kMagenta);
+  fo_pt_Mu8->GetYaxis()->SetRangeUser(1,total_pt_Mu17->GetEntries());
+  fo_pt_Mu8->Draw("hist");
+  fo_pt_Mu17->Draw("hist,same");
+  fo_pt_Mu24->Draw("hist,same");
+  fo_pt_Mu34->Draw("hist,same");
+
+  label->SetTextColor(kMagenta); label->DrawLatexNDC(0.8,0.85, "Mu34");
+  label->SetTextColor(kRed); label->DrawLatexNDC(0.8,0.80, "Mu24");
+  label->SetTextColor(kBlue); label->DrawLatexNDC(0.8,0.75, "Mu17");
+  label->SetTextColor(kBlack); label->DrawLatexNDC(0.8,0.70, "Mu8");
+
+  c3.SaveAs( doIso ? "pdfs/iso_pt_mu.pdf" : "pdfs/pt_mu.pdf" );
 
 }

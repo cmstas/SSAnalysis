@@ -21,6 +21,14 @@
 #include "CORE/Tools/jetcorr/SimpleJetCorrectionUncertainty.h"
 #include "TROOT.h"
 #include <vector>
+#include "Math/Vector4D.h" 
+#include "Math/LorentzVector.h" 
+
+#ifdef __MAKECINT__
+#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+;
+#pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
+#pragma link C++ typedef ROOT::Math::XYZTVectorF;
+#endif
 
 int nPoints(int sample, int mgl, int mlsp);
 
@@ -124,6 +132,8 @@ class babyMaker {
     float ht;
     vector <LorentzVector> jets;
     vector <float> jets_disc;
+    vector <float> jets_disc_mva;
+    vector <float> jets_disc_ivf;
     vector <float> jets_JEC; 
     vector <float> jets_unc; 
     vector <float> jets_undoJEC; 
@@ -204,10 +214,27 @@ class babyMaker {
     int lep1_mc_id;
     int lep2_mc_id;
 
+    //Electron-specific
+    bool lep1_el_conv_vtx_flag;
+    bool lep1_el_exp_innerlayers;
+    bool lep1_nPixelMiss;
+    bool lep1_tightCharge;
+    bool lep1_mu_ptErr;
+    bool lep1_el_threeChargeAgree;
+
+    bool lep2_el_conv_vtx_flag;
+    bool lep2_el_exp_innerlayers;
+    bool lep2_nPixelMiss;
+    bool lep2_tightCharge;
+    bool lep2_mu_ptErr;
+    bool lep2_el_threeChargeAgree;
+
     //b-tags
     int nbtags_raw;
     vector <LorentzVector> btags;
     vector <float> btags_disc;
+    vector <float> btags_disc_mva;
+    vector <float> btags_disc_ivf;
     vector <float> btags_JEC; 
     vector <float> btags_unc; 
     vector <float> btags_undoJEC; 
@@ -298,6 +325,8 @@ class babyMaker {
     float lep1_ip3d;
     float lep1_MVA;
     float lep2_MVA;
+    float lep1_MVA_miniaod;
+    float lep2_MVA_miniaod;
     float lep1_ip3d_err;
     float lep2_ip3d;
     float lep2_ip3d_err;

@@ -448,7 +448,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       }
 
       // Analysis Code
-      float weight = ss::is_real_data() ? 1.0 : ss::scale1fb()*luminosity*getPUw(ss::nGoodVertices());
+      // float weight = ss::is_real_data() ? 1.0 : ss::scale1fb()*luminosity*getPUw(ss::nGoodVertices());
+      float weight = ss::is_real_data() ? 1.0 : ss::scale1fb()*luminosity; // FIXME
 
       TString filename = fname;
 
@@ -458,7 +459,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       if( !(ss::njets() >= 2 && (ss::ht() > 500 ? 1 : ss::met() > 30) ) ) continue;
 
       //require triggers
-      if (!ss::fired_trigger()) continue;
+      if (!ss::fired_trigger() && ss::is_real_data()) continue;
       if (doLowHT) {
 	if (ss::ht()>300.) continue;
       }
@@ -737,6 +738,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       if( ( doData && (ss::is_real_data() && ss::hyp_class() == 2) ) || // if doing data, only fill pred with data
           (!doData && (ss::hyp_class() == 2) ) || // if not doing data, fill pred with MC (old behaviour)
           (doData && subtractContamination && !ss::is_real_data()) ) { // do contamination subtraction if doData and MC
+          
 
         int nbjets = ss::nbtags();
         if (nbjets > 3) nbjets = 3; 

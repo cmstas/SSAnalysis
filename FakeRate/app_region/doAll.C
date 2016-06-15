@@ -70,12 +70,12 @@
   TChain *ch = new TChain("t"); 
   if(doData) {
     // option += "_data";
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data1p280ifb/DataDoubleMuonD.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data1p280ifb/DataDoubleEGD.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"-data1p280ifb/DataMuonEGD.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DataDoubleMuon.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DataDoubleEG.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DataMuonEG.root");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/TTBAR.root");  
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag2+"/WJets_LO.root"); 
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");  
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets.root"); 
   } else {
     if (doLooseEMVA){
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets_LO.root");
@@ -92,6 +92,6 @@
   //ch_wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v1.04/Wjets_baby.root"); //this one!
 
   // upload plots if you're Nick
-  gSystem->Exec("if [ $USER == namin ]; then niceplots plots; fi");
+  // gSystem->Exec("if [ $USER == namin ]; then niceplots plots; fi");
 
 }

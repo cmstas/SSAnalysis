@@ -66,7 +66,11 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep2_idx"                                                , &lep2_idx                                                );
   BabyTree->Branch("jets"                                                    , &jets                                                    );
   BabyTree->Branch("btags_disc"                                              , &btags_disc                                              );
+  BabyTree->Branch("btags_disc_mva"                                          , &btags_disc_mva                                          );
+  BabyTree->Branch("btags_disc_ivf"                                          , &btags_disc_ivf                                          );
   BabyTree->Branch("jets_disc"                                               , &jets_disc                                               );
+  BabyTree->Branch("jets_disc_mva"                                           , &jets_disc_mva                                           );
+  BabyTree->Branch("jets_disc_ivf"                                           , &jets_disc_ivf                                           );
   BabyTree->Branch("jets_JEC"                                                , &jets_JEC                                                );
   BabyTree->Branch("btags_JEC"                                               , &btags_JEC                                               );
   BabyTree->Branch("jets_undoJEC"                                            , &jets_undoJEC                                            );
@@ -133,6 +137,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep2_ip3d"                                               , &lep2_ip3d                                               );
   BabyTree->Branch("lep1_MVA"                                                , &lep1_MVA                                                );
   BabyTree->Branch("lep2_MVA"                                                , &lep2_MVA                                                );
+  BabyTree->Branch("lep1_MVA_miniaod"                                        , &lep1_MVA_miniaod                                        );
+  BabyTree->Branch("lep2_MVA_miniaod"                                        , &lep2_MVA_miniaod                                        );
   BabyTree->Branch("lep1_ip3d_err"                                           , &lep1_ip3d_err                                           );
   BabyTree->Branch("lep2_ip3d_err"                                           , &lep2_ip3d_err                                           );
   BabyTree->Branch("nVetoElectrons7"                                         , &nVetoElectrons7                                         );
@@ -230,6 +236,19 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep1_genps_isLastCopyBeforeFSR"                          , &lep1_genps_isLastCopyBeforeFSR                          );
   BabyTree->Branch("lep1_mc3idx"                                             , &lep1_mc3idx                                             );
   BabyTree->Branch("lep2_mc3idx"                                             , &lep2_mc3idx                                             );
+  BabyTree->Branch("lep1_el_conv_vtx_flag"   , &lep1_el_conv_vtx_flag   );
+  BabyTree->Branch("lep2_el_conv_vtx_flag"   , &lep2_el_conv_vtx_flag   );
+  BabyTree->Branch("lep1_el_exp_innerlayers" , &lep1_el_exp_innerlayers );
+  BabyTree->Branch("lep1_mu_ptErr" , &lep1_mu_ptErr );
+  BabyTree->Branch("lep2_mu_ptErr" , &lep2_mu_ptErr );
+  BabyTree->Branch("lep1_el_threeChargeAgree" , &lep1_el_threeChargeAgree );
+  BabyTree->Branch("lep2_el_threeChargeAgree" , &lep2_el_threeChargeAgree );
+  BabyTree->Branch("lep2_el_exp_innerlayers" , &lep2_el_exp_innerlayers );
+  BabyTree->Branch("lep1_nPixelMiss"   , &lep1_nPixelMiss   );
+  BabyTree->Branch("lep2_nPixelMiss"   , &lep2_nPixelMiss   );
+  BabyTree->Branch("lep1_tightCharge"   , &lep1_tightCharge   );
+  BabyTree->Branch("lep2_tightCharge"   , &lep2_tightCharge   );
+  
   BabyTree->Branch("is_fastsim", &is_fastsim); 
 
   //InSituFR
@@ -382,9 +401,13 @@ void babyMaker::InitBabyNtuple(){
     lep2_idx = -1;
     jets.clear();
     btags_disc.clear();
+    btags_disc_mva.clear();
+    btags_disc_ivf.clear();
     jet_pt.clear(); 
     ht_raw = -1;
     jets_disc.clear();
+    jets_disc_mva.clear();
+    jets_disc_ivf.clear();
     jets_JEC.clear();
     btags_JEC.clear();
     jets_undoJEC.clear();
@@ -451,8 +474,22 @@ void babyMaker::InitBabyNtuple(){
     lep2_ip3d = -999998;
     lep1_MVA = -999998;
     lep2_MVA = -999998;
+    lep1_MVA_miniaod = -999998;
+    lep2_MVA_miniaod = -999998;
     lep1_ip3d_err = -999998;
     lep2_ip3d_err = -999998;
+    lep1_el_conv_vtx_flag = 0;
+    lep1_nPixelMiss = 0;
+    lep1_el_exp_innerlayers = 0;
+    lep1_tightCharge = 0;
+    lep1_mu_ptErr = 0;
+    lep1_el_threeChargeAgree = 0;
+    lep2_el_conv_vtx_flag = 0;
+    lep2_nPixelMiss = 0;
+    lep2_el_exp_innerlayers = 0;
+    lep2_tightCharge = 0;
+    lep2_mu_ptErr = 0;
+    lep2_el_threeChargeAgree = 0;
     nVetoElectrons7 = 0;
     nVetoElectrons10 = 0;
     nVetoElectrons25 = 0;
@@ -638,7 +675,6 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   is_real_data = tas::evt_isRealData();
 
   is_miniaodv1 = filename.find("MCRUN2_74_V9") != std::string::npos;
-  std::cout << "IS THIS miniaodv1? " << is_miniaodv1 << endl;
 
   //These c-s errors
   if (!is_real_data && tas::genweights().size()>110) {
@@ -766,6 +802,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   lep2_passes_id = isGoodLepton(lep2_id, lep2_idx);
   lep1_MVA = abs(lep1_id) == 11 ? getMVAoutput(lep1_idx) : -9999; 
   lep2_MVA = abs(lep2_id) == 11 ? getMVAoutput(lep2_idx) : -9999; 
+  lep1_MVA_miniaod = abs(lep1_id) == 11 ? els_VIDNonTrigMvaValue().at(lep1_idx) : -9999; 
+  lep2_MVA_miniaod = abs(lep2_id) == 11 ? els_VIDNonTrigMvaValue().at(lep2_idx) : -9999; 
 
   //More First lepton stuff
   if (abs(lep1_id) == 11 || abs(lep1_id) == 13){
@@ -773,6 +811,13 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep1_tight = abs(lep1_id) == 11 ? isGoodElectron(lep1_idx) : isGoodMuon(lep1_idx);
     lep1_veto = abs(lep1_id) == 11 ? isGoodVetoElectron(lep1_idx) : isGoodVetoMuon(lep1_idx);
     lep1_fo = abs(lep1_id) == 11 ? isFakableElectron(lep1_idx) : isFakableMuon(lep1_idx);
+    lep1_el_conv_vtx_flag = abs(lep1_id) == 11 ? (!(els_conv_vtx_flag().at(lep1_idx))) : 0;
+    lep1_nPixelMiss = abs(lep1_id) == 11 ? (!(els_lost_pixelhits().at(lep1_idx))) : -1;
+    lep1_tightCharge = abs(lep1_id) == 11 ? tightChargeEle(lep1_idx) : -1;
+    lep1_el_exp_innerlayers  = abs(lep1_id) == 11 ? (els_exp_innerlayers().at(lep1_idx) <= 0) : -1;
+    lep1_el_threeChargeAgree = abs(lep1_id) == 11 ? threeChargeAgree(lep1_idx) : -1;
+
+    lep1_mu_ptErr = abs(lep1_id) == 13 ? (mus_ptErr().at(lep1_idx)/mus_trk_p4().at(lep1_idx).pt() < 0.2) : -1;
   }
 
 
@@ -782,6 +827,13 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep2_tight = abs(lep2_id) == 11 ? isGoodElectron(lep2_idx) : isGoodMuon(lep2_idx);
     lep2_veto = abs(lep2_id) == 11 ? isGoodVetoElectron(lep2_idx) : isGoodVetoMuon(lep2_idx);
     lep2_fo = abs(lep2_id) == 11 ? isFakableElectron(lep2_idx) : isFakableMuon(lep2_idx);
+    lep2_el_conv_vtx_flag = abs(lep2_id) == 11 ? (!(els_conv_vtx_flag().at(lep2_idx))) : 0;
+    lep2_nPixelMiss = abs(lep2_id) == 11 ? (!(els_lost_pixelhits().at(lep2_idx))) : -1;
+    lep2_tightCharge = abs(lep2_id) == 11 ? tightChargeEle(lep2_idx) : -1;
+    lep2_el_exp_innerlayers  = abs(lep2_id) == 11 ? (els_exp_innerlayers().at(lep2_idx) <= 0) : -1;
+    lep2_el_threeChargeAgree = abs(lep2_id) == 11 ? threeChargeAgree(lep2_idx) : -1;
+
+    lep2_mu_ptErr = abs(lep2_id) == 13 ? (mus_ptErr().at(lep2_idx)/mus_trk_p4().at(lep2_idx).pt() < 0.2) : -1;
   }
 
   //More Third lepton stuff
@@ -1073,13 +1125,19 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   //Determine and save jet and b-tag variables, corrected
   jet_results = SSJetsCalculator(jetCorr, 1);
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets.push_back(jet_results.first.at(i).p4());
-  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags.push_back(jet_results.second.at(i).p4());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_disc.push_back(jet_results.first.at(i).csv());
-  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc.push_back(jet_results.second.at(i).csv());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_disc_mva.push_back(jet_results.first.at(i).csvmva());
+  for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_disc_ivf.push_back(jet_results.first.at(i).csvivf());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_JEC.push_back(jet_results.first.at(i).jec());
-  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_JEC.push_back(jet_results.second.at(i).jec());
   for (unsigned int i = 0; i < jet_results.first.size(); i++) jets_undoJEC.push_back(jet_results.first.at(i).undo_jec());
+
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags.push_back(jet_results.second.at(i).p4());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc.push_back(jet_results.second.at(i).csv());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc_mva.push_back(jet_results.second.at(i).csvmva());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_disc_ivf.push_back(jet_results.second.at(i).csvivf());
+  for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_JEC.push_back(jet_results.second.at(i).jec());
   for (unsigned int i = 0; i < jet_results.second.size(); i++) btags_undoJEC.push_back(jet_results.second.at(i).undo_jec());
+
   for (unsigned int i = 0; i < jet_results.first.size(); i++){
     jecUnc->setJetEta(jets[i].eta()); 
     jecUnc->setJetPt(jets[i].pt()*jets_undoJEC[i]*jets_JEC[i]); 
@@ -1222,7 +1280,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     if (rawpt*JEC*(1-jetUnc) > 40 && isLoosePFJet_50nsV1(i)) mostJets_jet_dn.push_back(Jet(i, JEC)); 
     else                                                     mostJets_jet_dn.push_back(Jet(-1, -9999)); 
     mostJets_rawp4.push_back(jet*tas::pfjets_undoJEC().at(i)); 
-    mostJets_disc.push_back(tas::pfjets_pfCombinedInclusiveSecondaryVertexV2BJetTag().at(i)); 
+    // mostJets_disc.push_back(tas::pfjets_pfCombinedInclusiveSecondaryVertexV2BJetTag().at(i)); 
+    mostJets_disc.push_back(tas::getbtagvalue("pfCombinedInclusiveSecondaryVertexV2BJetTags", i)); 
     mostJets_unc.push_back(jetUnc); 
     mostJets_JEC.push_back(JEC); 
     mostJets_undoJEC.push_back(tas::pfjets_undoJEC().at(i)); 

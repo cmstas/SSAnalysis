@@ -1,52 +1,70 @@
 #!/bin/bash
 
-path="/hadoop/cms/store/user/${USER}/condor/ss_13_babies/"
+# path="/hadoop/cms/store/user/${USER}/condor/ss_13_babies/"
+path="/hadoop/cms/store/user/${USER}/condor/ss_babies_June10/"
 
 samples = [
 
-# ["DataDoubleEGC_05oct","datadoubleegc_05oct_*.root"],
-# ["DataDoubleMuonC_05oct","datadoublemuonc_05oct_*.root"],
-# ["DataMuonEGC_05oct","datamuonegc_05oct_*.root"],
-# ["DataDoubleEGD_05oct","datadoubleegd_05oct_*.root"],
-# ["DataDoubleMuonD_05oct","datadoublemuond_05oct_*.root"],
-# ["DataMuonEGD_05oct","datamuonegd_05oct_*.root"],
-# ["DataDoubleEGD_v4","datadoubleegd_v4_*.root"],
-# ["DataDoubleMuonD_v4","datadoublemuond_v4_*.root"],
-# ["DataMuonEGD_v4","datamuonegd_v4_*.root"],
+# ["WJets","wjets_*.root"],
+# ["DY_high","dy_high_[0-9]*.root"],
+# ["DY_low","dy_low_*.root"],
+# ["DataDoubleEG","datadoubleeg*.root"],
+# ["DataDoubleMuon","datadoublemuon*.root"],
+# ["DataMuonEG","datamuoneg*.root"],
+# ["WWZ","wwz_*.root"],
+# ["WWW","www_*.root"],
+# ["TTZ","ttz_*.root"],
+# ["TTW","ttw_*.root"],
+# ["WZ","wz_*.root"],
+# ["WGToLNuG","wgtolnug_*.root"],
+# ["TTG","ttg_*.root"],
+# ["TTHtoNonBB","tthtononbb_*.root"],
+# ["TZQ","tzq_*.root"],
+# ["TTTT","tttt_*.root"],
+# ["VHtoNonBB","vhtononbb_*.root"],
+# ["WZZ","wzz_*.root"],
+# ["WWDPS","wwdps_*.root"],
+# ["QQWW","qqww_*.root"],
+# ["TG","tg_*.root"],
+# ["ZG","zg_*.root"],
+# ["ZZ","zz_*.root"],
+# ["TTBAR_PH","ttbar_ph_*.root"],
+["GGHtoZZto4L","gghtozzto4l_*.root"],
 
-#["DY_high","dy_high_*.root"],
-#["DY_low","dy_low_*.root"],
+
+
+
+# ["DY_high_LO","dy_high_LO_*.root"],
 # ["TTBAR","ttbar_[0-9]*.root"],
 # ["WWZ","wwz_*.root"],
 # ["ZZ","zz_*.root"],
-# ["WJets","wjets_[0-9]*.root"],
-# ["TTZL","ttzl_*.root"],
-# ["TTZQ","ttzq_*.root"],
+# ["TTZ","ttz_*.root"],
 # ["TTW","ttw_*.root"],
 # ["TTWQQ","ttwqq_*.root"],
 # ["WZ","wz_*.root"],
 # ["WGToLNuG","wgtolnug_*.root"],
 # ["TTG","ttg_*.root"],
 # ["TTHtoNonBB","tthtononbb_*.root"],
-# ["TTHtoNonBBext","tthtononbbext_*.root"],
-# ["VHtoNonBB","vhtononbb_*.root"],
 # ["TZQ","tzq_*.root"],
 # ["TTTT","tttt_*.root"],
-# ["TTBAR_PH","ttbar_ph_*.root"],
-# ["ttbar-ph_merged1","ttbar_ph_1*root"],
-# ["ttbar-ph_merged2","ttbar_ph_2*root"],
-# ["ttbar-ph_merged3","ttbar_ph_[3-9]*root"],
-# ["TTBAR_PH","ttbar-ph_merged*root"],
-# ["WWDPS","wwdps_*.root"],
+
+# ["VHtoNonBB","vhtononbb_*.root"],
 # ["WZZ","wzz_*.root"],
+# ["TTZQ","ttzq_*.root"],
+
+# ["TTBAR_PH","ttbar_ph_*.root"],
+# ["WWDPS","wwdps_*.root"],
 # ["SINGLETOP1","singletop1_*.root"],
 # ["SINGLETOP2","singletop2_*.root"],
-# ["SINGLETOP3","singletop3_*.root"],
 # ["SINGLETOP4","singletop4_*.root"],
 # ["SINGLETOP5","singletop5_*.root"],
 # ["QQWW","qqww_*.root"],
 # ["TG","tg_*.root"],
 # ["ZG","zg_*.root"],
+# ["GGHtoZZto4L","gghtozzto4l_*.root"],
+# ["WGMG","wgmg_*.root"],
+
+
 
 # ["T6TTWW_600_425_50","t6ttww_600_425_50_*.root"],
 # ["T6TTWW_650_150_50","t6ttww_650_150_50_*.root"],
@@ -180,7 +198,7 @@ samples = [
     # ["T1TTBB_1025to1200_0to850"           , "t1ttbb_1025to1200_0to850_*.root" ] ,         
     # ["T5tttt_degen_600to800_0to625"       , "t5tttt_degen_600to800_0to625_*.root"],      
     # ["T5tttt_degen_1025to1200_875to1075"  , "t5tttt_degen_1025to1200_875to1075_*.root"],
-    ["T5ttcc_600to800_0to625","t5ttcc_600to800_0to625_*.root"],
+    # ["T5ttcc_600to800_0to625","t5ttcc_600to800_0to625_*.root"],
     # ["T5ttcc_1425to1600_0to1350","t5ttcc_1425to1600_0to1350"],
  ]
 
@@ -195,6 +213,10 @@ for final,loc in samples:
     files = glob.glob("%s/%s" % (path,loc))
 
     if(len(files) < 1): continue
+
+    if os.path.isfile(final+".root"):
+        print "%s.root already in here, skipping" % final
+        continue
 
     print "[%s] %s" % (final,path+"/"+loc)
 
