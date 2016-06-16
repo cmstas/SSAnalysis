@@ -226,15 +226,15 @@ int main(int argc, char *argv[]){
       shortname="tthtononbb";
       break;
     case VHtoNonBB:
-      name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1";
-      tag="V07-06-03_MC";
-      path="/store/group/snt/run2_25ns_76MiniAODv2/";
+    name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1"
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
+    tag="V08-00-05";
       shortname="vhtononbb";
       break;
     case TTZlow:
-      name="TTZ_lowMM_petrucc";
-      tag="V07-04-11";
-      path="/store/group/snt/run2_25ns_privateMiniAOD";
+      name="TTZLow_Private_TTZLow_m1to10_RunIISpring16MiniAODv2_Private80X-v1";
+      path="/store/group/snt/run2_25ns_80MiniAODv2/";
+      tag="V08-00-05";
       shortname="ttzlow"; 
       break;
     case GGHtoZZto4L:
@@ -1006,7 +1006,7 @@ int main(int argc, char *argv[]){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  set_goodrun_file("goldenJson_2016_804p2.txt");
+  set_goodrun_file("goldenJson_2016_2p6ifb.txt");
   
   // string jecEra = "Fall15_25nsV2";
   string jecEra = "Spring16_25nsV3";

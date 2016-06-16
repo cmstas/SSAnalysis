@@ -4,7 +4,7 @@ xrootdbroken="1"
 
 nSubmitted=0
 
-SPPATH="ss_babies_June10" # FIXME must match with DIRNAME in condorExecutable
+SPPATH="ss_babies_June16" # FIXME must match with DIRNAME in condorExecutable
 
 DOCOMPILE="1"
 NOSUBMIT="0"
@@ -86,11 +86,10 @@ T5TTCC="T5ttcc_825to1000_675to875 T5ttcc_1025to1200_875to1075 T5ttcc_825to1000_0
 FORSYNC="TG"
 
 DATA="DataDoubleMuonv1 DataDoubleEGv1 DataMuonEGv1 DataDoubleMuonv2 DataDoubleEGv2 DataMuonEGv2"
-CENTRAL_NEW="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ TTBAR_PH GGHtoZZto4L"
-NOT_YET="TTZlow"
+CENTRAL_NEW="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ TTBAR_PH GGHtoZZto4L TTZlow"
 
 # ALL="$CENTRAL_NEW $DATA"
-ALL="GGHtoZZto4L"
+ALL="TTZlow VHtoNonBB $DATA"
 
 
 #Then submit jobs
@@ -253,14 +252,14 @@ do
     path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
     nameNu=27
   elif [ $sname == "VHtoNonBB" ] ;then 
-    name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1"
-    tag="V07-06-03_MC";
-    path="/hadoop/cms/store/group/snt/run2_25ns_76MiniAODv2/";
+    name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1"
+    path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2/";
+    tag="V08-00-05";
     nameNu=28
   elif [ $sname == "TTZlow" ]; then 
-    name="TTZ_lowMM_petrucc"
-    tag="V07-04-11"
-    path="/hadoop/cms/store/group/snt/run2_25ns_privateMiniAOD"
+      name="TTZLow_Private_TTZLow_m1to10_RunIISpring16MiniAODv2_Private80X-v1";
+      path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2/";
+      tag="V08-00-05";
     nameNu=29
   elif [ $sname == "GGHtoZZto4L" ] ; then
     name="GluGluHToZZTo4L_M125_13TeV_powheg2_JHUgenV6_pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1";

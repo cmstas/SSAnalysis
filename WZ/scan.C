@@ -32,41 +32,56 @@ int scan(){
 
 
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");  titles.push_back("Fakes"); files.push_back("Fakes");
-    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP*.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_high.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_low.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets.root");
+    titles.push_back("Fakes"); files.push_back("Fakes");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZ.root");    titles.push_back("ttZH"); files.push_back("ttZH");
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");
+    // // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP*.root");
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_high.root");
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_low.root");
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets.root");
+
+    titles.push_back("ttZH"); files.push_back("ttZH");
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZ.root");
     // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZLOW.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTHtoNonBB.root");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");   titles.push_back("ttW"); files.push_back("TTW");
+    titles.push_back("ttW"); files.push_back("TTW");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root"); titles.push_back("Rares"); files.push_back("Rares");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");
+
+    titles.push_back("Rares"); files.push_back("Rares");
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/GGHtoZZto4L.root");
-
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWZ.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZZ.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWW.root");
-
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WWDPS.root");
     // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/VHtoNonBB.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTTT.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TZQ.root");
     //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/T6TTWW_600_425_50.root ");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/QQWW.root");     titles.push_back("WW"); files.push_back("WW");
+    titles.push_back("WW"); files.push_back("WW");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WGToLNuG.root");     titles.push_back("XG"); files.push_back("XG");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/QQWW.root");
+
+    titles.push_back("XG"); files.push_back("XG");
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WGToLNuG.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZG.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TG.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTG.root");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ.root");     titles.push_back("WZ"); files.push_back("WZ");
+    titles.push_back("WZ"); files.push_back("WZ");
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/Data*.root"); files.push_back("Data");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ.root");
+
+    files.push_back("Data");
+
+    // tag = "v6.02";
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/Data*.root");
 
     int nEventsTotal = 0;
     int nEventsChain = ch->GetEntries();
@@ -193,7 +208,8 @@ int scan(){
             }
 
             // this guarantees that the third lepton makes a Z with one of the first two leptons
-            if( ! (ss::hyp_class() == 6) ) continue;
+            if( ! (ss::hyp_class() == 6) && !(ss::hyp_class()==2) ) continue;
+            // if( ! (ss::hyp_class() == 6) ) continue;
 
             if(ss::met() < 30.0) continue;//relax to 30 for low lumi
             if(ss::njets() < 2) continue;
@@ -223,6 +239,13 @@ int scan(){
             else zmass = zmass23;
 
             if (fabs(zmass-91.2) > 15) continue;
+
+            // bool isDataFake = false;
+            // if(ss::is_real_data() && (ss::lep3_fo() && !ss::lep3_tight()) && ss::lep1_passes_id() && ss::lep2_passes_id()) isDataFake = true;
+            // if(ss::is_real_data() && (ss::lep2_fo() && !ss::lep2_tight()) && ss::lep1_passes_id() && ss::lep3_passes_id()) isDataFake = true;
+            // if(ss::is_real_data() && (ss::lep1_fo() && !ss::lep1_tight()) && ss::lep2_passes_id() && ss::lep3_passes_id()) isDataFake = true;
+            // if(!isDataFake) continue;
+            // float eff = 1.0;
 
 
             float fr = 0.0;
