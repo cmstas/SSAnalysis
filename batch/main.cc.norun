@@ -226,7 +226,7 @@ int main(int argc, char *argv[]){
       shortname="tthtononbb";
       break;
     case VHtoNonBB:
-    name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1"
+    name="VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
     path="/store/group/snt/run2_25ns_80MiniAODv2/";
     tag="V08-00-05";
       shortname="vhtononbb";
