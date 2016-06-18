@@ -18,7 +18,7 @@ eval `scramv1 runtime -sh`
 popd
 
 #Specify name of output file and name of dierctory in /hadoop/...
-export DIRNAME=ss_babies_June10 # FIXME match submit25ns
+export DIRNAME=ss_babies_June16 # FIXME match submit25ns
 export WHICH_SMALL=`echo ${WHICH,,}`
 
 #backgrounds
