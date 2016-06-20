@@ -132,7 +132,7 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   nominal2->Draw("E2,SAME");
   nominal->Draw("E1,SAME");
 
-  TLegend* leg = new TLegend(0.35,0.91,0.85,0.99);
+  TLegend* leg = new TLegend(0.35,0.91,0.85-0.18,0.99-0.18);
   leg->SetFillColor(kWhite);
   leg->SetBorderSize(0);
   leg->SetNColumns(2);
@@ -144,7 +144,7 @@ void printTotalSyst(TString process, TString kine, TString lumi, TString dir){
   pad1->RedrawAxis();
   pad1->Update();
 
-  c1.SaveAs(Form("%s/%s_%s_%sifb_totUnc.png",dir.Data(),process.Data(),kine.Data(),lumi.Data()));
+  c1.SaveAs(Form("%s/plots/%s_%s_%sifb_totUnc.png",dir.Data(),process.Data(),kine.Data(),lumi.Data()));
 
   // TCanvas c2;
   // band2->GetYaxis()->SetRangeUser(-0.5,0.5);
