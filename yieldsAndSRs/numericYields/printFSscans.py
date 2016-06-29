@@ -1,6 +1,6 @@
 import os, glob, ROOT
 
-scan = "T1TTTT"
+scan = "T1TTTT_main"
 #scan = "T6TTWW_50"
 #scan = "T5QQQQVV"
 #scan = "T5QQQQWW"
@@ -9,7 +9,9 @@ scan = "T1TTTT"
 #scan = "T5tttt_degen"
 #scan = "T5ttcc"
 
-files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/v6.02-fs/"+scan+"*.root")
+files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/v8.02/"+scan+"*.root")
+
+scan = scan.replace("_main","")
 
 outf = open("fs_%s.h" % scan.lower(), 'w')
 
@@ -22,7 +24,10 @@ for fn in files:
         #print kname
         if "csErr" in kname:
             masses = kname.split('_')
-            #print masses[1], masses[2]
+            # print masses[1], masses[2]
+            # if masses[1]  != "1300" or masses[2] != "100": continue
+            # if masses[1]  != 1300: continue
+            print "GOOD:",masses[1], masses[2]
             h = ROOT.TH1F("h_%s_%s"%(masses[1], masses[2]),"h_%s_%s"%(masses[1], masses[2]),2,-1,1)
             t.Draw("scale1fb>>h_%s_%s"%(masses[1], masses[2]),"sparms[0]==%s && sparms[1]==%s" % (masses[1], masses[2]),"goff")
             if h.GetMean()<0: 

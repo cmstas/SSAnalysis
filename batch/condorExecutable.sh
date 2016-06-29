@@ -18,7 +18,7 @@ eval `scramv1 runtime -sh`
 popd
 
 #Specify name of output file and name of dierctory in /hadoop/...
-export DIRNAME=ss_babies_June16 # FIXME match submit25ns
+export DIRNAME=ss_babies_June22_3p99ifb_sig # FIXME match submit25ns
 export WHICH_SMALL=`echo ${WHICH,,}`
 
 #backgrounds
@@ -57,6 +57,8 @@ if [ "$WHICH" == "32" ]; then WHICH_SMALL="wgmg"; fi
 if [ "$WHICH" == "33" ]; then WHICH_SMALL="tthtononbbext"; fi
 if [ "$WHICH" == "34" ]; then WHICH_SMALL="zzz"; fi
 if [ "$WHICH" == "35" ]; then WHICH_SMALL="www"; fi
+if [ "$WHICH" == "36" ]; then WHICH_SMALL="ttznlo"; fi
+if [ "$WHICH" == "37" ]; then WHICH_SMALL="ttwnlo"; fi
 
 #signals
 if [ "$WHICH" == "100" ]; then WHICH_SMALL="t1tttt_1500"; fi
@@ -82,7 +84,7 @@ if [ "$WHICH" == "1005" ]; then WHICH_SMALL="datamuonegv2"; fi
 # if [ "$WHICH" == "1008" ]; then WHICH_SMALL="datamuonegd_v4"; fi
 
 #signal
-if [ "$WHICH" == "10001" ] ; then WHICH_SMALL="t1tttt_1950_700to950"        ; fi
+if [ "$WHICH" == "10001" ] ; then WHICH_SMALL="t1tttt_main"        ; fi
 if [ "$WHICH" == "10002" ] ; then WHICH_SMALL="t1tttt_1100_1to775"          ; fi
 if [ "$WHICH" == "10003" ] ; then WHICH_SMALL="t1tttt_1175_950"             ; fi
 if [ "$WHICH" == "10004" ] ; then WHICH_SMALL="t1tttt_1275_900to975"        ; fi

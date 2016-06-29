@@ -39,6 +39,9 @@ enum sample_t {
   ZZZ = 34,
   WWW = 35,
 
+  TTZnlo = 36,
+  TTWnlo = 37,
+
   //Signals
   T1TTTT_1500 = 100,
   T1TTTT_1200 = 101,
@@ -63,7 +66,7 @@ enum sample_t {
   // DataMuonEGD_v4 = 1008,
 
   //Fastsim
-  T1TTTT_1950_700to950        = 10001,
+  T1TTTT_main                 = 10001,
   T1TTTT_1100_1to775          = 10002,
   T1TTTT_1175_950             = 10003,
   T1TTTT_1275_900to975        = 10004,

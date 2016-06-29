@@ -8,7 +8,10 @@
   //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02-fs/T5QQQQWW_*_*.root"); 
   //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02-fs/T5QQQQWW_*_*.root"); 
   //chain->Add("T5ttttDM175_*_*.root"); 
-  chain->Add("T1*_*_*.root"); 
+
+  // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/T1TTTT_main.root"); 
+  chain->Add("/hadoop/cms/store/user/namin/condor/ss_babies_June22_3p99ifb/t1tttt_main_1.root"); 
+
   //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02-fs/T1TTBB_*_*.root"); 
   //chain->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02-fs/T5ttttDM*.root");
   //chain->Add("T5ttcc_1025to1200_0to1025.root");
@@ -27,7 +30,8 @@
      int find3 = title.length();
      string mGluino = title.substr(find+1, find2-find-1);
      string mLSP = title.substr(find2+1, find3-find2); 
-     cout << "if (mSp1 == " << mGluino << " && mSp2 == " << mLSP << ") return " << hist->GetBinContent(1) << ";" << endl;
+     // cout << "if (mSp1 == " << mGluino << " && mSp2 == " << mLSP << ") return " << hist->GetBinContent(1) << ";" << endl;
+     cout << mGluino << " " << mLSP << " " << hist->GetBinContent(1) << endl;
     }
   }
 

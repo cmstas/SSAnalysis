@@ -7,7 +7,7 @@
   gROOT->ProcessLine(".L ../../classFiles/v6.02/SS.cc+");
 
   gROOT->ProcessLine(".L ratios.C++");
-  gROOT->ProcessLine("ratios(1)");
+  // gROOT->ProcessLine("ratios(1)");
   gROOT->ProcessLine("ratios(0)");
 
   // gROOT->ProcessLine(".L yields.C++");

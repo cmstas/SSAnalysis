@@ -16,6 +16,9 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
       if (useIsoTrig) hlt = (doMu ? "HLT_Mu8_TrkIsoVVL" : "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30");
   }
 
+  // TString tag_data = tag;
+  TString tag_data = tag+"/3p99ifb/"; // FIXME
+
 
   float mult = 1.0;
 
@@ -28,6 +31,16 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   float m17i = 28.3003;
   float m8 = 496.07;
   float m17 = 13.1493;
+
+  // to go from 800/pb SFs to 4/fb SFs
+  e8i *= 0.7625*3.99/0.8042;
+  e17i *= 0.9663*3.99/0.8042;
+  e8 *= 0.7625*3.99/0.8042;
+  e17 *= 0.929*3.99/0.8042;
+  m8i *= 0.758*3.99/0.8042;
+  m17i *= 0.369*3.99/0.8042;
+  m8 *= 0.7528*3.99/0.8042;
+  m17 *= 0.4533*3.99/0.8042;
 
   if(do8) {
       if(useIsoTrig) mult = (doMu ? m8i : e8i);
@@ -42,7 +55,7 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
 
   int idlep = (doMu ? 13 : 11); 
 
-  TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/"+tag+"/2016DoubleMu*.root" : "/nfs-7/userdata/leptonTree/"+tag+"/2016DoubleEG.root");
+  TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleMu*.root" : "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleEG.root");
   TString dyf = "/nfs-7/userdata/leptonTree/"+tag+"/DY_madgraph*.root";
 
   TString leptype = (doMu ? "Mu17" : "Ele17");

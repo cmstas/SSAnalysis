@@ -44,7 +44,7 @@ def smooth(g,h):
 
 sigs = []
 
-for mglu in range (minx,maxx,step):
+for mglu in range (minx,maxx,step): # FIXME lsp mass 1 
     for mlsp in range (miny,maxy,step):
         if os.path.isfile(("%s/fs_t1tttt_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
         print "found sig = fs_t1tttt_m%i_m%i" % (mglu,mlsp)

@@ -79,15 +79,15 @@ void kinem(){
 
   //Options string.  
   vector <string> options; 
-  options.push_back("--xAxisLabel lep p_{T}        --outputName lep_pt"        );
-  options.push_back("--xAxisLabel M_{ll}           --outputName mll"           );
-  options.push_back("--xAxisLabel MET              --outputName met"           );
-  options.push_back("--xAxisLabel H_{T}            --outputName ht"            );
-  options.push_back("--xAxisLabel M_{T} min        --outputName mtmin"         );
-  options.push_back("--xAxisLabel nJets            --outputName njets"         );
-  options.push_back("--xAxisLabel nBtags           --outputName nbtags"        );
-  options.push_back("--xAxisLabel jet p_{T}        --outputName jetpt"         );
-  options.push_back("--xAxisLabel MET 3.0          --outputName met3p0"        );
+  options.push_back("--xAxisLabel lep p_{T}        --outputName pdfs/lep_pt"        );
+  options.push_back("--xAxisLabel M_{ll}           --outputName pdfs/mll"           );
+  options.push_back("--xAxisLabel MET              --outputName pdfs/met"           );
+  options.push_back("--xAxisLabel H_{T}            --outputName pdfs/ht"            );
+  options.push_back("--xAxisLabel M_{T} min        --outputName pdfs/mtmin"         );
+  options.push_back("--xAxisLabel nJets            --outputName pdfs/njets"         );
+  options.push_back("--xAxisLabel nBtags           --outputName pdfs/nbtags"        );
+  options.push_back("--xAxisLabel jet p_{T}        --outputName pdfs/jetpt"         );
+  options.push_back("--xAxisLabel MET 3.0          --outputName pdfs/met3p0"        );
 
   //Make final plot
   for (unsigned int j = 0; j < data_plots[0].size(); j++){

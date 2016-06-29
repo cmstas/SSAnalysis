@@ -10,11 +10,15 @@
   TString tag2 = tag;
 
   tag = "v1.09FR_80X"; // FIXME
+  // tag = "v1.09FR_80X/badMuID"; // FIXME
   tag2 = "v1.09FR_76X"; // FIXME
 
+  // TString tag_data = tag;
+  TString tag_data = tag+"/3p99ifb/"; // FIXME
+
   TChain *data = new TChain("t"); 
-  data->Add( "/nfs-7/userdata/leptonTree/"+tag+"/2016DoubleEG.root" );
-  data->Add( "/nfs-7/userdata/leptonTree/"+tag+"/2016DoubleMuon.root" );
+  data->Add( "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleEG*.root" );
+  data->Add( "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleMuon*.root" ); // FIXME
   ScanChain(data,"./rate_histos_data_LooseEMVA.root","useLooseEMVA"); 
   ScanChain(data,"./rate_histos_data_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 

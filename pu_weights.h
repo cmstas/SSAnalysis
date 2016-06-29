@@ -3,6 +3,61 @@ float getPUwECO(int nvtx) {
   if (nvtx<60) return array[nvtx];
   else return 1.;
 }
+float getTruePUwECO(int nvtx) {
+   if (nvtx>=0.000000 && nvtx<1.000000) return 0.001242;
+   if (nvtx>=1.000000 && nvtx<2.000000) return 0.009134;
+   if (nvtx>=2.000000 && nvtx<3.000000) return 0.009748;
+   if (nvtx>=3.000000 && nvtx<4.000000) return 0.022781;
+   if (nvtx>=4.000000 && nvtx<5.000000) return 0.044303;
+   if (nvtx>=5.000000 && nvtx<6.000000) return 0.044381;
+   if (nvtx>=6.000000 && nvtx<7.000000) return 0.074973;
+   if (nvtx>=7.000000 && nvtx<8.000000) return 0.452390;
+   if (nvtx>=8.000000 && nvtx<9.000000) return 0.800787;
+   if (nvtx>=9.000000 && nvtx<10.000000) return 0.869224;
+   if (nvtx>=10.000000 && nvtx<11.000000) return 0.914828;
+   if (nvtx>=11.000000 && nvtx<12.000000) return 1.114916;
+   if (nvtx>=12.000000 && nvtx<13.000000) return 1.421726;
+   if (nvtx>=13.000000 && nvtx<14.000000) return 1.716146;
+   if (nvtx>=14.000000 && nvtx<15.000000) return 1.954499;
+   if (nvtx>=15.000000 && nvtx<16.000000) return 1.931450;
+   if (nvtx>=16.000000 && nvtx<17.000000) return 1.771625;
+   if (nvtx>=17.000000 && nvtx<18.000000) return 1.765461;
+   if (nvtx>=18.000000 && nvtx<19.000000) return 1.553672;
+   if (nvtx>=19.000000 && nvtx<20.000000) return 1.486273;
+   if (nvtx>=20.000000 && nvtx<21.000000) return 1.155802;
+   if (nvtx>=21.000000 && nvtx<22.000000) return 0.914544;
+   if (nvtx>=22.000000 && nvtx<23.000000) return 0.763326;
+   if (nvtx>=23.000000 && nvtx<24.000000) return 0.628013;
+   if (nvtx>=24.000000 && nvtx<25.000000) return 0.457471;
+   if (nvtx>=25.000000 && nvtx<26.000000) return 0.359195;
+   if (nvtx>=26.000000 && nvtx<27.000000) return 0.224582;
+   if (nvtx>=27.000000 && nvtx<28.000000) return 0.152288;
+   if (nvtx>=28.000000 && nvtx<29.000000) return 0.085062;
+   if (nvtx>=29.000000 && nvtx<30.000000) return 0.050443;
+   if (nvtx>=30.000000 && nvtx<31.000000) return 0.028176;
+   if (nvtx>=31.000000 && nvtx<32.000000) return 0.015188;
+   if (nvtx>=32.000000 && nvtx<33.000000) return 0.010569;
+   if (nvtx>=33.000000 && nvtx<34.000000) return 0.006558;
+   if (nvtx>=34.000000 && nvtx<35.000000) return 0.005573;
+   if (nvtx>=35.000000 && nvtx<36.000000) return 0.005573;
+   if (nvtx>=36.000000 && nvtx<37.000000) return 0.006753;
+   if (nvtx>=37.000000 && nvtx<38.000000) return 0.005966;
+   if (nvtx>=38.000000 && nvtx<39.000000) return 0.000000;
+   if (nvtx>=39.000000 && nvtx<40.000000) return 0.000000;
+   if (nvtx>=40.000000 && nvtx<41.000000) return 0.000000;
+   if (nvtx>=41.000000 && nvtx<42.000000) return 0.000000;
+   if (nvtx>=42.000000 && nvtx<43.000000) return 0.000000;
+   if (nvtx>=43.000000 && nvtx<44.000000) return 0.000000;
+   if (nvtx>=44.000000 && nvtx<45.000000) return 0.000000;
+   if (nvtx>=45.000000 && nvtx<46.000000) return 0.000000;
+   if (nvtx>=46.000000 && nvtx<47.000000) return 0.000000;
+   if (nvtx>=47.000000 && nvtx<48.000000) return 0.000000;
+   if (nvtx>=48.000000 && nvtx<49.000000) return 0.000000;
+   if (nvtx>=49.000000 && nvtx<50.000000) return 0.000000;
+   return 0.;
+}
+
+
 
 float getTruePUw(float nvtx) {
    if (nvtx>=0.000000 && nvtx<1.000000) return 0.000000;

@@ -95,6 +95,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   bool useIsoTrigs = false;
   if (option.Contains("IsoTrigs")) useIsoTrigs = true;
 
+  float anyPt = false;
+
   bool doJEC = false;
 
   bool debug = false;
@@ -105,16 +107,57 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   float etabins_mu[4] = {0., 1.2, 2.1, 2.4};
   float etabins_el[4] = {0., 0.8, 1.479, 2.5};
 
+  // int nptbins = 7;
+  // int netabins = 3;
+  // float ptbins[8] = {10., 12., 15., 20., 25., 35., 50., 70.};
+  // float etabins_mu[4] = {0., 1.2, 2.1, 2.4};
+  // float etabins_el[4] = {0., 0.8, 1.479, 2.5};
+
   // handmade "prescales" from normalizeToZPeak.C
+
+  // // matthieu's numbers
+  // float lumi = 804;
+  // float e8i = lumi/0.392;
+  // float e17i = lumi/9.672;
+  // float e8 = lumi/0.392;
+  // float e17 = lumi/9.624;
+  // float m8i = lumi/3.250;
+  // float m17i = lumi/30.578;
+  // float m8 = lumi/1.597;
+  // float m17 = lumi/65.43;
+
+  // 800/pb SFs from normalizeZpeak
   float e8i = 1767.61;
   float e17i = 84.5516;
   float e8 = 1767.61;
   float e17 = 85.1862;
-
   float m8i = 238.145;
   float m17i = 28.3003;
   float m8 = 496.07;
   float m17 = 13.1493;
+
+  // to go from 800/pb SFs to 4/fb SFs
+  e8i *= 0.7625*3.99/0.8042;
+  e17i *= 0.9663*3.99/0.8042;
+  e8 *= 0.7625*3.99/0.8042;
+  e17 *= 0.929*3.99/0.8042;
+  m8i *= 0.758*3.99/0.8042;
+  m17i *= 0.369*3.99/0.8042;
+  m8 *= 0.7528*3.99/0.8042;
+  m17 *= 0.4533*3.99/0.8042;
+
+  // // for synch - don't weight mu17, el17
+  // float e8i = 0;
+  // float e17i = 1;
+  // float e8 = 0;
+  // float e17 = 1;
+  // float m8i = 0;
+  // float m17i = 1;
+  // float m8 = 0;
+  // float m17 = 1;
+  // anyPt = true;
+
+  
 
   if (false) {
     //this should be ok as long as there are less bins in the extrPtRel case
@@ -470,9 +513,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
     }
 
     cout << " => File: " << TString(currentFile->GetTitle()) << endl;
+
+    if(doJEC) {
     cout << "applying JEC from the following files:" << endl;
     for (unsigned int ifile = 0; ifile < jetcorr_filenames_pfL1L2L3.size(); ++ifile) {
       cout << (isDataFromFileName ? "DATA: " : "MC: ") << jetcorr_filenames_pfL1L2L3.at(ifile) << endl;
+    }
     }
     
     // Loop over Events in current file   //ACTUALLY A LEPTON "EVENT" LOOP
@@ -489,7 +535,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       // Progress
       LeptonTree::progress( nEventsTotal, nEventsChain );
 
-      if (debug && evt_event()!=39158858) continue;
+      if (debug && evt_event()!=701238056) continue;
       if (debug) cout << "event=" << evt_event() << " run=" << evt_run() << endl;
 
       //cout << "pt=" << p4().pt() << " iso=" << RelIso03EA() << endl;
@@ -500,6 +546,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
         float jetcorrection = 1.0;
         float jetarea = jets_area().at(i);
         float undoJEC = jets_undoJEC().at(i);
+        if (debug) {
+            cout << "event has jet with pt,eta,phi: " << jets()[i].pt() << "," << jets()[i].eta() << "," << jets()[i].phi() << endl;
+        }
 
         if(doJEC) {
             if (jetcorr_filenames_pfL1L2L3.size()>0) { 
@@ -621,9 +670,13 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       for(unsigned int i=0; i<jets_recorr.size(); i++)  {
 	if(ROOT::Math::VectorUtil::DeltaR(jets_recorr[i], p4()) < 1.) continue; //0.4 in babymaker
 	if(jets_disc()[i] > 0.800) nbtags++; // FIXME
-	if(jets_recorr[i].pt() > 40.) {
+	if(jets_recorr[i].pt() > 40. && fabs(jets_recorr[i].eta()) < 2.4) {
 	  ht += jets_recorr[i].pt();
 	  njets40++;
+      if(debug) {
+          cout << "-->recoiljet:" << jets_recorr[i].pt() << "," << jets_recorr[i].eta() << "," << jets_recorr[i].phi() << endl;
+          cout << "-->deltaR " << ROOT::Math::VectorUtil::DeltaR(jets_recorr[i],p4()) << endl;
+      }
 	}
       }
       if(njets40 > 0) jetptcut = true;
@@ -645,6 +698,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		      << " ptrel=" << ptrel
 		      << " ptratio=" << p4().pt()/closejetpt
 		      << endl;
+
+      if(debug) {
+          cout << "lepton pt,eta,phi: " << p4().pt() << "," << p4().eta() << "," << p4().phi() << endl;
+          cout << "closejet pt,eta,phi: " << closejet.pt() << "," << closejet.eta() << "," << closejet.phi() << endl;
+          cout << "deltaR " << ROOT::Math::VectorUtil::DeltaR(closejet,p4()) << endl;
+      }
 
       if (debug) cout << "check jet: njets40=" << njets40 << " ht_SS=" << ht_SS() << endl;
       if( !jetptcut || ht_SS()<40 )
@@ -682,22 +741,22 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if(!isData) prescale = 1; // triggers messed up in 80X MC
       if (abs(id())==11 && (isData)) {
 	if (useIsoTrigs) {
-	  if (p4().pt() >= 10 && HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
+	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) { 
           prescale = HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30();
           prescale = e8i; // FIXME
       }
-	  if (p4().pt() >= 25 && HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
+	  if ((anyPt || p4().pt() >= 25) && HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
           prescale = HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30();
           prescale = e17i; // FIXME
       }
 	  if (prescale>0) weight *= prescale;
 	  else continue;	  
 	} else {
-	  if (p4().pt() >= 10 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0) {
+	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0) { 
           prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
           prescale = e8; // FIXME
       }
-	  if (p4().pt() >= 25 && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()>0) {
+	  if ((anyPt || p4().pt() >= 25) && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()>0) {
           prescale = HLT_Ele17_CaloIdM_TrackIdM_PFJet30();
           prescale = e17; // FIXME
       }
@@ -708,12 +767,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (abs(id())==13 && (isData)) {	
 	// use mu8+mu17
 	if (useIsoTrigs) {
-	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) {
+	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) { 
           prescale = HLT_Mu8_TrkIsoVVL();
           prescale = m8i; // FIXME
       }
 
-	  if (p4().pt()>=25 && HLT_Mu17_TrkIsoVVL()>0) {
+	  if ((anyPt || p4().pt()>=25) && HLT_Mu17_TrkIsoVVL()>0) {
           prescale = HLT_Mu17_TrkIsoVVL();
           prescale = m17i; // FIXME
       }
@@ -721,13 +780,13 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (prescale>0) weight *= prescale;
 	  else continue;
 	} else {
-	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0)
+	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0) 
       {
           prescale = HLT_Mu8();
           prescale = m8; // FIXME
       }
 
-	  if (p4().pt()>=25 && HLT_Mu17()>0)
+	  if ((anyPt || p4().pt() >= 25) && HLT_Mu17()>0)
       {
           prescale = HLT_Mu17();
           prescale = m17; // FIXME
@@ -744,15 +803,17 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if(nFOs_SS() > 1) //if more than 1 FO in event
 	{continue;}
       
-      // if(nbtags != 1) continue; 
+      // if(nbtags != 1) continue;  // FIXME
+      // if(ht_SS() < 200) continue;  // FIXME
 
       //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
       //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
       // |eta|>2.4 will mess up the rate in the highest eta bins (2<|eta|<3)
       //Don't think eta cut is anywhere else
       if (debug) cout << "check pt/eta" << endl;
-      if(p4().pt() < 10. || fabs(p4().eta()) > 2.4) //What do we want here? 
-	{continue;}
+      if(p4().pt() < 10.) continue;
+      if(abs(id()) == 11 && fabs(p4().eta()) > 2.5) continue;
+      if(abs(id()) == 13 && fabs(p4().eta()) > 2.4) continue;
 
       if (doLightonly && abs(id())==11 && p4().pt() < 20.) continue;//because EMEnriched does not go below 20 GeV
 

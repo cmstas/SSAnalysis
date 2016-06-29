@@ -4,7 +4,7 @@ import tableMaker as tm
 
 sm.addGlobalOptions("--graphicspaths ../pdfs/")
 
-sm.initSlides(me="Nick",themeName="alex",opts="--themecolor 13,26,129")
+sm.initSlides(me="Nick",themeName="alexmod",opts="--themecolor 13,26,129")
 sm.addSlide(title="WZ Scale Factor ENDL With 1.264 fb$^{-1} (OLD)$", opts="")
 
 sm.addSlide(title="Overview", text="""
@@ -28,4 +28,4 @@ sm.addSlide(title="CR scale factor",text="""
         -- From this CR, after subtracting out nonWZ contributions, I find a WZ data/MC scale factor of $\\mathbf{1.340 \\pm 0.435}$.
         """)
 
-sm.writeSlides("WZ101915.tex", opts="--compile --copy --dump")
+sm.writeSlides("WZ062316.tex", opts="--compile --copy --dump")

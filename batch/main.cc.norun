@@ -262,6 +262,19 @@ int main(int argc, char *argv[]){
       shortname="www";
       break; 
 
+    case TTZnlo:
+      name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v3";
+      tag="V08-00-01";
+      path="/store/group/snt/run2_25ns_80MiniAODv1/";
+      shortname="ttznlo";
+      break; 
+    case TTWnlo:
+      name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+      tag="V08-00-05";
+      path="/store/group/snt/run2_25ns_80MiniAODv2/";
+      shortname="ttwnlo";
+      break; 
+
     //Signal
     case T1TTTT_1500:
       name="SMS-T1tttt_mGluino-1500_mLSP-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1";
@@ -350,9 +363,9 @@ int main(int argc, char *argv[]){
       isData = true;
       break;
 
-    case T1TTTT_1950_700to950:
-      shortname="t1tttt_1950_700to950";
-      name="SMS-T1tttt_mGluino-1950_mLSP-700to950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+    case T1TTTT_main:
+      shortname="t1tttt_main";
+      name="SMS-T1tttt_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
       isSignal=1;
       break;
     case T1TTTT_1100_1to775:
@@ -986,8 +999,8 @@ int main(int argc, char *argv[]){
 
   //Path for signal
   if (isSignal > 0){
-    path="/store/group/snt/run2_fastsim"; 
-    tag="V07-04-12";
+    path="/store/group/snt/run2_25ns_80MiniAODv2_fastsim"; 
+    tag="V08-00-05";
   }
   
   //Set up file and tree
@@ -1006,7 +1019,8 @@ int main(int argc, char *argv[]){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  set_goodrun_file("goldenJson_2016_2p6ifb.txt");
+  // set_goodrun_file("goldenJson_2016_2p6ifb.txt");
+  set_goodrun_file("goldenJson_2016_3p99ifb.txt");
   
   // string jecEra = "Fall15_25nsV2";
   string jecEra = "Spring16_25nsV3";
@@ -1015,7 +1029,7 @@ int main(int argc, char *argv[]){
   JetCorrectionUncertainty *jecUnc = 0;
   if ( isData)      jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA_Uncertainty_AK4PFchs.txt"); 
   if (!isData)      jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_MC_Uncertainty_AK4PFchs.txt"); 
-  if (isSignal > 0) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Fastsim15_Uncertainty_AK4PFchs.txt"); 
+  if (isSignal > 0) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Spring16_FastSimV1_Uncertainty_AK4PFchs.txt"); 
 
   //Init MVA
   createAndInitMVA("./CORE", true, true);
@@ -1035,9 +1049,9 @@ int main(int argc, char *argv[]){
 
   //JEC files -- 25 ns FASTSIM
   std::vector<std::string> jetcorr_filenames_25ns_FASTSIM_pfL1L2L3;
-  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Fastsim15_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Fastsim15_L2Relative_AK4PFchs.txt"); 
-  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Fastsim15_L3Absolute_AK4PFchs.txt"); 
+  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Spring16_FastSimV1_L1FastJet_AK4PFchs.txt");
+  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Spring16_FastSimV1_L2Relative_AK4PFchs.txt"); 
+  jetcorr_filenames_25ns_FASTSIM_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/Spring16_FastSimV1_L3Absolute_AK4PFchs.txt"); 
 
   //JECs
   std::vector<std::string> filenames;

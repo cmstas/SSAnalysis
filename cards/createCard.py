@@ -13,7 +13,8 @@ import math
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
-lumi = "2.3"
+lumi = "4.0"
+# lumi = "2.3"
 
 pseudoData = 0
 
@@ -225,6 +226,7 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("btag","shape"))
     for process in processes: card.write("%-15s " % (process.btag))
     card.write("\n")
+
     #nuisance pu
     card.write("%-40s %-5s " % ("pu","shape"))
     for process in processes: card.write("%-15s " % (process.pu))
@@ -309,9 +311,9 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     for process in processes: card.write("%-15s " % (process.flips))
     card.write("\n")
 
-    for process in processes: writeStatForProcess(dir,card,kine,process,processes)
+    # for process in processes: writeStatForProcess(dir,card,kine,process,processes)  # FIXME UNCOMMENT
     #print "warning: using correlated statistical uncertainties"
-    #or process in processes: writeStatForProcessCorrelated(card,process,processes)
+    for process in processes: writeStatForProcessCorrelated(card,process,processes) # FIXME COMMENT
 
     return
 
