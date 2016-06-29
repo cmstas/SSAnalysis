@@ -56,6 +56,8 @@ void writeJesSyst(TH1F* central,string name,TString kine);
 void writeHTHltSyst(TH1F* central,string name,TString kine);
 void writeBSHltSyst(TH1F* central,string name,TString kine);
 bool isSRHighHT(TString kine, int sr);
+bool isSRSuperHighHT(TString kine, int sr);
+bool isSR5Jets(TString kine, int sr);
 int nbtagsSR(TString kine, int sr);
 void initHistError(bool usePoisson, TH1F* plot);
 
@@ -107,47 +109,47 @@ void getyields(){
   TChain *t5qqqqww_1200_chain = new TChain("t","t5qqqqww_1200"); 
   TChain *t5qqqqww_deg_chain = new TChain("t","t5qqqqww_deg"); 
   
-  // //Fill chains
-  // ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
-  // wjets_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root"       , tag.c_str()));
-  // dy_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_high.root"        , tag.c_str()));
-  // dy_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_low.root"         , tag.c_str()));
-  // ttw_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
-  // ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ.root"           , tag.c_str())); 
-  // ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZLOW.root"         , tag.c_str())); 
-  // ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
-  // wz_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"             , tag.c_str()));
-  // ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
-  // xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TG.root"             , tag.c_str()));
-  // xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTG.root"            , tag.c_str()));
-  // xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"           , tag.c_str()));
-  // xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZG.root"             , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZZ.root"             , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/GGHtoZZto4L.root"    , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"            , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"            , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWW.root"            , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWDPS.root"          , tag.c_str()));
-  // tttt_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
-  // //data
-  // data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str())); // DEAR GOD FIXME
-  // data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str())); // DEAR GOD FIXME
-  // data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str())); // DEAR GOD FIXME
-  // //flips
-  // flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"     , tag.c_str()));
-  // flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"      , tag.c_str()));
-  // //fakes
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"                   , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ.root"                  , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"                    , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"            , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"                  , tag.c_str()));
+  //Fill chains
+  ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
+  wjets_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root"       , tag.c_str()));
+  dy_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_high.root"        , tag.c_str()));
+  dy_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_low.root"         , tag.c_str()));
+  ttw_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
+  ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ.root"           , tag.c_str())); 
+  ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZLOW.root"         , tag.c_str())); 
+  ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
+  wz_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"             , tag.c_str()));
+  ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
+  xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TG.root"             , tag.c_str()));
+  xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTG.root"            , tag.c_str()));
+  xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"           , tag.c_str()));
+  xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZG.root"             , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZZ.root"             , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/GGHtoZZto4L.root"    , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"            , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"            , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWW.root"            , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
+  rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWDPS.root"          , tag.c_str()));
+  tttt_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
+  //data
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str())); // DEAR GOD FIXME
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str())); // DEAR GOD FIXME
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str())); // DEAR GOD FIXME
+  //flips
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"     , tag.c_str()));
+  flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"      , tag.c_str()));
+  //fakes
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"                   , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ.root"                  , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"                    , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"            , tag.c_str()));
+  fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"                  , tag.c_str()));
 
   // //signals fullsim
   // t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root"              , tag.c_str()));
@@ -160,7 +162,7 @@ void getyields(){
   // t5qqqqww_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWWDeg_1000_315_300.root"   , tag.c_str()));
 
   //Get yields
-  #include "fs_t1tttt.h"
+  // #include "fs_t1tttt.h"
 
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
   ttbar_chain->SetTitle("ttbar_fa");
@@ -2272,8 +2274,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         else exit(1);
         //btag: normalize (be careful with bins inclusive in btags, they are not affected by this syst)
 	int nBins = plot_btagSF_ct_alt->GetNbinsX();
-	int nInclBins = 2;
-	if (kinRegs[kr]=="hilow") nInclBins = 4;
+	int nInclBins = 4;
+	if (kinRegs[kr]=="hilow") nInclBins = 6;
 	if (kinRegs[kr]=="lowlow") nInclBins = 1;
 	if (plot_btagSF_up_alt->Integral(1,nBins-nInclBins)>0) {
 	  float scaleBtag_up = plot_btagSF_ct_alt->Integral(1,nBins-nInclBins)/plot_btagSF_up_alt->Integral(1,nBins-nInclBins);
@@ -2371,15 +2373,26 @@ bool isSRHighHT(TString kine, int sr) {
   return true;
 }
 
+bool isSRSuperHighHT(TString kine, int sr) {
+  if (kine.Contains("br")) {
+    return false;
+  } else if (kine.Contains("hihi")) {
+      return (sr == 31 || sr == 33);
+  } else if (kine.Contains("hilow")) {
+      return (sr == 25 || sr == 27);
+  }
+  return false;
+}
+
 bool isSR5Jets(TString kine, int sr) {
   if (kine.Contains("br")) {
     return false;
   } else if (kine.Contains("hihi")) {
-    if(sr == 1 || sr == 2 || sr == 5 || sr == 7 || sr == 10 || sr == 13 || sr == 15 || sr == 18 || sr == 9 || sr == 17 || sr == 21 || sr == 23 || sr == 25 || sr == 26 || sr == 27 || sr == 28 || sr == 29 || sr == 30 || sr == 32) return false;
+      if( sr == 4 || sr == 6 || sr == 12 || sr == 14 || sr == 20 || sr == 22 ) return true;
   } else if (kine.Contains("hilow")) {
-    if(sr == 1 || sr == 2 || sr == 5 || sr == 8 || sr == 11 || sr == 14 || sr == 17 || sr == 7 || sr == 13 || sr == 19 || sr == 22 || sr == 20 || sr == 21 || sr == 23 || sr == 24 || sr == 26) return false;
+      if( sr == 4 || sr == 6 || sr == 10 || sr == 12 || sr == 16 || sr == 18 ) return true;
   }
-  return true;
+  return false;
 }
 
 int nbtagsSR(TString kine, int sr) {
@@ -2450,14 +2463,29 @@ void writeStat(TH1F* central,string name) {
 void writeTTVExtrSyst(TH1F* central,string name,TString kine) {
   TString up = "Up";
   TString down = "Down";
+
+  // TH1F* systUpHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),up.Data()));
+  // systUpHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),up.Data()));
+  // TH1F* systDownHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),down.Data()));
+  // systDownHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),down.Data()));
+  // TH1F* systUpHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),up.Data()));
+  // systUpHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),up.Data()));
+  // TH1F* systDownHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),down.Data()));
+  // systDownHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),down.Data()));
+
+  TH1F* systUpNJH = (TH1F*) central->Clone(Form("%s_extr_njh%s",name.c_str(),up.Data()));
+  systUpNJH->SetTitle(Form("%s_extr_njh%s",name.c_str(),up.Data()));
+  TH1F* systDownNJH = (TH1F*) central->Clone(Form("%s_extr_njh%s",name.c_str(),down.Data()));
+  systDownNJH->SetTitle(Form("%s_extr_njh%s",name.c_str(),down.Data()));
+  TH1F* systUpNJL = (TH1F*) central->Clone(Form("%s_extr_njl%s",name.c_str(),up.Data()));
+  systUpNJL->SetTitle(Form("%s_extr_njl%s",name.c_str(),up.Data()));
+  TH1F* systDownNJL = (TH1F*) central->Clone(Form("%s_extr_njl%s",name.c_str(),down.Data()));
+  systDownNJL->SetTitle(Form("%s_extr_njl%s",name.c_str(),down.Data()));
   TH1F* systUpHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),up.Data()));
   systUpHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),up.Data()));
   TH1F* systDownHTH = (TH1F*) central->Clone(Form("%s_extr_hth%s",name.c_str(),down.Data()));
   systDownHTH->SetTitle(Form("%s_extr_hth%s",name.c_str(),down.Data()));
-  TH1F* systUpHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),up.Data()));
-  systUpHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),up.Data()));
-  TH1F* systDownHTL = (TH1F*) central->Clone(Form("%s_extr_htl%s",name.c_str(),down.Data()));
-  systDownHTL->SetTitle(Form("%s_extr_htl%s",name.c_str(),down.Data()));
+
   TH1F* systUpLL = (TH1F*) central->Clone(Form("%s_extr_ll%s",name.c_str(),up.Data()));
   systUpLL->SetTitle(Form("%s_extr_ll%s",name.c_str(),up.Data()));
   TH1F* systDownLL = (TH1F*) central->Clone(Form("%s_extr_ll%s",name.c_str(),down.Data()));
@@ -2470,29 +2498,37 @@ void writeTTVExtrSyst(TH1F* central,string name,TString kine) {
     }
     fillDownMirrorUp(central,systUpLL,systDownLL);
   } else {
-    //hihi and hilow have different extrapolation unceratinties for hi and low HT
-    //HTHigh
-    float systValue = 1.08;
+    //Low njets: 5%
+    float systValue = 1.05;
+    for (int bin=1;bin<=systUpNJL->GetNbinsX();++bin) {
+      if(isSR5Jets(kine, bin)) continue;
+      float val = central->GetBinContent(bin)*systValue;
+      if (val>0) systUpNJL->SetBinContent(bin,val);
+    }
+    //High njets: 40%
+    systValue = 1.40;
+    for (int bin=1;bin<=systUpNJH->GetNbinsX();++bin) {
+      if(!isSR5Jets(kine, bin)) continue;
+      float val = central->GetBinContent(bin)*systValue;
+      if (val>0) systUpNJH->SetBinContent(bin,val);
+    }
+    //Super high ht: 100%
+    systValue = 2.00;
     for (int bin=1;bin<=systUpHTH->GetNbinsX();++bin) {
-      //skip low ht regions
-      if (!isSRHighHT(kine,bin)) continue;
+      if(!isSRSuperHighHT(kine, bin)) continue;
       float val = central->GetBinContent(bin)*systValue;
       if (val>0) systUpHTH->SetBinContent(bin,val);
     }
+    fillDownMirrorUp(central,systUpNJH,systDownNJH);
+    fillDownMirrorUp(central,systUpNJL,systDownNJL);
     fillDownMirrorUp(central,systUpHTH,systDownHTH);
-    //HTLow
-    systValue = 1.03;
-    for (int bin=1;bin<=systUpHTL->GetNbinsX();++bin) {
-      if (isSRHighHT(kine,bin)) continue;
-      float val = central->GetBinContent(bin)*systValue;
-      if (val>0) systUpHTL->SetBinContent(bin,val);
-    }
-    fillDownMirrorUp(central,systUpHTL,systDownHTL);
   }
   systUpHTH->Write();
   systDownHTH->Write();
-  systUpHTL->Write();
-  systDownHTL->Write();
+  systUpNJH->Write();
+  systDownNJH->Write();
+  systUpNJL->Write();
+  systDownNJL->Write();
   systUpLL->Write();
   systDownLL->Write();
 }

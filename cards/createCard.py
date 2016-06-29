@@ -43,15 +43,20 @@ class Process:
         self.TTW = "-"
         self.ttw_pdf = "-"
         self.ttw_extr_hth = "-"
-        self.ttw_extr_htl = "-"
+        # self.ttw_extr_htl = "-"
+        self.ttw_extr_njl = "-"
+        self.ttw_extr_njh = "-"
         self.ttw_extr_ll  = "-"
         self.TTZH = "-"
         self.ttzh_pdf = "-"
         self.ttzh_extr_hth = "-"
-        self.ttzh_extr_htl = "-"
+        # self.ttzh_extr_htl = "-"
+        self.ttzh_extr_njl = "-"
+        self.ttzh_extr_njh = "-"
         self.ttzh_extr_ll  = "-"
         self.WZ = "-"
         self.WW = "-"
+        self.ww_pdf = "-"
         self.XG = "-"
         self.rares = "-"
         self.fakes = "-"
@@ -244,9 +249,17 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("ttw_extr_hth","shape"))
     for process in processes: card.write("%-15s " % (process.ttw_extr_hth))
     card.write("\n")
-    #nuisance TTW extr_htl
-    card.write("%-40s %-5s " % ("ttw_extr_htl","shape"))
-    for process in processes: card.write("%-15s " % (process.ttw_extr_htl))
+    # #nuisance TTW extr_htl
+    # card.write("%-40s %-5s " % ("ttw_extr_htl","shape"))
+    # for process in processes: card.write("%-15s " % (process.ttw_extr_htl))
+    # card.write("\n")
+    #nuisance TTW extr_njl
+    card.write("%-40s %-5s " % ("ttw_extr_njl","shape"))
+    for process in processes: card.write("%-15s " % (process.ttw_extr_njl))
+    card.write("\n")
+    #nuisance TTW extr_njh
+    card.write("%-40s %-5s " % ("ttw_extr_njh","shape"))
+    for process in processes: card.write("%-15s " % (process.ttw_extr_njh))
     card.write("\n")
     #nuisance TTW extr_ll
     card.write("%-40s %-5s " % ("ttw_extr_ll","shape"))
@@ -265,9 +278,17 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("ttzh_extr_hth","shape"))
     for process in processes: card.write("%-15s " % (process.ttzh_extr_hth))
     card.write("\n")
-    #nuisance TTZH extr_htl
-    card.write("%-40s %-5s " % ("ttzh_extr_htl","shape"))
-    for process in processes: card.write("%-15s " % (process.ttzh_extr_htl))
+    # #nuisance TTZH extr_htl
+    # card.write("%-40s %-5s " % ("ttzh_extr_htl","shape"))
+    # for process in processes: card.write("%-15s " % (process.ttzh_extr_htl))
+    # card.write("\n")
+    #nuisance TTZH extr_njl
+    card.write("%-40s %-5s " % ("ttzh_extr_njl","shape"))
+    for process in processes: card.write("%-15s " % (process.ttzh_extr_njl))
+    card.write("\n")
+    #nuisance TTZH extr_njh
+    card.write("%-40s %-5s " % ("ttzh_extr_njh","shape"))
+    for process in processes: card.write("%-15s " % (process.ttzh_extr_njh))
     card.write("\n")
     #nuisance TTZH extr_ll
     card.write("%-40s %-5s " % ("ttzh_extr_ll","shape"))
@@ -312,7 +333,7 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("\n")
 
     # for process in processes: writeStatForProcess(dir,card,kine,process,processes)  # FIXME UNCOMMENT
-    #print "warning: using correlated statistical uncertainties"
+    print "warning: using correlated statistical uncertainties"
     for process in processes: writeStatForProcessCorrelated(card,process,processes) # FIXME COMMENT
 
     return
@@ -357,7 +378,9 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTW.lumi         = "1.027"
     TTW.ttw_pdf      = "1.04"
     TTW.ttw_extr_hth = "1"
-    TTW.ttw_extr_htl = "1"
+    # TTW.ttw_extr_htl = "1"
+    TTW.ttw_extr_njl = "1"
+    TTW.ttw_extr_njh = "1"
     TTW.ttw_extr_ll  = "1"
     TTW.jes  = "1"
     TTW.lepeff  = "1.04"
@@ -371,7 +394,9 @@ def writeOneCard(dir, signal, kine, plot, output):
     TTZH.lumi          = "1.027"
     TTZH.ttzh_pdf      = "1.04"
     TTZH.ttzh_extr_hth = "1"
-    TTZH.ttzh_extr_htl = "1"
+    TTZH.ttzh_extr_njh = "1"
+    TTZH.ttzh_extr_njl = "1"
+    # TTZH.ttzh_extr_htl = "1"
     TTZH.ttzh_extr_ll  = "1"
     TTZH.jes  = "1"
     TTZH.lepeff  = "1.04"
@@ -385,7 +410,8 @@ def writeOneCard(dir, signal, kine, plot, output):
     WZ.jes  = "1"
     WZ.btag = "1"
     WZ.pu = "1"
-    WW.WW = "1.30"
+    WW.WW = "1.20"
+    WW.ww_pdf = "1.04"
     WW.lumi = "1.027"
     WW.jes  = "1"
     WW.lepeff  = "1.04"
