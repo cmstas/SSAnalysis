@@ -16,6 +16,7 @@
 #include "CORE/SSSelections.h"
 #include "CORE/ElectronSelections.h"
 #include "CORE/IsolationTools.h"
+#include "CORE/JetSelections.h"
 #include "CORE/Tools/goodrun.h"
 #include "CORE/Tools/jetcorr/JetCorrectionUncertainty.h"  
 #include "CORE/Tools/jetcorr/SimpleJetCorrectionUncertainty.h"

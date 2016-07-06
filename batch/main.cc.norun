@@ -1045,7 +1045,7 @@ int main(int argc, char *argv[]){
   set_goodrun_file("goldenJson_2016_5p76ifb.txt");
   
   // string jecEra = "Fall15_25nsV2";
-  string jecEra = "Spring16_25nsV3";
+  string jecEra = "Spring16_25nsV6";
 
   //Make Jet Energy Uncertainties
   JetCorrectionUncertainty *jecUnc = 0;

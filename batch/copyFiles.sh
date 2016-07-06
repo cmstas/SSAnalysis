@@ -1,69 +1,36 @@
 #!/bin/bash
 
 #Copy files
-cp ../helper_babymaker.cc .
-cp ../helper_babymaker.h . 
+cp ../helper_babymaker.{h,cc} .
 
 #Make and fill CORE directory
-if [ ! -d CORE ] 
-then
-  mkdir CORE 
-fi
-cp ../CORE/*.h CORE/
-cp ../CORE/*.cc CORE/
+mkdir -p CORE 
+cp ../CORE/*.{h,cc} CORE/
 
 #And data directory inside CORE
-if [ ! -d CORE/data ] 
-then
-  mkdir CORE/data
-fi
+mkdir -p CORE/data
 cp ../CORE/data/*.xml CORE/data/
 
 #And tools directory inside CORE
-if [ ! -d CORE/Tools ] 
-then
-  mkdir CORE/Tools
-fi
-cp -r ../CORE/Tools               CORE/
+mkdir -p CORE/Tools
+cp -r ../CORE/Tools CORE/
 
-#And data directory inside jetcorr
-if [ ! -d CORE/Tools/jetcorr/data/run2_50ns ] 
-then
-  mkdir -p CORE/Tools/jetcorr/data/run2_50ns
-fi
-cp ../CORE/Tools/jetcorr/data/run2_50ns/*.txt CORE/Tools/jetcorr/data/run2_50ns/
-
-if [ ! -d CORE/Tools/btagsf ]
-then
-  mkdir -p CORE/Tools/btagsf
-fi
-cp -r /nfs-6/userdata/mt2utils/ CORE/Tools/btagsf
-
-if [ ! -d CORE/Tools/filterLists ]
-then
-  mkdir -p CORE/Tools/filterLists
-fi
-# cp -r /nfs-6/userdata/mt2utils/csc2015_Dec01.txt CORE/Tools/filterLists/
-tar -czf btagsf.tar.gz btagsf
+mkdir -p CORE/Tools/btagsf
 
 #And goodrun list directory 
-if [ ! -d goodRunList ] 
-then
-  mkdir goodRunList
-fi
-cp ../goodRunList/*.txt        goodRunList/
+mkdir -p goodRunList
+cp ../goodRunList/*.txt goodRunList/
 
 #And btagsSF dir
 cp -r ../btagsf . 
+
+tar -czf btagsf.tar.gz btagsf
 
 #Linkdef
 cp ../LinkDef.h . 
 
 #Make log dir
-if [ ! -d logs ] 
-then
-  mkdir logs
-fi
+mkdir -p logs
 
 #Sed commands to get babymaker to work
 sed -i "s,\"Tools\/,\"CORE/Tools\/,g" helper_babymaker.h 

@@ -338,17 +338,33 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
 
     // get btag efficiencies
     TFile* f_btag_eff = 0;
-    if (isFastsim == 0) f_btag_eff = new TFile("btagsf/bTagEffs_80X.root");
-    if (isFastsim >  0 ) f_btag_eff = new TFile("CORE/Tools/btagsf/data/run2_fastsim/btageff__SMS-T1bbbb-T1qqqq_fastsim.root");
-    TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_b");
-    TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_c");
-    TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("eff_total_M_udsg");
-    BabyFile->cd();
+    if (isFastsim == 0) {
+        // f_btag_eff = new TFile("btagsf/bTagEffs_80X.root");
+        // TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_b");
+        // TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_c");
+        // TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("eff_total_M_udsg");
+        f_btag_eff = new TFile("btagsf/btageff__ttbar_powheg_pythia8_25ns.root");
+        TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
+        TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
+        TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
 
-    h_btag_eff_b               = (TH2D*) h_btag_eff_b_temp->Clone("h_btag_eff_b");
-    h_btag_eff_c               = (TH2D*) h_btag_eff_c_temp->Clone("h_btag_eff_c");
-    h_btag_eff_udsg            = (TH2D*) h_btag_eff_udsg_temp->Clone("h_btag_eff_udsg");
-    f_btag_eff->Close();
+        BabyFile->cd();
+        h_btag_eff_b               = (TH2D*) h_btag_eff_b_temp->Clone("h_btag_eff_b");
+        h_btag_eff_c               = (TH2D*) h_btag_eff_c_temp->Clone("h_btag_eff_c");
+        h_btag_eff_udsg            = (TH2D*) h_btag_eff_udsg_temp->Clone("h_btag_eff_udsg");
+        f_btag_eff->Close();
+    }
+    if (isFastsim >  0 ) {
+        f_btag_eff = new TFile("CORE/Tools/btagsf/data/run2_fastsim/btageff__SMS-T1bbbb-T1qqqq_fastsim.root");
+        TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
+        TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
+        TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
+        BabyFile->cd();
+        h_btag_eff_b               = (TH2D*) h_btag_eff_b_temp->Clone("h_btag_eff_b");
+        h_btag_eff_c               = (TH2D*) h_btag_eff_c_temp->Clone("h_btag_eff_c");
+        h_btag_eff_udsg            = (TH2D*) h_btag_eff_udsg_temp->Clone("h_btag_eff_udsg");
+        f_btag_eff->Close();
+    }
   }
 
   //Print warning!
@@ -725,7 +741,6 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
       if (isFastsim >= 5) xsec = go_xsec(sparms[0]).xsec;
       if (isFastsim != 3) xsec_error = go_xsec(sparms[0]).percErr;
       if (isFastsim == 3) xsec_error = stop_xsec(sparms[0]).percErr;
-
       if (isFastsim <  100) scale1fb = 1000*xsec/nPoints(isFastsim, sparms[0], sparms[1]);
       if (isFastsim == 102) scale1fb = 1000*xsec/59378;
       is_fastsim = 1; 
@@ -1251,6 +1266,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
   //Save Most jets 
   vector <Jet> mostJets_jet;
+  vector <int> mostJets_idx;
   vector <Jet> mostJets_jet_up;
   vector <Jet> mostJets_jet_dn;
   for (unsigned int i = 0; i < tas::pfjets_p4().size(); i++){
@@ -1285,6 +1301,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     if (rawpt*JEC*(1-jetUnc) > 40 && isLoosePFJet_50nsV1(i)) mostJets_jet_dn.push_back(Jet(i, JEC)); 
     else                                                     mostJets_jet_dn.push_back(Jet(-1, -9999)); 
     mostJets_rawp4.push_back(jet*tas::pfjets_undoJEC().at(i)); 
+    mostJets_idx.push_back(i);
     // mostJets_disc.push_back(tas::pfjets_pfCombinedInclusiveSecondaryVertexV2BJetTag().at(i)); 
     mostJets_disc.push_back(tas::getbtagvalue("pfCombinedInclusiveSecondaryVertexV2BJetTags", i)); 
     mostJets_unc.push_back(jetUnc); 
@@ -1466,9 +1483,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
           if (mostJets_passCleaning.at(i) == 0) continue;
           if (mostJets_passID.at(i) == 0) continue;
           float jet_pt = mostJets.at(i).pt()*mostJets_undoJEC.at(i)*mostJets_JEC.at(i); 
-          int jetIdx = mostJets_jet.at(i).idx();
-          if(jetIdx < 0) continue;
-
+          int jetIdx = mostJets_idx.at(i);
           bool isBtag = mostJets_disc.at(i) > btagCut;
           if( isBtag && jet_pt < 25.0) continue;
           if(!isBtag && jet_pt < 40.0) continue;
@@ -1485,7 +1500,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   metphi3p0 = MET3p0_.second;
 
   //MET filters
-  passes_met_filters = (isFastsim > 0) ? failsFastSimJetFilter : passesMETfilters2016(is_real_data);
+  passes_met_filters = (isFastsim > 0) ? !failsFastSimJetFilter : passesMETfilters2016(is_real_data);
 
   // Met filters not filled properly in 80X miniAODv1
   if(is_miniaodv1_80X) passes_met_filters = true;
@@ -1495,8 +1510,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
   int SR = signalRegion(njets, nbtags, met, ht, mtmin, lep1_id, lep2_id, lep1_coneCorrPt, lep2_coneCorrPt);
   anal_type_t categ = analysisCategory(lep1_id, lep2_id, lep1_coneCorrPt, lep2_coneCorrPt);
-  if (categ > 0) SR += 32; 
-  if (categ > 1) SR += 26; 
+  if (categ > 0) SR += 33; 
+  if (categ > 1) SR += 27; 
 
   babyErrorStruct.SR = SR;
   if (hyp_class == 3) babyErrorStruct.isGood = true;
