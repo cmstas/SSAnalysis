@@ -338,12 +338,13 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
 
     // get btag efficiencies
     TFile* f_btag_eff = 0;
-    if (isFastsim == 0) f_btag_eff = new TFile("btagsf/btageff__ttbar_powheg_pythia8_25ns.root");
+    if (isFastsim == 0) f_btag_eff = new TFile("btagsf/bTagEffs_80X.root");
     if (isFastsim >  0 ) f_btag_eff = new TFile("CORE/Tools/btagsf/data/run2_fastsim/btageff__SMS-T1bbbb-T1qqqq_fastsim.root");
-    TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
-    TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
-    TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
+    TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_b");
+    TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_c");
+    TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("eff_total_M_udsg");
     BabyFile->cd();
+
     h_btag_eff_b               = (TH2D*) h_btag_eff_b_temp->Clone("h_btag_eff_b");
     h_btag_eff_c               = (TH2D*) h_btag_eff_c_temp->Clone("h_btag_eff_c");
     h_btag_eff_udsg            = (TH2D*) h_btag_eff_udsg_temp->Clone("h_btag_eff_udsg");
@@ -675,6 +676,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   is_real_data = tas::evt_isRealData();
 
   is_miniaodv1 = filename.find("MCRUN2_74_V9") != std::string::npos;
+  is_miniaodv1_80X = filename.find("RunIISpring16MiniAODv1") != std::string::npos;
 
   //These c-s errors
   if (!is_real_data && tas::genweights().size()>110) {
@@ -723,6 +725,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
       if (isFastsim >= 5) xsec = go_xsec(sparms[0]).xsec;
       if (isFastsim != 3) xsec_error = go_xsec(sparms[0]).percErr;
       if (isFastsim == 3) xsec_error = stop_xsec(sparms[0]).percErr;
+
       if (isFastsim <  100) scale1fb = 1000*xsec/nPoints(isFastsim, sparms[0], sparms[1]);
       if (isFastsim == 102) scale1fb = 1000*xsec/59378;
       is_fastsim = 1; 
@@ -730,6 +733,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   }
 
   //Fill data vs. mc variables
+  // NOTE deprecated NJA
   filt_csc = is_real_data ? tas::evt_cscTightHaloId() : 1;
   filt_hbhe = is_real_data ? (tas::evt_hbheFilter() && tas::hcalnoise_isolatedNoiseSumE() < 50.0 && tas::hcalnoise_isolatedNoiseSumEt() < 25.0 && tas::hcalnoise_numIsolatedNoiseChannels() < 10) : 1;
   filt_hcallaser = is_real_data ? tas::filt_hcalLaser() : 1;
@@ -1456,13 +1460,35 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     nGoodVertices++;
   }
 
+  bool failsFastSimJetFilter = 0;
+  if(isFastsim) {
+      for (unsigned int i = 0; i < mostJets.size(); i++){
+          if (mostJets_passCleaning.at(i) == 0) continue;
+          if (mostJets_passID.at(i) == 0) continue;
+          float jet_pt = mostJets.at(i).pt()*mostJets_undoJEC.at(i)*mostJets_JEC.at(i); 
+          int jetIdx = mostJets_jet.at(i).idx();
+          if(jetIdx < 0) continue;
+
+          bool isBtag = mostJets_disc.at(i) > btagCut;
+          if( isBtag && jet_pt < 25.0) continue;
+          if(!isBtag && jet_pt < 40.0) continue;
+          if(isBadFastsimJet(jetIdx)) { 
+              failsFastSimJetFilter = 1;
+              break;
+          }
+      }
+  }
+
   //MET3p0 (aka FKW MET)
   pair<float,float> MET3p0_ = MET3p0();
   met3p0 = MET3p0_.first;
   metphi3p0 = MET3p0_.second;
 
   //MET filters
-  passes_met_filters = (isFastsim > 0) ? 1 : passesMETfilterv2();
+  passes_met_filters = (isFastsim > 0) ? failsFastSimJetFilter : passesMETfilters2016(is_real_data);
+
+  // Met filters not filled properly in 80X miniAODv1
+  if(is_miniaodv1_80X) passes_met_filters = true;
 
   //Fill Baby
   BabyTree->Fill();

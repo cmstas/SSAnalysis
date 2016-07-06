@@ -324,21 +324,40 @@ do
   elif [ $sname == "DataDoubleEGv2"    ]; then 
     isData="1"
     name="Run2016B_DoubleEG_MINIAOD_PromptReco-v2/merged/";
-    tag="V08-00-04";
+    tag="V08-00-06";
     path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1003
   elif [ $sname == "DataDoubleMuonv2"  ]; then 
     isData="1"
     name="Run2016B_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
-    tag="V08-00-04";
+    tag="V08-00-06";
     path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1004
   elif [ $sname == "DataMuonEGv2"    ]; then 
     isData="1"
     name="Run2016B_MuonEG_MINIAOD_PromptReco-v2/merged/";
-    tag="V08-00-04";
+    tag="V08-00-06";
     path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1005
+
+  elif [ $sname == "DataDoubleEGC"    ]; then 
+    isData="1"
+    name="Run2016C_DoubleEG_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-07";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1006
+  elif [ $sname == "DataDoubleMuonC"  ]; then 
+    isData="1"
+    name="Run2016C_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-07";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1007
+  elif [ $sname == "DataMuonEGC"    ]; then 
+    isData="1"
+    name="Run2016C_MuonEG_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-07";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1008
 
   #Signals
   elif [ $sname == "T1TTTT_1500" ] 
