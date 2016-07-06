@@ -1042,7 +1042,7 @@ int main(int argc, char *argv[]){
 
   //Add good run list
   // set_goodrun_file("goldenJson_2016_2p6ifb.txt");
-  set_goodrun_file("goldenJson_2016_3p99ifb.txt");
+  set_goodrun_file("goldenJson_2016_5p76ifb.txt");
   
   // string jecEra = "Fall15_25nsV2";
   string jecEra = "Spring16_25nsV3";
@@ -1123,7 +1123,7 @@ int main(int argc, char *argv[]){
     }
 
     //If data, check good run list
-    if (tas::evt_isRealData() && !goodrun(tas::evt_run(), tas::evt_lumiBlock())) continue; 
+    if (tas::evt_isRealData() && !goodrun(tas::evt_run(), tas::evt_lumiBlock())) continue;
 
     //Progress bar
     CMS3::progress(nEventsTotal, nEvents);
