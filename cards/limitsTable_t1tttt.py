@@ -1,7 +1,9 @@
 import os, ROOT, array
+from multiprocessing.dummy import Pool as ThreadPool 
 
-mydir = "v6.02-statunc"
-mylumi = "2.3"
+# mydir = "all_points"
+mydir = "all_points_fix"
+mylumi = "4.0"
 
 #the first time you need to make both cards and limits
 #if you no not delete logs, then next time you can skip cards and limits
@@ -9,14 +11,20 @@ redocards = False
 redolimits = False
 deletelogs = False
 
+verbose = True
+
 step = 25
 minx = 600
 maxx = 1700+step
+# maxx = 2100+step
 miny = 0
 maxy = 1450+step
+# maxy = 1850+step
 minz = 1e-2
-maxz = 50
+maxz = 50.0
 maxyh = 1700
+# maxyh = 2100
+# ybinsfirstxbin = 15 #19
 ybinsfirstxbin = 15 #19
 
 npx = (maxx-minx)/step
@@ -25,18 +33,22 @@ npyh = (maxyh-miny)/step
 
 def smooth(g,h):
     h_tmp = g.GetHistogram()
+    print g, h, h_tmp
     #set histo values from graph (interpolated)
     for xbin in range(1,h_tmp.GetNbinsX()+1):
         for ybin in range(1,h_tmp.GetNbinsY()+1):
             value = h_tmp.GetBinContent(xbin,ybin)
             h.SetBinContent(xbin,ybin,value)
+
     #trick to avoid zeros above the diagonal that would affect the smoothing
     for xbin in range(1,h.GetNbinsX()+1):
         for ybin in range(2,h.GetNbinsY()+1):
             if ybin>xbin+ybinsfirstxbin: 
                 h.SetBinContent(xbin,ybin,h.GetBinContent(xbin,ybin-1))
+
     #smooth
     h.Smooth()
+
     #now cleanup above the diagonal
     for xbin in range(1,h.GetNbinsX()+1):
         for ybin in range(1,h.GetNbinsY()+1):
@@ -46,8 +58,11 @@ sigs = []
 
 for mglu in range (minx,maxx,step): # FIXME lsp mass 1 
     for mlsp in range (miny,maxy,step):
+        if mlsp == 0: mlsp = 1
+
         if os.path.isfile(("%s/fs_t1tttt_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
-        print "found sig = fs_t1tttt_m%i_m%i" % (mglu,mlsp)
+        if verbose:
+            print "found sig = fs_t1tttt_m%i_m%i" % (mglu,mlsp)
         sigs.append(("fs_t1tttt_m%i_m%i" % (mglu,mlsp)))
 
 limit_obs = []
@@ -61,11 +76,23 @@ minx = minx - step/2.
 maxx = maxx - step/2.
 
 #print sigs
+# sigs = sigs[:100]
 
-for sig in sigs[:]:
-    #print sig
+# for sig in sigs[:]:
+def run_sig(sig):
+    if verbose:
+        print sig
     if redocards: os.system("python createCard.py "+mydir+" "+sig)
     if redolimits: os.system("combine -M Asymptotic "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.txt >& "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log") # --run expected --noFitAsimov
+import os
+os.nice(10)
+if redocards and redolimits:
+    pool = ThreadPool(25)
+    vals = pool.map(run_sig, sigs)
+    pool.close()
+    pool.join()
+
+for sig in sigs:
     foundObs = False
     with open(mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log") as f:
         for line in f:
@@ -87,6 +114,12 @@ for sig in sigs[:]:
     if not foundObs: 
         print "obs not found for", sig
         sigs.remove(sig)
+
+
+# print limit_obs
+# print limit_exp
+# print limit_sm1
+# print limit_sp1
 
 if redocards==True and redolimits==False: exit()
 
@@ -136,7 +169,10 @@ for sig in sigs:
     mglu = int(sig.split("_")[2][1:])
     mglus.append(mglu)
     mlsp = int(sig.split("_")[3][1:])
+    if mlsp == 1: mlsp = 0
     mlsps.append(mlsp)
+    if mlsp == 375 and mglu == 600:
+        print sig, limit_obs[count], limit_exp[count], hxsec.GetBinContent(hxsec.FindBin(mglu))
     v_xsec.append( limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
     v_sobs.append( limit_obs[count] )
     v_som1.append( limit_obs[count]*(hxsec.GetBinContent(hxsec.FindBin(mglu))-hxsec.GetBinError(hxsec.FindBin(mglu)))/hxsec.GetBinContent(hxsec.FindBin(mglu)) )
@@ -146,13 +182,15 @@ for sig in sigs:
     v_ssp1.append( limit_sp1[count] )
     h_xsec_test.SetBinContent(h_xsec_test.FindBin(mglu,mlsp), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)))
     h_sobs_test.SetBinContent(h_sobs_test.FindBin(mglu,mlsp), limit_obs[count])
-    print ("%-8s %4i %4i | %.1f | %.1f (-1s %.1f, +1s %.1f) | %.3f " % (smod , mglu, mlsp , limit_obs[count]  , limit_exp[count] , limit_sm1[count] , limit_sp1[count], hxsec.GetBinContent(hxsec.FindBin(mglu)) ) )
+    if verbose:
+        print ("%-8s %4i %4i | %.1f | %.1f (-1s %.1f, +1s %.1f) | %.3f " % (smod , mglu, mlsp , limit_obs[count]  , limit_exp[count] , limit_sm1[count] , limit_sp1[count], hxsec.GetBinContent(hxsec.FindBin(mglu)) ) )
     count = count+1
 
-#h_xsec_test.GetZaxis().SetRangeUser(1e-2,10e0)
-#h_xsec_test.Draw("colz")
-#print h_xsec_test.GetXaxis().GetBinLowEdge(1), h_xsec_test.GetXaxis().GetBinUpEdge(1)
-#c1.SaveAs("xsec_test.pdf")
+# h_xsec_test.GetZaxis().SetRangeUser(1e-2,10e0)
+# h_xsec_test.Draw("colz")
+# print h_xsec_test.GetXaxis().GetBinLowEdge(1), h_xsec_test.GetXaxis().GetBinUpEdge(1)
+# c1.SaveAs("xsec_test.pdf")
+# os.system("web xsec_test.pdf")
 
 g_xsec = ROOT.TGraph2D("g_xsec","",count,mglus,mlsps,v_xsec)
 g_sexp = ROOT.TGraph2D("g_sexp","",count,mglus,mlsps,v_sexp)
@@ -220,21 +258,34 @@ h_xsec.GetZaxis().SetTitleOffset(1.3)
 
 h_xsec.GetZaxis().SetRangeUser(minz,maxz)
 
-#hack to fix smoothing issues
-h_xsec.SetBinContent(34,49,0.2)
-h_xsec.SetBinContent(35,50,0.2)
-h_xsec.SetBinContent(36,51,0.2)
-h_xsec.SetBinContent(35,49,0.18)
-h_xsec.SetBinContent(36,50,0.18)
-h_xsec.SetBinContent(37,51,0.18)
-h_xsec.SetBinContent(36,49,0.15)
-h_xsec.SetBinContent(37,50,0.15)
-h_xsec.SetBinContent(38,51,0.15)
+# #hack to fix smoothing issues
+# h_xsec.SetBinContent(34,49,0.2)
+# h_xsec.SetBinContent(35,50,0.2)
+# h_xsec.SetBinContent(36,51,0.2)
+# h_xsec.SetBinContent(35,49,0.18)
+# h_xsec.SetBinContent(36,50,0.18)
+# h_xsec.SetBinContent(37,51,0.18)
+# h_xsec.SetBinContent(36,49,0.15)
+# h_xsec.SetBinContent(37,50,0.15)
+# h_xsec.SetBinContent(38,51,0.15)
 
+# print k_sexp
+# k_sexp.Draw("colz")
+# c1.SaveAs("smooth.pdf")
+# os.system("web smooth.pdf")
+# print k_sexp.GetContourList(0.1)
+# print k_sexp.GetContourList(0.5)
+# print k_sexp.GetContourList(1.5)
+# print k_sexp.GetContourList(10.0)
+
+k_sexp.Draw()
 h_xsec.Draw("colz")
 
 cexplist = k_sexp.GetContourList(1.)
 max_points = -1
+# print cexplist
+# print len(cexplist)
+# cexplist.Print()
 for i in range(0,len(cexplist)):
     n_points = cexplist[i].GetN()
     if n_points > max_points:
@@ -312,9 +363,11 @@ diag.SetLineStyle(2)
 diag.Draw("same")
 
 diagtex = ROOT.TLatex(0.20,0.365, "m_{#tilde{g}}-m_{#tilde{#chi}_{1}^{0}} = 2 #upoint (m_{W} + m_{b})" )
+# diagtex = ROOT.TLatex(0.20,0.335, "m_{#tilde{g}}-m_{#tilde{#chi}_{1}^{0}} = 2 #upoint (m_{W} + m_{b})" )
 diagtex.SetNDC()
 diagtex.SetTextSize(0.03)
-diagtex.SetTextAngle(37)
+# diagtex.SetTextAngle(37)
+diagtex.SetTextAngle(39)
 diagtex.SetLineWidth(2)
 diagtex.SetTextFont(42)
 diagtex.Draw()
@@ -342,12 +395,12 @@ cmstexbold.SetLineWidth(2)
 cmstexbold.SetTextFont(61)
 cmstexbold.Draw()
 
-#cmstexprel = ROOT.TLatex(0.26,0.91, "Preliminary" )
-#cmstexprel.SetNDC()
-#cmstexprel.SetTextSize(0.03)
-#cmstexprel.SetLineWidth(2)
-#cmstexprel.SetTextFont(52)
-#cmstexprel.Draw()
+cmstexprel = ROOT.TLatex(0.28,0.91, "Preliminary" )
+cmstexprel.SetNDC()
+cmstexprel.SetTextSize(0.04)
+cmstexprel.SetLineWidth(2)
+cmstexprel.SetTextFont(52)
+cmstexprel.Draw()
 
 padt.Update()
 padt.RedrawAxis();
@@ -397,7 +450,7 @@ LExpM.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.Draw("LSAME")
 
-c1.SaveAs("t1tttt_scan_xsec.pdf")
+c1.SaveAs("t1tttt_scan_xsec_test.pdf")
 
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
@@ -448,3 +501,10 @@ csm1write.Write()
 csp1write = csp1.Clone("ssexp_p1s")
 csp1write.Write()
 fout.Close()
+
+
+k_sexp.Draw("colz")
+c1.SaveAs("forContour_test.pdf")
+
+os.system("web t1tttt_scan_xsec_test.pdf")
+os.system("web forContour_test.pdf")

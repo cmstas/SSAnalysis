@@ -162,7 +162,7 @@ void getyields(){
   // t5qqqqww_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWWDeg_1000_315_300.root"   , tag.c_str()));
 
   //Get yields
-  // #include "fs_t1tttt.h"
+  #include "fs_t1tttt.h"
 
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
   ttbar_chain->SetTitle("ttbar_fa");
@@ -1472,7 +1472,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (!ss::passes_met_filters() && ss::is_real_data()) continue; // FIXME no met filters in miniaodv1 MC
 
       // float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
-      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUwECO(ss::trueNumInt()[0]); // FIXME don't have PUw and btagSF
+      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0]); // FIXME don't have PUw and btagSF
       weight*=scaleLumi;
       if (isWZ) weight*=getWZSF();
 
@@ -1893,12 +1893,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if(ss::is_real_data() && ss::hyp_class() == 3) {
           // textfile_global << Form("%1d%9d%llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", 
           // cout << Form("%1d:%1d:%llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d%s\n", 
-          cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", 
-              ss::run(), ss::lumi(), ss::event(), 
-              ss::nVetoElectrons7()+ss::nVetoMuons5(),
-              ss::lep1_id(), lep1_pt,
-              ss::lep2_id(), lep2_pt,
-              ss::njets(), ss::nbtags(), ss::met(), ss::ht(), SR) << endl;
+          // cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", 
+          //     ss::run(), ss::lumi(), ss::event(), 
+          //     ss::nVetoElectrons7()+ss::nVetoMuons5(),
+          //     ss::lep1_id(), lep1_pt,
+          //     ss::lep2_id(), lep2_pt,
+          //     ss::njets(), ss::nbtags(), ss::met(), ss::ht(), SR) << endl;
       }
 
       if (doFakes == 1 )            p_fake_alt_up.BR  ->Fill(BR, weight_alt_FR); 

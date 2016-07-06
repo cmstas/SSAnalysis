@@ -3,7 +3,7 @@ fs_t1tttt_1300_100_chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/T1TTTT_main
 pair<yields_t, plots_t> results_fs_t1tttt_1300_100 = run(fs_t1tttt_1300_100_chain, 0, 0, 0, 0, 1);
 delete fs_t1tttt_1300_100_chain;
 
-if(false)
+if(true)
 {
 TChain *fs_t1tttt_1200_300_chain = new TChain("t","fs_t1tttt_m1200_m300" );
 fs_t1tttt_1200_300_chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/T1TTTT_main.root");

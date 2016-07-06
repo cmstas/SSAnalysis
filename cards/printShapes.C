@@ -19,6 +19,7 @@ void printShapes(TString process, TString kine, TString lumi, TString nameN, TSt
   up->SetLineColor(kRed);
   down->SetLineColor(kBlue);
 
+
   TH1F* ratioup = (TH1F*) up->Clone("ratioup");
   TH1F* ratiodn = (TH1F*) down->Clone("ratiodn");
   ratioup->Add(nominal,-1.);
@@ -96,7 +97,7 @@ void printShapes(TString process, TString kine, TString lumi, TString nameN, TSt
   pad1->Update();
 
   if (doLogy)
-    c1.SaveAs(Form("%s/%s_%s_%sifb_%s_shape_log.png",dir.Data(),process.Data(),kine.Data(),lumi.Data(),nameA.Data()));
+    c1.SaveAs(Form("%s/%s_%s_%sifb_%s_shape_log.pdf",dir.Data(),process.Data(),kine.Data(),lumi.Data(),nameA.Data()));
   else
-    c1.SaveAs(Form("%s/%s_%s_%sifb_%s_shape.png",dir.Data(),process.Data(),kine.Data(),lumi.Data(),nameA.Data()));
+    c1.SaveAs(Form("%s/%s_%s_%sifb_%s_shape.pdf",dir.Data(),process.Data(),kine.Data(),lumi.Data(),nameA.Data()));
 }
