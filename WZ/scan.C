@@ -89,7 +89,7 @@ int scan(){
     int nGoodEvents = 0;
     int nGoodEventsData = 0;
     float nGoodEventsWeighted = 0;
-    float luminosity = 3.99; // getLumi();
+    float luminosity = getLumi();
 
     TFile *currentFile = 0;
     TObjArray *listOfFiles = ch->GetListOfFiles();
@@ -213,7 +213,8 @@ int scan(){
             }
 
             // this guarantees that the third lepton makes a Z with one of the first two leptons
-            if( ! (ss::hyp_class() == 6) && !(ss::hyp_class()==2) ) continue;
+            // if( ! (ss::hyp_class() == 6) && !(ss::hyp_class()==2) ) continue;
+            if( ! (ss::hyp_class() == 6) ) continue;
             // if( ! (ss::hyp_class() == 6) ) continue;
 
             if(ss::met() < 30.0) continue;//relax to 30 for low lumi

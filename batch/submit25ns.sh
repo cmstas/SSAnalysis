@@ -4,7 +4,7 @@ xrootdbroken="1"
 
 nSubmitted=0
 
-SPPATH="ss_babies_June22_3p99ifb_sig" # FIXME must match with DIRNAME in condorExecutable
+SPPATH="ss_babies_July8_6p26ifb" # FIXME must match with DIRNAME in condorExecutable
 
 DOCOMPILE="1"
 NOSUBMIT="0"
@@ -85,11 +85,14 @@ T5TTCC="T5ttcc_825to1000_675to875 T5ttcc_1025to1200_875to1075 T5ttcc_825to1000_0
 # FORSYNC="TTBAR DY_high WZ TTW QQWW TG"
 FORSYNC="TG"
 
-DATA="DataDoubleMuonv1 DataDoubleEGv1 DataMuonEGv1 DataDoubleMuonv2 DataDoubleEGv2 DataMuonEGv2"
+# NOT IN GOLDEN JSON: DataDoubleMuonv1 DataDoubleEGv1 DataMuonEGv1 
+DATA="DataDoubleMuonv2 DataDoubleEGv2 DataMuonEGv2 DataDoubleMuonC DataDoubleEGC DataMuonEGC"
 CENTRAL_NEW="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ TTBAR_PH GGHtoZZto4L TTZlow"
+SIG="T1TTTT_main T5QQQQVV_main T5QQQQVV_dm20"
 
-# ALL="$CENTRAL_NEW $DATA"
-ALL="T1TTTT_main"
+ALL="$DATA $CENTRAL_NEW $SIG"
+
+ALL="T5QQQQVV_dm20 T5QQQQVV_main"
 
 
 #Then submit jobs
@@ -207,9 +210,9 @@ do
       tag="V08-00-05";
     nameNu=17
   elif [ $sname == "TTBAR_PH" ] ;then 
-    name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext4-v1";
-    tag="V08-00-01";
-    path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
+    name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext4-v1";
+    tag="V08-00-05";
+    path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2/";
     nameNu=18
   elif [ $sname == "WWZ" ]; then 
       name="WWZ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
@@ -669,14 +672,14 @@ do
     isSignal=1
     nameNu=10053
 
-  elif [ $sname == "T5QQQQVV_1000To1075_1To950"  ]
+  elif [ $sname == "T5QQQQVV_main"  ]
   then
-    name="SMS-T5qqqqVV_mGluino-1000To1075_mLSP-1To950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    name="SMS-T5qqqqVV_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1"
     isSignal=1
     nameNu=11000
-  elif [ $sname == "T5QQQQVV_1100To1175_1to1050" ]
+  elif [ $sname == "T5QQQQVV_dm20" ]
   then
-    name="SMS-T5qqqqVV_mGluino-1100To1175_mLSP-1to1050_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    name="SMS-T5qqqqVV_dM20_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1"
     isSignal=1
     nameNu=11001
   elif [ $sname == "T5QQQQVV_1200To1275_1to1150" ]
@@ -1120,6 +1123,7 @@ do
     sed -i s/ARG1/$nameNu/g condorFile
     sed -i s/ARG2/$number/g condorFile
     sed -i s/ARG3/$USER/g condorFile
+    sed -i s/ARG4/$SPPATH/g condorFile
     sed -i "s,USER_PROXY,$pathToProxy,g" condorFile
     condor_submit condorFile
 

@@ -1,13 +1,18 @@
 import os, ROOT, array
+from multiprocessing.dummy import Pool as ThreadPool 
 
-mydir = "v6.02-statunc"
-mylumi = "2.3"
+mydir = "v8.03_fort5qqqqvv"
+mylumi = "6.3"
+
+isDM20 = False
 
 #the first time you need to make both cards and limits
 #if you no not delete logs, then next time you can skip cards and limits
-redocards = False
-redolimits = False
+redocards = True
+redolimits = True
 deletelogs = False
+
+verbose = False
 
 step = 25
 minx = 600
@@ -18,6 +23,10 @@ minz = 1e-2
 maxz = 50
 maxyh = 1500
 ybinsfirstxbin = 19
+
+if isDM20:
+    maxy = 1150+step
+    ybinsfirstxbin = 21
 
 npx = (maxx-minx)/step
 npy = (maxy-miny)/step
@@ -48,8 +57,11 @@ sigs = []
 
 for mglu in range (minx,maxx,step):
     for mlsp in range (miny,maxy,step):
+        if mlsp == 0: mlsp = 1
+
         if os.path.isfile(("%s/fs_t5qqqqvv_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
-        #print "found sig = fs_t5qqqqvv_m%i_m%i" % (mglu,mlsp)
+        if verbose:
+            print "found sig = fs_t5qqqqvv_m%i_m%i" % (mglu,mlsp)
         sigs.append(("fs_t5qqqqvv_m%i_m%i" % (mglu,mlsp)))
 
 limit_obs = []
@@ -64,14 +76,42 @@ maxx = maxx - step/2.
 
 #print sigs
 
-for sig in sigs:
+# for sig in sigs:
     #print sig
+def run_sig(sig):
+    if verbose:
+        print sig
     if redocards: os.system("python createCard.py "+mydir+" "+sig)
     if redolimits: os.system("combine -M Asymptotic "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.txt >& "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log") # --run expected --noFitAsimov
+import os
+os.nice(10)
+if redocards and redolimits:
+    pool = ThreadPool(25)
+    vals = pool.map(run_sig, sigs)
+    pool.close()
+    pool.join()
+
+# to_check = [
+#         "fs_t5qqqqvv_m1250_m500",
+#         "fs_t5qqqqvv_m1350_m550",
+#         "fs_t5qqqqvv_m1350_m850",
+#         "fs_t5qqqqvv_m1400_m600",
+#         "fs_t5qqqqvv_m1500_m800",
+#         "fs_t5qqqqvv_m1550_m800",
+#         "fs_t5qqqqvv_m1650_m800",
+#         "fs_t5qqqqvv_m1750_m700"
+#         ]
+# sigs = to_check
+
+# print len(sigs)
+new_sigs = []
+for sig in sigs:
     foundObs = False
     with open(mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log") as f:
         for line in f:
             #print line
+            # if sig in to_check:
+            #     print line
             if "Observed Limit" in line:
                 val = line.split()[4]
                 limit_obs.append(float(val))
@@ -85,8 +125,19 @@ for sig in sigs:
             if "Expected 84" in line:
                 val = line.split()[4]
                 limit_sp1.append(float(val))
+    print sig, foundObs
     if deletelogs: os.system("rm "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log")
-    if not foundObs: print "obs not found for", sig
+    if not foundObs:
+        print "obs not found for", sig
+        # sigs.remove(sig)
+    else:
+        new_sigs.append(sig)
+sigs = new_sigs[:]
+
+# print len(new_sigs), new_sigs
+# print len(limit_obs), limit_obs
+
+if redocards==True and redolimits==False: exit()
 
 ROOT.gStyle.SetOptStat(0)
 #"Official" SUSY palette
@@ -134,7 +185,11 @@ for sig in sigs:
     mglu = int(sig.split("_")[2][1:])
     mglus.append(mglu)
     mlsp = int(sig.split("_")[3][1:])
+    if mlsp == 1: mlsp = 0
     mlsps.append(mlsp)
+    # print sig, count, mglu, len(sigs), len(limit_obs)
+    # print limit_obs
+
     v_xsec.append( limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
     v_sobs.append( limit_obs[count] )
     v_som1.append( limit_obs[count]*(hxsec.GetBinContent(hxsec.FindBin(mglu))-hxsec.GetBinError(hxsec.FindBin(mglu)))/hxsec.GetBinContent(hxsec.FindBin(mglu)) )
@@ -144,7 +199,8 @@ for sig in sigs:
     v_ssp1.append( limit_sp1[count] )
     h_xsec_test.SetBinContent(h_xsec_test.FindBin(mglu,mlsp), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)))
     h_sobs_test.SetBinContent(h_sobs_test.FindBin(mglu,mlsp), limit_obs[count])
-    print ("%-8s %4i %4i | %.1f | %.1f (-1s %.1f, +1s %.1f) | %.3f " % (smod , mglu, mlsp , limit_obs[count]  , limit_exp[count] , limit_sm1[count] , limit_sp1[count], hxsec.GetBinContent(hxsec.FindBin(mglu)) ) )
+    if verbose:
+        print ("%-8s %4i %4i | %.1f | %.1f (-1s %.1f, +1s %.1f) | %.3f " % (smod , mglu, mlsp , limit_obs[count]  , limit_exp[count] , limit_sm1[count] , limit_sp1[count], hxsec.GetBinContent(hxsec.FindBin(mglu)) ) )
     count = count+1
 
 #h_xsec_test.GetZaxis().SetRangeUser(1e-2,10e0)
@@ -336,14 +392,17 @@ cmstexbold.SetLineWidth(2)
 cmstexbold.SetTextFont(61)
 cmstexbold.Draw()
 
-#cmstexprel = ROOT.TLatex(0.26,0.91, "Preliminary" )
-#cmstexprel.SetNDC()
-#cmstexprel.SetTextSize(0.03)
-#cmstexprel.SetLineWidth(2)
-#cmstexprel.SetTextFont(52)
-#cmstexprel.Draw()
+cmstexprel = ROOT.TLatex(0.28,0.91, "Preliminary" )
+cmstexprel.SetNDC()
+cmstexprel.SetTextSize(0.04)
+cmstexprel.SetLineWidth(2)
+cmstexprel.SetTextFont(52)
+cmstexprel.Draw()
 
-masstex = ROOT.TLatex(0.18,0.67, "m_{#tilde{#chi}^{#pm}_{1}} = 0.5(m_{#tilde{g}}+m_{#tilde{#chi}^{0}_{1}})" )
+if isDM20:
+    masstex = ROOT.TLatex(0.18,0.67, "m_{#tilde{#chi}^{#pm}_{1}} = m_{#tilde{#chi}^{0}_{1}} + 20 GeV" )
+else:
+    masstex = ROOT.TLatex(0.18,0.67, "m_{#tilde{#chi}^{#pm}_{1}} = 0.5(m_{#tilde{g}}+m_{#tilde{#chi}^{0}_{1}})" )
 masstex.SetNDC()
 masstex.SetTextSize(0.03)
 masstex.SetLineWidth(2)
@@ -398,7 +457,7 @@ LExpM.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.Draw("LSAME")
 
-c1.SaveAs("t5qqqqvv_scan_xsec.pdf")
+c1.SaveAs("t5qqqq%s_scan_xsec_6p3ifb.pdf" % ("vv" if not isDM20 else "ww"))
 
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
@@ -430,7 +489,7 @@ h_sexp.Draw("colz")
 cexp.Draw("samecont2");
 c1.SaveAs("sexp.pdf")
 
-fout = ROOT.TFile("SUS15008_t5qqqqvv.root","RECREATE")
+fout = ROOT.TFile("SUS15008_t5qqqq%s_6p3ifb.root" % ("vv" if not isDM20 else "ww"),"RECREATE")
 hxsecwrite = h_xsec.Clone("xsec")
 for xbin in range(1,hxsecwrite.GetNbinsX()+1):
     for ybin in range(1,hxsecwrite.GetNbinsY()+1):
@@ -449,3 +508,8 @@ csm1write.Write()
 csp1write = csp1.Clone("ssexp_p1s")
 csp1write.Write()
 fout.Close()
+
+
+k_sexp.Draw("colz")
+
+os.system("web t5qqqq%s_scan_xsec_6p3ifb.pdf" % ("vv" if not isDM20 else "ww"))

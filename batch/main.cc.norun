@@ -172,9 +172,9 @@ int main(int argc, char *argv[]){
       shortname="wwdps";
       break;
     case TTBAR_PH:
-    name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3_ext4-v1";
-    tag="V08-00-01";
-    path="/store/group/snt/run2_25ns_80MiniAODv1/";
+    name="TT_TuneCUETP8M1_13TeV-powheg-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext4-v1";
+    tag="V08-00-05";
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
       shortname="ttbar_ph";
       break;
     case ZZ:
@@ -651,15 +651,15 @@ int main(int argc, char *argv[]){
       isSignal=1;
       break;
   
-    case T5QQQQVV_1000To1075_1To950:
-      shortname="t5qqqqvv_1000to1075_1to950";
-      name="SMS-T5qqqqVV_mGluino-1000To1075_mLSP-1To950_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+    case T5QQQQVV_main:
+      shortname="t5qqqqvv_main";
+      name="SMS-T5qqqqVV_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
       isSignal=2;
       break;
-    case T5QQQQVV_1100To1175_1to1050:
-      shortname="t5qqqqvv_1100to1175_1to1050";
-      name="SMS-T5qqqqVV_mGluino-1100To1175_mLSP-1to1050_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      isSignal=2;
+    case T5QQQQVV_dm20:
+      shortname="t5qqqqvv_dm20";
+      name="SMS-T5qqqqVV_dM20_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+      isSignal=3;
       break;
     case T5QQQQVV_1200To1275_1to1150:
       shortname="t5qqqqvv_1200to1275_1to1150";
@@ -1042,7 +1042,7 @@ int main(int argc, char *argv[]){
 
   //Add good run list
   // set_goodrun_file("goldenJson_2016_2p6ifb.txt");
-  set_goodrun_file("goldenJson_2016_5p76ifb.txt");
+  set_goodrun_file("goldenJson_2016_6p26ifb.txt");
   
   // string jecEra = "Fall15_25nsV2";
   string jecEra = "Spring16_25nsV6";

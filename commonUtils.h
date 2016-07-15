@@ -5,28 +5,44 @@
 // float getLumi() { return 0.8042; }
 // float getLumiUnblind() { return 0.8042; }
 // bool isUnblindRun(int run) { return run <= 274240; }
+// float getWZSF() { return 0.85; }
+// TString getTag() { return "v8.02"; } // up to the 3.99/fb json
+// #include "flip_rates.h"
 
 
 // // 2.6
 // float getLumi() { return 2.6; }
 // float getLumiUnblind() { return 2.6; }
 // bool isUnblindRun(int run) { return run <= 274442; }
+// float getWZSF() { return 0.85; } 
+// TString getTag() { return "v8.02"; } // up to the 3.99/fb json
+// #include "flip_rates.h"
 
-// 3.99
-float getLumi() { return 3.99; }
-float getLumiUnblind() { return 3.99; }
-bool isUnblindRun(int run) { return run <= 275125; }
+// // 3.99
+// float getLumi() { return 3.99; }
+// float getLumiUnblind() { return 3.99; }
+// bool isUnblindRun(int run) { return run <= 275125; }
+// float getWZSF() { return 1.021; } // 4/fb
+// TString getTag() { return "v8.02"; } // up to the 3.99/fb json
+// #include "flip_rates.h"
 
-TString getTag() { return "v8.02"; }
-//TString getTag() { return "v7.00"; }
+// 6.26
+float getLumi() { return 6.26; }
+float getLumiUnblind() { return 6.26; }
+bool isUnblindRun(int run) { return true; }
+float getWZSF() { return 0.948; }
+TString getTag() { return "v8.03"; } // up to the 6.26/fb json
+#include "flip_rates_6p26ifb.h"
+
 
 bool applyThirdLeptonVeto() { return false; }
 
-// float getWZSF() { return 0.85; } // 800/pb
-float getWZSF() { return 1.021; } // 4/fb
+
+#include "hlt/HLTEfficiency.cc"
+
 
 #include "pu_weights.h"
-#include "flip_rates.h"
+// #include "flip_rates.h"
 #include "fake_rates.h"
 #include "fake_rates_noCC.h"
 #include "lepton_sf.h"

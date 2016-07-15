@@ -1,9 +1,11 @@
 import os, ROOT, array
 from multiprocessing.dummy import Pool as ThreadPool 
 
-# mydir = "all_points"
-mydir = "all_points_fix"
-mylumi = "4.0"
+# mydir = "all_points_fix"
+# mylumi = "4.0"
+
+mydir = "v8.03_forLims"
+mylumi = "6.3"
 
 #the first time you need to make both cards and limits
 #if you no not delete logs, then next time you can skip cards and limits
@@ -450,7 +452,7 @@ LExpM.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.Draw("LSAME")
 
-c1.SaveAs("t1tttt_scan_xsec_test.pdf")
+c1.SaveAs("t1tttt_scan_xsec_6p3ifb.pdf")
 
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
@@ -482,7 +484,7 @@ h_sexp.Draw("colz")
 cexp.Draw("samecont2");
 c1.SaveAs("sexp.pdf")
 
-fout = ROOT.TFile("SUS15008_t1tttt.root","RECREATE")
+fout = ROOT.TFile("SUS15008_t1tttt_6p3ifb.root","RECREATE")
 hxsecwrite = h_xsec.Clone("xsec")
 for xbin in range(1,hxsecwrite.GetNbinsX()+1):
     for ybin in range(1,hxsecwrite.GetNbinsY()+1):
@@ -504,7 +506,5 @@ fout.Close()
 
 
 k_sexp.Draw("colz")
-c1.SaveAs("forContour_test.pdf")
 
-os.system("web t1tttt_scan_xsec_test.pdf")
-os.system("web forContour_test.pdf")
+os.system("web t1tttt_scan_xsec_6p3ifb.pdf")

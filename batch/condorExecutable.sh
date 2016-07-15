@@ -3,6 +3,7 @@
 WHICH=$1
 FILE=$2
 USER=$3
+DIRNAME=$4
 
 #Show where you are
 hostname
@@ -18,7 +19,7 @@ eval `scramv1 runtime -sh`
 popd
 
 #Specify name of output file and name of dierctory in /hadoop/...
-export DIRNAME=ss_babies_June22_3p99ifb_sig # FIXME match submit25ns
+# export DIRNAME=ss_babies_July8_6p26ifb # FIXME match submit25ns
 export WHICH_SMALL=`echo ${WHICH,,}`
 
 #backgrounds
@@ -142,8 +143,8 @@ if [ "$WHICH" == "10050" ] ; then WHICH_SMALL="t1tttt_1550to1575_500to1175" ; fi
 if [ "$WHICH" == "10051" ] ; then WHICH_SMALL="t1tttt_600_1to225"           ; fi  
 if [ "$WHICH" == "10052" ] ; then WHICH_SMALL="t1tttt_600to625_250to375"    ; fi  
 if [ "$WHICH" == "10053" ] ; then WHICH_SMALL="t1tttt_900to950_200to700"    ; fi  
-if [ "$WHICH" == "11000" ] ; then WHICH_SMALL="t5qqqqvv_1000to1075_1to950"  ; fi  
-if [ "$WHICH" == "11001" ] ; then WHICH_SMALL="t5qqqqvv_1100to1175_1to1050" ; fi  
+if [ "$WHICH" == "11000" ] ; then WHICH_SMALL="t5qqqqvv_main"  ; fi  
+if [ "$WHICH" == "11001" ] ; then WHICH_SMALL="t5qqqqvv_dm20" ; fi  
 if [ "$WHICH" == "11002" ] ; then WHICH_SMALL="t5qqqqvv_1200to1275_1to1150" ; fi  
 if [ "$WHICH" == "11003" ] ; then WHICH_SMALL="t5qqqqvv_1300to1375_1to1250" ; fi  
 if [ "$WHICH" == "11004" ] ; then WHICH_SMALL="t5qqqqvv_1400to1550_1to1275" ; fi  
@@ -239,5 +240,5 @@ then
   rm $deleteMe 
   echo "THIS BITCH IS EMPTY, DELETING IT!!"
 else
-  lcg-cp -b -D srmv2 --vo cms --connect-timeout 2400 --verbose file://`pwd`/${OUTPUT}.root srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${COPYDIR}/${OUTPUT}.root
+  gfal-copy -p -f -t 4200 --verbose file://`pwd`/${OUTPUT}.root srm://bsrm-3.t2.ucsd.edu:8443/srm/v2/server?SFN=${COPYDIR}/${OUTPUT}.root
 fi

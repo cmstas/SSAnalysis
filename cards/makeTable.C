@@ -11,9 +11,11 @@ void makeTable() {
     pm  = "+/-";
   }
 
-  TString lumi = "4.0";
-  // TString dir = "v8.02_4p0";
-  TString dir = "v8.02_4p0_newbins";
+  // TString lumi = "4.0";
+  // TString dir = "v8.02_4p0_newbins";
+
+  TString lumi = "6.3";
+  TString dir = "v8.03";
 
   // TString lumi = "0.8";
   // TString dir = "v8.02_800pb_unblind";

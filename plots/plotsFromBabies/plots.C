@@ -13,11 +13,11 @@
 using namespace std;
 
 //Lumi
-float lumiAG = 3.99;
+float lumiAG = 6.26;
 
 //Data or Signal
 enum type_ag { DATA, SIGNAL, FAKES }; 
-type_ag type = DATA; 
+type_ag type = FAKES; 
 bool useSFs = true;
 
 //Global Definitions
@@ -42,19 +42,19 @@ pair <vector <TH1F*>, vector <float> > fake_plots;
 void plots(){
 
   //Declare chains
-  TChain *data  = new TChain("t", "data"); data ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/Data*.root");
-  TChain *ttz   = new TChain("t"); ttz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTZ*.root"         ); 
-  TChain *ttx   = new TChain("t"); ttx  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTW.root"          ); 
-  TChain *ttw   = new TChain("t"); ttw  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTHtoNonBB.root"   ); 
-  TChain *wz    = new TChain("t"); wz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/WZ.root"           ); 
-  TChain *ttbar = new TChain("t"); ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTBAR_PH.root"     ); 
-  TChain *dy    = new TChain("t"); dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/DY_high.root"      ); 
-                                   dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/DY_low.root"       ); 
-  TChain *wjets = new TChain("t"); wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/WJets.root"        ); 
-  TChain *mb    = new TChain("t"); mb   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/WWZ.root"          ); 
-  TChain *wzz   = new TChain("t"); wzz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/WZZ.root"          ); 
-  TChain *zz    = new TChain("t"); zz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/ZZ.root"           ); 
-  TChain *qqww  = new TChain("t"); qqww ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/QQWW.root"         ); 
+  TChain *data  = new TChain("t", "data"); data ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/Data*.root");
+  TChain *ttz   = new TChain("t");         ttz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/TTZ*.root"         ); 
+  TChain *ttx   = new TChain("t");         ttx  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/TTW.root"          ); 
+  TChain *ttw   = new TChain("t");         ttw  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/TTHtoNonBB.root"   ); 
+  TChain *wz    = new TChain("t");         wz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/WZ.root"           ); 
+  TChain *ttbar = new TChain("t");         ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/TTBAR_PH.root"     ); 
+  TChain *dy    = new TChain("t");         dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/DY_high.root"      ); 
+                                           dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/DY_low.root"       ); 
+  TChain *wjets = new TChain("t");         wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/WJets.root"        ); 
+  TChain *mb    = new TChain("t");         mb   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/WWZ.root"          ); 
+  TChain *wzz   = new TChain("t");         wzz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/WZZ.root"          ); 
+  TChain *zz    = new TChain("t");         zz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/ZZ.root"           ); 
+  TChain *qqww  = new TChain("t");         qqww ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.03/QQWW.root"         ); 
 
   //Make plots
   dy_plots    = makePlots(dy);
@@ -284,7 +284,7 @@ void drawPlot(int which, string title, string subtitle, string xaxis, string tit
   titles.push_back("WZ");         colors.push_back(kOrange); 
   titles.push_back("ttbar");      colors.push_back(18); 
   titles.push_back("DY");         colors.push_back(kGray+2); 
-  titles.push_back("W+Jets");     colors.push_back(18); 
+  titles.push_back("W+Jets");     colors.push_back(16); 
   titles.push_back("MultiBoson"); colors.push_back(kMagenta-7); 
   titles.push_back("qqWW");       colors.push_back(kOrange-3); 
   std::cout << __LINE__ << std::endl;

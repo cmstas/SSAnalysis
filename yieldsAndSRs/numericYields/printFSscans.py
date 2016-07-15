@@ -1,6 +1,9 @@
 import os, glob, ROOT
 
-scan = "T1TTTT_main"
+tag = "v8.03"
+
+# scan = "T1TTTT_main"
+scan = "T5QQQQVV_main"
 #scan = "T6TTWW_50"
 #scan = "T5QQQQVV"
 #scan = "T5QQQQWW"
@@ -9,7 +12,7 @@ scan = "T1TTTT_main"
 #scan = "T5tttt_degen"
 #scan = "T5ttcc"
 
-files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/v8.02/"+scan+"*.root")
+files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/"+scan+"*.root")
 
 scan = scan.replace("_main","")
 

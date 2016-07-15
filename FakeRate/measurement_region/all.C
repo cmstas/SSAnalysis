@@ -7,7 +7,8 @@
     gROOT->ProcessLine(".L plotEWKCorFR.C");
 
     TString tag = getTag();
-  tag = "v1.09FR_80X"; // FIXME
+  // tag = "v1.09FR_80X"; // FIXME
+  tag = "v1.10FR"; // FIXME
     cout << "using tag=" << tag << endl;
     float intlumi = getLumi();
     cout << "intlumi=" << intlumi << "/fb" << endl;

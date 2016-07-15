@@ -146,6 +146,28 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   m8 *= 0.7528*3.99/0.8042;
   m17 *= 0.4533*3.99/0.8042;
 
+  // for 6.26/fb
+  e8i = 17644.6;
+  e17i = 1161.41;
+  e8 = 17840.6;
+  e17 = 1166.48;
+  m8i = 3443.22;
+  m17i = 102.902;
+  m8 = 6829.05;
+  m17 = 85.8415;
+  
+  // // MATTHIEU's numbers 
+  // // for 6.26/fb
+  // e8i = 3912.5;
+  // e17i = 241.16;
+  // e8 = 3912.5;
+  // e17 = 241.62;
+  // m8i = 1339.7;
+  // m17i = 48.035;
+  // m8 = 2628.3;
+  // m17 = 31.912;
+
+
   // // for synch - don't weight mu17, el17
   // float e8i = 0;
   // float e17i = 1;
@@ -593,7 +615,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       // Analysis Code
       float lumi = getLumi();//in /fb
-      // float puw = getPUw(nvtx());
+      // float puw = getTruePUw(nvtx());
       float puw = 1.0; //FIXME
       float weight = scale1fb()*lumi*puw;
       if (isData) weight = 1.;

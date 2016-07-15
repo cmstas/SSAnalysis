@@ -8,7 +8,10 @@ void printShapes(TString process, TString kine, TString lumi, TString nameN, TSt
 
   bool doLogy = 0;
 
-  TFile *_file = TFile::Open(Form("%s/%s_histos_%s_%sifb.root",dir.Data(),process.Data(),kine.Data(),lumi.Data()));
+  TString fname = Form("%s/%s_histos_%s_%sifb.root",dir.Data(),process.Data(),kine.Data(),lumi.Data());
+  std::cout << "opening: " << fname << std::endl;
+  TFile *_file = TFile::Open(fname);
+  std::cout << _file << std::endl;
 
   TH1F* nominal = (TH1F*) _file->Get(nameN);
   if (kine=="hihi")   nominal->SetTitle(process+" "+nameA+" shape SRHH L="+lumi+"/fb");

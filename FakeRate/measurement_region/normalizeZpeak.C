@@ -17,7 +17,8 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   }
 
   // TString tag_data = tag;
-  TString tag_data = tag+"/3p99ifb/"; // FIXME
+  // TString tag_data = tag+"/3p99ifb/"; // FIXME
+  TString tag_data = tag; // FIXME
 
 
   float mult = 1.0;
@@ -32,16 +33,47 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   float m8 = 496.07;
   float m17 = 13.1493;
 
-  // to go from 800/pb SFs to 4/fb SFs
-  e8i *= 0.7625*3.99/0.8042;
-  e17i *= 0.9663*3.99/0.8042;
-  e8 *= 0.7625*3.99/0.8042;
-  e17 *= 0.929*3.99/0.8042;
-  m8i *= 0.758*3.99/0.8042;
-  m17i *= 0.369*3.99/0.8042;
-  m8 *= 0.7528*3.99/0.8042;
-  m17 *= 0.4533*3.99/0.8042;
 
+  // // to go from 800/pb SFs to 4/fb SFs
+  // e8i *= 0.7625*3.99/0.8042;
+  // e17i *= 0.9663*3.99/0.8042;
+  // e8 *= 0.7625*3.99/0.8042;
+  // e17 *= 0.929*3.99/0.8042;
+  // m8i *= 0.758*3.99/0.8042;
+  // m17i *= 0.369*3.99/0.8042;
+  // m8 *= 0.7528*3.99/0.8042;
+  // m17 *= 0.4533*3.99/0.8042;
+
+  // e8i = 1.0;
+  // e17i = 1.0;
+  // e8 = 1.0;
+  // e17 = 1.0;
+  // m8i = 1.0;
+  // m17i = 1.0;
+  // m8 = 1.0;
+  // m17 = 1.0;
+  
+  // for 6.26/fb
+  e8i = 17644.6;
+  e17i = 1161.41;
+  e8 = 17840.6;
+  e17 = 1166.48;
+  m8i = 3443.22;
+  m17i = 102.902;
+  m8 = 6829.05;
+  m17 = 85.8415;
+
+  // // MATTHIEU's numbers 
+  // // for 6.26/fb
+  // e8i = 3912.5;
+  // e17i = 241.16;
+  // e8 = 3912.5;
+  // e17 = 241.62;
+  // m8i = 1339.7;
+  // m17i = 48.035;
+  // m8 = 2628.3;
+  // m17 = 31.912;
+  
   if(do8) {
       if(useIsoTrig) mult = (doMu ? m8i : e8i);
       else mult = (doMu ? m8 : e8);
@@ -55,7 +87,7 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
 
   int idlep = (doMu ? 13 : 11); 
 
-  TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleMu*.root" : "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleEG.root");
+  TString dataf = (doMu ? "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleMu*.root" : "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleEG*.root");
   TString dyf = "/nfs-7/userdata/leptonTree/"+tag+"/DY_madgraph*.root";
 
   TString leptype = (doMu ? "Mu17" : "Ele17");

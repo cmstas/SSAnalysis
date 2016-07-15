@@ -322,16 +322,17 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
 
   if (applyBtagSFs) {
     // setup btag calibration readers
-    calib = new BTagCalibration("csvv2", "btagsf/CSVv2.csv"); // 50ns version of SFs
-    reader_heavy    = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets", "central"); // central
-    reader_heavy_UP = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets", "up");      // sys up
-    reader_heavy_DN = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "mujets", "down");    // sys down
-    reader_light    = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "central");   // central
-    reader_light_UP = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "up");        // sys up
-    reader_light_DN = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "down");      // sys down
+    calib = new BTagCalibration("csvv2", "btagsf/CSVv2_4invfb.csv"); // 50ns version of SFs
+    reader_heavy    = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "central"); // central
+    reader_heavy_UP = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "up");      // sys up
+    reader_heavy_DN = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "down");    // sys down
+    reader_light    = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl", "central");   // central
+    reader_light_UP = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl", "up");        // sys up
+    reader_light_DN = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "incl", "down");      // sys down
 
     // And another one for fastsim
-    calib_fs = new BTagCalibration("csvv2_fs", "btagsf/CSV_fastsim.csv"); 
+    // calib_fs = new BTagCalibration("csvv2_fs", "btagsf/CSV_13TEV_Combined_20_11_2015.csv"); 
+    calib_fs = new BTagCalibration("csvv2_fs", "btagsf/CSV_13TEV_T1tttt_1200_800_11_7_2016.csv");  // see email from Dominick titled "Fwd: btag eff and SFs for fastsim"
     reader_fastsim    = new BTagCalibrationReader(calib_fs, BTagEntry::OP_MEDIUM, "fastsim", "central"); // central
     reader_fastsim_UP = new BTagCalibrationReader(calib_fs, BTagEntry::OP_MEDIUM, "fastsim", "up");      // sys up
     reader_fastsim_DN = new BTagCalibrationReader(calib_fs, BTagEntry::OP_MEDIUM, "fastsim", "down");    // sys down
@@ -355,7 +356,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
         f_btag_eff->Close();
     }
     if (isFastsim >  0 ) {
-        f_btag_eff = new TFile("CORE/Tools/btagsf/data/run2_fastsim/btageff__SMS-T1bbbb-T1qqqq_fastsim.root");
+        f_btag_eff = new TFile("btagsf/btageff__SMS-T1bbbb-T1qqqq_fastsim.root");
         TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
         TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
         TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
@@ -693,6 +694,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
   is_miniaodv1 = filename.find("MCRUN2_74_V9") != std::string::npos;
   is_miniaodv1_80X = filename.find("RunIISpring16MiniAODv1") != std::string::npos;
+  // std::cout << " is_miniaodv1_80X: " << is_miniaodv1_80X << std::endl; // FIXME remove
+
 
   //These c-s errors
   if (!is_real_data && tas::genweights().size()>110) {
@@ -735,8 +738,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     if (isFastsim > 0){
       sparms = tas::sparm_values();  
       sparmNames = tas::sparm_names(); 
-      if (isFastsim <= 2) xsec = go_xsec(sparms[0]).xsec;
-      if (isFastsim == 3) xsec = stop_xsec(sparms[0]).xsec; 
+      if (isFastsim <= 3) xsec = go_xsec(sparms[0]).xsec;
+      // if (isFastsim == 3) xsec = stop_xsec(sparms[0]).xsec; 
       if (isFastsim == 4) xsec = go_xsec(sparms[0]).xsec*0.104976; //dilepton filter
       if (isFastsim >= 5) xsec = go_xsec(sparms[0]).xsec;
       if (isFastsim != 3) xsec_error = go_xsec(sparms[0]).percErr;
@@ -1499,11 +1502,10 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   met3p0 = MET3p0_.first;
   metphi3p0 = MET3p0_.second;
 
-  //MET filters
-  passes_met_filters = (isFastsim > 0) ? !failsFastSimJetFilter : passesMETfilters2016(is_real_data);
-
   // Met filters not filled properly in 80X miniAODv1
   if(is_miniaodv1_80X) passes_met_filters = true;
+  else passes_met_filters = (isFastsim > 0) ? !failsFastSimJetFilter : passesMETfilters2016(is_real_data);
+
 
   //Fill Baby
   BabyTree->Fill();

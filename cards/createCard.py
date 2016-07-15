@@ -13,10 +13,13 @@ import math
 
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
-lumi = "4.0"
+# lumi = "4.0"
+lumi = "6.3"
 # lumi = "2.3"
 
 pseudoData = 0
+
+ignore = False # FIXME FIXME PLEASE FIXME -- default behaviour is ignore = False
 
 doComb = False
 
@@ -245,26 +248,30 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("ttw_pdf","lnN"))
     for process in processes: card.write("%-15s " % (process.ttw_pdf))
     card.write("\n")
-    #nuisance TTW extr_hth
-    card.write("%-40s %-5s " % ("ttw_extr_hth","shape"))
-    for process in processes: card.write("%-15s " % (process.ttw_extr_hth))
-    card.write("\n")
-    # #nuisance TTW extr_htl
-    # card.write("%-40s %-5s " % ("ttw_extr_htl","shape"))
-    # for process in processes: card.write("%-15s " % (process.ttw_extr_htl))
-    # card.write("\n")
-    #nuisance TTW extr_njl
-    card.write("%-40s %-5s " % ("ttw_extr_njl","shape"))
-    for process in processes: card.write("%-15s " % (process.ttw_extr_njl))
-    card.write("\n")
-    #nuisance TTW extr_njh
-    card.write("%-40s %-5s " % ("ttw_extr_njh","shape"))
-    for process in processes: card.write("%-15s " % (process.ttw_extr_njh))
-    card.write("\n")
-    #nuisance TTW extr_ll
-    card.write("%-40s %-5s " % ("ttw_extr_ll","shape"))
-    for process in processes: card.write("%-15s " % (process.ttw_extr_ll))
-    card.write("\n")
+
+
+    if kine != "br":
+        #nuisance TTW extr_hth
+        if not ignore:
+            card.write("%-40s %-5s " % ("ttw_extr_hth","shape"))
+            for process in processes: card.write("%-15s " % (process.ttw_extr_hth))
+            card.write("\n")
+        # #nuisance TTW extr_htl
+        # card.write("%-40s %-5s " % ("ttw_extr_htl","shape"))
+        # for process in processes: card.write("%-15s " % (process.ttw_extr_htl))
+        # card.write("\n")
+        #nuisance TTW extr_njl
+        card.write("%-40s %-5s " % ("ttw_extr_njl","shape"))
+        for process in processes: card.write("%-15s " % (process.ttw_extr_njl))
+        card.write("\n")
+        #nuisance TTW extr_njh
+        card.write("%-40s %-5s " % ("ttw_extr_njh","shape"))
+        for process in processes: card.write("%-15s " % (process.ttw_extr_njh))
+        card.write("\n")
+        #nuisance TTW extr_ll
+        card.write("%-40s %-5s " % ("ttw_extr_ll","shape"))
+        for process in processes: card.write("%-15s " % (process.ttw_extr_ll))
+        card.write("\n")
 
     #nuisance TTZH
     card.write("%-40s %-5s " % ("TTZH","lnN"))
@@ -274,26 +281,30 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
     card.write("%-40s %-5s " % ("ttzh_pdf","lnN"))
     for process in processes: card.write("%-15s " % (process.ttzh_pdf))
     card.write("\n")
-    #nuisance TTZH extr_hth
-    card.write("%-40s %-5s " % ("ttzh_extr_hth","shape"))
-    for process in processes: card.write("%-15s " % (process.ttzh_extr_hth))
-    card.write("\n")
-    # #nuisance TTZH extr_htl
-    # card.write("%-40s %-5s " % ("ttzh_extr_htl","shape"))
-    # for process in processes: card.write("%-15s " % (process.ttzh_extr_htl))
-    # card.write("\n")
-    #nuisance TTZH extr_njl
-    card.write("%-40s %-5s " % ("ttzh_extr_njl","shape"))
-    for process in processes: card.write("%-15s " % (process.ttzh_extr_njl))
-    card.write("\n")
-    #nuisance TTZH extr_njh
-    card.write("%-40s %-5s " % ("ttzh_extr_njh","shape"))
-    for process in processes: card.write("%-15s " % (process.ttzh_extr_njh))
-    card.write("\n")
-    #nuisance TTZH extr_ll
-    card.write("%-40s %-5s " % ("ttzh_extr_ll","shape"))
-    for process in processes: card.write("%-15s " % (process.ttzh_extr_ll))
-    card.write("\n")
+
+
+    if kine != "br":
+        #nuisance TTZH extr_hth
+        if not ignore:
+            card.write("%-40s %-5s " % ("ttzh_extr_hth","shape"))
+            for process in processes: card.write("%-15s " % (process.ttzh_extr_hth))
+            card.write("\n")
+        # #nuisance TTZH extr_htl
+        # card.write("%-40s %-5s " % ("ttzh_extr_htl","shape"))
+        # for process in processes: card.write("%-15s " % (process.ttzh_extr_htl))
+        # card.write("\n")
+        #nuisance TTZH extr_njl
+        card.write("%-40s %-5s " % ("ttzh_extr_njl","shape"))
+        for process in processes: card.write("%-15s " % (process.ttzh_extr_njl))
+        card.write("\n")
+        #nuisance TTZH extr_njh
+        card.write("%-40s %-5s " % ("ttzh_extr_njh","shape"))
+        for process in processes: card.write("%-15s " % (process.ttzh_extr_njh))
+        card.write("\n")
+        #nuisance TTZH extr_ll
+        card.write("%-40s %-5s " % ("ttzh_extr_ll","shape"))
+        for process in processes: card.write("%-15s " % (process.ttzh_extr_ll))
+        card.write("\n")
 
     #nuisance WZ
     if doComb == True:
@@ -374,6 +385,8 @@ def writeOneCard(dir, signal, kine, plot, output):
         signal.bshlt  = "1"
         signal.btag = "1"
         signal.pu = "1"
+    else:
+        print "making fake signal for MI limits!"
     TTW.TTW          = "1.13"
     TTW.lumi         = "1.027"
     TTW.ttw_pdf      = "1.04"

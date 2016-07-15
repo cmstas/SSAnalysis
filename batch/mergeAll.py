@@ -1,14 +1,17 @@
 #!/bin/bash
 
 # path="/hadoop/cms/store/user/${USER}/condor/ss_13_babies/"
-path="/hadoop/cms/store/user/${USER}/condor/ss_babies_June22_3p99ifb_sig/"
+path="/hadoop/cms/store/user/namin/condor/ss_babies_July8_6p26ifb/"
 
 samples = [
 
-["T1TTTT_main", "t1tttt_main_*.root"],
-# ["TTZnlo", "ttznlo_*.root"], # for NLO vs LO comparison, not for analysis
-# ["TTWnlo", "ttwnlo_*.root"], # for NLO vs LO comparison, not for analysis
+["T5QQQQVV_main", "t5qqqqvv_main_*.root"],
+["T5QQQQVV_dm20", "t5qqqqvv_dm20_*.root"],
+# ["TTZLOW","ttzlow_*.root"],
 # ["WJets","wjets_*.root"],
+# ["TTHtoNonBB","tthtononbb_*.root"],
+# ["GGHtoZZto4L","gghtozzto4l_*.root"],
+# ["T1TTTT_main", "t1tttt_main_*.root"],
 # ["DY_high","dy_high_[0-9]*.root"],
 # ["DY_low","dy_low_*.root"],
 # ["DataDoubleEG","datadoubleeg*.root"],
@@ -21,11 +24,9 @@ samples = [
 # ["WZ","wz_*.root"],
 # ["WGToLNuG","wgtolnug_*.root"],
 # ["TTG","ttg_*.root"],
-# ["TTHtoNonBB","tthtononbb_*.root"],
 # ["TZQ","tzq_*.root"],
 # ["TTTT","tttt_*.root"],
 # ["VHtoNonBB","vhtononbb_*.root"],
-# ["TTZlow","ttzlow_*.root"]
 # ["WZZ","wzz_*.root"],
 # ["WWDPS","wwdps_*.root"],
 # ["QQWW","qqww_*.root"],
@@ -33,8 +34,9 @@ samples = [
 # ["ZG","zg_*.root"],
 # ["ZZ","zz_*.root"],
 # ["TTBAR_PH","ttbar_ph_*.root"],
-# ["GGHtoZZto4L","gghtozzto4l_*.root"],
 
+# ["TTZnlo", "ttznlo_*.root"], # for NLO vs LO comparison, not for analysis
+# ["TTWnlo", "ttwnlo_*.root"], # for NLO vs LO comparison, not for analysis
 
 # ["DY_high_LO","dy_high_LO_*.root"],
 # ["TTBAR","ttbar_[0-9]*.root"],

@@ -40,4 +40,3 @@ float flipRateError(float pt, float eta) {
    if (pt>=200 && fabs(eta)>=1.479 && fabs(eta)<2.5 ) return 0.00270871;
    return 0.;
 }
-

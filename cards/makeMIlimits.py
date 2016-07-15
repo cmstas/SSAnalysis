@@ -1,6 +1,7 @@
 import ROOT, array
 
 dir="v6.02-mi"
+lumi=3.99
 
 met=[300,400,500,600,700,800,900,1000]
 ht=[1125,1200,1300,1400,1500,1600,1700,1800,1900,2000]
@@ -25,8 +26,8 @@ files_obs.append(dir+"/higgsCombineTest.HybridNew.mH1000.-2012955751.root")
 for fn in files_obs:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        #print entry.limit/2.26
-        obs.append(entry.limit/2.26)  
+        #print entry.limit/lumi
+        obs.append(entry.limit/lumi)  
         x0e.append(0.)
 
 files_exp=[]
@@ -41,8 +42,8 @@ files_exp.append(dir+"/higgsCombineTest.HybridNew.mH1000.1085533504.quant0.500.r
 for fn in files_exp:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        #print entry.limit/2.26
-        exp.append(entry.limit/2.26)  
+        #print entry.limit/lumi
+        exp.append(entry.limit/lumi)  
 
 files_m2s=[]
 files_m2s.append(dir+"/higgsCombineTest.HybridNew.mH300.-252547084.quant0.025.root ")
@@ -56,8 +57,8 @@ files_m2s.append(dir+"/higgsCombineTest.HybridNew.mH1000.-149935760.quant0.025.r
 for fn in files_m2s:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        #print entry.limit/2.26
-        m2s.append(entry.limit/2.26)  
+        #print entry.limit/lumi
+        m2s.append(entry.limit/lumi)  
 
 files_m1s=[]
 files_m1s.append(dir+"/higgsCombineTest.HybridNew.mH300.-1036663579.quant0.160.root")
@@ -71,8 +72,8 @@ files_m1s.append(dir+"/higgsCombineTest.HybridNew.mH1000.1913562600.quant0.160.r
 for fn in files_m1s:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        #print entry.limit/2.26
-        m1s.append(entry.limit/2.26)  
+        #print entry.limit/lumi
+        m1s.append(entry.limit/lumi)  
 
 files_p1s=[]
 files_p1s.append(dir+"/higgsCombineTest.HybridNew.mH300.-1200664757.quant0.840.root ")
@@ -86,8 +87,8 @@ files_p1s.append(dir+"/higgsCombineTest.HybridNew.mH1000.-1797958744.quant0.840.
 for fn in files_p1s:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        #print entry.limit/2.26
-        p1s.append(entry.limit/2.26)  
+        #print entry.limit/lumi
+        p1s.append(entry.limit/lumi)  
 
 files_p2s=[]
 files_p2s.append(dir+"/higgsCombineTest.HybridNew.mH300.129536121.quant0.975.root  ")
@@ -101,8 +102,8 @@ files_p2s.append(dir+"/higgsCombineTest.HybridNew.mH1000.-998003919.quant0.975.r
 for fn in files_p2s:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        #print entry.limit/2.26
-        p2s.append(entry.limit/2.26)  
+        #print entry.limit/lumi
+        p2s.append(entry.limit/lumi)  
 
 print p2s
 print p1s
@@ -165,7 +166,7 @@ gobs.SetLineWidth(3)
 gobs.SetLineColor(ROOT.kBlack)
 gobs.Draw("PL")
 
-cmstex = ROOT.TLatex(0.675,0.91, "2.3 fb^{-1} (13 TeV)" )
+cmstex = ROOT.TLatex(0.675,0.91, "%.2f fb^{-1} (13 TeV)" % lumi)
 cmstex.SetNDC()
 cmstex.SetTextSize(0.04)
 cmstex.SetLineWidth(2)
@@ -179,12 +180,12 @@ cmstexbold.SetLineWidth(2)
 cmstexbold.SetTextFont(61)
 cmstexbold.Draw()
 
-#cmstexprel = ROOT.TLatex(0.26,0.91, "Preliminary" )
-#cmstexprel.SetNDC()
-#cmstexprel.SetTextSize(0.03)
-#cmstexprel.SetLineWidth(2)
-#cmstexprel.SetTextFont(52)
-#cmstexprel.Draw()
+cmstexprel = ROOT.TLatex(0.26,0.91, "Preliminary" )
+cmstexprel.SetNDC()
+cmstexprel.SetTextSize(0.03)
+cmstexprel.SetLineWidth(2)
+cmstexprel.SetTextFont(52)
+cmstexprel.Draw()
 
 l1 = ROOT.TLegend(0.15, 0.70, 0.95, 0.90)
 l1.SetTextFont(42)
@@ -254,8 +255,8 @@ files_obs.append(dir+"/higgsCombineTest.HybridNew.mH2000.-963769095.root  ")
 for fn in files_obs:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        #print entry.limit/2.26
-        obs.append(entry.limit/2.26)  
+        #print entry.limit/lumi
+        obs.append(entry.limit/lumi)  
         x0e.append(0.)
 
 files_exp=[]
@@ -272,8 +273,8 @@ files_exp.append(dir+"/higgsCombineTest.HybridNew.mH2000.70642719.quant0.500.roo
 for fn in files_exp:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        #print entry.limit/2.26
-        exp.append(entry.limit/2.26)  
+        #print entry.limit/lumi
+        exp.append(entry.limit/lumi)  
 
 files_m2s=[]
 files_m2s.append(dir+"/higgsCombineTest.HybridNew.mH1125.-831553152.quant0.025.root ")
@@ -289,8 +290,8 @@ files_m2s.append(dir+"/higgsCombineTest.HybridNew.mH2000.964245984.quant0.025.ro
 for fn in files_m2s:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        print entry.limit/2.26, entry.limitErr/entry.limit/2.26
-        m2s.append(entry.limit/2.26)  
+        print entry.limit/lumi, entry.limitErr/entry.limit/lumi
+        m2s.append(entry.limit/lumi)  
 
 files_m1s=[]
 files_m1s.append(dir+"/higgsCombineTest.HybridNew.mH1125.1723870869.quant0.160.root ")
@@ -306,8 +307,8 @@ files_m1s.append(dir+"/higgsCombineTest.HybridNew.mH2000.847229035.quant0.160.ro
 for fn in files_m1s:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        #print entry.limit/2.26
-        m1s.append(entry.limit/2.26)  
+        #print entry.limit/lumi
+        m1s.append(entry.limit/lumi)  
 
 files_p1s=[]
 files_p1s.append(dir+"/higgsCombineTest.HybridNew.mH1125.1999564852.quant0.840.root ")
@@ -323,8 +324,8 @@ files_p1s.append(dir+"/higgsCombineTest.HybridNew.mH2000.-176787656.quant0.840.r
 for fn in files_p1s:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        #print entry.limit/2.26
-        p1s.append(entry.limit/2.26)  
+        #print entry.limit/lumi
+        p1s.append(entry.limit/lumi)  
 
 files_p2s=[]
 files_p2s.append(dir+"/higgsCombineTest.HybridNew.mH1125.-1120954457.quant0.975.root")
@@ -340,8 +341,8 @@ files_p2s.append(dir+"/higgsCombineTest.HybridNew.mH2000.-2014766644.quant0.975.
 for fn in files_p2s:
     f = ROOT.TFile.Open(fn)
     for entry in f.limit:
-        #print entry.limit/2.26
-        p2s.append(entry.limit/2.26)  
+        #print entry.limit/lumi
+        p2s.append(entry.limit/lumi)  
 
 print p2s
 print p1s
@@ -405,7 +406,7 @@ gobs.SetLineWidth(3)
 gobs.SetLineColor(ROOT.kBlack)
 gobs.Draw("PL")
 
-cmstex = ROOT.TLatex(0.675,0.91, "2.3 fb^{-1} (13 TeV)" )
+cmstex = ROOT.TLatex(0.675,0.91, "%.2f fb^{-1} (13 TeV)" % lumi)
 cmstex.SetNDC()
 cmstex.SetTextSize(0.04)
 cmstex.SetLineWidth(2)
@@ -419,12 +420,12 @@ cmstexbold.SetLineWidth(2)
 cmstexbold.SetTextFont(61)
 cmstexbold.Draw()
 
-#cmstexprel = ROOT.TLatex(0.26,0.91, "Preliminary" )
-#cmstexprel.SetNDC()
-#cmstexprel.SetTextSize(0.03)
-#cmstexprel.SetLineWidth(2)
-#cmstexprel.SetTextFont(52)
-#cmstexprel.Draw()
+cmstexprel = ROOT.TLatex(0.26,0.91, "Preliminary" )
+cmstexprel.SetNDC()
+cmstexprel.SetTextSize(0.03)
+cmstexprel.SetLineWidth(2)
+cmstexprel.SetTextFont(52)
+cmstexprel.Draw()
 
 l1 = ROOT.TLegend(0.15, 0.70, 0.95, 0.90)
 l1.SetTextFont(42)
