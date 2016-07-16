@@ -5,14 +5,14 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TKey.h"
-#include "../../classFiles/v7.00/SS.h"
-#include "../../CORE/SSSelections.h"
-#include "../../software/tableMaker/CTable.h"
-#include "../../software/dataMCplotMaker/dataMCplotMaker.h"
-#include "../../commonUtils.h"
-#include "../../CORE/Tools/dorky/dorky.h"
-#include "../../CORE/Tools/utils.h"
-#include "../../batch/xsec.cc"
+#include "../../../../classFiles/v7.00/SS.h"
+#include "../../../../CORE/SSSelections.h"
+#include "../../../../software/tableMaker/CTable.h"
+#include "../../../../software/dataMCplotMaker/dataMCplotMaker.h"
+#include "../../../../commonUtils.h"
+#include "../../../../CORE/Tools/dorky/dorky.h"
+#include "../../../../CORE/Tools/utils.h"
+#include "../../../../batch/xsec.cc"
 
 //Root files on/off
 bool makeRootFiles = 1;
@@ -34,17 +34,19 @@ bool doCutFlowTable = false;
 
 bool suppressWarns = 1;
 
-// XXX DEFAULT
-bool doMIcutMET = false;
-bool doMIcutHT = false;
-float MIcut = 0;
-TString dir = tag;
+// // XXX DEFAULT
+// bool doMIcutMET = false;
+// bool doMIcutHT = false;
+// float MIcut = 0;
+// TString dir = tag;
 
-// // XXX MI limits
+// XXX MI limits
 // bool doMIcutMET = true;
 // bool doMIcutHT = false;
-// float MIcut = 500;
-// TString dir = Form("v8.02_cut%.0f", MIcut);
+bool doMIcutMET = DOMETCUTHERE;
+bool doMIcutHT = DOHTCUTHERE;
+float MIcut = THECUTHERE;
+TString dir = Form("v8.02_cut%.0f_fix", MIcut);
 
 
 // // XXX TTTT
@@ -52,7 +54,7 @@ TString dir = tag;
 // bool doMIcutMET = false;
 // bool doMIcutHT = false;
 // float MIcut = 0;
-// TString dir = "v8.03_tttt";
+// TString dir = "v8.02_tttt";
 
 
 
@@ -95,8 +97,6 @@ static float roughSystFAKES = 0.35;
 static float roughSystFAKESHH = 0.40;
 static float roughSystFAKESXL = 0.30;
 
-HLTEfficiency HLTEff("../../hlt/HLT_Efficiencies_7p65fb_2016.root");
-
 void getyields(){
 
 
@@ -135,7 +135,7 @@ void getyields(){
   TChain *t5qqqqww_1200_chain = new TChain("t","t5qqqqww_1200"); 
   TChain *t5qqqqww_deg_chain = new TChain("t","t5qqqqww_deg"); 
   
-  // //Fill chains
+  //Fill chains
   ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
   wjets_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root"       , tag.c_str()));
   dy_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_high.root"        , tag.c_str()));
@@ -161,9 +161,9 @@ void getyields(){
   rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWDPS.root"          , tag.c_str()));
   tttt_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
   //data
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str()));
-  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str()));
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str())); // DEAR GOD FIXME
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str())); // DEAR GOD FIXME
+  data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str())); // DEAR GOD FIXME
   //flips
   flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"     , tag.c_str()));
   flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"      , tag.c_str()));
@@ -177,6 +177,12 @@ void getyields(){
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"            , tag.c_str()));
   fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"                  , tag.c_str()));
 
+    TChain *fs_t1tttt_1300_100_chain = new TChain("t","fs_t1tttt_m1300_m100" );
+    fs_t1tttt_1300_100_chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/T1TTTT_main.root");
+    pair<yields_t, plots_t> results_fs_t1tttt_1300_100 = run(fs_t1tttt_1300_100_chain, 0, 0, 0, 0, 1);
+    delete fs_t1tttt_1300_100_chain;
+
+
   // //signals fullsim
   // t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root"              , tag.c_str()));
   // t1tttt_1500_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1500.root"              , tag.c_str()));
@@ -187,10 +193,8 @@ void getyields(){
   // t5qqqqww_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWW_1200_1000_800.root"   , tag.c_str()));
   // t5qqqqww_deg_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T5qqqqWWDeg_1000_315_300.root"   , tag.c_str()));
 
-  // //Get yields
+  //Get yields
   // #include "fs_t1tttt.h"
-  // #include "fs_t5qqqqvv.h"
-  // #include "fs_t5qqqqvv_dm20.h"
 
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
   ttbar_chain->SetTitle("ttbar_fa");
@@ -1490,27 +1494,23 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (!ss::fired_trigger() && ss::is_real_data()) continue;
       if (!ss::passedFilterList()) continue;
       if (!ss::passes_met_filters() && ss::is_real_data()) continue; // FIXME no met filters in miniaodv1 MC
-      // if (!ss::passes_met_filters()) continue; // FIXME use this with v8.03 since we have properly accounted for met filters in ALL MC (masked in miniaodv1 still)
 
-      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
+      // float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
+      float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0]); // FIXME don't have PUw and btagSF
       weight*=scaleLumi;
       if (isWZ) weight*=getWZSF();
 
-      if(!ss::is_real_data()) {
-          weight *= HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::lep2_id(), ss::ht(), 0);
-      }
+      // if(ss::is_real_data() && doFakes) { weight *= 0.8024 / 3.99; } // FIXME remove
 
-      //apply lepton scale factors
-      if (ss::is_real_data()==0 && isWZ==0) {
-          // FIXME don't have lepton SF yet
-          // weight*=eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht());
-          if (isFastSimSignal) {
-              weight *= invFilterEff;
-              // FIXME don't have FS scale factors yet
-              // weight *= eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices());
-              // if (chainTitle.Contains("fs_t5tttt_degen_test_m900_m700")) weight = weight * 1000. * 0.677478 / 117290. / ss::scale1fb();
-          }
-      }
+      // //apply lepton scale factors
+      // // FIXME don't have lepton SF
+      // if (ss::is_real_data()==0 && isWZ==0) {
+      //     weight*=eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht());
+      //     if (isFastSimSignal) {
+      //         weight *= invFilterEff*eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices());
+      //         // if (chainTitle.Contains("fs_t5tttt_degen_test_m900_m700")) weight = weight * 1000. * 0.677478 / 117290. / ss::scale1fb();
+      //     }
+      // }
 
       if (isFastSimSignal && doCutFlowTable) {
 	cut_flow_count = 1;//reinitialize per event
@@ -1667,14 +1667,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	  float fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht());
 	  weight *= fr/(1.-fr);
 	  float fra = alternativeFakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht());
-      // std::cout << " fr: " << fr << " fra: " << fra << std::endl;
 	  weight_alt_FR *= fra/(1.-fra);
 	}
         if (ss::lep2_passes_id()==0) {
 	  float fr = fakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht());
 	  weight *= fr/(1.-fr);
 	  float fra = alternativeFakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht());
-      // std::cout << " fr: " << fr << " fra: " << fra << std::endl;
 	  weight_alt_FR *= fra/(1.-fra);
 	}
 	//subtract double FO
@@ -1683,6 +1681,13 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	  weight *= -1.;
 	  weight_alt_FR *= -1.;
 	}
+
+        // // FIXME
+        // //
+        // if(weight < 0) weight = -1;
+        // else weight = 1;
+
+
 
       }
 
@@ -1799,8 +1804,31 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         else continue;
       }
 
-      if(doMIcutMET && !(categ == HighHigh && (SR == 30 || SR == 32) && ss::met() > MIcut)) continue;
-      if(doMIcutHT && !(categ == HighHigh && (SR == 31 || SR == 33) && ss::ht() > MIcut)) continue;
+      // if(!(categ == HighLow && SR == 8)) continue; // FIXME
+      
+      if(doMIcutMET && !(categ == HighHigh && (SR == 30 || SR == 32) && ss::met() > MIcut)) continue; // FIXME
+      if(doMIcutMET && SR == 32) SR = 30; // FIXME
+
+      if(doMIcutHT && !(categ == HighHigh && (SR == 31 || SR == 33) && ss::ht() > MIcut)) continue; // FIXME
+      if(doMIcutHT && SR == 33) SR = 31; // FIXME
+
+    // if(ss::is_real_data() && (ss::hyp_class()==3 || (ss::hyp_class()==2 && doFakes == 1)) && ((categ == HighHigh && SR == 10) || (categ == HighLow && SR == 8))) {
+    //     bool lep1loose = ss::lep1_passes_id() == 0;
+    //     bool lep2loose = ss::lep2_passes_id() == 0;
+    //     float fr = -1;
+    //     if(lep1loose) {
+    //         fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht());
+    //     } else {
+    //         fr = fakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht());
+    //     }
+    //     // SR
+    //     // ss::lep1_coneCorrPt() ss::lep1_p4().eta() ss::ht() lep1loose ss::lep1_id()
+    //     // ss::lep2_coneCorrPt() ss::lep2_p4().eta() ss::ht() lep2loose ss::lep2_id()
+    //     // ss::filename() ss::filenumber()
+    //     // NJA
+    //     std::bitset<8> trigbits(ss::triggers());
+    //     std::cout << "class " << ss::hyp_class() << " SR " << SR << " " << ss::run() << ":" << ss::lumi() << ":" << ss::event() << " " << " lep1pt,eta " << ss::lep1_coneCorrPt() << "," << ss::lep1_p4().eta() << " lep1loose: " << lep1loose << " lep1id " << ss::lep1_id() << " lep2pt,eta " << ss::lep2_coneCorrPt() << "," << ss::lep2_p4().eta() << " ht " << ss::ht() << " lep2loose " << lep2loose << " lep2id " << ss::lep2_id() << " /hadoop/cms/store/group/snt/run2_data/" << ss::filename() << "V08-00-04/merged_ntuple_" << ss::filenumber() << ".root " << trigbits << std::endl;
+    // }
 
       if (doFakes == 1 && ss::is_real_data() && ss::hyp_class()==2 && SR>0) {
 	float ptT = (ss::lep1_passes_id()==0 ? ss::lep2_coneCorrPt() : ss::lep1_coneCorrPt());
@@ -1809,6 +1837,23 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	float ptJ = (ss::lep1_passes_id()==0 ? ss::jet_close_lep1().pt() : ss::jet_close_lep2().pt());
 	float iso = (ss::lep1_passes_id()==0 ? ss::lep1_miniIso() : ss::lep2_miniIso());
 	//cout << Form("%20i       %6.2f %6.2f %6.2f %6.2f %6.2f %s SR%i",ss::event(),ptT,ptCL,ptR,ptJ,iso,cat.c_str(),SR) << endl;
+
+
+    // if((categ == HighHigh && SR == 10) || (categ == HighLow && SR == 8)) {
+    //     bool lep1loose = ss::lep1_passes_id() == 0;
+    //     bool lep2loose = ss::lep2_passes_id() == 0;
+    //     float fr = -1;
+    //     if(lep1loose) {
+    //         fr = fakeRate(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht());
+    //     } else {
+    //         fr = fakeRate(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht());
+    //     }
+    //     // SR
+    //     // ss::lep1_coneCorrPt() ss::lep1_p4().eta() ss::ht() lep1loose ss::lep1_id()
+    //     // ss::lep2_coneCorrPt() ss::lep2_p4().eta() ss::ht() lep2loose ss::lep2_id()
+    //     // fr
+    //     std::cout << "lnt SR: " << SR << " ss::lep1_coneCorrPt(): " << ss::lep1_coneCorrPt() << " ss::lep1_p4().eta(): " << ss::lep1_p4().eta() << " ss::ht(): " << ss::ht() << " lep1loose: " << lep1loose << " ss::lep1_id(): " << ss::lep1_id() << " ss::lep2_coneCorrPt(): " << ss::lep2_coneCorrPt() << " ss::lep2_p4().eta(): " << ss::lep2_p4().eta() << " ss::ht(): " << ss::ht() << " lep2loose: " << lep2loose << " ss::lep2_id(): " << ss::lep2_id() << " fr: " << fr << std::endl;
+    // }
 
     
       }
@@ -1875,8 +1920,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       // 	// nSelected++; 
       //}
 
-      // FOR GLOBAL DUMP
-      // if(ss::is_real_data() && ss::hyp_class() == 3) {
+      if(ss::is_real_data() && ss::hyp_class() == 3) {
           // textfile_global << Form("%1d%9d%llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", 
           // cout << Form("%1d:%1d:%llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d%s\n", 
           // cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", 
@@ -1885,7 +1929,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
           //     ss::lep1_id(), lep1_pt,
           //     ss::lep2_id(), lep2_pt,
           //     ss::njets(), ss::nbtags(), ss::met(), ss::ht(), SR) << endl;
-      // }
+      }
 
       if (doFakes == 1 )            p_fake_alt_up.BR  ->Fill(BR, weight_alt_FR); 
       if (isData  == 0 )            p_jes_alt_up.BR   ->Fill(BR_unc_up, weight); 
@@ -2077,7 +2121,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       string name = chainTitle.Data();
 
-      TFile *fileOut = TFile::Open(Form("../../cards/%s/%s_histos_%s_%.1fifb.root",dir.Data(),name.c_str(),kinRegs[kr].Data(),lumiAG),"RECREATE");
+      TFile *fileOut = TFile::Open(Form("../../../../cards/%s/%s_histos_%s_%.1fifb.root",dir.Data(),name.c_str(),kinRegs[kr].Data(),lumiAG),"RECREATE");
       TH1F* plot = 0;
       if (kinRegs[kr]=="hihi") plot=p_result.SRHH.TOTAL;
       else if (kinRegs[kr]=="hilow") plot=p_result.SRHL.TOTAL;
@@ -2088,7 +2132,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       //hack to mitigate statistical uncertainty due to empty control regions for fakes
       if (name=="fakes") {
 	//in case prediction is zero, take statistical upper limit from fakes_mc 
-	TFile *file_fakes_mc = TFile::Open(Form("../../cards/%s/fakes_mc_histos_%s_%.1fifb.root",dir.Data(),kinRegs[kr].Data(),lumiAG),"OPEN");
+	TFile *file_fakes_mc = TFile::Open(Form("../../../../cards/%s/fakes_mc_histos_%s_%.1fifb.root",dir.Data(),kinRegs[kr].Data(),lumiAG),"OPEN");
 	if (file_fakes_mc==0) {
 	  if (!suppressWarns) cout << "warning, need fakes_mc to set stat for fakes" << endl;
 	  assert(0);
@@ -2229,16 +2273,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         TH1F* fakes_EWKUp    = (TH1F*) plot_alt->Clone("fakes_EWKUp");
         TH1F* fakes_EWKDown  = (TH1F*) plot_alt->Clone("fakes_EWKDown");
         fillDownMirrorUp(h_sr,fakes_EWKUp,fakes_EWKDown);
-
-            // if(kinRegs[kr] == "hihi") {
-            //   for (int mybin=1;mybin<=fakes_EWKUp->GetNbinsX();++mybin) {
-            //       cout << "warning: fakes_EWKUp,Down " " " << mybin << ": ";
-            //       cout << fakes_EWKUp->GetBinContent(mybin) << " +/-" << fakes_EWKUp->GetBinError(mybin) << " ^---v ";
-            //       cout << fakes_EWKDown->GetBinContent(mybin) << " +/-" << fakes_EWKDown->GetBinError(mybin);
-            //       cout << endl;
-            //     } 
-            // }
-
         fakes_EWKUp->Write();
         fakes_EWKDown->Write();
       }
