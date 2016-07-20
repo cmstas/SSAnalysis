@@ -88,11 +88,11 @@ FORSYNC="TG"
 # NOT IN GOLDEN JSON: DataDoubleMuonv1 DataDoubleEGv1 DataMuonEGv1 
 DATA="DataDoubleMuonv2 DataDoubleEGv2 DataMuonEGv2 DataDoubleMuonC DataDoubleEGC DataMuonEGC DataDoubleMuonD DataDoubleEGD DataMuonEGD"
 CENTRAL_NEW="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ TTBAR_PH GGHtoZZto4L TTZlow"
-SIG="T1TTTT_main T5QQQQVV_main T5QQQQVV_dm20"
+SIG="T1TTTT_main T5QQQQVV_main T5QQQQVV_dm20 T5TTCC_main"
 
 ALL="$DATA $CENTRAL_NEW $SIG"
 
-ALL="T5QQQQVV_dm20 T5QQQQVV_main"
+# ALL="T5QQQQVV_dm20 T5QQQQVV_main"
 
 
 #Then submit jobs
@@ -939,11 +939,11 @@ do
     isSignal=1;
     name="SMS-T5tttt_degen_mGl-1025to1200_mLSP-0to1025_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
 
-  elif [ $sname == "T5ttcc_825to1000_675to875" ] 
+  elif [ $sname == "T5TTCC_main" ] 
     then
     nameNu=17001
     isSignal=1;
-    name="SMS-T5ttcc_mGl-825to1000_mLSP-675to875_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1"
+    name="SMS-T5ttcc_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v3";
   elif [ $sname == "T5ttcc_1025to1200_875to1075" ] 
     then
     nameNu=17002

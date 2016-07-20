@@ -192,7 +192,7 @@ enum sample_t {
   T5tttt_degen_600to800_0to625       = 16010,
   T5tttt_degen_1025to1200_875to1075  = 16011,
 
-  T5ttcc_825to1000_675to875          = 17001,
+  T5TTCC_main                        = 17001, // used to be T5ttcc_825to1000_675to875
   T5ttcc_1025to1200_875to1075        = 17002,
   T5ttcc_825to1000_0to825            = 17003,
   T5ttcc_600to800_450to675           = 17004,

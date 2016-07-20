@@ -1,6 +1,7 @@
 //sample: 1-T1tttt
 //sample: 2-T5qqqqVV
 //sample: 3-T5qqqqVV_dm20
+//sample: 8-T5ttcc
 int nPoints(int sample, int mSp1, int mSp2){
   if (sample == 1){
       if (mSp1 == 1200 && mSp2 == 300) return 67936;

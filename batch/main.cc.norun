@@ -960,9 +960,9 @@ int main(int argc, char *argv[]){
       shortname="t5tttt_degen_1025to1200_875to1075";
       isSignal=7;
       break;
-    case T5ttcc_825to1000_675to875:
-      shortname="t5ttcc_825to1000_675to875";
-      name="SMS-T5ttcc_mGl-825to1000_mLSP-675to875_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
+    case T5TTCC_main:
+      shortname="t5ttcc_main";
+      name="SMS-T5ttcc_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v3";
       isSignal=8;
       break;
     case T5ttcc_1025to1200_875to1075:
