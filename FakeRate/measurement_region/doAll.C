@@ -31,7 +31,7 @@
   // ScanChain(dy,"./rate_histos_dy_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
   // TChain *wj = new TChain("t"); 
-  // wj->Add( "/nfs-7/userdata/leptonTree/"+tag+"/WJets.root" );
+  // wj->Add( "/nfs-7/userdata/leptonTree/"+tag+"/WJets*.root" );
   // ScanChain(wj,"./rate_histos_wj_LooseEMVA.root","useLooseEMVA"); 
   // ScanChain(wj,"./rate_histos_wj_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 

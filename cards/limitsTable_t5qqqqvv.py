@@ -1,7 +1,8 @@
 import os, ROOT, array
 from multiprocessing.dummy import Pool as ThreadPool 
 
-mydir = "v8.03_fort5qqqqvv"
+# mydir = "v8.03_fort5qqqqvv"
+mydir = "v8.03_fort5qqqqvv_fix"
 mylumi = "6.3"
 
 isDM20 = False
@@ -203,10 +204,11 @@ for sig in sigs:
         print ("%-8s %4i %4i | %.1f | %.1f (-1s %.1f, +1s %.1f) | %.3f " % (smod , mglu, mlsp , limit_obs[count]  , limit_exp[count] , limit_sm1[count] , limit_sp1[count], hxsec.GetBinContent(hxsec.FindBin(mglu)) ) )
     count = count+1
 
-#h_xsec_test.GetZaxis().SetRangeUser(1e-2,10e0)
-#h_xsec_test.Draw("colz")
-#print h_xsec_test.GetXaxis().GetBinLowEdge(1), h_xsec_test.GetXaxis().GetBinUpEdge(1)
-#c1.SaveAs("xsec_test.pdf")
+# h_xsec_test.GetZaxis().SetRangeUser(1e-2,10e0)
+# h_xsec_test.Draw("colz")
+# print h_xsec_test.GetXaxis().GetBinLowEdge(1), h_xsec_test.GetXaxis().GetBinUpEdge(1)
+# c1.SaveAs("xsec_test.pdf")
+# os.system("web xsec_test.pdf")
 
 #c1.SetLogz(0)
 #h_sobs_test.GetZaxis().SetRangeUser(0.1,2)

@@ -147,14 +147,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   m17 *= 0.4533*3.99/0.8042;
 
   // for 6.26/fb
-  e8i = 17644.6;
-  e17i = 1161.41;
-  e8 = 17840.6;
-  e17 = 1166.48;
-  m8i = 3443.22;
-  m17i = 102.902;
-  m8 = 6829.05;
-  m17 = 85.8415;
+  e8i = 17644.6*1.05035;
+  e17i = 1161.41*1.05035;
+  e8 = 17840.6*1.05035;
+  e17 = 1166.48*1.05035;
+  m8i = 3443.22*1.05;
+  m17i = 102.902*1.05;
+  m8 = 6829.05*1.05;
+  m17 = 85.8415*1.05;
   
   // // MATTHIEU's numbers 
   // // for 6.26/fb
@@ -436,6 +436,23 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TH1F *njets40_histo = new TH1F("njets40_histo", "Njets with pT > 40 GeV", 5,0,5);
   njets40_histo->SetDirectory(rootdir);
   njets40_histo->Sumw2();
+
+  // NJA
+  TH1D *Nt_nvtx_histo_e = new TH1D("Nt_nvtx_histo_e", "", 20, 0, 40);
+  Nt_nvtx_histo_e->SetDirectory(rootdir);
+  Nt_nvtx_histo_e->Sumw2();
+
+  TH1D *Nt_nvtx_histo_mu = new TH1D("Nt_nvtx_histo_mu", "", 20, 0, 40);
+  Nt_nvtx_histo_mu->SetDirectory(rootdir);
+  Nt_nvtx_histo_mu->Sumw2();
+
+  TH1D *Nl_cone_nvtx_histo_e = new TH1D("Nl_cone_nvtx_histo_e", "", 20, 0, 40);
+  Nl_cone_nvtx_histo_e->SetDirectory(rootdir);
+  Nl_cone_nvtx_histo_e->Sumw2();
+
+  TH1D *Nl_cone_nvtx_histo_mu = new TH1D("Nl_cone_nvtx_histo_mu", "", 20, 0, 40);
+  Nl_cone_nvtx_histo_mu->SetDirectory(rootdir);
+  Nl_cone_nvtx_histo_mu->Sumw2();
   //----------------------
 
   //e determination
@@ -615,8 +632,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       // Analysis Code
       float lumi = getLumi();//in /fb
-      // float puw = getTruePUw(nvtx());
-      float puw = 1.0; //FIXME
+      float puw = getTruePUw(nvtx());
       float weight = scale1fb()*lumi*puw;
       if (isData) weight = 1.;
 
@@ -1054,6 +1070,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		{ 
 		  //uncorrected and cone corrected FR
 		  Nt_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //
+
+          // NJA
+		  Nt_nvtx_histo_e->Fill(nvtx(), weight);   //
+
 		  //jet corrected FR
 		  Nt_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 		  if (p4().pt()>25.) Nt_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
@@ -1067,6 +1087,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		  //cone corrected FR
 		  if( passId ) Nl_cone_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
 		  else Nl_cone_histo_e->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),ht,false), weight);
+
+          // NJA
+		  Nl_cone_nvtx_histo_e->Fill(nvtx(), weight);
+
 		  //jet corrected FR
 		  Nl_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 		  if (p4().pt()>25.) Nl_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
@@ -1098,6 +1122,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		{ 
 		  //uncorrected and cone corrected FR
 		  Nt_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //
+
+          // NJA
+		  Nt_nvtx_histo_mu->Fill(nvtx(), weight);   //
+
 		  //jet corrected FR
 		  Nt_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 		  if (p4().pt()>25.) Nt_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
@@ -1111,6 +1139,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		  //cone corrected FR
 		  if( passId ) Nl_cone_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
 		  else Nl_cone_histo_mu->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),ht,false), weight);
+
+          // NJA
+		  Nl_cone_nvtx_histo_mu->Fill(nvtx(), weight);
+
 		  //jet corrected FR
 		  Nl_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 		  if (p4().pt()>25.) Nl_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
@@ -1175,6 +1207,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   TH2D *rate_jet_lowpt_histo_mu = (TH2D*) Nt_jet_lowpt_histo_mu->Clone("rate_jet_lowpt_histo_mu");
   TH1F *total_BR_histo_e = (TH1F*) NBs_BR_histo_e->Clone("total_BR_histo_e");
   TH1F *total_BR_histo_mu = (TH1F*) NBs_BR_histo_mu->Clone("total_BR_histo_mu");
+
+  // NJA
+  TH1D *rate_cone_nvtx_histo_e = (TH1D*) Nt_nvtx_histo_e->Clone("rate_cone_nvtx_histo_e");
+  TH1D *rate_cone_nvtx_histo_mu = (TH1D*) Nt_nvtx_histo_mu->Clone("rate_cone_nvtx_histo_mu");
+  rate_cone_nvtx_histo_e->Divide(rate_cone_nvtx_histo_e,Nl_cone_nvtx_histo_e);
+  rate_cone_nvtx_histo_mu->Divide(rate_cone_nvtx_histo_mu,Nl_cone_nvtx_histo_mu);
 
   rate_histo_e->Divide(rate_histo_e,Nl_histo_e,1,1,"B");
   rate_histo_mu->Divide(rate_histo_mu,Nl_histo_mu,1,1,"B");
@@ -1273,6 +1311,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   Nl_cone_histo_mu->Write();
   rate_cone_histo_e->Write();
   rate_cone_histo_mu->Write();
+
+  // NJA
+  rate_cone_nvtx_histo_e->Write();
+  rate_cone_nvtx_histo_mu->Write();
+
   Nl_jet_histo_e->Write();
   Nl_jet_histo_mu->Write();
   Nt_jet_histo_e->Write();
