@@ -12,7 +12,7 @@ class HLTEfficiency{
   
 public:
 
-  HLTEfficiency(std::string filename="HLT_Efficiencies_4fb_2016.root") {
+  HLTEfficiency(std::string filename="HLT_Efficiencies_7p65fb_2016.root") {
     _initHistos=false;
     _fileName=filename;
     loadFile();
@@ -81,7 +81,7 @@ public:
     if(isHTHLT) totEff *= 0.962 + var*0.01;
     
     //HLT HT efficiency correction for low pt leptons
-    if(ht>300 && ht>325 && pt1<30 && pt2<30) {
+    if(ht>300 && ht<325 && pt1<30 && pt2<30) {
       totEff *= 0.85 + var*0.05;
     }
 
