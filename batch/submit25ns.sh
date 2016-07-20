@@ -86,7 +86,7 @@ T5TTCC="T5ttcc_825to1000_675to875 T5ttcc_1025to1200_875to1075 T5ttcc_825to1000_0
 FORSYNC="TG"
 
 # NOT IN GOLDEN JSON: DataDoubleMuonv1 DataDoubleEGv1 DataMuonEGv1 
-DATA="DataDoubleMuonv2 DataDoubleEGv2 DataMuonEGv2 DataDoubleMuonC DataDoubleEGC DataMuonEGC"
+DATA="DataDoubleMuonv2 DataDoubleEGv2 DataMuonEGv2 DataDoubleMuonC DataDoubleEGC DataMuonEGC DataDoubleMuonD DataDoubleEGD DataMuonEGD"
 CENTRAL_NEW="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ TTBAR_PH GGHtoZZto4L TTZlow"
 SIG="T1TTTT_main T5QQQQVV_main T5QQQQVV_dm20"
 
@@ -361,6 +361,25 @@ do
     tag="V08-00-07";
     path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1008
+    
+  elif [ $sname == "DataDoubleEGD"    ]; then 
+    isData="1"
+    name="Run2016D_DoubleEG_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-08";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1009
+  elif [ $sname == "DataDoubleMuonD"  ]; then 
+    isData="1"
+    name="Run2016D_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-08";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1010
+  elif [ $sname == "DataMuonEGD"    ]; then 
+    isData="1"
+    name="Run2016D_MuonEG_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-08";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1011
 
   #Signals
   elif [ $sname == "T1TTTT_1500" ] 

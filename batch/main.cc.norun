@@ -385,6 +385,28 @@ int main(int argc, char *argv[]){
       isData = true;
       break;
 
+    case DataDoubleEGD:
+      name="Run2016D_DoubleEG_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-08";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegD";
+      isData = true;
+      break;
+    case DataDoubleMuonD:
+      name="Run2016D_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-08";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonD";
+      isData = true;
+      break;
+    case DataMuonEGD:
+      name="Run2016D_MuonEG_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-08";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegD";
+      isData = true;
+      break;
+
     case T1TTTT_main:
       shortname="t1tttt_main";
       name="SMS-T1tttt_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
@@ -1022,7 +1044,7 @@ int main(int argc, char *argv[]){
   //Path for signal
   if (isSignal > 0){
     path="/store/group/snt/run2_25ns_80MiniAODv2_fastsim"; 
-    tag="V08-00-05";
+    tag="V08-00-09";
   }
   
   //Set up file and tree
@@ -1042,7 +1064,7 @@ int main(int argc, char *argv[]){
 
   //Add good run list
   // set_goodrun_file("goldenJson_2016_2p6ifb.txt");
-  set_goodrun_file("goldenJson_2016_6p26ifb.txt");
+  set_goodrun_file("goldenJson_2016_12p9ifb.txt");
   
   // string jecEra = "Fall15_25nsV2";
   string jecEra = "Spring16_25nsV6";
