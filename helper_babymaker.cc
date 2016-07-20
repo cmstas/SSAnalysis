@@ -322,7 +322,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
 
   if (applyBtagSFs) {
     // setup btag calibration readers
-    calib = new BTagCalibration("csvv2", "btagsf/CSVv2_4invfb.csv"); // 50ns version of SFs
+    calib = new BTagCalibration("csvv2", "btagsf/CSVv2_ichep.csv"); // https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation80X
     reader_heavy    = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "central"); // central
     reader_heavy_UP = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "up");      // sys up
     reader_heavy_DN = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "down");    // sys down
