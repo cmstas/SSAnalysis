@@ -1,4 +1,9 @@
 double FastSimTriggerEfficiency(double HT, double l1_Pt, int l1_pdgId, double l2_Pt, int l2_pdgId) {
+    // Using Matthieu's macro, so dummy 1 here
+    // also, no triggers in MC, so assume Fast is same as Full
+    return 1.0; // FIXME
+
+
   double pt1, pt2, pdgid1, pdgid2; 
   //Sort leptons: electrons first, then muons
   //Amongst the same flavor, sort by pt

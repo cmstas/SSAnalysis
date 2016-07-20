@@ -1,4 +1,8 @@
 float triggerScaleFactor(int pdgId1, int pdgId2, float pt1, float pt2, float ht) {
+    // Using Matthieu's macro, so dummy 1 here
+    return 1.0; // FIXME
+
+
   if (ht>300) {
     if ((abs(pdgId1)+abs(pdgId2))==22) return 1.;
     if ((abs(pdgId1)+abs(pdgId2))==26) return 0.985*0.985;
