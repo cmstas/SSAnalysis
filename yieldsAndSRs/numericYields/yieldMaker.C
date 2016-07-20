@@ -1489,8 +1489,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       //Reject not triggered
       if (!ss::fired_trigger() && ss::is_real_data()) continue;
       if (!ss::passedFilterList()) continue;
-      if (!ss::passes_met_filters() && ss::is_real_data()) continue; // FIXME no met filters in miniaodv1 MC
-      // if (!ss::passes_met_filters()) continue; // FIXME use this with v8.03 since we have properly accounted for met filters in ALL MC (masked in miniaodv1 still)
+      // if (!ss::passes_met_filters() && ss::is_real_data()) continue; // FIXME no met filters in miniaodv1 MC
+      if (!ss::passes_met_filters()) continue; // FIXME use this with v8.03 and above since we have properly accounted for met filters in ALL MC (masked in miniaodv1 still)
 
       float weight =  ss::is_real_data() ? 1.0 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
       weight*=scaleLumi;
@@ -1502,12 +1502,10 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       //apply lepton scale factors
       if (ss::is_real_data()==0 && isWZ==0) {
-          // FIXME don't have lepton SF yet
-          // weight*=eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht());
+          weight*=eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht());
           if (isFastSimSignal) {
               weight *= invFilterEff;
-              // FIXME don't have FS scale factors yet
-              // weight *= eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices());
+              weight *= eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices());
               // if (chainTitle.Contains("fs_t5tttt_degen_test_m900_m700")) weight = weight * 1000. * 0.677478 / 117290. / ss::scale1fb();
           }
       }
