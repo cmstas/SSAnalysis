@@ -7,13 +7,32 @@ def dump_bins(h2, name):
     print "float %s(float pt, float eta) {" % name
     for ix in range(1,h2.GetNbinsX()+1):
         for iy in range(1,h2.GetNbinsY()+1):
-            val = min(1.0, h2.GetBinContent(ix,iy))
+            val = h2.GetBinContent(ix,iy)
             if ix != h2.GetNbinsX():
-                print "    if (pt >= %.0f && pt < %.0f && fabs(eta) >= %.3f && fabs(eta) < %.3f) return %.4f;" \
+                print "  if (pt >= %.0f && pt < %.0f && fabs(eta) >= %.3f && fabs(eta) < %.3f) return %.4f;" \
                         % (h2.GetXaxis().GetBinLowEdge(ix), h2.GetXaxis().GetBinUpEdge(ix), h2.GetYaxis().GetBinLowEdge(iy), h2.GetYaxis().GetBinUpEdge(iy), val)
             else:
-                print "    if (pt >= %.0f  && fabs(eta) >= %.3f && fabs(eta) < %.3f) return %.4f;" \
+                print "  if (pt >= %.0f  && fabs(eta) >= %.3f && fabs(eta) < %.3f) return %.4f;" \
                         % (h2.GetXaxis().GetBinLowEdge(ix), h2.GetYaxis().GetBinLowEdge(iy), h2.GetYaxis().GetBinUpEdge(iy), val)
+    print "}"
+
+def dump_bins_fastsim(h3, name):
+    print "float %s(float pt, float eta, int nvtx) {" % name
+    print "  if (pt>=200) pt = 199.9;"
+    print "  if (fabs(eta)>=2.4) eta = 2.3;"
+    print "  if (nvtx>=40) nvtx = 39;"
+    for ix in range(1,h3.GetNbinsX()+1):
+        for iy in range(1,h3.GetNbinsY()+1):
+            for iz in range(1,h3.GetNbinsZ()+1):
+                val = h3.GetBinContent(ix,iy,iz)
+                ptlow = h3.GetXaxis().GetBinLowEdge(ix)
+                pthigh = h3.GetXaxis().GetBinUpEdge(ix)
+                etalow = h3.GetYaxis().GetBinLowEdge(iy)
+                etahigh = h3.GetYaxis().GetBinUpEdge(iy)
+                nvtxlow = h3.GetZaxis().GetBinLowEdge(iz)
+                nvtxhigh = h3.GetZaxis().GetBinUpEdge(iz)
+                print "  if (pt >= %.0f && pt < %.0f && fabs(eta) >= %.3f && fabs(eta) < %.3f && nvtx >= %i && nvtx < %i) return %.4f;" \
+                        % (ptlow, pthigh, etalow, etahigh, nvtxlow, nvtxhigh, val)
     print "}"
 
 # el_sfs.root
@@ -22,10 +41,10 @@ def dump_bins(h2, name):
 # electrons
 electron_file = r.TFile("rootfiles/el_sfs.root")
 
-tightid2d3d = electron_file.Get("TightID2D3D")
-multi = electron_file.Get("Multi")
-convhit0chg = electron_file.Get("ConvIHit0Chg")
-multiemu = electron_file.Get("MultiEmu")
+tightid2d3d = electron_file.Get("GsfElectronToTightID2D3D")
+multi = electron_file.Get("MVATightElectronToMultiIsoT")
+convhit0chg = electron_file.Get("MVATightConvIHit0ElectronToConvIHit0Chg")
+multiemu = electron_file.Get("MVATightElectronToMultiIsoEmu")
 
 el_noiso = tightid2d3d.Clone("el_noiso")
 el_noiso.Multiply(multi)
@@ -56,6 +75,17 @@ mu.Multiply(sip3dlt4)
 # mu.Multiply(multiiso) # FIXME
 # mu.Multiply(dpt) # FIXME
 
+# fastsim
+el_fastsim_file = r.TFile("rootfiles/el_fastsim.root")
+mu_fastsim_file = r.TFile("rootfiles/mu_fastsim.root")
+el_fastsim = el_fastsim_file.Get("histo3D")
+mu_fastsim = mu_fastsim_file.Get("histo3D")
+
+### DO THE DUMPING
+
 dump_bins(el_noiso, name="electronScaleFactorHighHT")
 dump_bins(el_iso, name="electronScaleFactorLowHT")
 dump_bins(mu, name="muonScaleFactor")
+
+dump_bins_fastsim(el_fastsim, name="electronScaleFactorFastSim")
+dump_bins_fastsim(mu_fastsim, name="muonScaleFactorFastSim")

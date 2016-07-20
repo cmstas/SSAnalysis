@@ -1,6 +1,7 @@
 * taking SFs from https://twiki.cern.ch/twiki/bin/view/CMS/SUSLeptonSF#Electrons_AN1
-* go into `rootfiles` and execute `. download.sh` to hopefully download the correct ones (uncomment new ones as they become available)
-* then make modifications inside of `dumpScaleFactors.py` and run it. put this in the appropriate `.h` file
+* fastsim SFs from https://twiki.cern.ch/twiki/bin/view/CMS/SUSLeptonSFMC
+* go into `rootfiles` and execute `. download.sh` to hopefully download the correct ones (uncomment new ones as they become available, and download the stupid ones behind CERN firewall manually)
+* then make modifications inside of `dumpScaleFactors.py` and run it. put these in the appropriate `.h` files
 
 We consider the histograms listed (take product of various histograms since these are factorized)
 
