@@ -4,7 +4,7 @@ xrootdbroken="1"
 
 nSubmitted=0
 
-SPPATH="ss_babies_July8_6p26ifb" # FIXME must match with DIRNAME in condorExecutable
+SPPATH="ss_babies_July20_12p9ifb" # FIXME must match with DIRNAME in condorExecutable
 
 DOCOMPILE="1"
 NOSUBMIT="0"
@@ -1059,7 +1059,7 @@ do
   fi
 
   #fastsim path
-  if [ "$isSignal" == "1" ]; then path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2_fastsim"; tag="V08-00-05"; fi
+  if [ "$isSignal" == "1" ]; then path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2_fastsim"; tag="V08-00-09"; fi
 
   # #Data vs. MC variables
   # if [ `echo $name | tr '_' ' ' | awk '{print $1}' | cut -c 1-7` == "Run2015" ]

@@ -367,21 +367,21 @@ int main(int argc, char *argv[]){
       name="Run2016C_DoubleEG_MINIAOD_PromptReco-v2/merged/";
       tag="V08-00-07";
       path="/store/group/snt/run2_data/";
-      shortname="datadoubleegC";
+      shortname="datadoubleegc";
       isData = true;
       break;
     case DataDoubleMuonC:
       name="Run2016C_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
       tag="V08-00-07";
       path="/store/group/snt/run2_data/";
-      shortname="datadoublemuonC";
+      shortname="datadoublemuonc";
       isData = true;
       break;
     case DataMuonEGC:
       name="Run2016C_MuonEG_MINIAOD_PromptReco-v2/merged/";
       tag="V08-00-07";
       path="/store/group/snt/run2_data/";
-      shortname="datamuonegC";
+      shortname="datamuonegc";
       isData = true;
       break;
 
@@ -389,21 +389,21 @@ int main(int argc, char *argv[]){
       name="Run2016D_DoubleEG_MINIAOD_PromptReco-v2/merged/";
       tag="V08-00-08";
       path="/store/group/snt/run2_data/";
-      shortname="datadoubleegD";
+      shortname="datadoubleegd";
       isData = true;
       break;
     case DataDoubleMuonD:
       name="Run2016D_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
       tag="V08-00-08";
       path="/store/group/snt/run2_data/";
-      shortname="datadoublemuonD";
+      shortname="datadoublemuond";
       isData = true;
       break;
     case DataMuonEGD:
       name="Run2016D_MuonEG_MINIAOD_PromptReco-v2/merged/";
       tag="V08-00-08";
       path="/store/group/snt/run2_data/";
-      shortname="datamuonegD";
+      shortname="datamuonegd";
       isData = true;
       break;
 
