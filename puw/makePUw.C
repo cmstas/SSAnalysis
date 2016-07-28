@@ -1,19 +1,22 @@
 {
 
     // central
-    TFile *f_central = TFile::Open("pileup_central_4ifb.root");
+    // TFile *f_central = TFile::Open("pileup_central_4ifb.root");
+    TFile *f_central = TFile::Open("MyDataPileupHistogram.root");
     TH1F* vtx_central = (TH1F*) f_central->Get("pileup");
     vtx_central->Scale(1.0/vtx_central->Integral());
     std::cout << vtx_central->Integral() << std::endl;
 
     // up
-    TFile *f_up = TFile::Open("pileup_up_4ifb.root");
+    // TFile *f_up = TFile::Open("pileup_up_4ifb.root");
+    TFile *f_up = TFile::Open("MyDataPileupHistogramUp.root");
     TH1F* vtx_up = (TH1F*) f_up->Get("pileup");
     vtx_up->Scale(1.0/vtx_up->Integral());
     std::cout << vtx_up->Integral() << std::endl;
 
     // down
-    TFile *f_down = TFile::Open("pileup_down_4ifb.root");
+    // TFile *f_down = TFile::Open("pileup_down_4ifb.root");
+    TFile *f_down = TFile::Open("MyDataPileupHistogramDown.root");
     TH1F* vtx_down = (TH1F*) f_down->Get("pileup");
     vtx_down->Scale(1.0/vtx_down->Integral());
     std::cout << vtx_down->Integral() << std::endl;
@@ -34,6 +37,16 @@
     puw_up->Divide(vtx_mc);
     puw_down->Divide(vtx_mc);
     fout->Write();
+
+    // //PUw from Laurent
+    // TFile *f_central = TFile::Open("MyDataPileupHistogram.root");
+    // TFile *f_up = TFile::Open("MyDataPileupHistogramUp.root");
+    // TFile *f_down = TFile::Open("MyDataPileupHistogramDown.root");
+    // TH1D* puw_central = (TH1D*)f_central->Get("pileup");
+    // TH1D* puw_up = (TH1D*)f_up->Get("pileup");
+    // TH1D* puw_down = (TH1D*)f_down->Get("pileup");
+
+
 
     cout << "float getTruePUw(int nvtx) {" << endl;
     for (int bin=1;bin<=puw_central->GetNbinsX();++bin) {
