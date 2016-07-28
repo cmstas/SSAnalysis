@@ -70,6 +70,8 @@ public:
     case 26: { 
       hltleg1 = (isHTHLT)?( kMuHTLeg ):( l1Lead?kMuLeg1:kMuLeg2 );
       hltleg2 = (isHTHLT)?( kMuHTLeg ):( l1Lead?kMuLeg2:kMuLeg1 );
+      // FIXME
+      if(!isHTHLT) totEff *= 0.86;
       break;
     }
     }
@@ -78,7 +80,7 @@ public:
 
     //L1 HT plateau efficiency
     //https://lathomas.web.cern.ch/lathomas/SUSYMultiLepton/TriggerEff/Results_7p65fb/l1htturnon.pdf
-    if(isHTHLT) totEff *= 0.962 + var*0.01;
+    // if(isHTHLT) totEff *= 0.962 + var*0.01; // email 155eeeeaaa87dece
     
     //HLT HT efficiency correction for low pt leptons
     if(ht>300 && ht<325 && pt1<30 && pt2<30) {
@@ -100,8 +102,8 @@ private:
     _hist_HLT_MuEle_Leg2   =(TH2F*)_file->Get("hist2dnum_Ele12_CaloIdL_TrackIdL_IsoVL__HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL");
     _hist_HLT_DiEleHT_Leg  =(TH2F*)_file->Get("hist2dnum_Ele8_CaloIdM_TrackIdM__DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT250or300");
     _hist_HLT_EleMuHT_Leg1 =(TH2F*)_file->Get("hist2dnum_Ele8_CaloIdM_TrackIdM__DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT250or300");
-    _hist_HLT_DiMu_Leg1    =(TH2F*)_file->Get("hist2dnum_Mu17__HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL");
-    _hist_HLT_DiMu_Leg2    =(TH2F*)_file->Get("hist2dnum_Mu8__HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL");
+    _hist_HLT_DiMu_Leg1    =(TH2F*)_file->Get("hist2dnum_Mu17__HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL"); // modify this
+    _hist_HLT_DiMu_Leg2    =(TH2F*)_file->Get("hist2dnum_Mu8__HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL"); // modify this
     _hist_HLT_MuEle_Leg1   =(TH2F*)_file->Get("hist2dnum_Mu17__HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL");
     _hist_HLT_EleMu_Leg2   =(TH2F*)_file->Get("hist2dnum_Mu8__HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL");
     _hist_HLT_DiMuHT_Leg   =(TH2F*)_file->Get("hist2dnum_Mu8__HLT_DoubleMu8_Mass8_PFHT250or300");
