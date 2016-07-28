@@ -4,7 +4,7 @@ xrootdbroken="1"
 
 nSubmitted=0
 
-SPPATH="ss_babies_July20_12p9ifb" # FIXME must match with DIRNAME in condorExecutable
+SPPATH="ss_babies_July27_isr" # FIXME must match with DIRNAME in condorExecutable
 
 DOCOMPILE="1"
 NOSUBMIT="0"
@@ -92,7 +92,7 @@ SIG="T1TTTT_main T5QQQQVV_main T5QQQQVV_dm20 T5TTCC_main"
 
 ALL="$DATA $CENTRAL_NEW $SIG"
 
-# ALL="T5QQQQVV_dm20 T5QQQQVV_main"
+ALL="T1TTTT_main T5QQQQVV_dm20 T5QQQQVV_main"
 
 
 #Then submit jobs

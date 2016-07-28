@@ -1,22 +1,26 @@
 #!/bin/bash
 
 # path="/hadoop/cms/store/user/${USER}/condor/ss_13_babies/"
-path="/hadoop/cms/store/user/namin/condor/ss_babies_July8_6p26ifb/"
+# path="/hadoop/cms/store/user/namin/condor/ss_babies_July8_6p26ifb/"
+path="/hadoop/cms/store/user/namin/condor/ss_babies_July27_isr/"
 
 samples = [
 
+# ["DataDoubleEG","datadoubleeg*.root"],
+# ["DataDoubleMuon","datadoublemuon*.root"],
+# ["DataMuonEG","datamuoneg*.root"],
+
 ["T5QQQQVV_main", "t5qqqqvv_main_*.root"],
 ["T5QQQQVV_dm20", "t5qqqqvv_dm20_*.root"],
+["T1TTTT_main", "t1tttt_main_*.root"],
+# ["T5TTCC_main", "t5ttcc_main_*.root"],
+
 # ["TTZLOW","ttzlow_*.root"],
 # ["WJets","wjets_*.root"],
 # ["TTHtoNonBB","tthtononbb_*.root"],
 # ["GGHtoZZto4L","gghtozzto4l_*.root"],
-# ["T1TTTT_main", "t1tttt_main_*.root"],
 # ["DY_high","dy_high_[0-9]*.root"],
 # ["DY_low","dy_low_*.root"],
-# ["DataDoubleEG","datadoubleeg*.root"],
-# ["DataDoubleMuon","datadoublemuon*.root"],
-# ["DataMuonEG","datamuoneg*.root"],
 # ["WWZ","wwz_*.root"],
 # ["WWW","www_*.root"],
 # ["TTZ","ttz_*.root"],
