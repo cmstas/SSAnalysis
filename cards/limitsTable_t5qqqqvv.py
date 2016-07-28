@@ -1,16 +1,22 @@
 import os, ROOT, array
 from multiprocessing.dummy import Pool as ThreadPool 
 
-# mydir = "v8.03_fort5qqqqvv"
-mydir = "v8.03_fort5qqqqvv_fix"
-mylumi = "6.3"
+# mydir = "v8.03_fort5qqqqvv_fix"
+# mydir = "v8.03_fort5qqqqvv_dm20"
+# mylumi = "6.3"
+
+mydir = "v8.04_sigs"
+mylumi = "12.9"
 
 isDM20 = False
+fake = False # True for the original v8.03_fort5qqqqvv_dm20 and v8.03_fort5qqqqvv since the names are the same
+
+
 
 #the first time you need to make both cards and limits
 #if you no not delete logs, then next time you can skip cards and limits
-redocards = True
-redolimits = True
+redocards = False
+redolimits = False
 deletelogs = False
 
 verbose = False
@@ -24,14 +30,18 @@ minz = 1e-2
 maxz = 50
 maxyh = 1500
 ybinsfirstxbin = 19
+extra = ""
 
-if isDM20:
+if isDM20 or fake:
     maxy = 1150+step
     ybinsfirstxbin = 21
+    if isDM20 and not fake: extra = "_dm20"
 
 npx = (maxx-minx)/step
 npy = (maxy-miny)/step
 npyh = (maxyh-miny)/step
+
+lumi_str = mylumi.replace(".","p")+"ifb"
 
 def smooth(g,h):
     h_tmp = g.GetHistogram()
@@ -60,15 +70,18 @@ for mglu in range (minx,maxx,step):
     for mlsp in range (miny,maxy,step):
         if mlsp == 0: mlsp = 1
 
-        if os.path.isfile(("%s/fs_t5qqqqvv_m%i_m%i_histos_hihi_%sifb.root" % (mydir,mglu,mlsp,mylumi))) is False: continue
+# fs_t5qqqqvv_dm20
+        if os.path.isfile(("%s/fs_t5qqqqvv%s_m%i_m%i_histos_hihi_%sifb.root" % (mydir,extra,mglu,mlsp,mylumi))) is False: continue
         if verbose:
-            print "found sig = fs_t5qqqqvv_m%i_m%i" % (mglu,mlsp)
-        sigs.append(("fs_t5qqqqvv_m%i_m%i" % (mglu,mlsp)))
+            print "found sig = fs_t5qqqqvv%s_m%i_m%i" % (extra,mglu,mlsp)
+        sigs.append(("fs_t5qqqqvv%s_m%i_m%i" % (extra,mglu,mlsp)))
 
 limit_obs = []
 limit_exp = []
 limit_sm1 = []
 limit_sp1 = []
+limit_sm2 = []
+limit_sp2 = []
 
 miny = miny - step/2.
 maxy = maxy - step/2.
@@ -126,6 +139,12 @@ for sig in sigs:
             if "Expected 84" in line:
                 val = line.split()[4]
                 limit_sp1.append(float(val))
+            if "Expected  2.5" in line:
+                val = line.split()[4]
+                limit_sm2.append(float(val))
+            if "Expected 97" in line:
+                val = line.split()[4]
+                limit_sp2.append(float(val))
     print sig, foundObs
     if deletelogs: os.system("rm "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log")
     if not foundObs:
@@ -178,14 +197,23 @@ v_xsec = array.array('d')
 v_sexp = array.array('d')
 v_ssm1 = array.array('d')
 v_ssp1 = array.array('d')
+v_ssm2 = array.array('d')
+v_ssp2 = array.array('d')
 v_sobs = array.array('d')
 v_som1 = array.array('d')
 v_sop1 = array.array('d')
 for sig in sigs:
-    smod = sig.split("_")[1]
-    mglu = int(sig.split("_")[2][1:])
-    mglus.append(mglu)
-    mlsp = int(sig.split("_")[3][1:])
+    if isDM20:
+        # fs_t5qqqqvv_dm20
+        smod = sig.split("_")[1] + "_dm20"
+        mglu = int(sig.split("_")[3][1:])
+        mglus.append(mglu)
+        mlsp = int(sig.split("_")[4][1:])
+    else:
+        smod = sig.split("_")[1]
+        mglu = int(sig.split("_")[2][1:])
+        mglus.append(mglu)
+        mlsp = int(sig.split("_")[3][1:])
     if mlsp == 1: mlsp = 0
     mlsps.append(mlsp)
     # print sig, count, mglu, len(sigs), len(limit_obs)
@@ -198,6 +226,10 @@ for sig in sigs:
     v_sexp.append( limit_exp[count] )
     v_ssm1.append( limit_sm1[count] )
     v_ssp1.append( limit_sp1[count] )
+    v_ssm2.append( limit_sm2[count] )
+    v_ssp2.append( limit_sp2[count] )
+
+
     h_xsec_test.SetBinContent(h_xsec_test.FindBin(mglu,mlsp), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)))
     h_sobs_test.SetBinContent(h_sobs_test.FindBin(mglu,mlsp), limit_obs[count])
     if verbose:
@@ -220,6 +252,8 @@ g_xsec = ROOT.TGraph2D("g_xsec","",count,mglus,mlsps,v_xsec)
 g_sexp = ROOT.TGraph2D("g_sexp","",count,mglus,mlsps,v_sexp)
 g_ssm1 = ROOT.TGraph2D("g_ssm1","",count,mglus,mlsps,v_ssm1)
 g_ssp1 = ROOT.TGraph2D("g_ssp1","",count,mglus,mlsps,v_ssp1)
+g_ssm2 = ROOT.TGraph2D("g_ssm2","",count,mglus,mlsps,v_ssm2)
+g_ssp2 = ROOT.TGraph2D("g_ssp2","",count,mglus,mlsps,v_ssp2)
 g_sobs = ROOT.TGraph2D("g_sobs","",count,mglus,mlsps,v_sobs)
 g_som1 = ROOT.TGraph2D("g_som1","",count,mglus,mlsps,v_som1)
 g_sop1 = ROOT.TGraph2D("g_sop1","",count,mglus,mlsps,v_sop1)
@@ -232,6 +266,10 @@ g_ssm1.SetNpx(npx);
 g_ssm1.SetNpy(npy);
 g_ssp1.SetNpx(npx);
 g_ssp1.SetNpy(npy);
+g_ssm2.SetNpx(npx);
+g_ssm2.SetNpy(npy);
+g_ssp2.SetNpx(npx);
+g_ssp2.SetNpy(npy);
 g_sobs.SetNpx(npx);
 g_sobs.SetNpy(npy);
 g_som1.SetNpx(npx);
@@ -247,6 +285,10 @@ h_ssm1 = ROOT.TH2D("h_ssm1","",npx,minx,maxx,npy,miny,maxy)
 smooth(g_ssm1,h_ssm1)
 h_ssp1 = ROOT.TH2D("h_ssp1","",npx,minx,maxx,npy,miny,maxy)
 smooth(g_ssp1,h_ssp1)
+h_ssm2 = ROOT.TH2D("h_ssm2","",npx,minx,maxx,npy,miny,maxy)
+smooth(g_ssm2,h_ssm2)
+h_ssp2 = ROOT.TH2D("h_ssp2","",npx,minx,maxx,npy,miny,maxy)
+smooth(g_ssp2,h_ssp2)
 h_sobs = ROOT.TH2D("h_sobs","",npx,minx,maxx,npy,miny,maxy)
 smooth(g_sobs,h_sobs)
 h_som1 = ROOT.TH2D("h_som1","",npx,minx,maxx,npy,miny,maxy)
@@ -260,6 +302,10 @@ k_ssm1 = ROOT.TGraph2D(h_ssm1)
 h_ssm1 = k_ssm1.GetHistogram()
 k_ssp1 = ROOT.TGraph2D(h_ssp1)
 h_ssp1 = k_ssp1.GetHistogram()
+k_ssm2 = ROOT.TGraph2D(h_ssm2)
+h_ssm2 = k_ssm2.GetHistogram()
+k_ssp2 = ROOT.TGraph2D(h_ssp2)
+h_ssp2 = k_ssp2.GetHistogram()
 k_sobs = ROOT.TGraph2D(h_sobs)
 j_sobs = k_sobs.GetHistogram()
 k_som1 = ROOT.TGraph2D(h_som1)
@@ -320,6 +366,31 @@ csp1.SetLineStyle(2)
 csp1.SetLineColor(ROOT.kRed)
 csp1.Draw("L same");
 
+# >>
+csm2list = k_ssm2.GetContourList(1.)
+max_points = -1
+for i in range(0,len(csm2list)):
+    n_points = csm2list[i].GetN()
+    if n_points > max_points:
+        csm2 = csm2list[i]
+        max_points = n_points
+csm2.SetLineWidth(2)
+csm2.SetLineStyle(3)
+csm2.SetLineColor(ROOT.kRed)
+csm2.Draw("L same");
+
+csp2list = k_ssp2.GetContourList(1.)
+max_points = -1
+for i in range(0,len(csp2list)):
+    n_points = csp2list[i].GetN()
+    if n_points > max_points:
+        csp2 = csp2list[i]
+        max_points = n_points
+csp2.SetLineWidth(2)
+csp2.SetLineStyle(3)
+csp2.SetLineColor(ROOT.kRed)
+csp2.Draw("L same");
+# <<
 cobslist = k_sobs.GetContourList(1.)
 max_points = -1
 for i in range(0,len(cobslist)):
@@ -401,7 +472,7 @@ cmstexprel.SetLineWidth(2)
 cmstexprel.SetTextFont(52)
 cmstexprel.Draw()
 
-if isDM20:
+if isDM20 or fake:
     masstex = ROOT.TLatex(0.18,0.67, "m_{#tilde{#chi}^{#pm}_{1}} = m_{#tilde{#chi}^{0}_{1}} + 20 GeV" )
 else:
     masstex = ROOT.TLatex(0.18,0.67, "m_{#tilde{#chi}^{#pm}_{1}} = 0.5(m_{#tilde{g}}+m_{#tilde{#chi}^{0}_{1}})" )
@@ -459,7 +530,31 @@ LExpM.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.Draw("LSAME")
 
-c1.SaveAs("t5qqqq%s_scan_xsec_6p3ifb.pdf" % ("vv" if not isDM20 else "ww"))
+# >>
+LExpP2 = ROOT.TGraph(2)
+LExpP2.SetName("LExpP")
+LExpP2.SetTitle("LExpP")
+LExpP2.SetLineColor(ROOT.kRed)
+LExpP2.SetLineStyle(3)
+LExpP2.SetLineWidth(2)
+LExpP2.SetMarkerStyle(20)
+LExpP2.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-1.83*(maxyh-miny)/100*10)
+LExpP2.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-1.83*(maxyh-miny)/100*10)
+LExpP2.Draw("LSAME")
+
+LExpM2 = ROOT.TGraph(2)
+LExpM2.SetName("LExpM")
+LExpM2.SetTitle("LExpM")
+LExpM2.SetLineColor(ROOT.kRed)
+LExpM2.SetLineStyle(3)
+LExpM2.SetLineWidth(2)
+LExpM2.SetMarkerStyle(20)
+LExpM2.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.33*(maxyh-miny)/100*10)
+LExpM2.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.33*(maxyh-miny)/100*10)
+LExpM2.Draw("LSAME")
+# <<
+
+c1.SaveAs("t5qqqq%s_scan_xsec_%s.pdf" % ("vv" if not (isDM20 or fake) else "ww", lumi_str))
 
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
@@ -491,7 +586,7 @@ h_sexp.Draw("colz")
 cexp.Draw("samecont2");
 c1.SaveAs("sexp.pdf")
 
-fout = ROOT.TFile("SUS15008_t5qqqq%s_6p3ifb.root" % ("vv" if not isDM20 else "ww"),"RECREATE")
+fout = ROOT.TFile("SUS15008_t5qqqq%s_%s.root" % ("vv" if not isDM20 else "ww", lumi_str),"RECREATE")
 hxsecwrite = h_xsec.Clone("xsec")
 for xbin in range(1,hxsecwrite.GetNbinsX()+1):
     for ybin in range(1,hxsecwrite.GetNbinsY()+1):
@@ -509,9 +604,14 @@ csm1write = csm1.Clone("ssexp_m1s")
 csm1write.Write()
 csp1write = csp1.Clone("ssexp_p1s")
 csp1write.Write()
+csm2write = csm2.Clone("ssexp_m2s")
+csm2write.Write()
+csp2write = csp2.Clone("ssexp_p2s")
+csp2write.Write()
+fout.Close()
 fout.Close()
 
 
 k_sexp.Draw("colz")
 
-os.system("web t5qqqq%s_scan_xsec_6p3ifb.pdf" % ("vv" if not isDM20 else "ww"))
+os.system("web t5qqqq%s_scan_xsec_%s.pdf" % ("vv" if not isDM20 else "ww", lumi_str))

@@ -4,8 +4,8 @@ from multiprocessing.dummy import Pool as ThreadPool
 # mydir = "all_points_fix"
 # mylumi = "4.0"
 
-mydir = "v8.03_forLims"
-mylumi = "6.3"
+mydir = "v8.04_sigs"
+mylumi = "12.9"
 
 #the first time you need to make both cards and limits
 #if you no not delete logs, then next time you can skip cards and limits
@@ -32,6 +32,8 @@ ybinsfirstxbin = 15 #19
 npx = (maxx-minx)/step
 npy = (maxy-miny)/step
 npyh = (maxyh-miny)/step
+
+lumi_str = mylumi.replace(".","p")+"ifb"
 
 def smooth(g,h):
     h_tmp = g.GetHistogram()
@@ -71,6 +73,8 @@ limit_obs = []
 limit_exp = []
 limit_sm1 = []
 limit_sp1 = []
+limit_sm2 = []
+limit_sp2 = []
 
 miny = miny - step/2.
 maxy = maxy - step/2.
@@ -112,6 +116,13 @@ for sig in sigs:
             if "Expected 84" in line:
                 val = line.split()[4]
                 limit_sp1.append(float(val))
+            if "Expected  2.5" in line:
+                val = line.split()[4]
+                limit_sm2.append(float(val))
+            if "Expected 97" in line:
+                val = line.split()[4]
+                limit_sp2.append(float(val))
+
     if deletelogs: os.system("rm "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log")
     if not foundObs: 
         print "obs not found for", sig
@@ -163,6 +174,8 @@ v_xsec = array.array('d')
 v_sexp = array.array('d')
 v_ssm1 = array.array('d')
 v_ssp1 = array.array('d')
+v_ssm2 = array.array('d')
+v_ssp2 = array.array('d')
 v_sobs = array.array('d')
 v_som1 = array.array('d')
 v_sop1 = array.array('d')
@@ -175,6 +188,7 @@ for sig in sigs:
     mlsps.append(mlsp)
     if mlsp == 375 and mglu == 600:
         print sig, limit_obs[count], limit_exp[count], hxsec.GetBinContent(hxsec.FindBin(mglu))
+    # print len(limit_sm1), len(limit_sp1), len(limit_sm2), len(limit_sp2)
     v_xsec.append( limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
     v_sobs.append( limit_obs[count] )
     v_som1.append( limit_obs[count]*(hxsec.GetBinContent(hxsec.FindBin(mglu))-hxsec.GetBinError(hxsec.FindBin(mglu)))/hxsec.GetBinContent(hxsec.FindBin(mglu)) )
@@ -182,6 +196,10 @@ for sig in sigs:
     v_sexp.append( limit_exp[count] )
     v_ssm1.append( limit_sm1[count] )
     v_ssp1.append( limit_sp1[count] )
+    v_ssm2.append( limit_sm2[count] )
+    v_ssp2.append( limit_sp2[count] )
+
+
     h_xsec_test.SetBinContent(h_xsec_test.FindBin(mglu,mlsp), limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)))
     h_sobs_test.SetBinContent(h_sobs_test.FindBin(mglu,mlsp), limit_obs[count])
     if verbose:
@@ -198,6 +216,8 @@ g_xsec = ROOT.TGraph2D("g_xsec","",count,mglus,mlsps,v_xsec)
 g_sexp = ROOT.TGraph2D("g_sexp","",count,mglus,mlsps,v_sexp)
 g_ssm1 = ROOT.TGraph2D("g_ssm1","",count,mglus,mlsps,v_ssm1)
 g_ssp1 = ROOT.TGraph2D("g_ssp1","",count,mglus,mlsps,v_ssp1)
+g_ssm2 = ROOT.TGraph2D("g_ssm2","",count,mglus,mlsps,v_ssm2)
+g_ssp2 = ROOT.TGraph2D("g_ssp2","",count,mglus,mlsps,v_ssp2)
 g_sobs = ROOT.TGraph2D("g_sobs","",count,mglus,mlsps,v_sobs)
 g_som1 = ROOT.TGraph2D("g_som1","",count,mglus,mlsps,v_som1)
 g_sop1 = ROOT.TGraph2D("g_sop1","",count,mglus,mlsps,v_sop1)
@@ -210,6 +230,10 @@ g_ssm1.SetNpx(npx);
 g_ssm1.SetNpy(npy);
 g_ssp1.SetNpx(npx);
 g_ssp1.SetNpy(npy);
+g_ssm2.SetNpx(npx);
+g_ssm2.SetNpy(npy);
+g_ssp2.SetNpx(npx);
+g_ssp2.SetNpy(npy);
 g_sobs.SetNpx(npx);
 g_sobs.SetNpy(npy);
 g_som1.SetNpx(npx);
@@ -225,6 +249,10 @@ h_ssm1 = ROOT.TH2D("h_ssm1","",npx,minx,maxx,npy,miny,maxy)
 smooth(g_ssm1,h_ssm1)
 h_ssp1 = ROOT.TH2D("h_ssp1","",npx,minx,maxx,npy,miny,maxy)
 smooth(g_ssp1,h_ssp1)
+h_ssm2 = ROOT.TH2D("h_ssm2","",npx,minx,maxx,npy,miny,maxy)
+smooth(g_ssm2,h_ssm2)
+h_ssp2 = ROOT.TH2D("h_ssp2","",npx,minx,maxx,npy,miny,maxy)
+smooth(g_ssp2,h_ssp2)
 h_sobs = ROOT.TH2D("h_sobs","",npx,minx,maxx,npy,miny,maxy)
 smooth(g_sobs,h_sobs)
 h_som1 = ROOT.TH2D("h_som1","",npx,minx,maxx,npy,miny,maxy)
@@ -238,6 +266,10 @@ k_ssm1 = ROOT.TGraph2D(h_ssm1)
 h_ssm1 = k_ssm1.GetHistogram()
 k_ssp1 = ROOT.TGraph2D(h_ssp1)
 h_ssp1 = k_ssp1.GetHistogram()
+k_ssm2 = ROOT.TGraph2D(h_ssm2)
+h_ssm2 = k_ssm2.GetHistogram()
+k_ssp2 = ROOT.TGraph2D(h_ssp2)
+h_ssp2 = k_ssp2.GetHistogram()
 k_sobs = ROOT.TGraph2D(h_sobs)
 j_sobs = k_sobs.GetHistogram()
 k_som1 = ROOT.TGraph2D(h_som1)
@@ -321,6 +353,32 @@ csp1.SetLineWidth(2)
 csp1.SetLineStyle(2)
 csp1.SetLineColor(ROOT.kRed)
 csp1.Draw("L same");
+
+# >>
+csm2list = k_ssm2.GetContourList(1.)
+max_points = -1
+for i in range(0,len(csm2list)):
+    n_points = csm2list[i].GetN()
+    if n_points > max_points:
+        csm2 = csm2list[i]
+        max_points = n_points
+csm2.SetLineWidth(2)
+csm2.SetLineStyle(3)
+csm2.SetLineColor(ROOT.kRed)
+csm2.Draw("L same");
+
+csp2list = k_ssp2.GetContourList(1.)
+max_points = -1
+for i in range(0,len(csp2list)):
+    n_points = csp2list[i].GetN()
+    if n_points > max_points:
+        csp2 = csp2list[i]
+        max_points = n_points
+csp2.SetLineWidth(2)
+csp2.SetLineStyle(3)
+csp2.SetLineColor(ROOT.kRed)
+csp2.Draw("L same");
+# <<
 
 cobslist = k_sobs.GetContourList(1.)
 max_points = -1
@@ -452,7 +510,31 @@ LExpM.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
 LExpM.Draw("LSAME")
 
-c1.SaveAs("t1tttt_scan_xsec_6p3ifb.pdf")
+# >>
+LExpP2 = ROOT.TGraph(2)
+LExpP2.SetName("LExpP")
+LExpP2.SetTitle("LExpP")
+LExpP2.SetLineColor(ROOT.kRed)
+LExpP2.SetLineStyle(3)
+LExpP2.SetLineWidth(2)
+LExpP2.SetMarkerStyle(20)
+LExpP2.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-1.83*(maxyh-miny)/100*10)
+LExpP2.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-1.83*(maxyh-miny)/100*10)
+LExpP2.Draw("LSAME")
+
+LExpM2 = ROOT.TGraph(2)
+LExpM2.SetName("LExpM")
+LExpM2.SetTitle("LExpM")
+LExpM2.SetLineColor(ROOT.kRed)
+LExpM2.SetLineStyle(3)
+LExpM2.SetLineWidth(2)
+LExpM2.SetMarkerStyle(20)
+LExpM2.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.33*(maxyh-miny)/100*10)
+LExpM2.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.33*(maxyh-miny)/100*10)
+LExpM2.Draw("LSAME")
+# <<
+
+c1.SaveAs("t1tttt_scan_xsec_%s.pdf" % lumi_str)
 
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
@@ -484,7 +566,7 @@ h_sexp.Draw("colz")
 cexp.Draw("samecont2");
 c1.SaveAs("sexp.pdf")
 
-fout = ROOT.TFile("SUS15008_t1tttt_6p3ifb.root","RECREATE")
+fout = ROOT.TFile("SUS15008_t1tttt_%s.root" % lumi_str,"RECREATE")
 hxsecwrite = h_xsec.Clone("xsec")
 for xbin in range(1,hxsecwrite.GetNbinsX()+1):
     for ybin in range(1,hxsecwrite.GetNbinsY()+1):
@@ -502,9 +584,13 @@ csm1write = csm1.Clone("ssexp_m1s")
 csm1write.Write()
 csp1write = csp1.Clone("ssexp_p1s")
 csp1write.Write()
+csm2write = csm2.Clone("ssexp_m2s")
+csm2write.Write()
+csp2write = csp2.Clone("ssexp_p2s")
+csp2write.Write()
 fout.Close()
 
 
 k_sexp.Draw("colz")
 
-os.system("web t1tttt_scan_xsec_6p3ifb.pdf")
+os.system("web t1tttt_scan_xsec_%s.pdf" % lumi_str)

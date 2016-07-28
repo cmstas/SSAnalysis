@@ -27,10 +27,12 @@
 ## MI limits
 * see the `milimits` area inside the yieldMaker area. (takes 20 mins)
 * after running that, there should be a series of folders inside this directory.
-* run `python prepareForMI_new.py` to prepare the cards and histograms to be one bin. Note that this assumes the new binning where we have two high ht and met regions (takes 5 mins)
+* edit `createCard.py` to use the correct luminosity
+* run `python prepareForMI_new.py` to prepare the cards and histograms to be one bin. Note that this assumes the new binning where we have two high ht and met regions (takes 5 mins, and ignore 'Bin SS has no processes contributing to it')
 * run `. poor_mans_batch.sh` with the proper parameters to run combine in parallel (takes 1.5 hrs)
-* run `python makeMIlimitsnick.py` 
-* If all goes well, you should end up with two beautiful plots
+* copy the root files generated in all the worker folders into a single folder called <whatever>
+* run `python makeMIlimitsnick.py` after editing dir to be <whatever>
+* If all goes well (5% chance), you should end up with two beautiful plots
 
 ## validation of signal points
 * inside `validation`, run `copy.sh` after editing in a few appropriate signal mass points to dump

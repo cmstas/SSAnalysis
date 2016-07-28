@@ -4,26 +4,26 @@ import glob
 
 ####  MUST EDIT
 met_folders = [
-"v8.02_cut300_fix",
-"v8.02_cut400_fix",
-"v8.02_cut500_fix",
-"v8.02_cut600_fix",
-"v8.02_cut700_fix",
-"v8.02_cut800_fix",
-"v8.02_cut900_fix",
-"v8.02_cut1000_fix",
+# "v8.04_cut300_fix",
+# "v8.04_cut400_fix",
+# "v8.04_cut500_fix",
+# "v8.04_cut600_fix",
+# "v8.04_cut700_fix",
+# "v8.04_cut800_fix",
+# "v8.04_cut900_fix",
+# "v8.04_cut1000_fix",
 ]
 ht_folders = [
-"v8.02_cut1125_fix",
-"v8.02_cut1200_fix",
-"v8.02_cut1300_fix",
-"v8.02_cut1400_fix",
-"v8.02_cut1500_fix",
-"v8.02_cut1600_fix",
-"v8.02_cut1700_fix",
-"v8.02_cut1800_fix",
-"v8.02_cut1900_fix",
-"v8.02_cut2000_fix",
+# "v8.04_cut1125_fix",
+# "v8.04_cut1200_fix",
+"v8.04_cut1300_fix",
+# "v8.04_cut1400_fix",
+# "v8.04_cut1500_fix",
+# "v8.04_cut1600_fix",
+# "v8.04_cut1700_fix",
+# "v8.04_cut1800_fix",
+# "v8.04_cut1900_fix",
+# "v8.04_cut2000_fix",
 ]
 sig_name = "fs_t1tttt_m1300_m100" # will rename this to "sig"
 #### END MUST EDIT
@@ -72,7 +72,7 @@ def doReduceBins(fname, isHT):
             val = hist.GetBinContent(bin_to_use)
             err = hist.GetBinError(bin_to_use)
 
-        if "_extr_hth" in name:
+        if "_extr_hth" in name or "xg" in fname:
             if hist.GetBinContent(bin_to_use) < 0.00001:
                 val = 0.00001
                 print fname, name, hist.GetBinContent(bin_to_use), hist.GetBinError(bin_to_use)
