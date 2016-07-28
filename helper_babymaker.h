@@ -30,6 +30,14 @@
 #pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
 #pragma link C++ typedef ROOT::Math::XYZTVectorF;
 #endif
+#include "Math/Vector4D.h" 
+#include "Math/LorentzVector.h" 
+
+#ifdef __MAKECINT__
+#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+;
+#pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
+#pragma link C++ typedef ROOT::Math::XYZTVectorF;
+#endif
 
 int nPoints(int sample, int mgl, int mlsp);
 
@@ -426,11 +434,17 @@ class babyMaker {
     float weight_btagsf_UP;
     float weight_btagsf_DN;
 
-    //ISR unc #s
+    //ISR unc #s - 2015
     LorentzVector gl1_p4;
     LorentzVector gl2_p4; 
     float glglpt; 
     float isr_unc;
+
+    //ISR unc #s - 2016
+    int nisrMatch;
+    float weight_isr;
+    float weight_isr_UP;
+    float weight_isr_DN;
 
     //Lep 3 stuff
     bool lep3_el_etaSC;

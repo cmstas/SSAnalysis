@@ -277,6 +277,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("gl2_p4" , &gl2_p4 );
   BabyTree->Branch("glglpt" , &glglpt );
   BabyTree->Branch("isr_unc", &isr_unc);
+  BabyTree->Branch("nisrMatch", &nisrMatch);
+  BabyTree->Branch("weight_isr"                                           , &weight_isr                                                                           );
+  BabyTree->Branch("weight_isr_UP"                                        , &weight_isr_UP                                                                        );
+  BabyTree->Branch("weight_isr_DN"                                        , &weight_isr_DN                                                                        );
 
   //Lep3 stuff
   BabyTree->Branch("lep3_el_etaSC"           , &lep3_el_etaSC           );
@@ -585,9 +589,13 @@ void babyMaker::InitBabyNtuple(){
     passes_met_filters = 0;
     madeExtraZ = 0;  
     madeExtraG = 0;  
+    nisrMatch = -1;
     weight_btagsf  = -9999.;
     weight_btagsf_UP = -9999.;
     weight_btagsf_DN = -9999.;
+    weight_isr  = -9999.;
+    weight_isr_UP = -9999.;
+    weight_isr_DN = -9999.;
     filenumber = -1;
     mostJets_rawp4.clear(); 
     mostJets_disc.clear(); 
@@ -1255,6 +1263,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   weight_btagsf_UP = weight_btagsf + (sqrt(pow(btagprob_err_heavy_UP,2) + pow(btagprob_err_light_UP,2)) * weight_btagsf);
   weight_btagsf_DN = weight_btagsf - (sqrt(pow(btagprob_err_heavy_DN,2) + pow(btagprob_err_light_DN,2)) * weight_btagsf);
 
+  // ISR stuff for 2015
   if (isFastsim > 0){
     for (unsigned int i = 0; i < tas::genps_status().size(); i++){
       if (isFastsim  < 3 && abs(tas::genps_id().at(i)) != 1000021) continue;
@@ -1265,6 +1274,17 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     }
     glglpt = (gl1_p4 + gl2_p4).pt(); 
     isr_unc = (glglpt < 400) ? 0 : ((glglpt < 600) ? 0.15 : 0.30); 
+  }
+
+  // ISR stuff for 2016
+  // https://github.com/cmstas/MT2Analysis/blob/cmssw80x/babymaker/ScanChain.cc#L1870
+  // https://github.com/cmstas/CORE/blob/master/MCSelections.cc#L438
+  if (!is_real_data) {
+      nisrMatch = get_nisrMatch(jets);
+      weight_isr = get_isrWeight(nisrMatch);
+      float unc_isr = get_isrUnc(nisrMatch);
+      weight_isr_UP = weight_isr + unc_isr;
+      weight_isr_DN = weight_isr - unc_isr;
   }
 
   //Save Most jets 
@@ -1496,6 +1516,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
           }
       }
   }
+
 
   //MET3p0 (aka FKW MET)
   pair<float,float> MET3p0_ = MET3p0();
