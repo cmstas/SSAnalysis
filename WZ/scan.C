@@ -193,8 +193,7 @@ int scan(){
 
             float scale = 1.0;
             if(!ss::is_real_data()) {
-                // scale = ss::scale1fb() * luminosity * getTruePUw(ss::trueNumInt()[0]);
-                scale = ss::scale1fb() * luminosity; // FIXME
+                scale = ss::scale1fb() * luminosity * getTruePUw(ss::trueNumInt()[0]);
             } else {
                 DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
                 if (is_duplicate(id) ) continue;

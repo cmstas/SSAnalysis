@@ -93,8 +93,7 @@ void flip(bool doMu=false){
       int absLepId = doMu ? 13 : 11;
 
       //Weight
-      // float weight = getPUw(ss::nGoodVertices());//scale1fb()*theLumi; 
-      float weight = scale1fb()*theLumi;  // FIXME put in PU reweighting
+      float weight = getTruePUw(ss::trueNumInt()[0])*scale1fb()*theLumi; 
       // float weight = 1.0;
 
       //If they make it this far, they are denominator events
