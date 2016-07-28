@@ -1,4 +1,7 @@
 {
+
+  gSystem->Exec("mkdir -p plots");
+
   gSystem->Load("../../CORE/CMS3_CORE.so");
   gROOT->ProcessLine(".L ../../software/dataMCplotMaker/dataMCplotMaker.cc+");
   gSystem->Load("../../software/tableMaker/libSimpleTable.so");
@@ -11,7 +14,7 @@
   TString tag1 = getTag();
   TString tag2 = "v5.01"; //no fake rate babies past v5.01 yet
 
-  bool doData = false;
+  bool doData = true;
 
   bool doInSitu = 0; //we should remove this or fix this; the function does not handle inSitu properly
 
@@ -74,12 +77,17 @@
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DataDoubleEG.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DataMuonEG.root");
 
+      // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTBAR_PH.root"); // FIXME
+      // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTBAR_PH.root"); // FIXME
+      // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v7.00/TTBAR_PH.root"); // FIXME
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");  
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets.root"); 
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets.root"); 
+
   } else {
     if (doLooseEMVA){
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets_LO.root");
       ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");
+      // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTBAR_PH.root"); // FIXME
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DY_high.root");
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DY_low.root");
     }
