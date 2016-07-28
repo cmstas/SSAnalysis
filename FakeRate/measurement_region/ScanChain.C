@@ -24,6 +24,7 @@
 
 #include "../../CORE/Tools/JetCorrector.cc"
 #include "../../commonUtils.h"
+#include "vtx_reweight.h"
 
 using namespace std;
 using namespace lepton_tree;
@@ -101,6 +102,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
   bool debug = false;
 
+  bool applyDataVtxWeight = false;
+
   int nptbins = 5;
   int netabins = 3;
   float ptbins[6] = {10., 15., 25., 35., 50., 70.};
@@ -167,6 +170,25 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   // m8 = 2628.3;
   // m17 = 31.912;
 
+  // 12.9 fb^-1
+  e8i = 4437.33;
+  e17i = 354.598;
+  e8 = 4434.51;
+  e17 = 355.14;
+  m8i = 1952.23;
+  m17i = 92.9757;
+  m8 = 3956.74;
+  m17 = 65.5245;
+
+  // // go from 12.9 fb^-1 to (12.9-6.26) fb^-1 for Lesya's suggestion to check second HALF
+  // e8i *= 1.1784;
+  // e17i *= 1.46174;
+  // e8 *= 1.17915;
+  // e17 *= 1.45954;
+  // m8i *= 2.16748;
+  // m17i *= 2.96596;
+  // m8 *= 2.03015;
+  // m17 *= 4.20456;
 
   // // for synch - don't weight mu17, el17
   // float e8i = 0;
@@ -632,7 +654,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       // Analysis Code
       float lumi = getLumi();//in /fb
+      // float lumi = 12.9-6.26;//in /fb // HALF
+      // if(isData && evt_run() <= 275782) continue;
       float puw = getTruePUw(nvtx());
+      // float puw = 1.0;
       float weight = scale1fb()*lumi*puw;
       if (isData) weight = 1.;
 
@@ -707,7 +732,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       int nbtags = 0;
       for(unsigned int i=0; i<jets_recorr.size(); i++)  {
 	if(ROOT::Math::VectorUtil::DeltaR(jets_recorr[i], p4()) < 1.) continue; //0.4 in babymaker
-	if(jets_disc()[i] > 0.800) nbtags++; // FIXME
+	if(jets_disc()[i] > 0.800) nbtags++;
 	if(jets_recorr[i].pt() > 40. && fabs(jets_recorr[i].eta()) < 2.4) {
 	  ht += jets_recorr[i].pt();
 	  njets40++;
@@ -773,6 +798,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	
       }	
 
+      float vtxWeight = 1.0;
       if (debug) cout << "check pt range of triggers" << endl; 
       //check prescales, apply cuts on the pT range depending on the trigger
       int prescale = -1;
@@ -782,10 +808,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) { 
           prescale = HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30();
           prescale = e8i; // FIXME
+          vtxWeight = getPUw_iso_8_el(nvtx());
       }
 	  if ((anyPt || p4().pt() >= 25) && HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
           prescale = HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30();
           prescale = e17i; // FIXME
+          vtxWeight = getPUw_iso_17_el(nvtx());
       }
 	  if (prescale>0) weight *= prescale;
 	  else continue;	  
@@ -793,10 +821,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0) { 
           prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
           prescale = e8; // FIXME
+          vtxWeight = getPUw_8_el(nvtx());
       }
 	  if ((anyPt || p4().pt() >= 25) && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()>0) {
           prescale = HLT_Ele17_CaloIdM_TrackIdM_PFJet30();
           prescale = e17; // FIXME
+          vtxWeight = getPUw_17_el(nvtx());
       }
 	  if (prescale>0) weight *= prescale;
 	  else continue;	  
@@ -808,11 +838,13 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) { 
           prescale = HLT_Mu8_TrkIsoVVL();
           prescale = m8i; // FIXME
+          vtxWeight = getPUw_iso_8_mu(nvtx());
       }
 
 	  if ((anyPt || p4().pt()>=25) && HLT_Mu17_TrkIsoVVL()>0) {
           prescale = HLT_Mu17_TrkIsoVVL();
           prescale = m17i; // FIXME
+          vtxWeight = getPUw_iso_17_mu(nvtx());
       }
 
 	  if (prescale>0) weight *= prescale;
@@ -822,12 +854,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       {
           prescale = HLT_Mu8();
           prescale = m8; // FIXME
+          vtxWeight = getPUw_8_mu(nvtx());
       }
 
 	  if ((anyPt || p4().pt() >= 25) && HLT_Mu17()>0)
       {
           prescale = HLT_Mu17();
           prescale = m17; // FIXME
+          vtxWeight = getPUw_17_mu(nvtx());
       }
 
 	  if (prescale>0) weight *= prescale;
@@ -835,15 +869,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	}
       }
 
+      if(applyDataVtxWeight) weight *= vtxWeight;
+
       //if (isSyncFile) weight = 1;
       
       if (debug) cout << "check nFO_SS" << endl;
       if(nFOs_SS() > 1) //if more than 1 FO in event
 	{continue;}
       
-      // if(nbtags != 1) continue;  // FIXME
-      // if(ht_SS() < 200) continue;  // FIXME
-
       //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
       //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
       // |eta|>2.4 will mess up the rate in the highest eta bins (2<|eta|<3)

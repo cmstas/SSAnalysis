@@ -41,7 +41,7 @@
   nvtx_data->SetMarkerStyle(kFullCircle);
   nvtx_dy->SetFillColor(kGreen+2);
 
-  cout << nvtx_dy->GetEntries() << endl;
+  // cout << nvtx_dy->GetEntries() << endl;
 
   for(unsigned int ivtx = 1; ivtx < nvtx_dy->GetNbinsX(); ivtx++) {
       // cout << ivtx << " " << getTruePUw(ivtx) << " ";
@@ -62,43 +62,24 @@
   suffix += do8 ? "_8" : "_17";
   suffix += doMu ? "_mu" : "_el";
 
-  cout << "Saving nvtx" << suffix << ".png" << endl;
+  cout << ">>> Saving nvtx" << suffix << ".png" << endl;
 
   c1.SaveAs("nvtx" + suffix + ".png");
 
-  // for(unsigned int ivtx = 1; ivtx <= nvtx_data->GetNbinsX(); ivtx++) {
-  //     float data = nvtx_data->GetBinContent(ivtx+1);
-  //     float dy = nvtx_dy->GetBinContent(ivtx+1);
-  //     cout << data << " " << dy << endl;
-  // }
-
-  // TCanvas c2;
-  // TH1F* nvtx_ratio = (TH1F*) nvtx_data->Clone("nvtx_ratio");
-  // nvtx_ratio->Scale(1./nvtx_ratio->Integral());
-  // TH1F* nvtx_den = (TH1F*) nvtx_dy->Clone("nvtx_den");
-  // nvtx_den->Scale(1./nvtx_den->Integral());
-  // nvtx_ratio->Divide(nvtx_den);
-  // nvtx_ratio->Draw();
-  // c2.SaveAs("nvtx_ratio.png");
-
-  // TCanvas c3;
-  // TH1F* nvtx_rw = (TH1F*) nvtx_dy->Clone("nvtx_rw");
-  // for (int bin=1;bin<=nvtx_rw->GetNbinsX();++bin) {
-  //   nvtx_rw->SetBinContent(bin, nvtx_ratio->GetBinContent(bin)*nvtx_rw->GetBinContent(bin));
-  // }
-
-  // nvtx_rw->SetFillColor(kGreen+2);
-  // nvtx_data->Draw("PE");
-  // nvtx_rw->Draw("hist,same");
-  // nvtx_data->Draw("PEsame");
-  // c3.SaveAs("nvtx_rw.png");
-
-  // cout << "float getPUw(int nvtx) {" << endl;
-  // for (int bin=1;bin<=nvtx_ratio->GetNbinsX();++bin) {
-  //   cout << Form("   if (nvtx>=%f && nvtx<%f) return %f;",nvtx_ratio->GetBinLowEdge(bin),nvtx_ratio->GetBinLowEdge(bin+1),nvtx_ratio->GetBinContent(bin) ) << endl;
-  // }
-  // cout << "   return 0.;" << endl;
-  // cout << "}" << endl;
+  cout << "float getPUw" << suffix << "(int nvtx) {" << endl;
+  for(unsigned int ivtx = 1; ivtx <= nvtx_data->GetNbinsX(); ivtx++) {
+      float data = nvtx_data->GetBinContent(ivtx+1);
+      float dy = nvtx_dy->GetBinContent(ivtx+1);
+      // now we want to print out the weight to bring prescaled data to the dy (which is now weighted to match the unprescaled triggers in the signal regions)
+      // NOTE that this is a weight to multiply DATA by
+      float sf = 0.0;
+      if(dy > 0.0 && data > 0) sf = dy/data;
+      cout << " if (nvtx==" << ivtx;
+      cout << ") return " << sf << ";";
+      cout << endl;
+  }
+  cout << "  return 0.;" << endl;
+  cout << "}" << endl;
 
   }
   }

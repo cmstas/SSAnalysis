@@ -83,6 +83,7 @@ pair<float,float> plotMTCR(float inputSF_el, float inputSF_mu, bool useIsoTrig) 
   leg->SetFillColor(kWhite);
   leg->SetLineColor(kWhite);
   leg->SetHeader(Form("L=%.1f/fb",getLumi()));
+  // leg->SetHeader(Form("L=%.1f/fb",12.9-6.26)); // HALF
   leg->AddEntry(h_data,"data","pe");
   leg->AddEntry(h_wj  ,"W+jets","f");
   leg->AddEntry(h_dy  ,"DY","f");

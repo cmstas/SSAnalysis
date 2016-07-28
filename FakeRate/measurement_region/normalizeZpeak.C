@@ -63,6 +63,36 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   m8 = 6829.05*1.05;
   m17 = 85.8415*1.05;
 
+  // dummy to be used to calculate new SF
+  e8i = 1;
+  e17i = 1;
+  e8 = 1;
+  e17 = 1;
+  m8i = 1;
+  m17i = 1;
+  m8 = 1;
+  m17 = 1;
+
+  // 12.9 fb^-1
+  e8i = 4437.33;
+  e17i = 354.598;
+  e8 = 4434.51;
+  e17 = 355.14;
+  m8i = 1952.23;
+  m17i = 92.9757;
+  m8 = 3956.74;
+  m17 = 65.5245;
+
+  // // go from 12.9 fb^-1 to (12.9-6.26) fb^-1 for Lesya's suggestion to check second HALF
+  // e8i *= 1.1784;
+  // e17i *= 1.46174;
+  // e8 *= 1.17915;
+  // e17 *= 1.45954;
+  // m8i *= 2.16748;
+  // m17i *= 2.96596;
+  // m8 *= 2.03015;
+  // m17 *= 4.20456;
+
   // // MATTHIEU's numbers 
   // // for 6.26/fb
   // e8i = 3912.5;
@@ -102,10 +132,13 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   mll_data->Sumw2();  
   mll_dy->Sumw2();
 
+  std::cout << "scanning data" << std::endl;
   t_data->Draw("dilep_mass>>mll_data",Form("%f*%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",mult,hlt.Data(),idlep,hlt.Data()),"goff");
-  // t_dy->Draw("dilep_mass>>mll_dy",Form("%f*scale1fb*%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",intlumi,hlt.Data(),idlep,hlt.Data()),"goff");
-  // NO electron triggers in 80X MC?
+  // HALF
+  // t_data->Draw("dilep_mass>>mll_data",Form("%f*%s*((evt_run>275782) && abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",mult,hlt.Data(),idlep,hlt.Data()),"goff");
+
   hlt = "1";
+  std::cout << "scanning mc" << std::endl;
   t_dy->Draw("dilep_mass>>mll_dy",Form("%f*scale1fb*%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",intlumi,hlt.Data(),idlep,hlt.Data()),"goff");
 
   float mc_zpeak   = mll_dy->Integral(mll_dy->FindBin(75),mll_dy->FindBin(105));
@@ -128,7 +161,7 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   TLegend* leg = new TLegend(0.7,0.7,0.89,0.89);
   leg->SetFillColor(kWhite);
   leg->SetLineColor(kWhite);
-  leg->SetHeader(Form("L=%.1f/pb",intlumi));
+  leg->SetHeader(Form("L=%.1f/fb",intlumi));
   leg->AddEntry(mll_data,"data","pe");
   leg->AddEntry(mll_dy  ,"DY","f");
   leg->AddEntry((TObject*)0  ,Form( "SF: %.2f", data_zpeak/mc_zpeak ),"");

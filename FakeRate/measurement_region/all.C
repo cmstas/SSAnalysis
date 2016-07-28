@@ -8,9 +8,10 @@
 
     TString tag = getTag();
   // tag = "v1.09FR_80X"; // FIXME
-  tag = "v1.10FR"; // FIXME
+  tag = "v1.11FR"; // FIXME
     cout << "using tag=" << tag << endl;
     float intlumi = getLumi();
+    // float intlumi = 12.9-6.26; // HALF
     cout << "intlumi=" << intlumi << "/fb" << endl;
 
     cout << "non isolated triggers" << endl;
