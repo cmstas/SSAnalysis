@@ -3,7 +3,7 @@ fs_t1tttt_1150_500_chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/T1TTTT_main
 pair<yields_t, plots_t> results_fs_t1tttt_1150_500 = run(fs_t1tttt_1150_500_chain, 0, 0, 0, 0, 1);
 delete fs_t1tttt_1150_500_chain;
 
-if(false) { // FIXME
+if(true) { // FIXME
 
 TChain *fs_t1tttt_1200_350_chain = new TChain("t","fs_t1tttt_m1200_m350" );
 fs_t1tttt_1200_350_chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/T1TTTT_main.root");
