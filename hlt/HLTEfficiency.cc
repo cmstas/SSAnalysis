@@ -19,6 +19,7 @@ public:
   };
   
   ~HLTEfficiency() {
+      _file->Close();
     delete _hist_HLT_DiEle_Leg1;
     delete _hist_HLT_DiEle_Leg2;
     delete _hist_HLT_EleMu_Leg1;
@@ -31,8 +32,8 @@ public:
     delete _hist_HLT_EleMu_Leg2;
     delete _hist_HLT_DiMuHT_Leg;
     delete _hist_HLT_EleMuHT_Leg2;
-
     delete _file;
+
   };
 
 
