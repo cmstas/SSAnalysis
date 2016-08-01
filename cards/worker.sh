@@ -6,6 +6,12 @@ lumi=$5
 
 cd $where
 
+echo "where: $where"
+echo "cut: $cut"
+echo "pfx: $pfx"
+echo "postfix: $postfix"
+echo "lumi: $lumi"
+
 # # orig
 # Ntoys=500
 # AbsAcc=0.05

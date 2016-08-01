@@ -1,11 +1,13 @@
-import os, ROOT, array
+import os, ROOT, array, sys
 from multiprocessing.dummy import Pool as ThreadPool 
 
 # mydir = "v8.03_fort5qqqqvv_fix"
 # mydir = "v8.03_fort5qqqqvv_dm20"
 # mylumi = "6.3"
 
-mydir = "v8.04_sigs"
+# mydir = "v8.04_sigs"
+mydir = "v8.04_July28"
+# mydir = "v8.04_t5qqqqdm20_July28"
 mylumi = "12.9"
 
 isDM20 = False
@@ -19,21 +21,21 @@ redocards = False
 redolimits = False
 deletelogs = False
 
-verbose = False
+verbose = True
 
 step = 25
 minx = 600
-maxx = 1700+step
+maxx = 2000+step
 miny = 0
-maxy = 1250+step
-minz = 1e-2
-maxz = 50
-maxyh = 1500
+maxy = 1800+step
+minz = 1e-3
+maxz = 2
+maxyh = 1800
 ybinsfirstxbin = 19
 extra = ""
 
 if isDM20 or fake:
-    maxy = 1150+step
+    maxy = 1800+step
     ybinsfirstxbin = 21
     if isDM20 and not fake: extra = "_dm20"
 
@@ -95,6 +97,7 @@ maxx = maxx - step/2.
 def run_sig(sig):
     if verbose:
         print sig
+    if os.path.isfile(mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log"): return
     if redocards: os.system("python createCard.py "+mydir+" "+sig)
     if redolimits: os.system("combine -M Asymptotic "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.txt >& "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log") # --run expected --noFitAsimov
 import os
@@ -120,38 +123,57 @@ if redocards and redolimits:
 # print len(sigs)
 new_sigs = []
 for sig in sigs:
-    foundObs = False
+    foundObs, foundExp = False, False
     with open(mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log") as f:
+        obs = 0.0
+        exp = 0.0
+        sm1 = 0.0
+        sp1 = 0.0
+        sm2 = 0.0
+        sp2 = 0.0
         for line in f:
             #print line
             # if sig in to_check:
             #     print line
             if "Observed Limit" in line:
                 val = line.split()[4]
-                limit_obs.append(float(val))
+                # limit_obs.append(float(val))
+                obs = float(val)
                 foundObs = True
             if "Expected 50" in line:
                 val = line.split()[4]
-                limit_exp.append(float(val))
+                # limit_exp.append(float(val))
+                exp = float(val)
+                foundExp = True
             if "Expected 16" in line:
                 val = line.split()[4]
-                limit_sm1.append(float(val))
+                # limit_sm1.append(float(val))
+                sm1 = float(val)
             if "Expected 84" in line:
                 val = line.split()[4]
-                limit_sp1.append(float(val))
+                # limit_sp1.append(float(val))
+                sp1 = float(val)
             if "Expected  2.5" in line:
                 val = line.split()[4]
-                limit_sm2.append(float(val))
+                # limit_sm2.append(float(val))
+                sm2 = float(val)
             if "Expected 97" in line:
                 val = line.split()[4]
-                limit_sp2.append(float(val))
-    print sig, foundObs
+                # limit_sp2.append(float(val))
+                sp2 = float(val)
+    # print sig, foundObs
     if deletelogs: os.system("rm "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log")
-    if not foundObs:
+    if not foundObs or not foundExp:
         print "obs not found for", sig
         # sigs.remove(sig)
     else:
         new_sigs.append(sig)
+        limit_exp.append(exp)
+        limit_obs.append(obs)
+        limit_sm1.append(sm1)
+        limit_sp1.append(sp1)
+        limit_sm2.append(sm2)
+        limit_sp2.append(sp2)
 sigs = new_sigs[:]
 
 # print len(new_sigs), new_sigs
@@ -219,6 +241,9 @@ for sig in sigs:
     # print sig, count, mglu, len(sigs), len(limit_obs)
     # print limit_obs
 
+    # if mglu == 1250:
+    #     print mglu, mlsp, count, limit_obs[count], hxsec.GetBinContent(hxsec.FindBin(mglu))
+
     v_xsec.append( limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
     v_sobs.append( limit_obs[count] )
     v_som1.append( limit_obs[count]*(hxsec.GetBinContent(hxsec.FindBin(mglu))-hxsec.GetBinError(hxsec.FindBin(mglu)))/hxsec.GetBinContent(hxsec.FindBin(mglu)) )
@@ -242,11 +267,12 @@ for sig in sigs:
 # c1.SaveAs("xsec_test.pdf")
 # os.system("web xsec_test.pdf")
 
-#c1.SetLogz(0)
-#h_sobs_test.GetZaxis().SetRangeUser(0.1,2)
-#h_sobs_test.Draw("colz")
-#print h_sobs_test.GetXaxis().GetBinLowEdge(1), h_sobs_test.GetXaxis().GetBinUpEdge(1)
-#c1.SaveAs("sobs_test.pdf")
+# c1.SetLogz(0)
+# h_sobs_test.GetZaxis().SetRangeUser(0.1,2)
+# h_sobs_test.Draw("colz")
+# print h_sobs_test.GetXaxis().GetBinLowEdge(1), h_sobs_test.GetXaxis().GetBinUpEdge(1)
+# c1.SaveAs("sobs_test.pdf")
+# os.system("web sobs_test.pdf")
 
 g_xsec = ROOT.TGraph2D("g_xsec","",count,mglus,mlsps,v_xsec)
 g_sexp = ROOT.TGraph2D("g_sexp","",count,mglus,mlsps,v_sexp)
@@ -429,15 +455,15 @@ cop1.SetLineStyle(1)
 cop1.SetLineColor(ROOT.kBlack)
 cop1.Draw("L same");
 
-diag = ROOT.TLine(600,600,1300,1300)
+diag = ROOT.TLine(600,600,1600,1600)
 diag.SetLineWidth(1)
 diag.SetLineStyle(2)
 diag.Draw("same")
 
-diagtex = ROOT.TLatex(0.20,0.485, "m_{#tilde{g}} = m_{#tilde{#chi}_{1}^{0}}" )
+diagtex = ROOT.TLatex(0.20,0.445, "m_{#tilde{g}} = m_{#tilde{#chi}_{1}^{0}}" )
 diagtex.SetNDC()
 diagtex.SetTextSize(0.03)
-diagtex.SetTextAngle(41)
+diagtex.SetTextAngle(42)
 diagtex.SetLineWidth(2)
 diagtex.SetTextFont(42)
 diagtex.Draw()
@@ -449,7 +475,7 @@ l1.SetShadowColor(ROOT.kWhite)
 l1.SetFillColor(ROOT.kWhite)
 l1.SetHeader("pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow q#bar{q}'W#tilde{#chi}^{0}_{1}      NLO+NLL exclusion")
 l1.AddEntry(cobs , "Observed #pm 1 #sigma_{theory}", "l")
-l1.AddEntry(cexp , "Expected #pm 1 #sigma_{experiment}", "l")
+l1.AddEntry(cexp , "Expected #pm 1 and 2 #sigma_{experiment}", "l")
 
 cmstex = ROOT.TLatex(0.575,0.91, mylumi+" fb^{-1} (13 TeV)" )
 cmstex.SetNDC()

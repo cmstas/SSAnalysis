@@ -2,16 +2,17 @@ import ROOT, array
 import sys, glob
 
 #### EDIT ME
-dir="MIlimits_12p9"
+# dir="MIlimits_12p9"
+dir="MIlimits_12p9_July28"
 lumi=12.9
 #### END EDIT
 
 met=[300,400,500,600,700,800,900,1000]
 ht=[1125,1200,1300,1400,1500,1600,1700,1800,1900,2000]
 
-magic = 5
+magic = 3
 
-doMET = False
+doMET = True
 doHT = True
 
 
@@ -171,17 +172,17 @@ if doMET:
     LExp1 = ROOT.TGraphAsymmErrors(2)
     LExp1.SetFillColor(ROOT.kYellow)
     LExp1.SetPoint(0,250+ 3.8*(1050-250)/100, magic-2.08*(magic-0)/100*10)
-    LExp1.SetPointError(0,0.,0.,0.15,0.15)
+    LExp1.SetPointError(0,0.,0.,0.15*magic/5,0.15*magic/5)
     LExp1.SetPoint(1,250+21.2*(1050-250)/100, magic-2.08*(magic-0)/100*10)
-    LExp1.SetPointError(1,0.,0.,0.15,0.15)
+    LExp1.SetPointError(1,0.,0.,0.15*magic/5,0.15*magic/5)
     LExp1.Draw("3")
 
     LExp2 = ROOT.TGraphAsymmErrors(2)
     LExp2.SetFillColor(ROOT.kGreen)
     LExp2.SetPoint(0,250+ 3.8*(1050-250)/100, magic-2.08*(magic-0)/100*10)
-    LExp2.SetPointError(0,0.,0.,0.08,0.08)
+    LExp2.SetPointError(0,0.,0.,0.08*magic/5,0.08*magic/5)
     LExp2.SetPoint(1,250+21.2*(1050-250)/100, magic-2.08*(magic-0)/100*10)
-    LExp2.SetPointError(1,0.,0.,0.08,0.08)
+    LExp2.SetPointError(1,0.,0.,0.08*magic/5,0.08*magic/5)
     LExp2.Draw("L3")
 
     LExp = ROOT.TGraph(2)
@@ -292,7 +293,7 @@ if doHT:
     padt2.Draw()
     padt2.cd()
 
-    h = ROOT.TH2F("h2","h2",20,1050,2050,5,0,5)
+    h = ROOT.TH2F("h2","h2",20,1050,2050,magic,0,magic)
     h.SetTitle("")
     h.GetXaxis().SetTitle("H_{T} (GeV)")
     h.GetYaxis().SetTitle("#sigma#kern[0.1]{A}#kern[0.1]{#varepsilon} limit at 95% CL (fb)")
@@ -360,26 +361,26 @@ if doHT:
 
     LExp1 = ROOT.TGraphAsymmErrors(2)
     LExp1.SetFillColor(ROOT.kYellow)
-    LExp1.SetPoint(0,1050+ 3.8*(2050-1050)/100, 5-2.08*(5-0)/100*10)
-    LExp1.SetPointError(0,0.,0.,0.15,0.15)
-    LExp1.SetPoint(1,1050+21.2*(2050-1050)/100, 5-2.08*(5-0)/100*10)
-    LExp1.SetPointError(1,0.,0.,0.15,0.15)
+    LExp1.SetPoint(0,1050+ 3.8*(2050-1050)/100, magic-2.08*(magic-0)/100*10)
+    LExp1.SetPointError(0,0.,0.,0.15*magic/5,0.15*magic/5)
+    LExp1.SetPoint(1,1050+21.2*(2050-1050)/100, magic-2.08*(magic-0)/100*10)
+    LExp1.SetPointError(1,0.,0.,0.15*magic/5,0.15*magic/5)
     LExp1.Draw("3")
 
     LExp2 = ROOT.TGraphAsymmErrors(2)
     LExp2.SetFillColor(ROOT.kGreen)
-    LExp2.SetPoint(0,1050+ 3.8*(2050-1050)/100, 5-2.08*(5-0)/100*10)
-    LExp2.SetPointError(0,0.,0.,0.08,0.08)
-    LExp2.SetPoint(1,1050+21.2*(2050-1050)/100, 5-2.08*(5-0)/100*10)
-    LExp2.SetPointError(1,0.,0.,0.08,0.08)
+    LExp2.SetPoint(0,1050+ 3.8*(2050-1050)/100, magic-2.08*(magic-0)/100*10)
+    LExp2.SetPointError(0,0.,0.,0.08*magic/5,0.08*magic/5)
+    LExp2.SetPoint(1,1050+21.2*(2050-1050)/100, magic-2.08*(magic-0)/100*10)
+    LExp2.SetPointError(1,0.,0.,0.08*magic/5,0.08*magic/5)
     LExp2.Draw("L3")
 
     LExp = ROOT.TGraph(2)
     LExp.SetLineColor(ROOT.kBlack)
     LExp.SetLineStyle(7)
     LExp.SetLineWidth(3)
-    LExp.SetPoint(0,1050+ 3.8*(2050-1050)/100, 5-2.08*(5-0)/100*10)
-    LExp.SetPoint(1,1050+21.2*(2050-1050)/100, 5-2.08*(5-0)/100*10)
+    LExp.SetPoint(0,1050+ 3.8*(2050-1050)/100, magic-2.08*(magic-0)/100*10)
+    LExp.SetPoint(1,1050+21.2*(2050-1050)/100, magic-2.08*(magic-0)/100*10)
     LExp.Draw("L")
 
     masstex = ROOT.TLatex(0.62,0.79, "50 < E_{T}^{miss} < 300 GeV" )

@@ -19,7 +19,9 @@ void makeTable() {
 
   TString lumi = "12.9";
   // TString dir = "v8.04_properSF";
-  TString dir = "v8.04_July25";
+  // TString dir = "v8.04_July25";
+  // TString dir = "v8.04_July28";
+  TString dir = "v8.04_t5qqqqdm20_July28";
 
   // TString lumi = "0.8";
   // TString dir = "v8.02_800pb_unblind";

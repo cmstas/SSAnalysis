@@ -9,6 +9,7 @@
 ## Limits
 * run the yieldMaker with an #include directive for one of the `fs_t1tttt.h`-like files. These are created via the `printFSscans.py` script (~2 hours)
 * all the root files should end up here
+* run `addMETSyst.py` to add the MET systematics for the fastsim root files
 * run `limitsTable_XXX.py` for the appropriate model (with redocards and redolimits set to True) to make the cards in parallel (takes ~20 mins)
 * next time, you do not need to set redocards and redolimits to True since we can just reuse them
 

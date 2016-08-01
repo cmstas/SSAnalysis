@@ -4,8 +4,11 @@ from multiprocessing.dummy import Pool as ThreadPool
 # mydir = "all_points_fix"
 # mylumi = "4.0"
 
-mydir = "v8.04_sigs"
+# mydir = "v8.04_sigs"
+mydir = "v8.04_July28"
 mylumi = "12.9"
+
+postfix="_newrange"
 
 #the first time you need to make both cards and limits
 #if you no not delete logs, then next time you can skip cards and limits
@@ -17,14 +20,14 @@ verbose = True
 
 step = 25
 minx = 600
-maxx = 1700+step
+maxx = 2000+step
 # maxx = 2100+step
 miny = 0
-maxy = 1450+step
+maxy = 1800+step
 # maxy = 1850+step
-minz = 1e-2
-maxz = 50.0
-maxyh = 1700
+minz = 1e-3
+maxz = 2.0
+maxyh = 1800
 # maxyh = 2100
 # ybinsfirstxbin = 15 #19
 ybinsfirstxbin = 15 #19
@@ -88,8 +91,10 @@ maxx = maxx - step/2.
 def run_sig(sig):
     if verbose:
         print sig
+    if os.path.isfile(mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log"): return
     if redocards: os.system("python createCard.py "+mydir+" "+sig)
     if redolimits: os.system("combine -M Asymptotic "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.txt >& "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log") # --run expected --noFitAsimov
+
 import os
 os.nice(10)
 if redocards and redolimits:
@@ -98,35 +103,60 @@ if redocards and redolimits:
     pool.close()
     pool.join()
 
+new_sigs = []
 for sig in sigs:
     foundObs = False
     with open(mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log") as f:
+        obs = 0.0
+        exp = 0.0
+        sm1 = 0.0
+        sp1 = 0.0
+        sm2 = 0.0
+        sp2 = 0.0
         for line in f:
             #print line
+            # if sig in to_check:
+            #     print line
             if "Observed Limit" in line:
                 val = line.split()[4]
-                limit_obs.append(float(val))
+                # limit_obs.append(float(val))
+                obs = float(val)
                 foundObs = True
             if "Expected 50" in line:
                 val = line.split()[4]
-                limit_exp.append(float(val))
+                # limit_exp.append(float(val))
+                exp = float(val)
+                foundExp = True
             if "Expected 16" in line:
                 val = line.split()[4]
-                limit_sm1.append(float(val))
+                # limit_sm1.append(float(val))
+                sm1 = float(val)
             if "Expected 84" in line:
                 val = line.split()[4]
-                limit_sp1.append(float(val))
+                # limit_sp1.append(float(val))
+                sp1 = float(val)
             if "Expected  2.5" in line:
                 val = line.split()[4]
-                limit_sm2.append(float(val))
+                # limit_sm2.append(float(val))
+                sm2 = float(val)
             if "Expected 97" in line:
                 val = line.split()[4]
-                limit_sp2.append(float(val))
-
+                # limit_sp2.append(float(val))
+                sp2 = float(val)
+    # print sig, foundObs
     if deletelogs: os.system("rm "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.log")
-    if not foundObs: 
+    if not foundObs or not foundExp:
         print "obs not found for", sig
-        sigs.remove(sig)
+        # sigs.remove(sig)
+    else:
+        new_sigs.append(sig)
+        limit_exp.append(exp)
+        limit_obs.append(obs)
+        limit_sm1.append(sm1)
+        limit_sp1.append(sp1)
+        limit_sm2.append(sm2)
+        limit_sp2.append(sp2)
+sigs = new_sigs[:]
 
 
 # print limit_obs
@@ -186,9 +216,9 @@ for sig in sigs:
     mlsp = int(sig.split("_")[3][1:])
     if mlsp == 1: mlsp = 0
     mlsps.append(mlsp)
-    if mlsp == 375 and mglu == 600:
-        print sig, limit_obs[count], limit_exp[count], hxsec.GetBinContent(hxsec.FindBin(mglu))
-    # print len(limit_sm1), len(limit_sp1), len(limit_sm2), len(limit_sp2)
+    # if mlsp == 375 and mglu == 600:
+    #     print sig, limit_obs[count], limit_exp[count], hxsec.GetBinContent(hxsec.FindBin(mglu))
+    print len(limit_sm1), len(limit_sp1), len(limit_sm2), len(limit_sp2), len(limit_obs), count, len(sigs)
     v_xsec.append( limit_obs[count]*hxsec.GetBinContent(hxsec.FindBin(mglu)) )
     v_sobs.append( limit_obs[count] )
     v_som1.append( limit_obs[count]*(hxsec.GetBinContent(hxsec.FindBin(mglu))-hxsec.GetBinError(hxsec.FindBin(mglu)))/hxsec.GetBinContent(hxsec.FindBin(mglu)) )
@@ -422,12 +452,13 @@ diag.SetLineWidth(1)
 diag.SetLineStyle(2)
 diag.Draw("same")
 
-diagtex = ROOT.TLatex(0.20,0.365, "m_{#tilde{g}}-m_{#tilde{#chi}_{1}^{0}} = 2 #upoint (m_{W} + m_{b})" )
+diagtex = ROOT.TLatex(0.18,0.365, "m_{#tilde{g}}-m_{#tilde{#chi}_{1}^{0}} = 2 #upoint (m_{W} + m_{b})" )
 # diagtex = ROOT.TLatex(0.20,0.335, "m_{#tilde{g}}-m_{#tilde{#chi}_{1}^{0}} = 2 #upoint (m_{W} + m_{b})" )
 diagtex.SetNDC()
 diagtex.SetTextSize(0.03)
 # diagtex.SetTextAngle(37)
-diagtex.SetTextAngle(39)
+# diagtex.SetTextAngle(39)
+diagtex.SetTextAngle(42)
 diagtex.SetLineWidth(2)
 diagtex.SetTextFont(42)
 diagtex.Draw()
@@ -439,7 +470,7 @@ l1.SetShadowColor(ROOT.kWhite)
 l1.SetFillColor(ROOT.kWhite)
 l1.SetHeader("pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow t#bar{t}#tilde{#chi}^{0}_{1}            NLO+NLL exclusion")
 l1.AddEntry(cobs , "Observed #pm 1 #sigma_{theory}", "l")
-l1.AddEntry(cexp , "Expected #pm 1 #sigma_{experiment}", "l")
+l1.AddEntry(cexp , "Expected #pm 1 and 2 #sigma_{experiment}", "l")
 
 cmstex = ROOT.TLatex(0.575,0.91, mylumi+" fb^{-1} (13 TeV)" )
 cmstex.SetNDC()
@@ -534,7 +565,7 @@ LExpM2.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.33*(maxyh-miny)/100*10)
 LExpM2.Draw("LSAME")
 # <<
 
-c1.SaveAs("t1tttt_scan_xsec_%s.pdf" % lumi_str)
+c1.SaveAs("t1tttt_scan_xsec_%s%s.pdf" % (lumi_str,postfix))
 
 h_sobs.GetXaxis().SetLabelSize(0.035)
 h_sobs.GetYaxis().SetLabelSize(0.035)
@@ -566,7 +597,7 @@ h_sexp.Draw("colz")
 cexp.Draw("samecont2");
 c1.SaveAs("sexp.pdf")
 
-fout = ROOT.TFile("SUS15008_t1tttt_%s.root" % lumi_str,"RECREATE")
+fout = ROOT.TFile("SUS15008_t1tttt_%s%s.root" % (lumi_str,postfix),"RECREATE")
 hxsecwrite = h_xsec.Clone("xsec")
 for xbin in range(1,hxsecwrite.GetNbinsX()+1):
     for ybin in range(1,hxsecwrite.GetNbinsY()+1):
@@ -593,4 +624,4 @@ fout.Close()
 
 k_sexp.Draw("colz")
 
-os.system("web t1tttt_scan_xsec_%s.pdf" % lumi_str)
+os.system("web t1tttt_scan_xsec_%s%s.pdf" % (lumi_str,postfix))

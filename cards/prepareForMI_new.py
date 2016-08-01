@@ -4,26 +4,26 @@ import glob
 
 ####  MUST EDIT
 met_folders = [
-# "v8.04_cut300_fix",
-# "v8.04_cut400_fix",
-# "v8.04_cut500_fix",
-# "v8.04_cut600_fix",
-# "v8.04_cut700_fix",
-# "v8.04_cut800_fix",
-# "v8.04_cut900_fix",
-# "v8.04_cut1000_fix",
+ "v8.04_July28_cut300",
+ "v8.04_July28_cut400",
+ "v8.04_July28_cut500",
+ "v8.04_July28_cut600",
+ "v8.04_July28_cut700",
+ "v8.04_July28_cut800",
+ "v8.04_July28_cut900",
+"v8.04_July28_cut1000",
 ]
 ht_folders = [
-# "v8.04_cut1125_fix",
-# "v8.04_cut1200_fix",
-"v8.04_cut1300_fix",
-# "v8.04_cut1400_fix",
-# "v8.04_cut1500_fix",
-# "v8.04_cut1600_fix",
-# "v8.04_cut1700_fix",
-# "v8.04_cut1800_fix",
-# "v8.04_cut1900_fix",
-# "v8.04_cut2000_fix",
+"v8.04_July28_cut1125",
+"v8.04_July28_cut1200",
+"v8.04_July28_cut1300",
+"v8.04_July28_cut1400",
+"v8.04_July28_cut1500",
+"v8.04_July28_cut1600",
+"v8.04_July28_cut1700",
+"v8.04_July28_cut1800",
+"v8.04_July28_cut1900",
+"v8.04_July28_cut2000",
 ]
 sig_name = "fs_t1tttt_m1300_m100" # will rename this to "sig"
 #### END MUST EDIT
