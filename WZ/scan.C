@@ -30,10 +30,10 @@ int scan(){
     TString tag = getTag();
 
     std::vector<TString> files;
+    std::vector<float> systs;
 
 
-
-    titles.push_back("Fakes"); files.push_back("Fakes");
+    titles.push_back("Nonprompt Lep."); files.push_back("Fakes"); systs.push_back(0.3);
 
     // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");
     // // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP*.root");
@@ -41,17 +41,17 @@ int scan(){
     // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_low.root");
     // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets.root");
 
-    titles.push_back("ttZH"); files.push_back("ttZH");
+    titles.push_back("t#bar{t}Z/H"); files.push_back("ttZH"); systs.push_back(0.2);
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZ.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZLOW.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTHtoNonBB.root");
 
-    titles.push_back("ttW"); files.push_back("TTW");
+    titles.push_back("t#bar{t}W"); files.push_back("TTW"); systs.push_back(0.2);
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");
 
-    titles.push_back("Rares"); files.push_back("Rares");
+    titles.push_back("Rare SM"); files.push_back("Rares"); systs.push_back(0.5);
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZZ.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/GGHtoZZto4L.root");
@@ -64,22 +64,22 @@ int scan(){
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TZQ.root");
     //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/T6TTWW_600_425_50.root ");
 
-    titles.push_back("WW"); files.push_back("WW");
+    titles.push_back("WW"); files.push_back("WW"); systs.push_back(0.3);
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/QQWW.root");
 
-    titles.push_back("XG"); files.push_back("XG");
+    titles.push_back("X+#gamma"); files.push_back("XG"); systs.push_back(0.5);
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WGToLNuG.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/ZG.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TG.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTG.root");
 
-    titles.push_back("WZ"); files.push_back("WZ");
+    titles.push_back("WZ"); files.push_back("WZ"); systs.push_back(0.3);
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ.root");
 
-    files.push_back("Data");
+    files.push_back("Data"); systs.push_back(0.0);
 
     // tag = "v6.02";
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/Data*.root");
@@ -95,22 +95,16 @@ int scan(){
     TObjArray *listOfFiles = ch->GetListOfFiles();
     TIter fileIter(listOfFiles);
 
-    vector<TH1F*> h1D_njets_vec;
-    vector<TH1F*> h1D_ht_vec;
-    vector<TH1F*> h1D_met_vec;
-    vector<TH1F*> h1D_mt_vec;
-    vector<TH1F*> h1D_zmass_vec;
-    vector<TH1F*> h1D_hyp_class_vec;
-    vector<TH1F*> h1D_nbtags_vec;
-    vector<TH1F*> h1D_mtmin_vec;
-    vector<TH1F*> h1D_mtw_vec;
+    vector<pair<TH1F*,float> > h1D_njets_vec;
+    vector<pair<TH1F*,float> > h1D_ht_vec;
+    vector<pair<TH1F*,float> > h1D_met_vec;
+    vector<pair<TH1F*,float> > h1D_mt_vec;
+    vector<pair<TH1F*,float> > h1D_nbtags_vec;
+    vector<pair<TH1F*,float> > h1D_mtmin_vec;
+    vector<pair<TH1F*,float> > h1D_mtw_vec;
+    vector<pair<TH1F*,float> > h1D_lep1pt_vec;
+    vector<pair<TH1F*,float> > h1D_lep2pt_vec;
 
-    vector<TH1F*> h1D_lep1pt_vec;
-    vector<TH1F*> h1D_lep2pt_vec;
-
-    vector<TH1F*> h1D_yields_HH_vec;
-    vector<TH1F*> h1D_yields_HL_vec;
-    vector<TH1F*> h1D_yields_LL_vec;
 
     TH2F* h2D_met_mtmin_wz = new TH2F("met_mtmin", "", 20, 0, 300, 20, 0, 300); 
     TH2F* h2D_met_mtw_wz = new TH2F("met_mtw", "", 20, 0, 300, 20, 0, 300); 
@@ -125,8 +119,6 @@ int scan(){
         TH1F* h1D_ht_file = new TH1F("ht"+files.at(i), "H_{T};GeV;Entries", 20, 0, 1000); 
         TH1F* h1D_met_file = new TH1F("met"+files.at(i), "#slash{E}_{T};GeV;Entries", 8, 0, 200); 
         TH1F* h1D_mt_file = new TH1F("mt"+files.at(i), "M_{T};GeV;Entries", 20, 0, 450); 
-        TH1F* h1D_zmass_file = new TH1F("zmass"+files.at(i), "Z Mass;GeV;Entries", 42, 70, 112); 
-        TH1F* h1D_hyp_class_file = new TH1F("hypclass"+files.at(i), "hyp_class;ID;Entries", 7, 0, 7); 
         TH1F* h1D_nbtags_file = new TH1F("nbtags"+files.at(i), "Nbtags;nbtags;Entries", 4, 0, 4); 
         TH1F* h1D_mtmin_file = new TH1F("mtmin"+files.at(i), "mtmin;mtmin;Entries", 20, 0, 200); 
         TH1F* h1D_mtw_file = new TH1F("mtw"+files.at(i), "mtw;mtw;Entries", 20, 0, 200); 
@@ -134,25 +126,16 @@ int scan(){
         TH1F* h1D_lep1pt_file = new TH1F("lep1pt"+files.at(i), "lep1pt;lep1pt;Entries", 40, 0, 400); 
         TH1F* h1D_lep2pt_file = new TH1F("lep2pt"+files.at(i), "lep2pt;lep2pt;Entries", 40, 0, 400); 
 
-        TH1F* h1D_yields_HH_file = new TH1F("h1D_yields_HH"+files.at(i), "", 32, 1, 33); 
-        TH1F* h1D_yields_HL_file = new TH1F("h1D_yields_HL"+files.at(i), "", 26, 1, 27); 
-        TH1F* h1D_yields_LL_file = new TH1F("h1D_yields_LL"+files.at(i), "", 8, 1, 9); 
+        h1D_njets_vec.push_back(std::make_pair(h1D_njets_file,systs.at(i)));
+        h1D_ht_vec.push_back(std::make_pair(h1D_ht_file,systs.at(i)));
+        h1D_met_vec.push_back(std::make_pair(h1D_met_file,systs.at(i)));
+        h1D_mt_vec.push_back(std::make_pair(h1D_mt_file,systs.at(i)));
+        h1D_mtmin_vec.push_back(std::make_pair(h1D_mtmin_file,systs.at(i)));
+        h1D_mtw_vec.push_back(std::make_pair(h1D_mtw_file,systs.at(i)));
+        h1D_nbtags_vec.push_back(std::make_pair(h1D_nbtags_file,systs.at(i)));
+        h1D_lep1pt_vec.push_back(std::make_pair(h1D_lep1pt_file,systs.at(i)));
+        h1D_lep2pt_vec.push_back(std::make_pair(h1D_lep2pt_file,systs.at(i)));
 
-        h1D_njets_vec.push_back(h1D_njets_file); 
-        h1D_ht_vec.push_back(h1D_ht_file); 
-        h1D_met_vec.push_back(h1D_met_file); 
-        h1D_mt_vec.push_back(h1D_mt_file); 
-        h1D_mtmin_vec.push_back(h1D_mtmin_file); 
-        h1D_mtw_vec.push_back(h1D_mtw_file); 
-        h1D_zmass_vec.push_back(h1D_zmass_file); 
-        h1D_hyp_class_vec.push_back(h1D_hyp_class_file); 
-        h1D_nbtags_vec.push_back(h1D_nbtags_file); 
-        h1D_lep1pt_vec.push_back(h1D_lep1pt_file); 
-        h1D_lep2pt_vec.push_back(h1D_lep2pt_file); 
-
-        h1D_yields_HH_vec.push_back(h1D_yields_HH_file);
-        h1D_yields_HL_vec.push_back(h1D_yields_HL_file);
-        h1D_yields_LL_vec.push_back(h1D_yields_LL_file);
 
     }
 
@@ -202,8 +185,6 @@ int scan(){
             TString filename = filename_;
             int iSample = iSample_;
 
-            // fill these before making cuts
-            fill(h1D_hyp_class_vec.at(iSample), ss::hyp_class(), scale);
 
             if (!ss::fired_trigger() && ss::is_real_data()) continue;
             if (ss::is_real_data()) {
@@ -354,16 +335,15 @@ int scan(){
             if(ss::ht() < 300)  addToCounter("4:ht<300_" +filename,scale);
             if(ss::ht() >= 300) addToCounter("4:ht>=300_"+filename,scale);
 
-            fill(h1D_zmass_vec.at(iSample),zmass, scale); 
-            fill(h1D_ht_vec.at(iSample),ss::ht(), scale);
+            fill(h1D_ht_vec.at(iSample).first,ss::ht(), scale);
 
-            fill(h1D_met_vec.at(iSample),ss::met(), scale);
-            fill(h1D_njets_vec.at(iSample),ss::njets(), scale);
-            fill(h1D_mtmin_vec.at(iSample),ss::mtmin(), scale);
-            fill(h1D_mtw_vec.at(iSample),mtw, scale);
-            fill(h1D_lep1pt_vec.at(iSample),ss::lep1_p4().pt(), scale);
-            fill(h1D_lep2pt_vec.at(iSample),ss::lep2_p4().pt(), scale);
-            fill(h1D_nbtags_vec.at(iSample), ss::nbtags(), scale);
+            fill(h1D_met_vec.at(iSample).first,ss::met(), scale);
+            fill(h1D_njets_vec.at(iSample).first,ss::njets(), scale);
+            fill(h1D_mtmin_vec.at(iSample).first,ss::mtmin(), scale);
+            fill(h1D_mtw_vec.at(iSample).first,mtw, scale);
+            fill(h1D_lep1pt_vec.at(iSample).first,ss::lep1_p4().pt(), scale);
+            fill(h1D_lep2pt_vec.at(iSample).first,ss::lep2_p4().pt(), scale);
+            fill(h1D_nbtags_vec.at(iSample).first, ss::nbtags(), scale);
 
             addToCounter(filename, scale);
 
@@ -398,24 +378,46 @@ int scan(){
     printCounter(true);
 
     TH1F* data;
-    TString comt = Form(" --errHistAtBottom --doCounts --colorTitle --lumi %.2f --lumiUnit fb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/",luminosity);
+    // TString comt = Form(" --errHistAtBottom --doCounts --colorTitle --lumi %.2f --lumiUnit fb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/",luminosity);
+    // std::string pct = " --showPercentage ";
+    TString comt = Form(" --errHistAtBottom --lumi %.2f --lumiUnit fb --noDivisionLabel --legendTaller 0.15 --legendUp -0.15 --dataName Data --legendRight -0.08 --outOfFrame --type Preliminary --outputName pdfs/",luminosity);
     std::string com = comt.Data();
-    std::string pct = " --showPercentage ";
-    std::string spec = "";
 
     std::string HHbins = " --xAxisVerticalBinLabels --xAxisBinLabels 1A,2A,3A,4A,5A,6A,7A,8A,9A,10A,11A,12A,13A,14A,15A,16A,17A,18A,19A,20A,21A,22A,23A,24A,25A,26A,27A,28A,29A,30A,31A,32A";
     std::string HLbins = " --xAxisVerticalBinLabels --xAxisBinLabels 1B,2B,3B,4B,5B,6B,7B,8B,9B,10B,11B,12B,13B,14B,15B,16B,17B,18B,19B,20B,21B,22B,23B,24B,25B,26B";
     std::string LLbins = " --xAxisVerticalBinLabels --xAxisBinLabels 1C,2C,3C,4C,5C,6C,7C,8C";
 
-    data = h1D_njets_vec.back(); h1D_njets_vec.pop_back(); dataMCplotMaker(data,h1D_njets_vec ,titles,"Njets",spec,com+"h1D_njets.pdf --isLinear --vLine 5 --xAxisOverride njets", vector <TH1F*>(), vector<string>(), colors);
-    data = h1D_ht_vec.back(); h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec ,titles,"H_{T}",spec,com+"h1D_ht.pdf --isLinear --xAxisOverride H_{T} [GeV]", vector <TH1F*>(), vector<string>(), colors);
-    data = h1D_mtmin_vec.back(); h1D_mtmin_vec.pop_back(); dataMCplotMaker(data,h1D_mtmin_vec ,titles,"m_{T,min}",spec,com+"h1D_mtmin.pdf --isLinear --xAxisOverride m_{T,min} [GeV]", vector <TH1F*>(), vector<string>(), colors);
-    data = h1D_mtw_vec.back(); h1D_mtw_vec.pop_back(); dataMCplotMaker(data,h1D_mtw_vec ,titles,"m_{T}^{W}",spec,com+"h1D_mtw.pdf --isLinear --xAxisOverride m_{T}^{W} [GeV]", vector <TH1F*>(), vector<string>(), colors);
-    data = h1D_met_vec.back(); h1D_met_vec.pop_back(); dataMCplotMaker(data,h1D_met_vec ,titles,"#slash{E}_{T}",spec,com+"h1D_met.pdf --isLinear --xAxisOverride #slash{E}_{T} [GeV]", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_njets_vec.back().first; h1D_njets_vec.pop_back(); dataMCplotMaker(data,h1D_njets_vec ,titles,"","",com+"h1D_njets.pdf --isLinear --xAxisOverride N_{jets}", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_ht_vec.back().first; h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec ,titles,"","",com+"h1D_ht.pdf --isLinear --xAxisOverride H_{T} (GeV)", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_mtmin_vec.back().first; h1D_mtmin_vec.pop_back(); dataMCplotMaker(data,h1D_mtmin_vec ,titles,"","",com+"h1D_mtmin.pdf --isLinear --xAxisOverride m_{T,min} (GeV)", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_mtw_vec.back().first; h1D_mtw_vec.pop_back(); dataMCplotMaker(data,h1D_mtw_vec ,titles,"","",com+"h1D_mtw.pdf --isLinear --xAxisOverride m_{T}^{W} (GeV)", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_nbtags_vec.back().first; h1D_nbtags_vec.pop_back(); dataMCplotMaker(data,h1D_nbtags_vec ,titles,"","",com+"h1D_nbtags.pdf --isLinear --vLine 1 --xAxisOverride nbtags", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_lep1pt_vec.back().first; h1D_lep1pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep1pt_vec ,titles,"","",com+"h1D_lep1pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{1}) (GeV)", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_lep2pt_vec.back().first; h1D_lep2pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep2pt_vec ,titles,"","",com+"h1D_lep2pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{2}) (GeV)", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_met_vec.back().first; h1D_met_vec.pop_back(); dataMCplotMaker(data,h1D_met_vec ,titles,"","",com+"h1D_met.pdf --isLinear --xAxisOverride #slash{E}_{T} (GeV)", vector <TH1F*>(), vector<string>(), colors);
 
-    data = h1D_nbtags_vec.back(); h1D_nbtags_vec.pop_back(); dataMCplotMaker(data,h1D_nbtags_vec ,titles,"Nbtags",spec,com+"h1D_nbtags.pdf --isLinear --vLine 1 --xAxisOverride nbtags", vector <TH1F*>(), vector<string>(), colors);
-    data = h1D_lep1pt_vec.back(); h1D_lep1pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep1pt_vec ,titles,"p_{T}(lep_{1})",spec,com+"h1D_lep1pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{1}) [GeV]", vector <TH1F*>(), vector<string>(), colors);
-    data = h1D_lep2pt_vec.back(); h1D_lep2pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep2pt_vec ,titles,"p_{T}(lep_{2})",spec,com+"h1D_lep2pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{2}) [GeV]", vector <TH1F*>(), vector<string>(), colors);
+  // vector<pair<TH1F*, float> > SRHH_plots;
+// static float roughSystTTW   = 0.2;
+// static float roughSystTTZH  = 0.2;
+// static float roughSystWZ    = 0.3;
+// static float roughSystWW    = 0.3;
+// static float roughSystXG    = 0.5;
+// static float roughSystRARES = 0.5;
+// static float roughSystFLIPS = 0.3;
+// static float roughSystFAKES = 0.35;
+// static float roughSystFAKESHH = 0.40;
+// static float roughSystFAKESXL = 0.30;
+  // SRHH_plots.push_back(pair<TH1F*, float>(p_ttw.SRHH.TOTAL  , roughSystTTW     ));
+  // SRHH_plots.push_back(pair<TH1F*, float>(p_ttzh.SRHH.TOTAL , roughSystTTZH    ));
+  // SRHH_plots.push_back(pair<TH1F*, float>(p_wz.SRHH.TOTAL   , roughSystWZ      ));
+  // SRHH_plots.push_back(pair<TH1F*, float>(p_ww.SRHH.TOTAL   , roughSystWW      ));
+  // SRHH_plots.push_back(pair<TH1F*, float>(p_xg.SRHH.TOTAL   , roughSystXG      ));
+  // SRHH_plots.push_back(pair<TH1F*, float>(p_rares.SRHH.TOTAL, roughSystRARES   ));
+  // SRHH_plots.push_back(pair<TH1F*, float>(p_flips.SRHH.TOTAL, roughSystFLIPS   ));
+  // SRHH_plots.push_back(pair<TH1F*, float>(p_fakes.SRHH.TOTAL, roughSystFAKESHH ));
+
+  // TString extra = " --poissonErrorsNoZeros ";
+  // dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.2f --outputName plots/HHSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
     // drawHist2D(h2D_ht_sumleppt_wz , "pdfs/h2D_ht_sumleppt_wz.pdf" , "--logscale --title WZ: p_{T}(lep_{1})+p_{T}(lep_{2}) vs H_{T} --xlabel  sum H_{T} --ylabel leppt");
     // drawHist2D(h2D_ht_njets_wz , "pdfs/h2D_ht_njets_wz.pdf" , "--logscale --title WZ: Njets vs H_{T} --xlabel  H_{T} --ylabel Njets");
