@@ -66,8 +66,8 @@ if __name__ == "__main__":
 
     name_patts = [
     # ("T1tttt", "/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2_fastsim/SMS-T1tttt_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/V08-00-09/merged_ntuple_*.root"),
-    ("T5ttcc", "/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2_fastsim/SMS-T5ttcc_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v3/V08-00-09/merged_ntuple_*.root"),
-    ("T5qqqqVV", "/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2_fastsim/SMS-T5qqqqVV_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/V08-00-09/merged_ntuple_*.root"),
+    # ("T5ttcc", "/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2_fastsim/SMS-T5ttcc_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v3/V08-00-09/merged_ntuple_*.root"),
+    # ("T5qqqqVV", "/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2_fastsim/SMS-T5qqqqVV_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/V08-00-09/merged_ntuple_*.root"),
     ("T5qqqqVV_dm20", "/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2_fastsim/SMS-T5qqqqVV_dM20_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/V08-00-09/merged_ntuple_*.root"),
     ]
 
