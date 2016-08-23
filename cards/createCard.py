@@ -500,6 +500,15 @@ def writeAllCards(dir, signal, suffix=""):
     subprocess.call(["combineCards.py","card_"+signal+suffix+"_"+lumi+"ifb-hihi.txt","card_"+signal+suffix+"_"+lumi+"ifb-hilow.txt","card_"+signal+suffix+"_"+lumi+"ifb-lowlow.txt"],stdout=f)
     os.chdir(olddir)
 
+def writeAllCardsForOneKine(dir, signal, kine, suffix=""):
+    print "Writing all cards for one kinematic region"
+    writeOneCard(dir, signal, kine,   "sr"+suffix, "card_"+signal+suffix+"_"+lumi+"ifb-"+kine+".txt" )
+    olddir = os.getcwd()
+    os.chdir(dir)
+    f = open('card_'+signal+suffix+'_'+lumi+'ifb-all.txt', 'wb')
+    subprocess.call(["combineCards.py","card_"+signal+suffix+"_"+lumi+"ifb-"+kine+".txt"],stdout=f)
+    os.chdir(olddir)
+
 #main body
 if len(sys.argv)==3:
     dir = sys.argv[1]
@@ -510,6 +519,13 @@ elif len(sys.argv)==4:
     signal = sys.argv[2]
     suffix = sys.argv[3]
     writeAllCards( dir, signal, suffix )
+elif len(sys.argv)==5:
+    dir = sys.argv[1]
+    signal = sys.argv[2]
+    suffix = sys.argv[3]
+    kine = sys.argv[4]
+    suffix = "" # override suffix. we only need it to make the number of arguments greater than the previous elif
+    writeAllCardsForOneKine( dir, signal, kine, suffix )
 elif len(sys.argv)==6:
     dir = sys.argv[1]
     signal = sys.argv[2]
