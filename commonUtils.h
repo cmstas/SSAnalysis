@@ -41,8 +41,8 @@ float getLumiUnblind() { return 12.9; }
 bool isUnblindRun(int run) { return true; }
 float getWZSF() { return 0.948; } // 0.948 pm 0.210
 TString getTag() { return "v8.04"; }
-#include "flip_rates_12p9ifb.h"
-#include "fake_rates_12p9ifb.h"
+#include "flip_rates.h"
+#include "fake_rates.h"
 
 // // 2nd HALF
 // float getLumi() { return 12.9-6.26; }
