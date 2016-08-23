@@ -244,6 +244,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep1_el_threeChargeAgree" , &lep1_el_threeChargeAgree );
   BabyTree->Branch("lep2_el_threeChargeAgree" , &lep2_el_threeChargeAgree );
   BabyTree->Branch("lep2_el_exp_innerlayers" , &lep2_el_exp_innerlayers );
+  BabyTree->Branch("lep1_el_etaSC" , &lep1_el_etaSC );
+  BabyTree->Branch("lep2_el_etaSC" , &lep2_el_etaSC );
   BabyTree->Branch("lep1_nPixelMiss"   , &lep1_nPixelMiss   );
   BabyTree->Branch("lep2_nPixelMiss"   , &lep2_nPixelMiss   );
   BabyTree->Branch("lep1_tightCharge"   , &lep1_tightCharge   );
@@ -512,6 +514,8 @@ void babyMaker::InitBabyNtuple(){
     lep2_tightCharge = 0;
     lep2_mu_ptErr = 0;
     lep2_el_threeChargeAgree = 0;
+    lep1_el_etaSC = -999;
+    lep2_el_etaSC = -999;
     nVetoElectrons7 = 0;
     nVetoElectrons10 = 0;
     nVetoElectrons25 = 0;
@@ -847,6 +851,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep1_tightCharge = abs(lep1_id) == 11 ? tightChargeEle(lep1_idx) : -1;
     lep1_el_exp_innerlayers  = abs(lep1_id) == 11 ? (els_exp_innerlayers().at(lep1_idx) <= 0) : -1;
     lep1_el_threeChargeAgree = abs(lep1_id) == 11 ? threeChargeAgree(lep1_idx) : -1;
+    lep1_el_etaSC = abs(lep1_id) == 11 ? els_etaSC().at(lep1_idx) : -999;
 
     lep1_mu_ptErr = abs(lep1_id) == 13 ? (mus_ptErr().at(lep1_idx)/mus_trk_p4().at(lep1_idx).pt() < 0.2) : -1;
   }
@@ -863,6 +868,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep2_tightCharge = abs(lep2_id) == 11 ? tightChargeEle(lep2_idx) : -1;
     lep2_el_exp_innerlayers  = abs(lep2_id) == 11 ? (els_exp_innerlayers().at(lep2_idx) <= 0) : -1;
     lep2_el_threeChargeAgree = abs(lep2_id) == 11 ? threeChargeAgree(lep2_idx) : -1;
+    lep2_el_etaSC = abs(lep2_id) == 11 ? els_etaSC().at(lep2_idx) : -999;
 
     lep2_mu_ptErr = abs(lep2_id) == 13 ? (mus_ptErr().at(lep2_idx)/mus_trk_p4().at(lep2_idx).pt() < 0.2) : -1;
   }

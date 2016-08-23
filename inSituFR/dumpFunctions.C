@@ -5,7 +5,11 @@
     TString lep = doMu ? "muon" : "elec";
     TString l = doMu ? "mu" : "e";
 
-    TFile* f = TFile::Open("inSituFR_cone_FR_histos_data_normal.root");
+    // TFile* f = TFile::Open("inSituFR_cone_FR_histos_data_normal.root");
+    TString pfx = "all_";
+    pfx = "lowht_";
+    // pfx = "highht_";
+    TFile* f = TFile::Open(pfx+"inSituFR_cone_FR_histos.root");
 
     TH2D* numer = (TH2D*) f->Get(lep);
     

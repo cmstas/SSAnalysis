@@ -67,6 +67,8 @@ bool applyThirdLeptonVeto() { return false; }
 #include "lepton_sf.h"
 #include "lepton_sf_fastsim.h"
 
+#include "fake_rates_insitu.h"
+
 float fakeRate(int id, float pt, float eta, float ht) { 
   if (ht>300.) {
     if (abs(id)==11) return electronFakeRate(pt,eta);
@@ -115,6 +117,7 @@ float qcdMCFakeRate(int id, float pt, float eta, float ht) {
   }
 }
 
+/*
 float elecFakeRateInSitu(float pt, float eta) {
    if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 1;
    if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.666667;
@@ -150,6 +153,7 @@ float muonFakeRateInSituError(float pt, float eta) {
    if (pt>=50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.0546839;
    return 0.;
 }
+*/
 
 float fakeRateInSitu(int id, float pt, float eta) { 
   if (abs(id)==11) return elecFakeRateInSitu(pt,eta);
