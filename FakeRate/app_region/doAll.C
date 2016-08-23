@@ -14,9 +14,9 @@
   TString tag1 = getTag();
   TString tag2 = "v5.01"; //no fake rate babies past v5.01 yet
 
-  bool doData = true;
+  bool doData = false;
 
-  bool doInSitu = 0; //we should remove this or fix this; the function does not handle inSitu properly
+  bool doInSitu = 1; //we should remove this or fix this; the function does not handle inSitu properly
 
   bool highhigh   = 1;
   bool highlow    = 0;
@@ -77,9 +77,6 @@
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DataDoubleEG.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DataMuonEG.root");
 
-      // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTBAR_PH.root"); // FIXME
-      // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTBAR_PH.root"); // FIXME
-      // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v7.00/TTBAR_PH.root"); // FIXME
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");  
     // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets.root"); 
 
@@ -87,7 +84,6 @@
     if (doLooseEMVA){
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets_LO.root");
       ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");
-      // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTBAR_PH.root"); // FIXME
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DY_high.root");
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DY_low.root");
     }
