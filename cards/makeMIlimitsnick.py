@@ -138,7 +138,7 @@ if doMET:
     gobs.SetLineColor(ROOT.kBlack)
     gobs.Draw("PL")
 
-    cmstex = ROOT.TLatex(0.675,0.91, "%.2f fb^{-1} (13 TeV)" % lumi)
+    cmstex = ROOT.TLatex(0.675,0.91, "%.1f fb^{-1} (13 TeV)" % lumi)
     cmstex.SetNDC()
     cmstex.SetTextSize(0.04)
     cmstex.SetLineWidth(2)
@@ -328,7 +328,7 @@ if doHT:
     gobs.SetLineColor(ROOT.kBlack)
     gobs.Draw("PL")
 
-    cmstex = ROOT.TLatex(0.675,0.91, "%.2f fb^{-1} (13 TeV)" % lumi)
+    cmstex = ROOT.TLatex(0.675,0.91, "%.1f fb^{-1} (13 TeV)" % lumi)
     cmstex.SetNDC()
     cmstex.SetTextSize(0.04)
     cmstex.SetLineWidth(2)
