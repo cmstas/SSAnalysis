@@ -23,7 +23,8 @@ def get_xsec(mglu):
 fname = "logs/log_fs_t5qqqqvv_m1000_m700_12.9_hihi_31.txt"
 
 # fnames = glob.glob("logs_bad/*.txt")
-fnames = glob.glob("logs_Aug6/*.txt")
+# fnames = glob.glob("logs_Aug6/*.txt")
+fnames = glob.glob("logs_Aug24/*.txt")
 
 def get_info(fname):
     sig, lumi, kine, sr = fname.split("log_")[-1].replace(".txt","").rsplit("_",3)
@@ -45,19 +46,23 @@ def get_info(fname):
                     pred = float(line.split()[-1])
                 elif sig+": " in line:
                     nsig = float(line.split()[-1])
-                elif "'sig': " in line:
-                    nsig = float(line.split()[-1])
+                elif "NSIGNAL" in line:
+                    nsig = float(line.split(":")[-1])
             except:
                 pass
 
 
     if lim_exp is None: return {}
 
-    print lim_obs, lim_exp, get_xsec(mglu)
+    xsec = get_xsec(mglu)
+    # FIXME
+    if nsig < 0.0001: nsig = 0.00001
+    # print fname, nsig/xsec, xsec, nsig, lim_obs, lim_exp
+    # xsec = 1
     ret = {"mglu": mglu, "mlsp": mlsp, "sr": sr, "kine": kine, "lumi": lumi, 
-            "sig": sig, "lim_obs": get_xsec(mglu)*lim_obs, "lim_exp": get_xsec(mglu)*lim_exp, "obs": obs,
+            "sig": sig, "lim_obs": xsec/nsig*lim_obs, "lim_exp": xsec/nsig*lim_exp, "obs": obs,
+            # "sig": sig, "lim_obs": xsec*lim_obs, "lim_exp": xsec*lim_exp, "obs": obs,
             "pred": pred, "nsig": nsig, "fname": fname}
-    print ret
     return ret
 
 d_sigs = {}
@@ -74,6 +79,7 @@ for fname in fnames:
 # sort each mass point in order of decreasing expected limit
 for sig in d_sigs:
     d_sigs[sig] = sorted(d_sigs[sig], key=lambda x: x.get("lim_exp",99999.0))
+    # d_sigs[sig] = sorted(d_sigs[sig], key=lambda x: -x.get("lim_exp",-99999.0)) # FIXME
 
 # for thing in d_sigs["fs_t5qqqqvv_m1000_m700"]:
 #     print thing["sr"], thing["kine"], thing["lim_exp"]
@@ -143,6 +149,7 @@ for sig in d_sigs:
     buff += "\\begin{tabular}{lccccc} \n"
     buff += "\\hline \n"
     buff += "SR & N_\\mathrm{obs} & N_\\mathrm{bkg} & Expected limit (pb) & Observed limit (pb) & N_\\mathrm{sig} \\\\ \n"
+    # buff += "SR & N_\\mathrm{obs} & N_\\mathrm{bkg} & Exp. sig. strength & Obs. sig. strength & N_\\mathrm{sig} \\\\ \n" # FIXME
     buff += "\\hline \n"
     for thing in d_sigs[sig][:10]:
         sr = "HH"
@@ -158,4 +165,4 @@ for sig in d_sigs:
     tm.makePDF(template % buff, "tables/table_%s.tex" % sig)
     
 
-os.system("niceplots tables tables_sig_Aug8")
+os.system("niceplots tables tables_sig_Aug24")

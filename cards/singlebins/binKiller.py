@@ -38,6 +38,7 @@ def doReduceBins(fname, kine, SR):
     # FIXME write new SR hist with nsig=1
     if "sig_" in fname:
         srin = fout.Get("sr")
+        print "NSIGNAL:"+str(srin.GetBinContent(1))
         srin.SetBinContent(1, 1.0)
         srin.Write()
 
