@@ -70,6 +70,9 @@ bool applyThirdLeptonVeto() { return false; }
 // FIXME
 #include "fake_rates_insitu.h"
 // #include "fake_rates_insitu_siplt4.h"
+// #include "fake_rates_insitu_miniisolt4.h"
+
+#include "insitu_selections.h"
 
 float fakeRate(int id, float pt, float eta, float ht) { 
   if (ht>300.) {

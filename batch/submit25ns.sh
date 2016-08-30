@@ -95,7 +95,7 @@ ALL="$DATA $CENTRAL_NEW $SIG"
 NEWDATA="DataDoubleMuonE DataDoubleEGE DataMuonEGE DataDoubleMuonF DataDoubleEGF DataMuonEGF"
 ALL="$NEWDATA"
 
-ALL="DY_low DY_high WJets"
+# ALL="DY_low DY_high WJets"
 
 #Then submit jobs
 nIter=0

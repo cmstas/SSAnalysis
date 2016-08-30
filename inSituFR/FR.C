@@ -14,9 +14,6 @@
 //do the data!!
 bool doData = false; 
 
-//testPC -- test the prompt contamination, ie allow numer-numer events
-bool testPC = false;
-
 //Include DY and W+Jets
 bool others = false;
 
@@ -29,14 +26,18 @@ string tag = getTag().Data();
 //Lumi
 float luminosity = doData ? 20.0 : getLumi();
 
-TH1D * evtCounter = new TH1D("","",1000,0,1000); 
+TH1D * evtCounter = new TH1D("counter","counter",1000,0,1000); 
 std::vector<TString> counterNames;
 map<TString, int> evtBinMap;
 int evtBin = 0;
 void initCounter() {
-    evtCounter = new TH1D("","",1000,0,1000); 
+    for(int ibin = 0; ibin < evtCounter->GetNbinsX(); ibin++) {
+        evtCounter->SetBinContent(ibin, 0);
+    }
     evtCounter->Sumw2();
     evtBinMap.clear();
+    counterNames.clear();
+    evtBin = 0;
 }
 void addToCounter(TString name, double weight=1.0) {
     if(evtBinMap.find(name) == evtBinMap.end() ) {
@@ -57,19 +58,24 @@ void printCounter(bool file = false) {
     cout << string(30, '-') << endl;
 }
 
-bool passesMVA(int whichlep, int level){
-    if (whichlep == 1 && abs(ss::lep1_id()) != 11) return true;
-    if (whichlep == 2 && abs(ss::lep2_id()) != 11) return true;
-    float aeta = (whichlep == 1) ? fabs(ss::lep1_el_etaSC()) : fabs(ss::lep2_el_etaSC());
-    float disc = (whichlep == 1) ? ss::lep1_MVA() : ss::lep2_MVA();
+bool passesMVA(int level, int lep_id, float lep_etaSC, float lep_MVA){
+    lep_etaSC = fabs(lep_etaSC);
+    if (abs(lep_id) != 11) return true;
+
+    // (0.87, 0.6, 0.17) is tight MVA for numerator/analysis leptons
+    // (-0.155, -0.56, -0.76) is MVA for IsolatedFO
+    // http://uaf-8.t2.ucsd.edu/~namin/dump/ssan.pdf#page=55
+    //    - Isolated trigger denominator: (0.05, -0.26, -0.40)
+    //    - Non-isolated trigger denominator: (-0.36,-0.58,-0.62)
+    //       - will need to bypass the passIsolatedFO stuff in order to use this since this is looser than that
     if (level == 1) {
-        if (aeta < 0.8) return disc > -0.155;
-        if ((aeta >= 0.8 && aeta <= 1.479)) return disc > -0.56;
-        if (aeta > 1.479) return disc > -0.76;
+        if (lep_etaSC < 0.8) return lep_MVA > -0.155;
+        if ((lep_etaSC >= 0.8 && lep_etaSC <= 1.479)) return lep_MVA > -0.56;
+        if (lep_etaSC > 1.479) return lep_MVA > -0.76;
     } else if (level == 2) {
-        if (aeta < 0.8) return disc > 0.87;
-        if ((aeta >= 0.8 && aeta <= 1.479)) return disc > 0.60;
-        if (aeta > 1.479) return disc > 0.17;
+        if (lep_etaSC < 0.8) return lep_MVA > 0.87;
+        if ((lep_etaSC >= 0.8 && lep_etaSC <= 1.479)) return lep_MVA > 0.60;
+        if (lep_etaSC > 1.479) return lep_MVA > 0.17;
     }
     return false;
 }
@@ -96,8 +102,8 @@ void FR(int doHighHT=-1){
   std::cout << "Using " << tag << " babies" << std::endl;
 
   //Declare hists
-  TH2D *numer_elec_2D_sipgt4 ; 
-  TH2D *denom_elec_2D_sipgt4 ; 
+  TH2D *numer_elec_2D_sipgt4; 
+  TH2D *denom_elec_2D_sipgt4; 
   TH2D *numer_elec_2D_siplt4; 
   TH2D *denom_elec_2D_siplt4; 
   TH2D *numer_muon_2D_sipgt4; 
@@ -107,11 +113,8 @@ void FR(int doHighHT=-1){
 
   //Define hists
   int nBinsX = 5; 
-  // int nBinsY = 1; 
   int nBinsY = 3; 
   float xbins[] = { 10, 15, 25, 35, 50, 70 }; 
-  // //float ybins[] = { 0, 0.8, 1.479, 2.5 }; 
-  // float ybins[] = { 0, 2.4 }; 
   float ybins_mu[] = {0., 1.2, 2.1, 2.4};
   float ybins_el[] = {0., 0.8, 1.479, 2.5};
 
@@ -197,7 +200,6 @@ void FR(int doHighHT=-1){
         if (duplicate_removal::is_duplicate(id)) continue; 
       }
 
-      //Pt
       float pt1 = ss::lep1_coneCorrPt(); 
       float pt2 = ss::lep2_coneCorrPt(); 
 
@@ -205,8 +207,6 @@ void FR(int doHighHT=-1){
 
       //Progress
       SSAG::progress(nEventsTotal, nEventsChain);
-
-      //if (ss::run() > 258750) continue;
 
       //Event Selection
       int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), pt1, pt2);
@@ -232,15 +232,6 @@ void FR(int doHighHT=-1){
       //SS Z veto
       if (ssZveto && fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15) continue;
 
-      //Various variables
-      float ptrel_cut_1    = (abs(ss::lep1_id()) == 11 ? 7.20 : 7.20);
-      float ptrel_cut_2    = (abs(ss::lep2_id()) == 11 ? 7.20 : 7.20);
-      float ptratio_cut_1  = (abs(ss::lep1_id()) == 11 ? 0.80 : 0.76);
-      float ptratio_cut_2  = (abs(ss::lep2_id()) == 11 ? 0.80 : 0.76);
-      float mini_cut_1     = (abs(ss::lep1_id()) == 11 ? 0.12 : 0.16);
-      float mini_cut_2     = (abs(ss::lep2_id()) == 11 ? 0.12 : 0.16);
-      bool lep1_denom_iso  = ((ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))));
-      bool lep2_denom_iso  = ((ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))));
 
       float miniiso_1 = ss::lep1_miniIso();
       float miniiso_2 = ss::lep2_miniIso();
@@ -249,32 +240,41 @@ void FR(int doHighHT=-1){
       float ptratio_1 = ss::lep1_closeJet().pt() > 0 ? ss::lep1_p4().pt()/ss::lep1_closeJet().pt() : 1.0; 
       float ptratio_2 = ss::lep2_closeJet().pt() > 0 ? ss::lep2_p4().pt()/ss::lep2_closeJet().pt() : 1.0; 
 
+      //Various variables
+      float ptrel_cut_1    = (abs(ss::lep1_id()) == 11 ? 7.20 : 7.20);
+      float ptrel_cut_2    = (abs(ss::lep2_id()) == 11 ? 7.20 : 7.20);
+      float ptratio_cut_1  = (abs(ss::lep1_id()) == 11 ? 0.80 : 0.76);
+      float ptratio_cut_2  = (abs(ss::lep2_id()) == 11 ? 0.80 : 0.76);
+      bool lep1_denom_iso  = (miniiso_1 < 0.4) && ((ptrel_1 > ptrel_cut_1) || ((1.0/ptratio_1) < (1.0/ptratio_cut_1 + miniiso_1)));
+      bool lep2_denom_iso  = (miniiso_2 < 0.4) && ((ptrel_2 > ptrel_cut_2) || ((1.0/ptratio_2) < (1.0/ptratio_cut_2 + miniiso_2)));
+      // bool lep1_denom_iso  = (miniiso_1 < 0.4); // && ((ptrel_1 > ptrel_cut_1) || ((1.0/ptratio_1) < (1.0/ptratio_cut_1 + miniiso_1)));
+      // bool lep2_denom_iso  = (miniiso_2 < 0.4); // && ((ptrel_2 > ptrel_cut_2) || ((1.0/ptratio_2) < (1.0/ptratio_cut_2 + miniiso_2)));
+
       // The if statements are getting kind of long now, so shorten some things
-      bool lep1_prompt = (testPC || isGoodLeg(1)) && (isFakeLeg(2) || testPC);
-      bool lep2_prompt = (testPC || isGoodLeg(2)) && (isFakeLeg(1) || testPC);
+      bool lep1_prompt = isGoodLeg(1) && isFakeLeg(2);
+      bool lep2_prompt = isGoodLeg(2) && isFakeLeg(1);
       bool lep1_elec = abs(ss::lep1_id()) == 11;
       bool lep2_elec = abs(ss::lep2_id()) == 11;
-      float lep1_sip = ss::lep1_sip();
-      float lep2_sip = ss::lep2_sip();
       bool lep1_passes_id = ss::lep1_passes_id();
       bool lep2_passes_id = ss::lep2_passes_id();
-      bool lep1_sip_good = lep1_sip < 4; // FIXME make sure inequality is correct when doing this for real
+      float lep1_sip = ss::lep1_sip();
+      float lep2_sip = ss::lep2_sip();
+      bool lep1_sip_good = lep1_sip < 4;
       bool lep2_sip_good = lep2_sip < 4;
 
 
-      bool denom1 = lep2_prompt && !lep1_sip_good && lep2_passes_id && lep1_denom_iso;
-      bool denom2 = lep1_prompt && !lep2_sip_good && lep1_passes_id && lep2_denom_iso;
+      // Finally we can combine things together
+      bool denom1 = lep2_prompt && lep2_passes_id && lep1_denom_iso;
+      bool denom2 = lep1_prompt && lep1_passes_id && lep2_denom_iso;
 
-      bool numer1 = passesMVA(1,2) && ss::lep1_multiIso() && (fabs(ss::lep1_dxyPV()) < 0.05);
-      bool numer2 = passesMVA(2,2) && ss::lep2_multiIso() && (fabs(ss::lep2_dxyPV()) < 0.05);
-
+      bool numer1 = passesMVA(2, ss::lep1_id(), ss::lep1_el_etaSC(), ss::lep1_MVA()) && ss::lep1_multiIso() && (fabs(ss::lep1_dxyPV()) < 0.05);
+      bool numer2 = passesMVA(2, ss::lep2_id(), ss::lep2_el_etaSC(), ss::lep2_MVA()) && ss::lep2_multiIso() && (fabs(ss::lep2_dxyPV()) < 0.05);
 
       //histo1 is for electrons with SIP > 4
-      if (lep1_elec && denom1){
-          if(pt1>50 && abs(ss::lep1_p4().eta()) > 1.479) addToCounter("denom pt>50");
+      if (lep1_elec && denom1 && !lep1_sip_good){
+        addToCounter("DENOM EL");
         if (numer1) {
-          if(pt1>50 && abs(ss::lep1_p4().eta()) > 1.479) addToCounter("numer pt>50");
-          if(pt1>50 && abs(ss::lep1_p4().eta()) > 1.479 && ss::hyp_class() == 3) addToCounter("numer pt>50 && class3");
+            addToCounter("NUMER EL");
             numer_elec_2D_sipgt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);  
             numer_vs_sip_el->Fill(lep1_sip, weight);
         }
@@ -288,8 +288,10 @@ void FR(int doHighHT=-1){
         multiiso_vs_sip_el->Fill(lep1_sip, ss::lep1_multiIso(), weight);
 
       }
-      if (lep2_elec && denom2){
+      if (lep2_elec && denom2 && !lep2_sip_good){
+        addToCounter("DENOM EL");
         if (numer2) {
+            addToCounter("NUMER EL");
             numer_elec_2D_sipgt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);  
             numer_vs_sip_el->Fill(lep2_sip, weight);
         }
@@ -305,7 +307,7 @@ void FR(int doHighHT=-1){
       }
 
       //histo2 is for electrons with SIP < 4
-      if (lep1_elec && denom1){
+      if (lep1_elec && denom1 && lep1_sip_good){
         if (numer1) {
             numer_elec_2D_siplt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);  
             numer_vs_sip_el->Fill(lep1_sip, weight);
@@ -320,7 +322,7 @@ void FR(int doHighHT=-1){
         multiiso_vs_sip_el->Fill(lep1_sip, ss::lep1_multiIso(), weight);
 
       }
-      if (lep2_elec && denom2){
+      if (lep2_elec && denom2 && lep2_sip_good){
         if (numer2) {
             numer_elec_2D_siplt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);  
             numer_vs_sip_el->Fill(lep2_sip, weight);
@@ -337,8 +339,10 @@ void FR(int doHighHT=-1){
       }
 
       //histo3 is for muons with SIP > 4 
-      if (!lep1_elec && denom1){
+      if (!lep1_elec && denom1 && !lep1_sip_good){
+        addToCounter("DENOM MU");
         if (numer1) {
+            addToCounter("NUMER MU");
             numer_muon_2D_sipgt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);  
             numer_vs_sip_mu->Fill(lep1_sip, weight);
         }
@@ -352,8 +356,10 @@ void FR(int doHighHT=-1){
         multiiso_vs_sip_mu->Fill(lep1_sip, ss::lep1_multiIso(), weight);
 
       }
-      if (!lep2_elec && denom2){
+      if (!lep2_elec && denom2 && !lep2_sip_good){
+        addToCounter("DENOM MU");
         if (numer2) {
+            addToCounter("NUMER MU");
             numer_muon_2D_sipgt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);  
             numer_vs_sip_mu->Fill(lep2_sip, weight);
         }
@@ -369,7 +375,7 @@ void FR(int doHighHT=-1){
       }
 
       //histo4 is for muons with SIP < 4 
-      if (!lep1_elec && denom1){
+      if (!lep1_elec && denom1 && lep1_sip_good){
         if (numer1) {
             numer_muon_2D_siplt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);  
             numer_vs_sip_mu->Fill(lep1_sip, weight);
@@ -384,7 +390,7 @@ void FR(int doHighHT=-1){
         multiiso_vs_sip_mu->Fill(lep1_sip, ss::lep1_multiIso(), weight);
 
       }
-      if (!lep2_elec && denom2){
+      if (!lep2_elec && denom2 && lep2_sip_good){
         if (numer2) {
             numer_muon_2D_siplt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);  
             numer_vs_sip_mu->Fill(lep2_sip, weight);
