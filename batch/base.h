@@ -67,6 +67,14 @@ enum sample_t {
   DataDoubleMuonD = 1010,
   DataMuonEGD = 1011,
 
+  DataDoubleEGE = 1012,
+  DataDoubleMuonE = 1013,
+  DataMuonEGE = 1014,
+
+  DataDoubleEGF = 1015,
+  DataDoubleMuonF = 1016,
+  DataMuonEGF = 1017,
+
   // DataDoubleEGD = 1003,
   // DataDoubleMuonD = 1004,
   // DataMuonEGD = 1005,

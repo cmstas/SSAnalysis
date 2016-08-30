@@ -231,7 +231,9 @@ class babyMaker {
     bool lep1_tightCharge;
     bool lep1_mu_ptErr;
     bool lep1_el_threeChargeAgree;
-    bool lep1_el_etaSC;
+    float lep1_el_etaSC;
+    bool lep1_isTrigSafeNoIsov1;
+    bool lep1_isTrigSafev1;
 
     bool lep2_el_conv_vtx_flag;
     bool lep2_el_exp_innerlayers;
@@ -239,7 +241,9 @@ class babyMaker {
     bool lep2_tightCharge;
     bool lep2_mu_ptErr;
     bool lep2_el_threeChargeAgree;
-    bool lep2_el_etaSC;
+    float lep2_el_etaSC;
+    bool lep2_isTrigSafeNoIsov1;
+    bool lep2_isTrigSafev1;
 
     //b-tags
     int nbtags_raw;

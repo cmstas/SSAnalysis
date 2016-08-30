@@ -250,6 +250,10 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep2_nPixelMiss"   , &lep2_nPixelMiss   );
   BabyTree->Branch("lep1_tightCharge"   , &lep1_tightCharge   );
   BabyTree->Branch("lep2_tightCharge"   , &lep2_tightCharge   );
+  BabyTree->Branch("lep1_isTrigSafeNoIsov1"  , &lep1_isTrigSafeNoIsov1  ); 
+  BabyTree->Branch("lep1_isTrigSafev1"       , &lep1_isTrigSafev1       ); 
+  BabyTree->Branch("lep2_isTrigSafeNoIsov1"  , &lep2_isTrigSafeNoIsov1  ); 
+  BabyTree->Branch("lep2_isTrigSafev1"       , &lep2_isTrigSafev1       ); 
   
   BabyTree->Branch("is_fastsim", &is_fastsim); 
 
@@ -516,6 +520,10 @@ void babyMaker::InitBabyNtuple(){
     lep2_el_threeChargeAgree = 0;
     lep1_el_etaSC = -999;
     lep2_el_etaSC = -999;
+    lep1_isTrigSafeNoIsov1 = 0;
+    lep1_isTrigSafev1 = 0;
+    lep2_isTrigSafeNoIsov1 = 0;
+    lep2_isTrigSafev1 = 0; 
     nVetoElectrons7 = 0;
     nVetoElectrons10 = 0;
     nVetoElectrons25 = 0;
@@ -854,6 +862,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep1_el_etaSC = abs(lep1_id) == 11 ? els_etaSC().at(lep1_idx) : -999;
 
     lep1_mu_ptErr = abs(lep1_id) == 13 ? (mus_ptErr().at(lep1_idx)/mus_trk_p4().at(lep1_idx).pt() < 0.2) : -1;
+
+    lep1_isTrigSafeNoIsov1   = abs(lep1_id) == 11 ? isTriggerSafenoIso_v1(lep1_idx) : 1; 
+    lep1_isTrigSafev1        = abs(lep1_id) == 11 ? isTriggerSafe_v1(lep1_idx) : 1; 
   }
 
 
@@ -871,6 +882,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep2_el_etaSC = abs(lep2_id) == 11 ? els_etaSC().at(lep2_idx) : -999;
 
     lep2_mu_ptErr = abs(lep2_id) == 13 ? (mus_ptErr().at(lep2_idx)/mus_trk_p4().at(lep2_idx).pt() < 0.2) : -1;
+
+    lep2_isTrigSafeNoIsov1   = abs(lep2_id) == 11 ? isTriggerSafenoIso_v1(lep2_idx) : 1; 
+    lep2_isTrigSafev1        = abs(lep2_id) == 11 ? isTriggerSafe_v1(lep2_idx) : 1; 
   }
 
   //More Third lepton stuff

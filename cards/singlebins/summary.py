@@ -26,20 +26,53 @@ fname = "logs/log_fs_t5qqqqvv_m1000_m700_12.9_hihi_31.txt"
 # fnames = glob.glob("logs_Aug6/*.txt")
 fnames = glob.glob("logs_Aug24/*.txt")
 
+def get_eff(themodelstr, thekine, thesr):
+    d_effs = {}
+    if not d_effs:
+        with open("effs.txt") as fhin:
+            for line in fhin:
+                if not line.strip(): continue
+
+                if "with" not in line:
+                    extra = None
+                    modelstr, mglu, mlsp, kinecode, sr, nsig, sigeffpct = line.split()
+                else:
+                    modelstr, _, extra, mglu, mlsp, kinecode, sr, nsig, sigeffpct = line.split()
+
+                kine = "hihi"
+                if kinecode == "HL": kine = "hilow"
+                elif kinecode == "LL": kine = "lowlow"
+                sr = int(sr.replace("SR",""))
+
+                model = "t1tttt"
+                if "TfqqqqWW" in modelstr: model = "t5qqqqvv"
+                if extra and "dmtwenty" in extra: model += "_dm20"
+
+                modelstr = "fs_%s_m%s_m%s" % (model, mglu, mlsp) 
+
+                if modelstr not in d_effs: d_effs[modelstr] = {}
+                d_effs[modelstr][(kine,sr)] = sigeffpct
+
+    eff = 0.0
+    try: eff = float(d_effs[themodelstr][(thekine,thesr)])
+    except: pass
+    return eff
+
+
 def get_info(fname):
     sig, lumi, kine, sr = fname.split("log_")[-1].replace(".txt","").rsplit("_",3)
     sr = int(sr)
     mglu, mlsp = map(int,sig.replace("_m","_").split("_")[-2:])
 
-    lim_obs, lim_exp, obs, pred, nsig = None, None, None, None, None
+    robs, rexp, obs, pred, nsig = None, None, None, None, None
     with open(fname, "r") as fhin:
         for line in fhin:
             try:
                 line = line.strip()
                 if "Observed Limit" in line:
-                    lim_obs = float(line.split()[-1])
+                    robs = float(line.split()[-1])
                 elif "Expected 50" in line:
-                    lim_exp = float(line.split()[-1])
+                    rexp = float(line.split()[-1])
                 elif "Obs:" in line:
                     obs = int(line.split()[-1])
                 elif "Pred:" in line:
@@ -52,15 +85,21 @@ def get_info(fname):
                 pass
 
 
-    if lim_exp is None: return {}
+    if rexp is None: return {}
 
-    xsec = get_xsec(mglu)
+    # xsec = get_xsec(mglu)
     # FIXME
     if nsig < 0.0001: nsig = 0.00001
+    eff = get_eff(sig, kine, sr)
+    if eff < 0.0001: eff = 0.00001
     # print fname, nsig/xsec, xsec, nsig, lim_obs, lim_exp
     # xsec = 1
     ret = {"mglu": mglu, "mlsp": mlsp, "sr": sr, "kine": kine, "lumi": lumi, 
-            "sig": sig, "lim_obs": xsec/nsig*lim_obs, "lim_exp": xsec/nsig*lim_exp, "obs": obs,
+            # "sig": sig, "lim_obs": xsec/nsig*lim_obs, "lim_exp": xsec/nsig*lim_exp, "obs": obs,
+            # "sig": sig, "lim_obs": nsig*lim_obs/12.9*1000, "lim_exp": nsig*lim_exp/12.9*1000, "obs": obs,
+            # "sig": sig, "lim_obs": robs/nsig/12.9, "lim_exp": rexp/nsig/12.9, "obs": obs, "rexp": rexp, 
+            "sig": sig, "lim_obs": 100.0*robs/eff/12.9, "lim_exp": 100.0*rexp/eff/12.9, "obs": obs, "rexp": rexp, "robs": robs,
+            "sigeff": eff,
             # "sig": sig, "lim_obs": xsec*lim_obs, "lim_exp": xsec*lim_exp, "obs": obs,
             "pred": pred, "nsig": nsig, "fname": fname}
     return ret
@@ -145,18 +184,17 @@ for sig in d_sigs:
 
     buff += "\\begin{table}[!h] \n"
     buff += "\\begin{center} \n"
-    buff += "\\caption{\\label{tab:bins%s} Single bin limits for most sensitive bins for the %s model %s assuming gluino and LSP masses equal to %i and %i GeV, respectively.}\n" % (sig, model, extra, mglu, mlsp)
-    buff += "\\begin{tabular}{lccccc} \n"
+    buff += "\\caption{\\label{tab:bins%s} Single bin limits for most sensitive bins for the %s model %s assuming gluino and LSP masses equal to %i and %i GeV, respectively, for 12.9 fb${}^{-1}$}\n" % (sig, model, extra, mglu, mlsp)
+    buff += "\\begin{tabular}{lccccccc} \n"
     buff += "\\hline \n"
-    buff += "SR & N_\\mathrm{obs} & N_\\mathrm{bkg} & Expected limit (pb) & Observed limit (pb) & N_\\mathrm{sig} \\\\ \n"
-    # buff += "SR & N_\\mathrm{obs} & N_\\mathrm{bkg} & Exp. sig. strength & Obs. sig. strength & N_\\mathrm{sig} \\\\ \n" # FIXME
+    buff += "SR & N_\\mathrm{obs} & N_\\mathrm{bkg} & N_\\mathrm{exp,UL}^\\mathrm{95\\% CL} &  $\\sigma_\\mathrm{exp}$ [fb] & $\\sigma_\\mathrm{obs}$ [fb] & N_\\mathrm{sig}^\\mathrm{exp} & $A\\epsilon_\\mathrm{sig}$ (\\%) \\\\ \n"
     buff += "\\hline \n"
     for thing in d_sigs[sig][:10]:
         sr = "HH"
         if thing["kine"] == "hilow": sr = "HL"
         elif thing["kine"] == "lowlow": sr = "LL"
         sr += str(thing["sr"])
-        buff += "%s & %i & %.2f & %.2f & %.2f & %.2f \\\\ \n" % (sr, thing["obs"], thing["pred"], thing["lim_exp"], thing["lim_obs"], thing["nsig"])
+        buff += "%s & %i & %.2f & %.2f & %.2f & %.2f & %.2f & %.3f \\\\ \n" % (sr, thing["obs"], thing["pred"], thing["rexp"], thing["lim_exp"], thing["lim_obs"], thing["nsig"], thing["sigeff"])
     buff += "\\hline \n"
     buff += "\\end{tabular} \n"
     buff += "\\end{center} \n"

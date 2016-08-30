@@ -87,6 +87,14 @@ if [ "$WHICH" == "1009" ]; then WHICH_SMALL="datadoubleegd"; fi
 if [ "$WHICH" == "1010" ]; then WHICH_SMALL="datadoublemuond"; fi
 if [ "$WHICH" == "1011" ]; then WHICH_SMALL="datamuonegd"; fi
 
+if [ "$WHICH" == "1012" ]; then WHICH_SMALL="datadoubleege"; fi
+if [ "$WHICH" == "1013" ]; then WHICH_SMALL="datadoublemuone"; fi
+if [ "$WHICH" == "1014" ]; then WHICH_SMALL="datamuonege"; fi
+
+if [ "$WHICH" == "1015" ]; then WHICH_SMALL="datadoubleegf"; fi
+if [ "$WHICH" == "1016" ]; then WHICH_SMALL="datadoublemuonf"; fi
+if [ "$WHICH" == "1017" ]; then WHICH_SMALL="datamuonegf"; fi
+
 #signal
 if [ "$WHICH" == "10001" ] ; then WHICH_SMALL="t1tttt_main"        ; fi
 if [ "$WHICH" == "10002" ] ; then WHICH_SMALL="t1tttt_1100_1to775"          ; fi

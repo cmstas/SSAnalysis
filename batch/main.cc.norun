@@ -319,6 +319,9 @@ int main(int argc, char *argv[]){
 
 
     //Data
+// ######################################
+// ############## Era B #################
+// ######################################
     case DataDoubleEGv1:
       name="Run2016B_DoubleEG_MINIAOD_PromptReco-v1/merged/";
       tag="V08-00-04";
@@ -363,6 +366,9 @@ int main(int argc, char *argv[]){
       isData = true;
       break;
 
+// ######################################
+// ############## Era C #################
+// ######################################
     case DataDoubleEGC:
       name="Run2016C_DoubleEG_MINIAOD_PromptReco-v2/merged/";
       tag="V08-00-07";
@@ -385,6 +391,9 @@ int main(int argc, char *argv[]){
       isData = true;
       break;
 
+// ######################################
+// ############## Era D #################
+// ######################################
     case DataDoubleEGD:
       name="Run2016D_DoubleEG_MINIAOD_PromptReco-v2/merged/";
       tag="V08-00-08";
@@ -404,6 +413,56 @@ int main(int argc, char *argv[]){
       tag="V08-00-08";
       path="/store/group/snt/run2_data/";
       shortname="datamuonegd";
+      isData = true;
+      break;
+      
+// ######################################
+// ############## Era E #################
+// ######################################
+    case DataDoubleEGE:
+      name="Run2016E_DoubleEG_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-10";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleege";
+      isData = true;
+      break;
+    case DataDoubleMuonE:
+      name="Run2016E_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-10";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuone";
+      isData = true;
+      break;
+    case DataMuonEGE:
+      name="Run2016E_MuonEG_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-10";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonege";
+      isData = true;
+      break;
+
+// ######################################
+// ############## Era F #################
+// ######################################
+    case DataDoubleEGF:
+      name="Run2016F_DoubleEG_MINIAOD_PromptReco-v1/merged/";
+      tag="V08-00-11";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegf";
+      isData = true;
+      break;
+    case DataDoubleMuonF:
+      name="Run2016F_DoubleMuon_MINIAOD_PromptReco-v1/merged/";
+      tag="V08-00-11";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonf";
+      isData = true;
+      break;
+    case DataMuonEGF:
+      name="Run2016F_MuonEG_MINIAOD_PromptReco-v1/merged/";
+      tag="V08-00-11";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegf";
       isData = true;
       break;
 
@@ -1063,8 +1122,7 @@ int main(int argc, char *argv[]){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  // set_goodrun_file("goldenJson_2016_2p6ifb.txt");
-  set_goodrun_file("goldenJson_2016_12p9ifb.txt");
+  set_goodrun_file("goldenJson_2016_20p1ifb.txt");
   
   // string jecEra = "Fall15_25nsV2";
   string jecEra = "Spring16_25nsV6";

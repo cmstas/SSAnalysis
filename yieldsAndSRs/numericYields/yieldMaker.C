@@ -2096,11 +2096,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         float ptratio_cut_2  = (abs(ss::lep2_id()) == 11 ? 0.80 : 0.76);
         float ptrel_cut_1  = (abs(ss::lep1_id()) == 11 ? 7.20 : 7.20);
         float ptrel_cut_2  = (abs(ss::lep2_id()) == 11 ? 7.20 : 7.20);
+        // FIXME FIXME -- is the ptratio_1 thing buggy? should it be inverted? search for "lep1_denom_iso" in inSituFR/FR.C and compare
         bool lep1_denom_iso  = ((ss::lep1_miniIso() < 0.4) && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || (ptratio_1 < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))));
         bool lep2_denom_iso  = ((ss::lep2_miniIso() < 0.4) && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || (ptratio_2 < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))));
         float fr = 0.;
-        if (ss::lep1_passes_id()==0 && passesNumeratorMVA(ss::lep1_id(),ss::lep1_p4().eta(),ss::lep1_MVA()) && ss::lep2_passes_id() && ss::lep1_dxyPV()<0.05 && ss::lep1_sip()<4 && lep1_denom_iso) fr = fakeRateInSitu(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta());
-        if (ss::lep2_passes_id()==0 && passesNumeratorMVA(ss::lep2_id(),ss::lep2_p4().eta(),ss::lep2_MVA()) && ss::lep1_passes_id() && ss::lep2_dxyPV()<0.05 && ss::lep2_sip()<4 && lep2_denom_iso) fr = fakeRateInSitu(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta());
+        if (ss::lep1_passes_id()==0 && passesNumeratorMVA(ss::lep1_id(),ss::lep1_p4().eta(),ss::lep1_MVA()) && ss::lep2_passes_id() && ss::lep1_dxyPV()<0.05 && ss::lep1_sip()<4 && lep1_denom_iso) fr = fakeRateInSitu(ss::lep1_id(),ss::lep1_coneCorrPt(), ss::lep1_p4().eta(), ss::ht());
+        if (ss::lep2_passes_id()==0 && passesNumeratorMVA(ss::lep2_id(),ss::lep2_p4().eta(),ss::lep2_MVA()) && ss::lep1_passes_id() && ss::lep2_dxyPV()<0.05 && ss::lep2_sip()<4 && lep2_denom_iso) fr = fakeRateInSitu(ss::lep2_id(),ss::lep2_coneCorrPt(), ss::lep2_p4().eta(), ss::ht());
         weight *= fr/(1.-fr);
         if (!ss::is_real_data()) weight *= -1.;
       }
@@ -2479,6 +2480,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     int cut1 = -1, cut2 = -1;
     float max1 = -1., max2 = -1.;
     for (int cut=0;cut<70;cut++) {
+        // std::cout << model << " " << extra << " "<< m1 << " " << m2 << " " << sr_flow_name[cut] << " " << sr_flow[cut] << " " << 100.*sr_flow[cut]/cut_flow[0] << std::endl; // FIXME
+        // \TfqqqqWW  with \dmtwenty  1000 700HH SR16 0.0845688 0.00201474
       if (sr_flow[cut]>max1) {
 	cut1 = cut;
 	max1 = sr_flow[cut];

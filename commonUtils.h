@@ -67,7 +67,9 @@ bool applyThirdLeptonVeto() { return false; }
 #include "lepton_sf.h"
 #include "lepton_sf_fastsim.h"
 
+// FIXME
 #include "fake_rates_insitu.h"
+// #include "fake_rates_insitu_siplt4.h"
 
 float fakeRate(int id, float pt, float eta, float ht) { 
   if (ht>300.) {
@@ -155,16 +157,28 @@ float muonFakeRateInSituError(float pt, float eta) {
 }
 */
 
-float fakeRateInSitu(int id, float pt, float eta) { 
-  if (abs(id)==11) return elecFakeRateInSitu(pt,eta);
-  else if (abs(id)==13) return muonFakeRateInSitu(pt,eta);
-  else return 0.;
+float fakeRateInSitu(int id, float pt, float eta, float ht) { 
+  if (ht>300.) {
+      if (abs(id)==11) return elecFakeRateInSituHighHT(pt,eta);
+      else if (abs(id)==13) return muonFakeRateInSituHighHT(pt,eta);
+      else return 0.;
+  } else {
+      if (abs(id)==11) return elecFakeRateInSitu(pt,eta);
+      else if (abs(id)==13) return muonFakeRateInSitu(pt,eta);
+      else return 0.;
+  }
 }
 
-float fakeRateErrorInSitu(int id, float pt, float eta) { 
-  if (abs(id)==11) return elecFakeRateInSituError(pt,eta);
-  else if (abs(id)==13) return muonFakeRateInSituError(pt,eta);
-  else return 0.;
+float fakeRateErrorInSitu(int id, float pt, float eta, float ht) { 
+  if (ht>300.) {
+      if (abs(id)==11) return elecFakeRateInSituErrorHighHT(pt,eta);
+      else if (abs(id)==13) return muonFakeRateInSituErrorHighHT(pt,eta);
+      else return 0.;
+  } else {
+      if (abs(id)==11) return elecFakeRateInSituError(pt,eta);
+      else if (abs(id)==13) return muonFakeRateInSituError(pt,eta);
+      else return 0.;
+  }
 }
 
 bool passIsolatedFO(int id, float eta, float mva) {

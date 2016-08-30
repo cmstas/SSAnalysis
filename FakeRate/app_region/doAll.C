@@ -3,10 +3,11 @@
   gSystem->Exec("mkdir -p plots");
 
   gSystem->Load("../../CORE/CMS3_CORE.so");
+  gROOT->ProcessLine(".L ../../software/dataMCplotMaker/PlotMaker2D.cc+");
   gROOT->ProcessLine(".L ../../software/dataMCplotMaker/dataMCplotMaker.cc+");
   gSystem->Load("../../software/tableMaker/libSimpleTable.so");
 
-  gROOT->ProcessLine(".L ../../classFiles/v6.02/SS.cc+");
+  gROOT->ProcessLine(".L ../../classFiles/v8.04/SS.cc+");
   gROOT->ProcessLine(".L ScanChain.C++");
 
   gROOT->ProcessLine(".L ../../commonUtils.h");
@@ -83,7 +84,8 @@
   } else {
     if (doLooseEMVA){
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/WJets_LO.root");
-      ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");
+      // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/TTBAR_PH.root");
+      ch->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe/TTBAR_PH*.root"); // FIXME
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DY_high.root");
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DY_low.root");
     }

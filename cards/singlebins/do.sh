@@ -31,6 +31,7 @@ for sig in fs_t1tttt_m1400_m1000 fs_t1tttt_m1500_m200 fs_t5qqqqvv_m1000_m700 fs_
             rename $sig sig $new_dir/${sig}*.root
 
             # reduce hists to single bin
+            # put into temp file and then cat later since we want to grep NSIGNAL and for some reason, this was getting overwritten. sigh.
             echo "python binKiller.py $new_dir $kine $sr > temp.txt"
             python binKiller.py $new_dir $kine $sr > temp.txt
 

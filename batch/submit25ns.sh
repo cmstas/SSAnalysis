@@ -4,7 +4,7 @@ xrootdbroken="1"
 
 nSubmitted=0
 
-SPPATH="ss_babies_July27_isr" # FIXME must match with DIRNAME in condorExecutable
+SPPATH="ss_babies_Aug25" # FIXME must match with DIRNAME in condorExecutable
 
 DOCOMPILE="1"
 NOSUBMIT="0"
@@ -86,14 +86,16 @@ T5TTCC="T5ttcc_825to1000_675to875 T5ttcc_1025to1200_875to1075 T5ttcc_825to1000_0
 FORSYNC="TG"
 
 # NOT IN GOLDEN JSON: DataDoubleMuonv1 DataDoubleEGv1 DataMuonEGv1 
-DATA="DataDoubleMuonv2 DataDoubleEGv2 DataMuonEGv2 DataDoubleMuonC DataDoubleEGC DataMuonEGC DataDoubleMuonD DataDoubleEGD DataMuonEGD"
+DATA="DataDoubleMuonv2 DataDoubleEGv2 DataMuonEGv2 DataDoubleMuonC DataDoubleEGC DataMuonEGC DataDoubleMuonD DataDoubleEGD DataMuonEGD DataDoubleMuonE DataDoubleEGE DataMuonEGE DataDoubleMuonF DataDoubleEGF DataMuonEGF"
 CENTRAL_NEW="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ TTBAR_PH GGHtoZZto4L TTZlow"
 SIG="T1TTTT_main T5QQQQVV_main T5QQQQVV_dm20 T5TTCC_main"
 
 ALL="$DATA $CENTRAL_NEW $SIG"
 
-ALL="T1TTTT_main T5QQQQVV_dm20 T5QQQQVV_main"
+NEWDATA="DataDoubleMuonE DataDoubleEGE DataMuonEGE DataDoubleMuonF DataDoubleEGF DataMuonEGF"
+ALL="$NEWDATA"
 
+ALL="DY_low DY_high WJets"
 
 #Then submit jobs
 nIter=0
@@ -305,6 +307,9 @@ do
     nameNu=37
 
     #data
+########################################
+################ Era B #################
+########################################
   elif [ $sname == "DataDoubleEGv1"    ]; then 
     isData="1"
     name="Run2016B_DoubleEG_MINIAOD_PromptReco-v1/merged/";
@@ -343,6 +348,9 @@ do
     path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1005
 
+########################################
+################ Era C #################
+########################################
   elif [ $sname == "DataDoubleEGC"    ]; then 
     isData="1"
     name="Run2016C_DoubleEG_MINIAOD_PromptReco-v2/merged/";
@@ -362,6 +370,10 @@ do
     path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1008
     
+
+########################################
+################ Era D #################
+########################################
   elif [ $sname == "DataDoubleEGD"    ]; then 
     isData="1"
     name="Run2016D_DoubleEG_MINIAOD_PromptReco-v2/merged/";
@@ -380,6 +392,50 @@ do
     tag="V08-00-08";
     path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1011
+
+########################################
+################ Era E #################
+########################################
+  elif [ $sname == "DataDoubleEGE"    ]; then 
+    isData="1"
+    name="Run2016E_DoubleEG_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-10";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1012
+  elif [ $sname == "DataDoubleMuonE"  ]; then 
+    isData="1"
+    name="Run2016E_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-10";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1013
+  elif [ $sname == "DataMuonEGE"    ]; then 
+    isData="1"
+    name="Run2016E_MuonEG_MINIAOD_PromptReco-v2/merged/";
+    tag="V08-00-10";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1014
+
+########################################
+################ Era F #################
+########################################
+  elif [ $sname == "DataDoubleEGF"    ]; then 
+    isData="1"
+    name="Run2016F_DoubleEG_MINIAOD_PromptReco-v1/merged/";
+    tag="V08-00-11";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1015
+  elif [ $sname == "DataDoubleMuonF"  ]; then 
+    isData="1"
+    name="Run2016F_DoubleMuon_MINIAOD_PromptReco-v1/merged/";
+    tag="V08-00-11";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1016
+  elif [ $sname == "DataMuonEGF"    ]; then 
+    isData="1"
+    name="Run2016F_MuonEG_MINIAOD_PromptReco-v1/merged/";
+    tag="V08-00-11";
+    path="/hadoop/cms/store/group/snt/run2_data/";
+    nameNu=1017
 
   #Signals
   elif [ $sname == "T1TTTT_1500" ] 
