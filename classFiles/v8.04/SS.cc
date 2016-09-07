@@ -1153,6 +1153,16 @@ void SSAG::Init(TTree *tree) {
 		lep2_el_threeChargeAgree_branch = tree->GetBranch("lep2_el_threeChargeAgree");
 		if (lep2_el_threeChargeAgree_branch) {lep2_el_threeChargeAgree_branch->SetAddress(&lep2_el_threeChargeAgree_);}
 	}
+	lep1_mediumMuonPOG_branch = 0;
+	if (tree->GetBranch("lep1_mediumMuonPOG") != 0) {
+		lep1_mediumMuonPOG_branch = tree->GetBranch("lep1_mediumMuonPOG");
+		if (lep1_mediumMuonPOG_branch) {lep1_mediumMuonPOG_branch->SetAddress(&lep1_mediumMuonPOG_);}
+	}
+	lep2_mediumMuonPOG_branch = 0;
+	if (tree->GetBranch("lep2_mediumMuonPOG") != 0) {
+		lep2_mediumMuonPOG_branch = tree->GetBranch("lep2_mediumMuonPOG");
+		if (lep2_mediumMuonPOG_branch) {lep2_mediumMuonPOG_branch->SetAddress(&lep2_mediumMuonPOG_);}
+	}
 	lep2_el_exp_innerlayers_branch = 0;
 	if (tree->GetBranch("lep2_el_exp_innerlayers") != 0) {
 		lep2_el_exp_innerlayers_branch = tree->GetBranch("lep2_el_exp_innerlayers");
@@ -1740,6 +1750,8 @@ void SSAG::GetEntry(unsigned int idx)
 		lep2_mu_ptErr_isLoaded = false;
 		lep1_el_threeChargeAgree_isLoaded = false;
 		lep2_el_threeChargeAgree_isLoaded = false;
+		lep1_mediumMuonPOG_isLoaded = false;
+		lep2_mediumMuonPOG_isLoaded = false;
 		lep2_el_exp_innerlayers_isLoaded = false;
 		lep1_el_etaSC_isLoaded = false;
 		lep2_el_etaSC_isLoaded = false;
@@ -2044,6 +2056,8 @@ void SSAG::LoadAllBranches()
 	if (lep1_el_exp_innerlayers_branch != 0) lep1_el_exp_innerlayers();
 	if (lep1_mu_ptErr_branch != 0) lep1_mu_ptErr();
 	if (lep2_mu_ptErr_branch != 0) lep2_mu_ptErr();
+	if (lep1_mediumMuonPOG_branch != 0) lep1_mediumMuonPOG();
+	if (lep2_mediumMuonPOG_branch != 0) lep2_mediumMuonPOG();
 	if (lep1_el_threeChargeAgree_branch != 0) lep1_el_threeChargeAgree();
 	if (lep2_el_threeChargeAgree_branch != 0) lep2_el_threeChargeAgree();
 	if (lep2_el_exp_innerlayers_branch != 0) lep2_el_exp_innerlayers();
@@ -5061,6 +5075,32 @@ void SSAG::LoadAllBranches()
 		}
 		return lep2_el_threeChargeAgree_;
 	}
+	const bool &SSAG::lep1_mediumMuonPOG()
+	{
+		if (not lep1_mediumMuonPOG_isLoaded) {
+			if (lep1_mediumMuonPOG_branch != 0) {
+				lep1_mediumMuonPOG_branch->GetEntry(index);
+			} else { 
+				printf("branch lep1_mediumMuonPOG_branch does not exist!\n");
+				exit(1);
+			}
+			lep1_mediumMuonPOG_isLoaded = true;
+		}
+		return lep1_mediumMuonPOG_;
+	}
+	const bool &SSAG::lep2_mediumMuonPOG()
+	{
+		if (not lep2_mediumMuonPOG_isLoaded) {
+			if (lep2_mediumMuonPOG_branch != 0) {
+				lep2_mediumMuonPOG_branch->GetEntry(index);
+			} else { 
+				printf("branch lep2_mediumMuonPOG_branch does not exist!\n");
+				exit(1);
+			}
+			lep2_mediumMuonPOG_isLoaded = true;
+		}
+		return lep2_mediumMuonPOG_;
+	}
 	const bool &SSAG::lep2_el_exp_innerlayers()
 	{
 		if (not lep2_el_exp_innerlayers_isLoaded) {
@@ -6282,6 +6322,8 @@ namespace ss {
 	const bool &lep1_el_exp_innerlayers() { return samesign.lep1_el_exp_innerlayers(); }
 	const bool &lep1_mu_ptErr() { return samesign.lep1_mu_ptErr(); }
 	const bool &lep2_mu_ptErr() { return samesign.lep2_mu_ptErr(); }
+	const bool &lep1_mediumMuonPOG() { return samesign.lep1_mediumMuonPOG(); }
+	const bool &lep2_mediumMuonPOG() { return samesign.lep2_mediumMuonPOG(); }
 	const bool &lep1_el_threeChargeAgree() { return samesign.lep1_el_threeChargeAgree(); }
 	const bool &lep2_el_threeChargeAgree() { return samesign.lep2_el_threeChargeAgree(); }
 	const bool &lep2_el_exp_innerlayers() { return samesign.lep2_el_exp_innerlayers(); }
