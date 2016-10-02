@@ -2,18 +2,24 @@
 
 # path="/hadoop/cms/store/user/${USER}/condor/ss_13_babies/"
 # path="/hadoop/cms/store/user/namin/condor/ss_babies_July8_6p26ifb/"
-path="/hadoop/cms/store/user/namin/condor/ss_babies_July27_isr/"
+# path="/hadoop/cms/store/user/namin/condor/ss_babies_July27_isr/"
+# path="/hadoop/cms/store/user/namin/condor/ss_babies_Aug25/"
+# path="/hadoop/cms/store/user/namin/condor/ss_babies_June22_3p99ifb/" # for ttw_nlo, ttz_nlo
+path="/hadoop/cms/store/user/namin/condor/ss_babies_Sept22/"
 
 samples = [
 
-# ["DataDoubleEG","datadoubleeg*.root"],
-# ["DataDoubleMuon","datadoublemuon*.root"],
-# ["DataMuonEG","datamuoneg*.root"],
+["DataMuonEG","datamuoneg*.root"],
+["DataDoubleEG","datadoubleeg*.root"],
+["DataDoubleMuon","datadoublemuon*.root"],
 
-["T5QQQQVV_main", "t5qqqqvv_main_*.root"],
-["T5QQQQVV_dm20", "t5qqqqvv_dm20_*.root"],
-["T1TTTT_main", "t1tttt_main_*.root"],
+# ["T6TTWW_main", "t6ttww_main_*.root"],
+# ["T5TTTT_dm175", "t5tttt_dm175_*.root"],
 # ["T5TTCC_main", "t5ttcc_main_*.root"],
+# ["T5QQQQVV_main", "t5qqqqvv_main_*.root"],
+# ["T5QQQQVV_dm20", "t5qqqqvv_dm20_*.root"],
+# ["T1TTTT_main", "t1tttt_main_*.root"],
+# ["T1TTBB_main", "t1ttbb_main_*.root"],
 
 # ["TTZLOW","ttzlow_*.root"],
 # ["WJets","wjets_*.root"],
@@ -221,6 +227,8 @@ for final,loc in samples:
 
     if(len(files) < 1): continue
 
+    print "[%s] Found %i files" % (final,len(files))
+
     if os.path.isfile(final+".root"):
         print "%s.root already in here, skipping" % final
         continue
@@ -236,11 +244,14 @@ for final,loc in samples:
             outfile = "%s_chunk%i.root" % (final, ichunk)
             mergedChunks.append(outfile)
             print "[%s] Making chunk %i of %i: %s" % (final, ichunk, len(chunks)-1, outfile)
-            os.system("hadd -k %s %s > haddlog.txt" % (outfile, args))
+            # os.system("hadd -k %s %s > haddlog.txt" % (outfile, args))
+            os.system("hadd  %s %s > haddlog.txt" % (outfile, args))
         print "[%s] Making final file: %s.root" % (final,final)
-        os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(mergedChunks)))
+        # os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(mergedChunks)))
+        os.system("hadd %s.root %s >> haddlog.txt" % (final, " ".join(mergedChunks)))
         os.system("rm %s_chunk*.root" % (final))
     else:
         print "[%s] Making final file: %s.root" % (final,final)
-        os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(chunks[0])))
+        # os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(chunks[0])))
+        os.system("hadd  %s.root %s >> haddlog.txt" % (final, " ".join(chunks[0])))
 

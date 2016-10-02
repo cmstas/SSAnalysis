@@ -24,7 +24,8 @@ fname = "logs/log_fs_t5qqqqvv_m1000_m700_12.9_hihi_31.txt"
 
 # fnames = glob.glob("logs_bad/*.txt")
 # fnames = glob.glob("logs_Aug6/*.txt")
-fnames = glob.glob("logs_Aug24/*.txt")
+# fnames = glob.glob("logs_Aug24/*.txt")
+fnames = glob.glob("logs/*.txt")
 
 def get_eff(themodelstr, thekine, thesr):
     d_effs = {}
@@ -200,7 +201,9 @@ for sig in d_sigs:
     buff += "\\end{center} \n"
     buff += "\\end{table} \n"
 
-    tm.makePDF(template % buff, "tables/table_%s.tex" % sig)
+    print buff
+
+    # tm.makePDF(template % buff, "tables/table_%s.tex" % sig)
     
 
-os.system("niceplots tables tables_sig_Aug24")
+# os.system("niceplots tables tables_sig_Aug24")

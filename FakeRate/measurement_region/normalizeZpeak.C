@@ -17,8 +17,8 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   }
 
   // TString tag_data = tag;
-  // TString tag_data = tag+"/3p99ifb/"; // FIXME
-  TString tag_data = tag; // FIXME
+  TString tag_data = "v1.12FR"; // FIXME
+  // TString tag_data = tag; // FIXME
 
 
   float mult = 1.0;
@@ -44,44 +44,45 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   // m8 *= 0.7528*3.99/0.8042;
   // m17 *= 0.4533*3.99/0.8042;
 
-  // e8i = 1.0;
-  // e17i = 1.0;
-  // e8 = 1.0;
-  // e17 = 1.0;
-  // m8i = 1.0;
-  // m17i = 1.0;
-  // m8 = 1.0;
-  // m17 = 1.0;
+  e8i = 1.0;
+  e17i = 1.0;
+  e8 = 1.0;
+  e17 = 1.0;
+  m8i = 1.0;
+  m17i = 1.0;
+  m8 = 1.0;
+  m17 = 1.0;
+
   
-  // for 6.26/fb
-  e8i = 17644.6*1.05035;
-  e17i = 1161.41*1.05035;
-  e8 = 17840.6*1.05035;
-  e17 = 1166.48*1.05035;
-  m8i = 3443.22*1.05;
-  m17i = 102.902*1.05;
-  m8 = 6829.05*1.05;
-  m17 = 85.8415*1.05;
+  // // for 6.26/fb
+  // e8i = 17644.6*1.05035;
+  // e17i = 1161.41*1.05035;
+  // e8 = 17840.6*1.05035;
+  // e17 = 1166.48*1.05035;
+  // m8i = 3443.22*1.05;
+  // m17i = 102.902*1.05;
+  // m8 = 6829.05*1.05;
+  // m17 = 85.8415*1.05;
 
-  // dummy to be used to calculate new SF
-  e8i = 1;
-  e17i = 1;
-  e8 = 1;
-  e17 = 1;
-  m8i = 1;
-  m17i = 1;
-  m8 = 1;
-  m17 = 1;
+  // // dummy to be used to calculate new SF
+  // e8i = 1;
+  // e17i = 1;
+  // e8 = 1;
+  // e17 = 1;
+  // m8i = 1;
+  // m17i = 1;
+  // m8 = 1;
+  // m17 = 1;
 
-  // 12.9 fb^-1
-  e8i = 4437.33;
-  e17i = 354.598;
-  e8 = 4434.51;
-  e17 = 355.14;
-  m8i = 1952.23;
-  m17i = 92.9757;
-  m8 = 3956.74;
-  m17 = 65.5245;
+  // // 12.9 fb^-1
+  // e8i = 4437.33;
+  // e17i = 354.598;
+  // e8 = 4434.51;
+  // e17 = 355.14;
+  // m8i = 1952.23;
+  // m17i = 92.9757;
+  // m8 = 3956.74;
+  // m17 = 65.5245;
 
   // // go from 12.9 fb^-1 to (12.9-6.26) fb^-1 for Lesya's suggestion to check second HALF
   // e8i *= 1.1784;
@@ -103,6 +104,16 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   // m17i = 48.035;
   // m8 = 2628.3;
   // m17 = 31.912;
+
+  // For 22.0/fb JSON
+  e8i = 5251.71;
+  e17i = 483.027;
+  e8 = 5249.37;
+  e17 = 476.482;
+  m8i = 2820.13;
+  m17i = 133.217;
+  m8 = 5707.51;
+  m17 = 98.7317;
   
   if(do8) {
       if(useIsoTrig) mult = (doMu ? m8i : e8i);

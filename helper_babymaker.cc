@@ -44,8 +44,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("xsec_error"                                              , &xsec_error                                              );
   BabyTree->Branch("kfactor"                                                 , &kfactor                                                 );
   BabyTree->Branch("gen_met"                                                 , &gen_met                                                 );
-  BabyTree->Branch("genweights"                                              , &genweights                                              );
-  BabyTree->Branch("genweightsID"                                            , &genweightsID                                            );
+  // BabyTree->Branch("genweights"                                              , &genweights                                              );
+  // BabyTree->Branch("genweightsID"                                            , &genweightsID                                            );
   BabyTree->Branch("gen_met_phi"                                             , &gen_met_phi                                             );
   BabyTree->Branch("njets"                                                   , &njets                                                   );
   BabyTree->Branch("njets_raw"                                               , &njets_raw                                               );
@@ -105,12 +105,13 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep1_tkIso"                                              , &lep1_tkIso                                              );
   BabyTree->Branch("lep2_tkIso"                                              , &lep2_tkIso                                              );
   BabyTree->Branch("dilep_p4"                                                , &dilep_p4                                                );
-  BabyTree->Branch("genps_p4"                                                , &genps_p4                                                );
-  BabyTree->Branch("genps_id"                                                , &genps_id                                                );
-  BabyTree->Branch("genps_id_mother"                                         , &genps_id_mother                                         );
-  BabyTree->Branch("genps_idx_mother"                                        , &genps_idx_mother                                        );
-  BabyTree->Branch("genps_status"                                            , &genps_status                                            );
-  BabyTree->Branch("genps_id_grandma"                                        , &genps_id_grandma                                        );
+  BabyTree->Branch("ncharginos"                                                , &ncharginos                                                );
+  // BabyTree->Branch("genps_p4"                                                , &genps_p4                                                );
+  // BabyTree->Branch("genps_id"                                                , &genps_id                                                );
+  // BabyTree->Branch("genps_id_mother"                                         , &genps_id_mother                                         );
+  // BabyTree->Branch("genps_idx_mother"                                        , &genps_idx_mother                                        );
+  // BabyTree->Branch("genps_status"                                            , &genps_status                                            );
+  // BabyTree->Branch("genps_id_grandma"                                        , &genps_id_grandma                                        );
   BabyTree->Branch("lep1_passes_id"                                          , &lep1_passes_id                                          );
   BabyTree->Branch("lep2_passes_id"                                          , &lep2_passes_id                                          );
   BabyTree->Branch("lep3_passes_id"                                          , &lep3_passes_id                                          );
@@ -254,6 +255,12 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep1_isTrigSafev1"       , &lep1_isTrigSafev1       ); 
   BabyTree->Branch("lep2_isTrigSafeNoIsov1"  , &lep2_isTrigSafeNoIsov1  ); 
   BabyTree->Branch("lep2_isTrigSafev1"       , &lep2_isTrigSafev1       ); 
+  BabyTree->Branch("lep1_tightMuonPOG"  , &lep1_tightMuonPOG  ); 
+  BabyTree->Branch("lep1_mediumMuonPOG"  , &lep1_mediumMuonPOG  ); 
+  BabyTree->Branch("lep1_looseMuonPOG"  , &lep1_looseMuonPOG  ); 
+  BabyTree->Branch("lep2_tightMuonPOG"  , &lep2_tightMuonPOG  ); 
+  BabyTree->Branch("lep2_mediumMuonPOG"  , &lep2_mediumMuonPOG  ); 
+  BabyTree->Branch("lep2_looseMuonPOG"  , &lep2_looseMuonPOG  ); 
   
   BabyTree->Branch("is_fastsim", &is_fastsim); 
 
@@ -409,8 +416,8 @@ void babyMaker::InitBabyNtuple(){
     xsec = -1;
     kfactor = -1;
     gen_met = -1;
-    genweights.clear();
-    genweightsID.clear();
+    // genweights.clear();
+    // genweightsID.clear();
     gen_met_phi = -1;
     njets = -1;
     njets_raw = -1;
@@ -470,12 +477,13 @@ void babyMaker::InitBabyNtuple(){
     lep2_iso = -1;
     lep1_tkIso = -1;
     lep2_tkIso = -1;
-    genps_p4.clear();
-    genps_id.clear();
-    genps_id_mother.clear();
-    genps_idx_mother.clear();
-    genps_status.clear();
-    genps_id_grandma.clear();
+    ncharginos = -1;
+    // genps_p4.clear();
+    // genps_id.clear();
+    // genps_id_mother.clear();
+    // genps_idx_mother.clear();
+    // genps_status.clear();
+    // genps_id_grandma.clear();
     lep1_passes_id = false;
     lep2_passes_id = false;
     lep3_passes_id = false;
@@ -524,6 +532,12 @@ void babyMaker::InitBabyNtuple(){
     lep1_isTrigSafev1 = 0;
     lep2_isTrigSafeNoIsov1 = 0;
     lep2_isTrigSafev1 = 0; 
+    lep1_tightMuonPOG = 0;
+    lep1_mediumMuonPOG = 0;
+    lep1_looseMuonPOG = 0;
+    lep2_tightMuonPOG = 0;
+    lep2_mediumMuonPOG = 0;
+    lep2_looseMuonPOG = 0;
     nVetoElectrons7 = 0;
     nVetoElectrons10 = 0;
     nVetoElectrons25 = 0;
@@ -714,7 +728,16 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
   is_miniaodv1 = filename.find("MCRUN2_74_V9") != std::string::npos;
   is_miniaodv1_80X = filename.find("RunIISpring16MiniAODv1") != std::string::npos;
-  // std::cout << " is_miniaodv1_80X: " << is_miniaodv1_80X << std::endl; // FIXME remove
+  bool is_wjets = false;
+  if(filename.find("W") == 0) {
+  // if sample part starts with W then check for WJets, W[0-4]Jets...
+
+    if ( (filename.find("WJets") == 0)  ||
+         (filename.find("W1Jet") == 0)  ||
+         (filename.find("W2Jet") == 0)  ||
+         (filename.find("W3Jet") == 0)  ||
+         (filename.find("W4Jet") == 0) ) is_wjets = true;
+  }
 
 
   //These c-s errors
@@ -752,8 +775,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     kfactor = tas::evt_kfactor();
     gen_met = tas::gen_met();
     gen_met_phi = tas::gen_metPhi();
-    genweights = tas::genweights(); 
-    genweightsID = tas::genweightsID(); 
+    // genweights = tas::genweights();  // These two are 20% of the ntuple size
+    // genweightsID = tas::genweightsID(); 
     scale1fb = tas::evt_scale1fb(); 
     if (isFastsim > 0){
       sparms = tas::sparm_values();  
@@ -788,6 +811,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   }
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
   if (hyp_class == 0 || hyp_class == -1) return babyErrorStruct;
+  if (hyp_class == 7 && !is_wjets) return babyErrorStruct; // only care about OS ISFR events since we want more stats for WJets (this doubles ntuple size!!)
   lep1_p4 = (tas::hyp_ll_p4().at(best_hyp).pt() > tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_p4().at(best_hyp) : tas::hyp_lt_p4().at(best_hyp);
   lep2_p4 = (tas::hyp_ll_p4().at(best_hyp).pt() <= tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_p4().at(best_hyp) : tas::hyp_lt_p4().at(best_hyp);
   lep1_id = (tas::hyp_ll_p4().at(best_hyp).pt() > tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_id().at(best_hyp) : tas::hyp_lt_id().at(best_hyp);
@@ -865,6 +889,10 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
     lep1_isTrigSafeNoIsov1   = abs(lep1_id) == 11 ? isTriggerSafenoIso_v1(lep1_idx) : 1; 
     lep1_isTrigSafev1        = abs(lep1_id) == 11 ? isTriggerSafe_v1(lep1_idx) : 1; 
+
+    lep1_tightMuonPOG = abs(lep1_id) == 13 ? isTightMuonPOG(lep1_idx) : 0;
+    lep1_mediumMuonPOG = abs(lep1_id) == 13 ? isMediumMuonPOG(lep1_idx) : 0;
+    lep1_looseMuonPOG = abs(lep1_id) == 13 ? isLooseMuonPOG(lep1_idx) : 0;
   }
 
 
@@ -885,6 +913,10 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
     lep2_isTrigSafeNoIsov1   = abs(lep2_id) == 11 ? isTriggerSafenoIso_v1(lep2_idx) : 1; 
     lep2_isTrigSafev1        = abs(lep2_id) == 11 ? isTriggerSafe_v1(lep2_idx) : 1; 
+
+    lep2_tightMuonPOG = abs(lep2_id) == 13 ? isTightMuonPOG(lep2_idx) : 0;
+    lep2_mediumMuonPOG = abs(lep2_id) == 13 ? isMediumMuonPOG(lep2_idx) : 0;
+    lep2_looseMuonPOG = abs(lep2_id) == 13 ? isLooseMuonPOG(lep2_idx) : 0;
   }
 
   //More Third lepton stuff
@@ -1140,14 +1172,22 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     cout << "lep2 ratio: " << lep2_p4.pt()/lep2_closeJet.pt() << endl;
   }
   
-  //Fill all generated particles
-  if (!is_real_data){
-    genps_p4 = tas::genps_p4();
-    genps_id = tas::genps_id();
-    genps_id_mother = tas::genps_id_mother();
-    genps_idx_mother = tas::genps_idx_mother();
-    genps_status = tas::genps_status(); 
-    genps_id_grandma = tas::genps_id_simplegrandma(); 
+
+  // This is 50% of the ntuple size
+  // //Fill all generated particles
+  // if (!is_real_data){
+  //   genps_p4 = tas::genps_p4();
+  //   genps_id = tas::genps_id();
+  //   genps_id_mother = tas::genps_id_mother();
+  //   genps_idx_mother = tas::genps_idx_mother();
+  //   genps_status = tas::genps_status(); 
+  //   genps_id_grandma = tas::genps_id_simplegrandma(); 
+  // }
+  if (!is_real_data && isFastsim > 0) {
+      ncharginos = 0;
+      for (unsigned int gp=0;gp<tas::genps_id().size();gp++) {
+          if (abs(tas::genps_id()[gp])==1000024 && tas::genps_status()[gp]==22) ncharginos++;
+      }
   }
   
   //Determine and save jet and b-tag variables, raw

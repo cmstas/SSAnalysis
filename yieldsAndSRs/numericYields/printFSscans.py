@@ -3,10 +3,13 @@ import os, glob, ROOT
 tag = "v8.04"
 
 scans = [
-    "T1TTTT_main",
-    "T5QQQQVV_main",
-    "T5QQQQVV_dm20",
-    "T5TTCC_main",
+    # "T1TTTT_main",
+    # "T5QQQQVV_main",
+    # "T5QQQQVV_dm20",
+    # "T6TTWW_main",
+    # "T5TTCC_main",
+    # "T5TTTT_dm175",
+    "T1TTBB_main",
 ]
 
 #scan = "T6TTWW_50"

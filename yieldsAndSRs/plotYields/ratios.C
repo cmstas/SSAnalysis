@@ -9,7 +9,7 @@
 //Tables on/off
 bool makeTables = 0;
 bool testClassSF = false;
-float theLumi = 2.3;
+float theLumi = 12.9;
 
 struct results_t {
     TH1F* hh;
@@ -39,9 +39,9 @@ struct results_t {
 results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
 
   //Declare hists
-  TH1F *HighHighPlot = new TH1F(Form("%s_hh", name.c_str()), Form("%s_hh", name.c_str()), 32, 1, 33); 
-  TH1F *HighLowPlot  = new TH1F(Form("%s_hl", name.c_str()), Form("%s_hl", name.c_str()), 26, 1, 27); 
-  TH1F *LowLowPlot   = new TH1F(Form("%s_ll", name.c_str()), Form("%s_ll", name.c_str()),  8, 1,  9); 
+  TH1F *HighHighPlot = new TH1F(Form("%s_hh", name.c_str()), Form("%s_hh", name.c_str()), 33, 0.5, 33.5); 
+  TH1F *HighLowPlot  = new TH1F(Form("%s_hl", name.c_str()), Form("%s_hl", name.c_str()), 27, 0.5, 27.5); 
+  TH1F *LowLowPlot   = new TH1F(Form("%s_ll", name.c_str()), Form("%s_ll", name.c_str()),  8, 0.5,  8.5); 
 
   TH1F *base_Njets_raw   = new TH1F(Form("%s_base_njets_raw", name.c_str()), Form("%s_base_njets_raw", name.c_str()),  8, 0,  8); 
   TH1F *base_jetPt   = new TH1F(Form("%s_base_jetPt", name.c_str()), Form("%s_base_jetPt", name.c_str()),  15, 0,  300); 
@@ -148,7 +148,7 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
        
       //Figure out region, fill plot
       anal_type_t categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);  
-      int SR = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
+      int SR = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
       if (SR > 0 && categ == HighHigh) HighHighPlot->Fill(SR, weight);
       if (SR > 0 && categ == HighLow)  HighLowPlot ->Fill(SR, weight);
       if (SR > 0 && categ == LowLow)   LowLowPlot  ->Fill(SR, weight);
@@ -198,148 +198,154 @@ results_t run(TChain* chain, string name, hyp_type_t flavor = UNASSIGNED){
 
 }
 
-void ratios(bool data){
+void ratios(bool data, TString opts=""){
 
     
 
   //Make chains
   // TChain* data        = new TChain("t");
 
-  TChain* c74          = new TChain("t");
-  TChain* c80          = new TChain("t");
+  TChain* ch1          = new TChain("t");
+  TChain* ch2          = new TChain("t");
 
-  bool doTTZ = true;
-  bool do74NLO = false;
+  bool doTTZ = opts.Contains("doTTZ");
+  // Compare new NLO with old NLO unless bool set, then compare new NLO with high stats LO
+  bool doCompareNLOwithLO = opts.Contains("doCompareNLOwithLO");
+
 
   TString tag = getTag();
 
   if(data) {
-      c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataDoubleEG*.root"    );
-      c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataDoubleMuon*.root"  );
-      c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataMuonEG*.root"      );
+      ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataDoubleEG*.root"    );
+      ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataDoubleMuon*.root"  );
+      ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DataMuonEG*.root"      );
 
-      c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/DataDoubleEG*.root"    );
-      c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/DataDoubleMuon*.root"  );
-      c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/DataMuonEG*.root"      );
+      ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/DataDoubleEG*.root"    );
+      ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/DataDoubleMuon*.root"  );
+      ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.00-fix/DataMuonEG*.root"      );
   } else {
 
-      // 80X NLO:
-      if(!do74NLO) {
-          if(doTTZ) c74->Add("/home/users/namin/2016/ss/master/SSAnalysis/batch/TTZnlo.root");
-          else c74->Add("/home/users/namin/2016/ss/master/SSAnalysis/batch/TTWnlo.root");
+      if(doTTZ) ch2->Add("/home/users/namin/2016/ss/master/SSAnalysis/batch/TTZnlo_new.root");
+      else ch2->Add("/home/users/namin/2016/ss/master/SSAnalysis/batch/TTWnlo_new.root");
+
+      if (doCompareNLOwithLO) {
+          if(doTTZ) ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/TTZ*.root");
+          // if(doTTZ) ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/TTZ.root");
+          else ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/TTW.root");
+      } else {
+          if(doTTZ) ch1->Add("/home/users/namin/2016/ss/master/SSAnalysis/batch/TTZnlo_old.root");
+          else ch1->Add("/home/users/namin/2016/ss/master/SSAnalysis/batch/TTWnlo_old.root");
       }
 
-      // c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTBAR_PH.root");
-      // c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/SINGLETOP*.root");
+      // ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTBAR_PH.root");
+      // ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/SINGLETOP*.root");
       
-      if(do74NLO) {
-          if(doTTZ) c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTZL*.root");
-          else c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTW.root");
-      }
-
-      // c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTHtoNonBB.root");
-      // c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/QQWW.root");
+      // ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/TTHtoNonBB.root");
+      // ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/QQWW.root");
 
 
-      // c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/WZ.root");
-      // c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/WJets.root");
-      // c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/WGToLNuG.root");
-      // c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DY_high.root");
-      // c74->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DY_low.root");
+      // ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/WZ.root");
+      // ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/WJets.root");
+      // ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/WGToLNuG.root");
+      // ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DY_high.root");
+      // ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v6.02/DY_low.root");
 
-      // c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTBAR_PH.root");
-      // c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/SINGLETOP*.root");
+      // ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTBAR_PH.root");
+      // ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/SINGLETOP*.root");
 
-      if(doTTZ) c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTZ*.root");
-      else c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTW.root");
       
-      // c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTHtoNonBB.root");
-      // c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/QQWW.root");
+      // ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/TTHtoNonBB.root");
+      // ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/QQWW.root");
 
-      // c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/WZ.root");
-      // c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/WJets.root");
-      // c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/WGToLNuG.root");
-      // c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/DY_high.root");
-      // c80->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/DY_low.root");
+      // ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/WZ.root");
+      // ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/WJets.root");
+      // ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/WGToLNuG.root");
+      // ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/DY_high.root");
+      // ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.02/DY_low.root");
   }
   std::vector<Color_t> colors;
   if(doTTZ) colors.push_back(kGreen-6);  // ttzh
   else colors.push_back(kGreen+3);  // tw
 
-  results_t c74_graphs       = run(c74      , "c74"      );
-  results_t c80_graphs       = run(c80      , "c80"      );
+  results_t ch1_graphs       = run(ch1      , "ch1"      );
+  results_t ch2_graphs       = run(ch2      , "ch2"      );
 
 
   //Prepare for plots -- null
   TH1F* null = new TH1F("","",1,0,1);
 
   //Prepare for plots -- backgrounds, sample
-  vector <TH1F*> background_high; background_high.push_back(c74_graphs.hh);
-  vector <TH1F*> background_hl; background_hl.push_back(c74_graphs.hl);
-  vector <TH1F*> background_low; background_low.push_back(c74_graphs.ll);
+  vector <TH1F*> background_high; background_high.push_back(ch1_graphs.hh);
+  vector <TH1F*> background_hl; background_hl.push_back(ch1_graphs.hl);
+  vector <TH1F*> background_low; background_low.push_back(ch1_graphs.ll);
 
   //Kinematic distributions
-  vector <TH1F*> background_base_njets_raw  ; background_base_njets_raw.push_back(c74_graphs.base_njets_raw)   ;
-  vector <TH1F*> background_base_jetpt  ; background_base_jetpt.push_back(c74_graphs.base_jetpt)   ;
-  vector <TH1F*> background_base_nbtags_raw ; background_base_nbtags_raw.push_back(c74_graphs.base_nbtags_raw) ;
-  vector <TH1F*> background_base_rawmet     ; background_base_rawmet.push_back(c74_graphs.base_rawmet)         ;
-  vector <TH1F*> background_base_ht_raw     ; background_base_ht_raw.push_back(c74_graphs.base_ht_raw)         ;
+  vector <TH1F*> background_base_njets_raw  ; background_base_njets_raw.push_back(ch1_graphs.base_njets_raw)   ;
+  vector <TH1F*> background_base_jetpt  ; background_base_jetpt.push_back(ch1_graphs.base_jetpt)   ;
+  vector <TH1F*> background_base_nbtags_raw ; background_base_nbtags_raw.push_back(ch1_graphs.base_nbtags_raw) ;
+  vector <TH1F*> background_base_rawmet     ; background_base_rawmet.push_back(ch1_graphs.base_rawmet)         ;
+  vector <TH1F*> background_base_ht_raw     ; background_base_ht_raw.push_back(ch1_graphs.base_ht_raw)         ;
 
-  vector <TH1F*> background_njets; background_njets.push_back(c74_graphs.njets);
-  vector <TH1F*> background_njets_raw; background_njets_raw.push_back(c74_graphs.njets_raw);
-  vector <TH1F*> background_nbtags; background_nbtags.push_back(c74_graphs.nbtags);
-  vector <TH1F*> background_nbtags_raw; background_nbtags_raw.push_back(c74_graphs.nbtags_raw);
-  vector <TH1F*> background_mtmin; background_mtmin.push_back(c74_graphs.mtmin);
-  vector <TH1F*> background_ht; background_ht.push_back(c74_graphs.ht);
-  vector <TH1F*> background_ht_raw; background_ht_raw.push_back(c74_graphs.ht_raw);
-  vector <TH1F*> background_met; background_met.push_back(c74_graphs.met);
-  vector <TH1F*> background_rawmet; background_rawmet.push_back(c74_graphs.rawmet);
-  vector <TH1F*> background_lep1pt; background_lep1pt.push_back(c74_graphs.lep1pt);
-  vector <TH1F*> background_lep2pt; background_lep2pt.push_back(c74_graphs.lep2pt);
+  vector <TH1F*> background_njets; background_njets.push_back(ch1_graphs.njets);
+  vector <TH1F*> background_njets_raw; background_njets_raw.push_back(ch1_graphs.njets_raw);
+  vector <TH1F*> background_nbtags; background_nbtags.push_back(ch1_graphs.nbtags);
+  vector <TH1F*> background_nbtags_raw; background_nbtags_raw.push_back(ch1_graphs.nbtags_raw);
+  vector <TH1F*> background_mtmin; background_mtmin.push_back(ch1_graphs.mtmin);
+  vector <TH1F*> background_ht; background_ht.push_back(ch1_graphs.ht);
+  vector <TH1F*> background_ht_raw; background_ht_raw.push_back(ch1_graphs.ht_raw);
+  vector <TH1F*> background_met; background_met.push_back(ch1_graphs.met);
+  vector <TH1F*> background_rawmet; background_rawmet.push_back(ch1_graphs.rawmet);
+  vector <TH1F*> background_lep1pt; background_lep1pt.push_back(ch1_graphs.lep1pt);
+  vector <TH1F*> background_lep2pt; background_lep2pt.push_back(ch1_graphs.lep2pt);
 
   //Prepare for plots -- background titles
   vector <string> titles;
-  if(data) titles.push_back("74X Data");
-  else titles.push_back("80X NLO");
 
-  string postfix = "_comparison_mc";
-  string type="";
+  string postfix = "";
+  string type="Old NLO";
+
+  if (doCompareNLOwithLO) {
+      type = "LO";
+      titles.push_back("LO");
+      postfix = "NLOvsLO";
+  } else {
+      type = "Old NLO";
+      titles.push_back("Old NLO");
+      postfix = "NLOvsNLO";
+  }
   
-  if (data) {
-      type = "Data";
-      postfix = "_comparison_data";
-  } 
-  // string extra = " --setMaximum 57.0 ";
-  string extra = " ";
+  // if (data) {
+  //     type = "Data";
+  //     postfix = "_comparison_data";
+  // } 
+  // // string extra = " --setMaximum 57.0 ";
+  string extra = " --legendCounts --histoErrors ";
 
 
 
-  //Make plots -- sample
- dataMCplotMaker(c80_graphs.base_njets_raw  , background_base_njets_raw  , titles , "base Njets_raw"  , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_base_njets_raw_%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                              , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
- dataMCplotMaker(c80_graphs.base_jetpt  , background_base_jetpt  , titles , "base jetpt"  , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_base_jetpt_%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                              , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
- dataMCplotMaker(c80_graphs.base_nbtags_raw , background_base_nbtags_raw , titles , "base Nbtags_raw" , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_base_nbtags_raw%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                              , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
- dataMCplotMaker(c80_graphs.base_ht_raw     , background_base_ht_raw     , titles , "base ht_raw"     , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_base_ht_raw_%s --xAxisLabel ht_raw --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
- dataMCplotMaker(c80_graphs.base_rawmet     , background_base_rawmet     , titles , "base rawmet"     , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_base_rawmet_%s --xAxisLabel rawmet --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
-
- dataMCplotMaker(c80_graphs.hh         , background_high       , titles , "H-H"        , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --vLine 9 --vLine 17 --vLine 25 --vLine 31 --outputName yield_plots/high_yields%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --nDivisions 210 --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s --xAxisVerticalBinLabels --xAxisBinLabels 1HH,2HH,3HH,4HH,5HH,6HH,7HH,8HH,9HH,10HH,11HH,12HH,13HH,14HH,15HH,16HH,17HH,18HH,19HH,20HH,21HH,22HH,23HH,24HH,25HH,26HH,27HH,28HH,29HH,30HH,31HH,32HH" , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
- dataMCplotMaker(c80_graphs.hl         , background_hl         , titles , "H-L"        , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --vLine 7 --vLine 13 --vLine 19 --vLine 23 --vLine 25 --outputName yield_plots//hl_yields%s --noDivisionLabel --xAxisLabel --energy 13 --lumi %.2f --lumiUnit fb --nDivisions 210 --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s --xAxisVerticalBinLabels --xAxisBinLabels 1HL,2HL,3HL,4HL,5HL,6HL,7HL,8HL,9HL,10HL,11HL,12HL,13HL,14HL,15HL,16HL,17HL,18HL,19HL,20HL,21HL,22HL,23HL,24HL,25HL,26HL" , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
 
  if(doTTZ) {
-     dataMCplotMaker(c80_graphs.njets      , background_njets      , titles , "Njets"      , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_njets_%s --noDivisionLabel --setMaximum 3 --xAxisLabel Njets --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
-     dataMCplotMaker(c80_graphs.nbtags     , background_nbtags     , titles , "Nbtags"     , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_nbtags_%s --noDivisionLabel --setMaximum 4 --xAxisLabel Nbtags --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                 , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
-     dataMCplotMaker(c80_graphs.mtmin      , background_mtmin      , titles , "mtmin"      , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_mtmin_%s --xAxisLabel mtmin --setMaximum 1.2 --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                            , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
-     dataMCplotMaker(c80_graphs.met        , background_met        , titles , "met"        , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_met_%s --xAxisLabel MET --setMaximum 3 --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
-     dataMCplotMaker(c80_graphs.ht         , background_ht         , titles , "ht"         , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_ht_%s --xAxisLabel HT --setMaximum 2 --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.hh      , background_high      , titles , "[ttZ] HH"      , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttz_HH_%s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.hl      , background_hl        , titles , "[ttZ] HL"      , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttz_HL_%s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.ll      , background_low       , titles , "[ttZ] LL"      , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttz_LL_%s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.njets      , background_njets      , titles , "[ttZ] Njets"      , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttz_kinem_njets_%s --noDivisionLabel --xAxisLabel Njets --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.nbtags     , background_nbtags     , titles , "[ttZ] Nbtags"     , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttz_kinem_nbtags_%s --noDivisionLabel --xAxisLabel Nbtags --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                 , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.mtmin      , background_mtmin      , titles , "[ttZ] mtmin"      , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttz_kinem_mtmin_%s --xAxisLabel mtmin --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                            , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.met        , background_met        , titles , "[ttZ] met"        , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttz_kinem_met_%s --xAxisLabel MET --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.ht         , background_ht         , titles , "[ttZ] ht"         , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttz_kinem_ht_%s --xAxisLabel HT --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
  } else {
-     dataMCplotMaker(c80_graphs.njets      , background_njets      , titles , "Njets"      , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_njets_%s --noDivisionLabel --setMaximum 9 --xAxisLabel Njets --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
-     dataMCplotMaker(c80_graphs.nbtags     , background_nbtags     , titles , "Nbtags"     , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_nbtags_%s --noDivisionLabel --setMaximum 12 --xAxisLabel Nbtags --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                 , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
-     dataMCplotMaker(c80_graphs.mtmin      , background_mtmin      , titles , "mtmin"      , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_mtmin_%s --xAxisLabel mtmin --setMaximum 2.5 --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                            , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
-     dataMCplotMaker(c80_graphs.met        , background_met        , titles , "met"        , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_met_%s --xAxisLabel MET --setMaximum 6.2 --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
-     dataMCplotMaker(c80_graphs.ht         , background_ht         , titles , "ht"         , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_ht_%s --xAxisLabel HT --setMaximum 5.3 --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.hh      , background_high      , titles , "[ttW] HH"      , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttw_HH_%s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.hl      , background_hl        , titles , "[ttW] HL"      , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttw_HL_%s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.ll      , background_low       , titles , "[ttW] LL"      , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttw_LL_%s --noDivisionLabel --xAxisLabel SR --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.njets      , background_njets      , titles , "[ttW] Njets"      , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttw_kinem_njets_%s --noDivisionLabel --xAxisLabel Njets --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.nbtags     , background_nbtags     , titles , "[ttW] Nbtags"     , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttw_kinem_nbtags_%s --noDivisionLabel --xAxisLabel Nbtags --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --noXaxisUnit --legendTextSize 0.0325 --isLinear %s "                                                                                                                 , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.mtmin      , background_mtmin      , titles , "[ttW] mtmin"      , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttw_kinem_mtmin_%s --xAxisLabel mtmin --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                            , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.met        , background_met        , titles , "[ttW] met"        , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttw_kinem_met_%s --xAxisLabel MET --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+     dataMCplotMaker(ch2_graphs.ht         , background_ht         , titles , "[ttW] ht"         , "" , Form("--topYaxisTitle New NLO/%s --dataName New NLO --outputName yield_plots/ttw_kinem_ht_%s --xAxisLabel HT  --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
  }
 
- dataMCplotMaker(c80_graphs.lep1pt     , background_lep1pt     , titles , "lep1pt"     , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_lep1pt_%s --xAxisLabel lep1pt --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
- dataMCplotMaker(c80_graphs.lep2pt     , background_lep2pt     , titles , "lep2pt"     , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_lep2pt_%s --xAxisLabel lep2pt --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+ // dataMCplotMaker(ch2_graphs.lep1pt     , background_lep1pt     , titles , "lep1pt"     , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_lep1pt_%s --xAxisLabel lep1pt --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
+ // dataMCplotMaker(ch2_graphs.lep2pt     , background_lep2pt     , titles , "lep2pt"     , "" , Form("--topYaxisTitle LO/NLO --dataName 80X LO %s --outputName yield_plots/kinem_lep2pt_%s --xAxisLabel lep2pt --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                          , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
 
 
 }

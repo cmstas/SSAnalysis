@@ -14,10 +14,11 @@
 
 bool doData = false; 
 bool doWjetsOnly = false;
+bool doSoup = false;
 bool test_MVA = false;
 bool test_Laurent = false;
 bool doPromptsOnly = false;
-
+bool doExtraElectronPtBin = false;
 
 //Path
 string tag = getTag().Data();
@@ -121,15 +122,41 @@ bool isGoodLeg(int lep){
   return 0;
 }
 
+void handleOverflow(TH2D* h2) {
+    int nx = h2->GetNbinsX();
+    for (unsigned int i = 1; i < 4; i++){ // <--- GRRR. ROOT starts bin #s at 1 (0 is underflow)
+        h2->SetBinContent(nx, i, h2->GetBinContent(nx , i) + h2->GetBinContent(nx+1 , i)); 
+        h2->SetBinError(nx, i, sqrt(pow(h2->GetBinError(nx,i),2) + pow(h2->GetBinError(nx+1,i),2))); 
+    }
+}
+
+void draw1DNumerDenom(TH1F* numer, TH1F* denom, TString fname) {
+  TCanvas *ctmp = new TCanvas("temp","temp");
+
+  denom->SetLineColor(kBlack);
+  denom->Draw("hist");
+  numer->SetLineColor(kRed);
+  numer->Draw("pesame");
+
+  ctmp->SaveAs(fname);
+
+
+}
+
 void FR(int doHighHT=-1, TString opts=""){
 
     doData = opts.Contains("doData");
     doWjetsOnly = opts.Contains("doWjetsOnly");
+    doSoup = opts.Contains("doSoup");
     test_MVA = opts.Contains("test_MVA");
     test_Laurent = opts.Contains("test_Laurent");
     doPromptsOnly = opts.Contains("doPromptsOnly");
+    doExtraElectronPtBin = opts.Contains("doExtraElectronPtBin");
 
     initCounter();
+
+    ofstream textfile;
+    textfile.open("unsorted.txt");
 
   //Lumi
   float luminosity = doData ? getLumi() : getLumi();
@@ -148,25 +175,45 @@ void FR(int doHighHT=-1, TString opts=""){
   TH2D *denom_muon_2D_siplt4; 
 
   //Define hists
-  int nBinsX = 5; 
-  int nBinsY = 3; 
-  float xbins[] = { 10, 15, 25, 35, 50, 70 }; 
-  float ybins_mu[] = {0., 1.2, 2.1, 2.4};
+  int nBinsX_el = 5; 
+  int nBinsY_el = 3; 
+  float xbins_el[] = { 10, 15, 25, 35, 50, 70 }; 
+  float xbins_el_extr[] = { 10, 15, 25, 35, 50, 70, 90 }; 
   float ybins_el[] = {0., 0.8, 1.479, 2.5};
+  int nBinsX_mu = 5; 
+  int nBinsY_mu = 3; 
+  float xbins_mu[] = { 10, 15, 25, 35, 50, 70 }; 
+  float ybins_mu[] = {0., 1.2, 2.1, 2.4};
 
-  numer_elec_2D_sipgt4  = new TH2D("numer_elec_2D_sipgt4" , "numer_elec_2D_sipgt4" , nBinsX, xbins, nBinsY, ybins_el);
-  denom_elec_2D_sipgt4  = new TH2D("denom_elec_2D_sipgt4" , "denom_elec_2D_sipgt4" , nBinsX, xbins, nBinsY, ybins_el);
-  numer_elec_2D_siplt4 = new TH2D("numer_elec_2D_siplt4", "numer_elec_2D_siplt4", nBinsX, xbins, nBinsY, ybins_el);
-  denom_elec_2D_siplt4 = new TH2D("denom_elec_2D_siplt4", "denom_elec_2D_siplt4", nBinsX, xbins, nBinsY, ybins_el);
-  numer_muon_2D_sipgt4 = new TH2D("numer_muon_2D_sipgt4", "numer_muon_2D_sipgt4", nBinsX, xbins, nBinsY, ybins_mu);
-  denom_muon_2D_sipgt4 = new TH2D("denom_muon_2D_sipgt4", "denom_muon_2D_sipgt4", nBinsX, xbins, nBinsY, ybins_mu);
-  numer_muon_2D_siplt4 = new TH2D("numer_muon_2D_siplt4", "numer_muon_2D_siplt4", nBinsX, xbins, nBinsY, ybins_mu);
-  denom_muon_2D_siplt4 = new TH2D("denom_muon_2D_siplt4", "denom_muon_2D_siplt4", nBinsX, xbins, nBinsY, ybins_mu);
+  if(doExtraElectronPtBin) {
+      numer_elec_2D_sipgt4  = new TH2D("numer_elec_2D_sipgt4" , "numer_elec_2D_sipgt4" , nBinsX_el+1, xbins_el_extr, nBinsY_el, ybins_el);
+      denom_elec_2D_sipgt4  = new TH2D("denom_elec_2D_sipgt4" , "denom_elec_2D_sipgt4" , nBinsX_el+1, xbins_el_extr, nBinsY_el, ybins_el);
+      numer_elec_2D_siplt4 = new TH2D("numer_elec_2D_siplt4", "numer_elec_2D_siplt4",    nBinsX_el+1, xbins_el_extr, nBinsY_el, ybins_el);
+      denom_elec_2D_siplt4 = new TH2D("denom_elec_2D_siplt4", "denom_elec_2D_siplt4",    nBinsX_el+1, xbins_el_extr, nBinsY_el, ybins_el);
+  } else {
+      numer_elec_2D_sipgt4  = new TH2D("numer_elec_2D_sipgt4" , "numer_elec_2D_sipgt4" , nBinsX_el, xbins_el, nBinsY_el, ybins_el);
+      denom_elec_2D_sipgt4  = new TH2D("denom_elec_2D_sipgt4" , "denom_elec_2D_sipgt4" , nBinsX_el, xbins_el, nBinsY_el, ybins_el);
+      numer_elec_2D_siplt4 = new TH2D("numer_elec_2D_siplt4", "numer_elec_2D_siplt4",    nBinsX_el, xbins_el, nBinsY_el, ybins_el);
+      denom_elec_2D_siplt4 = new TH2D("denom_elec_2D_siplt4", "denom_elec_2D_siplt4",    nBinsX_el, xbins_el, nBinsY_el, ybins_el);
+  }
+  numer_muon_2D_sipgt4 = new TH2D("numer_muon_2D_sipgt4", "numer_muon_2D_sipgt4",    nBinsX_mu, xbins_mu, nBinsY_mu, ybins_mu);
+  denom_muon_2D_sipgt4 = new TH2D("denom_muon_2D_sipgt4", "denom_muon_2D_sipgt4",    nBinsX_mu, xbins_mu, nBinsY_mu, ybins_mu);
+  numer_muon_2D_siplt4 = new TH2D("numer_muon_2D_siplt4", "numer_muon_2D_siplt4",    nBinsX_mu, xbins_mu, nBinsY_mu, ybins_mu);
+  denom_muon_2D_siplt4 = new TH2D("denom_muon_2D_siplt4", "denom_muon_2D_siplt4",    nBinsX_mu, xbins_mu, nBinsY_mu, ybins_mu);
 
   TH1F *numer_vs_sip_el  = new TH1F("numer_vs_sip_el" , "numer_vs_sip_el" , 16,0,8);
   TH1F *denom_vs_sip_el  = new TH1F("denom_vs_sip_el" , "denom_vs_sip_el" , 16,0,8);
   TH1F *numer_vs_sip_mu  = new TH1F("numer_vs_sip_mu" , "numer_vs_sip_mu" , 16,0,8);
   TH1F *denom_vs_sip_mu  = new TH1F("denom_vs_sip_mu" , "denom_vs_sip_mu" , 16,0,8);
+
+  TH1F *numer_vs_pt_el  = new TH1F("numer_vs_pt_el" , "numer, denom vs pt el (sip>4)" , 20,0,200);
+  TH1F *denom_vs_pt_el  = new TH1F("denom_vs_pt_el" , "numer, denom vs pt el (sip>4)" , 20,0,200);
+  TH1F *numer_vs_pt_mu  = new TH1F("numer_vs_pt_mu" , "numer, denom vs pt mu (sip>4)" , 20,0,200);
+  TH1F *denom_vs_pt_mu  = new TH1F("denom_vs_pt_mu" , "numer, denom vs pt mu (sip>4)" , 20,0,200);
+  TH1F *numer_vs_eta_el  = new TH1F("numer_vs_eta_el" , "numer, denom vs eta el (sip>4)" , 20,0,2.5);
+  TH1F *denom_vs_eta_el  = new TH1F("denom_vs_eta_el" , "numer, denom vs eta el (sip>4)" , 20,0,2.5);
+  TH1F *numer_vs_eta_mu  = new TH1F("numer_vs_eta_mu" , "numer, denom vs eta mu (sip>4)" , 20,0,2.5);
+  TH1F *denom_vs_eta_mu  = new TH1F("denom_vs_eta_mu" , "numer, denom vs eta mu (sip>4)" , 20,0,2.5);
 
   TH2F *miniiso_vs_sip_el  = new TH2F("miniiso_vs_sip_el" , "miniiso_vs_sip_el" , 16,0,8, 20,0,0.5);
   TH2F *ptrel_vs_sip_el  = new TH2F("ptrel_vs_sip_el" , "ptrel_vs_sip_el" , 16,0,8, 30,0,30);
@@ -181,7 +228,8 @@ void FR(int doHighHT=-1, TString opts=""){
   TH2F *ptratio_vs_miniiso_mu  = new TH2F("ptratio_vs_miniiso_mu" , "ptratio_vs_miniiso_mu" , 40,0,0.4,20,1.0,3.0);
   TH2F *ptratio_vs_miniiso_el  = new TH2F("ptratio_vs_miniiso_el" , "ptratio_vs_miniiso_el" , 40,0,0.4,20,1.0,3.0);
 
-  TH2F *mva_vs_aeta  = new TH2F("mva_vs_aeta" , "mva_vs_aeta" , 10,0,2.5, 20,-1,1);
+  TH2F *mva_vs_aeta_true  = new TH2F("mva_vs_aeta_true" , "mva_vs_aeta_true" , 10,0,2.5, 20,-1,1);
+  TH2F *mva_vs_aeta_fake  = new TH2F("mva_vs_aeta_fake" , "mva_vs_aeta_fake" , 10,0,2.5, 20,-1,1);
 
   //Set hist errors
   numer_elec_2D_sipgt4->Sumw2();
@@ -195,11 +243,12 @@ void FR(int doHighHT=-1, TString opts=""){
 
   //Declare chain
   TChain *chain = new TChain("t");
-  int fo2_suffix = 0;
   if (doData){
     duplicate_removal::clear_list();
     // chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/Data*.root"  , tag.c_str()));
-    chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/Data*.root");
+    // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/Data*.root");
+    // chain->Add("Data_skim.root");
+    chain->Add("Data_22p0ifb_skim.root");
   }
   else if (!doData){
 
@@ -208,9 +257,16 @@ void FR(int doHighHT=-1, TString opts=""){
     // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v2/TTBAR_PH*.root");
 
       if(doWjetsOnly) {
-          chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/WJets*To*.root");
+          // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/WJets*To*.root");
+          chain->Add("WJets_skim.root");
+      } else if(doSoup) {
+          // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/WJets*To*.root");
+          // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v3/TTBAR_PH*.root");
+          chain->Add("WJets_skim.root");
+          chain->Add("TTBAR_PH_skim.root");
       } else {
-          chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v3/TTBAR_PH*.root");
+          // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v3/TTBAR_PH*.root");
+          chain->Add("TTBAR_PH_skim.root");
       }
 
     // chain->Add("/hadoop/cms/store/user/namin/condor/ss_babies_Aug25/ttbar_ph_1282.root");
@@ -231,7 +287,8 @@ void FR(int doHighHT=-1, TString opts=""){
   while ( (currentFile = (TFile*)fileIter.Next()) ) {
 
     // Get File Content
-    TFile *file = new TFile(currentFile->GetTitle());
+    TString filename = currentFile->GetTitle();
+    TFile *file = new TFile(filename);
     TTree *tree = (TTree*)file->Get("t");
     samesign.Init(tree);
 
@@ -263,7 +320,7 @@ void FR(int doHighHT=-1, TString opts=""){
 
 
 
-      if (doWjetsOnly) {
+      if (doWjetsOnly || (doSoup && filename.Contains("WJets"))) {
           if (ss::hyp_class() == 6) continue;
       } else {
           if (ss::hyp_class() == 4 || ss::hyp_class() == 6) continue;
@@ -273,11 +330,6 @@ void FR(int doHighHT=-1, TString opts=""){
       // recompute these since I will need to now modify one of the cuts in the denominator
       bool inSituFR_id_lep1 = true;
       bool inSituFR_id_lep2 = true;
-
-      // if(abs(ss::lep1_id()) == 11) inSituFR_id_lep1 = fabs(ss::lep1_el_etaSC())<2.5 &&  ss::lep1_el_conv_vtx_flag() == 1 &&  ss::lep1_el_threeChargeAgree() == 1 &&  ss::lep1_el_exp_innerlayers() == 1 &&  ss::lep1_dZ() < 0.1 && passesMVA(2, ss::lep1_id(), ss::lep1_el_etaSC(), ss::lep1_MVA());
-      // else inSituFR_id_lep1 =  ss::lep1_dZ() < 0.1 && ss::lep1_mu_ptErr() && ss::lep1_mediumMuonPOG() &&  fabs(ss::lep1_p4().eta()) < 2.4;
-      // if(abs(ss::lep2_id()) == 11) inSituFR_id_lep2 = fabs(ss::lep2_el_etaSC())<2.5 &&  ss::lep2_el_conv_vtx_flag() == 1 &&  ss::lep2_el_threeChargeAgree() == 1 &&  ss::lep2_el_exp_innerlayers() == 1 &&  ss::lep2_dZ() < 0.1 && passesMVA(2, ss::lep2_id(), ss::lep2_el_etaSC(), ss::lep2_MVA());
-      // else inSituFR_id_lep2 =  ss::lep2_dZ() < 0.1 && ss::lep2_mu_ptErr() && ss::lep2_mediumMuonPOG() &&  fabs(ss::lep2_p4().eta()) < 2.4;
 
       if(abs(ss::lep1_id()) == 11) inSituFR_id_lep1 = fabs(ss::lep1_el_etaSC())<2.5 &&  ss::lep1_el_conv_vtx_flag() == 1 &&  ss::lep1_el_threeChargeAgree() == 1 &&  ss::lep1_el_exp_innerlayers() == 1 &&  ss::lep1_dZ() < 0.1;
       else inSituFR_id_lep1 =  ss::lep1_dZ() < 0.1 && ss::lep1_mu_ptErr() && ss::lep1_mediumMuonPOG() &&  fabs(ss::lep1_p4().eta()) < 2.4;
@@ -289,14 +341,18 @@ void FR(int doHighHT=-1, TString opts=""){
       // if (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2()) continue;
       if (!inSituFR_id_lep1 || !inSituFR_id_lep2) continue; // recomputed versions of variables above
 
-      // won't need this when we update babies // FIXME check that this is the case when you're done with the isfr studies
-      // if (!ss::lep1_isTrigSafeNoIsov1() || !ss::lep2_isTrigSafeNoIsov1()) continue;
 
       //Non-Isolated trigger requirements
       if (ss::is_real_data() && !ss::fired_trigger()) continue; 
 
-      if(abs(ss::lep1_id()) == 11) mva_vs_aeta->Fill(abs(ss::lep1_el_etaSC()), ss::lep1_MVA());
-      if(abs(ss::lep2_id()) == 11) mva_vs_aeta->Fill(abs(ss::lep2_el_etaSC()), ss::lep2_MVA());
+      if(abs(ss::lep1_id()) == 11) {
+          if (isGoodLeg(1)) mva_vs_aeta_true->Fill(abs(ss::lep1_el_etaSC()), ss::lep1_MVA());
+          if (isGoodLeg(2)) mva_vs_aeta_fake->Fill(abs(ss::lep1_el_etaSC()), ss::lep1_MVA());
+      }
+      if(abs(ss::lep2_id()) == 11) {
+          if (isGoodLeg(2)) mva_vs_aeta_true->Fill(abs(ss::lep2_el_etaSC()), ss::lep2_MVA());
+          if (isGoodLeg(1)) mva_vs_aeta_fake->Fill(abs(ss::lep2_el_etaSC()), ss::lep2_MVA());
+      }
 
 
       if(!test_MVA) {
@@ -367,18 +423,37 @@ void FR(int doHighHT=-1, TString opts=""){
       bool numer2 = ss::lep2_multiIso() && (fabs(ss::lep2_dxyPV()) < 0.05);
 
 
+      // // Check how many events are charge flips
+      // bool isCF1 = ss::lep1_id() == -ss::lep1_mc_id();
+      // bool isCF2 = ss::lep2_id() == -ss::lep2_mc_id();
+
+    if ((denom1 && !lep1_sip_good) || (denom2 && !lep2_sip_good)) {
+      textfile << Form("%1d %9d %llu %1d %1d %1d %1d\n", 
+          ss::run(), ss::lumi(), ss::event(), 
+          (denom1 && !lep1_sip_good),
+          (denom1 && !lep1_sip_good && numer1),
+          (denom2 && !lep2_sip_good),
+          (denom2 && !lep2_sip_good && numer2)
+          );
+    }
+
       //histo1 is for electrons with SIP > 4
       if (lep1_elec && denom1 && !lep1_sip_good){
 
         addToCounter("DENOM EL");
         if (numer1) {
             addToCounter("NUMER EL");
+            // if (isCF1) addToCounter("CF: NUMER EL");
             numer_elec_2D_sipgt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);  
             numer_vs_sip_el->Fill(lep1_sip, weight);
+            numer_vs_pt_el->Fill(pt1, weight);
+            numer_vs_eta_el->Fill(fabs(ss::lep1_p4().eta()), weight);
         }
         ptratio_vs_miniiso_el->Fill(miniiso_1, 1.0/ptratio_1);  
         denom_elec_2D_sipgt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);
         denom_vs_sip_el->Fill(lep1_sip, weight);
+        denom_vs_pt_el->Fill(pt1, weight);
+        denom_vs_eta_el->Fill(fabs(ss::lep1_p4().eta()), weight);
 
         miniiso_vs_sip_el->Fill(lep1_sip, miniiso_1, weight);
         ptrel_vs_sip_el->Fill(lep1_sip, ptrel_1, weight);
@@ -390,12 +465,17 @@ void FR(int doHighHT=-1, TString opts=""){
         addToCounter("DENOM EL");
         if (numer2) {
             addToCounter("NUMER EL");
+            // if (isCF2) addToCounter("CF: NUMER EL");
             numer_elec_2D_sipgt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);  
             numer_vs_sip_el->Fill(lep2_sip, weight);
+            numer_vs_pt_el->Fill(pt2, weight);
+            numer_vs_eta_el->Fill(fabs(ss::lep2_p4().eta()), weight);
         }
         ptratio_vs_miniiso_el->Fill(miniiso_2, 1.0/ptratio_2);  
         denom_elec_2D_sipgt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);
         denom_vs_sip_el->Fill(lep2_sip, weight);
+        denom_vs_pt_el->Fill(pt2, weight);
+        denom_vs_eta_el->Fill(fabs(ss::lep2_p4().eta()), weight);
 
         miniiso_vs_sip_el->Fill(lep2_sip, miniiso_2, weight);
         ptrel_vs_sip_el->Fill(lep2_sip, ptrel_2, weight);
@@ -441,12 +521,17 @@ void FR(int doHighHT=-1, TString opts=""){
         addToCounter("DENOM MU");
         if (numer1) {
             addToCounter("NUMER MU");
+            // if (isCF1) addToCounter("CF: NUMER MU");
             numer_muon_2D_sipgt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);  
             numer_vs_sip_mu->Fill(lep1_sip, weight);
+            numer_vs_pt_mu->Fill(pt1, weight);
+            numer_vs_eta_mu->Fill(fabs(ss::lep1_p4().eta()), weight);
         }
         ptratio_vs_miniiso_mu->Fill(miniiso_1, 1.0/ptratio_1);  
         denom_muon_2D_sipgt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);
         denom_vs_sip_mu->Fill(lep1_sip, weight);
+        denom_vs_pt_mu->Fill(pt1, weight);
+        denom_vs_eta_mu->Fill(fabs(ss::lep1_p4().eta()), weight);
 
         miniiso_vs_sip_mu->Fill(lep1_sip, miniiso_1, weight);
         ptrel_vs_sip_mu->Fill(lep1_sip, ptrel_1, weight);
@@ -458,12 +543,17 @@ void FR(int doHighHT=-1, TString opts=""){
         addToCounter("DENOM MU");
         if (numer2) {
             addToCounter("NUMER MU");
+            // if (isCF2) addToCounter("CF: NUMER MU");
             numer_muon_2D_sipgt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);  
             numer_vs_sip_mu->Fill(lep2_sip, weight);
+            numer_vs_pt_mu->Fill(pt2, weight);
+            numer_vs_eta_mu->Fill(fabs(ss::lep2_p4().eta()), weight);
         }
         ptratio_vs_miniiso_mu->Fill(miniiso_2, 1.0/ptratio_2);  
         denom_muon_2D_sipgt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);
         denom_vs_sip_mu->Fill(lep2_sip, weight);
+        denom_vs_pt_mu->Fill(pt2, weight);
+        denom_vs_eta_mu->Fill(fabs(ss::lep2_p4().eta()), weight);
 
         miniiso_vs_sip_mu->Fill(lep2_sip, miniiso_2, weight);
         ptrel_vs_sip_mu->Fill(lep2_sip, ptrel_2, weight);
@@ -505,21 +595,19 @@ void FR(int doHighHT=-1, TString opts=""){
       }
 
     }//event loop
+
+    // samesign.DumpActivatedBranches(tree);
   }//file loop
 
-  //Overflow
-  for (unsigned int i = 1; i < 4; i++){ // <--- GRRR. ROOT starts bin #s at 1 (0 is underflow)
 
-    denom_elec_2D_sipgt4 ->SetBinContent(nBinsX, i, denom_elec_2D_sipgt4->GetBinContent(nBinsX , i) + denom_elec_2D_sipgt4->GetBinContent(nBinsX+1 , i)); 
-    numer_elec_2D_sipgt4 ->SetBinContent(nBinsX, i, numer_elec_2D_sipgt4->GetBinContent(nBinsX , i) + numer_elec_2D_sipgt4->GetBinContent(nBinsX+1 , i)); 
-    denom_elec_2D_siplt4->SetBinContent(nBinsX, i, denom_elec_2D_siplt4->GetBinContent(nBinsX, i) + denom_elec_2D_siplt4->GetBinContent(nBinsX+1, i)); 
-    numer_elec_2D_siplt4->SetBinContent(nBinsX, i, numer_elec_2D_siplt4->GetBinContent(nBinsX, i) + numer_elec_2D_siplt4->GetBinContent(nBinsX+1, i)); 
-
-    denom_muon_2D_sipgt4->SetBinContent(nBinsX, i, denom_muon_2D_sipgt4->GetBinContent(nBinsX, i) + denom_muon_2D_sipgt4->GetBinContent(nBinsX+1, i)); 
-    numer_muon_2D_sipgt4->SetBinContent(nBinsX, i, numer_muon_2D_sipgt4->GetBinContent(nBinsX, i) + numer_muon_2D_sipgt4->GetBinContent(nBinsX+1, i)); 
-    denom_muon_2D_siplt4->SetBinContent(nBinsX, i, denom_muon_2D_siplt4->GetBinContent(nBinsX, i) + denom_muon_2D_siplt4->GetBinContent(nBinsX+1, i)); 
-    numer_muon_2D_siplt4->SetBinContent(nBinsX, i, numer_muon_2D_siplt4->GetBinContent(nBinsX, i) + numer_muon_2D_siplt4->GetBinContent(nBinsX+1, i)); 
-  }
+    handleOverflow(denom_elec_2D_sipgt4);
+    handleOverflow(numer_elec_2D_sipgt4);
+    handleOverflow(denom_elec_2D_siplt4);
+    handleOverflow(numer_elec_2D_siplt4);
+    handleOverflow(denom_muon_2D_sipgt4);
+    handleOverflow(numer_muon_2D_sipgt4);
+    handleOverflow(denom_muon_2D_siplt4);
+    handleOverflow(numer_muon_2D_siplt4);
 
   string pfx = "all";
   string desc = "All H_{T}";
@@ -611,18 +699,22 @@ void FR(int doHighHT=-1, TString opts=""){
   PlotMaker2D(ptratio_vs_miniiso_el, Form("--outputName plots/%s_ptratio_vs_miniiso_el.pdf --noOverflow --setTitle %s 1/ptratio vs miniIso (elec) --Xaxis miniIso --Yaxis 1/p_{T}^{ratio} --colors", pfx.c_str(), desc.c_str()));
   PlotMaker2D(ptratio_vs_miniiso_mu, Form("--outputName plots/%s_ptratio_vs_miniiso_mu.pdf --noOverflow --setTitle %s 1/ptratio vs miniIso (muon) --Xaxis miniIso --Yaxis 1/p_{T}^{ratio} --colors", pfx.c_str(), desc.c_str()));
 
-  PlotMaker2D(mva_vs_aeta, Form("--outputName plots/%s_mva_vs_aeta.pdf --noOverflow --setTitle %s MVA vs abs(etaSC) --Xaxis abs(etaSC) --Yaxis MVA --colors --isLogz", pfx.c_str(), desc.c_str()));
+  PlotMaker2D(mva_vs_aeta_true, Form("--outputName plots/%s_mva_vs_aeta_true.pdf --noOverflow --setTitle %s MVA vs abs(etaSC) for prompt leptons --Xaxis abs(etaSC) --Yaxis MVA --colors --isLogz", pfx.c_str(), desc.c_str()));
+  PlotMaker2D(mva_vs_aeta_fake, Form("--outputName plots/%s_mva_vs_aeta_fake.pdf --noOverflow --setTitle %s MVA vs abs(etaSC) for fake leptons --Xaxis abs(etaSC) --Yaxis MVA --colors --isLogz", pfx.c_str(), desc.c_str()));
 
-  numer_vs_sip_el->Divide(numer_vs_sip_el, denom_vs_sip_el, 1, 1, "b");
-  numer_vs_sip_mu->Divide(numer_vs_sip_mu, denom_vs_sip_mu, 1, 1, "b");
+  singleComparisonMaker(numer_vs_sip_el,denom_vs_sip_el,"denom",Form("FR vs sip3D (elec, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel sip3D --outputName plots/%s_numer_vs_sip_el.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
+  singleComparisonMaker(numer_vs_sip_mu,denom_vs_sip_mu,"denom",Form("FR vs sip3D (muon, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel sip3D --outputName plots/%s_numer_vs_sip_mu.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
 
-  TCanvas *c1 = new TCanvas("c1","c1");
-  numer_vs_sip_el->Draw("pe");
-  c1->SaveAs(Form("plots/%s_FR_vs_sip3d_el.pdf", pfx.c_str()));
-  numer_vs_sip_mu->Draw("pe");
-  c1->SaveAs(Form("plots/%s_FR_vs_sip3d_mu.pdf", pfx.c_str()));
+  singleComparisonMaker(numer_vs_pt_el,denom_vs_pt_el,"denom",Form("FR vs p_{T} (elec, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel p_{T} --outputName plots/%s_numer_vs_pt_el.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
+  singleComparisonMaker(numer_vs_pt_mu,denom_vs_pt_mu,"denom",Form("FR vs p_{T} (muon, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel p_{T} --outputName plots/%s_numer_vs_pt_mu.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
+
+  singleComparisonMaker(numer_vs_eta_el,denom_vs_eta_el,"denom",Form("FR vs abs(#eta) (elec, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel |#eta| --outputName plots/%s_numer_vs_eta_el.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
+  singleComparisonMaker(numer_vs_eta_mu,denom_vs_eta_mu,"denom",Form("FR vs abs(#eta) (muon, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel |#eta| --outputName plots/%s_numer_vs_eta_mu.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
 
   printCounter();
+
+  textfile.close();
+  system("sort -n -k1 -k2 -k3 unsorted.txt > ucsx_ISFR_dump.txt");
 
 }
 
@@ -636,8 +728,9 @@ void prompt_corrected_FR(int doHighHT=-1){
 
     TString htstr = "";
     TString desc = "";
-    if(doHighHT == 0) { htstr = "lowht"; desc = "Low H_{T}"; }
-    if(doHighHT == 1) { htstr = "highht"; desc = "High H_{T}"; }
+    if(doHighHT == -1) { htstr = "all"; desc = "All H_{T}"; }
+    if(doHighHT == 0)  { htstr = "lowht"; desc = "Low H_{T}"; }
+    if(doHighHT == 1)  { htstr = "highht"; desc = "High H_{T}"; }
     TFile* f_data = TFile::Open(Form("data_%s_inSituFR_cone_FR_histos.root", htstr.Data()));
     TFile* f_mc = TFile::Open(Form("prompt_%s_inSituFR_cone_FR_histos.root", htstr.Data()));
 
@@ -665,10 +758,19 @@ void prompt_corrected_FR(int doHighHT=-1){
     corrected_division(data_numer_elec_2D_siplt4, prompt_numer_elec_2D_siplt4, data_denom_elec_2D_siplt4, prompt_denom_elec_2D_siplt4);
     corrected_division(data_numer_muon_2D_siplt4, prompt_numer_muon_2D_siplt4, data_denom_muon_2D_siplt4, prompt_denom_muon_2D_siplt4);
 
-    PlotMaker2D(data_numer_elec_2D_siplt4, Form("--outputName plots/%s_promptCorr_FR_elec_siplt4.pdf --noOverflow --zMax 1.0 --zMin 0.0 --setTitle [Prompt-corr] elec %s FR(sip3D < 4) --Xaxis fake p_{T} --Yaxis |#eta| --text --colors", htstr.Data(), desc.Data())); 
-    PlotMaker2D(data_numer_muon_2D_siplt4, Form("--outputName plots/%s_promptCorr_FR_muon_siplt4.pdf --noOverflow --zMax 1.0 --zMin 0.0 --setTitle [Prompt-corr] muon %s FR(sip3D < 4) --Xaxis fake p_{T} --Yaxis |#eta| --text --colors", htstr.Data(), desc.Data())); 
-    PlotMaker2D(data_numer_elec_2D_sipgt4, Form("--outputName plots/%s_promptCorr_FR_elec_sipgt4.pdf --noOverflow --zMax 1.0 --zMin 0.0 --setTitle [Prompt-corr] elec %s FR(sip3D > 4) --Xaxis fake p_{T} --Yaxis |#eta| --text --colors", htstr.Data(), desc.Data())); 
-    PlotMaker2D(data_numer_muon_2D_sipgt4, Form("--outputName plots/%s_promptCorr_FR_muon_sipgt4.pdf --noOverflow --zMax 1.0 --zMin 0.0 --setTitle [Prompt-corr] muon %s FR(sip3D > 4) --Xaxis fake p_{T} --Yaxis |#eta| --text --colors", htstr.Data(), desc.Data())); 
+    PlotMaker2D(data_numer_elec_2D_siplt4, Form("--outputName plots/%s_promptCorr_FR_elec_siplt4.pdf --noOverflow --setTitle [Prompt-corr] elec %s FR(sip3D < 4) --Xaxis fake p_{T} --Yaxis |#eta| --text --colors", htstr.Data(), desc.Data())); 
+    PlotMaker2D(data_numer_muon_2D_siplt4, Form("--outputName plots/%s_promptCorr_FR_muon_siplt4.pdf --noOverflow --setTitle [Prompt-corr] muon %s FR(sip3D < 4) --Xaxis fake p_{T} --Yaxis |#eta| --text --colors", htstr.Data(), desc.Data())); 
+    PlotMaker2D(data_numer_elec_2D_sipgt4, Form("--outputName plots/%s_promptCorr_FR_elec_sipgt4.pdf --noOverflow --setTitle [Prompt-corr] elec %s FR(sip3D > 4) --Xaxis fake p_{T} --Yaxis |#eta| --text --colors", htstr.Data(), desc.Data())); 
+    PlotMaker2D(data_numer_muon_2D_sipgt4, Form("--outputName plots/%s_promptCorr_FR_muon_sipgt4.pdf --noOverflow --setTitle [Prompt-corr] muon %s FR(sip3D > 4) --Xaxis fake p_{T} --Yaxis |#eta| --text --colors", htstr.Data(), desc.Data())); 
+
+  TFile *file = new TFile(Form("corr_%s_inSituFR_cone_FR_histos.root", htstr.Data()), "RECREATE");
+  file->Write(); 
+
+  data_numer_elec_2D_sipgt4->Write("elec");
+  data_numer_muon_2D_sipgt4->Write("muon");
+  data_numer_elec_2D_siplt4->Write("elec_siplt4");
+  data_numer_muon_2D_siplt4->Write("muon_siplt4");
+  file->Close(); 
 
 }
 

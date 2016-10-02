@@ -63,11 +63,11 @@ def smooth(g,h):
     #now cleanup above the diagonal
     for xbin in range(1,h.GetNbinsX()+1):
         for ybin in range(1,h.GetNbinsY()+1):
-            if ybin>xbin+ybinsfirstxbin: h.SetBinContent(xbin,ybin,-999)
+            if ybin>xbin+ybinsfirstxbin: h.SetBinContent(xbin,ybin,-999 if doSignificance else 0)
 
 sigs = []
 
-for mglu in range (minx,maxx,step): # FIXME lsp mass 1 
+for mglu in range (minx,maxx,step):
     for mlsp in range (miny,maxy,step):
         if mlsp == 0: mlsp = 1
 
@@ -192,12 +192,6 @@ else:
             limit_sp2.append(sp2)
 
 sigs = new_sigs[:]
-
-
-# print limit_obs
-# print limit_exp
-# print limit_sm1
-# print limit_sp1
 
 if redocards==True and redolimits==False: exit()
 

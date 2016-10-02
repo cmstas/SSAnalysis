@@ -101,9 +101,9 @@ int main(int argc, char *argv[]){
       shortname="dy_high_LO";
       break;
     case WJets:
-      name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v2";
-      path="/store/group/snt/run2_25ns_80MiniAODv1/";
-      tag="V08-00-01";
+      name="WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+      path="/store/group/snt/run2_25ns_80MiniAODv2/";
+      tag="V08-00-05";
       shortname="wjets";
       break;
     case TTZQ:
@@ -220,9 +220,9 @@ int main(int argc, char *argv[]){
       shortname="tzq";
       break;
     case TTHtoNonBB:
-      name="ttHToNonbb_M125_13TeV_powheg_pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1";
-      tag="V08-00-01";
-      path="/store/group/snt/run2_25ns_80MiniAODv1/";
+      name="ttHToNonbb_M125_13TeV_powheg_pythia8_RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+      tag="V08-00-05";
+      path="/store/group/snt/run2_25ns_80MiniAODv2/";
       shortname="tthtononbb";
       break;
     case VHtoNonBB:
@@ -238,9 +238,9 @@ int main(int argc, char *argv[]){
       shortname="ttzlow"; 
       break;
     case GGHtoZZto4L:
-    name="GluGluHToZZTo4L_M125_13TeV_powheg2_JHUgenV6_pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1";
-    tag="V08-00-01";
-    path="/store/group/snt/run2_25ns_80MiniAODv1/";
+    name="GluGluHToZZTo4L_M125_13TeV_powheg2_JHUgenV6_pythia8_RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v3";
+    tag="V08-00-05";
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
       shortname="gghtozzto4l";
       break;
     case WGMG:
@@ -263,16 +263,72 @@ int main(int argc, char *argv[]){
       break; 
 
     case TTZnlo:
-      name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v3";
-      tag="V08-00-01";
-      path="/store/group/snt/run2_25ns_80MiniAODv1/";
+      name="TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8_RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14_ext1-v1";
+      tag="V08-00-12";
+      path="/store/group/snt/run2_25ns_80MiniAODv2/";
       shortname="ttznlo";
       break; 
     case TTWnlo:
-      name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
-      tag="V08-00-05";
+      name="TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14_ext1-v1";
+      tag="V08-00-12";
       path="/store/group/snt/run2_25ns_80MiniAODv2/";
       shortname="ttwnlo";
+      break; 
+
+    case WJets100To200:
+    name="WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1";
+    tag="V08-00-05";
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
+    shortname="wjets100to200";
+      break; 
+    case WJets200To400:
+    name="WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1";
+    tag="V08-00-05";
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
+    shortname="wjets200to400";
+      break; 
+    case WJets400To600:
+    name="WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1";
+    tag="V08-00-05";
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
+    shortname="wjets400to600";
+      break; 
+    case WJets600To800:
+    name="WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1";
+    tag="V08-00-05";
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
+    shortname="wjets600to800";
+      break; 
+    case WJets800To1200:
+    name="WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1";
+    tag="V08-00-05";
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
+    shortname="wjets800to1200";
+      break; 
+
+    case WJets1:
+    name="W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+    tag="V08-00-05";
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
+    shortname="wjets1";
+      break; 
+    case WJets2:
+    name="W2JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+    tag="V08-00-05";
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
+    shortname="wjets2";
+      break; 
+    case WJets3:
+    name="W3JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+    tag="V08-00-05";
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
+    shortname="wjets3";
+      break; 
+    case WJets4:
+    name="W4JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+    tag="V08-00-05";
+    path="/store/group/snt/run2_25ns_80MiniAODv2/";
+    shortname="wjets4";
       break; 
 
     //Signal
@@ -466,11 +522,38 @@ int main(int argc, char *argv[]){
       isData = true;
       break;
 
+// ######################################
+// ############## Era G #################
+// ######################################
+    case DataDoubleEGG:
+      name="Run2016G_DoubleEG_MINIAOD_PromptReco-v1/merged/";
+      tag="V08-00-12";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegg";
+      isData = true;
+      break;
+    case DataDoubleMuonG:
+      name="Run2016G_DoubleMuon_MINIAOD_PromptReco-v1/merged/";
+      tag="V08-00-12";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuong";
+      isData = true;
+      break;
+    case DataMuonEGG:
+      name="Run2016G_MuonEG_MINIAOD_PromptReco-v1/merged/";
+      tag="V08-00-12";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegg";
+      isData = true;
+      break;
+
     case T1TTTT_main:
       shortname="t1tttt_main";
       name="SMS-T1tttt_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
       isSignal=1;
       break;
+
+
     case T1TTTT_1100_1to775:
       shortname="t1tttt_1100_1to775";
       name="SMS-T1tttt_mGluino-1100_mLSP-1to775_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
@@ -778,11 +861,12 @@ int main(int argc, char *argv[]){
       isSignal=2;
       break;
   
-    case T6TTWW_50_300to600_225to575:
-      shortname="t6ttww_50_300to600_225to575";
-      name="SMS-T6ttWW_mLSP50_mSbottom-300to600_mChargino-225to575_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      isSignal=3;
+    case T6TTWW_main:
+      shortname="t6ttww_main";
+      name="SMS-T6ttWW_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+      isSignal=10;
       break;
+
     case T6TTWW_50_300to600_75to125:
       shortname="t6ttww_50_300to600_75to125";
       name="SMS-T6ttWW_mLSP50_mSbottom-300to600_mChargino-75to125_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
@@ -848,10 +932,10 @@ int main(int argc, char *argv[]){
      name="SMS-T5qqqqWW_mGl-825to1000_mLSP-0to925_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
      isSignal=4;
      break;
-   case T1TTBB_1225to1400_0to1050:
-     shortname="t1ttbb_1225to1400_0to1050";
-     name="SMS-T1ttbb_mGl-1225to1400_mLSP-0to1050_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-     isSignal=5;
+   case T1TTBB_main:
+     shortname="t1ttbb_main";
+     name="SMS-T1ttbb_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+     isSignal=6;
      break;
    case T1TTBB_1425to1600_0to1250:
      shortname="t1ttbb_1425to1600_0to1250";
@@ -909,10 +993,10 @@ int main(int argc, char *argv[]){
     isSignal=5;
     break;
 
-    case T5ttttDM175_825to1000_500to725:
-      shortname="t5ttttdm175_825to1000_500to725";
-      name="SMS-T5ttttDM175_mGl-825to1000_mLSP-500to725_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15MiniAODv2-FastAsympt25ns_74X_mcRun2_asymptotic_v2-v1";
-      isSignal=6;
+    case T5TTTT_dm175:
+      shortname="t5tttt_dm175";
+      name="SMS-T5tttt_dM175_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
+      isSignal=5;
       break;
     case T5ttttDM175_1025to1200_700to925:
       shortname="t5ttttdm175_1025to1200_700to925";
@@ -1022,7 +1106,7 @@ int main(int argc, char *argv[]){
     case T5TTCC_main:
       shortname="t5ttcc_main";
       name="SMS-T5ttcc_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring16MiniAODv2-PUSpring16Fast_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v3";
-      isSignal=8;
+      isSignal=4;
       break;
     case T5ttcc_1025to1200_875to1075:
       shortname="t5ttcc_1025to1200_875to1075";
@@ -1122,7 +1206,7 @@ int main(int argc, char *argv[]){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  set_goodrun_file("goldenJson_2016_20p1ifb.txt");
+  set_goodrun_file("goldenJson_2016_24p47ifb.txt");
   
   // string jecEra = "Fall15_25nsV2";
   string jecEra = "Spring16_25nsV6";

@@ -115,8 +115,8 @@ class babyMaker {
     float kfactor;      
     string filename;
     int filenumber; 
-    vector <float> genweights;
-    vector <string> genweightsID;
+    // vector <float> genweights;
+    // vector <string> genweightsID;
     bool passedFilterList; 
 
     //Pileup
@@ -245,6 +245,14 @@ class babyMaker {
     bool lep2_isTrigSafeNoIsov1;
     bool lep2_isTrigSafev1;
 
+    // Muon-specific
+    bool lep1_tightMuonPOG;
+    bool lep1_mediumMuonPOG;
+    bool lep1_looseMuonPOG;
+    bool lep2_tightMuonPOG;
+    bool lep2_mediumMuonPOG;
+    bool lep2_looseMuonPOG;
+
     //b-tags
     int nbtags_raw;
     vector <LorentzVector> btags;
@@ -297,13 +305,14 @@ class babyMaker {
     float lep1_tkIso;
     float lep2_tkIso;
 
-    //Gen Leptons
-    vector <LorentzVector> genps_p4;
-    vector <int> genps_id;
-    vector <int> genps_id_mother;
-    vector <int> genps_idx_mother;
-    vector <int> genps_status;
-    vector <int> genps_id_grandma;
+    // //Gen Leptons
+    int ncharginos;
+    // vector <LorentzVector> genps_p4;
+    // vector <int> genps_id;
+    // vector <int> genps_id_mother;
+    // vector <int> genps_idx_mother;
+    // vector <int> genps_status;
+    // vector <int> genps_id_grandma;
 
     //Leptons pass numerator ID
     bool lep1_passes_id;

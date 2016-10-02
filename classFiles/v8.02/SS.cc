@@ -383,6 +383,11 @@ void SSAG::Init(TTree *tree) {
 		nbtags_branch = tree->GetBranch("nbtags");
 		if (nbtags_branch) {nbtags_branch->SetAddress(&nbtags_);}
 	}
+	ncharginos_branch = 0;
+	if (tree->GetBranch("ncharginos") != 0) {
+		ncharginos_branch = tree->GetBranch("ncharginos");
+		if (ncharginos_branch) {ncharginos_branch->SetAddress(&ncharginos_);}
+	}
 	nbtags_raw_branch = 0;
 	if (tree->GetBranch("nbtags_raw") != 0) {
 		nbtags_raw_branch = tree->GetBranch("nbtags_raw");
@@ -1546,6 +1551,7 @@ void SSAG::GetEntry(unsigned int idx)
 		jets_unc_isLoaded = false;
 		btags_isLoaded = false;
 		nbtags_isLoaded = false;
+		ncharginos_isLoaded = false;
 		nbtags_raw_isLoaded = false;
 		sf_dilepTrig_hpt_isLoaded = false;
 		sf_dilepTrig_lpt_isLoaded = false;
@@ -1846,6 +1852,7 @@ void SSAG::LoadAllBranches()
 	if (jets_unc_branch != 0) jets_unc();
 	if (btags_branch != 0) btags();
 	if (nbtags_branch != 0) nbtags();
+	if (ncharginos_branch != 0) ncharginos();
 	if (nbtags_raw_branch != 0) nbtags_raw();
 	if (sf_dilepTrig_hpt_branch != 0) sf_dilepTrig_hpt();
 	if (sf_dilepTrig_lpt_branch != 0) sf_dilepTrig_lpt();
@@ -2886,6 +2893,19 @@ void SSAG::LoadAllBranches()
 			nbtags_isLoaded = true;
 		}
 		return nbtags_;
+	}
+	const int &SSAG::ncharginos()
+	{
+		if (not ncharginos_isLoaded) {
+			if (ncharginos_branch != 0) {
+				ncharginos_branch->GetEntry(index);
+			} else { 
+				printf("branch ncharginos_branch does not exist!\n");
+				exit(1);
+			}
+			ncharginos_isLoaded = true;
+		}
+		return ncharginos_;
 	}
 	const int &SSAG::nbtags_raw()
 	{
@@ -6000,6 +6020,7 @@ namespace ss {
 	const vector<float> &jets_unc() { return samesign.jets_unc(); }
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags() { return samesign.btags(); }
 	const int &nbtags() { return samesign.nbtags(); }
+	const int &ncharginos() { return samesign.ncharginos(); }
 	const int &nbtags_raw() { return samesign.nbtags_raw(); }
 	const float &sf_dilepTrig_hpt() { return samesign.sf_dilepTrig_hpt(); }
 	const float &sf_dilepTrig_lpt() { return samesign.sf_dilepTrig_lpt(); }

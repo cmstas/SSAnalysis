@@ -208,6 +208,9 @@ protected:
 	int      nbtags_;
 	TBranch *nbtags_branch;
 	bool     nbtags_isLoaded;
+	int      ncharginos_;
+	TBranch *ncharginos_branch;
+	bool     ncharginos_isLoaded;
 	int      nbtags_raw_;
 	TBranch *nbtags_raw_branch;
 	bool     nbtags_raw_isLoaded;
@@ -973,6 +976,7 @@ void LoadAllBranches();
 	const vector<float> &jets_unc();
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags();
 	const int &nbtags();
+	const int &ncharginos();
 	const int &nbtags_raw();
 	const float &sf_dilepTrig_hpt();
 	const float &sf_dilepTrig_lpt();
@@ -1277,6 +1281,7 @@ namespace ss {
 	const vector<float> &jets_unc();
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags();
 	const int &nbtags();
+	const int &ncharginos();
 	const int &nbtags_raw();
 	const float &sf_dilepTrig_hpt();
 	const float &sf_dilepTrig_lpt();

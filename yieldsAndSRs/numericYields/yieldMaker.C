@@ -13,18 +13,26 @@
 #include "../../CORE/Tools/dorky/dorky.h"
 #include "../../CORE/Tools/utils.h"
 #include "../../batch/xsec.cc"
-#include "isr_norm_t1tttt.h"
-#include "isr_norm_t5qqqq.h"
-#include "isr_norm_t5qqqq_dm20.h"
+#include "../../batch/points/isr_norm_t1tttt.h"
+#include "../../batch/points/isr_norm_t5qqqq.h"
+#include "../../batch/points/isr_norm_t5qqqq_dm20.h"
+#include "../../batch/points/isr_norm_t6ttww.h"
+#include "../../batch/points/isr_norm_t5tttt_dm175.h"
+#include "../../batch/points/isr_norm_t5ttcc.h"
+#include "../../batch/points/isr_norm_t1ttbb.h"
 
 //Root files on/off
 bool makeRootFiles = 1;
 
 float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
+string tagData = getTagData().Data();  
 
 bool doNoData   = false;
 bool testFakeSR = false;
+bool doRestrictSR = false;
+bool doPlotFailPtRatio = false;
+bool useNLOttWZ = true;
 
 
 float scaleLumi = 1.;//3.0/1.264;//careful!!!
@@ -42,7 +50,8 @@ bool doMIcutMET = false;
 bool doMIcutHT = false;
 float MIcut = 0;
 // TString dir = tag;
-TString dir = "v8.04";
+// TString dir = "v8.04_Sept21";
+TString dir = "v8.04_Oct1";
 
 // // XXX MI limits
 // bool doMIcutMET = true;
@@ -64,7 +73,7 @@ TString dir = "v8.04";
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
-struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_mt1; TH1F* h_mt2; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_l1eta; TH1F* h_l2eta; TH1F* h_type; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; TH1F* BR; TH1F* h_dxy; TH1F* h_dz; TH1F* h_sip3d_lep1; TH1F* h_sip3d_lep2; TH1F* h_mva; TH1F* h_nleps; TH1F *h_mu_dxy; TH1F *h_mu_dz; TH1F *h_mu_sip3d_lep1; TH1F *h_mu_mt1; TH1F *h_mu_l1pt; TH1F *h_mu_l1eta; TH1F *h_mu_lep1_miniIso; TH1F *h_mu_lep1_ptRel; TH1F *h_mu_lep1_ptRatio; TH1F *h_el_dxy; TH1F *h_el_dz; TH1F *h_el_sip3d_lep1; TH1F *h_el_mt1; TH1F *h_el_l1pt; TH1F *h_el_l1eta; TH1F *h_el_lep1_miniIso; TH1F *h_el_lep1_ptRel; TH1F *h_el_lep1_ptRatio; TH1F *h_mu_sip3d_lep2; TH1F *h_mu_lep2_miniIso; TH1F *h_mu_lep2_ptRel; TH1F *h_mu_lep2_ptRatio; TH1F *h_el_sip3d_lep2; TH1F *h_el_lep2_miniIso; TH1F *h_el_lep2_ptRel; TH1F *h_el_lep2_ptRatio; TH1F *h_mu_l2pt; TH1F *h_mu_l2eta; TH1F *h_el_l2pt; TH1F *h_el_l2eta; };
+struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_mt1; TH1F* h_mt2; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_l1eta; TH1F* h_l2eta; TH1F* h_type; TH1F* h_charge; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; TH1F* BR; TH1F* h_dxy; TH1F* h_dz; TH1F* h_sip3d_lep1; TH1F* h_sip3d_lep2; TH1F* h_mva; TH1F* h_nleps; TH1F *h_mu_dxy; TH1F *h_mu_dz; TH1F *h_mu_sip3d_lep1; TH1F *h_mu_mt1; TH1F *h_mu_l1pt; TH1F *h_mu_l1eta; TH1F *h_mu_lep1_miniIso; TH1F *h_mu_lep1_ptRel; TH1F *h_mu_lep1_ptRatio; TH1F *h_el_dxy; TH1F *h_el_dz; TH1F *h_el_sip3d_lep1; TH1F *h_el_mt1; TH1F *h_el_l1pt; TH1F *h_el_l1eta; TH1F *h_el_lep1_miniIso; TH1F *h_el_lep1_ptRel; TH1F *h_el_lep1_ptRatio; TH1F *h_mu_sip3d_lep2; TH1F *h_mu_lep2_miniIso; TH1F *h_mu_lep2_ptRel; TH1F *h_mu_lep2_ptRatio; TH1F *h_el_sip3d_lep2; TH1F *h_el_lep2_miniIso; TH1F *h_el_lep2_ptRel; TH1F *h_el_lep2_ptRatio; TH1F *h_mu_l2pt; TH1F *h_mu_l2eta; TH1F *h_el_l2pt; TH1F *h_el_l2eta; TH1F *h_fakeapp_HH; TH1F *h_fakeapp_HL; TH1F *h_fakeapp_LL; };
 
 
 
@@ -141,47 +150,56 @@ void getyields(){
   TChain *t5qqqqww_1200_chain = new TChain("t","t5qqqqww_1200"); 
   TChain *t5qqqqww_deg_chain = new TChain("t","t5qqqqww_deg"); 
   
-  // // //Fill chains
-  // ttbar_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"       , tag.c_str())); 
-  // wjets_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root"       , tag.c_str()));
-  // dy_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_high.root"        , tag.c_str()));
-  // dy_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_low.root"         , tag.c_str()));
-  // ttw_chain    ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"            , tag.c_str())); 
-  // ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ.root"           , tag.c_str())); 
-  // ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZLOW.root"         , tag.c_str())); 
-  // ttzh_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"     , tag.c_str()));
-  // wz_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"             , tag.c_str()));
-  // ww_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"           , tag.c_str()));
-  // xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TG.root"             , tag.c_str()));
-  // xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTG.root"            , tag.c_str()));
-  // xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WGToLNuG.root"           , tag.c_str()));
-  // xg_chain     ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZG.root"             , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZZ.root"             , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/GGHtoZZto4L.root"    , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"            , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"            , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWW.root"            , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/VHtoNonBB.root"      , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TZQ.root"            , tag.c_str()));
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str())); // FIXME-TTTT
-  // rares_chain  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWDPS.root"          , tag.c_str()));
-  // tttt_chain   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTTT.root"           , tag.c_str()));
-  // //data
-  // data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str()));
-  // data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str()));
-  // data_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str()));
-  // //flips
-  // flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"     , tag.c_str()));
-  // flips_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"      , tag.c_str()));
-  // //fakes
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleMuon*.root"    , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataDoubleEG*.root"  , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DataMuonEG*.root"      , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"                   , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ.root"                  , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"                    , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root"            , tag.c_str()));
-  // fakes_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"                  , tag.c_str()));
+  TString pfx  = Form("/nfs-7/userdata/ss2015/ssBabies/%s/", tag.c_str());
+  TString pfxData  = Form("/nfs-7/userdata/ss2015/ssBabies/%s/", tagData.c_str());
+  // TString pfx  = "./skim/";
+
+  // //Fill chains
+  ttbar_chain  ->Add(Form("%s/TTBAR_PH.root"       , pfx.Data())); 
+  wjets_chain  ->Add(Form("%s/WJets.root"       , pfx.Data()));
+  dy_chain     ->Add(Form("%s/DY_high.root"        , pfx.Data()));
+  dy_chain     ->Add(Form("%s/DY_low.root"         , pfx.Data()));
+    if (useNLOttWZ) {
+  ttw_chain    ->Add(Form("%s/TTWnlo_new.root"            , pfx.Data())); 
+  ttzh_chain   ->Add(Form("%s/TTZnlo_new.root"           , pfx.Data())); 
+    } else {
+  ttw_chain    ->Add(Form("%s/TTW.root"            , pfx.Data())); 
+  ttzh_chain   ->Add(Form("%s/TTZ.root"           , pfx.Data())); 
+    }
+  ttzh_chain   ->Add(Form("%s/TTZLOW.root"         , pfx.Data())); 
+  ttzh_chain   ->Add(Form("%s/TTHtoNonBB.root"     , pfx.Data()));
+  wz_chain     ->Add(Form("%s/WZ.root"             , pfx.Data()));
+  ww_chain     ->Add(Form("%s/QQWW.root"           , pfx.Data()));
+  xg_chain     ->Add(Form("%s/TG.root"             , pfx.Data()));
+  xg_chain     ->Add(Form("%s/TTG.root"            , pfx.Data()));
+  xg_chain     ->Add(Form("%s/WGToLNuG.root"           , pfx.Data()));
+  xg_chain     ->Add(Form("%s/ZG.root"             , pfx.Data()));
+  rares_chain  ->Add(Form("%s/ZZ.root"             , pfx.Data()));
+  rares_chain  ->Add(Form("%s/GGHtoZZto4L.root"    , pfx.Data()));
+  rares_chain  ->Add(Form("%s/WWZ.root"            , pfx.Data()));
+  rares_chain  ->Add(Form("%s/WZZ.root"            , pfx.Data()));
+  rares_chain  ->Add(Form("%s/WWW.root"            , pfx.Data()));
+  rares_chain  ->Add(Form("%s/VHtoNonBB.root"      , pfx.Data()));
+  rares_chain  ->Add(Form("%s/TZQ.root"            , pfx.Data()));
+  rares_chain  ->Add(Form("%s/TTTT.root"           , pfx.Data())); // FIXME-TTTT
+  rares_chain  ->Add(Form("%s/WWDPS.root"          , pfx.Data()));
+  tttt_chain   ->Add(Form("%s/TTTT.root"           , pfx.Data()));
+  //data
+  data_chain   ->Add(Form("%s/DataDoubleMuon*.root"    , pfxData.Data()));
+  data_chain   ->Add(Form("%s/DataDoubleEG*.root"  , pfxData.Data()));
+  data_chain   ->Add(Form("%s/DataMuonEG*.root"      , pfxData.Data()));
+  //flips
+  flips_chain  ->Add(Form("%s/DataMuonEG*.root"     , pfxData.Data()));
+  flips_chain  ->Add(Form("%s/DataDoubleEG*.root"      , pfxData.Data()));
+  //fakes
+  fakes_chain  ->Add(Form("%s/DataDoubleMuon*.root"    , pfxData.Data()));
+  fakes_chain  ->Add(Form("%s/DataDoubleEG*.root"  , pfxData.Data()));
+  fakes_chain  ->Add(Form("%s/DataMuonEG*.root"      , pfxData.Data()));
+  fakes_chain  ->Add(Form("%s/TTW.root"                   , pfx.Data()));
+  fakes_chain  ->Add(Form("%s/TTZ.root"                  , pfx.Data()));
+  fakes_chain  ->Add(Form("%s/WZ.root"                    , pfx.Data()));
+  fakes_chain  ->Add(Form("%s/TTHtoNonBB.root"            , pfx.Data()));
+  fakes_chain  ->Add(Form("%s/QQWW.root"                  , pfx.Data()));
 
   // //signals fullsim
   // t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root"              , tag.c_str()));
@@ -196,12 +214,15 @@ void getyields(){
 
 
   // // //Get yields
-  // #include "fs_t1tttt.h"
-  // #include "fs_t5qqqqvv.h"
-  // #include "fs_t5qqqqvv_dm20.h"
-  // #include "fs_t5ttcc.h"
+#include "fs_t1tttt.h"
+// #include "fs_t5qqqqvv.h"
+// #include "fs_t5qqqqvv_dm20.h"
+// #include "fs_t6ttww.h"
+// #include "fs_t5ttcc.h"
+// #include "fs_t5tttt_dm175.h"
+// #include "fs_t1ttbb.h"
 
-  #include "fs_cutflow.h"
+  // #include "fs_cutflow.h"
 
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
   ttbar_chain->SetTitle("ttbar_fa");
@@ -250,15 +271,6 @@ void getyields(){
 
   // textfile_global.close();
   // system("sort -n -k1 -k2 -k3 unsorted_global.txt > ucsx_SR_dump_global.txt");
-
-  //signals fast sim
-  //#include "fs_t6ttww_50.h"
-  //#include "fs_t5qqqqvv.h"
-  //#include "fs_t5qqqqww.h"
-  //#include "fs_t1ttbb.h"
-  //#include "fs_t5ttttdm175.h"
-  //#include "fs_t5tttt_degen.h"
-  //#include "fs_t5ttcc.h"
 
   yields_t& ttbar    = results_ttbar.first;
   yields_t& ttbar_ff = results_ttbar_ff.first;
@@ -681,7 +693,51 @@ void getyields(){
   type_plots.push_back(pair<TH1F*, float>(p_rares.h_type, roughSystRARES ));
   type_plots.push_back(pair<TH1F*, float>(p_flips.h_type, roughSystFLIPS ));
   type_plots.push_back(pair<TH1F*, float>(p_fakes.h_type, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_type, type_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/type_all_SS.pdf --xAxisLabel dilep type --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_type, type_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/type_all_SS.pdf --xAxisLabel dilep type --xAxisBinLabels MM,EM (M tight),EM (e tight),EE --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+
+  vector<pair<TH1F*, float> > charge_plots;
+  charge_plots.push_back(pair<TH1F*, float>(p_ttw.h_charge  , roughSystTTW   ));
+  charge_plots.push_back(pair<TH1F*, float>(p_ttzh.h_charge , roughSystTTZH  ));
+  charge_plots.push_back(pair<TH1F*, float>(p_wz.h_charge   , roughSystWZ    ));
+  charge_plots.push_back(pair<TH1F*, float>(p_ww.h_charge   , roughSystWW    ));
+  charge_plots.push_back(pair<TH1F*, float>(p_xg.h_charge   , roughSystXG    ));
+  charge_plots.push_back(pair<TH1F*, float>(p_rares.h_charge, roughSystRARES ));
+  charge_plots.push_back(pair<TH1F*, float>(p_flips.h_charge, roughSystFLIPS ));
+  charge_plots.push_back(pair<TH1F*, float>(p_fakes.h_charge, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_charge, charge_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/charge_all_SS.pdf --xAxisLabel dilep charge  --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+
+  vector<pair<TH1F*, float> > fakeapp_HH_plots;
+  fakeapp_HH_plots.push_back(pair<TH1F*, float>(p_ttw.h_fakeapp_HH  , roughSystTTW     ));
+  fakeapp_HH_plots.push_back(pair<TH1F*, float>(p_ttzh.h_fakeapp_HH , roughSystTTZH    ));
+  fakeapp_HH_plots.push_back(pair<TH1F*, float>(p_wz.h_fakeapp_HH   , roughSystWZ      ));
+  fakeapp_HH_plots.push_back(pair<TH1F*, float>(p_ww.h_fakeapp_HH   , roughSystWW      ));
+  fakeapp_HH_plots.push_back(pair<TH1F*, float>(p_xg.h_fakeapp_HH   , roughSystXG      ));
+  fakeapp_HH_plots.push_back(pair<TH1F*, float>(p_rares.h_fakeapp_HH, roughSystRARES   ));
+  fakeapp_HH_plots.push_back(pair<TH1F*, float>(p_flips.h_fakeapp_HH, roughSystFLIPS   ));
+  fakeapp_HH_plots.push_back(pair<TH1F*, float>(p_fakes.h_fakeapp_HH, roughSystFAKESHH ));
+  dataMCplotMaker(new TH1F("data","data",33,0.5,33.5), fakeapp_HH_plots, titles, "HH unweighted tight-loose ", "", Form("--lumi %.1f --outputName plots/fakeapp_HH.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+
+  vector<pair<TH1F*, float> > fakeapp_HL_plots;
+  fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_ttw.h_fakeapp_HL  , roughSystTTW     ));
+  fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_ttzh.h_fakeapp_HL , roughSystTTZH    ));
+  fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_wz.h_fakeapp_HL   , roughSystWZ      ));
+  fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_ww.h_fakeapp_HL   , roughSystWW      ));
+  fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_xg.h_fakeapp_HL   , roughSystXG      ));
+  fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_rares.h_fakeapp_HL, roughSystRARES   ));
+  fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_flips.h_fakeapp_HL, roughSystFLIPS   ));
+  fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_fakes.h_fakeapp_HL, roughSystFAKESHH ));
+  dataMCplotMaker(new TH1F("data","data",27,0.5,27.5), fakeapp_HL_plots, titles, "HL unweighted tight-loose ", "", Form("--lumi %.1f --outputName plots/fakeapp_HL.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+
+  vector<pair<TH1F*, float> > fakeapp_LL_plots;
+  fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_ttw.h_fakeapp_LL  , roughSystTTW     ));
+  fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_ttzh.h_fakeapp_LL , roughSystTTZH    ));
+  fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_wz.h_fakeapp_LL   , roughSystWZ      ));
+  fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_ww.h_fakeapp_LL   , roughSystWW      ));
+  fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_xg.h_fakeapp_LL   , roughSystXG      ));
+  fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_rares.h_fakeapp_LL, roughSystRARES   ));
+  fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_flips.h_fakeapp_LL, roughSystFLIPS   ));
+  fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_fakes.h_fakeapp_LL, roughSystFAKESHH ));
+  dataMCplotMaker(new TH1F("data","data",8,0.5,8.5), fakeapp_LL_plots, titles, "LL unweighted tight-loose ", "", Form("--lumi %.1f --outputName plots/fakeapp_LL.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   // >>>
   vector<pair<TH1F*, float> > sip3d_lep1_plots;
@@ -1228,7 +1284,7 @@ void getyields(){
   dxy_plots.push_back(pair<TH1F*, float>(p_rares.h_dxy, roughSystRARES ));
   dxy_plots.push_back(pair<TH1F*, float>(p_flips.h_dxy, roughSystFLIPS ));
   dxy_plots.push_back(pair<TH1F*, float>(p_fakes.h_dxy, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_met, dxy_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/dxy_all_SS.pdf --xAxisLabel dxy --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.h_dxy, dxy_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/dxy_all_SS.pdf --xAxisLabel dxy --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > dz_plots;
   dz_plots.push_back(pair<TH1F*, float>(p_ttw.h_dz  , roughSystTTW   ));
@@ -1403,8 +1459,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   bool isFastSimSignal = false;
   bool isT1ttbb = false;
   bool isT5qqqqVV = false;
+  bool isT6ttWW = false;
+  bool isT5tttt_dm175 = false;
   bool isT5qqqqVV_dm20 = false;
   bool isT1tttt = false;
+  bool isT5ttcc = false;
   float invFilterEff = 1.;
   vector<float> mysparms;
   if (isSignal && chainTitle.Contains("fs_")) {
@@ -1420,9 +1479,19 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     if (chainTitle.Contains("fs_t5qqqqvv_dm20")) {
       isT5qqqqVV_dm20 = true;
       invFilterEff = 9./4.;
+      invFilterEff *= 0.446; // efficiency of 1 lepton filter according to MCM for this sample
     }
     if (chainTitle.Contains("fs_t1tttt")) {
       isT1tttt = true;
+    }
+    if (chainTitle.Contains("fs_t6ttww")) {
+      isT6ttWW = true;
+    }
+    if (chainTitle.Contains("fs_t5tttt_dm175")) {
+      isT5tttt_dm175 = true;
+    }
+    if (chainTitle.Contains("fs_t5ttcc")) {
+      isT5ttcc = true;
     }
     TObjArray *tx = chainTitle.Tokenize("_");
     for (int i = 0; i < tx->GetEntries(); i++) {
@@ -1501,6 +1570,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   p_result.SRLL.TOTAL     = new TH1F(Form("SRLL_TOTAL_%s"  , chainTitleCh) , Form("SRLL_TOTAL_%s"  , chainTitleCh), 8 , 0.5 ,  8.5);
   p_result.BR             = new TH1F(Form("BR_%s"          , chainTitleCh) , Form("BR_%s"          , chainTitleCh), 4 , 0   , 4);   
   p_result.h_type         = new TH1F(Form("type_%s"        , chainTitleCh) , Form("type_%s"        , chainTitleCh), 4 , 0   , 4);   
+  p_result.h_charge       = new TH1F(Form("charge_%s"      , chainTitleCh) , Form("charge_%s"      , chainTitleCh), 3 , -1  , 2);   
   p_result.h_lep1_miniIso = new TH1F(Form("lep1_miniIso_%s", chainTitleCh) , Form("lep1_miniIso_%s", chainTitleCh), 30, 0   , 0.2); 
   p_result.h_lep2_miniIso = new TH1F(Form("lep2_miniIso_%s", chainTitleCh) , Form("lep2_miniIso_%s", chainTitleCh), 30, 0   , 0.2); 
   p_result.h_lep1_ptRatio = new TH1F(Form("lep1_ptRatio_%s", chainTitleCh) , Form("lep1_ptRatio_%s", chainTitleCh), 30, 0   , 1.5); 
@@ -1519,7 +1589,10 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   p_result.h_el_lep2_ptRatio = new TH1F(Form("lep2_el_ptRatio_%s", chainTitleCh) , Form("lep2_el_ptRatio_%s", chainTitleCh), 30, 0   , 1.5); 
   p_result.h_el_lep1_ptRel   = new TH1F(Form("lep1_el_ptRel_%s"  , chainTitleCh) , Form("lep1_el_ptRel_%s"  , chainTitleCh), 25, 0   , 50);  
   p_result.h_el_lep2_ptRel   = new TH1F(Form("lep2_el_ptRel_%s"  , chainTitleCh) , Form("lep2_el_ptRel_%s"  , chainTitleCh), 25, 0   , 50);  
-
+  
+  p_result.h_fakeapp_HH        = new TH1F(Form("fakeapp_HH_%s"      , chainTitleCh) , Form("fakeapp_HH_%s"      , chainTitleCh) , 33  , 0.5, 33.5);
+  p_result.h_fakeapp_HL        = new TH1F(Form("fakeapp_HL_%s"      , chainTitleCh) , Form("fakeapp_HL_%s"      , chainTitleCh) , 27  , 0.5, 27.5);
+  p_result.h_fakeapp_LL        = new TH1F(Form("fakeapp_LL_%s"      , chainTitleCh) , Form("fakeapp_LL_%s"      , chainTitleCh) , 8   , 0.5, 8.5 );
 
   //For FR variations
   plots_t p_fake_alt_up;
@@ -1717,6 +1790,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   initHistError(doPoisson, p_result.SRLL.TOTAL       );
   initHistError(doPoisson, p_result.BR               );
   initHistError(doPoisson, p_result.h_type           );
+  initHistError(doPoisson, p_result.h_charge         );
   initHistError(doPoisson, p_result.h_lep1_miniIso   );
   initHistError(doPoisson, p_result.h_lep2_miniIso   );
   initHistError(doPoisson, p_result.h_lep1_ptRatio   );
@@ -1850,13 +1924,16 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	}
 	if (!isTheRightSample) continue;
 	//filter on number of charginos for t1ttbb and t5qqqqvv
-	if (isT1ttbb || isT5qqqqVV) {
+	if (isT5qqqqVV) {
 	  int nCh = 0;
 	  for (unsigned int gp=0;gp<ss::genps_id().size();gp++) {
 	    if (abs(ss::genps_id()[gp])==1000024 && ss::genps_status()[gp]==22) nCh++;
 	  }
 	  if (nCh<2) continue;
 	}
+    if(isT1ttbb) {
+        if (ss::ncharginos() < 2) continue; // computed in babies for new ntuples
+    }
       }
 
       //Reject not triggered
@@ -1912,7 +1989,24 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
               weight            *= ss::weight_isr()   *isr_norm_t5qqqq(mysparms[0], mysparms[1],  0);
               weight_alt_ISR_up *= ss::weight_isr_UP()*isr_norm_t5qqqq(mysparms[0], mysparms[1],  1);
               weight_alt_ISR_dn *= ss::weight_isr_DN()*isr_norm_t5qqqq(mysparms[0], mysparms[1], -1);
+          } else if(isT6ttWW) {
+              weight            *= ss::weight_isr()   *isr_norm_t6ttww(mysparms[0], mysparms[1],  0);
+              weight_alt_ISR_up *= ss::weight_isr_UP()*isr_norm_t6ttww(mysparms[0], mysparms[1],  1);
+              weight_alt_ISR_dn *= ss::weight_isr_DN()*isr_norm_t6ttww(mysparms[0], mysparms[1], -1);
+          } else if(isT5tttt_dm175) {
+              weight            *= ss::weight_isr()   *isr_norm_t5tttt_dm175(mysparms[0], mysparms[1],  0);
+              weight_alt_ISR_up *= ss::weight_isr_UP()*isr_norm_t5tttt_dm175(mysparms[0], mysparms[1],  1);
+              weight_alt_ISR_dn *= ss::weight_isr_DN()*isr_norm_t5tttt_dm175(mysparms[0], mysparms[1], -1);
+          } else if(isT5ttcc) {
+              weight            *= ss::weight_isr()   *isr_norm_t5ttcc(mysparms[0], mysparms[1],  0);
+              weight_alt_ISR_up *= ss::weight_isr_UP()*isr_norm_t5ttcc(mysparms[0], mysparms[1],  1);
+              weight_alt_ISR_dn *= ss::weight_isr_DN()*isr_norm_t5ttcc(mysparms[0], mysparms[1], -1);
+          } else if(isT1ttbb) {
+              weight            *= ss::weight_isr()   *isr_norm_t1ttbb(mysparms[0], mysparms[1],  0);
+              weight_alt_ISR_up *= ss::weight_isr_UP()*isr_norm_t1ttbb(mysparms[0], mysparms[1],  1);
+              weight_alt_ISR_dn *= ss::weight_isr_DN()*isr_norm_t1ttbb(mysparms[0], mysparms[1], -1);
           }
+
 	// if (ss::glglpt()>600.) weight_alt_ISR*=1.30;
 	// else if (ss::glglpt()>400.) weight_alt_ISR*=1.15;
       }
@@ -2003,8 +2097,10 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	}
       }
 
-      // int temp_sr = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt); // FIXME
-      // if (temp_sr < 30) continue; // FIXME
+      anal_type_t temp_categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
+      int temp_sr = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
+      if (doRestrictSR && (temp_sr < 30)) continue;
+      // if (doRestrictSR && (temp_categ != HighHigh || temp_sr != 17)) continue; // FIXME NJA
 
       //Only keep good events
       int ssclass = 3;
@@ -2081,6 +2177,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
           //     ss::lep2_id(), ss::lep2_coneCorrPt(), ss::lep2_p4().eta(),
           //     ss::ht(), weight, temp_sr) << endl;
 
+        if (ss::is_real_data() && (ss::lep1_passes_id() + ss::lep2_passes_id() == 1)) {
+          if (temp_categ == HighHigh) p_result.h_fakeapp_HH->Fill(temp_sr);
+          if (temp_categ == HighLow)  p_result.h_fakeapp_HL->Fill(temp_sr);
+          if (temp_categ == LowLow)   p_result.h_fakeapp_LL->Fill(temp_sr);
+        }
       }
 
       //Get pt ratio
@@ -2213,6 +2314,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
 
 
+      bool lep1_fail_ptratio = ptratio_1 < (abs(ss::lep1_id()) == 11 ? 0.80 : 0.76);
+      bool lep2_fail_ptratio = ptratio_2 < (abs(ss::lep2_id()) == 11 ? 0.80 : 0.76);
 
 
       if (doNoData && testFakeSR) {
@@ -2261,61 +2364,67 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
                                     y_result.TOTAL += weight;
 
       //Fill kinem plots
-      p_result.h_dxy         ->Fill(ss::lep1_dxyPV()                                                                        , weight);
-      p_result.h_dxy         ->Fill(ss::lep2_dxyPV()                                                                        , weight);
-      p_result.h_dz          ->Fill(ss::lep1_dZ()                                                                           , weight);
-      p_result.h_dz          ->Fill(ss::lep2_dZ()                                                                           , weight);
-      p_result.h_sip3d_lep1       ->Fill(ss::lep1_sip()                                                                          , weight);
-      p_result.h_sip3d_lep2       ->Fill(ss::lep2_sip()                                                                          , weight);
-      p_result.h_mt1       ->Fill(mtl1                                                                                   , weight);
-      p_result.h_mt2       ->Fill(mtl2                                                                                   , weight);
-      p_result.h_l1pt        ->Fill(lep1_pt                                                                                 , weight);
-      p_result.h_l2pt        ->Fill(lep2_pt                                                                                 , weight);
-      p_result.h_l1eta       ->Fill(ss::lep1_p4().eta()                                                                     , weight);
-      p_result.h_l2eta       ->Fill(ss::lep2_p4().eta()                                                                     , weight);
-      p_result.h_lep1_miniIso->Fill(ss::lep1_miniIso()                                                                      , weight);
-      p_result.h_lep2_miniIso->Fill(ss::lep2_miniIso()                                                                      , weight);
-      p_result.h_lep1_ptRel  ->Fill(ss::lep1_ptrel_v1()                                                                     , weight);
-      p_result.h_lep2_ptRel  ->Fill(ss::lep2_ptrel_v1()                                                                     , weight);
-      p_result.h_lep1_ptRatio->Fill(ptratio_1                                                                               , weight);
-      p_result.h_lep2_ptRatio->Fill(ptratio_2                                                                               , weight);
-
-
-      if(abs(ss::lep1_id()) == 13) {
-          p_result.h_mu_sip3d_lep1  ->Fill(ss::lep1_sip()                                                                          , weight);
-          p_result.h_mu_l1pt        ->Fill(lep1_pt                                                                                 , weight);
-          p_result.h_mu_l1eta       ->Fill(ss::lep1_p4().eta()                                                                     , weight);
-          p_result.h_mu_lep1_miniIso->Fill(ss::lep1_miniIso()                                                                      , weight);
-          p_result.h_mu_lep1_ptRel  ->Fill(ss::lep1_ptrel_v1()                                                                     , weight);
-          p_result.h_mu_lep1_ptRatio->Fill(ptratio_1                                                                               , weight);
-      } else {
-          p_result.h_el_sip3d_lep1  ->Fill(ss::lep1_sip()                                                                          , weight);
-          p_result.h_el_l1pt        ->Fill(lep1_pt                                                                                 , weight);
-          p_result.h_el_l1eta       ->Fill(ss::lep1_p4().eta()                                                                     , weight);
-          p_result.h_el_lep1_miniIso->Fill(ss::lep1_miniIso()                                                                      , weight);
-          p_result.h_el_lep1_ptRel  ->Fill(ss::lep1_ptrel_v1()                                                                     , weight);
-          p_result.h_el_lep1_ptRatio->Fill(ptratio_1                                                                               , weight);
+      if ( (doPlotFailPtRatio && lep1_fail_ptratio) || (!doPlotFailPtRatio) ) {
+          p_result.h_dxy         ->Fill(ss::lep1_dxyPV()                                                                        , weight);
+          p_result.h_dz          ->Fill(ss::lep1_dZ()                                                                           , weight);
+          p_result.h_sip3d_lep1       ->Fill(ss::lep1_sip()                                                                          , weight);
+          p_result.h_mt1       ->Fill(mtl1                                                                                   , weight);
+          p_result.h_l1pt        ->Fill(lep1_pt                                                                                 , weight);
+          p_result.h_l1eta       ->Fill(ss::lep1_p4().eta()                                                                     , weight);
+          p_result.h_lep1_miniIso->Fill(ss::lep1_miniIso()                                                                      , weight);
+          p_result.h_lep1_ptRel  ->Fill(ss::lep1_ptrel_v1()                                                                     , weight);
+          p_result.h_lep1_ptRatio->Fill(ptratio_1                                                                               , weight);
+          if (abs(ss::lep1_id()) == 11) p_result.h_mva->Fill(ss::lep1_MVA()                                                     , weight);
+          if(abs(ss::lep1_id()) == 13) {
+              p_result.h_mu_sip3d_lep1  ->Fill(ss::lep1_sip()                                                                          , weight);
+              p_result.h_mu_l1pt        ->Fill(lep1_pt                                                                                 , weight);
+              p_result.h_mu_l1eta       ->Fill(ss::lep1_p4().eta()                                                                     , weight);
+              p_result.h_mu_lep1_miniIso->Fill(ss::lep1_miniIso()                                                                      , weight);
+              p_result.h_mu_lep1_ptRel  ->Fill(ss::lep1_ptrel_v1()                                                                     , weight);
+              p_result.h_mu_lep1_ptRatio->Fill(ptratio_1                                                                               , weight);
+          } else {
+              p_result.h_el_sip3d_lep1  ->Fill(ss::lep1_sip()                                                                          , weight);
+              p_result.h_el_l1pt        ->Fill(lep1_pt                                                                                 , weight);
+              p_result.h_el_l1eta       ->Fill(ss::lep1_p4().eta()                                                                     , weight);
+              p_result.h_el_lep1_miniIso->Fill(ss::lep1_miniIso()                                                                      , weight);
+              p_result.h_el_lep1_ptRel  ->Fill(ss::lep1_ptrel_v1()                                                                     , weight);
+              p_result.h_el_lep1_ptRatio->Fill(ptratio_1                                                                               , weight);
+          }
       }
 
-      if(abs(ss::lep2_id()) == 13) {
-          p_result.h_mu_sip3d_lep2  ->Fill(ss::lep2_sip()                                                                          , weight);
-          p_result.h_mu_l2pt        ->Fill(lep2_pt                                                                                 , weight);
-          p_result.h_mu_l2eta       ->Fill(ss::lep2_p4().eta()                                                                     , weight);
-          p_result.h_mu_lep2_miniIso->Fill(ss::lep2_miniIso()                                                                      , weight);
-          p_result.h_mu_lep2_ptRel  ->Fill(ss::lep2_ptrel_v1()                                                                     , weight);
-          p_result.h_mu_lep2_ptRatio->Fill(ptratio_2                                                                               , weight);
-      } else {
-          p_result.h_el_sip3d_lep2  ->Fill(ss::lep2_sip()                                                                          , weight);
-          p_result.h_el_l2pt        ->Fill(lep2_pt                                                                                 , weight);
-          p_result.h_el_l2eta       ->Fill(ss::lep2_p4().eta()                                                                     , weight);
-          p_result.h_el_lep2_miniIso->Fill(ss::lep2_miniIso()                                                                      , weight);
-          p_result.h_el_lep2_ptRel  ->Fill(ss::lep2_ptrel_v1()                                                                     , weight);
-          p_result.h_el_lep2_ptRatio->Fill(ptratio_2                                                                               , weight);
+      if ( (doPlotFailPtRatio && lep2_fail_ptratio) || (!doPlotFailPtRatio) ) {
+          p_result.h_dxy         ->Fill(ss::lep2_dxyPV()                                                                        , weight);
+          p_result.h_dz          ->Fill(ss::lep2_dZ()                                                                           , weight);
+          p_result.h_sip3d_lep2       ->Fill(ss::lep2_sip()                                                                          , weight);
+          p_result.h_mt2       ->Fill(mtl2                                                                                   , weight);
+          p_result.h_l2pt        ->Fill(lep2_pt                                                                                 , weight);
+          p_result.h_l2eta       ->Fill(ss::lep2_p4().eta()                                                                     , weight);
+          p_result.h_lep2_miniIso->Fill(ss::lep2_miniIso()                                                                      , weight);
+          p_result.h_lep2_ptRel  ->Fill(ss::lep2_ptrel_v1()                                                                     , weight);
+          p_result.h_lep2_ptRatio->Fill(ptratio_2                                                                               , weight);
+          if (abs(ss::lep2_id()) == 11) p_result.h_mva->Fill(ss::lep2_MVA()                                                     , weight);
+          if(abs(ss::lep2_id()) == 13) {
+              p_result.h_mu_sip3d_lep2  ->Fill(ss::lep2_sip()                                                                          , weight);
+              p_result.h_mu_l2pt        ->Fill(lep2_pt                                                                                 , weight);
+              p_result.h_mu_l2eta       ->Fill(ss::lep2_p4().eta()                                                                     , weight);
+              p_result.h_mu_lep2_miniIso->Fill(ss::lep2_miniIso()                                                                      , weight);
+              p_result.h_mu_lep2_ptRel  ->Fill(ss::lep2_ptrel_v1()                                                                     , weight);
+              p_result.h_mu_lep2_ptRatio->Fill(ptratio_2                                                                               , weight);
+          } else {
+              p_result.h_el_sip3d_lep2  ->Fill(ss::lep2_sip()                                                                          , weight);
+              p_result.h_el_l2pt        ->Fill(lep2_pt                                                                                 , weight);
+              p_result.h_el_l2eta       ->Fill(ss::lep2_p4().eta()                                                                     , weight);
+              p_result.h_el_lep2_miniIso->Fill(ss::lep2_miniIso()                                                                      , weight);
+              p_result.h_el_lep2_ptRel  ->Fill(ss::lep2_ptrel_v1()                                                                     , weight);
+              p_result.h_el_lep2_ptRatio->Fill(ptratio_2                                                                               , weight);
+          }
       }
 
       p_result.h_njets       ->Fill(ss::njets()                                                                             , weight);
       p_result.h_nbtags      ->Fill(ss::nbtags()                                                                            , weight);
       p_result.h_type        ->Fill(mytype                                                                                  , weight);
+      // p_result.h_charge      ->Fill(abs(ss::lep1_id())/ss::lep1_id()                                                        , weight);
+      p_result.h_charge      ->Fill(ss::lep1_id() > 0 ? 0.5: -0.5                                                               , weight);
       p_result.h_nleps       ->Fill(nleps                                                                                   , weight);
       p_result.BR            ->Fill(BR                                                                                      , weight);
       p_result.h_ht          ->Fill(ss::ht()                                                                                , weight);
@@ -2323,8 +2432,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_mll         ->Fill((ss::lep1_p4()*lep1_pt/ss::lep1_p4().pt()+ss::lep2_p4()*lep2_pt/ss::lep2_p4().pt()).M() , weight);
       p_result.h_mtmin       ->Fill(mtmin                                                                                   , weight);
 
-      if (abs(ss::lep1_id()) == 11) p_result.h_mva->Fill(ss::lep1_MVA()                                                     , weight);
-      if (abs(ss::lep2_id()) == 11) p_result.h_mva->Fill(ss::lep2_MVA()                                                     , weight);
+
       // if (!isData && !doFakes && !doFlips && SR == 1 && cat == "HH"){
       // cout << Form("%1d %9d %llu\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\t%5f\n", ss::run(), ss::lumi(), ss::event(), ss::nVetoElectrons7()+ss::nVetoMuons5(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR, ss::scale1fb());
       // cout << Form("%1d %9d %llu\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%s%2d\n", ss::run(), ss::lumi(), ss::event(), ss::lep1_id(), ss::lep1_p4().pt(), ss::lep2_id(), ss::lep2_p4().pt(), ss::njets(), ss::nbtags(), ss::met(), ss::ht(), cat.c_str(), SR);
@@ -2423,7 +2531,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   //cout << "Number selected: " << nSelected << endl;
   if (isFastSimSignal && doCutFlowTable) {
     TString title = chain->GetTitle();
-    title.ReplaceAll("_dm20","dm20"); // the extra _ screws up parsing below for this sample
+    title.ReplaceAll("_dm","dm"); // the extra _ screws up parsing below for this sample
     TString tok;
     int ntok = 0;
     Ssiz_t from = 0;
@@ -2551,6 +2659,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     int nk = 4;
     if (isFastSimSignal) nk = 3;
 
+    // gSystem->Exec(Form("mkdir -p ../../cards/%s/", dir.Data()));
     for (int kr = 0; kr<nk;kr++) {
 
       string name = chainTitle.Data();

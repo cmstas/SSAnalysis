@@ -35,16 +35,18 @@
 // #include "flip_rates_6p26ifb.h"
 // #include "fake_rates.h"
 
-// 12.9
-float getLumi() { return 12.9; }
-float getLumiUnblind() { return 12.9; }
-bool isUnblindRun(int run) { return true; }
-float getWZSF() { return 0.948; } // 0.948 pm 0.210
-TString getTag() { return "v8.04"; }
-#include "flip_rates.h"
-#include "fake_rates.h"
+// // 12.9 - ICHEP
+// float getLumi() { return 12.9; }
+// float getLumiUnblind() { return 12.9; }
+// bool isUnblindRun(int run) { return true; }
+// float getWZSF() { return 0.948; } // 0.948 pm 0.210
+// TString getTag() { return "v8.04"; }
+// TString getTagData() { return "v8.04"; }
+// #include "flip_rates.h"
+// #include "fake_rates.h"
+// #include "fake_rates_insitu.h"
 
-// // 2nd HALF
+// // 2nd HALF of ICHEP dataset
 // float getLumi() { return 12.9-6.26; }
 // float getLumiUnblind() { return 12.9-6.26; }
 // bool isUnblindRun(int run) { return run > 275782; }
@@ -53,6 +55,19 @@ TString getTag() { return "v8.04"; }
 // #include "flip_rates_12p9ifb.h"
 // #include "fake_rates_2ndhalf.h"
 
+// 24.47
+float getLumi() { return 24.47; }
+float getLumiUnblind() { return 12.9+4.4; }
+bool isUnblindRun(int run) { return (run<=276811) || ((run<=279931) && (run>=278820)); } // 276811 for end of ICHEP (12.9/fb), or 278820-279931 for beyond ICHEP studies (+4.4/fb)
+float getWZSF() { return 0.948; } // 0.948 pm 0.210
+TString getTag() { return "v8.04"; }
+TString getTagData() { return "v8.05"; }
+#include "flip_rates.h"
+// #include "fake_rates_22p0ifb.h"
+#include "fake_rates.h"
+#include "fake_rates_insitu_22p0ifb.h"
+// #include "fake_rates_insitu.h"
+// #include "fake_rates_insitu_mva_soup.h"
 
 bool applyThirdLeptonVeto() { return false; }
 
@@ -68,11 +83,14 @@ bool applyThirdLeptonVeto() { return false; }
 #include "lepton_sf_fastsim.h"
 
 // FIXME
-#include "fake_rates_insitu.h"
+// #include "fake_rates_insitu.h"
 // #include "fake_rates_insitu_siplt4.h"
 // #include "fake_rates_insitu_miniisolt4.h"
+// #include "fake_rates_insitu_soup.h"
+// #include "fake_rates_insitu_wjets.h"
+// #include "fake_rates_insitu_mva_soup.h"
+// #include "fake_rates_insitu_mva.h"
 
-#include "insitu_selections.h"
 
 float fakeRate(int id, float pt, float eta, float ht) { 
   if (ht>300.) {
@@ -122,52 +140,18 @@ float qcdMCFakeRate(int id, float pt, float eta, float ht) {
   }
 }
 
-/*
-float elecFakeRateInSitu(float pt, float eta) {
-   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 1;
-   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.666667;
-   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.333333;
-   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.166667;
-   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.384615;
-   return 0.;
-}
-
-float elecFakeRateInSituError(float pt, float eta) {
-   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0;
-   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.272166;
-   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.19245;
-   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.152145;
-   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.0813475;
-   return 0.;
-}
-
-float muonFakeRateInSitu(float pt, float eta) {
-   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.3125;
-   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.181818;
-   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.1;
-   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.0344828;
-   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.137931;
-   return 0.;
-}
-
-float muonFakeRateInSituError(float pt, float eta) {
-   if (pt>=10 && pt<15 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.115878;
-   if (pt>=15 && pt<25 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.0822304;
-   if (pt>=25 && pt<35 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.0547723;
-   if (pt>=35 && pt<50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.033883;
-   if (pt>=50 && fabs(eta)>=0 && fabs(eta)<2.4 ) return 0.0546839;
-   return 0.;
-}
-*/
-
 float fakeRateInSitu(int id, float pt, float eta, float ht) { 
   if (ht>300.) {
       if (abs(id)==11) return elecFakeRateInSituHighHT(pt,eta);
       else if (abs(id)==13) return muonFakeRateInSituHighHT(pt,eta);
       else return 0.;
-  } else {
+  } else if(ht > 0) {
       if (abs(id)==11) return elecFakeRateInSitu(pt,eta);
       else if (abs(id)==13) return muonFakeRateInSitu(pt,eta);
+      else return 0.;
+  } else { // negative ht means inclusive
+      if (abs(id)==11) return elecFakeRateInSituAllHT(pt,eta);
+      else if (abs(id)==13) return muonFakeRateInSituAllHT(pt,eta);
       else return 0.;
   }
 }
@@ -177,9 +161,13 @@ float fakeRateErrorInSitu(int id, float pt, float eta, float ht) {
       if (abs(id)==11) return elecFakeRateInSituErrorHighHT(pt,eta);
       else if (abs(id)==13) return muonFakeRateInSituErrorHighHT(pt,eta);
       else return 0.;
-  } else {
+  } else if(ht > 0) {
       if (abs(id)==11) return elecFakeRateInSituError(pt,eta);
       else if (abs(id)==13) return muonFakeRateInSituError(pt,eta);
+      else return 0.;
+  } else { // negative ht means inclusive
+      if (abs(id)==11) return elecFakeRateInSituErrorAllHT(pt,eta);
+      else if (abs(id)==13) return muonFakeRateInSituErrorAllHT(pt,eta);
       else return 0.;
   }
 }

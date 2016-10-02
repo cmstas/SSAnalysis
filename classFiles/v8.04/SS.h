@@ -933,6 +933,7 @@ protected:
 	bool     lep4_isTrigSafev1_isLoaded;
 public: 
 void Init(TTree *tree);
+void DumpActivatedBranches(TTree *tree);
 void GetEntry(unsigned int idx); 
 void LoadAllBranches(); 
 	const bool &lep1_isPrompt();

@@ -1,3 +1,8 @@
+// TChain *fs_t5qqqqvv_dm20_700_350_chain = new TChain("t","fs_t5qqqqvv_dm20_m700_m350" );
+// fs_t5qqqqvv_dm20_700_350_chain->Add("skim/T5QQQQVV_dm20_skim.root");
+// pair<yields_t, plots_t> results_fs_t5qqqqvv_dm20_700_350 = run(fs_t5qqqqvv_dm20_700_350_chain, 0, 0, 0, 0, 1);
+// delete fs_t5qqqqvv_dm20_700_350_chain;
+
 TChain *fs_t5qqqqvv_dm20_700_350_chain = new TChain("t","fs_t5qqqqvv_dm20_m700_m350" );
 fs_t5qqqqvv_dm20_700_350_chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/T5QQQQVV_dm20.root");
 pair<yields_t, plots_t> results_fs_t5qqqqvv_dm20_700_350 = run(fs_t5qqqqvv_dm20_700_350_chain, 0, 0, 0, 0, 1);

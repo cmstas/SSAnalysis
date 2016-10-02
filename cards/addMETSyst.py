@@ -3,8 +3,8 @@ import os
 import glob
 
 ####  MUST EDIT
-folder = "v8.04_test"
-sig_name = "fs_t1tttt_m"
+folder = "v8.04_Sept21"
+sig_name = "fs_t1ttbb_m"
 #### END MUST EDIT
 
 def doAddSyst(fname):

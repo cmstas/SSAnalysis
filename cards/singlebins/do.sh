@@ -1,17 +1,19 @@
 sig="fs_t1tttt_m1500_m200"
 
-orig_dir="v8.04_July28/"
+# orig_dir="v8.04_July28/"
 # orig_dir="v8.04_t5qqqqdm20_July28/"
+orig_dir="v8.04_Sept19/"
 
-new_dir="v8.04_July28_singlebin/"
+# new_dir="v8.04_July28_singlebin/"
+new_dir="v8.04_Sept19_singlebin/"
 lumi="12.9"
 kine="hihi"
 sr=30
 
 mkdir -p logs
 
-for sig in fs_t1tttt_m1400_m1000 fs_t1tttt_m1500_m200 fs_t5qqqqvv_m1000_m700 fs_t5qqqqvv_m1200_m400 ; do
-# for sig in fs_t5qqqqvv_dm20_m1400_m200 fs_t5qqqqvv_dm20_m1000_m700 ; do
+# for sig in fs_t1tttt_m1400_m1000 fs_t1tttt_m1500_m200 fs_t5qqqqvv_m1000_m700 fs_t5qqqqvv_m1200_m400 ; do
+for sig in fs_t5qqqqvv_dm20_m1400_m200 fs_t5qqqqvv_dm20_m1000_m700 ; do
 
     for kine in hihi hilow lowlow; do
 

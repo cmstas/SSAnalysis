@@ -359,7 +359,7 @@ def writeOneCard(dir, signal, kine, plot, output):
         print "Using pseudo data!"
         data = Process(-1,"data","pdata_histos_"+kine+"_"+lumi+"ifb.root",plot)
     else:
-        print "Using real data!"
+        # print "Using real data!"
         data = Process(-1,"data","data_histos_"+kine+"_"+lumi+"ifb.root",plot)
     signal = Process(0,signal,signal+"_histos_"+kine+"_"+lumi+"ifb.root",plot)
     TTW = Process(1,"ttw","ttw_histos_"+kine+"_"+lumi+"ifb.root",plot)

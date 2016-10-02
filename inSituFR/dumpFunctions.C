@@ -1,6 +1,9 @@
 {
 
-    for (int highHT = 0; highHT < 2; highHT++) {
+    bool doPromptCorrected = true;
+
+    // for (int highHT = 0; highHT < 2; highHT++) {
+    for (int highHT = -1; highHT < 2; highHT++) {
   for (int doMu=0;doMu<2;doMu++) {
 
     TString lep = doMu ? "muon" : "elec";
@@ -10,10 +13,11 @@
     TString pfx = "";
     TString sfx = "";
 
-    if(highHT) pfx = "highht_";
-    else pfx = "lowht_";
+    if(doPromptCorrected) pfx += "corr_";
 
-    if(highHT) sfx = "HighHT";
+    if(highHT == 1) { pfx = "highht_"; sfx = "HighHT"; }
+    else if(highHT == 0) { pfx = "lowht_"; }
+    else if(highHT == -1) { pfx = "all_"; sfx = "AllHT"; }
 
     TFile* f = TFile::Open(pfx+"inSituFR_cone_FR_histos.root");
 

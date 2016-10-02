@@ -4,12 +4,12 @@ from multiprocessing.dummy import Pool as ThreadPool
 mydir = "v8.04_July28" # regular nonDM20
 mylumi = "12.9"
 postfix = ""
-isDM20 = False
+isDM20 = True
 redocards = False
 redolimits = False
 deletelogs = False
 
-doSignificance = True
+doSignificance = False
 redosignificances = False
 
 verbose = True
@@ -18,7 +18,8 @@ verbose = True
 
 
 if isDM20:
-    mydir = "v8.04_t5qqqqdm20_July28" # DM20
+    # mydir = "v8.04_t5qqqqdm20_July28" # DM20
+    mydir = "v8.04_Sept19" # new DM20 after filter eff for 1 lep (Sep20)
 
 step = 25
 minx = 600
@@ -66,7 +67,7 @@ def smooth(g,h):
     #now cleanup above the diagonal
     for xbin in range(1,h.GetNbinsX()+1):
         for ybin in range(1,h.GetNbinsY()+1):
-            if ybin>xbin+ybinsfirstxbin: h.SetBinContent(xbin,ybin,-999)
+            if ybin>xbin+ybinsfirstxbin: h.SetBinContent(xbin,ybin,-999 if doSignificance else 0)
 
 sigs = []
 
@@ -108,9 +109,10 @@ def run_sig(sig):
     if redosignificances: os.system("combine -M ProfileLikelihood --uncapped 1 --significance --rMin -5 "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all.txt >& "+mydir+"/card_"+sig+"_"+mylumi+"ifb-all_significance.log") 
 
 import os
-os.nice(10)
+# os.nice(10)
+os.nice(0) # no more Mr. Nice guy
 if redocards or redolimits or redosignificances:
-    pool = ThreadPool(25)
+    pool = ThreadPool(20)
     vals = pool.map(run_sig, sigs)
     pool.close()
     pool.join()

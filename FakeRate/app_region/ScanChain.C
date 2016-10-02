@@ -33,6 +33,7 @@ CTable muons;
 
 bool doLatex = true;
 bool doRatio = false;
+bool inclHT = false;
 
 TH1D * evtCounter = new TH1D("","",1000,0,1000); 
 map<TString, int> evtBinMap;
@@ -66,16 +67,39 @@ void printCounter(bool file = false) {
     if(file) cout << "Wrote counter to counter.txt" << endl;
 }
 
-bool isFakeLeg(int lep){
+bool isFakeLeg(int lep, bool doData=false){
+  if (doData) return true;
   if (lep == 1) return (ss::lep1_motherID() <= 0);
   if (lep == 2) return (ss::lep2_motherID() <= 0);
   return 0;
 }
 
-bool isGoodLeg(int lep){
+bool isGoodLeg(int lep, bool doData=false){
+  if (doData) return true;
   if (lep == 1) return (ss::lep1_motherID() == 1);
   if (lep == 2) return (ss::lep2_motherID() == 1);
   return 0;
+}
+
+bool AN_MVA(int level, int lep_id, float lep_etaSC, float lep_MVA){
+    // level == 1 for Iso and 2 for noniso
+    lep_etaSC = fabs(lep_etaSC);
+    if (abs(lep_id) != 11) return true;
+
+    // http://uaf-8.t2.ucsd.edu/~namin/dump/ssan.pdf#page=55
+    //    - Isolated trigger denominator: (0.05, -0.26, -0.40)
+    //    - Non-isolated trigger denominator: (-0.36,-0.58,-0.62)
+    //       - will need to bypass the passIsolatedFO stuff in order to use this since this is looser than that
+    if (level == 1) {
+        if (lep_etaSC < 0.8) return lep_MVA > 0.05;
+        if ((lep_etaSC >= 0.8 && lep_etaSC <= 1.479)) return lep_MVA > -0.26;
+        if (lep_etaSC > 1.479) return lep_MVA > -0.40;
+    } else if (level == 2) {
+        if (lep_etaSC < 0.8) return lep_MVA > -0.36;
+        if ((lep_etaSC >= 0.8 && lep_etaSC <= 1.479)) return lep_MVA > -0.58;
+        if (lep_etaSC > 1.479) return lep_MVA > -0.62;
+    }
+    return false;
 }
 
 float computePtRel(LorentzVector lepp4, LorentzVector jetp4, bool subtractLep){
@@ -90,8 +114,10 @@ float computePtRel(LorentzVector lepp4, LorentzVector jetp4, bool subtractLep){
 int number = 0;
 
 float getFakeRate(int id, float pt, float eta, float ht, bool extrPtRel = false, bool doData = false, bool doInSitu = false){
+    if (inclHT) ht = -1; // negative ht means use inclusive ht in commonUtils // FIXME
+
     if (doInSitu) return fakeRateInSitu(id, pt, eta, ht);
-    else if (doData) return fakeRate(id, pt, eta, ht);
+    else if (doData ) return fakeRate(id, pt, eta, ht);
     else return qcdMCFakeRate(id, pt, eta, ht);
 }
 
@@ -142,6 +168,7 @@ void GetErrorPlot(TH1F *pred, vector< vector<TH2D*> > pred_err2_mu, vector< vect
   }
 }
 
+
 //getPt and getEta need to stay on sync with meas region
 float getPt(float pt, bool extrPtRel = false){
   if(pt < 10.)  return 11.;  
@@ -172,12 +199,27 @@ TH1F* histCreator(string str1, string str2, int nbins, float xbins[]){
 
 vector <TH1F*> hists; 
 
-int getHist(string name){
+// int getHist(string name){
+int getHist(TString name){
   for (unsigned int i = 0; i < hists.size(); i++){
     if (hists[i]->GetName() == name) return i; 
   }
   cout << "getHist failed on: " << name << ".  Be careful of spurious spaces!" << endl;
   return -1;
+}
+
+
+std::vector<std::pair<TH1F*, TH1F*> > getBackgrounds(std::string type, int isMu, std::vector<TString> filenames) {
+  std::vector<std::pair<TH1F*, TH1F*> > pairs;
+  for(unsigned int i = 0; i < filenames.size(); i++) {
+      std::string histname = type;
+      if(isMu == 0) histname += "_el";
+      else if(isMu == 1) histname += "_mu";
+      histname += filenames[i].Data();
+      // if(TString(histname).Contains("_obs")) continue; // FIXME - remove when not doing data
+      pairs.push_back( make_pair(hists[getHist(histname)],hists[getHist(histname)]) );
+  }
+  return pairs;
 }
 
 int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool doData = false, int nEvents = -1){
@@ -208,6 +250,10 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
   bool highlow = ptRegion.Contains("HL") ? true : false;
   bool lowlow = ptRegion.Contains("LL") ? true : false;
 
+  bool testMVA = option.Contains("_mva") ? true : false;
+  bool extrPt = option.Contains("_ept") ? true : false;
+  inclHT = option.Contains("_hth") ? true : false;
+
   bool doLowHT = option.Contains("IsoTrigs") ? true : false;
   bool doHighHT = option.Contains("HTTrigs") ? true : false;
 
@@ -216,7 +262,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
   bool doSubtractContamination = false;
   bool requireIsoTriggers = false;
 
-  float luminosity = doData ? getLumi() : 12.9;
+  // float luminosity = doData ? getLumi() : 12.9;
+  float luminosity = doData ? getLumi() : getLumi();
 
   //Dir
   TDirectory *rootdir = gDirectory->GetDirectory("Rint:");
@@ -227,75 +274,88 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
 
   //Make rate histo (for shape only)
   float xbins[6] = {10, 15, 25, 35, 50, 1000};
+  float xbins_extr[7] = {10, 15, 25, 35, 50, 70, 1000};
   float xbins_abbrev[5] = {15, 25, 35, 50, 150};
   float ybinse[4] = {0, 0.8, 1.479, 2.5}; 
   float ybinsm[4] = {0, 1.2, 2.1, 2.4}; 
-  TH2D *rate_histo_e  = new TH2D("elec", "elec", 5, xbins, 3, ybinse);
-  TH2D *rate_histo_mu = new TH2D("muon", "muon", 5, xbins, 3, ybinsm);
+
+  TH2D *rate_histo_e;
+  TH2D *rate_histo_mu;
+  if (extrPt) {
+      rate_histo_e  = new TH2D("elec", "elec", 6, xbins_extr, 3, ybinse);
+      rate_histo_mu = new TH2D("muon", "muon", 6, xbins_extr, 3, ybinsm);
+  } else {
+      rate_histo_e  = new TH2D("elec", "elec", 5, xbins     , 3, ybinse);
+      rate_histo_mu = new TH2D("muon", "muon", 5, xbins     , 3, ybinsm);
+  }
 
   //Histograms
-  hists.push_back( histCreator("Npn_histo_br_obs"       , "Observed Prompt-NonPrompt Background"              ,  4, 0,    4) ); 
-  hists.push_back( histCreator("Npn_histo_br_pred"      , "Predicted Prompt-NonPrompt Background"             ,  4, 0,    4) );
-  hists.push_back( histCreator("Npn_histo_br_obs_mu"    , "Observed Prompt-NonPrompt Background (Single mu)"  ,  4, 0,    4) );
-  hists.push_back( histCreator("Npn_histo_br_pred_mu"   , "Predicted Prompt-NonPrompt Background (Single mu)" ,  4, 0,    4) );
-  hists.push_back( histCreator("Npn_histo_br_obs_el"    , "Observed Prompt-NonPrompt Background (Single el)"  ,  4, 0,    4) );
-  hists.push_back( histCreator("Npn_histo_br_pred_el"   , "Predicted Prompt-NonPrompt Background (Single el)" ,  4, 0,    4) );
-  hists.push_back( histCreator("Npn_histo_sr_obs"       , "Observed Prompt-NonPrompt Background"              , nsr, 0.5,   nsr+0.5) );
-  hists.push_back( histCreator("Npn_histo_sr_pred"      , "Predicted Prompt-NonPrompt Background"             , nsr, 0.5,   nsr+0.5) );
-  hists.push_back( histCreator("Npn_histo_sr_obs_mu"    , "Observed Prompt-NonPrompt Background (Single mu)"  , nsr, 0.5,   nsr+0.5) );
-  hists.push_back( histCreator("Npn_histo_sr_pred_mu"   , "Predicted Prompt-NonPrompt Background (Single mu)" , nsr, 0.5,   nsr+0.5) );
-  hists.push_back( histCreator("Npn_histo_sr_obs_el"    , "Observed Prompt-NonPrompt Background (Single el)"  , nsr, 0.5,   nsr+0.5) );
-  hists.push_back( histCreator("Npn_histo_sr_pred_el"   , "Predicted Prompt-NonPrompt Background (Single el)" , nsr, 0.5,   nsr+0.5) );
-  hists.push_back( histCreator("Npn_histo_HT_obs"       , "Observed Prompt-NonPrompt Background"              , 20, 0, 1000) );
-  hists.push_back( histCreator("Npn_histo_HT_pred"      , "Predicted Prompt-NonPrompt Background"             , 20, 0, 1000) );
-  hists.push_back( histCreator("Npn_histo_HT_obs_mu"    , "Observed Prompt-NonPrompt Background (Single mu)"  , 20, 0, 1000) );
-  hists.push_back( histCreator("Npn_histo_HT_pred_mu"   , "Predicted Prompt-NonPrompt Background (Single mu)" , 20, 0, 1000) );
-  hists.push_back( histCreator("Npn_histo_HT_obs_el"    , "Observed Prompt-NonPrompt Background (Single el)"  , 20, 0, 1000) );
-  hists.push_back( histCreator("Npn_histo_HT_pred_el"   , "Predicted Prompt-NonPrompt Background (Single el)" , 20, 0, 1000) );
-  hists.push_back( histCreator("Npn_histo_MET_obs"      , "Observed Prompt-NonPrompt Background"              , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_MET_pred"     , "Predicted Prompt-NonPrompt Background"             , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_MET_obs_mu"   , "Observed Prompt-NonPrompt Background (Single mu)"  , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_MET_pred_mu"  , "Predicted Prompt-NonPrompt Background (Single mu)" , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_MET_obs_el"   , "Observed Prompt-NonPrompt Background (Single el)"  , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_MET_pred_el"  , "Predicted Prompt-NonPrompt Background (Single el)" , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_MTMIN_obs"    , "Observed Prompt-NonPrompt Background"              , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_MTMIN_pred"   , "Predicted Prompt-NonPrompt Background"             , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_MTMIN_obs_mu" , "Observed Prompt-NonPrompt Background (Single mu)"  , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_MTMIN_pred_mu", "Predicted Prompt-NonPrompt Background (Single mu)" , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_MTMIN_obs_el" , "Observed Prompt-NonPrompt Background (Single el)"  , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_MTMIN_pred_el", "Predicted Prompt-NonPrompt Background (Single el)" , 20, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L1PT_obs"     , "Observed Prompt-NonPrompt Background"              , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L1PT_pred"    , "Predicted Prompt-NonPrompt Background"             , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L1PT_obs_mu"  , "Observed Prompt-NonPrompt Background (Single mu)"  , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L1PT_pred_mu" , "Predicted Prompt-NonPrompt Background (Single mu)" , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L1PT_obs_el"  , "Observed Prompt-NonPrompt Background (Single el)"  , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L1PT_pred_el" , "Predicted Prompt-NonPrompt Background (Single el)" , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L2PT_obs"     , "Observed Prompt-NonPrompt Background"              , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L2PT_pred"    , "Predicted Prompt-NonPrompt Background"             , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L2PT_obs_mu"  , "Observed Prompt-NonPrompt Background (Single mu)"  , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L2PT_pred_mu" , "Predicted Prompt-NonPrompt Background (Single mu)" , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L2PT_obs_el"  , "Observed Prompt-NonPrompt Background (Single el)"  , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_L2PT_pred_el" , "Predicted Prompt-NonPrompt Background (Single el)" , 30, 0,   250) );
-  hists.push_back( histCreator("Npn_histo_LTrue_obs"     , "Observed Prompt-NonPrompt Background"              , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LTrue_pred"    , "Predicted Prompt-NonPrompt Background"             , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LTrue_obs_mu"  , "Observed Prompt-NonPrompt Background (Single mu)"  , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LTrue_pred_mu" , "Predicted Prompt-NonPrompt Background (Single mu)" , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LTrue_obs_el"  , "Observed Prompt-NonPrompt Background (Single el)"  , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LTrue_pred_el" , "Predicted Prompt-NonPrompt Background (Single el)" , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LFake_obs"     , "Observed Prompt-NonPrompt Background"              , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LFake_pred"    , "Predicted Prompt-NonPrompt Background"             , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LFake_obs_mu"  , "Observed Prompt-NonPrompt Background (Single mu)"  , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LFake_pred_mu" , "Predicted Prompt-NonPrompt Background (Single mu)" , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LFake_obs_el"  , "Observed Prompt-NonPrompt Background (Single el)"  , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LFake_pred_el" , "Predicted Prompt-NonPrompt Background (Single el)" , 30, 0,  250) );
-  hists.push_back( histCreator("Npn_histo_LFake_obs_el_rebin"  , "Observed Prompt-NonPrompt Background (Single el)"  , 4, xbins_abbrev) );
-  hists.push_back( histCreator("Npn_histo_LFake_pred_el_rebin" , "Predicted Prompt-NonPrompt Background (Single el)" , 4, xbins_abbrev) );
-  hists.push_back( histCreator("NBs_BR_histo_e"         , "Number of FOs from B's vs Nbtags (els)"            ,  4, 0,    4) );
-  hists.push_back( histCreator("NBs_BR_histo_mu"        , "Number of FOs from B's vs Nbtags (muons)"          ,  4, 0,    4) );
-  hists.push_back( histCreator("NnotBs_BR_histo_e"      , "Number of FOs NOT from B's vs Nbtags (els)"        ,  4, 0,    4) );
-  hists.push_back( histCreator("NnotBs_BR_histo_mu"     , "Number of FOs NOT from B's vs Nbtags (muons)"      ,  4, 0,    4) );
-  hists.push_back( histCreator("pTrel_histo_el"         , "pTrel (Electrons)"                                 , 15, 0,   30) );
-  hists.push_back( histCreator("pTrel_histo_mu"         , "pTrel (Muons)"                                     , 15, 0,   30) );
+  vector<TString> possibleFilenames = {"TTBAR", "WJets"};
+  for (unsigned int i = 0; i < possibleFilenames.size(); i++) {
+      std::string fname = possibleFilenames[i].Data();
+      hists.push_back( histCreator("Npn_histo_br_obs"        + fname, "Observed Prompt-NonPrompt Background"              ,  4, 0,    4) ); 
+      hists.push_back( histCreator("Npn_histo_br_pred"              , "Predicted Prompt-NonPrompt Background"             ,  4, 0,    4) );
+      hists.push_back( histCreator("Npn_histo_br_obs_mu"     + fname, "Observed Prompt-NonPrompt Background (Single mu)"  ,  4, 0,    4) );
+      hists.push_back( histCreator("Npn_histo_br_pred_mu"           , "Predicted Prompt-NonPrompt Background (Single mu)" ,  4, 0,    4) );
+      hists.push_back( histCreator("Npn_histo_br_obs_el"     + fname, "Observed Prompt-NonPrompt Background (Single el)"  ,  4, 0,    4) );
+      hists.push_back( histCreator("Npn_histo_br_pred_el"           , "Predicted Prompt-NonPrompt Background (Single el)" ,  4, 0,    4) );
+      hists.push_back( histCreator("Npn_histo_sr_obs"        + fname, "Observed Prompt-NonPrompt Background"              , nsr, 0.5,   nsr+0.5) );
+      hists.push_back( histCreator("Npn_histo_sr_pred"              , "Predicted Prompt-NonPrompt Background"             , nsr, 0.5,   nsr+0.5) );
+      hists.push_back( histCreator("Npn_histo_sr_obs_mu"     + fname, "Observed Prompt-NonPrompt Background (Single mu)"  , nsr, 0.5,   nsr+0.5) );
+      hists.push_back( histCreator("Npn_histo_sr_pred_mu"           , "Predicted Prompt-NonPrompt Background (Single mu)" , nsr, 0.5,   nsr+0.5) );
+      hists.push_back( histCreator("Npn_histo_sr_obs_el"     + fname, "Observed Prompt-NonPrompt Background (Single el)"  , nsr, 0.5,   nsr+0.5) );
+      hists.push_back( histCreator("Npn_histo_sr_pred_el"           , "Predicted Prompt-NonPrompt Background (Single el)" , nsr, 0.5,   nsr+0.5) );
+      hists.push_back( histCreator("Npn_histo_HT_obs"        + fname, "Observed Prompt-NonPrompt Background"              , 20, 0, 1000) );
+      hists.push_back( histCreator("Npn_histo_HT_pred"              , "Predicted Prompt-NonPrompt Background"             , 20, 0, 1000) );
+      hists.push_back( histCreator("Npn_histo_HT_obs_mu"     + fname, "Observed Prompt-NonPrompt Background (Single mu)"  , 20, 0, 1000) );
+      hists.push_back( histCreator("Npn_histo_HT_pred_mu"           , "Predicted Prompt-NonPrompt Background (Single mu)" , 20, 0, 1000) );
+      hists.push_back( histCreator("Npn_histo_HT_obs_el"     + fname, "Observed Prompt-NonPrompt Background (Single el)"  , 20, 0, 1000) );
+      hists.push_back( histCreator("Npn_histo_HT_pred_el"           , "Predicted Prompt-NonPrompt Background (Single el)" , 20, 0, 1000) );
+      hists.push_back( histCreator("Npn_histo_MET_obs"       + fname, "Observed Prompt-NonPrompt Background"              , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_MET_pred"             , "Predicted Prompt-NonPrompt Background"             , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_MET_obs_mu"    + fname, "Observed Prompt-NonPrompt Background (Single mu)"  , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_MET_pred_mu"          , "Predicted Prompt-NonPrompt Background (Single mu)" , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_MET_obs_el"    + fname, "Observed Prompt-NonPrompt Background (Single el)"  , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_MET_pred_el"          , "Predicted Prompt-NonPrompt Background (Single el)" , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_MTMIN_obs"     + fname, "Observed Prompt-NonPrompt Background"              , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_MTMIN_pred"           , "Predicted Prompt-NonPrompt Background"             , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_MTMIN_obs_mu"  + fname, "Observed Prompt-NonPrompt Background (Single mu)"  , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_MTMIN_pred_mu"        , "Predicted Prompt-NonPrompt Background (Single mu)" , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_MTMIN_obs_el"  + fname, "Observed Prompt-NonPrompt Background (Single el)"  , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_MTMIN_pred_el"        , "Predicted Prompt-NonPrompt Background (Single el)" , 20, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L1PT_obs"      + fname, "Observed Prompt-NonPrompt Background"              , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L1PT_pred"            , "Predicted Prompt-NonPrompt Background"             , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L1PT_obs_mu"   + fname, "Observed Prompt-NonPrompt Background (Single mu)"  , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L1PT_pred_mu"         , "Predicted Prompt-NonPrompt Background (Single mu)" , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L1PT_obs_el"   + fname, "Observed Prompt-NonPrompt Background (Single el)"  , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L1PT_pred_el"         , "Predicted Prompt-NonPrompt Background (Single el)" , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L2PT_obs"      + fname, "Observed Prompt-NonPrompt Background"              , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L2PT_pred"            , "Predicted Prompt-NonPrompt Background"             , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L2PT_obs_mu"   + fname, "Observed Prompt-NonPrompt Background (Single mu)"  , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L2PT_pred_mu"         , "Predicted Prompt-NonPrompt Background (Single mu)" , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L2PT_obs_el"   + fname, "Observed Prompt-NonPrompt Background (Single el)"  , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_L2PT_pred_el"         , "Predicted Prompt-NonPrompt Background (Single el)" , 30, 0,   250) );
+      hists.push_back( histCreator("Npn_histo_LTrue_obs"     + fname, "Observed Prompt-NonPrompt Background"              , 30, 0,  250) );
+      hists.push_back( histCreator("Npn_histo_LTrue_pred"           , "Predicted Prompt-NonPrompt Background"             , 30, 0,  250) );
+      hists.push_back( histCreator("Npn_histo_LTrue_obs_mu"  + fname, "Observed Prompt-NonPrompt Background (Single mu)"  , 30, 0,  250) );
+      hists.push_back( histCreator("Npn_histo_LTrue_pred_mu"        , "Predicted Prompt-NonPrompt Background (Single mu)" , 30, 0,  250) );
+      hists.push_back( histCreator("Npn_histo_LTrue_obs_el"  + fname, "Observed Prompt-NonPrompt Background (Single el)"  , 30, 0,  250) );
+      hists.push_back( histCreator("Npn_histo_LTrue_pred_el"        , "Predicted Prompt-NonPrompt Background (Single el)" , 30, 0,  250) );
+      hists.push_back( histCreator("Npn_histo_LFake_obs"     + fname, "Observed Prompt-NonPrompt Background"              , 30, 0,  250) );
+      hists.push_back( histCreator("Npn_histo_LFake_pred"           , "Predicted Prompt-NonPrompt Background"             , 30, 0,  250) );
+      hists.push_back( histCreator("Npn_histo_LFake_obs_mu"  + fname, "Observed Prompt-NonPrompt Background (Single mu)"  , 30, 0,  250) );
+      hists.push_back( histCreator("Npn_histo_LFake_pred_mu"        , "Predicted Prompt-NonPrompt Background (Single mu)" , 30, 0,  250) );
+      hists.push_back( histCreator("Npn_histo_LFake_obs_el"  + fname, "Observed Prompt-NonPrompt Background (Single el)"  , 30, 0,  250) );
+      hists.push_back( histCreator("Npn_histo_LFake_pred_el"        , "Predicted Prompt-NonPrompt Background (Single el)" , 30, 0,  250) );
+      hists.push_back( histCreator("NBs_BR_histo_e"                 , "Number of FOs from B's vs Nbtags (els)"            ,  4, 0,    4) );
+      hists.push_back( histCreator("NBs_BR_histo_mu"                , "Number of FOs from B's vs Nbtags (muons)"          ,  4, 0,    4) );
+      hists.push_back( histCreator("NnotBs_BR_histo_e"              , "Number of FOs NOT from B's vs Nbtags (els)"        ,  4, 0,    4) );
+      hists.push_back( histCreator("NnotBs_BR_histo_mu"             , "Number of FOs NOT from B's vs Nbtags (muons)"      ,  4, 0,    4) );
+      hists.push_back( histCreator("pTrel_histo_el"                 , "pTrel (Electrons)"                                 , 15, 0,   30) );
+      hists.push_back( histCreator("pTrel_histo_mu"                 , "pTrel (Muons)"                                     , 15, 0,   30) );
+      // hists.push_back( histCreator("Npn_histo_LFake_obs_el_rebin"  , "Observed Prompt-NonPrompt Background (Single el)"  , 4, xbins_abbrev) );
+      // hists.push_back( histCreator("Npn_histo_LFake_pred_el_rebin" , "Predicted Prompt-NonPrompt Background (Single el)" , 4, xbins_abbrev) );
+  }
 
   for (unsigned int i = 0; i < hists.size(); i++){
     hists[i]->SetDirectory(rootdir); 
@@ -468,6 +528,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
   TFile *currentFile = 0;
 
   // File Loop
+  vector<TString> filenames;
+  TString prevFilename = "";
   while ( (currentFile = (TFile*)fileIter.Next()) ) {
 
     
@@ -485,6 +547,11 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
     else if(fname.Contains("WJets")) { fname = "WJets";  }
     else if(fname.Contains("WZ3L"))  { fname = "WZ";     }
     else if(fname.Contains("Data"))  { fname = "Data";   }
+
+    if(fname != prevFilename) {
+        filenames.push_back(fname);
+        prevFilename = fname;
+    }
 
     // Loop over Events in current file
     if (nEventsTotal >= nEventsChain) continue;
@@ -544,8 +611,12 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
         if (ss::lep2_motherID()!=1 && ss::lep2_motherID()!=0) continue;
         if (ss::lep1_motherID()!=1 && ss::lep1_motherID()!=0) continue;
         //EMEnriched starts at 20 GeV
-        if ( (abs(ss::lep1_id())==11 && ss::lep1_motherID()==0 && ss::lep1_p4().pt() < 20) || 
-            (abs(ss::lep2_id())==11 && ss::lep2_motherID()==0 && ss::lep2_p4().pt() < 20) ) continue;
+
+        // if (!inSitu) {
+        //     if ( (abs(ss::lep1_id())==11 && ss::lep1_motherID()==0 && ss::lep1_p4().pt() < 20) || 
+        //          (abs(ss::lep2_id())==11 && ss::lep2_motherID()==0 && ss::lep2_p4().pt() < 20) ) continue;
+        // }
+
       }
 
       float lep1_ptrel_v1 = ss::lep1_ptrel_v1();
@@ -593,15 +664,25 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       bool lep2_passes_id = ss::lep2_passes_id();
 
 
-      if (ss::ht()<300.) {
-	//Skip if does not pass FO for isolated triggers
-	if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
-	if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
-	//do not do LL for LowHT -- I guess this was default for regular FR? so for now I will put the !inSitu part
-    if(!inSitu) {
-        if (lep1_pT < 25. && lep2_pT < 25.) continue;
-    }
-      } 
+      // //do not do LL for LowHT -- I guess this was default for regular FR? so for now I will put the !inSitu part
+      // if (!inSitu && lep1_pT < 25. && lep2_pT < 25.) continue;
+
+      // bool test_MVA = false; // FIXME
+      if(!testMVA) {
+          if (ss::ht()<300.) {
+              //Skip if does not pass FO for isolated triggers
+              if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
+              if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+          } 
+      } else {
+          if (ss::ht()<300.) { // isolated
+              if(!AN_MVA(1, ss::lep1_id(), ss::lep1_el_etaSC(), ss::lep1_MVA())) continue;
+              if(!AN_MVA(1, ss::lep2_id(), ss::lep2_el_etaSC(), ss::lep2_MVA())) continue;
+          } else { // non isolated
+              if(!AN_MVA(2, ss::lep1_id(), ss::lep1_el_etaSC(), ss::lep1_MVA())) continue;
+              if(!AN_MVA(2, ss::lep2_id(), ss::lep2_el_etaSC(), ss::lep2_MVA())) continue;
+          }
+      }
 
 
       //Determine mtMin
@@ -619,8 +700,9 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       int sr = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pT, lep2_pT);
 
       // SS Z veto -- this is to match the inSitu FR derivation macro
-      if (inSitu && (fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15)) continue;
+      if ((inSitu && !doData) && (fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15)) continue;
       if (inSitu && (ss::hyp_class() == 4 || ss::hyp_class() == 6)) continue;
+      if (ss::hyp_class() == 7) continue;
 
       //lepton pT selection
       if(highhigh && ac_base!=HighHigh) continue;
@@ -693,44 +775,41 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
           prompt1_reco += weight;  
           NpromptL2_reco += weight;  
 
-          hists[getHist("Npn_histo_sr_obs")   ]->Fill(sr, weight);
-          hists[getHist("Npn_histo_br_obs")   ]->Fill(br, weight);
-          hists[getHist("Npn_histo_HT_obs")   ]->Fill(ss::ht(), weight);
-          hists[getHist("Npn_histo_MET_obs")  ]->Fill(ss::met(), weight);
-          hists[getHist("Npn_histo_MTMIN_obs")]->Fill(mtmin, weight);
-          hists[getHist("Npn_histo_L1PT_obs") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-          hists[getHist("Npn_histo_L2PT_obs") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
-          hists[getHist("Npn_histo_LTrue_obs") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-          hists[getHist("Npn_histo_LFake_obs") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+          if(sr > 0) hists[getHist("Npn_histo_sr_obs"+fname)   ]->Fill(sr, weight);
+          hists[getHist("Npn_histo_br_obs"+fname)   ]->Fill(br, weight);
+          hists[getHist("Npn_histo_HT_obs"+fname)   ]->Fill(ss::ht(), weight);
+          hists[getHist("Npn_histo_MET_obs"+fname)  ]->Fill(ss::met(), weight);
+          hists[getHist("Npn_histo_MTMIN_obs"+fname)]->Fill(mtmin, weight);
+          hists[getHist("Npn_histo_L1PT_obs"+fname) ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+          hists[getHist("Npn_histo_L2PT_obs"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+          hists[getHist("Npn_histo_LTrue_obs"+fname) ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+          hists[getHist("Npn_histo_LFake_obs"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
 
           if(abs(ss::lep2_id()) == 11){
 
-            hists[getHist("Npn_histo_sr_obs_el")   ]->Fill(sr, weight);
-            hists[getHist("Npn_histo_br_obs_el")   ]->Fill(br, weight);
-            hists[getHist("Npn_histo_HT_obs_el")   ]->Fill(ss::ht(), weight);
-            hists[getHist("Npn_histo_MET_obs_el")  ]->Fill(ss::met(), weight);
-            hists[getHist("Npn_histo_MTMIN_obs_el")]->Fill(mtmin, weight);
-            hists[getHist("Npn_histo_L1PT_obs_el") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-            hists[getHist("Npn_histo_L2PT_obs_el") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
-            hists[getHist("Npn_histo_LTrue_obs_el") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-            hists[getHist("Npn_histo_LFake_obs_el") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
-            hists[getHist("Npn_histo_LFake_obs_el_rebin") ]->Fill(min(coneCorr ? lep2_pT : ss::lep2_p4().pt(),69.F), weight);
-
-            addToCounter("OBS elec lep1,2 weight");
-            addToCounter("OBS elec lep1,2 weight", weight);
+            if(sr > 0) hists[getHist("Npn_histo_sr_obs_el"+fname)   ]->Fill(sr, weight);
+            hists[getHist("Npn_histo_br_obs_el"+fname)   ]->Fill(br, weight);
+            hists[getHist("Npn_histo_HT_obs_el"+fname)   ]->Fill(ss::ht(), weight);
+            hists[getHist("Npn_histo_MET_obs_el"+fname)  ]->Fill(ss::met(), weight);
+            hists[getHist("Npn_histo_MTMIN_obs_el"+fname)]->Fill(mtmin, weight);
+            hists[getHist("Npn_histo_L1PT_obs_el"+fname) ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+            hists[getHist("Npn_histo_L2PT_obs_el"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+            hists[getHist("Npn_histo_LTrue_obs_el"+fname) ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+            hists[getHist("Npn_histo_LFake_obs_el"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+            // hists[getHist("Npn_histo_LFake_obs_el_rebin"+fname) ]->Fill(min(coneCorr ? lep2_pT : ss::lep2_p4().pt(),69.F), weight);
 
             addToCounter(filename+Form("_obs_el_BR%i", br), weight);
           } 
           else if(abs(ss::lep2_id()) == 13){
-            hists[getHist("Npn_histo_sr_obs_mu")   ]->Fill(sr, weight);
-            hists[getHist("Npn_histo_br_obs_mu")   ]->Fill(br, weight);
-            hists[getHist("Npn_histo_HT_obs_mu")   ]->Fill(ss::ht(), weight);
-            hists[getHist("Npn_histo_MET_obs_mu")  ]->Fill(ss::met(), weight);
-            hists[getHist("Npn_histo_MTMIN_obs_mu")]->Fill(mtmin, weight);
-            hists[getHist("Npn_histo_L1PT_obs_mu") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-            hists[getHist("Npn_histo_L2PT_obs_mu") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
-            hists[getHist("Npn_histo_LTrue_obs_mu") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-            hists[getHist("Npn_histo_LFake_obs_mu") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+            if(sr > 0) hists[getHist("Npn_histo_sr_obs_mu"+fname)   ]->Fill(sr, weight);
+            hists[getHist("Npn_histo_br_obs_mu"+fname)   ]->Fill(br, weight);
+            hists[getHist("Npn_histo_HT_obs_mu"+fname)   ]->Fill(ss::ht(), weight);
+            hists[getHist("Npn_histo_MET_obs_mu"+fname)  ]->Fill(ss::met(), weight);
+            hists[getHist("Npn_histo_MTMIN_obs_mu"+fname)]->Fill(mtmin, weight);
+            hists[getHist("Npn_histo_L1PT_obs_mu"+fname) ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+            hists[getHist("Npn_histo_L2PT_obs_mu"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+            hists[getHist("Npn_histo_LTrue_obs_mu"+fname) ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+            hists[getHist("Npn_histo_LFake_obs_mu"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
 
             addToCounter(filename+Form("_obs_mu_BR%i", br), weight);
           }
@@ -743,45 +822,42 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
           prompt1_reco += weight;
           NpromptL2_reco += weight;
 
-          hists[getHist("Npn_histo_sr_obs")]   ->Fill(sr, weight);
-          hists[getHist("Npn_histo_br_obs")]   ->Fill(br, weight);
-          hists[getHist("Npn_histo_HT_obs")]   ->Fill(ss::ht(), weight);
-          hists[getHist("Npn_histo_MET_obs")]  ->Fill(ss::met(), weight);
-          hists[getHist("Npn_histo_MTMIN_obs")]->Fill(mtmin, weight);
-          hists[getHist("Npn_histo_L1PT_obs") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-          hists[getHist("Npn_histo_L2PT_obs") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
-          hists[getHist("Npn_histo_LFake_obs") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-          hists[getHist("Npn_histo_LTrue_obs") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+          if(sr > 0) hists[getHist("Npn_histo_sr_obs"+fname)]   ->Fill(sr, weight);
+          hists[getHist("Npn_histo_br_obs"+fname)]   ->Fill(br, weight);
+          hists[getHist("Npn_histo_HT_obs"+fname)]   ->Fill(ss::ht(), weight);
+          hists[getHist("Npn_histo_MET_obs"+fname)]  ->Fill(ss::met(), weight);
+          hists[getHist("Npn_histo_MTMIN_obs"+fname)]->Fill(mtmin, weight);
+          hists[getHist("Npn_histo_L1PT_obs"+fname) ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+          hists[getHist("Npn_histo_L2PT_obs"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+          hists[getHist("Npn_histo_LFake_obs"+fname) ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+          hists[getHist("Npn_histo_LTrue_obs"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
           
           if(abs(ss::lep1_id()) == 11){
 
-            hists[getHist("Npn_histo_sr_obs_el")]   ->Fill(sr, weight);
-            hists[getHist("Npn_histo_br_obs_el")]   ->Fill(br, weight);
-            hists[getHist("Npn_histo_HT_obs_el")]   ->Fill(ss::ht(), weight);
-            hists[getHist("Npn_histo_MET_obs_el")]  ->Fill(ss::met(), weight);
-            hists[getHist("Npn_histo_MTMIN_obs_el")]->Fill(mtmin, weight);
-            hists[getHist("Npn_histo_L1PT_obs_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-            hists[getHist("Npn_histo_L2PT_obs_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
-            hists[getHist("Npn_histo_LFake_obs_el") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-            hists[getHist("Npn_histo_LFake_obs_el_rebin") ]->Fill(min(coneCorr ? lep1_pT : ss::lep1_p4().pt(),69.F), weight);
-            hists[getHist("Npn_histo_LTrue_obs_el") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+            if(sr > 0) hists[getHist("Npn_histo_sr_obs_el"+fname)]   ->Fill(sr, weight);
+            hists[getHist("Npn_histo_br_obs_el"+fname)]   ->Fill(br, weight);
+            hists[getHist("Npn_histo_HT_obs_el"+fname)]   ->Fill(ss::ht(), weight);
+            hists[getHist("Npn_histo_MET_obs_el"+fname)]  ->Fill(ss::met(), weight);
+            hists[getHist("Npn_histo_MTMIN_obs_el"+fname)]->Fill(mtmin, weight);
+            hists[getHist("Npn_histo_L1PT_obs_el"+fname)] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+            hists[getHist("Npn_histo_L2PT_obs_el"+fname)] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+            hists[getHist("Npn_histo_LFake_obs_el"+fname) ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+            // hists[getHist("Npn_histo_LFake_obs_el_rebin"+fname) ]->Fill(min(coneCorr ? lep1_pT : ss::lep1_p4().pt(),69.F), weight);
+            hists[getHist("Npn_histo_LTrue_obs_el"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
             
             addToCounter(filename+Form("_obs_el_BR%i", br), weight);
 
-            addToCounter("OBS elec lep1,2 weight");
-            addToCounter("OBS elec lep1,2 weight", weight);
-
           } 
           else if(abs(ss::lep1_id()) == 13){
-            hists[getHist("Npn_histo_sr_obs_mu")]   ->Fill(sr, weight);
-            hists[getHist("Npn_histo_br_obs_mu")]   ->Fill(br, weight);
-            hists[getHist("Npn_histo_HT_obs_mu")]   ->Fill(ss::ht(), weight);
-            hists[getHist("Npn_histo_MET_obs_mu")]  ->Fill(ss::met(), weight);
-            hists[getHist("Npn_histo_MTMIN_obs_mu")]->Fill(mtmin, weight);
-            hists[getHist("Npn_histo_L1PT_obs_mu")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-            hists[getHist("Npn_histo_L2PT_obs_mu")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
-            hists[getHist("Npn_histo_LFake_obs_mu") ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
-            hists[getHist("Npn_histo_LTrue_obs_mu") ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+            if(sr > 0) hists[getHist("Npn_histo_sr_obs_mu"+fname)]   ->Fill(sr, weight);
+            hists[getHist("Npn_histo_br_obs_mu"+fname)]   ->Fill(br, weight);
+            hists[getHist("Npn_histo_HT_obs_mu"+fname)]   ->Fill(ss::ht(), weight);
+            hists[getHist("Npn_histo_MET_obs_mu"+fname)]  ->Fill(ss::met(), weight);
+            hists[getHist("Npn_histo_MTMIN_obs_mu"+fname)]->Fill(mtmin, weight);
+            hists[getHist("Npn_histo_L1PT_obs_mu"+fname)] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+            hists[getHist("Npn_histo_L2PT_obs_mu"+fname)] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
+            hists[getHist("Npn_histo_LFake_obs_mu"+fname) ]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), weight);
+            hists[getHist("Npn_histo_LTrue_obs_mu"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
 
             addToCounter(filename+Form("_obs_mu_BR%i", br), weight);
           }
@@ -854,8 +930,23 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       // bool lep1_denom_iso  = (ss::lep1_miniIso() < 0.4) ; // && ((ss::lep1_ptrel_v1() > ptrel_cut_1) || ((ss::lep1_closeJet().pt()/ss::lep1_p4().pt()) < (1.0/ptratio_cut_1 + ss::lep1_miniIso()))));
       // bool lep2_denom_iso  = (ss::lep2_miniIso() < 0.4) ; // && ((ss::lep2_ptrel_v1() > ptrel_cut_2) || ((ss::lep2_closeJet().pt()/ss::lep2_p4().pt()) < (1.0/ptratio_cut_2 + ss::lep2_miniIso()))));
 
-          if (inSitu && (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2())) continue;
-          if (inSitu && (!ss::lep1_isTrigSafeNoIsov1() || !ss::lep2_isTrigSafeNoIsov1())) continue;
+
+      // for new ntuples, we must re-compute the IDs (and apply MVA manually) because I have taken out the tight MVA at the babymaking level
+      bool inSituFR_id_lep1 = true;
+      bool inSituFR_id_lep2 = true;
+      if(abs(ss::lep1_id()) == 11) inSituFR_id_lep1 = fabs(ss::lep1_el_etaSC())<2.5 &&  ss::lep1_el_conv_vtx_flag() == 1 &&  ss::lep1_el_threeChargeAgree() == 1 &&  ss::lep1_el_exp_innerlayers() == 1 &&  ss::lep1_dZ() < 0.1;
+      else inSituFR_id_lep1 =  ss::lep1_dZ() < 0.1 && ss::lep1_mu_ptErr() && ss::lep1_mediumMuonPOG() &&  fabs(ss::lep1_p4().eta()) < 2.4;
+      if(abs(ss::lep2_id()) == 11) inSituFR_id_lep2 = fabs(ss::lep2_el_etaSC())<2.5 &&  ss::lep2_el_conv_vtx_flag() == 1 &&  ss::lep2_el_threeChargeAgree() == 1 &&  ss::lep2_el_exp_innerlayers() == 1 &&  ss::lep2_dZ() < 0.1;
+      else inSituFR_id_lep2 =  ss::lep2_dZ() < 0.1 && ss::lep2_mu_ptErr() && ss::lep2_mediumMuonPOG() &&  fabs(ss::lep2_p4().eta()) < 2.4;
+
+      if(!testMVA) {
+          inSituFR_id_lep1 = inSituFR_id_lep1 && passesNumeratorMVA(ss::lep1_id(), ss::lep1_el_etaSC(), ss::lep1_MVA());
+          inSituFR_id_lep2 = inSituFR_id_lep2 && passesNumeratorMVA(ss::lep2_id(), ss::lep2_el_etaSC(), ss::lep2_MVA());
+      }
+
+          // if (inSitu && (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2())) continue;
+          if (inSitu && (!inSituFR_id_lep1 || !inSituFR_id_lep2)) continue; // recomputed versions of variables above
+          // if (inSitu && (!ss::lep1_isTrigSafeNoIsov1() || !ss::lep2_isTrigSafeNoIsov1())) continue;
 
 
         //1) Lep1 is tight, lep2 is loose!tight
@@ -863,7 +954,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
 
           //Baseline selections
           if (!inSitu && (ss::hyp_class() != 2)) continue;
-          if (inSitu && (ss::lep2_multiIso() || !isFakeLeg(2) || !isGoodLeg(1) || !lep2_denom_iso)) continue;
+          if (inSitu && (ss::lep2_multiIso() || !isFakeLeg(2, doData) || !isGoodLeg(1, doData) || !lep2_denom_iso)) continue;
 
           if (usePtRatioCor){
             //this is a tighter FO than default, so skip if it does not pass
@@ -887,10 +978,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
 
             addToCounter(filename+Form("_pred_el_BR%i", br), w);
 
-            addToCounter("PRED elec lep1,2 weight");
-            addToCounter("PRED elec lep1,2 weight", w);
-
-            hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, w);
+            if(sr > 0) hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, w);
             hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht(), w);
             hists[getHist("Npn_histo_MET_pred_el")]  ->Fill(ss::met(), w);
@@ -899,7 +987,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
             hists[getHist("Npn_histo_LTrue_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             if(isFakeLeg(2)) hists[getHist("Npn_histo_LFake_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
-            if(isFakeLeg(2)) hists[getHist("Npn_histo_LFake_pred_el_rebin")] ->Fill(min(coneCorr ? lep2_pT : ss::lep2_p4().pt(),69.F), w);
+            // if(isFakeLeg(2)) hists[getHist("Npn_histo_LFake_pred_el_rebin")] ->Fill(min(coneCorr ? lep2_pT : ss::lep2_p4().pt(),69.F), w);
             if (sr>=0) Npn_histo_sr_err2_pred_el[(ss::ht() > 300)][sr-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_br_err2_pred_el[ss::ht() > 300][br]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
             Npn_histo_HT_err2_pred_el[(ss::ht() > 300)][hists[getHist("Npn_histo_HT_pred_el")]->FindBin(ss::ht())-1]->Fill(lep2_pT, fabs(ss::lep2_p4().eta()), w);
@@ -924,7 +1012,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
 
             addToCounter(filename+Form("_pred_mu_BR%i", br), w);
 
-            hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, w);
+            if(sr > 0) hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, w);
             hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht(), w);
             hists[getHist("Npn_histo_MET_pred_mu")]->Fill(ss::met(), w);
@@ -949,7 +1037,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
           }
           Npn = Npn + w;
           if (ss::lep2_motherID()==1) Npn_s = Npn_s + w;
-          hists[getHist("Npn_histo_sr_pred")]->Fill(sr, w);
+          if(sr > 0) hists[getHist("Npn_histo_sr_pred")]->Fill(sr, w);
           hists[getHist("Npn_histo_br_pred")]->Fill(br, w);
           hists[getHist("Npn_histo_HT_pred")]->Fill(ss::ht(), w);
           hists[getHist("Npn_histo_MET_pred")]->Fill(ss::met(), w);
@@ -965,7 +1053,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
 
           //Baseline selections
           if (!inSitu && ss::hyp_class() != 2) continue;
-          if (inSitu && (ss::lep1_multiIso() || !isFakeLeg(1) || !isGoodLeg(2) || !lep1_denom_iso)) continue;
+          if (inSitu && (ss::lep1_multiIso() || !isFakeLeg(1, doData) || !isGoodLeg(2, doData) || !lep1_denom_iso)) continue;
 
           // if(doData && !ss::is_real_data() && isGoodLeg(1)) weight = -ss::scale1fb(); 
           // else weight = 0;
@@ -991,10 +1079,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
 
             addToCounter(filename+Form("_pred_el_BR%i", br), w);
 
-            addToCounter("PRED elec lep1,2 weight");
-            addToCounter("PRED elec lep1,2 weight", w);
-
-            hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, w);
+            if(sr > 0) hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, w);
             hists[getHist("Npn_histo_HT_pred_el")]   ->Fill(ss::ht(), w);
             hists[getHist("Npn_histo_MET_pred_el")]  ->Fill(ss::met(), w);
@@ -1002,7 +1087,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_L1PT_pred_el")] ->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
             hists[getHist("Npn_histo_L2PT_pred_el")] ->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
             if(isFakeLeg(1)) hists[getHist("Npn_histo_LFake_pred_el")]->Fill(coneCorr ? lep1_pT : ss::lep1_p4().pt(), w);
-            if(isFakeLeg(1)) hists[getHist("Npn_histo_LFake_pred_el_rebin")]->Fill(min(coneCorr ? lep1_pT : ss::lep1_p4().pt(),69.F), w);
+            // if(isFakeLeg(1)) hists[getHist("Npn_histo_LFake_pred_el_rebin")]->Fill(min(coneCorr ? lep1_pT : ss::lep1_p4().pt(),69.F), w);
             hists[getHist("Npn_histo_LTrue_pred_el")]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), w);
 
             if (sr>=0) Npn_histo_sr_err2_pred_el[(ss::ht() > 300)][sr-1]->Fill(lep1_pT, fabs(ss::lep1_p4().eta()), w);
@@ -1029,7 +1114,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
 
             addToCounter(filename+Form("_pred_mu_BR%i", br), w);
 
-            hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, w);
+            if(sr > 0) hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, w);
             hists[getHist("Npn_histo_HT_pred_mu")]->Fill(ss::ht(), w);
             hists[getHist("Npn_histo_MET_pred_mu")]->Fill(ss::met(), w);
@@ -1056,7 +1141,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
           }
           Npn = Npn + w;
           if (ss::lep1_motherID()==1) Npn_s = Npn_s + w;
-          hists[getHist("Npn_histo_sr_pred")]->Fill(sr, w);
+          if(sr > 0) hists[getHist("Npn_histo_sr_pred")]->Fill(sr, w);
           hists[getHist("Npn_histo_br_pred")]->Fill(br, w);
           hists[getHist("Npn_histo_HT_pred")]->Fill(ss::ht(), w);
           hists[getHist("Npn_histo_MET_pred")]->Fill(ss::met(), w);
@@ -1122,17 +1207,44 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
   std::string plotdir="plots/";
 
   // TString commonOptions = Form(" --isLinear --outOfFrame --type Supplementary (Simulation) --dataName Data --noDivisionLabel --noRatioPlot --lumi %.2f --yTitleOffset -0.2", luminosity);// --systBlack --systFillStyle 3345
-  TString commonOptions = Form(" --legendCounts --isLinear --outOfFrame --type Supplementary (Simulation) --dataName Data --noDivisionLabel --lumi %.2f --yTitleOffset -0.2", luminosity);// --systBlack --systFillStyle 3345
-  // std::string mc_type = "t#bar{t} MC";
-  std::string mc_type = "Data";
+  TString commonOptions = Form(" --legendCounts --isLinear --outOfFrame --type Supplementary (Simulation) --dataName Prediction --noDivisionLabel --lumi %.2f --yTitleOffset -0.2 --legendTaller 0.07 --legendRight -0.06", luminosity);// --systBlack --systFillStyle 3345
+  TString commonOptionsLog = Form(" --legendCounts  --outOfFrame --type Supplementary (Simulation) --dataName Prediction --noDivisionLabel --lumi %.2f --yTitleOffset -0.2 --legendTaller 0.07 --legendRight -0.06", luminosity);// --systBlack --systFillStyle 3345
+
+  std::string mc_type = "MC";
+  std::vector<Color_t> colors;
+
+  std::vector<std::string> obs_types;
+  for(unsigned int i = 0; i < filenames.size(); i++) {
+      if (filenames[i] == "TTBAR") {
+          obs_types.push_back("t#bar{t}");
+          colors.push_back(kYellow);
+      }
+      else if (filenames[i] == "WJets") {
+          obs_types.push_back("W+jets");
+          colors.push_back(kOrange);
+      }
+      else {
+          obs_types.push_back(filenames[i].Data());
+          colors.push_back(kGreen+2);
+      }
+  }
+
+
+  // //BR plots
+  // GetErrorPlot(hists[getHist("Npn_histo_br_pred")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el, inSitu);
+  // GetErrorPlot(hists[getHist("Npn_histo_br_pred_mu")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el, inSitu);
+  // GetErrorPlot(hists[getHist("Npn_histo_br_pred_el")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el, inSitu);
+  // dataMCplotMaker(hists[getHist("Npn_histo_br_pred")], { make_pair(hists[getHist("Npn_histo_br_obs")], hists[getHist("Npn_histo_br_obs")] ) }, obs_types, "BRs", mc_type+"", Form("--outputName %s --xAxisLabel Baseline Region --noXaxisUnit"+commonOptions, (plotdir+"br_all"+option).Data()), {}, {}, colors); 
+  // dataMCplotMaker(hists[getHist("Npn_histo_br_pred_mu")], { make_pair(hists[getHist("Npn_histo_br_obs_mu")], hists[getHist("Npn_histo_br_obs_mu")] ) }, obs_types, "BRs", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel Baseline Region --noXaxisUnit"+commonOptions, (plotdir+"br_mu"+option).Data()), {}, {}, colors); 
+  // dataMCplotMaker(hists[getHist("Npn_histo_br_pred_el")], { make_pair(hists[getHist("Npn_histo_br_obs_el")], hists[getHist("Npn_histo_br_obs_el")]) }, obs_types, "BRs", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel Baseline Region --noXaxisUnit"+commonOptions, (plotdir+"br_el"+option).Data()), {}, {}, colors); 
 
   //BR plots
   GetErrorPlot(hists[getHist("Npn_histo_br_pred")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_br_pred_mu")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_br_pred_el")], Npn_histo_br_err2_pred_mu, Npn_histo_br_err2_pred_el, inSitu);
-  dataMCplotMaker(hists[getHist("Npn_histo_br_pred")], { make_pair(hists[getHist("Npn_histo_br_obs")], hists[getHist("Npn_histo_br_obs")] ) }, {"t#bar{t}"}, "BRs", mc_type+"", Form("--outputName %s --xAxisLabel Baseline Region --noXaxisUnit"+commonOptions, (plotdir+"br_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_br_pred_mu")], { make_pair(hists[getHist("Npn_histo_br_obs_mu")], hists[getHist("Npn_histo_br_obs_mu")] ) }, {"t#bar{t}"}, "BRs", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel Baseline Region --noXaxisUnit"+commonOptions, (plotdir+"br_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_br_pred_el")], { make_pair(hists[getHist("Npn_histo_br_obs_el")], hists[getHist("Npn_histo_br_obs_el")]) }, {"t#bar{t}"}, "BRs", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel Baseline Region --noXaxisUnit"+commonOptions, (plotdir+"br_el"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_br_pred")], getBackgrounds("Npn_histo_br_obs", -1, filenames), obs_types, "BRs", mc_type+"", Form("--outputName %s --xAxisLabel Baseline Region --noXaxisUnit"+commonOptions, (plotdir+"br_all"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_br_pred_mu")], getBackgrounds("Npn_histo_br_obs", 1, filenames), obs_types, "BRs", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel Baseline Region --noXaxisUnit"+commonOptions, (plotdir+"br_mu"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_br_pred_el")], getBackgrounds("Npn_histo_br_obs", 0, filenames), obs_types, "BRs", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel Baseline Region --noXaxisUnit"+commonOptions, (plotdir+"br_el"+option).Data()), {}, {}, colors); 
 
   //SR plots
   string typeAG = "HH";
@@ -1141,66 +1253,70 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
   GetErrorPlot(hists[getHist("Npn_histo_sr_pred")], Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_sr_pred_mu")], Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_sr_pred_el")], Npn_histo_sr_err2_pred_mu, Npn_histo_sr_err2_pred_el, inSitu);
-  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred")], { make_pair(hists[getHist("Npn_histo_sr_obs")], hists[getHist("Npn_histo_sr_obs")]) }, {"t#bar{t}"}, Form("%s SRs", typeAG.c_str()), mc_type+"", Form("--outputName %s --xAxisLabel SR --noXaxisUnit"+commonOptions, (plotdir+"sr_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_mu")], { make_pair(hists[getHist("Npn_histo_sr_obs_mu")], hists[getHist("Npn_histo_sr_obs_mu")]) }, {"t#bar{t}"}, Form("%s SRs", typeAG.c_str()), mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel SR --noXaxisUnit"+commonOptions, (plotdir+"sr_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_el")], { make_pair(hists[getHist("Npn_histo_sr_obs_el")], hists[getHist("Npn_histo_sr_obs_el")]) }, {"t#bar{t}"}, Form("%s SRs", typeAG.c_str()), mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel SR --noXaxisUnit"+commonOptions, (plotdir+"sr_el"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred")], getBackgrounds("Npn_histo_sr_obs",-1,filenames), obs_types, Form("%s SRs", typeAG.c_str()), mc_type+"", Form("--outputName %s --xAxisLabel SR --noXaxisUnit"+commonOptions, (plotdir+"sr_all"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_mu")], getBackgrounds("Npn_histo_sr_obs",1,filenames), obs_types, Form("%s SRs", typeAG.c_str()), mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel SR --noXaxisUnit"+commonOptions, (plotdir+"sr_mu"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_el")], getBackgrounds("Npn_histo_sr_obs",0,filenames), obs_types, Form("%s SRs", typeAG.c_str()), mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel SR --noXaxisUnit"+commonOptions, (plotdir+"sr_el"+option).Data()), {}, {}, colors); 
+
+  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred")], getBackgrounds("Npn_histo_sr_obs",-1,filenames), obs_types, Form("%s SRs", typeAG.c_str()), mc_type+"", Form("--outputName %s --xAxisLabel SR --noXaxisUnit"+commonOptionsLog, (plotdir+"sr_log_all"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_mu")], getBackgrounds("Npn_histo_sr_obs",1,filenames), obs_types, Form("%s SRs", typeAG.c_str()), mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel SR --noXaxisUnit"+commonOptionsLog, (plotdir+"sr_log_mu"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_sr_pred_el")], getBackgrounds("Npn_histo_sr_obs",0,filenames), obs_types, Form("%s SRs", typeAG.c_str()), mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel SR --noXaxisUnit"+commonOptionsLog, (plotdir+"sr_log_el"+option).Data()), {}, {}, colors); 
 
   //HT plots
   GetErrorPlot(hists[getHist("Npn_histo_HT_pred")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_HT_pred_mu")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_HT_pred_el")], Npn_histo_HT_err2_pred_mu, Npn_histo_HT_err2_pred_el, inSitu);
-  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred")], { make_pair(hists[getHist("Npn_histo_HT_obs")], hists[getHist("Npn_histo_HT_obs")]) }, {"t#bar{t}"}, "H_{T}", mc_type+"", Form("--outputName %s --xAxisLabel H_{T}"+commonOptions, (plotdir+"HT_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred_mu")], { make_pair(hists[getHist("Npn_histo_HT_obs_mu")], hists[getHist("Npn_histo_HT_obs_mu")]) }, {"t#bar{t}"}, "H_{T}", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel H_{T}"+commonOptions, (plotdir+"HT_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred_el")], { make_pair(hists[getHist("Npn_histo_HT_obs_el")], hists[getHist("Npn_histo_HT_obs_el")]) }, {"t#bar{t}"}, "H_{T}", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel H_{T}"+commonOptions, (plotdir+"HT_el"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred")], getBackgrounds("Npn_histo_HT_obs",-1,filenames), obs_types, "H_{T}", mc_type+"", Form("--outputName %s --xAxisLabel H_{T}"+commonOptions, (plotdir+"HT_all"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred_mu")], getBackgrounds("Npn_histo_HT_obs",1,filenames), obs_types, "H_{T}", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel H_{T}"+commonOptions, (plotdir+"HT_mu"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_HT_pred_el")], getBackgrounds("Npn_histo_HT_obs",0,filenames), obs_types, "H_{T}", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel H_{T}"+commonOptions, (plotdir+"HT_el"+option).Data()), {}, {}, colors); 
 
   //MET plots
   GetErrorPlot(hists[getHist("Npn_histo_MET_pred")], Npn_histo_MET_err2_pred_mu, Npn_histo_MET_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_MET_pred_mu")], Npn_histo_MET_err2_pred_mu, Npn_histo_MET_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_MET_pred_el")], Npn_histo_MET_err2_pred_mu, Npn_histo_MET_err2_pred_el, inSitu);
-  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred")], { make_pair(hists[getHist("Npn_histo_MET_obs")], hists[getHist("Npn_histo_MET_obs")]) }, {"t#bar{t}"}, "MET", mc_type+"", Form("--outputName %s --xAxisLabel MET"+commonOptions, (plotdir+"MET_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred_mu")], { make_pair(hists[getHist("Npn_histo_MET_obs_mu")], hists[getHist("Npn_histo_MET_obs_mu")]) }, {"t#bar{t}"}, "MET", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel MET"+commonOptions, (plotdir+"MET_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred_el")], { make_pair(hists[getHist("Npn_histo_MET_obs_el")], hists[getHist("Npn_histo_MET_obs_el")]) }, {"t#bar{t}"}, "MET", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel MET"+commonOptions, (plotdir+"MET_el"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred")], getBackgrounds("Npn_histo_MET_obs",-1,filenames), obs_types, "MET", mc_type+"", Form("--outputName %s --xAxisLabel MET"+commonOptions, (plotdir+"MET_all"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred_mu")], getBackgrounds("Npn_histo_MET_obs",1,filenames), obs_types, "MET", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel MET"+commonOptions, (plotdir+"MET_mu"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_MET_pred_el")], getBackgrounds("Npn_histo_MET_obs",0,filenames), obs_types, "MET", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel MET"+commonOptions, (plotdir+"MET_el"+option).Data()), {}, {}, colors); 
 
   //MTMIN plots
   GetErrorPlot(hists[getHist("Npn_histo_MTMIN_pred")], Npn_histo_MTMIN_err2_pred_mu, Npn_histo_MTMIN_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_MTMIN_pred_mu")], Npn_histo_MTMIN_err2_pred_mu, Npn_histo_MTMIN_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_MTMIN_pred_el")], Npn_histo_MTMIN_err2_pred_mu, Npn_histo_MTMIN_err2_pred_el, inSitu);
-  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred")], { make_pair(hists[getHist("Npn_histo_MTMIN_obs")], hists[getHist("Npn_histo_MTMIN_obs")]) }, {"t#bar{t}"}, "M_{T}^{min}", mc_type+"", Form("--outputName %s --xAxisLabel M_{T}^{min}"+commonOptions, (plotdir+"MTMIN_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred_mu")], { make_pair(hists[getHist("Npn_histo_MTMIN_obs_mu")], hists[getHist("Npn_histo_MTMIN_obs_mu")]) }, {"t#bar{t}"}, "M_{T}^{min}", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel M_{T}^{min}"+commonOptions, (plotdir+"MTMIN_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred_el")], { make_pair(hists[getHist("Npn_histo_MTMIN_obs_el")], hists[getHist("Npn_histo_MTMIN_obs_el")]) }, {"t#bar{t}"}, "M_{T}^{min}", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel M_{T}^{min}"+commonOptions, (plotdir+"MTMIN_el"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred")], getBackgrounds("Npn_histo_MTMIN_obs",-1,filenames), obs_types, "M_{T}^{min}", mc_type+"", Form("--outputName %s --xAxisLabel M_{T}^{min}"+commonOptions, (plotdir+"MTMIN_all"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred_mu")], getBackgrounds("Npn_histo_MTMIN_obs",1,filenames), obs_types, "M_{T}^{min}", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel M_{T}^{min}"+commonOptions, (plotdir+"MTMIN_mu"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_MTMIN_pred_el")], getBackgrounds("Npn_histo_MTMIN_obs",0,filenames), obs_types, "M_{T}^{min}", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel M_{T}^{min}"+commonOptions, (plotdir+"MTMIN_el"+option).Data()), {}, {}, colors); 
 
   //L1PT plots
   GetErrorPlot(hists[getHist("Npn_histo_L1PT_pred")], Npn_histo_L1PT_err2_pred_mu, Npn_histo_L1PT_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_L1PT_pred_mu")], Npn_histo_L1PT_err2_pred_mu, Npn_histo_L1PT_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_L1PT_pred_el")], Npn_histo_L1PT_err2_pred_mu, Npn_histo_L1PT_err2_pred_el, inSitu);
-  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred")], { make_pair(hists[getHist("Npn_histo_L1PT_obs")], hists[getHist("Npn_histo_L1PT_obs")]) }, {"t#bar{t}"}, "L1 p_{T}", mc_type+"", Form("--outputName %s --xAxisLabel L1 p_{T}"+commonOptions, (plotdir+"L1PT_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred_mu")], { make_pair(hists[getHist("Npn_histo_L1PT_obs_mu")], hists[getHist("Npn_histo_L1PT_obs_mu")]) }, {"t#bar{t}"}, "L1 p_{T}", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel L1 p_{T}"+commonOptions, (plotdir+"L1PT_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred_el")], { make_pair(hists[getHist("Npn_histo_L1PT_obs_el")], hists[getHist("Npn_histo_L1PT_obs_el")]) }, {"t#bar{t}"}, "L1 p_{T}", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel L1 p_{T}"+commonOptions, (plotdir+"L1PT_el"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred")], getBackgrounds("Npn_histo_L1PT_obs",-1,filenames), obs_types, "L1 p_{T}", mc_type+"", Form("--outputName %s --xAxisLabel L1 p_{T}"+commonOptions, (plotdir+"L1PT_all"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred_mu")], getBackgrounds("Npn_histo_L1PT_obs",1,filenames), obs_types, "L1 p_{T}", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel L1 p_{T}"+commonOptions, (plotdir+"L1PT_mu"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_L1PT_pred_el")], getBackgrounds("Npn_histo_L1PT_obs",0,filenames), obs_types, "L1 p_{T}", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel L1 p_{T}"+commonOptions, (plotdir+"L1PT_el"+option).Data()), {}, {}, colors); 
 
   //L2PT plots
   GetErrorPlot(hists[getHist("Npn_histo_L2PT_pred")], Npn_histo_L2PT_err2_pred_mu, Npn_histo_L2PT_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_L2PT_pred_mu")], Npn_histo_L2PT_err2_pred_mu, Npn_histo_L2PT_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_L2PT_pred_el")], Npn_histo_L2PT_err2_pred_mu, Npn_histo_L2PT_err2_pred_el, inSitu);
-  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred")], { make_pair(hists[getHist("Npn_histo_L2PT_obs")], hists[getHist("Npn_histo_L2PT_obs")]) }, {"t#bar{t}"}, "L2 p_{T}", mc_type+"", Form("--outputName %s --xAxisLabel L2 p_{T}"+commonOptions, (plotdir+"L2PT_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred_mu")], { make_pair(hists[getHist("Npn_histo_L2PT_obs_mu")], hists[getHist("Npn_histo_L2PT_obs_mu")]) }, {"t#bar{t}"}, "L2 p_{T}", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel L2 p_{T}"+commonOptions, (plotdir+"L2PT_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred_el")], { make_pair(hists[getHist("Npn_histo_L2PT_obs_el")], hists[getHist("Npn_histo_L2PT_obs_el")]) }, {"t#bar{t}"}, "L2 p_{T}", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel L2 p_{T}"+commonOptions, (plotdir+"L2PT_el"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred")], getBackgrounds("Npn_histo_L2PT_obs",-1,filenames), obs_types, "L2 p_{T}", mc_type+"", Form("--outputName %s --xAxisLabel L2 p_{T}"+commonOptions, (plotdir+"L2PT_all"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred_mu")], getBackgrounds("Npn_histo_L2PT_obs",1,filenames), obs_types, "L2 p_{T}", mc_type+", Nonprompt muons", Form("--outputName %s --xAxisLabel L2 p_{T}"+commonOptions, (plotdir+"L2PT_mu"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_L2PT_pred_el")], getBackgrounds("Npn_histo_L2PT_obs",0,filenames), obs_types, "L2 p_{T}", mc_type+", Nonprompt electrons", Form("--outputName %s --xAxisLabel L2 p_{T}"+commonOptions, (plotdir+"L2PT_el"+option).Data()), {}, {}, colors); 
   
   //LTrue plots
   GetErrorPlot(hists[getHist("Npn_histo_LTrue_pred")], Npn_histo_LTrue_err2_pred_mu, Npn_histo_LTrue_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_LTrue_pred_mu")], Npn_histo_LTrue_err2_pred_mu, Npn_histo_LTrue_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_LTrue_pred_el")], Npn_histo_LTrue_err2_pred_mu, Npn_histo_LTrue_err2_pred_el, inSitu);
-  dataMCplotMaker(hists[getHist("Npn_histo_LTrue_pred")], { make_pair(hists[getHist("Npn_histo_LTrue_obs")], hists[getHist("Npn_histo_LTrue_obs")]) }, {"t#bar{t}"}, "LTight p_{T}", mc_type+", all", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LTight p_{T} --noDivisionLabel  --isLinear --noOverflow --lumi 12.9 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1 --legendCounts", (plotdir+"LTrue_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_LTrue_pred_mu")], { make_pair(hists[getHist("Npn_histo_LTrue_obs_mu")], hists[getHist("Npn_histo_LTrue_obs_mu")]) }, {"t#bar{t}"}, "LTight p_{T}", mc_type+", mu", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LTight p_{T} --noDivisionLabel  --isLinear --noOverflow --lumi 12.9 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1 --legendCounts", (plotdir+"LTrue_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_LTrue_pred_el")], { make_pair(hists[getHist("Npn_histo_LTrue_obs_el")], hists[getHist("Npn_histo_LTrue_obs_el")]) }, {"t#bar{t}"}, "LTight p_{T}", mc_type+", el", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LTight p_{T} --noDivisionLabel  --isLinear --noOverflow --lumi 12.9 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1 --legendCounts", (plotdir+"LTrue_el"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_LTrue_pred")], getBackgrounds("Npn_histo_LTrue_obs",-1,filenames), obs_types, "LTight p_{T}", mc_type+", all", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LTight p_{T} "+commonOptions, (plotdir+"LTrue_all"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_LTrue_pred_mu")], getBackgrounds("Npn_histo_LTrue_obs",1,filenames), obs_types, "LTight p_{T}", mc_type+", Nonprompt muons", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LTight p_{T} "+commonOptions, (plotdir+"LTrue_mu"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_LTrue_pred_el")], getBackgrounds("Npn_histo_LTrue_obs",0,filenames), obs_types, "LTight p_{T}", mc_type+", Nonprompt electrons", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LTight p_{T} "+commonOptions, (plotdir+"LTrue_el"+option).Data()), {}, {}, colors); 
 
   //LFake plots
   GetErrorPlot(hists[getHist("Npn_histo_LFake_pred")], Npn_histo_LFake_err2_pred_mu, Npn_histo_LFake_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_LFake_pred_mu")], Npn_histo_LFake_err2_pred_mu, Npn_histo_LFake_err2_pred_el, inSitu);
   GetErrorPlot(hists[getHist("Npn_histo_LFake_pred_el")], Npn_histo_LFake_err2_pred_mu, Npn_histo_LFake_err2_pred_el, inSitu);
-  dataMCplotMaker(hists[getHist("Npn_histo_LFake_pred")], { make_pair(hists[getHist("Npn_histo_LFake_obs")], hists[getHist("Npn_histo_LFake_obs")]) }, {"t#bar{t}"}, "LLoose p_{T}", mc_type+", all", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LLoose p_{T} --noDivisionLabel  --isLinear --noOverflow --lumi 12.9 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1 --legendCounts", (plotdir+"LFake_all"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_LFake_pred_mu")], { make_pair(hists[getHist("Npn_histo_LFake_obs_mu")], hists[getHist("Npn_histo_LFake_obs_mu")]) }, {"t#bar{t}"}, "LLoose p_{T}", mc_type+", mu", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LLoose p_{T} --noDivisionLabel  --isLinear --noOverflow --lumi 12.9 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1 --legendCounts", (plotdir+"LFake_mu"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_LFake_pred_el")], { make_pair(hists[getHist("Npn_histo_LFake_obs_el")], hists[getHist("Npn_histo_LFake_obs_el")]) }, {"t#bar{t}"}, "LLoose p_{T}", mc_type+", el", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LLoose p_{T} --noDivisionLabel  --isLinear --noOverflow --lumi 12.9 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1 --legendCounts", (plotdir+"LFake_el"+option).Data()), {}, {}, { kYellow }); 
-  dataMCplotMaker(hists[getHist("Npn_histo_LFake_pred_el_rebin")], { make_pair(hists[getHist("Npn_histo_LFake_obs_el_rebin")], hists[getHist("Npn_histo_LFake_obs_el_rebin")]) }, {"t#bar{t}"}, "LLoose p_{T}", mc_type+", el", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LLoose p_{T} --noDivisionLabel --setMaxMultiplier 2.0 --isLinear --noOverflow --lumi 12.9 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1 --legendCounts", (plotdir+"LFake_el_rebin"+option).Data()), {}, {}, { kYellow }); 
+  dataMCplotMaker(hists[getHist("Npn_histo_LFake_pred")], getBackgrounds("Npn_histo_LFake_obs",-1,filenames), obs_types, "LLoose p_{T}", mc_type+", all", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LLoose p_{T} "+commonOptions, (plotdir+"LFake_all"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_LFake_pred_mu")], getBackgrounds("Npn_histo_LFake_obs",1,filenames), obs_types, "LLoose p_{T}", mc_type+", Nonprompt muons", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LLoose p_{T} "+commonOptions, (plotdir+"LFake_mu"+option).Data()), {}, {}, colors); 
+  dataMCplotMaker(hists[getHist("Npn_histo_LFake_pred_el")], getBackgrounds("Npn_histo_LFake_obs",0,filenames), obs_types, "LLoose p_{T}", mc_type+", Nonprompt electrons", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LLoose p_{T} "+commonOptions, (plotdir+"LFake_el"+option).Data()), {}, {}, colors); 
+  // dataMCplotMaker(hists[getHist("Npn_histo_LFake_pred_el_rebin")], { make_pair(hists[getHist("Npn_histo_LFake_obs_el_rebin")], hists[getHist("Npn_histo_LFake_obs_el_rebin")]) }, obs_types, "LLoose p_{T}", mc_type+", el", Form("--outputName %s --outOfFrame --dataName Data --xAxisLabel LLoose p_{T} --noDivisionLabel --setMaxMultiplier 2.0 --isLinear --noOverflow --lumi 12.9 --noXaxisUnit --systBlack --systFillStyle 3345 --type Simulation --lumiPrec 1 --legendCounts", (plotdir+"LFake_el_rebin"+option).Data()), {}, {}, colors); 
 
 
   TH1F *total_BR_histo_e = (TH1F*)  hists[getHist("NBs_BR_histo_e")]->Clone("total_BR_histo_e");
@@ -1281,7 +1397,13 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
     muons.forSlideMaker("closure_muon_normal.tex"); 
   }
 
-  printCounter(true);
+  TFile *file = new TFile("histos_"+option+".root", "RECREATE");
+  file->Write(); 
+  for (unsigned int i = 0; i < hists.size(); i++){
+      if(doData && TString(hists[i]->GetName()).Contains("_obs")) continue;
+      hists[i]->Write();
+  }
 
+  printCounter(true);
   return 0;
 }

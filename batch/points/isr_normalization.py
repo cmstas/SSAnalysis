@@ -60,8 +60,12 @@ if __name__ == "__main__":
     # name,fname = "t1tttt", "../T1TTTT_main.root"
 
     for name, fname in [
-        ("t1tttt", "../T1TTTT_main.root"),
-        ("t5qqqq_dm20", "../T5QQQQVV_dm20.root"),
-        ("t5qqqq", "../T5QQQQVV_main.root"),
+        # ("t1tttt", "../T1TTTT_main.root"),
+        # ("t5qqqq_dm20", "../T5QQQQVV_dm20.root"),
+        # ("t5qqqq", "../T5QQQQVV_main.root"),
+        # ("t6ttww", "/nfs-7/userdata/ss2015/ssBabies/v8.04/T6TTWW_main.root"),
+        # ("t5ttcc", "/nfs-7/userdata/ss2015/ssBabies/v8.04/T5TTCC_main.root"),
+        # ("t5tttt_dm175", "/nfs-7/userdata/ss2015/ssBabies/v8.04/T5TTTT_dm175.root"),
+        ("t1ttbb", "/nfs-7/userdata/ss2015/ssBabies/v8.04/T1TTBB_main.root"),
             ]:
         main(name, fname)

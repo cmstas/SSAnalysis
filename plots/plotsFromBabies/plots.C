@@ -1,8 +1,9 @@
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
-#include "../../SSAnalysis/classFiles/v6.02/SS.h"
+#include "../../SSAnalysis/classFiles/v8.04/SS.h"
 #include "../../CORE/Tools/dorky/dorky.h"
 #include "../../software/tableMaker/CTable.h"
 #include "../../commonUtils.h"
+#include "../../CORE/SSSelections.h"
 
 #include "TChain.h"
 #include "TColor.h"
@@ -15,12 +16,13 @@ using namespace std;
 
 //Lumi
 // float lumiAG = 6.26;
-float lumiAG = 12.9;
+float lumiAG = getLumi();
 
 //Data or Signal
 enum type_ag { DATA, SIGNAL, FAKES }; 
 type_ag type = DATA; 
-bool useSFs = true;
+bool useSFs = true; // unused
+bool checkTailRegions = true;
 
 HLTEfficiency HLTEff("../../hlt/HLT_Efficiencies_7p65fb_2016.root");
 
@@ -46,19 +48,21 @@ pair <vector <TH1F*>, vector <float> > fake_plots;
 void plots(){
 
   //Declare chains
-  TChain *data  = new TChain("t", "data"); data ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/Data*.root");
-  TChain *ttz   = new TChain("t");         ttz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/TTZ*.root"         ); 
-  TChain *ttx   = new TChain("t");         ttx  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/TTW.root"          ); 
-  TChain *ttw   = new TChain("t");         ttw  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/TTHtoNonBB.root"   ); 
-  TChain *wz    = new TChain("t");         wz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/WZ.root"           ); 
-  TChain *ttbar = new TChain("t");         ttbar->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/TTBAR_PH.root"     ); 
-  TChain *dy    = new TChain("t");         dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/DY_high.root"      ); 
-                                           dy   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/DY_low.root"       ); 
-  TChain *wjets = new TChain("t");         wjets->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/WJets.root"        ); 
-  TChain *mb    = new TChain("t");         mb   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/WWZ.root"          ); 
-  TChain *wzz   = new TChain("t");         wzz  ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/WZZ.root"          ); 
-  TChain *zz    = new TChain("t");         zz   ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/ZZ.root"           ); 
-  TChain *qqww  = new TChain("t");         qqww ->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/QQWW.root"         ); 
+    TString tag = getTag();
+    TString tagData = getTagData();
+  TChain *data  = new TChain("t", "data"); data ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/Data*.root"     , tagData.Data()));
+  TChain *ttz   = new TChain("t");         ttz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ*.root"      , tag.Data())); 
+  TChain *ttx   = new TChain("t");         ttx  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"       , tag.Data())); 
+  TChain *ttw   = new TChain("t");         ttw  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root", tag.Data())); 
+  TChain *wz    = new TChain("t");         wz   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"        , tag.Data())); 
+  TChain *ttbar = new TChain("t");         ttbar->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"  , tag.Data())); 
+  TChain *dy    = new TChain("t");         dy   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_high.root"   , tag.Data())); 
+                                           dy   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_low.root"    , tag.Data())); 
+  TChain *wjets = new TChain("t");         wjets->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root"     , tag.Data())); 
+  TChain *mb    = new TChain("t");         mb   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"       , tag.Data())); 
+  TChain *wzz   = new TChain("t");         wzz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"       , tag.Data())); 
+  TChain *zz    = new TChain("t");         zz   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZZ.root"        , tag.Data())); 
+  TChain *qqww  = new TChain("t");         qqww ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"      , tag.Data())); 
 
   //Make plots
   dy_plots    = makePlots(dy);
@@ -136,8 +140,8 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
 
 
   //Declare plots
-  TH1F *met    = new TH1F("met"    , "met"    , 50  ,   0, 500);
-  TH1F *ht     = new TH1F("ht"     , "ht"     , 50  ,   0, 800);
+  TH1F *met    = new TH1F("met"    , "met"    , 50  ,   0, 1000);
+  TH1F *ht     = new TH1F("ht"     , "ht"     , 50  ,   0, 1800);
   TH1F *mll    = new TH1F("mll"    , "mll"    , 50  ,   0, 300);
   TH1F *mtmin  = new TH1F("mtmin"  , "mtmin"  , 50  ,   0, 300);
   TH1F *njets  = new TH1F("njets"  , "njets"  , 6  ,    0, 6  );
@@ -194,8 +198,19 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       if (!ss::passes_met_filters() && ss::is_real_data()) continue;
 
       //Lepton pT cuts
-      if (ss::lep1_p4().pt() < 25) continue;
-      if (ss::lep2_p4().pt() < 25) continue;
+      if (ss::lep1_coneCorrPt() < 25) continue;
+      if (ss::lep2_coneCorrPt() < 25) continue;
+      
+      // recalculate mtmin
+      float mtl1 = MT(ss::lep1_coneCorrPt(), ss::lep1_p4().phi(), ss::met(), ss::metPhi());
+      float mtl2 = MT(ss::lep2_coneCorrPt(), ss::lep2_p4().phi(), ss::met(), ss::metPhi());
+      float mtminRecalc = mtl1 > mtl2 ? mtl2 : mtl1;
+
+      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
+      if (BR < 0) continue;
+      int SR = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtminRecalc, ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
+      if (checkTailRegions && ((BR<0) || (SR<30) || ss::hyp_class()==6)) continue; // only look at tail regions for excess study
+      if (checkTailRegions && (abs(ss::dilep_p4().M()-91.2) <= 15)) continue; // only look at tail regions for excess study
 
       //Calculate weight
       float weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
@@ -222,6 +237,7 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       pt->Fill(ss::lep2_p4().pt()  , weight);
       eta->Fill(ss::lep1_p4().eta(), weight);
       eta->Fill(ss::lep2_p4().eta(), weight);
+
   
       //Counts
       if (ss::dilep_p4().M() < 30) continue; 

@@ -42,6 +42,17 @@ enum sample_t {
   TTZnlo = 36,
   TTWnlo = 37,
 
+  WJets100To200 = 38,
+  WJets200To400 = 39,
+  WJets400To600 = 40,
+  WJets600To800 = 41,
+  WJets800To1200 = 42,
+
+  WJets1 = 43,
+  WJets2 = 44,
+  WJets3 = 45,
+  WJets4 = 46,
+
   //Signals
   T1TTTT_1500 = 100,
   T1TTTT_1200 = 101,
@@ -74,6 +85,10 @@ enum sample_t {
   DataDoubleEGF = 1015,
   DataDoubleMuonF = 1016,
   DataMuonEGF = 1017,
+
+  DataDoubleEGG = 1018,
+  DataDoubleMuonG = 1019,
+  DataMuonEGG = 1020,
 
   // DataDoubleEGD = 1003,
   // DataDoubleMuonD = 1004,
@@ -147,7 +162,7 @@ enum sample_t {
   T5QQQQVV_700To775_1To650    = 11007,
   T5QQQQVV_800To975_1To850    = 11008,
 
-  T6TTWW_50_300to600_225to575 = 12000,
+  T6TTWW_main = 12000,
   T6TTWW_50_300to600_75to125  = 12001,
   T6TTWW_50_350to600_150to400 = 12002,
   T6TTWW_50_625to950_500to850 = 12003,
@@ -163,7 +178,7 @@ enum sample_t {
   T5QQQQWW_600to800_0to725    = 13005,
   T5QQQQWW_825to1000_0to925   = 13006,
 
-  T1TTBB_1225to1400_0to1050     = 14001,
+  T1TTBB_main     = 14001,
   T1TTBB_1425to1600_0to1250     = 14002,
   T1TTBB_1425to1600_1100to1350  = 14003,
   T1TTBB_600to800_275to575      = 14004,
@@ -176,7 +191,7 @@ enum sample_t {
   T1TTBB_1025to1200_700to975    = 14011,
   T1TTBB_1025to1200_0to850      = 14012,
 
-  T5ttttDM175_825to1000_500to725    = 15001,
+  T5TTTT_dm175    = 15001,
   T5ttttDM175_1025to1200_700to925   = 15002,
   T5ttttDM175_1225to1400_0to1050    = 15003,
   T5ttttDM175_1225to1400_900to1125  = 15004,

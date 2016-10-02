@@ -8,7 +8,11 @@
 
   gROOT->ProcessLine(".L ratios.C++");
   // gROOT->ProcessLine("ratios(1)");
-  gROOT->ProcessLine("ratios(0)");
+  // gROOT->ProcessLine("ratios(0)");
+  ratios(0, "doTTZ,doCompareNLOwithLO");
+  ratios(0, "doCompareNLOwithLO");
+  ratios(0, "doTTZ");
+  ratios(0, "");
 
   // gROOT->ProcessLine(".L yields.C++");
   // gROOT->ProcessLine("yields()");

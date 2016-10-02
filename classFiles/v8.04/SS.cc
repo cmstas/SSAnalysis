@@ -1520,6 +1520,17 @@ void SSAG::Init(TTree *tree) {
 	}
   tree->SetMakeClass(0);
 }
+
+void SSAG::DumpActivatedBranches(TTree *tree) {
+    for(int ib = 0; ib < tree->GetListOfBranches()->LastIndex(); ib++) {
+        TString bname = tree->GetListOfBranches()->At(ib)->GetName();
+        std::cout << "List of enabled branches: ";
+        if (tree->GetBranchStatus(bname))
+            std::cout << bname << ",";
+        std::cout << std::endl;
+    }
+}
+
 void SSAG::GetEntry(unsigned int idx) 
 	// this only marks branches as not loaded, saving a lot of time
 	{
