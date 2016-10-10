@@ -5,7 +5,8 @@
 # path="/hadoop/cms/store/user/namin/condor/ss_babies_July27_isr/"
 # path="/hadoop/cms/store/user/namin/condor/ss_babies_Aug25/"
 # path="/hadoop/cms/store/user/namin/condor/ss_babies_June22_3p99ifb/" # for ttw_nlo, ttz_nlo
-path="/hadoop/cms/store/user/namin/condor/ss_babies_Sept22/"
+# path="/hadoop/cms/store/user/namin/condor/ss_babies_Sept22/"
+path="/hadoop/cms/store/user/namin/condor/ss_babies_Oct4/"
 
 samples = [
 

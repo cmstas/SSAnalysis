@@ -53,10 +53,16 @@ int main(int argc, char *argv[]){
       shortname="synch_ttw";
       break;
     case SYNCH_TTW80:
-      name="TTW80_TTW80-SSDL2016-forSynch_Private80X";
+      name="TTW80_TTW80-SSDL2016-forSynch_Private80Xv2";
       path="/store/group/snt/run2_ss_synch/";
-      tag="V08-00-01";
+      tag="V08-00-05";
       shortname="synch_ttw_80";
+      break;
+    case TTH_M350:
+      name="TTH_ttH-m350-MINIAOD_Private80Xv2";
+      path="/store/group/snt/run2_25ns_80Private/";
+      tag="V08-00-05";
+      shortname="tth_m350";
       break;
     case TTBAR:
       name="TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v2";
@@ -1206,7 +1212,7 @@ int main(int argc, char *argv[]){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  set_goodrun_file("goldenJson_2016_24p47ifb.txt");
+  set_goodrun_file("goldenJson_2016_27p2.txt");
   
   // string jecEra = "Fall15_25nsV2";
   string jecEra = "Spring16_25nsV6";

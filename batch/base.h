@@ -235,6 +235,8 @@ enum sample_t {
   SYNCH_TTW80                        = 101011,
   DY_high_LO                         = 101012,
 
+  TTH_M350                           = 150000,
+
 };
 
 #endif
