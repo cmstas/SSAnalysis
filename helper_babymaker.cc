@@ -76,6 +76,9 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("jets_undoJEC"                                            , &jets_undoJEC                                            );
   BabyTree->Branch("btags_undoJEC"                                           , &btags_undoJEC                                           );
   BabyTree->Branch("btags_unc"                                               , &btags_unc                                               );
+  BabyTree->Branch("btags_eff"                                               , &btags_eff                                               );
+  BabyTree->Branch("btags_effpt"                                               , &btags_effpt                                               );
+  BabyTree->Branch("btags_sf"                                               , &btags_sf                                               );
   BabyTree->Branch("jets_unc"                                                , &jets_unc                                                );
   BabyTree->Branch("btags"                                                   , &btags                                                   );
   BabyTree->Branch("nbtags"                                                  , &nbtags                                                  );
@@ -357,14 +360,16 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
     // get btag efficiencies
     TFile* f_btag_eff = 0;
     if (isFastsim == 0) {
-        // f_btag_eff = new TFile("btagsf/bTagEffs_80X.root");
-        // TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_b");
-        // TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_c");
-        // TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("eff_total_M_udsg");
-        f_btag_eff = new TFile("btagsf/btageff__ttbar_powheg_pythia8_25ns.root");
-        TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
-        TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
-        TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
+
+        f_btag_eff = new TFile("btagsf/bTagEffs_80X.root");
+        TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_b");
+        TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_c");
+        TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("eff_total_M_udsg");
+
+        // f_btag_eff = new TFile("btagsf/btageff__ttbar_powheg_pythia8_25ns.root");
+        // TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
+        // TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
+        // TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
 
         BabyFile->cd();
         h_btag_eff_b               = (TH2D*) h_btag_eff_b_temp->Clone("h_btag_eff_b");
@@ -450,6 +455,9 @@ void babyMaker::InitBabyNtuple(){
     btags.clear();
     jets_unc.clear(); 
     btags_unc.clear(); 
+    btags_eff.clear(); 
+    btags_effpt.clear(); 
+    btags_sf.clear(); 
     btags.clear(); 
     nbtags = -1;
     nbtags_raw = -1;
@@ -781,14 +789,21 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     if (isFastsim > 0){
       sparms = tas::sparm_values();  
       sparmNames = tas::sparm_names(); 
-      if (isFastsim <= 3) xsec = go_xsec(sparms[0]).xsec;
+
+      // T1tttt, T5qqqqVV, T5tttt, T5ttcc
+      if (isFastsim <= 6) xsec = go_xsec(sparms[0]).xsec;
+      if (isFastsim <= 6) xsec_error = go_xsec(sparms[0]).percErr;
+      // T6ttWW
+      if (isFastsim == 10) xsec = stop_xsec(sparms[0]).xsec;
+      if (isFastsim == 10) xsec_error = stop_xsec(sparms[0]).percErr;
+
       // if (isFastsim == 3) xsec = stop_xsec(sparms[0]).xsec; 
-      if (isFastsim == 4) xsec = go_xsec(sparms[0]).xsec*0.104976; //dilepton filter
-      if (isFastsim >= 5) xsec = go_xsec(sparms[0]).xsec;
-      if (isFastsim != 3) xsec_error = go_xsec(sparms[0]).percErr;
-      if (isFastsim == 3) xsec_error = stop_xsec(sparms[0]).percErr;
+      // if (isFastsim == 4) xsec = go_xsec(sparms[0]).xsec*0.104976; //dilepton filter
+      // if (isFastsim >= 5) xsec = go_xsec(sparms[0]).xsec;
+      // if (isFastsim != 3) xsec_error = go_xsec(sparms[0]).percErr;
+      // if (isFastsim == 3) xsec_error = stop_xsec(sparms[0]).percErr;
       if (isFastsim <  100) scale1fb = 1000*xsec/nPoints(isFastsim, sparms[0], sparms[1]);
-      if (isFastsim == 102) scale1fb = 1000*xsec/59378;
+      // if (isFastsim == 102) scale1fb = 1000*xsec/59378;
       is_fastsim = 1; 
     }
   }
@@ -1318,6 +1333,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
        cout << Form("eff, SF = %f %f",eff,weight_cent) << endl;
        cout << Form("partial SF is %f",btagprob_data / btagprob_mc) << endl;
      }
+     btags_effpt.push_back(jet_pt);
+     btags_eff.push_back(eff);
+     btags_sf.push_back(weight_cent);
   }
   weight_btagsf = btagprob_data / btagprob_mc;
   weight_btagsf_UP = weight_btagsf + (sqrt(pow(btagprob_err_heavy_UP,2) + pow(btagprob_err_light_UP,2)) * weight_btagsf);

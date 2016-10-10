@@ -261,6 +261,9 @@ class babyMaker {
     vector <float> btags_disc_ivf;
     vector <float> btags_JEC; 
     vector <float> btags_unc; 
+    vector <float> btags_eff; 
+    vector <float> btags_effpt; 
+    vector <float> btags_sf; 
     vector <float> btags_undoJEC; 
     int nbtags;
 
