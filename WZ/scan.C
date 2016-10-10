@@ -23,17 +23,23 @@
 using namespace std;
 using namespace duplicate_removal;
 
+
 int scan(){
+
+    bool relaxNbtags = true;
+
+    HLTEfficiency HLTEff("../hlt/HLT_Efficiencies_7p65fb_2016.root");
+
     TChain *ch = new TChain("t");
     std::vector<std::string> titles;
 
     TString tag = getTag();
+    TString tagData = getTagData();
 
     std::vector<TString> files;
     std::vector<float> systs;
 
-
-    titles.push_back("Nonprompt Lep."); files.push_back("Fakes"); systs.push_back(0.3);
+    titles.push_back("Nonprompt Lep."); files.push_back("Fakes"); systs.push_back(0.5);
 
     // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTBAR_PH.root");
     // // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/SINGLETOP*.root");
@@ -41,15 +47,18 @@ int scan(){
     // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/DY_low.root");
     // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WJets.root");
 
-    titles.push_back("t#bar{t}Z/H"); files.push_back("ttZH"); systs.push_back(0.2);
+    // titles.push_back("t#bar{t}Z/H"); files.push_back("ttZH"); systs.push_back(0.5);
+    titles.push_back("t#bar{t}Z"); files.push_back("ttZ"); systs.push_back(0.5);
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZ.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZLOW.root");
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTHtoNonBB.root");
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZ.root");
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZLOW.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTZnlo_new.root");
 
-    titles.push_back("t#bar{t}W"); files.push_back("TTW"); systs.push_back(0.2);
 
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");
+    titles.push_back("t#bar{t}W"); files.push_back("TTW"); systs.push_back(0.5);
+
+    // ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTW.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTWnlo_new.root");
 
     titles.push_back("Rare SM"); files.push_back("Rares"); systs.push_back(0.5);
 
@@ -64,7 +73,7 @@ int scan(){
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TZQ.root");
     //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/T6TTWW_600_425_50.root ");
 
-    titles.push_back("WW"); files.push_back("WW"); systs.push_back(0.3);
+    titles.push_back("WW"); files.push_back("WW"); systs.push_back(0.5);
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/QQWW.root");
 
@@ -75,14 +84,18 @@ int scan(){
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TG.root");
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTG.root");
 
-    titles.push_back("WZ"); files.push_back("WZ"); systs.push_back(0.3);
+    titles.push_back("WZ"); files.push_back("WZ"); systs.push_back(0.0);
 
     ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/WZ.root");
+
+    titles.push_back("t#bar{t}H"); files.push_back("ttH"); systs.push_back(0.5);
+
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/TTHtoNonBB.root");
 
     files.push_back("Data"); systs.push_back(0.0);
 
     // tag = "v6.02";
-    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/Data*.root");
+    ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tagData+"/Data*.root");
 
     int nEventsTotal = 0;
     int nEventsChain = ch->GetEntries();
@@ -154,14 +167,16 @@ int scan(){
         int iSample_ = -1;
 
         // if(filename_.Contains("TTBAR") || filename_.Contains("SINGLETOP")  || filename_.Contains("DY_")  || filename_.Contains("WJets") )                          { filename_ = "Fakes"; iSample_ = 0; }
-             if(filename_.Contains("TTZ") || filename_.Contains("TTZLOW") || filename_.Contains("TTHtoNonBB"))                                                   { filename_ = "TTZ";   iSample_ = 1; }
+             // if(filename_.Contains("TTZ") || filename_.Contains("TTZLOW") || filename_.Contains("TTHtoNonBB"))                                                   { filename_ = "TTZ";   iSample_ = 1; }
+             if(filename_.Contains("TTZ") || filename_.Contains("TTZLOW") )                                                                                     { filename_ = "TTZ";   iSample_ = 1; }
         else if(filename_.Contains("TTW"))                                                                                                                      { filename_ = "TTW";   iSample_ = 2; }
         else if(filename_.Contains("/ZZ.root") || filename_.Contains("/GGHtoZZto4L.root") || filename_.Contains("/WWZ.root") || filename_.Contains("/WZZ.root") || filename_.Contains("/WWW.root") ||
                 filename_.Contains("/WWDPS.root") || filename_.Contains("/VHtoNonBB.root") || filename_.Contains("/TTTT.root") || filename_.Contains("/TZQ.root") ) { filename_ = "Rares"; iSample_ = 3; }
         else if(filename_.Contains("QQWW.root"))                                                                                                                { filename_ = "WW";    iSample_ = 4; }
         else if(filename_.Contains("/WGToLNuG.root") || filename_.Contains("/ZG.root") || filename_.Contains("/TG.root") || filename_.Contains("/TTG.root"))       { filename_ = "XG";    iSample_ = 5; }
         else if(filename_.Contains("/WZ.root"))                                                                                                                 { filename_ = "WZ";    iSample_ = 6; }
-        else if(filename_.Contains("Data"))                                                                                                                     { filename_ = "Data";  iSample_ = 7; }
+        else if(filename_.Contains("TTHto"))                                                                                                                    { filename_ = "TTH";   iSample_ = 7; }
+        else if(filename_.Contains("Data"))                                                                                                                     { filename_ = "Data";  iSample_ = 8; }
         else { std::cout << "ERROR: I don't know what " << filename_ << " is! Skipping file " << filename_ << std::endl; continue; }
 
         // Loop over Events in current file
@@ -177,6 +192,10 @@ int scan(){
             float scale = 1.0;
             if(!ss::is_real_data()) {
                 scale = ss::scale1fb() * luminosity * getTruePUw(ss::trueNumInt()[0]);
+                float HLTEffcomplement = (1-HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::lep2_id(), ss::ht(), 0))
+                                        *(1-HLTEff.getEfficiency(ss::lep2_p4().pt(),ss::lep2_p4().eta(), ss::lep2_id(), ss::lep3_p4().pt(), ss::lep3_p4().eta(), ss::lep3_id(), ss::ht(), 0))
+                                        *(1-HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep3_p4().pt(), ss::lep3_p4().eta(), ss::lep3_id(), ss::ht(), 0));
+                scale *= 1-HLTEffcomplement;
             } else {
                 DorkyEventIdentifier id(ss::run(), ss::event(), ss::lumi());
                 if (is_duplicate(id) ) continue;
@@ -188,14 +207,13 @@ int scan(){
 
             if (!ss::fired_trigger() && ss::is_real_data()) continue;
             if (ss::is_real_data()) {
-                if (!ss::passedFilterList()) continue;
+                // if (!ss::passedFilterList()) continue;
                 if (!ss::passes_met_filters()) continue;
             }
 
             // this guarantees that the third lepton makes a Z with one of the first two leptons
-            // if( ! (ss::hyp_class() == 6) && !(ss::hyp_class()==2) ) continue;
-            if( ! (ss::hyp_class() == 6) ) continue;
-            // if( ! (ss::hyp_class() == 6) ) continue;
+            if ( (ss::hyp_class() != 6)) continue;
+
 
             if(ss::met() < 30.0) continue;//relax to 30 for low lumi
             if(ss::njets() < 2) continue;
@@ -210,10 +228,11 @@ int scan(){
                 if (!(abs(ss::lep3_mcid()) == 11 || abs(ss::lep3_mcid()) == 13)) continue;
 
                 // FIXME
-                // scale *=  triggerScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::ht())
-                //         * leptonScaleFactor( ss::lep1_id(), ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht())
-                //         * leptonScaleFactor( ss::lep2_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::ht())
-                //         * leptonScaleFactor( ss::lep3_id(), ss::lep3_p4().pt(), ss::lep3_p4().eta(), ss::ht());
+                scale *=  1.0
+                        // * triggerScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::ht())
+                        * leptonScaleFactor( ss::lep1_id(), ss::lep1_p4().pt(), ss::lep1_p4().eta(), ss::ht())
+                        * leptonScaleFactor( ss::lep2_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::ht())
+                        * leptonScaleFactor( ss::lep3_id(), ss::lep3_p4().pt(), ss::lep3_p4().eta(), ss::ht());
 
             }
 
@@ -283,6 +302,8 @@ int scan(){
             bool goodMet = true;//ss::met() < 200.0;
             bool goodHH = ss::lep1_p4().pt() > 25.0 && ss::lep2_p4().pt() > 20.0;
             bool goodMtmin = true;//ss::mtmin() < 120;
+
+            if (relaxNbtags) goodBtags = true;
 
             if(filename.Contains("/WZ.root"))    {
                 h2D_ptlep1_ptlep2_wz->Fill(ss::lep2_p4().pt(),ss::lep1_p4().pt());
@@ -372,6 +393,7 @@ int scan(){
   colors.push_back(kOrange-3);  // ww
   colors.push_back(kViolet+2);  // xg
   colors.push_back(kOrange); // wz
+  colors.push_back(kGreen-7);  // tth
 
 
     std::cout << " nGoodEventsWeighted: " << nGoodEventsWeighted << " nGoodEvents: " << nGoodEvents << " nGoodEventsData: " << nGoodEventsData << " nEventsTotal: " << nEventsTotal << std::endl;
@@ -380,7 +402,7 @@ int scan(){
     TH1F* data;
     // TString comt = Form(" --errHistAtBottom --doCounts --colorTitle --lumi %.2f --lumiUnit fb --percentageInBox --legendRight 0.05 --legendUp 0.05 --noDivisionLabel --noType --outputName pdfs/",luminosity);
     // std::string pct = " --showPercentage ";
-    TString comt = Form(" --errHistAtBottom --lumi %.2f --lumiUnit fb --noDivisionLabel --legendTaller 0.15 --legendUp -0.15 --dataName Data --legendRight -0.08 --outOfFrame --type Preliminary --outputName pdfs/",luminosity);
+    TString comt = Form(" --errHistAtBottom --lumi %.2f --makeTable --lumiUnit fb --noDivisionLabel --legendTaller 0.15 --legendUp -0.15 --dataName Data --legendRight -0.08 --outOfFrame --type Preliminary --legendCounts --outputName pdfs/",luminosity);
     std::string com = comt.Data();
 
     std::string HHbins = " --xAxisVerticalBinLabels --xAxisBinLabels 1A,2A,3A,4A,5A,6A,7A,8A,9A,10A,11A,12A,13A,14A,15A,16A,17A,18A,19A,20A,21A,22A,23A,24A,25A,26A,27A,28A,29A,30A,31A,32A";
@@ -391,9 +413,9 @@ int scan(){
     data = h1D_ht_vec.back().first; h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec ,titles,"","",com+"h1D_ht.pdf --isLinear --xAxisOverride H_{T} (GeV)", vector <TH1F*>(), vector<string>(), colors);
     data = h1D_mtmin_vec.back().first; h1D_mtmin_vec.pop_back(); dataMCplotMaker(data,h1D_mtmin_vec ,titles,"","",com+"h1D_mtmin.pdf --isLinear --xAxisOverride m_{T,min} (GeV)", vector <TH1F*>(), vector<string>(), colors);
     data = h1D_mtw_vec.back().first; h1D_mtw_vec.pop_back(); dataMCplotMaker(data,h1D_mtw_vec ,titles,"","",com+"h1D_mtw.pdf --isLinear --xAxisOverride m_{T}^{W} (GeV)", vector <TH1F*>(), vector<string>(), colors);
-    data = h1D_nbtags_vec.back().first; h1D_nbtags_vec.pop_back(); dataMCplotMaker(data,h1D_nbtags_vec ,titles,"","",com+"h1D_nbtags.pdf --isLinear --vLine 1 --xAxisOverride nbtags", vector <TH1F*>(), vector<string>(), colors);
-    data = h1D_lep1pt_vec.back().first; h1D_lep1pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep1pt_vec ,titles,"","",com+"h1D_lep1pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{1}) (GeV)", vector <TH1F*>(), vector<string>(), colors);
-    data = h1D_lep2pt_vec.back().first; h1D_lep2pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep2pt_vec ,titles,"","",com+"h1D_lep2pt.pdf --isLinear --vLine 25 --xAxisOverride p_{T}(lep_{2}) (GeV)", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_nbtags_vec.back().first; h1D_nbtags_vec.pop_back(); dataMCplotMaker(data,h1D_nbtags_vec ,titles,"","",com+"h1D_nbtags.pdf --isLinear --xAxisOverride nbtags  --makeRootFile ", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_lep1pt_vec.back().first; h1D_lep1pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep1pt_vec ,titles,"","",com+"h1D_lep1pt.pdf --isLinear --xAxisOverride p_{T}(lep_{1}) (GeV)", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_lep2pt_vec.back().first; h1D_lep2pt_vec.pop_back(); dataMCplotMaker(data,h1D_lep2pt_vec ,titles,"","",com+"h1D_lep2pt.pdf --isLinear --xAxisOverride p_{T}(lep_{2}) (GeV)", vector <TH1F*>(), vector<string>(), colors);
     data = h1D_met_vec.back().first; h1D_met_vec.pop_back(); dataMCplotMaker(data,h1D_met_vec ,titles,"","",com+"h1D_met.pdf --isLinear --xAxisOverride #slash{E}_{T} (GeV)", vector <TH1F*>(), vector<string>(), colors);
 
   // vector<pair<TH1F*, float> > SRHH_plots;

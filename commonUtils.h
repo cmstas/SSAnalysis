@@ -55,10 +55,13 @@
 // #include "flip_rates_12p9ifb.h"
 // #include "fake_rates_2ndhalf.h"
 
-// 24.47
-float getLumi() { return 24.47; }
+// 27.2
+float getLumi() { return 27.2; }
 float getLumiUnblind() { return 12.9+4.4; }
-bool isUnblindRun(int run) { return (run<=276811) || ((run<=279931) && (run>=278820)); } // 276811 for end of ICHEP (12.9/fb), or 278820-279931 for beyond ICHEP studies (+4.4/fb)
+// bool isUnblindRun(int run) { return (run<=276811) || ((run<=279931) && (run>=278820)); } // 276811 for end of ICHEP (12.9/fb), or 278820-279931 for beyond ICHEP studies (+4.4/fb)
+bool isUnblindRun(int run) { return ((run<=276811) || ((run<=279931) && (run>=278820))) && ( (run!=279658) && (run!=279658) && (run!=279667) && (run!=279681) && (run!=279682) && (run!=279682) && (run!=279682) && (run!=279683) && (run!=279684) && (run!=279685) && (run!=279685) && (run!=279691) && (run!=279694) ); } // 276811 for end of ICHEP (12.9/fb), or 278820-279931 for beyond ICHEP studies (+4.4/fb)
+// float getLumiUnblind() { return 27.2; } // FIXME
+// bool isUnblindRun(int run) { return true; } // FIXME 
 float getWZSF() { return 0.948; } // 0.948 pm 0.210
 TString getTag() { return "v8.04"; }
 TString getTagData() { return "v8.05"; }

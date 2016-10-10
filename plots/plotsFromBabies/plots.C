@@ -21,8 +21,9 @@ float lumiAG = getLumi();
 //Data or Signal
 enum type_ag { DATA, SIGNAL, FAKES }; 
 type_ag type = DATA; 
+// type_ag type = FAKES; 
 bool useSFs = true; // unused
-bool checkTailRegions = true;
+bool checkTailRegions = false;
 
 HLTEfficiency HLTEff("../../hlt/HLT_Efficiencies_7p65fb_2016.root");
 
@@ -51,8 +52,10 @@ void plots(){
     TString tag = getTag();
     TString tagData = getTagData();
   TChain *data  = new TChain("t", "data"); data ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/Data*.root"     , tagData.Data()));
-  TChain *ttz   = new TChain("t");         ttz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ*.root"      , tag.Data())); 
-  TChain *ttx   = new TChain("t");         ttx  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"       , tag.Data())); 
+  // TChain *ttz   = new TChain("t");         ttz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ*.root"      , tag.Data())); 
+  // TChain *ttx   = new TChain("t");         ttx  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"       , tag.Data())); 
+  TChain *ttz   = new TChain("t");         ttz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZnlo_new.root"      , tag.Data())); 
+  TChain *ttx   = new TChain("t");         ttx  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTWnlo_new.root"       , tag.Data())); 
   TChain *ttw   = new TChain("t");         ttw  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root", tag.Data())); 
   TChain *wz    = new TChain("t");         wz   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"        , tag.Data())); 
   TChain *ttbar = new TChain("t");         ttbar->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"  , tag.Data())); 
@@ -96,6 +99,8 @@ void plots(){
   drawPlot(6 , Form("lep p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "p_{T}"      , "PT"          , "--yTitleOffset -0.10");
   drawPlot(7 , Form("#eta in %s dilepton pairs"       , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "#eta"       , "ETA"         , "--yTitleOffset -0.10 --setMaximum 10000000 --setMinimum 1");
   drawPlot(8 , Form("jet p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "p_{T}"      , "JETPT"       , "--yTitleOffset -0.10");
+  drawPlot(9 , Form("e p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "p_{T}^{e}"      , "PTE"          , "--yTitleOffset -0.10");
+  drawPlot(10 , Form("#mu p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "p_{T}^{#mu}"      , "PTM"          , "--yTitleOffset -0.10");
 
   //Print yields
   vector <float> total = {0,0,0,0}; 
@@ -149,6 +154,8 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
   TH1F *pt     = new TH1F("pt"     , "pt"     , 50 ,    0, 300);
   TH1F *eta    = new TH1F("eta"    , "eta"    , 50 , -3.2, 3.2);
   TH1F *jetpt  = new TH1F("jetpt"  , "jetpt"  , 50 ,    0, 300);
+  TH1F *pte     = new TH1F("pte"     , "pte"     , 50 ,    0, 300);
+  TH1F *ptm     = new TH1F("ptm"     , "ptm"     , 50 ,    0, 300);
 
   vector <float> counts = {0, 0, 0, 0};
  
@@ -196,6 +203,12 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       if (!ss::fired_trigger() && ss::is_real_data())      continue;
       if (!ss::passedFilterList() && ss::is_real_data())   continue;
       if (!ss::passes_met_filters() && ss::is_real_data()) continue;
+      
+      //electron FO is tighter for iso triggers, make sure it is passed
+      if (ss::ht()<300.) {
+        if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
+        if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+      } 
 
       //Lepton pT cuts
       if (ss::lep1_coneCorrPt() < 25) continue;
@@ -235,6 +248,8 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       mtmin->Fill(ss::mtmin()      , weight);
       pt->Fill(ss::lep1_p4().pt()  , weight);
       pt->Fill(ss::lep2_p4().pt()  , weight);
+      abs(ss::lep1_id()) == 11 ? pte->Fill(ss::lep1_p4().pt()  , weight) : ptm->Fill(ss::lep1_p4().pt()  , weight);
+      abs(ss::lep2_id()) == 11 ? pte->Fill(ss::lep2_p4().pt()  , weight) : ptm->Fill(ss::lep2_p4().pt()  , weight);
       eta->Fill(ss::lep1_p4().eta(), weight);
       eta->Fill(ss::lep2_p4().eta(), weight);
 
@@ -259,6 +274,8 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
   results.push_back(pt);
   results.push_back(eta);
   results.push_back(jetpt);
+  results.push_back(pte);
+  results.push_back(ptm);
 
 
   return make_pair(results, counts);
