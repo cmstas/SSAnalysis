@@ -3,8 +3,10 @@ import os
 import glob
 
 ####  MUST EDIT
-folder = "v8.04_Sept21"
-sig_name = "fs_t1ttbb_m"
+# folder = "v8.04_Sept21"
+# sig_name = "fs_t1ttbb_m"
+folder = "v8.04_Oct1"
+sig_name = "fs_t1tttt_m"
 #### END MUST EDIT
 
 def doAddSyst(fname):
@@ -62,4 +64,7 @@ if __name__ == "__main__":
     fnames = glob.glob("%s/%s*.root" % (folder, sig_name))
     # fnames = [fn for fn in fnames if "hihi" in fn]
     for fname in fnames:
-        doAddSyst(fname)
+        try:
+            doAddSyst(fname)
+        except:
+            print "[!] Failed to add syst to %s" % fname

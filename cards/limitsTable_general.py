@@ -44,11 +44,13 @@ def plot_limits(d):
             for ybin in range(2,h.GetNbinsY()+1):
                 if ybin>xbin+ybinsfirstxbin: 
                     h.SetBinContent(xbin,ybin,h.GetBinContent(xbin,ybin-1))
+
         #smooth
         # h.Smooth()
         # h.Smooth(1,"k5b")
         h.Smooth(1,"k5b")
         h.Smooth(1,"k5b")
+
         #now cleanup above the diagonal
         for xbin in range(1,h.GetNbinsX()+1):
             for ybin in range(1,h.GetNbinsY()+1):
@@ -634,14 +636,17 @@ def plot_limits(d):
         csp2write.Write()
         fout.Close()
 
-    # os.system("web %s_scan_xsec_%s%s%s.pdf" % (d["modeltag"], lumi_str,d["postfix"],"_sig" if d["doSignificance"] else ""))
+    os.system("web %s_scan_xsec_%s%s%s.pdf" % (d["modeltag"], lumi_str,d["postfix"],"_sig" if d["doSignificance"] else ""))
 
 if __name__ == "__main__":
     d_t1tttt = {
         "mydir": "v8.04_July28",
         "mylumi": "12.9",
+        # "mydir": "v8.04_Oct1",
+        # "mylumi": "17.3",
         "postfix": "",
         "redolimits": False,
+
         "doSignificance": False,
         "redosignificances": False,
         "verbose": False,
@@ -685,8 +690,10 @@ if __name__ == "__main__":
     d_t5qqqqvv["ybinsfirstxbin"] = 19
 
     d_t5qqqqvv_dm20 = d_t5qqqqvv.copy()
-    d_t5qqqqvv_dm20["mydir"] = "v8.04_Sept19"
+    # d_t5qqqqvv_dm20["mydir"] = "v8.04_Sept19"
+    d_t5qqqqvv_dm20["mydir"] = "v8.04_t5qqqqdm20_July28" # FIXME
     d_t5qqqqvv_dm20["modeltag"] = "t5qqqqvv_dm20"
+    d_t5qqqqvv_dm20["postfix"] = "beforefix"
     d_t5qqqqvv_dm20["maxy"] = 1825
     d_t5qqqqvv_dm20["ybinsfirstxbin"] = 21
     d_t5qqqqvv_dm20["mass_label"] = "m_{#tilde{#chi}^{#pm}_{1}} = m_{#tilde{#chi}^{0}_{1}} + 20 GeV"

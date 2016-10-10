@@ -17,11 +17,14 @@ void makeTable() {
   // TString lumi = "6.3";
   // TString dir = "v8.03";
 
-  TString lumi = "12.9";
+  // TString lumi = "12.9";
+  // TString lumi = "17.3";
+  TString lumi = "27.2";
   // TString dir = "v8.04_properSF";
   // TString dir = "v8.04_July25";
   // TString dir = "v8.04_July28";
-  TString dir = "v8.04_t5qqqqdm20_July28";
+  // TString dir = "v8.04_t5qqqqdm20_July28";
+  TString dir = "v8.04_Oct1";
 
   // TString lumi = "0.8";
   // TString dir = "v8.02_800pb_unblind";
@@ -263,7 +266,7 @@ pair<float, float> dumpCardForOneSR(TString process, TString kine, int sr, TStri
   float xg = pow(0.50,2);
   float rares = pow(0.50,2);
   float lepeff = pow(0.04,2)+pow(0.02,2);//both offline and hlt
-  float luminosity = pow(0.027,2);
+  float luminosity = pow(0.062,2);
 
   float error = 0.;
   if (process=="ttw"  ) error = ttw+lepeff+luminosity;

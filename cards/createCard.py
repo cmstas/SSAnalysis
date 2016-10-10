@@ -14,7 +14,8 @@ import math
 #to add more nuisances edit Process, writeOneCardFromProcesses and then set values in writeOneCard
 
 # lumi = "4.0"
-lumi = "12.9"
+# lumi = "12.9"
+lumi = "17.3"
 # lumi = "6.3"
 # lumi = "2.3"
 

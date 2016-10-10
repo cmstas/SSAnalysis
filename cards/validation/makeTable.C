@@ -257,7 +257,7 @@ pair<float, float> dumpCardForOneSR(TString process, TString kine, int sr, TStri
   float xg = pow(0.50,2);
   float rares = pow(0.50,2);
   float lepeff = pow(0.04,2)+pow(0.02,2);//both offline and hlt
-  float luminosity = pow(0.027,2);
+  float luminosity = pow(0.062,2);
 
   float error = 0.;
   if (process=="ttw"  ) error = ttw+lepeff+luminosity;
