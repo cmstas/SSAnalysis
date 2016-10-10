@@ -20,19 +20,19 @@ public:
   
   ~HLTEfficiency() {
       _file->Close();
-    delete _hist_HLT_DiEle_Leg1;
-    delete _hist_HLT_DiEle_Leg2;
-    delete _hist_HLT_EleMu_Leg1;
-    delete _hist_HLT_MuEle_Leg2;
-    delete _hist_HLT_DiEleHT_Leg;
-    delete _hist_HLT_EleMuHT_Leg1;
-    delete _hist_HLT_DiMu_Leg1;
-    delete _hist_HLT_DiMu_Leg2;
-    delete _hist_HLT_MuEle_Leg1;
-    delete _hist_HLT_EleMu_Leg2;
-    delete _hist_HLT_DiMuHT_Leg;
-    delete _hist_HLT_EleMuHT_Leg2;
-    delete _file;
+    // delete _hist_HLT_DiEle_Leg1;
+    // delete _hist_HLT_DiEle_Leg2;
+    // delete _hist_HLT_EleMu_Leg1;
+    // delete _hist_HLT_MuEle_Leg2;
+    // delete _hist_HLT_DiEleHT_Leg;
+    // delete _hist_HLT_EleMuHT_Leg1;
+    // delete _hist_HLT_DiMu_Leg1;
+    // delete _hist_HLT_DiMu_Leg2;
+    // delete _hist_HLT_MuEle_Leg1;
+    // delete _hist_HLT_EleMu_Leg2;
+    // delete _hist_HLT_DiMuHT_Leg;
+    // delete _hist_HLT_EleMuHT_Leg2;
+    // delete _file;
 
   };
 
