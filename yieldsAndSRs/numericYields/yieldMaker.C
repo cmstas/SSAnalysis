@@ -30,9 +30,11 @@ string tagData = getTagData().Data();
 
 bool doNoData   = false;
 bool testFakeSR = false;
-bool doRestrictSR = false;
+bool doRestrictSR = true;
 bool doPlotFailPtRatio = false;
 bool useNLOttWZ = true;
+bool plotPlusPlusPairs = false;
+bool plotNegNegPairs = false;
 
 
 float scaleLumi = 1.;//3.0/1.264;//careful!!!
@@ -41,7 +43,7 @@ float scaleLumi = 1.;//3.0/1.264;//careful!!!
 
 bool doLatex = 0;
 
-bool doCutFlowTable = true;
+bool doCutFlowTable = false;
 
 bool suppressWarns = 0;
 
@@ -73,7 +75,7 @@ TString dir = "v8.04_Oct1";
 
 struct yields_t { float EE; float EM; float MM; float TOTAL; }; 
 struct SR_t     { TH1F* EE; TH1F* EM; TH1F* MM; TH1F* TOTAL; }; 
-struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_mt1; TH1F* h_mt2; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_l1eta; TH1F* h_l2eta; TH1F* h_type; TH1F* h_charge; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; TH1F* BR; TH1F* h_dxy; TH1F* h_dz; TH1F* h_sip3d_lep1; TH1F* h_sip3d_lep2; TH1F* h_mva; TH1F* h_nleps; TH1F *h_mu_dxy; TH1F *h_mu_dz; TH1F *h_mu_sip3d_lep1; TH1F *h_mu_mt1; TH1F *h_mu_l1pt; TH1F *h_mu_l1eta; TH1F *h_mu_lep1_miniIso; TH1F *h_mu_lep1_ptRel; TH1F *h_mu_lep1_ptRatio; TH1F *h_el_dxy; TH1F *h_el_dz; TH1F *h_el_sip3d_lep1; TH1F *h_el_mt1; TH1F *h_el_l1pt; TH1F *h_el_l1eta; TH1F *h_el_lep1_miniIso; TH1F *h_el_lep1_ptRel; TH1F *h_el_lep1_ptRatio; TH1F *h_mu_sip3d_lep2; TH1F *h_mu_lep2_miniIso; TH1F *h_mu_lep2_ptRel; TH1F *h_mu_lep2_ptRatio; TH1F *h_el_sip3d_lep2; TH1F *h_el_lep2_miniIso; TH1F *h_el_lep2_ptRel; TH1F *h_el_lep2_ptRatio; TH1F *h_mu_l2pt; TH1F *h_mu_l2eta; TH1F *h_el_l2pt; TH1F *h_el_l2eta; TH1F *h_fakeapp_HH; TH1F *h_fakeapp_HL; TH1F *h_fakeapp_LL; };
+struct plots_t  { TH1F* h_ht; TH1F* h_met; TH1F* h_mll; TH1F* h_mtmin; TH1F* h_mt1; TH1F* h_mt2; TH1F* h_mt2real; TH1F* h_njets; TH1F* h_nbtags; TH1F* h_l1pt; TH1F* h_l2pt; TH1F* h_l1eta; TH1F* h_l2eta; TH1F* h_type; TH1F* h_charge; TH1F* h_lep1_miniIso; TH1F* h_lep2_miniIso; TH1F* h_lep1_ptRatio; TH1F* h_lep2_ptRatio; TH1F* h_lep1_ptRel; TH1F* h_lep2_ptRel; SR_t SRHH; SR_t SRHL; SR_t SRLL; TH1F* BR; TH1F* h_dxy; TH1F* h_dz; TH1F* h_sip3d_lep1; TH1F* h_sip3d_lep2; TH1F* h_mva; TH1F* h_nleps; TH1F *h_mu_dxy; TH1F *h_mu_dz; TH1F *h_mu_sip3d_lep1; TH1F *h_mu_mt1; TH1F *h_mu_l1pt; TH1F *h_mu_l1eta; TH1F *h_mu_lep1_miniIso; TH1F *h_mu_lep1_ptRel; TH1F *h_mu_lep1_ptRatio; TH1F *h_el_dxy; TH1F *h_el_dz; TH1F *h_el_sip3d_lep1; TH1F *h_el_mt1; TH1F *h_el_l1pt; TH1F *h_el_l1eta; TH1F *h_el_lep1_miniIso; TH1F *h_el_lep1_ptRel; TH1F *h_el_lep1_ptRatio; TH1F *h_mu_sip3d_lep2; TH1F *h_mu_lep2_miniIso; TH1F *h_mu_lep2_ptRel; TH1F *h_mu_lep2_ptRatio; TH1F *h_el_sip3d_lep2; TH1F *h_el_lep2_miniIso; TH1F *h_el_lep2_ptRel; TH1F *h_el_lep2_ptRatio; TH1F *h_mu_l2pt; TH1F *h_mu_l2eta; TH1F *h_el_l2pt; TH1F *h_el_l2eta; TH1F *h_fakeapp_HH; TH1F *h_fakeapp_HL; TH1F *h_fakeapp_LL; TH1F *h_mbb; };
 
 
 
@@ -214,7 +216,7 @@ void getyields(){
 
 
   // // //Get yields
-#include "fs_t1tttt.h"
+// #include "fs_t1tttt.h"
 // #include "fs_t5qqqqvv.h"
 // #include "fs_t5qqqqvv_dm20.h"
 // #include "fs_t6ttww.h"
@@ -613,7 +615,7 @@ void getyields(){
   SRHH_plots.push_back(pair<TH1F*, float>(p_fakes.SRHH.TOTAL, roughSystFAKESHH ));
 
   TString extra = " --poissonErrorsNoZeros ";
-  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.1f --outputName plots/HHSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.1f --outputName plots/HHSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary --makeTable ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   dataMCplotMaker(new TH1F("data","data",33,0.5,33.5), SRHH_plots, titles, "HH SRs ", "", Form("--lumi %.1f --outputName plots/HHSR_noData.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   // dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.1f --outputName plots/HHSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.1f --outputName plots/HHSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --topYaxisTitle Data/Pred. --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
@@ -627,7 +629,7 @@ void getyields(){
   SRHL_plots.push_back(pair<TH1F*, float>(p_rares.SRHL.TOTAL, roughSystRARES   ));
   SRHL_plots.push_back(pair<TH1F*, float>(p_flips.SRHL.TOTAL, roughSystFLIPS   ));
   SRHL_plots.push_back(pair<TH1F*, float>(p_fakes.SRHL.TOTAL, roughSystFAKESXL ));
-  dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "HL SRs", "", Form("--lumi %.1f --outputName plots/HLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "HL SRs", "", Form("--lumi %.1f --outputName plots/HLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08  --makeTable --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   // dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "HL SRs", "", Form("--lumi %.1f --outputName plots/HLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "HL SRs", "", Form("--lumi %.1f --outputName plots/HLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --topYaxisTitle Data/Pred. --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
@@ -640,7 +642,7 @@ void getyields(){
   SRLL_plots.push_back(pair<TH1F*, float>(p_rares.SRLL.TOTAL, roughSystRARES   ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_flips.SRLL.TOTAL, roughSystFLIPS   ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_fakes.SRLL.TOTAL, roughSystFAKESXL ));
-  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --nDivisions 8 --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow  --makeTable --systInclStat --noRatioPlot --nDivisions 8 --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   // dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --noRatioPlot --nDivisions 8 --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --topYaxisTitle Data/Pred. --noRatioPlot --nDivisions 8 --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
@@ -1320,6 +1322,17 @@ void getyields(){
   mll_plots.push_back(pair<TH1F*, float>(p_fakes.h_mll, roughSystFAKES ));
   dataMCplotMaker(p_data.h_mll, mll_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/mll_all_SS.pdf --xAxisLabel M_{LL} --isLinear --legendUp -.05 --systInclStat --topYaxisTitle Data/Pred. --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
+  vector<pair<TH1F*, float> > mbb_plots;
+  mbb_plots.push_back(pair<TH1F*, float>(p_ttw.h_mbb  , roughSystTTW   ));
+  mbb_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mbb , roughSystTTZH  ));
+  mbb_plots.push_back(pair<TH1F*, float>(p_wz.h_mbb   , roughSystWZ    ));
+  mbb_plots.push_back(pair<TH1F*, float>(p_ww.h_mbb   , roughSystWW    ));
+  mbb_plots.push_back(pair<TH1F*, float>(p_xg.h_mbb   , roughSystXG    ));
+  mbb_plots.push_back(pair<TH1F*, float>(p_rares.h_mbb, roughSystRARES ));
+  mbb_plots.push_back(pair<TH1F*, float>(p_flips.h_mbb, roughSystFLIPS ));
+  mbb_plots.push_back(pair<TH1F*, float>(p_fakes.h_mbb, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mbb, mbb_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/mbb_all_SS.pdf --xAxisLabel M_{b#bar{b}} --isLinear --legendUp -.05 --systInclStat --topYaxisTitle Data/Pred. --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+
   vector<pair<TH1F*, float> > mtmin_plots;
   mtmin_plots.push_back(pair<TH1F*, float>(p_ttw.h_mtmin  , roughSystTTW   ));
   mtmin_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mtmin , roughSystTTZH  ));
@@ -1352,6 +1365,17 @@ void getyields(){
   mt2_plots.push_back(pair<TH1F*, float>(p_flips.h_mt2, roughSystFLIPS ));
   mt2_plots.push_back(pair<TH1F*, float>(p_fakes.h_mt2, roughSystFAKES ));
   dataMCplotMaker(p_data.h_mt2, mt2_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/mt2_all_SS.pdf --xAxisLabel M_{T}^{lep2} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred.  --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data  --type Preliminary %s  --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);//--outOfFrame
+
+  vector<pair<TH1F*, float> > mt2real_plots;
+  mt2real_plots.push_back(pair<TH1F*, float>(p_ttw.h_mt2real  , roughSystTTW   ));
+  mt2real_plots.push_back(pair<TH1F*, float>(p_ttzh.h_mt2real , roughSystTTZH  ));
+  mt2real_plots.push_back(pair<TH1F*, float>(p_wz.h_mt2real   , roughSystWZ    ));
+  mt2real_plots.push_back(pair<TH1F*, float>(p_ww.h_mt2real   , roughSystWW    ));
+  mt2real_plots.push_back(pair<TH1F*, float>(p_xg.h_mt2real   , roughSystXG    ));
+  mt2real_plots.push_back(pair<TH1F*, float>(p_rares.h_mt2real, roughSystRARES ));
+  mt2real_plots.push_back(pair<TH1F*, float>(p_flips.h_mt2real, roughSystFLIPS ));
+  mt2real_plots.push_back(pair<TH1F*, float>(p_fakes.h_mt2real, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mt2real, mt2real_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/mt2real_all_SS.pdf --xAxisLabel M_{T}^{2} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred.  --legendTaller 0.15 --yTitleOffset -0.2 --dataName Data  --type Preliminary %s  --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);//--outOfFrame
 
   vector<pair<TH1F*, float> > njets_plots;
   njets_plots.push_back(pair<TH1F*, float>(p_ttw.h_njets  , roughSystTTW   ));
@@ -1538,9 +1562,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   // p_result.h_ht           = new TH1F(Form("ht_%s"          , chainTitleCh) , Form("ht_%s"          , chainTitleCh), 15, 80  ,1800);  // extended binning for tail SRs
   // p_result.h_met          = new TH1F(Form("met_%s"         , chainTitleCh) , Form("met_%s"         , chainTitleCh), 15, 0   , 600);  // extended binning for tail SRs
   p_result.h_mll          = new TH1F(Form("mll_%s"         , chainTitleCh) , Form("mll_%s"         , chainTitleCh), 10, 0   , 200); 
+  p_result.h_mbb          = new TH1F(Form("mbb_%s"         , chainTitleCh) , Form("mbb_%s"         , chainTitleCh), 20, 0   , 400); 
   p_result.h_mtmin        = new TH1F(Form("mtmin_%s"       , chainTitleCh) , Form("mtmin_%s"       , chainTitleCh), 10, 0   , 200); 
   p_result.h_mt1        = new TH1F(Form("mt1_%s"       , chainTitleCh) , Form("mt1_%s"       , chainTitleCh), 10, 0   , 200); 
   p_result.h_mt2        = new TH1F(Form("mt2_%s"       , chainTitleCh) , Form("mt2_%s"       , chainTitleCh), 10, 0   , 200); 
+  p_result.h_mt2real        = new TH1F(Form("mt2real_%s"       , chainTitleCh) , Form("mt2real_%s"       , chainTitleCh), 20, 0   , 200); 
   p_result.h_njets        = new TH1F(Form("njets_%s"       , chainTitleCh) , Form("njets_%s"       , chainTitleCh), 6 , 1.5 , 7.5); 
   p_result.h_nleps        = new TH1F(Form("nleps_%s"       , chainTitleCh) , Form("nleps_%s"       , chainTitleCh), 6 , 0   , 6);   
   p_result.h_nbtags       = new TH1F(Form("nbtags_%s"      , chainTitleCh) , Form("nbtags_%s"      , chainTitleCh), 4 , -0.5, 3.5); 
@@ -1766,9 +1792,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   initHistError(doPoisson, p_result.h_ht             );
   initHistError(doPoisson, p_result.h_met            );
   initHistError(doPoisson, p_result.h_mll            );
+  initHistError(doPoisson, p_result.h_mbb            );
   initHistError(doPoisson, p_result.h_mtmin          );
   initHistError(doPoisson, p_result.h_mt1            );
   initHistError(doPoisson, p_result.h_mt2            );
+  initHistError(doPoisson, p_result.h_mt2real        );
   initHistError(doPoisson, p_result.h_njets          );
   initHistError(doPoisson, p_result.h_nleps          );
   initHistError(doPoisson, p_result.h_nbtags         );
@@ -2099,8 +2127,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       anal_type_t temp_categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
       int temp_sr = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
-      if (doRestrictSR && (temp_sr < 30)) continue;
-      // if (doRestrictSR && (temp_categ != HighHigh || temp_sr != 17)) continue; // FIXME NJA
+      // if (doRestrictSR && (temp_sr < 30)) continue;
+      if (doRestrictSR && (temp_categ != HighHigh || temp_sr != 17)) continue; // FIXME NJA
 
       //Only keep good events
       int ssclass = 3;
@@ -2148,6 +2176,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
           }
           weight *= flipFact;
       } 
+
+      if (plotPlusPlusPairs && (ss::lep1_id() > 0)) continue; // Remember PDG convention is backwards
+      if (plotNegNegPairs && (ss::lep1_id() < 0)) continue; // Remember PDG convention is backwards
       
       //QCD Fakes
       if (doFakes == 1){
@@ -2313,7 +2344,6 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       // }
 
 
-
       bool lep1_fail_ptratio = ptratio_1 < (abs(ss::lep1_id()) == 11 ? 0.80 : 0.76);
       bool lep2_fail_ptratio = ptratio_2 < (abs(ss::lep2_id()) == 11 ? 0.80 : 0.76);
 
@@ -2424,13 +2454,18 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       p_result.h_nbtags      ->Fill(ss::nbtags()                                                                            , weight);
       p_result.h_type        ->Fill(mytype                                                                                  , weight);
       // p_result.h_charge      ->Fill(abs(ss::lep1_id())/ss::lep1_id()                                                        , weight);
-      p_result.h_charge      ->Fill(ss::lep1_id() > 0 ? 0.5: -0.5                                                               , weight);
+      p_result.h_charge      ->Fill(ss::lep1_id() > 0 ? -0.5: 0.5                                                               , weight);
       p_result.h_nleps       ->Fill(nleps                                                                                   , weight);
       p_result.BR            ->Fill(BR                                                                                      , weight);
       p_result.h_ht          ->Fill(ss::ht()                                                                                , weight);
       p_result.h_met         ->Fill(ss::met()                                                                               , weight);
       p_result.h_mll         ->Fill((ss::lep1_p4()*lep1_pt/ss::lep1_p4().pt()+ss::lep2_p4()*lep2_pt/ss::lep2_p4().pt()).M() , weight);
+      if (ss::btags().size() >= 2) {
+          p_result.h_mbb         ->Fill((ss::btags()[0]+ss::btags()[1]).M() , weight);
+      }
+
       p_result.h_mtmin       ->Fill(mtmin                                                                                   , weight);
+      p_result.h_mt2real       ->Fill(ss::mt2()                                                                                   , weight);
 
 
       // if (!isData && !doFakes && !doFlips && SR == 1 && cat == "HH"){
