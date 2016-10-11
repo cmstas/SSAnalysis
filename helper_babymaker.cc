@@ -1271,12 +1271,15 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (verbose) cout << "passed trigger safety" << endl;
 
   //now look at jets for get the btag scale factor (need to save down to 25 GeV corrected)
-  jet_results = SSJetsCalculator(jetCorr, 1, 1);
+  jet_results = SSJetsCalculator(jetCorr, 1, 0, 1);
   for (unsigned int i = 0; i < jet_results.first.size(); i++) {
      if (is_real_data) continue;
      //get btag eff weights
      float jet_pt = jet_results.first.at(i).p4().pt()*jet_results.first.at(i).undo_jec()*jet_results.first.at(i).jec();
+     // Don't consider any jets below 25
      if (jet_pt<25.) continue;
+     // Don't consider nonbjets with 25<pT<40
+     // if ((!jet_results.first.at(i).isBtag()) && (jet_pt<40.)) continue;
      float jet_eta = jet_results.first.at(i).p4().eta();
      int jet_mcFlavour = jet_results.first.at(i).mcFlavor();
      float eff = getBtagEffFromFile(jet_pt, jet_eta, jet_mcFlavour);
