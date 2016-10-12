@@ -34,7 +34,7 @@ hnames_rares = [hn for hn in histnames if ("Fakes" not in hn) and ("WZ" not in h
 
 h_data = f1.Get(hname_data).Clone("h_data")
 h_wz = f1.Get(hname_wz).Clone("h_wz")
-h_ttz = f1.Get(hname_ttz).Clone("h_tzz")
+h_ttz = f1.Get(hname_ttz).Clone("h_ttz")
 h_fakes = f1.Get(hname_fakes).Clone("h_fakes")
 hists_rares = [f1.Get(hn) for hn in hnames_rares]
 
