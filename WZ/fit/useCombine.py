@@ -25,9 +25,10 @@ def get_yield_and_error(h1):
 
 infile = "h1D_nbtags.root"
 outfile = "forCard.root"
+card_filename = "card.txt"
 f1 = r.TFile(infile)
 
-print ">>> Reading input histograms"
+print ">>> Reading input histograms from %s" % infile
 keys = f1.GetListOfKeys()
 histnames = [key.GetName() for key in keys if key.ReadObj().InheritsFrom(r.TH1F.Class())]
 hname_data = [hn for hn in histnames if "Data" in hn][0]
@@ -54,7 +55,7 @@ d_prefit = {
         "rares": get_yield_and_error(h_rares),
         }
 
-print ">>> Writing output histograms for combine"
+print ">>> Writing output histograms for combine into %s" % outfile
 # print h_rares.GetName()
 fout = r.TFile(outfile, "RECREATE")
 map(lambda x: x.Write(), [h_data])
@@ -103,14 +104,14 @@ rares   shape   -     -     -     -     1.0
         rarescount=h_rares.Integral(),
         )
 
-print ">>> Writing card"
+print ">>> Writing card %s" % card_filename
 # write card
-with open("card.txt", "w") as fhout:
+with open(card_filename, "w") as fhout:
     fhout.write(card_txt)
 
 # run combine
-print ">>> Running combine"
-output = commands.getoutput("combine -M MaxLikelihoodFit card.txt --saveNorm --saveWithUncertainties")
+print ">>> Running combine with card %s" % card_filename
+output = commands.getoutput("combine -M MaxLikelihoodFit %s --saveNorm --saveWithUncertainties" % card_filename)
 
 print ">>> Examining fit results"
 # examine output
