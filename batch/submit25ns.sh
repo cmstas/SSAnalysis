@@ -89,14 +89,15 @@ FORSYNC="TG"
 
 # NOT IN GOLDEN JSON: DataDoubleMuonv1 DataDoubleEGv1 DataMuonEGv1 
 DATA="DataDoubleMuonv2 DataDoubleEGv2 DataMuonEGv2 DataDoubleMuonC DataDoubleEGC DataMuonEGC DataDoubleMuonD DataDoubleEGD DataMuonEGD DataDoubleMuonE DataDoubleEGE DataMuonEGE DataDoubleMuonF DataDoubleEGF DataMuonEGF DataDoubleMuonG DataDoubleEGG DataMuonEGG"
-CENTRAL_NEW="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ TTBAR_PH GGHtoZZto4L TTZlow"
+CENTRAL_NEW="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ TTBAR_PH GGHtoZZto4L TTZlow TTZnlo TTWnlo"
 SIG="T1TTTT_main T5QQQQVV_dm20 T5TTCC_main T5QQQQVV_main T6TTWW_main T5TTTT_dm175 T1TTBB_main"
 
 ALL="$DATA $CENTRAL_NEW $SIG"
 
 NEWDATA="DataDoubleMuonG DataDoubleEGG DataMuonEGG"
 # ALL="$NEWDATA"
-ALL="TTH_M350"
+# ALL="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ GGHtoZZto4L TTZlow THW_M350"
+ALL="TTH_SCAN"
 # ALL="TTZnlo TTWnlo"
 
 # ALL="TTBAR_PH WJets WJets100To200 WJets200To400 WJets400To600 WJets600To800 WJets800To1200"
@@ -131,6 +132,16 @@ do
     path="/hadoop/cms/store/group/snt/run2_25ns_80Private/";
     tag="V08-00-05";
     nameNu=150000
+  elif   [ $sname == "THW_M350" ] ; then 
+    name="THW_tHW-m350-MINIAOD_Private80Xv2";
+    path="/hadoop/cms/store/group/snt/run2_25ns_80Private/";
+    tag="V08-00-05";
+    nameNu=150001
+  elif   [ $sname == "TTH_SCAN" ] ; then 
+    name="TTH_ttH-scan-MINIAOD_Private80Xv2";
+    path="/hadoop/cms/store/group/snt/run2_25ns_80Private/";
+    tag="V08-00-05";
+    nameNu=150002
   elif   [ $sname == "TTBAR" ] ; then 
     name="TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v2"
     path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";
@@ -267,7 +278,7 @@ do
     nameNu=26
   elif [ $sname == "TTHtoNonBB" ] ;then 
     name="ttHToNonbb_M125_13TeV_powheg_pythia8_RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
-    tag="V08-00-05";
+    tag="V08-00-09";
     path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv2/";
     nameNu=27
   elif [ $sname == "VHtoNonBB" ] ;then 

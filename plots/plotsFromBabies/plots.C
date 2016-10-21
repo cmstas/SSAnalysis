@@ -20,10 +20,11 @@ float lumiAG = getLumi();
 
 //Data or Signal
 enum type_ag { DATA, SIGNAL, FAKES }; 
-type_ag type = DATA; 
-// type_ag type = FAKES; 
+// type_ag type = DATA; 
+type_ag type = FAKES; 
 bool useSFs = true; // unused
 bool checkTailRegions = false;
+int pickCharge = 0; // 1 for ++, -1 for -- and 0 for no charge requirement;
 
 HLTEfficiency HLTEff("../../hlt/HLT_Efficiencies_7p65fb_2016.root");
 
@@ -145,17 +146,29 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
 
 
   //Declare plots
-  TH1F *met    = new TH1F("met"    , "met"    , 50  ,   0, 1000);
-  TH1F *ht     = new TH1F("ht"     , "ht"     , 50  ,   0, 1800);
-  TH1F *mll    = new TH1F("mll"    , "mll"    , 50  ,   0, 300);
-  TH1F *mtmin  = new TH1F("mtmin"  , "mtmin"  , 50  ,   0, 300);
+
+  // TH1F *met    = new TH1F("met"    , "met"    , 50  ,   0, 1000);
+  // TH1F *ht     = new TH1F("ht"     , "ht"     , 50  ,   0, 1800);
+  // TH1F *mll    = new TH1F("mll"    , "mll"    , 50  ,   0, 300);
+  // TH1F *mtmin  = new TH1F("mtmin"  , "mtmin"  , 50  ,   0, 300);
+  // TH1F *njets  = new TH1F("njets"  , "njets"  , 6  ,    0, 6  );
+  // TH1F *nbtags = new TH1F("nbtags" , "nbtags" , 4  ,    0, 4  );
+  // TH1F *pt     = new TH1F("pt"     , "pt"     , 50 ,    0, 300);
+  // TH1F *eta    = new TH1F("eta"    , "eta"    , 50 , -3.2, 3.2);
+  // TH1F *jetpt  = new TH1F("jetpt"  , "jetpt"  , 50 ,    0, 300);
+  // TH1F *pte     = new TH1F("pte"     , "pte"     , 50 ,    0, 300);
+  // TH1F *ptm     = new TH1F("ptm"     , "ptm"     , 50 ,    0, 300);
+  TH1F *met    = new TH1F("met"    , "met"    , 25  ,   0, 1000);
+  TH1F *ht     = new TH1F("ht"     , "ht"     , 25  ,   0, 1800);
+  TH1F *mll    = new TH1F("mll"    , "mll"    , 25  ,   0, 300);
+  TH1F *mtmin  = new TH1F("mtmin"  , "mtmin"  , 25  ,   0, 300);
   TH1F *njets  = new TH1F("njets"  , "njets"  , 6  ,    0, 6  );
   TH1F *nbtags = new TH1F("nbtags" , "nbtags" , 4  ,    0, 4  );
-  TH1F *pt     = new TH1F("pt"     , "pt"     , 50 ,    0, 300);
-  TH1F *eta    = new TH1F("eta"    , "eta"    , 50 , -3.2, 3.2);
-  TH1F *jetpt  = new TH1F("jetpt"  , "jetpt"  , 50 ,    0, 300);
-  TH1F *pte     = new TH1F("pte"     , "pte"     , 50 ,    0, 300);
-  TH1F *ptm     = new TH1F("ptm"     , "ptm"     , 50 ,    0, 300);
+  TH1F *pt     = new TH1F("pt"     , "pt"     , 25 ,    0, 300);
+  TH1F *eta    = new TH1F("eta"    , "eta"    , 25 , -3.2, 3.2);
+  TH1F *jetpt  = new TH1F("jetpt"  , "jetpt"  , 25 ,    0, 300);
+  TH1F *pte     = new TH1F("pte"     , "pte"     , 25 ,    0, 300);
+  TH1F *ptm     = new TH1F("ptm"     , "ptm"     , 25 ,    0, 300);
 
   vector <float> counts = {0, 0, 0, 0};
  
@@ -213,6 +226,8 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       //Lepton pT cuts
       if (ss::lep1_coneCorrPt() < 25) continue;
       if (ss::lep2_coneCorrPt() < 25) continue;
+
+      if ((pickCharge != 0) && (pickCharge*ss::lep1_id() > 0)) continue;
       
       // recalculate mtmin
       float mtl1 = MT(ss::lep1_coneCorrPt(), ss::lep1_p4().phi(), ss::met(), ss::metPhi());
@@ -228,7 +243,7 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       //Calculate weight
       float weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
       weight *= ss::is_real_data() ? 1 : (ss::sparms().size() == 0 ? eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht()) : eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices())); 
-      weight *= HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::lep2_id(), ss::ht(), 0);
+      weight *= ss::is_real_data() ? 1 : HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::lep2_id(), ss::ht(), 0);
 
       //Make met plots here
       if (ss::njets() >= 2) met->Fill(ss::met(), weight);  

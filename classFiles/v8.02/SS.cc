@@ -388,6 +388,11 @@ void SSAG::Init(TTree *tree) {
 		ncharginos_branch = tree->GetBranch("ncharginos");
 		if (ncharginos_branch) {ncharginos_branch->SetAddress(&ncharginos_);}
 	}
+	higgs_mass_branch = 0;
+	if (tree->GetBranch("higgs_mass") != 0) {
+		higgs_mass_branch = tree->GetBranch("higgs_mass");
+		if (higgs_mass_branch) {higgs_mass_branch->SetAddress(&higgs_mass_);}
+	}
 	nbtags_raw_branch = 0;
 	if (tree->GetBranch("nbtags_raw") != 0) {
 		nbtags_raw_branch = tree->GetBranch("nbtags_raw");
@@ -1552,6 +1557,7 @@ void SSAG::GetEntry(unsigned int idx)
 		btags_isLoaded = false;
 		nbtags_isLoaded = false;
 		ncharginos_isLoaded = false;
+		higgs_mass_isLoaded = false;
 		nbtags_raw_isLoaded = false;
 		sf_dilepTrig_hpt_isLoaded = false;
 		sf_dilepTrig_lpt_isLoaded = false;
@@ -1853,6 +1859,7 @@ void SSAG::LoadAllBranches()
 	if (btags_branch != 0) btags();
 	if (nbtags_branch != 0) nbtags();
 	if (ncharginos_branch != 0) ncharginos();
+	if (higgs_mass_branch != 0) higgs_mass();
 	if (nbtags_raw_branch != 0) nbtags_raw();
 	if (sf_dilepTrig_hpt_branch != 0) sf_dilepTrig_hpt();
 	if (sf_dilepTrig_lpt_branch != 0) sf_dilepTrig_lpt();
@@ -2906,6 +2913,19 @@ void SSAG::LoadAllBranches()
 			ncharginos_isLoaded = true;
 		}
 		return ncharginos_;
+	}
+	const int &SSAG::higgs_mass()
+	{
+		if (not higgs_mass_isLoaded) {
+			if (higgs_mass_branch != 0) {
+				higgs_mass_branch->GetEntry(index);
+			} else { 
+				printf("branch higgs_mass_branch does not exist!\n");
+				exit(1);
+			}
+			higgs_mass_isLoaded = true;
+		}
+		return higgs_mass_;
 	}
 	const int &SSAG::nbtags_raw()
 	{
@@ -6021,6 +6041,7 @@ namespace ss {
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &btags() { return samesign.btags(); }
 	const int &nbtags() { return samesign.nbtags(); }
 	const int &ncharginos() { return samesign.ncharginos(); }
+	const int &higgs_mass() { return samesign.higgs_mass(); }
 	const int &nbtags_raw() { return samesign.nbtags_raw(); }
 	const float &sf_dilepTrig_hpt() { return samesign.sf_dilepTrig_hpt(); }
 	const float &sf_dilepTrig_lpt() { return samesign.sf_dilepTrig_lpt(); }

@@ -236,6 +236,8 @@ enum sample_t {
   DY_high_LO                         = 101012,
 
   TTH_M350                           = 150000,
+  THW_M350                           = 150001,
+  TTH_SCAN                           = 150002,
 
 };
 

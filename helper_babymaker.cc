@@ -109,6 +109,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("lep2_tkIso"                                              , &lep2_tkIso                                              );
   BabyTree->Branch("dilep_p4"                                                , &dilep_p4                                                );
   BabyTree->Branch("ncharginos"                                                , &ncharginos                                                );
+  BabyTree->Branch("higgs_mass"                                                , &higgs_mass                                                );
   // BabyTree->Branch("genps_p4"                                                , &genps_p4                                                );
   // BabyTree->Branch("genps_id"                                                , &genps_id                                                );
   // BabyTree->Branch("genps_id_mother"                                         , &genps_id_mother                                         );
@@ -486,6 +487,7 @@ void babyMaker::InitBabyNtuple(){
     lep1_tkIso = -1;
     lep2_tkIso = -1;
     ncharginos = -1;
+    higgs_mass = -1;
     // genps_p4.clear();
     // genps_id.clear();
     // genps_id_mother.clear();
@@ -736,16 +738,26 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
   is_miniaodv1 = filename.find("MCRUN2_74_V9") != std::string::npos;
   is_miniaodv1_80X = filename.find("RunIISpring16MiniAODv1") != std::string::npos;
-  bool is_wjets = false;
-  if(filename.find("W") == 0) {
-  // if sample part starts with W then check for WJets, W[0-4]Jets...
 
-    if ( (filename.find("WJets") == 0)  ||
-         (filename.find("W1Jet") == 0)  ||
-         (filename.find("W2Jet") == 0)  ||
-         (filename.find("W3Jet") == 0)  ||
-         (filename.find("W4Jet") == 0) ) is_wjets = true;
-  }
+  int nHHsr = 33;
+  int nHLsr = 27;
+  int nLLsr = 8;
+
+  // bool is_wjets = false;
+  // if(filename.find("W") == 0) {
+  // // if sample part starts with W then check for WJets, W[0-4]Jets...
+  //   if ( (filename.find("WJets") == 0)  ||
+  //        (filename.find("W1Jet") == 0)  ||
+  //        (filename.find("W2Jet") == 0)  ||
+  //        (filename.find("W3Jet") == 0)  ||
+  //        (filename.find("W4Jet") == 0) ) is_wjets = true;
+  // }
+
+  int higgs_scan = 0;
+  if (filename.find("ttH-scan") != std::string::npos)  higgs_scan = 1;
+  if (filename.find("tHW-scan") != std::string::npos)  higgs_scan = 2;
+  if (filename.find("tHq-scan") != std::string::npos)  higgs_scan = 3;
+
 
 
   //These c-s errors
@@ -806,6 +818,17 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
       // if (isFastsim == 102) scale1fb = 1000*xsec/59378;
       is_fastsim = 1; 
     }
+
+    if (higgs_scan > 0) {
+        for (unsigned int gp=0;gp<tas::genps_id().size();gp++) {
+            if (abs(tas::genps_id()[gp])==25) {
+                higgs_mass = floor(tas::genps_mass()[gp] + 0.5);
+                break;
+            }
+        }
+        xsec = xsec_higgs(higgs_scan, higgs_mass);
+        scale1fb = 1000*xsec/nPoints_higgs(higgs_scan, higgs_mass);
+    }
   }
 
   //Fill data vs. mc variables
@@ -826,7 +849,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   }
   if (verbose) cout << "chose hyp: " << best_hyp << " of class" << hyp_class << endl;
   if (hyp_class == 0 || hyp_class == -1) return babyErrorStruct;
-  if (hyp_class == 7 && !is_wjets) return babyErrorStruct; // only care about OS ISFR events since we want more stats for WJets (this doubles ntuple size!!)
+  // if (hyp_class == 7 && !is_wjets) return babyErrorStruct; // only care about OS ISFR events since we want more stats for WJets (this doubles ntuple size!!)
+  if (hyp_class == 7) return babyErrorStruct;
   lep1_p4 = (tas::hyp_ll_p4().at(best_hyp).pt() > tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_p4().at(best_hyp) : tas::hyp_lt_p4().at(best_hyp);
   lep2_p4 = (tas::hyp_ll_p4().at(best_hyp).pt() <= tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_p4().at(best_hyp) : tas::hyp_lt_p4().at(best_hyp);
   lep1_id = (tas::hyp_ll_p4().at(best_hyp).pt() > tas::hyp_lt_p4().at(best_hyp).pt()) ? tas::hyp_ll_id().at(best_hyp) : tas::hyp_lt_id().at(best_hyp);
@@ -1612,10 +1636,10 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   //Fill Baby
   BabyTree->Fill();
 
-  int SR = signalRegion(njets, nbtags, met, ht, mtmin, lep1_id, lep2_id, lep1_coneCorrPt, lep2_coneCorrPt);
+  int SR = signalRegion2016(njets, nbtags, met, ht, mtmin, lep1_id, lep2_id, lep1_coneCorrPt, lep2_coneCorrPt);
   anal_type_t categ = analysisCategory(lep1_id, lep2_id, lep1_coneCorrPt, lep2_coneCorrPt);
-  if (categ > 0) SR += 33; 
-  if (categ > 1) SR += 27; 
+  if (categ > 0) SR += nHHsr; 
+  if (categ > 1) SR += nHLsr; 
 
   babyErrorStruct.SR = SR;
   if (hyp_class == 3) babyErrorStruct.isGood = true;

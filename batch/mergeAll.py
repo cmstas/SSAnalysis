@@ -10,9 +10,9 @@ path="/hadoop/cms/store/user/namin/condor/ss_babies_Oct4/"
 
 samples = [
 
-["DataMuonEG","datamuoneg*.root"],
-["DataDoubleEG","datadoubleeg*.root"],
-["DataDoubleMuon","datadoublemuon*.root"],
+# ["DataMuonEG","datamuoneg*.root"],
+# ["DataDoubleEG","datadoubleeg*.root"],
+# ["DataDoubleMuon","datadoublemuon*.root"],
 
 # ["T6TTWW_main", "t6ttww_main_*.root"],
 # ["T5TTTT_dm175", "t5tttt_dm175_*.root"],
@@ -21,6 +21,8 @@ samples = [
 # ["T5QQQQVV_dm20", "t5qqqqvv_dm20_*.root"],
 # ["T1TTTT_main", "t1tttt_main_*.root"],
 # ["T1TTBB_main", "t1ttbb_main_*.root"],
+
+["TTH_scan", "tth_scan_*.root"],
 
 # ["TTZLOW","ttzlow_*.root"],
 # ["WJets","wjets_*.root"],
@@ -45,9 +47,8 @@ samples = [
 # ["ZG","zg_*.root"],
 # ["ZZ","zz_*.root"],
 # ["TTBAR_PH","ttbar_ph_*.root"],
-
-# ["TTZnlo", "ttznlo_*.root"], # for NLO vs LO comparison, not for analysis
-# ["TTWnlo", "ttwnlo_*.root"], # for NLO vs LO comparison, not for analysis
+# ["TTZnlo", "ttznlo_*.root"],
+# ["TTWnlo", "ttwnlo_*.root"],
 
 # ["DY_high_LO","dy_high_LO_*.root"],
 # ["TTBAR","ttbar_[0-9]*.root"],

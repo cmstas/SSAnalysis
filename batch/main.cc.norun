@@ -64,6 +64,18 @@ int main(int argc, char *argv[]){
       tag="V08-00-05";
       shortname="tth_m350";
       break;
+    case THW_M350:
+      name="THW_tHW-m350-MINIAOD_Private80Xv2";
+      path="/store/group/snt/run2_25ns_80Private/";
+      tag="V08-00-05";
+      shortname="thw_m350";
+      break;
+    case TTH_SCAN:
+      name="TTH_ttH-scan-MINIAOD_Private80Xv2";
+      path="/store/group/snt/run2_25ns_80Private/";
+      tag="V08-00-05";
+      shortname="tth_scan";
+      break;
     case TTBAR:
       name="TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v2";
       path="/store/group/snt/run2_25ns_80MiniAODv1/";
@@ -227,7 +239,7 @@ int main(int argc, char *argv[]){
       break;
     case TTHtoNonBB:
       name="ttHToNonbb_M125_13TeV_powheg_pythia8_RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1";
-      tag="V08-00-05";
+      tag="V08-00-09";
       path="/store/group/snt/run2_25ns_80MiniAODv2/";
       shortname="tthtononbb";
       break;

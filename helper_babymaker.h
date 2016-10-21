@@ -40,6 +40,8 @@
 #endif
 
 int nPoints(int sample, int mgl, int mlsp);
+int nPoints_higgs(int sample, int mH);
+float xsec_higgs(int sample, int mH);
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef vector<pair<const LorentzVector *, double> > jets_with_corr_t;
@@ -308,6 +310,7 @@ class babyMaker {
     float lep1_tkIso;
     float lep2_tkIso;
 
+    int higgs_mass;
     // //Gen Leptons
     int ncharginos;
     // vector <LorentzVector> genps_p4;
