@@ -24,11 +24,16 @@ def doReduceBins(fname, kine, SR):
             if int(thesr) != int(SR): continue
             if str(thekine) != str(kine): continue
 
+
         # don't reduce an already reduced histogram, dummy!!
         if hist.GetNbinsX() == 1: SR = 1
 
         val = hist.GetBinContent(SR)
         err = hist.GetBinError(SR)
+
+        # print name, val
+        if "jesDown" in name and val == 0:
+            val = 0.0001
 
         h_temp = r.TH1F(name, name, 1, 0, 1)
         h_temp.SetBinContent(1, val)
