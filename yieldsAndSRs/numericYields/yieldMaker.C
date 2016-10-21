@@ -2181,7 +2181,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       if (isFastSimSignal) {
 	if (!(ss::lep1_motherID()==1 && ss::lep2_motherID()==1)) continue;
-	if ((isFastSimSignal || isHiggsScan) && (ss::hyp_class()==3 || ss::hyp_class()==4 || ss::hyp_class()==6)) {
+	if ((isFastSimSignal || isHiggsScan) && doCutFlowTable && (ss::hyp_class()==3 || ss::hyp_class()==4 || ss::hyp_class()==6)) {
 	  //trigger and two tight leptons
 	  cut_flow[cut_flow_count] += weight;
 	  cut_flow_name[cut_flow_count] = "Trigger and $\\geq$2 leptons";
