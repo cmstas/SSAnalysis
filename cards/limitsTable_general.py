@@ -653,7 +653,7 @@ if __name__ == "__main__":
         "modeltag": "t1tttt",
         "is_gluino": True,
         "mass_label": "",
-        "label_diag": "m_{#tilde{g}}-m_{#tilde{#chi}_{1}^{0}}: 2 #upoint (m_{W} + m_{b})",
+        "label_diag": "m_{#tilde{g}}-m_{#tilde{#chi}_{1}^{0}} = 2 #upoint (m_{W} + m_{b})",
         "label_xaxis": "m_{#tilde{g}} (GeV)",
         "label_yaxis": "m_{#tilde{#chi}_{1}^{0}} (GeV)",
         "label_process": "pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow t#bar{t}#tilde{#chi}^{0}_{1}          ",
