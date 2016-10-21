@@ -13,6 +13,7 @@
 #include "../../CORE/Tools/dorky/dorky.h"
 #include "../../CORE/Tools/utils.h"
 #include "../../batch/xsec.cc"
+#include "../../batch/higgs.cc"
 #include "../../batch/points/isr_norm_t1tttt.h"
 #include "../../batch/points/isr_norm_t5qqqq.h"
 #include "../../batch/points/isr_norm_t5qqqq_dm20.h"
@@ -28,13 +29,18 @@ float lumiAG = getLumiUnblind();
 string tag = getTag().Data();  
 string tagData = getTagData().Data();  
 
-bool doNoData   = false;
-bool testFakeSR = false;
-bool doRestrictSR = true;
-bool doPlotFailPtRatio = false;
-bool useNLOttWZ = true;
-bool plotPlusPlusPairs = false;
-bool plotNegNegPairs = false;
+int nHHsr = 33;
+int nHLsr = 27;
+int nLLsr = 8;
+
+bool doNoData   = false; // don't plot data
+bool testFakeSR = false; // legacy
+bool doRestrictSR = false; // restrict SR to custom SR below
+bool doPlotFailPtRatio = false; // make lepton plots for leptons that fail ptRatio
+bool useNLOttWZ = true; // use new high stats NLO ttW ttZ samples
+bool plotPlusPlusPairs = false; // plot only the ++ SS pairs
+bool plotNegNegPairs = false; // plot only the -- SS pairs
+bool useMCShapes = true; // take fake shapes from MC, but normalize to data fake prediction in plots
 
 
 float scaleLumi = 1.;//3.0/1.264;//careful!!!
@@ -53,7 +59,7 @@ bool doMIcutHT = false;
 float MIcut = 0;
 // TString dir = tag;
 // TString dir = "v8.04_Sept21";
-TString dir = "v8.04_Oct1";
+TString dir = "v8.04_Oct20";
 
 // // XXX MI limits
 // bool doMIcutMET = true;
@@ -100,6 +106,7 @@ bool isSRSuperHighHT(TString kine, int sr);
 bool isSR5Jets(TString kine, int sr);
 int nbtagsSR(TString kine, int sr);
 void initHistError(bool usePoisson, TH1F* plot);
+TH1F *getMCShape(TH1F* data, std::vector<TH1F*> vmc);
 
 static float roughSystTTW   = 0.2;
 static float roughSystTTZH  = 0.2;
@@ -156,52 +163,52 @@ void getyields(){
   TString pfxData  = Form("/nfs-7/userdata/ss2015/ssBabies/%s/", tagData.c_str());
   // TString pfx  = "./skim/";
 
-  // //Fill chains
-  ttbar_chain  ->Add(Form("%s/TTBAR_PH.root"       , pfx.Data())); 
-  wjets_chain  ->Add(Form("%s/WJets.root"       , pfx.Data()));
-  dy_chain     ->Add(Form("%s/DY_high.root"        , pfx.Data()));
-  dy_chain     ->Add(Form("%s/DY_low.root"         , pfx.Data()));
-    if (useNLOttWZ) {
-  ttw_chain    ->Add(Form("%s/TTWnlo_new.root"            , pfx.Data())); 
-  ttzh_chain   ->Add(Form("%s/TTZnlo_new.root"           , pfx.Data())); 
-    } else {
-  ttw_chain    ->Add(Form("%s/TTW.root"            , pfx.Data())); 
-  ttzh_chain   ->Add(Form("%s/TTZ.root"           , pfx.Data())); 
-    }
-  ttzh_chain   ->Add(Form("%s/TTZLOW.root"         , pfx.Data())); 
-  ttzh_chain   ->Add(Form("%s/TTHtoNonBB.root"     , pfx.Data()));
-  wz_chain     ->Add(Form("%s/WZ.root"             , pfx.Data()));
-  ww_chain     ->Add(Form("%s/QQWW.root"           , pfx.Data()));
-  xg_chain     ->Add(Form("%s/TG.root"             , pfx.Data()));
-  xg_chain     ->Add(Form("%s/TTG.root"            , pfx.Data()));
-  xg_chain     ->Add(Form("%s/WGToLNuG.root"           , pfx.Data()));
-  xg_chain     ->Add(Form("%s/ZG.root"             , pfx.Data()));
-  rares_chain  ->Add(Form("%s/ZZ.root"             , pfx.Data()));
-  rares_chain  ->Add(Form("%s/GGHtoZZto4L.root"    , pfx.Data()));
-  rares_chain  ->Add(Form("%s/WWZ.root"            , pfx.Data()));
-  rares_chain  ->Add(Form("%s/WZZ.root"            , pfx.Data()));
-  rares_chain  ->Add(Form("%s/WWW.root"            , pfx.Data()));
-  rares_chain  ->Add(Form("%s/VHtoNonBB.root"      , pfx.Data()));
-  rares_chain  ->Add(Form("%s/TZQ.root"            , pfx.Data()));
-  rares_chain  ->Add(Form("%s/TTTT.root"           , pfx.Data())); // FIXME-TTTT
-  rares_chain  ->Add(Form("%s/WWDPS.root"          , pfx.Data()));
-  tttt_chain   ->Add(Form("%s/TTTT.root"           , pfx.Data()));
-  //data
-  data_chain   ->Add(Form("%s/DataDoubleMuon*.root"    , pfxData.Data()));
-  data_chain   ->Add(Form("%s/DataDoubleEG*.root"  , pfxData.Data()));
-  data_chain   ->Add(Form("%s/DataMuonEG*.root"      , pfxData.Data()));
-  //flips
-  flips_chain  ->Add(Form("%s/DataMuonEG*.root"     , pfxData.Data()));
-  flips_chain  ->Add(Form("%s/DataDoubleEG*.root"      , pfxData.Data()));
-  //fakes
-  fakes_chain  ->Add(Form("%s/DataDoubleMuon*.root"    , pfxData.Data()));
-  fakes_chain  ->Add(Form("%s/DataDoubleEG*.root"  , pfxData.Data()));
-  fakes_chain  ->Add(Form("%s/DataMuonEG*.root"      , pfxData.Data()));
-  fakes_chain  ->Add(Form("%s/TTW.root"                   , pfx.Data()));
-  fakes_chain  ->Add(Form("%s/TTZ.root"                  , pfx.Data()));
-  fakes_chain  ->Add(Form("%s/WZ.root"                    , pfx.Data()));
-  fakes_chain  ->Add(Form("%s/TTHtoNonBB.root"            , pfx.Data()));
-  fakes_chain  ->Add(Form("%s/QQWW.root"                  , pfx.Data()));
+  // // //Fill chains
+  // ttbar_chain  ->Add(Form("%s/TTBAR_PH*.root"       , pfx.Data())); 
+  // wjets_chain  ->Add(Form("%s/WJets.root"       , pfx.Data()));
+  // dy_chain     ->Add(Form("%s/DY_high.root"        , pfx.Data()));
+  // dy_chain     ->Add(Form("%s/DY_low.root"         , pfx.Data()));
+  //   if (useNLOttWZ) {
+  // ttw_chain    ->Add(Form("%s/TTWnlo_new.root"            , pfx.Data())); 
+  // ttzh_chain   ->Add(Form("%s/TTZnlo_new.root"           , pfx.Data())); 
+  //   } else {
+  // ttw_chain    ->Add(Form("%s/TTW.root"            , pfx.Data())); 
+  // ttzh_chain   ->Add(Form("%s/TTZ.root"           , pfx.Data())); 
+  //   }
+  // ttzh_chain   ->Add(Form("%s/TTZLOW.root"         , pfx.Data())); 
+  // ttzh_chain   ->Add(Form("%s/TTHtoNonBB.root"     , pfx.Data()));
+  // wz_chain     ->Add(Form("%s/WZ.root"             , pfx.Data()));
+  // ww_chain     ->Add(Form("%s/QQWW.root"           , pfx.Data()));
+  // xg_chain     ->Add(Form("%s/TG.root"             , pfx.Data()));
+  // xg_chain     ->Add(Form("%s/TTG.root"            , pfx.Data()));
+  // xg_chain     ->Add(Form("%s/WGToLNuG.root"           , pfx.Data()));
+  // xg_chain     ->Add(Form("%s/ZG.root"             , pfx.Data()));
+  // rares_chain  ->Add(Form("%s/ZZ.root"             , pfx.Data()));
+  // rares_chain  ->Add(Form("%s/GGHtoZZto4L.root"    , pfx.Data()));
+  // rares_chain  ->Add(Form("%s/WWZ.root"            , pfx.Data()));
+  // rares_chain  ->Add(Form("%s/WZZ.root"            , pfx.Data()));
+  // rares_chain  ->Add(Form("%s/WWW.root"            , pfx.Data()));
+  // rares_chain  ->Add(Form("%s/VHtoNonBB.root"      , pfx.Data()));
+  // rares_chain  ->Add(Form("%s/TZQ.root"            , pfx.Data()));
+  // rares_chain  ->Add(Form("%s/TTTT.root"           , pfx.Data())); // FIXME-TTTT
+  // rares_chain  ->Add(Form("%s/WWDPS.root"          , pfx.Data()));
+  // tttt_chain   ->Add(Form("%s/TTTT.root"           , pfx.Data()));
+  // //data
+  // data_chain   ->Add(Form("%s/DataDoubleMuon*.root"    , pfxData.Data()));
+  // data_chain   ->Add(Form("%s/DataDoubleEG*.root"  , pfxData.Data()));
+  // data_chain   ->Add(Form("%s/DataMuonEG*.root"      , pfxData.Data()));
+  // //flips
+  // flips_chain  ->Add(Form("%s/DataMuonEG*.root"     , pfxData.Data()));
+  // flips_chain  ->Add(Form("%s/DataDoubleEG*.root"      , pfxData.Data()));
+  // //fakes
+  // fakes_chain  ->Add(Form("%s/DataDoubleMuon*.root"    , pfxData.Data()));
+  // fakes_chain  ->Add(Form("%s/DataDoubleEG*.root"  , pfxData.Data()));
+  // fakes_chain  ->Add(Form("%s/DataMuonEG*.root"      , pfxData.Data()));
+  // fakes_chain  ->Add(Form("%s/TTW.root"                   , pfx.Data()));
+  // fakes_chain  ->Add(Form("%s/TTZ.root"                  , pfx.Data()));
+  // fakes_chain  ->Add(Form("%s/WZ.root"                    , pfx.Data()));
+  // fakes_chain  ->Add(Form("%s/TTHtoNonBB.root"            , pfx.Data()));
+  // fakes_chain  ->Add(Form("%s/QQWW.root"                  , pfx.Data()));
 
   // //signals fullsim
   // t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root"              , tag.c_str()));
@@ -217,6 +224,7 @@ void getyields(){
 
   // // //Get yields
 // #include "fs_t1tttt.h"
+#include "fs_t1tttt_test.h"
 // #include "fs_t5qqqqvv.h"
 // #include "fs_t5qqqqvv_dm20.h"
 // #include "fs_t6ttww.h"
@@ -225,6 +233,7 @@ void getyields(){
 // #include "fs_t1ttbb.h"
 
   // #include "fs_cutflow.h"
+  // #include "tth_scan.h"
 
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
   ttbar_chain->SetTitle("ttbar_fa");
@@ -353,6 +362,8 @@ void getyields(){
   plots_t& p_fakes_is = results_fakes_is.second;
 
   plots_t& p_t1tttt_1200 = results_t1tttt_1200.second;
+
+    // plots_t& p_tth_scan_350 = results_tth_scan_350.second;
 
   //Titles for legend
   vector <string> titles;
@@ -616,7 +627,7 @@ void getyields(){
 
   TString extra = " --poissonErrorsNoZeros ";
   dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.1f --outputName plots/HHSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary --makeTable ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
-  dataMCplotMaker(new TH1F("data","data",33,0.5,33.5), SRHH_plots, titles, "HH SRs ", "", Form("--lumi %.1f --outputName plots/HHSR_noData.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(new TH1F("data","data",nHHsr,0.5,nHHsr+0.5), SRHH_plots, titles, "HH SRs ", "", Form("--lumi %.1f --outputName plots/HHSR_noData.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   // dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.1f --outputName plots/HHSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.1f --outputName plots/HHSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --topYaxisTitle Data/Pred. --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
@@ -642,9 +653,9 @@ void getyields(){
   SRLL_plots.push_back(pair<TH1F*, float>(p_rares.SRLL.TOTAL, roughSystRARES   ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_flips.SRLL.TOTAL, roughSystFLIPS   ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_fakes.SRLL.TOTAL, roughSystFAKESXL ));
-  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow  --makeTable --systInclStat --noRatioPlot --nDivisions 8 --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow  --makeTable --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   // dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --noRatioPlot --nDivisions 8 --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
-  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --topYaxisTitle Data/Pred. --noRatioPlot --nDivisions 8 --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --topYaxisTitle Data/Pred. --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   //SR plots
   vector <TH1F*> SRHHMC_plots;
@@ -717,7 +728,7 @@ void getyields(){
   fakeapp_HH_plots.push_back(pair<TH1F*, float>(p_rares.h_fakeapp_HH, roughSystRARES   ));
   fakeapp_HH_plots.push_back(pair<TH1F*, float>(p_flips.h_fakeapp_HH, roughSystFLIPS   ));
   fakeapp_HH_plots.push_back(pair<TH1F*, float>(p_fakes.h_fakeapp_HH, roughSystFAKESHH ));
-  dataMCplotMaker(new TH1F("data","data",33,0.5,33.5), fakeapp_HH_plots, titles, "HH unweighted tight-loose ", "", Form("--lumi %.1f --outputName plots/fakeapp_HH.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(new TH1F("data","data",nHHsr,0.5,nHHsr+0.5), fakeapp_HH_plots, titles, "HH unweighted tight-loose ", "", Form("--lumi %.1f --outputName plots/fakeapp_HH.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > fakeapp_HL_plots;
   fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_ttw.h_fakeapp_HL  , roughSystTTW     ));
@@ -728,7 +739,7 @@ void getyields(){
   fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_rares.h_fakeapp_HL, roughSystRARES   ));
   fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_flips.h_fakeapp_HL, roughSystFLIPS   ));
   fakeapp_HL_plots.push_back(pair<TH1F*, float>(p_fakes.h_fakeapp_HL, roughSystFAKESHH ));
-  dataMCplotMaker(new TH1F("data","data",27,0.5,27.5), fakeapp_HL_plots, titles, "HL unweighted tight-loose ", "", Form("--lumi %.1f --outputName plots/fakeapp_HL.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(new TH1F("data","data",nHLsr,0.5,nHLsr+0.5), fakeapp_HL_plots, titles, "HL unweighted tight-loose ", "", Form("--lumi %.1f --outputName plots/fakeapp_HL.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > fakeapp_LL_plots;
   fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_ttw.h_fakeapp_LL  , roughSystTTW     ));
@@ -739,7 +750,7 @@ void getyields(){
   fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_rares.h_fakeapp_LL, roughSystRARES   ));
   fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_flips.h_fakeapp_LL, roughSystFLIPS   ));
   fakeapp_LL_plots.push_back(pair<TH1F*, float>(p_fakes.h_fakeapp_LL, roughSystFAKESHH ));
-  dataMCplotMaker(new TH1F("data","data",8,0.5,8.5), fakeapp_LL_plots, titles, "LL unweighted tight-loose ", "", Form("--lumi %.1f --outputName plots/fakeapp_LL.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(new TH1F("data","data",nLLsr,0.5,nLLsr+0.5), fakeapp_LL_plots, titles, "LL unweighted tight-loose ", "", Form("--lumi %.1f --outputName plots/fakeapp_LL.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   // >>>
   vector<pair<TH1F*, float> > sip3d_lep1_plots;
@@ -750,8 +761,9 @@ void getyields(){
   sip3d_lep1_plots.push_back(pair<TH1F*, float>(p_xg.h_sip3d_lep1   , roughSystXG    ));
   sip3d_lep1_plots.push_back(pair<TH1F*, float>(p_rares.h_sip3d_lep1, roughSystRARES ));
   sip3d_lep1_plots.push_back(pair<TH1F*, float>(p_flips.h_sip3d_lep1, roughSystFLIPS ));
-  sip3d_lep1_plots.push_back(pair<TH1F*, float>(p_fakes.h_sip3d_lep1, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_sip3d_lep1, sip3d_lep1_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/sip3d_lep1_all_SS.pdf --xAxisLabel sip3d_lep1 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) sip3d_lep1_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_sip3d_lep1,{p_ttbar_ff.h_sip3d_lep1,p_wjets_ff.h_sip3d_lep1,p_st_ff.h_sip3d_lep1}), roughSystFAKES ));
+  else sip3d_lep1_plots.push_back(pair<TH1F*, float>(p_fakes.h_sip3d_lep1, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_sip3d_lep1, sip3d_lep1_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/sip3d_lep1_all_SS.pdf --xAxisLabel sip3d_lep1 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > sip3d_lep2_plots;
   sip3d_lep2_plots.push_back(pair<TH1F*, float>(p_ttw.h_sip3d_lep2  , roughSystTTW   ));
@@ -761,8 +773,9 @@ void getyields(){
   sip3d_lep2_plots.push_back(pair<TH1F*, float>(p_xg.h_sip3d_lep2   , roughSystXG    ));
   sip3d_lep2_plots.push_back(pair<TH1F*, float>(p_rares.h_sip3d_lep2, roughSystRARES ));
   sip3d_lep2_plots.push_back(pair<TH1F*, float>(p_flips.h_sip3d_lep2, roughSystFLIPS ));
-  sip3d_lep2_plots.push_back(pair<TH1F*, float>(p_fakes.h_sip3d_lep2, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_sip3d_lep2, sip3d_lep2_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/sip3d_lep2_all_SS.pdf --xAxisLabel sip3d_lep2 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) sip3d_lep2_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_sip3d_lep2,{p_ttbar_ff.h_sip3d_lep2,p_wjets_ff.h_sip3d_lep2,p_st_ff.h_sip3d_lep2}), roughSystFAKES ));
+  else sip3d_lep2_plots.push_back(pair<TH1F*, float>(p_fakes.h_sip3d_lep2, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_sip3d_lep2, sip3d_lep2_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/sip3d_lep2_all_SS.pdf --xAxisLabel sip3d_lep2 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
 
   vector<pair<TH1F*, float> > lep1_miniIso_plots;
@@ -773,8 +786,9 @@ void getyields(){
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_miniIso   , roughSystXG    ));
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_miniIso, roughSystRARES ));
   lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_miniIso, roughSystFLIPS ));
-  lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_miniIso, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep1_miniIso_all_SS.pdf --xAxisLabel lep1_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep1_miniIso_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_lep1_miniIso,{p_ttbar_ff.h_lep1_miniIso,p_wjets_ff.h_lep1_miniIso,p_st_ff.h_lep1_miniIso}), roughSystFAKES ));
+  else lep1_miniIso_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_miniIso, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep1_miniIso, lep1_miniIso_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep1_miniIso_all_SS.pdf --xAxisLabel lep1_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep2_miniIso_plots;
   lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep2_miniIso  , roughSystTTW   ));
@@ -784,8 +798,9 @@ void getyields(){
   lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_miniIso   , roughSystXG    ));
   lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_miniIso, roughSystRARES ));
   lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_miniIso, roughSystFLIPS ));
-  lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_miniIso, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep2_miniIso_all_SS.pdf --xAxisLabel lep2_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep2_miniIso_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_lep2_miniIso,{p_ttbar_ff.h_lep2_miniIso,p_wjets_ff.h_lep2_miniIso,p_st_ff.h_lep2_miniIso}), roughSystFAKES ));
+  else lep2_miniIso_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_miniIso, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep2_miniIso, lep2_miniIso_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep2_miniIso_all_SS.pdf --xAxisLabel lep2_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep1_ptRel_plots;
   lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_ptRel  , roughSystTTW   ));
@@ -795,8 +810,9 @@ void getyields(){
   lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_ptRel   , roughSystXG    ));
   lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_ptRel, roughSystRARES ));
   lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_ptRel, roughSystFLIPS ));
-  lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_ptRel, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep1_ptRel_all_SS.pdf --xAxisLabel lep1_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep1_ptRel_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_lep1_ptRel,{p_ttbar_ff.h_lep1_ptRel,p_wjets_ff.h_lep1_ptRel,p_st_ff.h_lep1_ptRel}), roughSystFAKES ));
+  else lep1_ptRel_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_ptRel, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep1_ptRel, lep1_ptRel_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep1_ptRel_all_SS.pdf --xAxisLabel lep1_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep2_ptRel_plots;
   lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep2_ptRel  , roughSystTTW   ));
@@ -806,8 +822,9 @@ void getyields(){
   lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_ptRel   , roughSystXG    ));
   lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_ptRel, roughSystRARES ));
   lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_ptRel, roughSystFLIPS ));
-  lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_ptRel, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep2_ptRel_all_SS.pdf --xAxisLabel lep2_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep2_ptRel_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_lep2_ptRel,{p_ttbar_ff.h_lep2_ptRel,p_wjets_ff.h_lep2_ptRel,p_st_ff.h_lep2_ptRel}), roughSystFAKES ));
+  else lep2_ptRel_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_ptRel, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep2_ptRel, lep2_ptRel_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep2_ptRel_all_SS.pdf --xAxisLabel lep2_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep1_ptRatio_plots;
   lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep1_ptRatio  , roughSystTTW   ));
@@ -817,8 +834,9 @@ void getyields(){
   lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_xg.h_lep1_ptRatio   , roughSystXG    ));
   lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_rares.h_lep1_ptRatio, roughSystRARES ));
   lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_flips.h_lep1_ptRatio, roughSystFLIPS ));
-  lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_ptRatio, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep1_ptRatio_all_SS.pdf --xAxisLabel lep1_ptRatio --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep1_ptRatio_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_lep1_ptRatio,{p_ttbar_ff.h_lep1_ptRatio,p_wjets_ff.h_lep1_ptRatio,p_st_ff.h_lep1_ptRatio}), roughSystFAKES ));
+  else lep1_ptRatio_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep1_ptRatio, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep1_ptRatio, lep1_ptRatio_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep1_ptRatio_all_SS.pdf --xAxisLabel lep1_ptRatio --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep2_ptRatio_plots;
   lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_ttw.h_lep2_ptRatio  , roughSystTTW   ));
@@ -828,8 +846,9 @@ void getyields(){
   lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_xg.h_lep2_ptRatio   , roughSystXG    ));
   lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_rares.h_lep2_ptRatio, roughSystRARES ));
   lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_flips.h_lep2_ptRatio, roughSystFLIPS ));
-  lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_ptRatio, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep2_ptRatio_all_SS.pdf --xAxisLabel lep2_ptRatio --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep2_ptRatio_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_lep2_ptRatio,{p_ttbar_ff.h_lep2_ptRatio,p_wjets_ff.h_lep2_ptRatio,p_st_ff.h_lep2_ptRatio}), roughSystFAKES ));
+  else lep2_ptRatio_plots.push_back(pair<TH1F*, float>(p_fakes.h_lep2_ptRatio, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_lep2_ptRatio, lep2_ptRatio_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep2_ptRatio_all_SS.pdf --xAxisLabel lep2_ptRatio --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   
 
   //lep1 pt plots
@@ -891,8 +910,9 @@ void getyields(){
   sip3d_lep1_el_plots.push_back(pair<TH1F*, float>(p_xg.h_el_sip3d_lep1   , roughSystXG    ));
   sip3d_lep1_el_plots.push_back(pair<TH1F*, float>(p_rares.h_el_sip3d_lep1, roughSystRARES ));
   sip3d_lep1_el_plots.push_back(pair<TH1F*, float>(p_flips.h_el_sip3d_lep1, roughSystFLIPS ));
-  sip3d_lep1_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_sip3d_lep1, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_el_sip3d_lep1, sip3d_lep1_el_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/sip3d_lep1_el_all_SS.pdf --xAxisLabel e: sip3d_lep1 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) sip3d_lep1_el_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_el_sip3d_lep1,{p_ttbar_ff.h_el_sip3d_lep1,p_wjets_ff.h_el_sip3d_lep1,p_st_ff.h_el_sip3d_lep1}), roughSystFAKES ));
+  else sip3d_lep1_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_sip3d_lep1, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_el_sip3d_lep1, sip3d_lep1_el_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/sip3d_lep1_el_all_SS.pdf --xAxisLabel e: sip3d_lep1 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > sip3d_lep2_el_plots;
   sip3d_lep2_el_plots.push_back(pair<TH1F*, float>(p_ttw.h_el_sip3d_lep2  , roughSystTTW   ));
@@ -902,8 +922,9 @@ void getyields(){
   sip3d_lep2_el_plots.push_back(pair<TH1F*, float>(p_xg.h_el_sip3d_lep2   , roughSystXG    ));
   sip3d_lep2_el_plots.push_back(pair<TH1F*, float>(p_rares.h_el_sip3d_lep2, roughSystRARES ));
   sip3d_lep2_el_plots.push_back(pair<TH1F*, float>(p_flips.h_el_sip3d_lep2, roughSystFLIPS ));
-  sip3d_lep2_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_sip3d_lep2, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_el_sip3d_lep2, sip3d_lep2_el_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/sip3d_lep2_el_all_SS.pdf --xAxisLabel e: sip3d_lep2 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) sip3d_lep2_el_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_el_sip3d_lep2,{p_ttbar_ff.h_el_sip3d_lep2,p_wjets_ff.h_el_sip3d_lep2,p_st_ff.h_el_sip3d_lep2}), roughSystFAKES ));
+  else sip3d_lep2_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_sip3d_lep2, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_el_sip3d_lep2, sip3d_lep2_el_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/sip3d_lep2_el_all_SS.pdf --xAxisLabel e: sip3d_lep2 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
 
   vector<pair<TH1F*, float> > lep1_miniIso_el_plots;
@@ -914,8 +935,9 @@ void getyields(){
   lep1_miniIso_el_plots.push_back(pair<TH1F*, float>(p_xg.h_el_lep1_miniIso   , roughSystXG    ));
   lep1_miniIso_el_plots.push_back(pair<TH1F*, float>(p_rares.h_el_lep1_miniIso, roughSystRARES ));
   lep1_miniIso_el_plots.push_back(pair<TH1F*, float>(p_flips.h_el_lep1_miniIso, roughSystFLIPS ));
-  lep1_miniIso_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_lep1_miniIso, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_el_lep1_miniIso, lep1_miniIso_el_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep1_miniIso_el_all_SS.pdf --xAxisLabel e: lep1_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep1_miniIso_el_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_el_lep1_miniIso,{p_ttbar_ff.h_el_lep1_miniIso,p_wjets_ff.h_el_lep1_miniIso,p_st_ff.h_el_lep1_miniIso}), roughSystFAKES ));
+  else lep1_miniIso_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_lep1_miniIso, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_el_lep1_miniIso, lep1_miniIso_el_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep1_miniIso_el_all_SS.pdf --xAxisLabel e: lep1_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep2_miniIso_el_plots;
   lep2_miniIso_el_plots.push_back(pair<TH1F*, float>(p_ttw.h_el_lep2_miniIso  , roughSystTTW   ));
@@ -925,8 +947,9 @@ void getyields(){
   lep2_miniIso_el_plots.push_back(pair<TH1F*, float>(p_xg.h_el_lep2_miniIso   , roughSystXG    ));
   lep2_miniIso_el_plots.push_back(pair<TH1F*, float>(p_rares.h_el_lep2_miniIso, roughSystRARES ));
   lep2_miniIso_el_plots.push_back(pair<TH1F*, float>(p_flips.h_el_lep2_miniIso, roughSystFLIPS ));
-  lep2_miniIso_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_lep2_miniIso, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_el_lep2_miniIso, lep2_miniIso_el_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep2_miniIso_el_all_SS.pdf --xAxisLabel e: lep2_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep2_miniIso_el_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_el_lep2_miniIso,{p_ttbar_ff.h_el_lep2_miniIso,p_wjets_ff.h_el_lep2_miniIso,p_st_ff.h_el_lep2_miniIso}), roughSystFAKES ));
+  else lep2_miniIso_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_lep2_miniIso, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_el_lep2_miniIso, lep2_miniIso_el_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep2_miniIso_el_all_SS.pdf --xAxisLabel e: lep2_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep1_ptRel_el_plots;
   lep1_ptRel_el_plots.push_back(pair<TH1F*, float>(p_ttw.h_el_lep1_ptRel  , roughSystTTW   ));
@@ -936,8 +959,9 @@ void getyields(){
   lep1_ptRel_el_plots.push_back(pair<TH1F*, float>(p_xg.h_el_lep1_ptRel   , roughSystXG    ));
   lep1_ptRel_el_plots.push_back(pair<TH1F*, float>(p_rares.h_el_lep1_ptRel, roughSystRARES ));
   lep1_ptRel_el_plots.push_back(pair<TH1F*, float>(p_flips.h_el_lep1_ptRel, roughSystFLIPS ));
-  lep1_ptRel_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_lep1_ptRel, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_el_lep1_ptRel, lep1_ptRel_el_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep1_ptRel_el_all_SS.pdf --xAxisLabel e: lep1_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep1_ptRel_el_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_el_lep1_ptRel,{p_ttbar_ff.h_el_lep1_ptRel,p_wjets_ff.h_el_lep1_ptRel,p_st_ff.h_el_lep1_ptRel}), roughSystFAKES ));
+  else lep1_ptRel_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_lep1_ptRel, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_el_lep1_ptRel, lep1_ptRel_el_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep1_ptRel_el_all_SS.pdf --xAxisLabel e: lep1_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep2_ptRel_el_plots;
   lep2_ptRel_el_plots.push_back(pair<TH1F*, float>(p_ttw.h_el_lep2_ptRel  , roughSystTTW   ));
@@ -947,8 +971,9 @@ void getyields(){
   lep2_ptRel_el_plots.push_back(pair<TH1F*, float>(p_xg.h_el_lep2_ptRel   , roughSystXG    ));
   lep2_ptRel_el_plots.push_back(pair<TH1F*, float>(p_rares.h_el_lep2_ptRel, roughSystRARES ));
   lep2_ptRel_el_plots.push_back(pair<TH1F*, float>(p_flips.h_el_lep2_ptRel, roughSystFLIPS ));
-  lep2_ptRel_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_lep2_ptRel, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_el_lep2_ptRel, lep2_ptRel_el_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep2_ptRel_el_all_SS.pdf --xAxisLabel e: lep2_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep2_ptRel_el_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_el_lep2_ptRel,{p_ttbar_ff.h_el_lep2_ptRel,p_wjets_ff.h_el_lep2_ptRel,p_st_ff.h_el_lep2_ptRel}), roughSystFAKES ));
+  else lep2_ptRel_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_lep2_ptRel, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_el_lep2_ptRel, lep2_ptRel_el_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep2_ptRel_el_all_SS.pdf --xAxisLabel e: lep2_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep1_ptRatio_el_plots;
   lep1_ptRatio_el_plots.push_back(pair<TH1F*, float>(p_ttw.h_el_lep1_ptRatio  , roughSystTTW   ));
@@ -958,8 +983,9 @@ void getyields(){
   lep1_ptRatio_el_plots.push_back(pair<TH1F*, float>(p_xg.h_el_lep1_ptRatio   , roughSystXG    ));
   lep1_ptRatio_el_plots.push_back(pair<TH1F*, float>(p_rares.h_el_lep1_ptRatio, roughSystRARES ));
   lep1_ptRatio_el_plots.push_back(pair<TH1F*, float>(p_flips.h_el_lep1_ptRatio, roughSystFLIPS ));
-  lep1_ptRatio_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_lep1_ptRatio, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_el_lep1_ptRatio, lep1_ptRatio_el_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep1_ptRatio_el_all_SS.pdf --xAxisLabel e: lep1_ptRatio --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep1_ptRatio_el_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_el_lep1_ptRatio,{p_ttbar_ff.h_el_lep1_ptRatio,p_wjets_ff.h_el_lep1_ptRatio,p_st_ff.h_el_lep1_ptRatio}), roughSystFAKES ));
+  else lep1_ptRatio_el_plots.push_back(pair<TH1F*, float>(p_fakes.h_el_lep1_ptRatio, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_el_lep1_ptRatio, lep1_ptRatio_el_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep1_ptRatio_el_all_SS.pdf --xAxisLabel e: lep1_ptRatio --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep2_ptRatio_el_plots;
   lep2_ptRatio_el_plots.push_back(pair<TH1F*, float>(p_ttw.h_el_lep2_ptRatio  , roughSystTTW   ));
@@ -1033,8 +1059,9 @@ void getyields(){
   sip3d_lep1_mu_plots.push_back(pair<TH1F*, float>(p_xg.h_mu_sip3d_lep1   , roughSystXG    ));
   sip3d_lep1_mu_plots.push_back(pair<TH1F*, float>(p_rares.h_mu_sip3d_lep1, roughSystRARES ));
   sip3d_lep1_mu_plots.push_back(pair<TH1F*, float>(p_flips.h_mu_sip3d_lep1, roughSystFLIPS ));
-  sip3d_lep1_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_sip3d_lep1, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mu_sip3d_lep1, sip3d_lep1_mu_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/sip3d_lep1_mu_all_SS.pdf --xAxisLabel #mu: sip3d_lep1 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) sip3d_lep1_mu_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_mu_sip3d_lep1,{p_ttbar_ff.h_mu_sip3d_lep1,p_wjets_ff.h_mu_sip3d_lep1,p_st_ff.h_mu_sip3d_lep1}), roughSystFAKES ));
+  else sip3d_lep1_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_sip3d_lep1, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mu_sip3d_lep1, sip3d_lep1_mu_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/sip3d_lep1_mu_all_SS.pdf --xAxisLabel #mu: sip3d_lep1 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > sip3d_lep2_mu_plots;
   sip3d_lep2_mu_plots.push_back(pair<TH1F*, float>(p_ttw.h_mu_sip3d_lep2  , roughSystTTW   ));
@@ -1044,8 +1071,9 @@ void getyields(){
   sip3d_lep2_mu_plots.push_back(pair<TH1F*, float>(p_xg.h_mu_sip3d_lep2   , roughSystXG    ));
   sip3d_lep2_mu_plots.push_back(pair<TH1F*, float>(p_rares.h_mu_sip3d_lep2, roughSystRARES ));
   sip3d_lep2_mu_plots.push_back(pair<TH1F*, float>(p_flips.h_mu_sip3d_lep2, roughSystFLIPS ));
-  sip3d_lep2_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_sip3d_lep2, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mu_sip3d_lep2, sip3d_lep2_mu_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/sip3d_lep2_mu_all_SS.pdf --xAxisLabel #mu: sip3d_lep2 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) sip3d_lep2_mu_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_mu_sip3d_lep2,{p_ttbar_ff.h_mu_sip3d_lep2,p_wjets_ff.h_mu_sip3d_lep2,p_st_ff.h_mu_sip3d_lep2}), roughSystFAKES ));
+  else sip3d_lep2_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_sip3d_lep2, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mu_sip3d_lep2, sip3d_lep2_mu_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/sip3d_lep2_mu_all_SS.pdf --xAxisLabel #mu: sip3d_lep2 --isLinear --legendUp -.05 --noDivisionLabel --noXaxisUnit --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
 
   vector<pair<TH1F*, float> > lep1_miniIso_mu_plots;
@@ -1056,8 +1084,9 @@ void getyields(){
   lep1_miniIso_mu_plots.push_back(pair<TH1F*, float>(p_xg.h_mu_lep1_miniIso   , roughSystXG    ));
   lep1_miniIso_mu_plots.push_back(pair<TH1F*, float>(p_rares.h_mu_lep1_miniIso, roughSystRARES ));
   lep1_miniIso_mu_plots.push_back(pair<TH1F*, float>(p_flips.h_mu_lep1_miniIso, roughSystFLIPS ));
-  lep1_miniIso_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_lep1_miniIso, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mu_lep1_miniIso, lep1_miniIso_mu_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep1_miniIso_mu_all_SS.pdf --xAxisLabel #mu: lep1_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep1_miniIso_mu_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_mu_lep1_miniIso,{p_ttbar_ff.h_mu_lep1_miniIso,p_wjets_ff.h_mu_lep1_miniIso,p_st_ff.h_mu_lep1_miniIso}), roughSystFAKES ));
+  else lep1_miniIso_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_lep1_miniIso, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mu_lep1_miniIso, lep1_miniIso_mu_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep1_miniIso_mu_all_SS.pdf --xAxisLabel #mu: lep1_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep2_miniIso_mu_plots;
   lep2_miniIso_mu_plots.push_back(pair<TH1F*, float>(p_ttw.h_mu_lep2_miniIso  , roughSystTTW   ));
@@ -1067,8 +1096,9 @@ void getyields(){
   lep2_miniIso_mu_plots.push_back(pair<TH1F*, float>(p_xg.h_mu_lep2_miniIso   , roughSystXG    ));
   lep2_miniIso_mu_plots.push_back(pair<TH1F*, float>(p_rares.h_mu_lep2_miniIso, roughSystRARES ));
   lep2_miniIso_mu_plots.push_back(pair<TH1F*, float>(p_flips.h_mu_lep2_miniIso, roughSystFLIPS ));
-  lep2_miniIso_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_lep2_miniIso, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mu_lep2_miniIso, lep2_miniIso_mu_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep2_miniIso_mu_all_SS.pdf --xAxisLabel #mu: lep2_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep2_miniIso_mu_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_mu_lep2_miniIso,{p_ttbar_ff.h_mu_lep2_miniIso,p_wjets_ff.h_mu_lep2_miniIso,p_st_ff.h_mu_lep2_miniIso}), roughSystFAKES ));
+  else lep2_miniIso_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_lep2_miniIso, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mu_lep2_miniIso, lep2_miniIso_mu_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep2_miniIso_mu_all_SS.pdf --xAxisLabel #mu: lep2_miniIso --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep1_ptRel_mu_plots;
   lep1_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_ttw.h_mu_lep1_ptRel  , roughSystTTW   ));
@@ -1078,8 +1108,9 @@ void getyields(){
   lep1_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_xg.h_mu_lep1_ptRel   , roughSystXG    ));
   lep1_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_rares.h_mu_lep1_ptRel, roughSystRARES ));
   lep1_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_flips.h_mu_lep1_ptRel, roughSystFLIPS ));
-  lep1_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_lep1_ptRel, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mu_lep1_ptRel, lep1_ptRel_mu_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep1_ptRel_mu_all_SS.pdf --xAxisLabel #mu: lep1_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep1_ptRel_mu_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_mu_lep1_ptRel,{p_ttbar_ff.h_mu_lep1_ptRel,p_wjets_ff.h_mu_lep1_ptRel,p_st_ff.h_mu_lep1_ptRel}), roughSystFAKES ));
+  else lep1_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_lep1_ptRel, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mu_lep1_ptRel, lep1_ptRel_mu_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep1_ptRel_mu_all_SS.pdf --xAxisLabel #mu: lep1_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep2_ptRel_mu_plots;
   lep2_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_ttw.h_mu_lep2_ptRel  , roughSystTTW   ));
@@ -1089,8 +1120,9 @@ void getyields(){
   lep2_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_xg.h_mu_lep2_ptRel   , roughSystXG    ));
   lep2_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_rares.h_mu_lep2_ptRel, roughSystRARES ));
   lep2_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_flips.h_mu_lep2_ptRel, roughSystFLIPS ));
-  lep2_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_lep2_ptRel, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mu_lep2_ptRel, lep2_ptRel_mu_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep2_ptRel_mu_all_SS.pdf --xAxisLabel #mu: lep2_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep2_ptRel_mu_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_mu_lep2_ptRel,{p_ttbar_ff.h_mu_lep2_ptRel,p_wjets_ff.h_mu_lep2_ptRel,p_st_ff.h_mu_lep2_ptRel}), roughSystFAKES ));
+  else lep2_ptRel_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_lep2_ptRel, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mu_lep2_ptRel, lep2_ptRel_mu_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep2_ptRel_mu_all_SS.pdf --xAxisLabel #mu: lep2_ptRel --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep1_ptRatio_mu_plots;
   lep1_ptRatio_mu_plots.push_back(pair<TH1F*, float>(p_ttw.h_mu_lep1_ptRatio  , roughSystTTW   ));
@@ -1100,8 +1132,9 @@ void getyields(){
   lep1_ptRatio_mu_plots.push_back(pair<TH1F*, float>(p_xg.h_mu_lep1_ptRatio   , roughSystXG    ));
   lep1_ptRatio_mu_plots.push_back(pair<TH1F*, float>(p_rares.h_mu_lep1_ptRatio, roughSystRARES ));
   lep1_ptRatio_mu_plots.push_back(pair<TH1F*, float>(p_flips.h_mu_lep1_ptRatio, roughSystFLIPS ));
-  lep1_ptRatio_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_lep1_ptRatio, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mu_lep1_ptRatio, lep1_ptRatio_mu_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/lep1_ptRatio_mu_all_SS.pdf --xAxisLabel #mu: lep1_ptRatio --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  if (useMCShapes) lep1_ptRatio_mu_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_mu_lep1_ptRatio,{p_ttbar_ff.h_mu_lep1_ptRatio,p_wjets_ff.h_mu_lep1_ptRatio,p_st_ff.h_mu_lep1_ptRatio}), roughSystFAKES ));
+  else lep1_ptRatio_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_lep1_ptRatio, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mu_lep1_ptRatio, lep1_ptRatio_mu_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/lep1_ptRatio_mu_all_SS.pdf --xAxisLabel #mu: lep1_ptRatio --isLinear --legendUp -.05 --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
   vector<pair<TH1F*, float> > lep2_ptRatio_mu_plots;
   lep2_ptRatio_mu_plots.push_back(pair<TH1F*, float>(p_ttw.h_mu_lep2_ptRatio  , roughSystTTW   ));
@@ -1124,8 +1157,9 @@ void getyields(){
   l1pt_mu_plots.push_back(pair<TH1F*, float>(p_xg.h_mu_l1pt   , roughSystXG    ));
   l1pt_mu_plots.push_back(pair<TH1F*, float>(p_rares.h_mu_l1pt, roughSystRARES ));
   l1pt_mu_plots.push_back(pair<TH1F*, float>(p_flips.h_mu_l1pt, roughSystFLIPS ));
-  l1pt_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_l1pt, roughSystFAKES ));
-  dataMCplotMaker(p_data.h_mu_l1pt, l1pt_mu_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/l1pt_mu_all_SS.pdf --xAxisLabel #mu: Leading Lepton p_{T} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --type Preliminary --dataName Data  --type Preliminary %s   --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
+  if (useMCShapes) l1pt_mu_plots.push_back(pair<TH1F*, float>(getMCShape(p_fakes.h_mu_l1pt,{p_ttbar_ff.h_mu_l1pt,p_wjets_ff.h_mu_l1pt,p_st_ff.h_mu_l1pt}), roughSystFAKES ));
+  else l1pt_mu_plots.push_back(pair<TH1F*, float>(p_fakes.h_mu_l1pt, roughSystFAKES ));
+  dataMCplotMaker(p_data.h_mu_l1pt, l1pt_mu_plots, titles, (useMCShapes ? "Baseline selection, MC fake shape" : "Baseline selection"), "", Form("--lumi %.1f --outputName plots/l1pt_mu_all_SS.pdf --xAxisLabel #mu: Leading Lepton p_{T} --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.2 --type Preliminary --dataName Data  --type Preliminary %s   --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);// --outOfFrame
 
   //lep1 eta plots
   vector<pair<TH1F*, float> > l1eta_mu_plots;
@@ -1388,6 +1422,8 @@ void getyields(){
   njets_plots.push_back(pair<TH1F*, float>(p_fakes.h_njets, roughSystFAKES ));
   dataMCplotMaker(p_data.h_njets, njets_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/njets_all_SS.pdf --xAxisLabel N_{jet} --noXaxisUnit --nDivisions 6 --noDivisionLabel --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.1 --dataName Data  --type Preliminary %s   --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);//  --outOfFrame
 
+  // dataMCplotMaker(p_data.h_njets, njets_plots, titles, "Baseline selection", "", Form("--lumi %.1f --outputName plots/njets_all_SS.pdf --xAxisLabel N_{jet} --noXaxisUnit --nDivisions 6 --noDivisionLabel --isLinear --legendUp -.15 --legendRight -0.08 --systInclStat --topYaxisTitle Data/Pred. --legendTaller 0.15 --yTitleOffset -0.1 --dataName Data  --type Preliminary %s   --outOfFrame ", lumiAG, extra.Data()), {p_tth_scan_350.h_njets}, {"tth_m350"}, colors);//  --outOfFrame
+
   vector<pair<TH1F*, float> > nbtags_plots;
   nbtags_plots.push_back(pair<TH1F*, float>(p_ttw.h_nbtags  , roughSystTTW   ));
   nbtags_plots.push_back(pair<TH1F*, float>(p_ttzh.h_nbtags , roughSystTTZH  ));
@@ -1489,6 +1525,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   bool isT1tttt = false;
   bool isT5ttcc = false;
   float invFilterEff = 1.;
+
+  bool isHiggsScan = false;
   vector<float> mysparms;
   if (isSignal && chainTitle.Contains("fs_")) {
     isFastSimSignal = true;
@@ -1527,6 +1565,17 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     }
   }
 
+  if (isSignal && chainTitle.Contains("tth_scan")) {
+      isHiggsScan = true;
+      TObjArray *tx = chainTitle.Tokenize("_");
+      for (int i = 0; i < tx->GetEntries(); i++) {
+          if (((TObjString *)(tx->At(i)))->String().BeginsWith("m")) {
+              float asparm = ((TObjString *)(tx->At(i)))->String().ReplaceAll("m","").Atof();
+              mysparms.push_back(asparm);
+          }
+      }
+  }
+
   bool isT6 = false;
   if (isSignal && chainTitle.Contains("fs_t6")) {
     isT6 = true;
@@ -1535,8 +1584,8 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   float cut_flow[10] = {0.};
   TString cut_flow_name[10] = {""};
   int cut_flow_count = 0;
-  float sr_flow[70] = {0.};
-  TString sr_flow_name[70] = {""};
+  float sr_flow[150] = {0.};
+  TString sr_flow_name[150] = {""};
   float xsec = 0.;
 
   yields_t y_result;
@@ -1582,18 +1631,18 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   p_result.h_el_l2pt         = new TH1F(Form("l2pt_el_%s"        , chainTitleCh) , Form("l2pt_el_%s"        , chainTitleCh), 10, 0   , 100); 
   p_result.h_el_l1eta        = new TH1F(Form("l1eta_el_%s"       , chainTitleCh) , Form("l1eta_el_%s"       , chainTitleCh), 24, -2.5, 2.5); 
   p_result.h_el_l2eta        = new TH1F(Form("l2eta_el_%s"       , chainTitleCh) , Form("l2eta_el_%s"       , chainTitleCh), 24, -2.5, 2.5); 
-  p_result.SRHH.EE        = new TH1F(Form("SRHH_EE_%s"     , chainTitleCh) , Form("SRHH_EE_%s"     , chainTitleCh), 33, 0.5 , 33.5);
-  p_result.SRHH.EM        = new TH1F(Form("SRHH_EM_%s"     , chainTitleCh) , Form("SRHH_EM_%s"     , chainTitleCh), 33, 0.5 , 33.5);
-  p_result.SRHH.MM        = new TH1F(Form("SRHH_MM_%s"     , chainTitleCh) , Form("SRHH_MM_%s"     , chainTitleCh), 33, 0.5 , 33.5);
-  p_result.SRHH.TOTAL     = new TH1F(Form("SRHH_TOTAL_%s"  , chainTitleCh) , Form("SRHH_TOTAL_%s"  , chainTitleCh), 33, 0.5 , 33.5);
-  p_result.SRHL.EE        = new TH1F(Form("SRHL_EE_%s"     , chainTitleCh) , Form("SRHL_EE_%s"     , chainTitleCh), 27, 0.5 , 27.5);
-  p_result.SRHL.EM        = new TH1F(Form("SRHL_EM_%s"     , chainTitleCh) , Form("SRHL_EM_%s"     , chainTitleCh), 27, 0.5 , 27.5);
-  p_result.SRHL.MM        = new TH1F(Form("SRHL_MM_%s"     , chainTitleCh) , Form("SRHL_MM_%s"     , chainTitleCh), 27, 0.5 , 27.5);
-  p_result.SRHL.TOTAL     = new TH1F(Form("SRHL_TOTAL_%s"  , chainTitleCh) , Form("SRHL_TOTAL_%s"  , chainTitleCh), 27, 0.5 , 27.5);
-  p_result.SRLL.EE        = new TH1F(Form("SRLL_EE_%s"     , chainTitleCh) , Form("SRLL_EE_%s"     , chainTitleCh), 8 , 0.5 ,  8.5);
-  p_result.SRLL.EM        = new TH1F(Form("SRLL_EM_%s"     , chainTitleCh) , Form("SRLL_EM_%s"     , chainTitleCh), 8 , 0.5 ,  8.5);
-  p_result.SRLL.MM        = new TH1F(Form("SRLL_MM_%s"     , chainTitleCh) , Form("SRLL_MM_%s"     , chainTitleCh), 8 , 0.5 ,  8.5);
-  p_result.SRLL.TOTAL     = new TH1F(Form("SRLL_TOTAL_%s"  , chainTitleCh) , Form("SRLL_TOTAL_%s"  , chainTitleCh), 8 , 0.5 ,  8.5);
+  p_result.SRHH.EE        = new TH1F(Form("SRHH_EE_%s"     , chainTitleCh) , Form("SRHH_EE_%s"     , chainTitleCh), nHHsr, 0.5 , nHHsr+0.5);
+  p_result.SRHH.EM        = new TH1F(Form("SRHH_EM_%s"     , chainTitleCh) , Form("SRHH_EM_%s"     , chainTitleCh), nHHsr, 0.5 , nHHsr+0.5);
+  p_result.SRHH.MM        = new TH1F(Form("SRHH_MM_%s"     , chainTitleCh) , Form("SRHH_MM_%s"     , chainTitleCh), nHHsr, 0.5 , nHHsr+0.5);
+  p_result.SRHH.TOTAL     = new TH1F(Form("SRHH_TOTAL_%s"  , chainTitleCh) , Form("SRHH_TOTAL_%s"  , chainTitleCh), nHHsr, 0.5 , nHHsr+0.5);
+  p_result.SRHL.EE        = new TH1F(Form("SRHL_EE_%s"     , chainTitleCh) , Form("SRHL_EE_%s"     , chainTitleCh), nHLsr, 0.5 , nHLsr+0.5);
+  p_result.SRHL.EM        = new TH1F(Form("SRHL_EM_%s"     , chainTitleCh) , Form("SRHL_EM_%s"     , chainTitleCh), nHLsr, 0.5 , nHLsr+0.5);
+  p_result.SRHL.MM        = new TH1F(Form("SRHL_MM_%s"     , chainTitleCh) , Form("SRHL_MM_%s"     , chainTitleCh), nHLsr, 0.5 , nHLsr+0.5);
+  p_result.SRHL.TOTAL     = new TH1F(Form("SRHL_TOTAL_%s"  , chainTitleCh) , Form("SRHL_TOTAL_%s"  , chainTitleCh), nHLsr, 0.5 , nHLsr+0.5);
+  p_result.SRLL.EE        = new TH1F(Form("SRLL_EE_%s"     , chainTitleCh) , Form("SRLL_EE_%s"     , chainTitleCh), nLLsr , 0.5 ,  nLLsr+0.5);
+  p_result.SRLL.EM        = new TH1F(Form("SRLL_EM_%s"     , chainTitleCh) , Form("SRLL_EM_%s"     , chainTitleCh), nLLsr , 0.5 ,  nLLsr+0.5);
+  p_result.SRLL.MM        = new TH1F(Form("SRLL_MM_%s"     , chainTitleCh) , Form("SRLL_MM_%s"     , chainTitleCh), nLLsr , 0.5 ,  nLLsr+0.5);
+  p_result.SRLL.TOTAL     = new TH1F(Form("SRLL_TOTAL_%s"  , chainTitleCh) , Form("SRLL_TOTAL_%s"  , chainTitleCh), nLLsr , 0.5 ,  nLLsr+0.5);
   p_result.BR             = new TH1F(Form("BR_%s"          , chainTitleCh) , Form("BR_%s"          , chainTitleCh), 4 , 0   , 4);   
   p_result.h_type         = new TH1F(Form("type_%s"        , chainTitleCh) , Form("type_%s"        , chainTitleCh), 4 , 0   , 4);   
   p_result.h_charge       = new TH1F(Form("charge_%s"      , chainTitleCh) , Form("charge_%s"      , chainTitleCh), 3 , -1  , 2);   
@@ -1616,16 +1665,16 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   p_result.h_el_lep1_ptRel   = new TH1F(Form("lep1_el_ptRel_%s"  , chainTitleCh) , Form("lep1_el_ptRel_%s"  , chainTitleCh), 25, 0   , 50);  
   p_result.h_el_lep2_ptRel   = new TH1F(Form("lep2_el_ptRel_%s"  , chainTitleCh) , Form("lep2_el_ptRel_%s"  , chainTitleCh), 25, 0   , 50);  
   
-  p_result.h_fakeapp_HH        = new TH1F(Form("fakeapp_HH_%s"      , chainTitleCh) , Form("fakeapp_HH_%s"      , chainTitleCh) , 33  , 0.5, 33.5);
-  p_result.h_fakeapp_HL        = new TH1F(Form("fakeapp_HL_%s"      , chainTitleCh) , Form("fakeapp_HL_%s"      , chainTitleCh) , 27  , 0.5, 27.5);
-  p_result.h_fakeapp_LL        = new TH1F(Form("fakeapp_LL_%s"      , chainTitleCh) , Form("fakeapp_LL_%s"      , chainTitleCh) , 8   , 0.5, 8.5 );
+  p_result.h_fakeapp_HH        = new TH1F(Form("fakeapp_HH_%s"      , chainTitleCh) , Form("fakeapp_HH_%s"      , chainTitleCh) , nHHsr  , 0.5, nHHsr+0.5);
+  p_result.h_fakeapp_HL        = new TH1F(Form("fakeapp_HL_%s"      , chainTitleCh) , Form("fakeapp_HL_%s"      , chainTitleCh) , nHLsr  , 0.5, nHLsr+0.5);
+  p_result.h_fakeapp_LL        = new TH1F(Form("fakeapp_LL_%s"      , chainTitleCh) , Form("fakeapp_LL_%s"      , chainTitleCh) , nLLsr   , 0.5, nLLsr+0.5 );
 
   //For FR variations
   plots_t p_fake_alt_up;
   if (doFakes == 1) {
-    p_fake_alt_up.SRHH.TOTAL        = new TH1F(Form("SRHH_FR_TOTAL_%s"      , chainTitleCh) , Form("SRHH_FR_TOTAL_%s"      , chainTitleCh) , 33  , 0.5, 33.5);
-    p_fake_alt_up.SRHL.TOTAL        = new TH1F(Form("SRHL_FR_TOTAL_%s"      , chainTitleCh) , Form("SRHL_FR_TOTAL_%s"      , chainTitleCh) , 27  , 0.5, 27.5);
-    p_fake_alt_up.SRLL.TOTAL        = new TH1F(Form("SRLL_FR_TOTAL_%s"      , chainTitleCh) , Form("SRLL_FR_TOTAL_%s"      , chainTitleCh) , 8   , 0.5, 8.5 );
+    p_fake_alt_up.SRHH.TOTAL        = new TH1F(Form("SRHH_FR_TOTAL_%s"      , chainTitleCh) , Form("SRHH_FR_TOTAL_%s"      , chainTitleCh) , nHHsr  , 0.5, nHHsr+0.5);
+    p_fake_alt_up.SRHL.TOTAL        = new TH1F(Form("SRHL_FR_TOTAL_%s"      , chainTitleCh) , Form("SRHL_FR_TOTAL_%s"      , chainTitleCh) , nHLsr  , 0.5, nHLsr+0.5);
+    p_fake_alt_up.SRLL.TOTAL        = new TH1F(Form("SRLL_FR_TOTAL_%s"      , chainTitleCh) , Form("SRLL_FR_TOTAL_%s"      , chainTitleCh) , nLLsr   , 0.5, nLLsr+0.5 );
     p_fake_alt_up.BR                = new TH1F(Form("BR_FR_%s"              , chainTitleCh) , Form("BR_FR_%s"              , chainTitleCh) , 4   , 0 , 4);  
   } else {
     p_fake_alt_up.SRHH.TOTAL    = 0;
@@ -1638,12 +1687,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   plots_t p_jes_alt_up;
   plots_t p_jes_alt_dn;
   if (doFakes == 1 || isData==0) {
-    p_jes_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_JES_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHH_JES_UP_TOTAL_%s"   , chainTitleCh) , 33, 0.5, 33.5);
-    p_jes_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_JES_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHL_JES_UP_TOTAL_%s"   , chainTitleCh) , 27, 0.5, 27.5);
-    p_jes_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_JES_UP_TOTAL_%s"   , chainTitleCh) , Form("SRLL_JES_UP_TOTAL_%s"   , chainTitleCh) , 8 , 0.5, 8.5 );
-    p_jes_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_JES_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHH_JES_DN_TOTAL_%s"   , chainTitleCh) , 33, 0.5, 33.5);
-    p_jes_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_JES_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHL_JES_DN_TOTAL_%s"   , chainTitleCh) , 27, 0.5, 27.5);
-    p_jes_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_JES_DN_TOTAL_%s"   , chainTitleCh) , Form("SRLL_JES_DN_TOTAL_%s"   , chainTitleCh) , 8 , 0.5, 8.5 );
+    p_jes_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_JES_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHH_JES_UP_TOTAL_%s"   , chainTitleCh) , nHHsr, 0.5, nHHsr+0.5);
+    p_jes_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_JES_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHL_JES_UP_TOTAL_%s"   , chainTitleCh) , nHLsr, 0.5, nHLsr+0.5);
+    p_jes_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_JES_UP_TOTAL_%s"   , chainTitleCh) , Form("SRLL_JES_UP_TOTAL_%s"   , chainTitleCh) , nLLsr , 0.5, nLLsr+0.5 );
+    p_jes_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_JES_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHH_JES_DN_TOTAL_%s"   , chainTitleCh) , nHHsr, 0.5, nHHsr+0.5);
+    p_jes_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_JES_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHL_JES_DN_TOTAL_%s"   , chainTitleCh) , nHLsr, 0.5, nHLsr+0.5);
+    p_jes_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_JES_DN_TOTAL_%s"   , chainTitleCh) , Form("SRLL_JES_DN_TOTAL_%s"   , chainTitleCh) , nLLsr , 0.5, nLLsr+0.5 );
     p_jes_alt_up.BR             = new TH1F(Form("BR_JES_UP_%s"           , chainTitleCh) , Form("BR_JES_UP_%s"           , chainTitleCh) , 4 , 0 , 4);
     p_jes_alt_dn.BR             = new TH1F(Form("BR_JES_DN_%s"           , chainTitleCh) , Form("BR_JES_DN_%s"           , chainTitleCh) , 4 , 0 , 4);
   } else {
@@ -1661,12 +1710,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   plots_t p_btagSF_alt_up;
   plots_t p_btagSF_alt_dn;
   if (isData==0){
-    p_btagSF_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_UP_TOTAL_%s", chainTitleCh), Form("SRHH_BTAGSF_UP_TOTAL_%s", chainTitleCh),  33, 0.5, 33.5);
-    p_btagSF_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_UP_TOTAL_%s", chainTitleCh), Form("SRHL_BTAGSF_UP_TOTAL_%s", chainTitleCh),  27, 0.5, 27.5);
-    p_btagSF_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_UP_TOTAL_%s", chainTitleCh), Form("SRLL_BTAGSF_UP_TOTAL_%s", chainTitleCh),  8,  0.5, 8.5 );
-    p_btagSF_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_DN_TOTAL_%s", chainTitleCh), Form("SRHH_BTAGSF_DN_TOTAL_%s", chainTitleCh),  33, 0.5, 33.5);
-    p_btagSF_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_DN_TOTAL_%s", chainTitleCh), Form("SRHL_BTAGSF_DN_TOTAL_%s", chainTitleCh),  27, 0.5, 27.5);
-    p_btagSF_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_DN_TOTAL_%s", chainTitleCh), Form("SRLL_BTAGSF_DN_TOTAL_%s", chainTitleCh),  8,  0.5, 8.5 );
+    p_btagSF_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_UP_TOTAL_%s", chainTitleCh), Form("SRHH_BTAGSF_UP_TOTAL_%s", chainTitleCh),  nHHsr, 0.5, nHHsr+0.5);
+    p_btagSF_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_UP_TOTAL_%s", chainTitleCh), Form("SRHL_BTAGSF_UP_TOTAL_%s", chainTitleCh),  nHLsr, 0.5, nHLsr+0.5);
+    p_btagSF_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_UP_TOTAL_%s", chainTitleCh), Form("SRLL_BTAGSF_UP_TOTAL_%s", chainTitleCh),  nLLsr,  0.5, nLLsr+0.5 );
+    p_btagSF_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_BTAGSF_DN_TOTAL_%s", chainTitleCh), Form("SRHH_BTAGSF_DN_TOTAL_%s", chainTitleCh),  nHHsr, 0.5, nHHsr+0.5);
+    p_btagSF_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_BTAGSF_DN_TOTAL_%s", chainTitleCh), Form("SRHL_BTAGSF_DN_TOTAL_%s", chainTitleCh),  nHLsr, 0.5, nHLsr+0.5);
+    p_btagSF_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_BTAGSF_DN_TOTAL_%s", chainTitleCh), Form("SRLL_BTAGSF_DN_TOTAL_%s", chainTitleCh),  nLLsr,  0.5, nLLsr+0.5 );
     p_btagSF_alt_up.BR         = new TH1F(Form("BR_BTAGSF_UP_%s"        , chainTitleCh), Form("BR_BTAGSF_UP_%s"        , chainTitleCh),  4,  0 , 4);
     p_btagSF_alt_dn.BR         = new TH1F(Form("BR_BTAGSF_DN_%s"        , chainTitleCh), Form("BR_BTAGSF_DN_%s"        , chainTitleCh),  4,  0 , 4);
   } 
@@ -1685,12 +1734,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   plots_t p_pu_alt_up;
   plots_t p_pu_alt_dn;
   if (doFakes == 1 || isData==0) {
-    p_pu_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_PU_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHH_PU_UP_TOTAL_%s"   , chainTitleCh) , 33, 0.5, 33.5);
-    p_pu_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_PU_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHL_PU_UP_TOTAL_%s"   , chainTitleCh) , 27, 0.5, 27.5);
-    p_pu_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_PU_UP_TOTAL_%s"   , chainTitleCh) , Form("SRLL_PU_UP_TOTAL_%s"   , chainTitleCh) , 8,  0.5, 8.5 );
-    p_pu_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_PU_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHH_PU_DN_TOTAL_%s"   , chainTitleCh) , 33, 0.5, 33.5);
-    p_pu_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_PU_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHL_PU_DN_TOTAL_%s"   , chainTitleCh) , 27, 0.5, 27.5);
-    p_pu_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_PU_DN_TOTAL_%s"   , chainTitleCh) , Form("SRLL_PU_DN_TOTAL_%s"   , chainTitleCh) , 8,  0.5, 8.5 );
+    p_pu_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_PU_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHH_PU_UP_TOTAL_%s"   , chainTitleCh) , nHHsr, 0.5, nHHsr+0.5);
+    p_pu_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_PU_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHL_PU_UP_TOTAL_%s"   , chainTitleCh) , nHLsr, 0.5, nHLsr+0.5);
+    p_pu_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_PU_UP_TOTAL_%s"   , chainTitleCh) , Form("SRLL_PU_UP_TOTAL_%s"   , chainTitleCh) , nLLsr,  0.5, nLLsr+0.5 );
+    p_pu_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_PU_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHH_PU_DN_TOTAL_%s"   , chainTitleCh) , nHHsr, 0.5, nHHsr+0.5);
+    p_pu_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_PU_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHL_PU_DN_TOTAL_%s"   , chainTitleCh) , nHLsr, 0.5, nHLsr+0.5);
+    p_pu_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_PU_DN_TOTAL_%s"   , chainTitleCh) , Form("SRLL_PU_DN_TOTAL_%s"   , chainTitleCh) , nLLsr,  0.5, nLLsr+0.5 );
     p_pu_alt_up.BR             = new TH1F(Form("BR_PU_UP_%s"           , chainTitleCh) , Form("BR_PU_UP_%s"           , chainTitleCh) , 4   , 0 , 4);
     p_pu_alt_dn.BR             = new TH1F(Form("BR_PU_DN_%s"           , chainTitleCh) , Form("BR_PU_DN_%s"           , chainTitleCh) , 4   , 0 , 4);
   } else {
@@ -1708,12 +1757,12 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   plots_t p_isr_alt_up;
   plots_t p_isr_alt_dn;
   if (isFastSimSignal) {
-    p_isr_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_ISR_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHH_ISR_UP_TOTAL_%s"   , chainTitleCh) , 33  , 0.5, 33.5);
-    p_isr_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_ISR_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHL_ISR_UP_TOTAL_%s"   , chainTitleCh) , 27  , 0.5, 27.5);
-    p_isr_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_ISR_UP_TOTAL_%s"   , chainTitleCh) , Form("SRLL_ISR_UP_TOTAL_%s"   , chainTitleCh) , 8   , 0.5, 8.5 );
-    p_isr_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_ISR_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHH_ISR_DN_TOTAL_%s"   , chainTitleCh) , 33  , 0.5, 33.5);
-    p_isr_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_ISR_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHL_ISR_DN_TOTAL_%s"   , chainTitleCh) , 27  , 0.5, 27.5);
-    p_isr_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_ISR_DN_TOTAL_%s"   , chainTitleCh) , Form("SRLL_ISR_DN_TOTAL_%s"   , chainTitleCh) , 8   , 0.5, 8.5 );
+    p_isr_alt_up.SRHH.TOTAL     = new TH1F(Form("SRHH_ISR_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHH_ISR_UP_TOTAL_%s"   , chainTitleCh) , nHHsr  , 0.5, nHHsr+0.5);
+    p_isr_alt_up.SRHL.TOTAL     = new TH1F(Form("SRHL_ISR_UP_TOTAL_%s"   , chainTitleCh) , Form("SRHL_ISR_UP_TOTAL_%s"   , chainTitleCh) , nHLsr  , 0.5, nHLsr+0.5);
+    p_isr_alt_up.SRLL.TOTAL     = new TH1F(Form("SRLL_ISR_UP_TOTAL_%s"   , chainTitleCh) , Form("SRLL_ISR_UP_TOTAL_%s"   , chainTitleCh) , nLLsr   , 0.5, nLLsr+0.5 );
+    p_isr_alt_dn.SRHH.TOTAL     = new TH1F(Form("SRHH_ISR_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHH_ISR_DN_TOTAL_%s"   , chainTitleCh) , nHHsr  , 0.5, nHHsr+0.5);
+    p_isr_alt_dn.SRHL.TOTAL     = new TH1F(Form("SRHL_ISR_DN_TOTAL_%s"   , chainTitleCh) , Form("SRHL_ISR_DN_TOTAL_%s"   , chainTitleCh) , nHLsr  , 0.5, nHLsr+0.5);
+    p_isr_alt_dn.SRLL.TOTAL     = new TH1F(Form("SRLL_ISR_DN_TOTAL_%s"   , chainTitleCh) , Form("SRLL_ISR_DN_TOTAL_%s"   , chainTitleCh) , nLLsr   , 0.5, nLLsr+0.5 );
   } else {
     p_isr_alt_up.SRHH.TOTAL     = 0;
     p_isr_alt_up.SRHL.TOTAL     = 0;
@@ -1726,9 +1775,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   //For PFMET, GENMET variations -- actual variation will be calculated in a script outside here
   plots_t p_genmet_alt;
   if (isFastSimSignal) {
-    p_genmet_alt.SRHH.TOTAL     = new TH1F(Form("SRHH_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , Form("SRHH_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , 33  , 0.5, 33.5);
-    p_genmet_alt.SRHL.TOTAL     = new TH1F(Form("SRHL_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , Form("SRHL_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , 33  , 0.5, 33.5);
-    p_genmet_alt.SRLL.TOTAL     = new TH1F(Form("SRLL_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , Form("SRLL_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , 33  , 0.5, 33.5);
+    p_genmet_alt.SRHH.TOTAL     = new TH1F(Form("SRHH_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , Form("SRHH_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , nHHsr  , 0.5, nHHsr+0.5);
+    p_genmet_alt.SRHL.TOTAL     = new TH1F(Form("SRHL_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , Form("SRHL_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , nHHsr  , 0.5, nHHsr+0.5);
+    p_genmet_alt.SRLL.TOTAL     = new TH1F(Form("SRLL_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , Form("SRLL_GENMET_ALT_TOTAL_%s"   , chainTitleCh) , nHHsr  , 0.5, nHHsr+0.5);
   } else {
     p_genmet_alt.SRHH.TOTAL     = 0;
     p_genmet_alt.SRHL.TOTAL     = 0;
@@ -1743,18 +1792,18 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   //plots_t p_alpha_alt_up;
   //plots_t p_alpha_alt_dn;
   if (isFastSimSignal) {
-    p_scale_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRHH_SCALE_UP_TOTAL_%s", chainTitleCh), 33, 0.5, 33.5);
-    p_scale_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRHL_SCALE_UP_TOTAL_%s", chainTitleCh), 27, 0.5, 27.5);
-    p_scale_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRLL_SCALE_UP_TOTAL_%s", chainTitleCh), 8 , 0.5, 8.5 );
-    p_scale_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_SCALE_DN_TOTAL_%s", chainTitleCh), Form("SRHH_SCALE_DN_TOTAL_%s", chainTitleCh), 33, 0.5, 33.5);
-    p_scale_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_SCALE_DN_TOTAL_%s", chainTitleCh), Form("SRHL_SCALE_DN_TOTAL_%s", chainTitleCh), 27, 0.5, 27.5);
-    p_scale_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_SCALE_DN_TOTAL_%s", chainTitleCh), Form("SRLL_SCALE_DN_TOTAL_%s", chainTitleCh), 8 , 0.5, 8.5 );
-    p_pdf_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_PDF_UP_TOTAL_%s", chainTitleCh), Form("SRHH_PDF_UP_TOTAL_%s", chainTitleCh), 33, 0.5, 33.5);
-    p_pdf_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_PDF_UP_TOTAL_%s", chainTitleCh), Form("SRHL_PDF_UP_TOTAL_%s", chainTitleCh), 27, 0.5, 27.5);
-    p_pdf_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_PDF_UP_TOTAL_%s", chainTitleCh), Form("SRLL_PDF_UP_TOTAL_%s", chainTitleCh), 8 , 0.5, 8.5 );
-    p_pdf_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRHH_PDF_DN_TOTAL_%s", chainTitleCh), 33, 0.5, 33.5);
-    p_pdf_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRHL_PDF_DN_TOTAL_%s", chainTitleCh), 27, 0.5, 27.5);
-    p_pdf_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRLL_PDF_DN_TOTAL_%s", chainTitleCh), 8 , 0.5, 8.5 );
+    p_scale_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRHH_SCALE_UP_TOTAL_%s", chainTitleCh), nHHsr, 0.5, nHHsr+0.5);
+    p_scale_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRHL_SCALE_UP_TOTAL_%s", chainTitleCh), nHLsr, 0.5, nHLsr+0.5);
+    p_scale_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_SCALE_UP_TOTAL_%s", chainTitleCh), Form("SRLL_SCALE_UP_TOTAL_%s", chainTitleCh), nLLsr , 0.5, nLLsr+0.5 );
+    p_scale_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_SCALE_DN_TOTAL_%s", chainTitleCh), Form("SRHH_SCALE_DN_TOTAL_%s", chainTitleCh), nHHsr, 0.5, nHHsr+0.5);
+    p_scale_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_SCALE_DN_TOTAL_%s", chainTitleCh), Form("SRHL_SCALE_DN_TOTAL_%s", chainTitleCh), nHLsr, 0.5, nHLsr+0.5);
+    p_scale_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_SCALE_DN_TOTAL_%s", chainTitleCh), Form("SRLL_SCALE_DN_TOTAL_%s", chainTitleCh), nLLsr , 0.5, nLLsr+0.5 );
+    p_pdf_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_PDF_UP_TOTAL_%s", chainTitleCh), Form("SRHH_PDF_UP_TOTAL_%s", chainTitleCh), nHHsr, 0.5, nHHsr+0.5);
+    p_pdf_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_PDF_UP_TOTAL_%s", chainTitleCh), Form("SRHL_PDF_UP_TOTAL_%s", chainTitleCh), nHLsr, 0.5, nHLsr+0.5);
+    p_pdf_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_PDF_UP_TOTAL_%s", chainTitleCh), Form("SRLL_PDF_UP_TOTAL_%s", chainTitleCh), nLLsr , 0.5, nLLsr+0.5 );
+    p_pdf_alt_dn.SRHH.TOTAL = new TH1F(Form("SRHH_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRHH_PDF_DN_TOTAL_%s", chainTitleCh), nHHsr, 0.5, nHHsr+0.5);
+    p_pdf_alt_dn.SRHL.TOTAL = new TH1F(Form("SRHL_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRHL_PDF_DN_TOTAL_%s", chainTitleCh), nHLsr, 0.5, nHLsr+0.5);
+    p_pdf_alt_dn.SRLL.TOTAL = new TH1F(Form("SRLL_PDF_DN_TOTAL_%s", chainTitleCh), Form("SRLL_PDF_DN_TOTAL_%s", chainTitleCh), nLLsr , 0.5, nLLsr+0.5 );
     //p_alpha_alt_up.SRHH.TOTAL = new TH1F(Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHH_ALPHA_UP_TOTAL_%s", chainTitleCh), 32, 0.5, 32.5);
     //p_alpha_alt_up.SRHL.TOTAL = new TH1F(Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRHL_ALPHA_UP_TOTAL_%s", chainTitleCh), 27, 0.5, 27.5);
     //p_alpha_alt_up.SRLL.TOTAL = new TH1F(Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), Form("SRLL_ALPHA_UP_TOTAL_%s", chainTitleCh), 8 , 0.5, 8.5 );
@@ -1897,7 +1946,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       }
 
       //Next figure out scale, PDF, and alpha_s variations and fill the histograms
-      for (int i = 1; i < 67; i++){
+      for (int i = 1; i < nHHsr+nHLsr+nLLsr+1; i++){
         float nominal  = cs_hist->GetBinContent(200+i); 
         float scale_up = nominal > 0 ? fabs(1-cs_hist->GetBinContent(300+i)/nominal)  : 0; 
         float scale_dn = nominal > 0 ? fabs(1-cs_hist->GetBinContent(400+i)/nominal)  : 0; 
@@ -1909,29 +1958,39 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         }
         float pdf = h_pdf->GetMean() > 0 ? h_pdf->GetRMS()/nominal : 0; 
         delete h_pdf; 
-        if      (i <= 33) p_scale_alt_up.SRHH.TOTAL->Fill(i,    scale_up); 
-        else if (i <= 59) p_scale_alt_up.SRHL.TOTAL->Fill(i-33, scale_up); 
-        else              p_scale_alt_up.SRLL.TOTAL->Fill(i-59, scale_up); 
-        if      (i <= 33) p_scale_alt_dn.SRHH.TOTAL->Fill(i,    scale_dn); 
-        else if (i <= 59) p_scale_alt_dn.SRHL.TOTAL->Fill(i-33, scale_dn); 
-        else              p_scale_alt_dn.SRLL.TOTAL->Fill(i-59, scale_dn); 
-        if      (i <= 33) p_pdf_alt_up.SRHH.TOTAL->Fill(i,    pdf); 
-        else if (i <= 59) p_pdf_alt_up.SRHL.TOTAL->Fill(i-33, pdf); 
-        else              p_pdf_alt_up.SRLL.TOTAL->Fill(i-59, pdf); 
-        if      (i <= 33) p_pdf_alt_dn.SRHH.TOTAL->Fill(i,    pdf); 
-        else if (i <= 59) p_pdf_alt_dn.SRHL.TOTAL->Fill(i-33, pdf); 
-        else              p_pdf_alt_dn.SRLL.TOTAL->Fill(i-59, pdf); 
-        //if      (i <= 33) p_alpha_alt_up.SRHH.TOTAL->Fill(i,    alpha_up); 
-        //else if (i <= 59) p_alpha_alt_up.SRHL.TOTAL->Fill(i-33, alpha_up); 
-        //else              p_alpha_alt_up.SRLL.TOTAL->Fill(i-59, alpha_up); 
-        //if      (i <= 33) p_alpha_alt_dn.SRHH.TOTAL->Fill(i,    alpha_dn); 
-        //else if (i <= 59) p_alpha_alt_dn.SRHL.TOTAL->Fill(i-33, alpha_dn); 
-        //else              p_alpha_alt_dn.SRLL.TOTAL->Fill(i-59, alpha_dn); 
+        if      (i <= nHHsr) p_scale_alt_up.SRHH.TOTAL->Fill(i,    scale_up); 
+        else if (i <= (nHHsr+nHLsr)) p_scale_alt_up.SRHL.TOTAL->Fill(i-nHHsr, scale_up); 
+        else              p_scale_alt_up.SRLL.TOTAL->Fill(i-(nHHsr+nHLsr), scale_up); 
+        if      (i <= nHHsr) p_scale_alt_dn.SRHH.TOTAL->Fill(i,    scale_dn); 
+        else if (i <= (nHHsr+nHLsr)) p_scale_alt_dn.SRHL.TOTAL->Fill(i-nHHsr, scale_dn); 
+        else              p_scale_alt_dn.SRLL.TOTAL->Fill(i-(nHHsr+nHLsr), scale_dn); 
+        if      (i <= nHHsr) p_pdf_alt_up.SRHH.TOTAL->Fill(i,    pdf); 
+        else if (i <= (nHHsr+nHLsr)) p_pdf_alt_up.SRHL.TOTAL->Fill(i-nHHsr, pdf); 
+        else              p_pdf_alt_up.SRLL.TOTAL->Fill(i-(nHHsr+nHLsr), pdf); 
+        if      (i <= nHHsr) p_pdf_alt_dn.SRHH.TOTAL->Fill(i,    pdf); 
+        else if (i <= (nHHsr+nHLsr)) p_pdf_alt_dn.SRHL.TOTAL->Fill(i-nHHsr, pdf); 
+        else              p_pdf_alt_dn.SRLL.TOTAL->Fill(i-(nHHsr+nHLsr), pdf); 
+        //if      (i <= nHHsr) p_alpha_alt_up.SRHH.TOTAL->Fill(i,    alpha_up); 
+        //else if (i <= (nHHsr+nHLsr)) p_alpha_alt_up.SRHL.TOTAL->Fill(i-nHHsr, alpha_up); 
+        //else              p_alpha_alt_up.SRLL.TOTAL->Fill(i-(nHHsr+nHLsr), alpha_up); 
+        //if      (i <= nHHsr) p_alpha_alt_dn.SRHH.TOTAL->Fill(i,    alpha_dn); 
+        //else if (i <= (nHHsr+nHLsr)) p_alpha_alt_dn.SRHL.TOTAL->Fill(i-nHHsr, alpha_dn); 
+        //else              p_alpha_alt_dn.SRLL.TOTAL->Fill(i-(nHHsr+nHLsr), alpha_dn); 
       }
       //all
       cut_flow[0] += xsec*lumiAG*1000.;//cs_hist->GetBinContent(1)/(
       cut_flow_name[0] = "No selection";
     }
+
+    if (isHiggsScan) { // NJA
+      int sample = 0;
+      if (chainTitle.Contains("tth_scan")) sample = 1;
+      else if (chainTitle.Contains("thw_scan")) sample = 2;
+      else if (chainTitle.Contains("thq_scan")) sample = 3;
+      cut_flow[0] += xsec_higgs(sample,mysparms[0])*lumiAG*1000.;
+      cut_flow_name[0] = "No selection";
+    }
+
 
     // Loop over Events in current file
     for(unsigned int event = 0; event < tree->GetEntriesFast(); event++){
@@ -1964,6 +2023,11 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     }
       }
 
+      if (isHiggsScan) {
+          // make sure the higgs mass point we are considering is the same as chain title
+          if (fabs(mysparms[0]-ss::higgs_mass()) > 0.1) continue;
+      }
+
       //Reject not triggered
       if (!ss::fired_trigger() && ss::is_real_data()) continue;
       if (!ss::passedFilterList()) continue;
@@ -1988,7 +2052,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
           }
       }
 
-      if (isFastSimSignal && doCutFlowTable) {
+      if ((isFastSimSignal || isHiggsScan) && doCutFlowTable) {
 	cut_flow_count = 1;//reinitialize per event
       }
 
@@ -2117,7 +2181,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       if (isFastSimSignal) {
 	if (!(ss::lep1_motherID()==1 && ss::lep2_motherID()==1)) continue;
-	if (doCutFlowTable && (ss::hyp_class()==3 || ss::hyp_class()==4 || ss::hyp_class()==6)) {
+	if ((isFastSimSignal || isHiggsScan) && (ss::hyp_class()==3 || ss::hyp_class()==4 || ss::hyp_class()==6)) {
 	  //trigger and two tight leptons
 	  cut_flow[cut_flow_count] += weight;
 	  cut_flow_name[cut_flow_count] = "Trigger and $\\geq$2 leptons";
@@ -2128,7 +2192,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       anal_type_t temp_categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
       int temp_sr = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
       // if (doRestrictSR && (temp_sr < 30)) continue;
-      if (doRestrictSR && (temp_categ != HighHigh || temp_sr != 17)) continue; // FIXME NJA
+      if (doRestrictSR && (temp_categ != HighHigh || temp_sr != 17)) continue; // FIXME
+      // if (doRestrictSR && (temp_categ != HighHigh || temp_sr != 26)) continue; // FIXME
+      // if (doRestrictSR && (temp_categ != HighLow || temp_sr != 20)) continue; // FIXME
 
       //Only keep good events
       int ssclass = 3;
@@ -2244,7 +2310,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
         if (duplicate_removal::is_duplicate(id)){ continue; }
       }
 
-      if (isFastSimSignal && doCutFlowTable) {
+      if ((isFastSimSignal || isHiggsScan) && doCutFlowTable) {
 	//two tight SS leptons passing 3rd lepton veto
 	cut_flow[cut_flow_count] += weight;
 	cut_flow_name[cut_flow_count] = "At least one SS lepton pair";
@@ -2258,7 +2324,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       if (BR < 0) continue;
 
 
-      if (isFastSimSignal && doCutFlowTable) {
+      if ((isFastSimSignal || isHiggsScan) && doCutFlowTable) {
 	//baseline selection
 	cut_flow[cut_flow_count] += weight;
 	cut_flow_name[cut_flow_count] = "Baseline (two jets, and either \\ETmiss $>$ 30\\gev or \\HT $>$ 500\\gev)";
@@ -2297,18 +2363,19 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 	  if (categ==1) cat = "HL";
 	  if (categ==2) cat = "LL";
 
-      if (isFastSimSignal && doCutFlowTable && SR>0) {
+      if ((isFastSimSignal || isHiggsScan) && doCutFlowTable && SR>0) {
 	//signal region selection
 	cut_flow[cut_flow_count] += weight;
 	cut_flow_name[cut_flow_count] = "Any SR (\\ETmiss $>$ 50\\gev)";
 	cut_flow_count++;
 	//specific signal region selection
 	int offset = 0;
-	if (cat=="HL") offset = 33;
-	if (cat=="LL") offset = 59;
+	if (cat=="HL") offset = nHHsr;
+	if (cat=="LL") offset = nHHsr+nHLsr;
 	sr_flow_name[SR+offset] = Form("%s SR%i",cat.c_str(),SR);
 	sr_flow[SR+offset] += weight;
       }
+
 
      //bool avi = 0; 
       //if (categ == 0 && SR == 1)  avi = 1;
@@ -2622,7 +2689,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     printf("\\hline \n");
     int cut1 = -1, cut2 = -1;
     float max1 = -1., max2 = -1.;
-    for (int cut=0;cut<70;cut++) {
+    for (int cut=0;cut<nHHsr+nHLsr+nLLsr+1;cut++) {
         // std::cout << model << " " << extra << " "<< m1 << " " << m2 << " " << sr_flow_name[cut] << " " << sr_flow[cut] << " " << 100.*sr_flow[cut]/cut_flow[0] << std::endl; // FIXME
         // \TfqqqqWW  with \dmtwenty  1000 700HH SR16 0.0845688 0.00201474
       if (sr_flow[cut]>max1) {
@@ -2639,6 +2706,13 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     printf("\\end{tabular} \n");
     printf("\\end{center} \n");
     printf("\\end{table} \n");
+  }
+
+  if (isHiggsScan && doCutFlowTable) {
+    for (int cut=0;cut<nHHsr+nHLsr+nLLsr+1;cut++) {
+        std::cout << chain->GetTitle() << " " << mysparms[0] << " " << sr_flow_name[cut] << " " << sr_flow[cut] << " " << 100.*sr_flow[cut]/cut_flow[0] << std::endl; // FIXME
+    }
+        // \TfqqqqWW  with \dmtwenty  1000 700HH SR16 0.0845688 0.00201474
   }
 
   if (y_result.EE<0) y_result.EE=0.;
@@ -2996,6 +3070,17 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
   //Return yield
   return pair<yields_t, plots_t>(y_result,p_result); 
 
+}
+
+TH1F *getMCShape(TH1F* data, std::vector<TH1F*> vmc) {
+    // return a hist which has same shape as sum of MC inputs, but integral of input data hist
+    TH1F* new_data = (TH1F*)(data->Clone(Form("%s_mcshape",data->GetName())));
+    new_data->Reset();
+    for (unsigned int imc = 0; imc < vmc.size(); imc++) {
+        new_data->Add(vmc[imc]);
+    }
+    new_data->Scale(data->Integral(0,-1) / new_data->Integral(0,-1));
+    return new_data;
 }
 
 bool isSRHighHT(TString kine, int sr) {
