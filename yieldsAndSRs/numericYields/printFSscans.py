@@ -9,8 +9,12 @@ scans = [
     # "T6TTWW_main",
     # "T5TTCC_main",
     # "T5TTTT_dm175",
-    "T1TTBB_main",
+    # "T1TTBB_main",
 ]
+
+higgs_scans = [
+        "TTH_scan"
+        ]
 
 #scan = "T6TTWW_50"
 #scan = "T5QQQQVV"
@@ -19,6 +23,34 @@ scans = [
 #scan = "T5ttttDM175"
 #scan = "T5tttt_degen"
 #scan = "T5ttcc"
+
+for scan in higgs_scans:
+    files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/"+scan+"*.root")
+
+    outf = open("%s.h" % scan.lower(), 'w')
+
+    for fn in files:
+        #print fn
+        f = ROOT.TFile.Open(fn, "read")
+        t = f.Get("t")
+
+        masses = [350]
+        t.SetBranchStatus("*",0)
+        t.SetBranchStatus("higgs_mass",1)
+        t.SetEstimate(t.GetEntries());
+        t.Draw("higgs_mass","","goff")
+        v_masses = t.GetV1()
+        masses = set({})
+        for i in range(t.GetEntries()):
+            masses.add(int(v_masses[i]))
+
+        for mass in sorted(masses):
+            outf.write("TChain *%s_%i_chain = new TChain(\"t\",\"%s_m%i\" );\n" % (scan.lower(), mass, scan.lower(), mass))
+            outf.write("%s_%i_chain->Add(\"%s\");\n" % (scan.lower(), mass,  fn))
+            outf.write("pair<yields_t, plots_t> results_%s_%i = run(%s_%i_chain, 0, 0, 0, 0, 1);\n" % (scan.lower(), mass,  scan.lower(), mass))
+            outf.write("delete %s_%i_chain;\n\n" % (scan.lower(), mass))
+        f.Close()
+    outf.close()
 
 for scan in scans:
     files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/"+scan+"*.root")
