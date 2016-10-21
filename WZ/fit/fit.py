@@ -2,6 +2,12 @@ import ROOT as r
 import os
 import math
 import numpy as np
+import commands
+import ast
+import sys
+
+
+
 
 def get_weight_hist(h1, syst=0.0):
     """
@@ -20,7 +26,8 @@ def get_weight_hist(h1, syst=0.0):
     return h2
 
 # bypass TFractionFitter and use manual toys instead
-do_nick_fit = False
+do_nick_fit = True
+do_nick_combine = True
 
 f1 = r.TFile("h1D_nbtags.root")
 
@@ -99,30 +106,51 @@ for i in range(4):
 
 # do the fit and get the results
 if do_nick_fit:
-    import manual
-    nbins = 3
 
-    vals_data = np.array([h_data.GetBinContent(i) for i in range(1,nbins+1)])
-    errs_data = np.array([h_data.GetBinError(i) for i in range(1,nbins+1)])
-    vals_wz = np.array([h_wz.GetBinContent(i) for i in range(1,nbins+1)])
-    errs_wz = np.array([h_wz.GetBinError(i) for i in range(1,nbins+1)])
-    vals_ttz = np.array([h_ttz.GetBinContent(i) for i in range(1,nbins+1)])
-    errs_ttz = np.array([h_ttz.GetBinError(i) for i in range(1,nbins+1)])
-    vals_fakes = np.array([h_fakes.GetBinContent(i) for i in range(1,nbins+1)])
-    errs_fakes = np.array([h_fakes.GetBinError(i) for i in range(1,nbins+1)])
-    vals_rares = np.array([h_rares.GetBinContent(i) for i in range(1,nbins+1)])
-    errs_rares = np.array([h_rares.GetBinError(i) for i in range(1,nbins+1)])
+    if do_nick_combine:
 
-    # FIXME change the syst values on lines 45-48 of manual.py depending on the considered cases
-    sfs = manual.get_sfs(
-            vals_data, vals_wz, vals_ttz, vals_fakes, vals_rares,
-            errs_data, errs_wz, errs_ttz, errs_fakes, errs_rares,
-            ntrials=100,ntoys=1000
-            )
-    sf_wz    , sf_err_wz = sfs[0]
-    sf_ttz   , sf_err_ttz = sfs[1]
-    sf_fakes , sf_err_fakes = sfs[2]
-    sf_rares , sf_err_rares = sfs[3]
+        # sigh...interference between histogram names, so need to call this in a different process...can't just import it
+        lnNsig = 2.0
+        lnNbg = 1.25
+        shapeUnc = 0.05
+
+        if len(sys.argv) > 3:
+            lnNsig = float(sys.argv[1])
+            lnNbg = float(sys.argv[2])
+            shapeUnc = float(sys.argv[3])
+        output = commands.getoutput(""" python -c 'd_sfs = __import__("useCombine").get_sfs("h1D_nbtags.root", %.2f, %.2f, %.2f); print "GREP",d_sfs' | grep "GREP" """ % (lnNsig, lnNbg, shapeUnc))
+        d_sfs = ast.literal_eval(output.replace("GREP","").strip())
+
+        sf_wz    , sf_err_wz = d_sfs["totals"]["wz"]
+        sf_ttz   , sf_err_ttz = d_sfs["totals"]["ttz"]
+        sf_fakes , sf_err_fakes = d_sfs["totals"]["fakes"]
+        sf_rares , sf_err_rares = d_sfs["totals"]["rares"]
+
+    else:
+        import manual
+        nbins = 3
+
+        vals_data = np.array([h_data.GetBinContent(i) for i in range(1,nbins+1)])
+        errs_data = np.array([h_data.GetBinError(i) for i in range(1,nbins+1)])
+        vals_wz = np.array([h_wz.GetBinContent(i) for i in range(1,nbins+1)])
+        errs_wz = np.array([h_wz.GetBinError(i) for i in range(1,nbins+1)])
+        vals_ttz = np.array([h_ttz.GetBinContent(i) for i in range(1,nbins+1)])
+        errs_ttz = np.array([h_ttz.GetBinError(i) for i in range(1,nbins+1)])
+        vals_fakes = np.array([h_fakes.GetBinContent(i) for i in range(1,nbins+1)])
+        errs_fakes = np.array([h_fakes.GetBinError(i) for i in range(1,nbins+1)])
+        vals_rares = np.array([h_rares.GetBinContent(i) for i in range(1,nbins+1)])
+        errs_rares = np.array([h_rares.GetBinError(i) for i in range(1,nbins+1)])
+
+        # FIXME change the syst values on lines 45-48 of manual.py depending on the considered cases
+        sfs = manual.get_sfs(
+                vals_data, vals_wz, vals_ttz, vals_fakes, vals_rares,
+                errs_data, errs_wz, errs_ttz, errs_fakes, errs_rares,
+                ntrials=100,ntoys=1000
+                )
+        sf_wz    , sf_err_wz = sfs[0]
+        sf_ttz   , sf_err_ttz = sfs[1]
+        sf_fakes , sf_err_fakes = sfs[2]
+        sf_rares , sf_err_rares = sfs[3]
 else:
 
     # constrain hists with bin-by-bin weights
@@ -159,10 +187,12 @@ else:
 # h_rares = fit.GetMCPrediction(3)
 
 if do_nick_fit:
+
     h_wz.Scale(sf_wz)
     h_ttz.Scale(sf_ttz)
     h_fakes.Scale(sf_fakes)
     h_rares.Scale(sf_rares)
+
 else:
     h_wz.Scale(frac_new_wz/frac_wz)
     h_ttz.Scale(frac_new_ttz/frac_ttz)
@@ -213,6 +243,6 @@ sfs.DrawLatexNDC(0.55,0.55, "SF t#bar{t}Z = %.2f #pm %.2f" % (sf_ttz, sf_err_ttz
 sfs.DrawLatexNDC(0.55,0.50, "SF fakes = %.2f #pm %.2f" % (sf_fakes, sf_err_fakes))
 sfs.DrawLatexNDC(0.55,0.45, "SF rares = %.2f #pm %.2f" % (sf_rares, sf_err_rares))
 
-c1.SaveAs("plots/nbtags_postfit.pdf")
-
-os.system("niceplots plots plots_wzttzsf_Oct10")
+c1.SaveAs("plots/nbtags_postfit_%.2f_%.2f_%.2f.pdf" % (lnNsig,lnNbg,shapeUnc))
+print "lnNsig,lnNbg,shapeUnc,wz,ttz,fakes,rares", lnNsig,lnNbg,shapeUnc,sf_wz, sf_err_wz, sf_ttz, sf_err_ttz, sf_fakes, sf_err_fakes, sf_rares, sf_err_rares
+# os.system("niceplots plots plots_wzttzsf_Oct10")

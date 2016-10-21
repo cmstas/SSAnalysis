@@ -110,6 +110,7 @@ int scan(){
 
     vector<pair<TH1F*,float> > h1D_njets_vec;
     vector<pair<TH1F*,float> > h1D_ht_vec;
+    vector<pair<TH1F*,float> > h1D_mll_vec;
     vector<pair<TH1F*,float> > h1D_met_vec;
     vector<pair<TH1F*,float> > h1D_mt_vec;
     vector<pair<TH1F*,float> > h1D_nbtags_vec;
@@ -130,6 +131,7 @@ int scan(){
 
         TH1F* h1D_njets_file = new TH1F("njets"+files.at(i), "Njets;;Entries", 10, 0, 10);
         TH1F* h1D_ht_file = new TH1F("ht"+files.at(i), "H_{T};GeV;Entries", 20, 0, 1000); 
+        TH1F* h1D_mll_file = new TH1F("mll"+files.at(i), "m_{ll};GeV;Entries", 20, 70, 110); 
         TH1F* h1D_met_file = new TH1F("met"+files.at(i), "#slash{E}_{T};GeV;Entries", 8, 0, 200); 
         TH1F* h1D_mt_file = new TH1F("mt"+files.at(i), "M_{T};GeV;Entries", 20, 0, 450); 
         TH1F* h1D_nbtags_file = new TH1F("nbtags"+files.at(i), "Nbtags;nbtags;Entries", 4, 0, 4); 
@@ -141,6 +143,7 @@ int scan(){
 
         h1D_njets_vec.push_back(std::make_pair(h1D_njets_file,systs.at(i)));
         h1D_ht_vec.push_back(std::make_pair(h1D_ht_file,systs.at(i)));
+        h1D_mll_vec.push_back(std::make_pair(h1D_mll_file,systs.at(i)));
         h1D_met_vec.push_back(std::make_pair(h1D_met_file,systs.at(i)));
         h1D_mt_vec.push_back(std::make_pair(h1D_mt_file,systs.at(i)));
         h1D_mtmin_vec.push_back(std::make_pair(h1D_mtmin_file,systs.at(i)));
@@ -357,6 +360,7 @@ int scan(){
             if(ss::ht() >= 300) addToCounter("4:ht>=300_"+filename,scale);
 
             fill(h1D_ht_vec.at(iSample).first,ss::ht(), scale);
+            fill(h1D_mll_vec.at(iSample).first,zmass, scale);
 
             fill(h1D_met_vec.at(iSample).first,ss::met(), scale);
             fill(h1D_njets_vec.at(iSample).first,ss::njets(), scale);
@@ -411,6 +415,7 @@ int scan(){
 
     data = h1D_njets_vec.back().first; h1D_njets_vec.pop_back(); dataMCplotMaker(data,h1D_njets_vec ,titles,"","",com+"h1D_njets.pdf --isLinear --xAxisOverride N_{jets}", vector <TH1F*>(), vector<string>(), colors);
     data = h1D_ht_vec.back().first; h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec ,titles,"","",com+"h1D_ht.pdf --isLinear --xAxisOverride H_{T} (GeV)", vector <TH1F*>(), vector<string>(), colors);
+    data = h1D_mll_vec.back().first; h1D_mll_vec.pop_back(); dataMCplotMaker(data,h1D_mll_vec ,titles,"","",com+"h1D_mll.pdf --isLinear --xAxisOverride m_{ll} (GeV)", vector <TH1F*>(), vector<string>(), colors);
     data = h1D_mtmin_vec.back().first; h1D_mtmin_vec.pop_back(); dataMCplotMaker(data,h1D_mtmin_vec ,titles,"","",com+"h1D_mtmin.pdf --isLinear --xAxisOverride m_{T,min} (GeV)", vector <TH1F*>(), vector<string>(), colors);
     data = h1D_mtw_vec.back().first; h1D_mtw_vec.pop_back(); dataMCplotMaker(data,h1D_mtw_vec ,titles,"","",com+"h1D_mtw.pdf --isLinear --xAxisOverride m_{T}^{W} (GeV)", vector <TH1F*>(), vector<string>(), colors);
     data = h1D_nbtags_vec.back().first; h1D_nbtags_vec.pop_back(); dataMCplotMaker(data,h1D_nbtags_vec ,titles,"","",com+"h1D_nbtags.pdf --isLinear --xAxisOverride nbtags  --makeRootFile ", vector <TH1F*>(), vector<string>(), colors);
