@@ -6,7 +6,8 @@ nSubmitted=0
 
 # SPPATH="ss_babies_Aug25" # FIXME must match with DIRNAME in condorExecutable
 # SPPATH="ss_babies_Sept22" # FIXME must match with DIRNAME in condorExecutable
-SPPATH="ss_babies_Oct4" # FIXME must match with DIRNAME in condorExecutable
+# SPPATH="ss_babies_Oct4" # FIXME must match with DIRNAME in condorExecutable
+SPPATH="ss_babies_Oct22" # FIXME must match with DIRNAME in condorExecutable
 
 DOCOMPILE="1"
 NOSUBMIT="0"
@@ -97,7 +98,7 @@ ALL="$DATA $CENTRAL_NEW $SIG"
 NEWDATA="DataDoubleMuonG DataDoubleEGG DataMuonEGG"
 # ALL="$NEWDATA"
 # ALL="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ GGHtoZZto4L TTZlow THW_M350"
-ALL="TTH_SCAN"
+ALL="TTH_SCAN THW_SCAN THQ_SCAN"
 # ALL="TTZnlo TTWnlo"
 
 # ALL="TTBAR_PH WJets WJets100To200 WJets200To400 WJets400To600 WJets600To800 WJets800To1200"
@@ -138,10 +139,20 @@ do
     tag="V08-00-05";
     nameNu=150001
   elif   [ $sname == "TTH_SCAN" ] ; then 
-    name="TTH_ttH-scan-MINIAOD_Private80Xv2";
+    name="TTH_ttH-scan-MINIAOD_Private80Xv2_v2";
     path="/hadoop/cms/store/group/snt/run2_25ns_80Private/";
     tag="V08-00-05";
     nameNu=150002
+  elif   [ $sname == "THW_SCAN" ] ; then 
+    name="THW_tHW-scan-MINIAOD_Private80Xv2";
+    path="/hadoop/cms/store/group/snt/run2_25ns_80Private/";
+    tag="V08-00-05";
+    nameNu=150003
+  elif   [ $sname == "THQ_SCAN" ] ; then 
+    name="THQ_tHq-scan-MINIAOD_Private80Xv2";
+    path="/hadoop/cms/store/group/snt/run2_25ns_80Private/";
+    tag="V08-00-05";
+    nameNu=150004
   elif   [ $sname == "TTBAR" ] ; then 
     name="TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v2"
     path="/hadoop/cms/store/group/snt/run2_25ns_80MiniAODv1/";

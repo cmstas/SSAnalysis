@@ -109,6 +109,7 @@ int scan(){
     TIter fileIter(listOfFiles);
 
     vector<pair<TH1F*,float> > h1D_njets_vec;
+    vector<pair<TH1F*,float> > h1D_njetsnb2_vec;
     vector<pair<TH1F*,float> > h1D_ht_vec;
     vector<pair<TH1F*,float> > h1D_mll_vec;
     vector<pair<TH1F*,float> > h1D_met_vec;
@@ -130,6 +131,7 @@ int scan(){
     for(int i = 0; i < files.size(); i++) {
 
         TH1F* h1D_njets_file = new TH1F("njets"+files.at(i), "Njets;;Entries", 10, 0, 10);
+        TH1F* h1D_njetsnb2_file = new TH1F("njetsnb2"+files.at(i), "Njets;;Entries", 10, 0, 10);
         TH1F* h1D_ht_file = new TH1F("ht"+files.at(i), "H_{T};GeV;Entries", 20, 0, 1000); 
         TH1F* h1D_mll_file = new TH1F("mll"+files.at(i), "m_{ll};GeV;Entries", 20, 70, 110); 
         TH1F* h1D_met_file = new TH1F("met"+files.at(i), "#slash{E}_{T};GeV;Entries", 8, 0, 200); 
@@ -142,6 +144,7 @@ int scan(){
         TH1F* h1D_lep2pt_file = new TH1F("lep2pt"+files.at(i), "lep2pt;lep2pt;Entries", 40, 0, 400); 
 
         h1D_njets_vec.push_back(std::make_pair(h1D_njets_file,systs.at(i)));
+        h1D_njetsnb2_vec.push_back(std::make_pair(h1D_njetsnb2_file,systs.at(i)));
         h1D_ht_vec.push_back(std::make_pair(h1D_ht_file,systs.at(i)));
         h1D_mll_vec.push_back(std::make_pair(h1D_mll_file,systs.at(i)));
         h1D_met_vec.push_back(std::make_pair(h1D_met_file,systs.at(i)));
@@ -364,6 +367,7 @@ int scan(){
 
             fill(h1D_met_vec.at(iSample).first,ss::met(), scale);
             fill(h1D_njets_vec.at(iSample).first,ss::njets(), scale);
+            if(ss::nbtags() == 2) fill(h1D_njetsnb2_vec.at(iSample).first,ss::njets(), scale);
             fill(h1D_mtmin_vec.at(iSample).first,ss::mtmin(), scale);
             fill(h1D_mtw_vec.at(iSample).first,mtw, scale);
             fill(h1D_lep1pt_vec.at(iSample).first,ss::lep1_p4().pt(), scale);
@@ -413,6 +417,7 @@ int scan(){
     std::string HLbins = " --xAxisVerticalBinLabels --xAxisBinLabels 1B,2B,3B,4B,5B,6B,7B,8B,9B,10B,11B,12B,13B,14B,15B,16B,17B,18B,19B,20B,21B,22B,23B,24B,25B,26B";
     std::string LLbins = " --xAxisVerticalBinLabels --xAxisBinLabels 1C,2C,3C,4C,5C,6C,7C,8C";
 
+    data = h1D_njetsnb2_vec.back().first; h1D_njetsnb2_vec.pop_back(); dataMCplotMaker(data,h1D_njetsnb2_vec ,titles,"","",com+"h1D_njetsnb2.pdf --isLinear --xAxisOverride N_{jets}", vector <TH1F*>(), vector<string>(), colors);
     data = h1D_njets_vec.back().first; h1D_njets_vec.pop_back(); dataMCplotMaker(data,h1D_njets_vec ,titles,"","",com+"h1D_njets.pdf --isLinear --xAxisOverride N_{jets}", vector <TH1F*>(), vector<string>(), colors);
     data = h1D_ht_vec.back().first; h1D_ht_vec.pop_back(); dataMCplotMaker(data,h1D_ht_vec ,titles,"","",com+"h1D_ht.pdf --isLinear --xAxisOverride H_{T} (GeV)", vector <TH1F*>(), vector<string>(), colors);
     data = h1D_mll_vec.back().first; h1D_mll_vec.pop_back(); dataMCplotMaker(data,h1D_mll_vec ,titles,"","",com+"h1D_mll.pdf --isLinear --xAxisOverride m_{ll} (GeV)", vector <TH1F*>(), vector<string>(), colors);

@@ -29,7 +29,8 @@ def get_weight_hist(h1, syst=0.0):
 do_nick_fit = True
 do_nick_combine = True
 
-f1 = r.TFile("h1D_nbtags.root")
+infile = "h1D_nbtags.root"
+f1 = r.TFile(infile)
 
 keys = f1.GetListOfKeys()
 histnames = [key.GetName() for key in keys if key.ReadObj().InheritsFrom(r.TH1F.Class())]
@@ -111,14 +112,14 @@ if do_nick_fit:
 
         # sigh...interference between histogram names, so need to call this in a different process...can't just import it
         lnNsig = 2.0
-        lnNbg = 1.25
-        shapeUnc = 0.05
+        lnNbg = 1.50
+        shapeUnc = 0.1
 
         if len(sys.argv) > 3:
             lnNsig = float(sys.argv[1])
             lnNbg = float(sys.argv[2])
             shapeUnc = float(sys.argv[3])
-        output = commands.getoutput(""" python -c 'd_sfs = __import__("useCombine").get_sfs("h1D_nbtags.root", %.2f, %.2f, %.2f); print "GREP",d_sfs' | grep "GREP" """ % (lnNsig, lnNbg, shapeUnc))
+        output = commands.getoutput(""" python -c 'd_sfs = __import__("useCombine").get_sfs("%s", %.2f, %.2f, %.2f); print "GREP",d_sfs' | grep "GREP" """ % (infile, lnNsig, lnNbg, shapeUnc))
         d_sfs = ast.literal_eval(output.replace("GREP","").strip())
 
         sf_wz    , sf_err_wz = d_sfs["totals"]["wz"]
@@ -243,6 +244,6 @@ sfs.DrawLatexNDC(0.55,0.55, "SF t#bar{t}Z = %.2f #pm %.2f" % (sf_ttz, sf_err_ttz
 sfs.DrawLatexNDC(0.55,0.50, "SF fakes = %.2f #pm %.2f" % (sf_fakes, sf_err_fakes))
 sfs.DrawLatexNDC(0.55,0.45, "SF rares = %.2f #pm %.2f" % (sf_rares, sf_err_rares))
 
-c1.SaveAs("plots/nbtags_postfit_%.2f_%.2f_%.2f.pdf" % (lnNsig,lnNbg,shapeUnc))
+c1.SaveAs("plots_Oct25/nbtags_postfit_%.2f_%.2f_%.2f.pdf" % (lnNsig,lnNbg,shapeUnc))
 print "lnNsig,lnNbg,shapeUnc,wz,ttz,fakes,rares", lnNsig,lnNbg,shapeUnc,sf_wz, sf_err_wz, sf_ttz, sf_err_ttz, sf_fakes, sf_err_fakes, sf_rares, sf_err_rares
 # os.system("niceplots plots plots_wzttzsf_Oct10")

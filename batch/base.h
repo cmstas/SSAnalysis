@@ -237,7 +237,10 @@ enum sample_t {
 
   TTH_M350                           = 150000,
   THW_M350                           = 150001,
+
   TTH_SCAN                           = 150002,
+  THW_SCAN                           = 150003,
+  THQ_SCAN                           = 150004,
 
 };
 

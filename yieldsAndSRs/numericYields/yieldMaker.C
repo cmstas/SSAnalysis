@@ -33,6 +33,10 @@ int nHHsr = 33;
 int nHLsr = 27;
 int nLLsr = 8;
 
+// int nHHsr = 57;
+// int nHLsr = 46;
+// int nLLsr = 8;
+
 bool doNoData   = false; // don't plot data
 bool testFakeSR = false; // legacy
 bool doRestrictSR = false; // restrict SR to custom SR below
@@ -41,6 +45,7 @@ bool useNLOttWZ = true; // use new high stats NLO ttW ttZ samples
 bool plotPlusPlusPairs = false; // plot only the ++ SS pairs
 bool plotNegNegPairs = false; // plot only the -- SS pairs
 bool useMCShapes = true; // take fake shapes from MC, but normalize to data fake prediction in plots
+bool useChargeSplitSR = false; // use alternate SRs for charge splitting
 
 
 float scaleLumi = 1.;//3.0/1.264;//careful!!!
@@ -59,7 +64,8 @@ bool doMIcutHT = false;
 float MIcut = 0;
 // TString dir = tag;
 // TString dir = "v8.04_Sept21";
-TString dir = "v8.04_Oct20";
+// TString dir = "v8.04_Oct25_17p3noNLO";
+TString dir = "v8.04_Oct22";
 
 // // XXX MI limits
 // bool doMIcutMET = true;
@@ -74,6 +80,27 @@ TString dir = "v8.04_Oct20";
 // bool doMIcutHT = false;
 // float MIcut = 0;
 // TString dir = "v8.04_tttt_July26";
+
+// For output tree
+float tree_met = -1, tree_ht = -1, tree_mtmin = -1, tree_weight = -1;
+int tree_l1id = -1, tree_l2id = -1, tree_njets = -1, tree_nbtags = -1, tree_kine = -1, tree_SR = -1;
+TString tree_name = "";
+TFile *out_file;
+TTree *out_tree;
+// TFile * out_file = new TFile("output.root", "RECREATE");
+// out_file->cd();
+// TTree * out_tree = new TTree("t", "From yieldMaker");
+// out_tree->Branch("weight" , &tree_weight );
+// out_tree->Branch("met" , &tree_met );
+// out_tree->Branch("ht" , &tree_ht );
+// out_tree->Branch("mtmin" , &tree_mtmin );
+// out_tree->Branch("l1id" , &tree_l1id );
+// out_tree->Branch("l2id" , &tree_l2id );
+// out_tree->Branch("njets" , &tree_njets );
+// out_tree->Branch("nbtags" , &tree_nbtags );
+// out_tree->Branch("kine" , &tree_kine );
+// out_tree->Branch("SR" , &tree_SR );
+// out_tree->Branch("name" , &tree_name );
 
 
 // ofstream textfile_global;
@@ -123,6 +150,21 @@ HLTEfficiency HLTEff("../../hlt/HLT_Efficiencies_7p65fb_2016.root");
 
 void getyields(){
 
+    out_file = new TFile("output.root", "RECREATE");
+    out_file->cd();
+    out_tree = new TTree("t", "From yieldMaker");
+    out_tree->Branch("weight" , &tree_weight );
+    out_tree->Branch("met" , &tree_met );
+    out_tree->Branch("ht" , &tree_ht );
+    out_tree->Branch("mtmin" , &tree_mtmin );
+    out_tree->Branch("l1id" , &tree_l1id );
+    out_tree->Branch("l2id" , &tree_l2id );
+    out_tree->Branch("njets" , &tree_njets );
+    out_tree->Branch("nbtags" , &tree_nbtags );
+    out_tree->Branch("kine" , &tree_kine );
+    out_tree->Branch("SR" , &tree_SR );
+    out_tree->Branch("name" , &tree_name );
+
 
     // FIXME -- bug? we will end up multiplying by scaleLumi^2
   // if (doNoData) lumiAG = scaleLumi*getLumi();
@@ -163,52 +205,52 @@ void getyields(){
   TString pfxData  = Form("/nfs-7/userdata/ss2015/ssBabies/%s/", tagData.c_str());
   // TString pfx  = "./skim/";
 
-  // // //Fill chains
-  // ttbar_chain  ->Add(Form("%s/TTBAR_PH*.root"       , pfx.Data())); 
-  // wjets_chain  ->Add(Form("%s/WJets.root"       , pfx.Data()));
-  // dy_chain     ->Add(Form("%s/DY_high.root"        , pfx.Data()));
-  // dy_chain     ->Add(Form("%s/DY_low.root"         , pfx.Data()));
-  //   if (useNLOttWZ) {
-  // ttw_chain    ->Add(Form("%s/TTWnlo_new.root"            , pfx.Data())); 
-  // ttzh_chain   ->Add(Form("%s/TTZnlo_new.root"           , pfx.Data())); 
-  //   } else {
-  // ttw_chain    ->Add(Form("%s/TTW.root"            , pfx.Data())); 
-  // ttzh_chain   ->Add(Form("%s/TTZ.root"           , pfx.Data())); 
-  //   }
-  // ttzh_chain   ->Add(Form("%s/TTZLOW.root"         , pfx.Data())); 
-  // ttzh_chain   ->Add(Form("%s/TTHtoNonBB.root"     , pfx.Data()));
-  // wz_chain     ->Add(Form("%s/WZ.root"             , pfx.Data()));
-  // ww_chain     ->Add(Form("%s/QQWW.root"           , pfx.Data()));
-  // xg_chain     ->Add(Form("%s/TG.root"             , pfx.Data()));
-  // xg_chain     ->Add(Form("%s/TTG.root"            , pfx.Data()));
-  // xg_chain     ->Add(Form("%s/WGToLNuG.root"           , pfx.Data()));
-  // xg_chain     ->Add(Form("%s/ZG.root"             , pfx.Data()));
-  // rares_chain  ->Add(Form("%s/ZZ.root"             , pfx.Data()));
-  // rares_chain  ->Add(Form("%s/GGHtoZZto4L.root"    , pfx.Data()));
-  // rares_chain  ->Add(Form("%s/WWZ.root"            , pfx.Data()));
-  // rares_chain  ->Add(Form("%s/WZZ.root"            , pfx.Data()));
-  // rares_chain  ->Add(Form("%s/WWW.root"            , pfx.Data()));
-  // rares_chain  ->Add(Form("%s/VHtoNonBB.root"      , pfx.Data()));
-  // rares_chain  ->Add(Form("%s/TZQ.root"            , pfx.Data()));
-  // rares_chain  ->Add(Form("%s/TTTT.root"           , pfx.Data())); // FIXME-TTTT
-  // rares_chain  ->Add(Form("%s/WWDPS.root"          , pfx.Data()));
-  // tttt_chain   ->Add(Form("%s/TTTT.root"           , pfx.Data()));
-  // //data
-  // data_chain   ->Add(Form("%s/DataDoubleMuon*.root"    , pfxData.Data()));
-  // data_chain   ->Add(Form("%s/DataDoubleEG*.root"  , pfxData.Data()));
-  // data_chain   ->Add(Form("%s/DataMuonEG*.root"      , pfxData.Data()));
-  // //flips
-  // flips_chain  ->Add(Form("%s/DataMuonEG*.root"     , pfxData.Data()));
-  // flips_chain  ->Add(Form("%s/DataDoubleEG*.root"      , pfxData.Data()));
-  // //fakes
-  // fakes_chain  ->Add(Form("%s/DataDoubleMuon*.root"    , pfxData.Data()));
-  // fakes_chain  ->Add(Form("%s/DataDoubleEG*.root"  , pfxData.Data()));
-  // fakes_chain  ->Add(Form("%s/DataMuonEG*.root"      , pfxData.Data()));
-  // fakes_chain  ->Add(Form("%s/TTW.root"                   , pfx.Data()));
-  // fakes_chain  ->Add(Form("%s/TTZ.root"                  , pfx.Data()));
-  // fakes_chain  ->Add(Form("%s/WZ.root"                    , pfx.Data()));
-  // fakes_chain  ->Add(Form("%s/TTHtoNonBB.root"            , pfx.Data()));
-  // fakes_chain  ->Add(Form("%s/QQWW.root"                  , pfx.Data()));
+  // //Fill chains
+  ttbar_chain  ->Add(Form("%s/TTBAR_PH*.root"       , pfx.Data())); 
+  wjets_chain  ->Add(Form("%s/WJets.root"       , pfx.Data()));
+  dy_chain     ->Add(Form("%s/DY_high.root"        , pfx.Data()));
+  dy_chain     ->Add(Form("%s/DY_low.root"         , pfx.Data()));
+    if (useNLOttWZ) {
+  ttw_chain    ->Add(Form("%s/TTWnlo_new.root"            , pfx.Data())); 
+  ttzh_chain   ->Add(Form("%s/TTZnlo_new.root"           , pfx.Data())); 
+    } else {
+  ttw_chain    ->Add(Form("%s/TTW.root"            , pfx.Data())); 
+  ttzh_chain   ->Add(Form("%s/TTZ.root"           , pfx.Data())); 
+    }
+  ttzh_chain   ->Add(Form("%s/TTZLOW.root"         , pfx.Data())); 
+  ttzh_chain   ->Add(Form("%s/TTHtoNonBB.root"     , pfx.Data()));
+  wz_chain     ->Add(Form("%s/WZ.root"             , pfx.Data()));
+  ww_chain     ->Add(Form("%s/QQWW.root"           , pfx.Data()));
+  xg_chain     ->Add(Form("%s/TG.root"             , pfx.Data()));
+  xg_chain     ->Add(Form("%s/TTG.root"            , pfx.Data()));
+  xg_chain     ->Add(Form("%s/WGToLNuG.root"           , pfx.Data()));
+  xg_chain     ->Add(Form("%s/ZG.root"             , pfx.Data()));
+  rares_chain  ->Add(Form("%s/ZZ.root"             , pfx.Data()));
+  rares_chain  ->Add(Form("%s/GGHtoZZto4L.root"    , pfx.Data()));
+  rares_chain  ->Add(Form("%s/WWZ.root"            , pfx.Data()));
+  rares_chain  ->Add(Form("%s/WZZ.root"            , pfx.Data()));
+  rares_chain  ->Add(Form("%s/WWW.root"            , pfx.Data()));
+  rares_chain  ->Add(Form("%s/VHtoNonBB.root"      , pfx.Data()));
+  rares_chain  ->Add(Form("%s/TZQ.root"            , pfx.Data()));
+  rares_chain  ->Add(Form("%s/TTTT.root"           , pfx.Data())); // FIXME-TTTT
+  rares_chain  ->Add(Form("%s/WWDPS.root"          , pfx.Data()));
+  tttt_chain   ->Add(Form("%s/TTTT.root"           , pfx.Data()));
+  //data
+  data_chain   ->Add(Form("%s/DataDoubleMuon*.root"    , pfxData.Data()));
+  data_chain   ->Add(Form("%s/DataDoubleEG*.root"  , pfxData.Data()));
+  data_chain   ->Add(Form("%s/DataMuonEG*.root"      , pfxData.Data()));
+  //flips
+  flips_chain  ->Add(Form("%s/DataMuonEG*.root"     , pfxData.Data()));
+  flips_chain  ->Add(Form("%s/DataDoubleEG*.root"      , pfxData.Data()));
+  //fakes
+  fakes_chain  ->Add(Form("%s/DataDoubleMuon*.root"    , pfxData.Data()));
+  fakes_chain  ->Add(Form("%s/DataDoubleEG*.root"  , pfxData.Data()));
+  fakes_chain  ->Add(Form("%s/DataMuonEG*.root"      , pfxData.Data()));
+  fakes_chain  ->Add(Form("%s/TTW.root"                   , pfx.Data()));
+  fakes_chain  ->Add(Form("%s/TTZ.root"                  , pfx.Data()));
+  fakes_chain  ->Add(Form("%s/WZ.root"                    , pfx.Data()));
+  fakes_chain  ->Add(Form("%s/TTHtoNonBB.root"            , pfx.Data()));
+  fakes_chain  ->Add(Form("%s/QQWW.root"                  , pfx.Data()));
 
   // //signals fullsim
   // t1tttt_1200_chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/T1TTTT_1200.root"              , tag.c_str()));
@@ -232,8 +274,10 @@ void getyields(){
 // #include "fs_t5tttt_dm175.h"
 // #include "fs_t1ttbb.h"
 
-  // #include "fs_cutflow.h"
+  // // #include "fs_cutflow.h"
   // #include "tth_scan.h"
+  // #include "thw_scan.h"
+  // #include "thq_scan.h"
 
   pair<yields_t, plots_t> results_ttbar    = run(ttbar_chain);
   ttbar_chain->SetTitle("ttbar_fa");
@@ -272,13 +316,13 @@ void getyields(){
   pair<yields_t, plots_t> results_fakes_is = run(fakes_chain, 1, 0, 2);
 
   pair<yields_t, plots_t> results_t1tttt_1200 = run(t1tttt_1200_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t1tttt_1500 = run(t1tttt_1500_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t5tttt_deg  = run(t5tttt_deg_chain , 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t5qqqq_1200 = run(t5qqqq_1200_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t1tttt_1500 = run(t1tttt_1500_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t5tttt_deg  = run(t5tttt_deg_chain , 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t5qqqq_1200 = run(t5qqqq_1200_chain, 0, 0, 0, 0, 1);
   pair<yields_t, plots_t> results_t6ttww_650  = run(t6ttww_650_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t6ttww_600  = run(t6ttww_600_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t5qqqqww_1200 = run(t5qqqqww_1200_chain, 0, 0, 0, 0, 1);
-  pair<yields_t, plots_t> results_t5qqqqww_deg  = run(t5qqqqww_deg_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t6ttww_600  = run(t6ttww_600_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t5qqqqww_1200 = run(t5qqqqww_1200_chain, 0, 0, 0, 0, 1);
+  // pair<yields_t, plots_t> results_t5qqqqww_deg  = run(t5qqqqww_deg_chain, 0, 0, 0, 0, 1);
 
   // textfile_global.close();
   // system("sort -n -k1 -k2 -k3 unsorted_global.txt > ucsx_SR_dump_global.txt");
@@ -626,7 +670,7 @@ void getyields(){
   SRHH_plots.push_back(pair<TH1F*, float>(p_fakes.SRHH.TOTAL, roughSystFAKESHH ));
 
   TString extra = " --poissonErrorsNoZeros ";
-  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.1f --outputName plots/HHSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary --makeTable ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.1f --outputName plots/HHSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary --makeTable  ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   dataMCplotMaker(new TH1F("data","data",nHHsr,0.5,nHHsr+0.5), SRHH_plots, titles, "HH SRs ", "", Form("--lumi %.1f --outputName plots/HHSR_noData.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --type Preliminary %s ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   // dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.1f --outputName plots/HHSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   dataMCplotMaker(p_data.SRHH.TOTAL, SRHH_plots, titles, "HH SRs", "", Form("--lumi %.1f --outputName plots/HHSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --topYaxisTitle Data/Pred. --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
@@ -640,7 +684,7 @@ void getyields(){
   SRHL_plots.push_back(pair<TH1F*, float>(p_rares.SRHL.TOTAL, roughSystRARES   ));
   SRHL_plots.push_back(pair<TH1F*, float>(p_flips.SRHL.TOTAL, roughSystFLIPS   ));
   SRHL_plots.push_back(pair<TH1F*, float>(p_fakes.SRHL.TOTAL, roughSystFAKESXL ));
-  dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "HL SRs", "", Form("--lumi %.1f --outputName plots/HLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08  --makeTable --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "HL SRs", "", Form("--lumi %.1f --outputName plots/HLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08  --makeTable --noOverflow --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary  ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   // dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "HL SRs", "", Form("--lumi %.1f --outputName plots/HLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   dataMCplotMaker(p_data.SRHL.TOTAL, SRHL_plots, titles, "HL SRs", "", Form("--lumi %.1f --outputName plots/HLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --topYaxisTitle Data/Pred. --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
@@ -653,7 +697,7 @@ void getyields(){
   SRLL_plots.push_back(pair<TH1F*, float>(p_rares.SRLL.TOTAL, roughSystRARES   ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_flips.SRLL.TOTAL, roughSystFLIPS   ));
   SRLL_plots.push_back(pair<TH1F*, float>(p_fakes.SRLL.TOTAL, roughSystFAKESXL ));
-  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow  --makeTable --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
+  dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR.pdf --xAxisLabel SR --noXaxisUnit --isLinear --legendUp -.15 --legendRight -0.08 --noOverflow  --makeTable --systInclStat --noRatioPlot --outOfFrame --legendTaller 0.15 --yTitleOffset -0.5 --dataName Data %s --type Preliminary  ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   // dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --noRatioPlot --nDivisions 8 --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
   dataMCplotMaker(p_data.SRLL.TOTAL, SRLL_plots, titles, "LL SRs", "", Form("--lumi %.1f --outputName plots/LLSR_log.pdf --xAxisLabel SR --noXaxisUnit --legendUp -.01 --legendRight -0.05 --noOverflow --systInclStat --topYaxisTitle Data/Pred. --noRatioPlot --setMinimum 0.03 --outOfFrame --legendTaller 0.04 --yTitleOffset -0.1 --type Preliminary --dataName Data %s", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors);
 
@@ -1504,10 +1548,16 @@ void getyields(){
   dataMCplotMaker(p_data.h_nleps, nleps_plotsMC, titles2, "from MC", "SS Baseline", Form("--lumi %.1f --outputName plots/nleps_all_SSMC.pdf --xAxisLabel N_{leptons} --isLinear --legendUp -.05 --systInclStat --topYaxisTitle Data/Pred. --dataName Data --type Preliminary %s --outOfFrame ", lumiAG, extra.Data()), vector <TH1F*>(), vector <string>(), colors2);
 
 
+  // Write output tree
+  out_file->cd();
+  out_tree->Write();
+  out_file->Close();
 }
 
 //doFakes = 1 for QCD, 2 for inSitu
 pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFakes, int exclude, bool isSignal, bool isGamma){
+
+    out_file->cd();
 
 
   TString chainTitle = chain->GetTitle();
@@ -1565,7 +1615,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
     }
   }
 
-  if (isSignal && chainTitle.Contains("tth_scan")) {
+  if (isSignal && (chainTitle.Contains("tth_scan") || chainTitle.Contains("thq_scan") || chainTitle.Contains("thw_scan")) ) {
       isHiggsScan = true;
       TObjArray *tx = chainTitle.Tokenize("_");
       for (int i = 0; i < tx->GetEntries(); i++) {
@@ -2333,6 +2383,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       //Get the SR
       int SR = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
+      if (useChargeSplitSR) SR = signalRegionChargeSplit(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
 
       //SR variation due to JES
       float mtl1_unc_up = MT(lep1_pt, ss::lep1_p4().phi(), ss::met_unc_up(), ss::metPhi_unc_up());
@@ -2342,7 +2393,9 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       float mtl2_unc_dn = MT(lep2_pt, ss::lep2_p4().phi(), ss::met_unc_dn(), ss::metPhi_unc_dn());
       float mtmin_unc_dn = mtl1_unc_dn > mtl2_unc_dn ? mtl2_unc_dn : mtl1_unc_dn;
       int SR_unc_up = signalRegion2016(ss::njets_unc_up(), ss::nbtags_unc_up(), ss::met_unc_up(), ss::ht_unc_up(), mtmin_unc_up, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
+      if (useChargeSplitSR) SR_unc_up = signalRegionChargeSplit(ss::njets_unc_up(), ss::nbtags_unc_up(), ss::met_unc_up(), ss::ht_unc_up(), mtmin_unc_up, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
       int SR_unc_dn = signalRegion2016(ss::njets_unc_dn(), ss::nbtags_unc_dn(), ss::met_unc_dn(), ss::ht_unc_dn(), mtmin_unc_dn, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
+      if (useChargeSplitSR) SR_unc_dn = signalRegionChargeSplit(ss::njets_unc_dn(), ss::nbtags_unc_dn(), ss::met_unc_dn(), ss::ht_unc_dn(), mtmin_unc_dn, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
       int BR_unc_up = baselineRegion(ss::njets_unc_up(), ss::nbtags_unc_up(), ss::met_unc_up(), ss::ht_unc_up(), ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
       int BR_unc_dn = baselineRegion(ss::njets_unc_dn(), ss::nbtags_unc_dn(), ss::met_unc_dn(), ss::ht_unc_dn(), ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
 
@@ -2351,6 +2404,7 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
       float mtl2_gen_alt = MT(lep2_pt, ss::lep2_p4().phi(), ss::gen_met(), ss::gen_met_phi());
       float mtmin_gen_alt = mtl1_gen_alt > mtl2_gen_alt ? mtl2_gen_alt : mtl1_gen_alt;
       int SR_genmet_alt = signalRegion2016(ss::njets(), ss::nbtags(), ss::gen_met(), ss::ht(), mtmin_gen_alt, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
+      if (useChargeSplitSR) SR_genmet_alt = signalRegionChargeSplit(ss::njets(), ss::nbtags(), ss::gen_met(), ss::ht(), mtmin_gen_alt, ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
       int BR_genmet_alt = baselineRegion(ss::njets(), ss::nbtags(), ss::gen_met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), lep1_pt, lep2_pt);
 
       int nleps = 2;
@@ -2533,6 +2587,20 @@ pair<yields_t, plots_t> run(TChain *chain, bool isData, bool doFlips, int doFake
 
       p_result.h_mtmin       ->Fill(mtmin                                                                                   , weight);
       p_result.h_mt2real       ->Fill(ss::mt2()                                                                                   , weight);
+
+      // Fill tree
+      tree_met = ss::met();
+      tree_ht = ss::ht();
+      tree_mtmin = mtmin;
+      tree_l1id = ss::lep1_id();
+      tree_l2id = ss::lep2_id();
+      tree_njets = ss::njets();
+      tree_nbtags = ss::nbtags();
+      tree_kine = categ;
+      tree_SR = SR;
+      tree_name = chainTitle;
+      tree_weight = weight;
+      out_tree->Fill();
 
 
       // if (!isData && !doFakes && !doFlips && SR == 1 && cat == "HH"){

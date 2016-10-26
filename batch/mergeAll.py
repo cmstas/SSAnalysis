@@ -6,7 +6,8 @@
 # path="/hadoop/cms/store/user/namin/condor/ss_babies_Aug25/"
 # path="/hadoop/cms/store/user/namin/condor/ss_babies_June22_3p99ifb/" # for ttw_nlo, ttz_nlo
 # path="/hadoop/cms/store/user/namin/condor/ss_babies_Sept22/"
-path="/hadoop/cms/store/user/namin/condor/ss_babies_Oct4/"
+# path="/hadoop/cms/store/user/namin/condor/ss_babies_Oct4/"
+path="/hadoop/cms/store/user/namin/condor/ss_babies_Oct22/"
 
 samples = [
 
@@ -23,6 +24,8 @@ samples = [
 # ["T1TTBB_main", "t1ttbb_main_*.root"],
 
 ["TTH_scan", "tth_scan_*.root"],
+["THW_scan", "thw_scan_*.root"],
+["THQ_scan", "thq_scan_*.root"],
 
 # ["TTZLOW","ttzlow_*.root"],
 # ["WJets","wjets_*.root"],

@@ -71,10 +71,22 @@ int main(int argc, char *argv[]){
       shortname="thw_m350";
       break;
     case TTH_SCAN:
-      name="TTH_ttH-scan-MINIAOD_Private80Xv2";
+      name="TTH_ttH-scan-MINIAOD_Private80Xv2_v2";
       path="/store/group/snt/run2_25ns_80Private/";
       tag="V08-00-05";
       shortname="tth_scan";
+      break;
+    case THW_SCAN:
+      name="THW_tHW-scan-MINIAOD_Private80Xv2";
+      path="/store/group/snt/run2_25ns_80Private/";
+      tag="V08-00-05";
+      shortname="thw_scan";
+      break;
+    case THQ_SCAN:
+      name="THQ_tHq-scan-MINIAOD_Private80Xv2";
+      path="/store/group/snt/run2_25ns_80Private/";
+      tag="V08-00-05";
+      shortname="thq_scan";
       break;
     case TTBAR:
       name="TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v2";

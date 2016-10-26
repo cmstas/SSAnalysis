@@ -15,9 +15,9 @@ def main(name, fpatt):
     
     # book histos
     hists = []
-    bins = "100,0,2500"
+    bins = "250,0,2500"
     for ifname, fname in enumerate(fnames):
-        hists.append( TH1F("h"+str(ifname),"h"+str(ifname),100,0,2500) )
+        hists.append( TH1F("h"+str(ifname),"h"+str(ifname),250,0,2500) )
 
     def fill_histo(ifname, fname):
         f1 = TFile.Open(fname)

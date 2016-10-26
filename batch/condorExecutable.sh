@@ -243,6 +243,8 @@ if [ "$WHICH" == "101012" ] ; then WHICH_SMALL="dy_high_LO"; fi
 if [ "$WHICH" == "150000" ] ; then WHICH_SMALL="tth_m350"; fi
 if [ "$WHICH" == "150001" ] ; then WHICH_SMALL="thw_m350"; fi
 if [ "$WHICH" == "150002" ] ; then WHICH_SMALL="tth_scan"; fi
+if [ "$WHICH" == "150003" ] ; then WHICH_SMALL="thw_scan"; fi
+if [ "$WHICH" == "150004" ] ; then WHICH_SMALL="thq_scan"; fi
 
 export OUTPUT=${WHICH_SMALL}_${FILE}
 

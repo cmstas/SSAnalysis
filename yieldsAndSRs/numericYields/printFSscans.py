@@ -13,7 +13,9 @@ scans = [
 ]
 
 higgs_scans = [
-        "TTH_scan"
+        "TTH_scan",
+        "THW_scan",
+        "THQ_scan",
         ]
 
 #scan = "T6TTWW_50"
@@ -34,7 +36,6 @@ for scan in higgs_scans:
         f = ROOT.TFile.Open(fn, "read")
         t = f.Get("t")
 
-        masses = [350]
         t.SetBranchStatus("*",0)
         t.SetBranchStatus("higgs_mass",1)
         t.SetEstimate(t.GetEntries());
