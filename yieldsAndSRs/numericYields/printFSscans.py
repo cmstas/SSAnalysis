@@ -1,9 +1,12 @@
 import os, glob, ROOT
 
-tag = "v8.04"
+# tag = "v8.04"
+# postfix=""
+tag = "v8.06"
+postfix="_new"
 
 scans = [
-    # "T1TTTT_main",
+    "T1TTTT_main",
     # "T5QQQQVV_main",
     # "T5QQQQVV_dm20",
     # "T6TTWW_main",
@@ -13,23 +16,15 @@ scans = [
 ]
 
 higgs_scans = [
-        "TTH_scan",
-        "THW_scan",
-        "THQ_scan",
+        # "TTH_scan",
+        # "THW_scan",
+        # "THQ_scan",
         ]
-
-#scan = "T6TTWW_50"
-#scan = "T5QQQQVV"
-#scan = "T5QQQQWW"
-#scan = "T1TTBB"
-#scan = "T5ttttDM175"
-#scan = "T5tttt_degen"
-#scan = "T5ttcc"
 
 for scan in higgs_scans:
     files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/"+scan+"*.root")
 
-    outf = open("%s.h" % scan.lower(), 'w')
+    outf = open("%s%s.h" % (scan.lower(),postfix), 'w')
 
     for fn in files:
         #print fn
@@ -58,7 +53,7 @@ for scan in scans:
 
     scan = scan.replace("_main","")
 
-    outf = open("fs_%s.h" % scan.lower(), 'w')
+    outf = open("fs_%s%s.h" % (scan.lower(),postfix), 'w')
 
     for fn in files:
         #print fn
