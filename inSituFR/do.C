@@ -29,7 +29,7 @@
   //     FR(doHighHT, "doSoup,test_MVA,doExtraElectronPtBin");
   // }
 
-  FR(-1, "test_MVA,doExtraElectronPtBin");
+  FR(-1, "doSoup,test_MVA,doExtraElectronPtBin");
 
   // // Recipe to calculate promptCorrected FR for data with extra electron PtBin
   // for(int doHighHT = -1; doHighHT < 2; doHighHT++) {
