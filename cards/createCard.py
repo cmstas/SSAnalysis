@@ -198,9 +198,10 @@ def writeOneCardFromProcesses(dir, kine, plot, output, data, processes):
         for process in processes: card.write("%-15s " % (process.met))
         card.write("\n")
     #nuisance scale
-    card.write("%-40s %-5s " % ("scale","shape"))
-    for process in processes: card.write("%-15s " % (process.scale))
-    card.write("\n")
+    if "NOSCALEUNC" not in os.environ:
+        card.write("%-40s %-5s " % ("scale","shape"))
+        for process in processes: card.write("%-15s " % (process.scale))
+        card.write("\n")
     #nuisance pdf_flat
     #for process in processes: writeDummyPdfForSignal(dir,card,kine,process,processes)
     #nuisance norm

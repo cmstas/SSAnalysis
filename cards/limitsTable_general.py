@@ -82,13 +82,14 @@ def plot_limits(d):
     def run_sig(sig):
         if d["verbose"]:
             print sig
-        if not d["doSignificance"]: 
-            if os.path.isfile(d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.log"): return
-        else: 
-            if os.path.isfile(d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all_significance.log"): return
+        if not d["redolimits"]: 
+            if not d["doSignificance"]: 
+                if os.path.isfile(d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.log"): return
+            else: 
+                if os.path.isfile(d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all_significance.log"): return
 
         if d["redolimits"]: 
-            os.system("python createCard.py "+d["mydir"]+" "+sig)
+            os.system(d["extracard"]+" python createCard.py "+d["mydir"]+" "+sig)
             os.system("combine -M Asymptotic "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.txt >& "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.log") # --run expected --noFitAsimov
         if d["redosignificances"]: os.system("combine -M ProfileLikelihood --uncapped 1 --significance --rMin -5 "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.txt >& "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all_significance.log") 
 
@@ -640,12 +641,21 @@ def plot_limits(d):
 
 if __name__ == "__main__":
     d_t1tttt = {
-        "mydir": "v8.04_July28",
-        "mylumi": "12.9",
+        # "mydir": "v8.04_July28",
+        # "mylumi": "12.9",
+        # "mydir": "v8.04_Oct25_17p3noNLO",
+        # "mylumi": "17.3",
         # "mydir": "v8.04_Oct1",
         # "mylumi": "17.3",
-        "postfix": "",
-        "redolimits": False,
+        # "extracard": "",
+
+        # "mydir": "v8.04_Nov3_17p3_qsplit",
+        "mydir": "v8.04_Nov5_17p3_qsplit",
+        "mylumi": "17.3",
+        "postfix": "qsplit",
+        "redolimits": True,
+        # "extracard": "export NOSCALEUNC=true; ", # FIXME
+        "extracard": "",
 
         "doSignificance": False,
         "redosignificances": False,
@@ -690,10 +700,10 @@ if __name__ == "__main__":
     d_t5qqqqvv["ybinsfirstxbin"] = 19
 
     d_t5qqqqvv_dm20 = d_t5qqqqvv.copy()
-    # d_t5qqqqvv_dm20["mydir"] = "v8.04_Sept19"
-    d_t5qqqqvv_dm20["mydir"] = "v8.04_t5qqqqdm20_July28" # FIXME
+    d_t5qqqqvv_dm20["mydir"] = "v8.04_Sept19"
+    # d_t5qqqqvv_dm20["mydir"] = "v8.04_t5qqqqdm20_July28" # FIXME
+    # d_t5qqqqvv_dm20["postfix"] = "beforefix"
     d_t5qqqqvv_dm20["modeltag"] = "t5qqqqvv_dm20"
-    d_t5qqqqvv_dm20["postfix"] = "beforefix"
     d_t5qqqqvv_dm20["maxy"] = 1825
     d_t5qqqqvv_dm20["ybinsfirstxbin"] = 21
     d_t5qqqqvv_dm20["mass_label"] = "m_{#tilde{#chi}^{#pm}_{1}} = m_{#tilde{#chi}^{0}_{1}} + 20 GeV"
@@ -776,9 +786,10 @@ if __name__ == "__main__":
     d_t1ttbb["maxyh"] = 1700
     d_t1ttbb["ybinsfirstxbin"] = 15
 
-    plot_limits(d_t5qqqqvv_dm20)
+
+    # plot_limits(d_t5qqqqvv_dm20)
     # plot_limits(d_t5qqqqvv)
-    # plot_limits(d_t1tttt)
+    plot_limits(d_t1tttt)
     # plot_limits(d_t6ttww)
     # plot_limits(d_t5ttcc)
     # plot_limits(d_t5tttt_dm175)

@@ -1,6 +1,6 @@
 pair<float, float> dumpCardForOneSR(TString process, TString kine, int sr, TString lumi, TString dir);
 
-void makeTable(TString sig="fake_sig") {
+void makeTable(TString sig="fake_sig", TString lumi="6.3", TString dir="points") {
 
   bool doLatex = true;
 
@@ -14,8 +14,8 @@ void makeTable(TString sig="fake_sig") {
   // TString lumi = "4.0";
   // TString dir = "v8.02_4p0_newbins";
 
-  TString lumi = "6.3";
-  TString dir = "points";
+  // TString lumi = "6.3";
+  // TString dir = "points";
 
   // TString lumi = "0.8";
   // TString dir = "v8.02_800pb_unblind";
