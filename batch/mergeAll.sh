@@ -1,7 +1,8 @@
 #!/bin/bash
 
-path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies/
-tag=v6.02-fs
+# path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies/
+path=/hadoop/cms/store/user/${USER}/condor/ss_babies_Nov5/
+tag=v8.06_oldsrs
 remake=no
 
 function run () {
@@ -17,6 +18,9 @@ function run () {
 if [ ! -d /nfs-7/userdata/ss2015/ssBabies/$tag ]; then mkdir -p /nfs-7/userdata/ss2015/ssBabies/$tag; fi
 
 rm nohub.txt
+
+run $path/ttznlo $tag/TTZnlo.root
+# run $path/ttwnlo $tag/TTWnlo.root
 
 #run $path/datadoubleegc_05oct                     $tag/DataDoubleEGC_05oct.root         
 #run $path/datadoublemuonc_05oct                   $tag/DataDoubleMuonC_05oct.root       
@@ -124,21 +128,21 @@ rm nohub.txt
 #run $path/t1tttt_900to950_200to700              $tag/T1TTTT_900to950_200to700.root    
 #run $path/t1tttt_975_600to750                   $tag/T1TTTT_975_600to750.root         
 
-run $path/t5qqqqvv_1000to1075_1to950   $tag/T5QQQQVV_1000to1075_1to950.root  
-run $path/t5qqqqvv_1100to1175_1to1050  $tag/T5QQQQVV_1100to1175_1to1050.root 
-run $path/t5qqqqvv_1200to1275_1to1150  $tag/T5QQQQVV_1200to1275_1to1150.root 
-run $path/t5qqqqvv_1300to1375_1to1250  $tag/T5QQQQVV_1300to1375_1to1250.root 
-run $path/t5qqqqvv_1400to1550_1to1275  $tag/T5QQQQVV_1400to1550_1to1275.root 
-run $path/t5qqqqvv_1600to1750_1to950   $tag/T5QQQQVV_1600to1750_1to950.root  
-run $path/t5qqqqvv_600to675_1to550     $tag/T5QQQQVV_600to675_1to550.root    
-run $path/t5qqqqvv_700to775_1to650     $tag/T5QQQQVV_700to775_1to650.root    
-run $path/t5qqqqvv_800to975_1to850     $tag/T5QQQQVV_800to975_1to850.root    
+# run $path/t5qqqqvv_1000to1075_1to950   $tag/T5QQQQVV_1000to1075_1to950.root  
+# run $path/t5qqqqvv_1100to1175_1to1050  $tag/T5QQQQVV_1100to1175_1to1050.root 
+# run $path/t5qqqqvv_1200to1275_1to1150  $tag/T5QQQQVV_1200to1275_1to1150.root 
+# run $path/t5qqqqvv_1300to1375_1to1250  $tag/T5QQQQVV_1300to1375_1to1250.root 
+# run $path/t5qqqqvv_1400to1550_1to1275  $tag/T5QQQQVV_1400to1550_1to1275.root 
+# run $path/t5qqqqvv_1600to1750_1to950   $tag/T5QQQQVV_1600to1750_1to950.root  
+# run $path/t5qqqqvv_600to675_1to550     $tag/T5QQQQVV_600to675_1to550.root    
+# run $path/t5qqqqvv_700to775_1to650     $tag/T5QQQQVV_700to775_1to650.root    
+# run $path/t5qqqqvv_800to975_1to850     $tag/T5QQQQVV_800to975_1to850.root    
 
-run $path/t6ttww_50_300to600_225to575  $tag/T6TTWW_50_300to600_225to575.root 
-run $path/t6ttww_50_300to600_75to125   $tag/T6TTWW_50_300to600_75to125.root  
-run $path/t6ttww_50_350to600_150to400  $tag/T6TTWW_50_350to600_150to400.root 
-run $path/t6ttww_50_625to950_500to850  $tag/T6TTWW_50_625to950_500to850.root 
-run $path/t6ttww_50_625to950_550to875  $tag/T6TTWW_50_625to950_550to875.root 
-run $path/t6ttww_50_625to950_75to125   $tag/T6TTWW_50_625to950_75to125.root  
-run $path/t6ttww_50_650to950_150to750  $tag/T6TTWW_50_650to950_150to750.root 
-run $path/t6ttww_50_300to600_150to500  $tag/T6TTWW_50_300to600_150to500.root 
+# run $path/t6ttww_50_300to600_225to575  $tag/T6TTWW_50_300to600_225to575.root 
+# run $path/t6ttww_50_300to600_75to125   $tag/T6TTWW_50_300to600_75to125.root  
+# run $path/t6ttww_50_350to600_150to400  $tag/T6TTWW_50_350to600_150to400.root 
+# run $path/t6ttww_50_625to950_500to850  $tag/T6TTWW_50_625to950_500to850.root 
+# run $path/t6ttww_50_625to950_550to875  $tag/T6TTWW_50_625to950_550to875.root 
+# run $path/t6ttww_50_625to950_75to125   $tag/T6TTWW_50_625to950_75to125.root  
+# run $path/t6ttww_50_650to950_150to750  $tag/T6TTWW_50_650to950_150to750.root 
+# run $path/t6ttww_50_300to600_150to500  $tag/T6TTWW_50_300to600_150to500.root 

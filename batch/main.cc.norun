@@ -1282,6 +1282,8 @@ int main(int argc, char *argv[]){
   struct csErr_info_t { TH1F* cs; float cs_scale_up; float cs_scale_dn; float cs_pdf[102]; TH1F* results; int nEntries; int mGluino; int mLSP;}; 
   vector <csErr_info_t> csErr_info_v; 
 
+  bool haveMadeErrStruct = false;
+
   //Event Loop
   for(unsigned int eventAG=0; eventAG < nEvents; eventAG++){
 
@@ -1306,7 +1308,7 @@ int main(int argc, char *argv[]){
         csErr.cs_scale_up = 0;
         csErr.cs_scale_dn = 0;
         for (int i = 0; i < 102; i++) csErr.cs_pdf[i] = 0; 
-        csErr.results = new TH1F(Form("csErr_%i_%i", mGluino, mLSP), Form("csErr_%i_%i", mGluino, mLSP), 7766, 0, 7766); 
+        csErr.results = new TH1F(Form("csErr_%i_%i", mGluino, mLSP), Form("csErr_%i_%i", mGluino, mLSP), 16000, 0, 16000); 
         csErr.results->Sumw2(); 
         csErr.nEntries = 0; 
         csErr.mGluino = mGluino; 
@@ -1314,6 +1316,21 @@ int main(int argc, char *argv[]){
         idx = csErr_info_v.size(); 
         csErr_info_v.push_back(csErr); 
       } 
+    } else if (!(tas::evt_isRealData())) {
+        if (!haveMadeErrStruct) {
+            csErr_info_t csErr; 
+            csErr.cs = new TH1F("cs","cs", 1, 0, 1);
+            csErr.cs->Sumw2(); 
+            csErr.cs_scale_up = 0;
+            csErr.cs_scale_dn = 0;
+            for (int i = 0; i < 102; i++) csErr.cs_pdf[i] = 0; 
+            csErr.results = new TH1F("csErr","csErr", 16000, 0, 16000); 
+            csErr.results->Sumw2(); 
+            csErr.nEntries = 0; 
+            idx = 0;
+            csErr_info_v.push_back(csErr); 
+            haveMadeErrStruct = true;
+        }
     }
 
     //If data, check good run list
@@ -1327,24 +1344,25 @@ int main(int argc, char *argv[]){
     bool isGood = csErr.isGood; 
 
     //c-s error variables
-    if (isSignal > 0){
+    if (isSignal > 0 || haveMadeErrStruct){
+        if (haveMadeErrStruct) idx = 0;
       csErr_info_v[idx].results->Fill(0.5, 1);  
       csErr_info_v[idx].results->Fill(3.5, csErr.cs_scale_up); 
       csErr_info_v[idx].results->Fill(4.5, csErr.cs_scale_dn); 
       if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(200+SR-0.5, csErr.cs_scale_no); 
-      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(300+SR-0.5, csErr.cs_scale_up); 
-      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(400+SR-0.5, csErr.cs_scale_dn); 
+      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(400+SR-0.5, csErr.cs_scale_up); 
+      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(600+SR-0.5, csErr.cs_scale_dn); 
       for (unsigned int i = 0; i < 100; i++){
         if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(1000+100*(SR-1)+i-0.5, csErr.cs_pdf[i]);
         csErr_info_v[idx].results->Fill(6+i-0.5, csErr.cs_pdf[i]); 
       }
-      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(7600+SR-0.5, csErr.cs_pdf[100]); 
-      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(7700+SR-0.5, csErr.cs_pdf[101]); 
+      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(15600+SR-0.5, csErr.cs_pdf[100]); 
+      if (SR > 0 && isGood) csErr_info_v[idx].results->Fill(15700+SR-0.5, csErr.cs_pdf[101]); 
     }
 
   }//event loop 
 
-  if (isSignal > 0){
+  if (isSignal > 0 || haveMadeErrStruct){
     for (unsigned int j = 0; j < csErr_info_v.size(); j++){
       //bin 1: nEntries
       //bin 2: cross-section
@@ -1355,13 +1373,13 @@ int main(int argc, char *argv[]){
       //bin 5: cross-section scale dn
       //bin 6-107: cross-section PDF error
       //bin 201-266: yield in each SR (for cross-check)
-      //bin 301-366: scale up in each SR
-      //bin 401-466: scale dn in each SR 
+      //bin 401-466: scale up in each SR
+      //bin 601-666: scale dn in each SR 
       //bin 1000-1099: SR1 PDF weights
       //bin 1100-1199: SR2 PDF weights
       //bin 7500-7599: SR66 PDF weights
-      //bin 7600-7666: alpha_s up in each SR
-      //bin 7700-7766: alpha_s dn in each SR
+      //bin 15600-15666: alpha_s up in each SR
+      //bin 15700-15766: alpha_s dn in each SR
 
     }
   }
