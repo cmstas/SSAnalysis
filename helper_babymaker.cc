@@ -44,8 +44,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("xsec_error"                                              , &xsec_error                                              );
   BabyTree->Branch("kfactor"                                                 , &kfactor                                                 );
   BabyTree->Branch("gen_met"                                                 , &gen_met                                                 );
-  // BabyTree->Branch("genweights"                                              , &genweights                                              );
-  // BabyTree->Branch("genweightsID"                                            , &genweightsID                                            );
+  BabyTree->Branch("genweights"                                              , &genweights                                              );
+  BabyTree->Branch("genweightsID"                                            , &genweightsID                                            );
   BabyTree->Branch("gen_met_phi"                                             , &gen_met_phi                                             );
   BabyTree->Branch("njets"                                                   , &njets                                                   );
   BabyTree->Branch("njets_raw"                                               , &njets_raw                                               );
@@ -422,8 +422,8 @@ void babyMaker::InitBabyNtuple(){
     xsec = -1;
     kfactor = -1;
     gen_met = -1;
-    // genweights.clear();
-    // genweightsID.clear();
+    genweights.clear();
+    genweightsID.clear();
     gen_met_phi = -1;
     njets = -1;
     njets_raw = -1;
@@ -722,6 +722,9 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   //Debug mode
   if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return babyErrorStruct;
 
+  // verbose = true;
+  // if (tas::evt_event() != 16602379) return babyErrorStruct; // FIXME FIXME FIXME
+
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return babyErrorStruct;
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return babyErrorStruct;
@@ -739,9 +742,13 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   is_miniaodv1 = filename.find("MCRUN2_74_V9") != std::string::npos;
   is_miniaodv1_80X = filename.find("RunIISpring16MiniAODv1") != std::string::npos;
 
-  int nHHsr = 33;
-  int nHLsr = 27;
-  int nLLsr = 8;
+  // int nHHsr = 33;
+  // int nHLsr = 27;
+
+  int nHHsr = 51;
+  int nHLsr = 41;
+
+  // int nLLsr = 8; // comment out since unused stupid g++
 
   // bool is_wjets = false;
   // if(filename.find("W") == 0) {
@@ -795,8 +802,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     kfactor = tas::evt_kfactor();
     gen_met = tas::gen_met();
     gen_met_phi = tas::gen_metPhi();
-    // genweights = tas::genweights();  // These two are 20% of the ntuple size
-    // genweightsID = tas::genweightsID(); 
+    genweights = tas::genweights();  // These two are 20% of the ntuple size
+    genweightsID = tas::genweightsID(); 
     scale1fb = tas::evt_scale1fb(); 
     if (isFastsim > 0){
       sparms = tas::sparm_values();  
@@ -1636,7 +1643,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   //Fill Baby
   BabyTree->Fill();
 
-  int SR = signalRegion2016(njets, nbtags, met, ht, mtmin, lep1_id, lep2_id, lep1_coneCorrPt, lep2_coneCorrPt);
+  // int SR = signalRegion2016(njets, nbtags, met, ht, mtmin, lep1_id, lep2_id, lep1_coneCorrPt, lep2_coneCorrPt);
+  int SR = signalRegionChargeSplit(njets, nbtags, met, ht, mtmin, lep1_id, lep2_id, lep1_coneCorrPt, lep2_coneCorrPt);
   anal_type_t categ = analysisCategory(lep1_id, lep2_id, lep1_coneCorrPt, lep2_coneCorrPt);
   if (categ > 0) SR += nHHsr; 
   if (categ > 1) SR += nHLsr; 

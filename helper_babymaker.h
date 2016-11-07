@@ -117,8 +117,8 @@ class babyMaker {
     float kfactor;      
     string filename;
     int filenumber; 
-    // vector <float> genweights;
-    // vector <string> genweightsID;
+    vector <float> genweights;
+    vector <string> genweightsID;
     bool passedFilterList; 
 
     //Pileup
