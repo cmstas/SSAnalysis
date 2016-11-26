@@ -51,9 +51,9 @@ if __name__ == "__main__":
 
     name_patts = [
     # ("ttH", "/hadoop/cms/store/group/snt/run2_25ns_80Private/TTH_ttH-scan-MINIAOD_Private80Xv2/V08-00-05/merged_ntuple_*.root"),
-    ("ttH", "/hadoop/cms/store/group/snt/run2_25ns_80Private/TTH_ttH-scan-MINIAOD_Private80Xv2_v2/V08-00-05/merged_ntuple_*.root"),
-    ("tHW", "/hadoop/cms/store/group/snt/run2_25ns_80Private/THW_tHW-scan-MINIAOD_Private80Xv2/V08-00-05/merged_ntuple_*.root"),
-    ("tHq", "/hadoop/cms/store/group/snt/run2_25ns_80Private/THQ_tHq-scan-MINIAOD_Private80Xv2/V08-00-05/merged_ntuple_*.root"),
+    # ("ttH", "/hadoop/cms/store/group/snt/run2_25ns_80Private/TTH_ttH-scan-MINIAOD_Private80Xv2_v2/V08-00-05/merged_ntuple_*.root"),
+    # ("tHW", "/hadoop/cms/store/group/snt/run2_25ns_80Private/THW_tHW-scan-MINIAOD_Private80Xv2/V08-00-05/merged_ntuple_*.root"),
+    ("tHq", "/hadoop/cms/store/group/snt/run2_25ns_80Private/THQ_tHq-scan-MINIAOD_Private80Xv2_v2/V08-00-09/merged_ntuple_*.root"),
     ]
 
     for name, fpatt in name_patts:

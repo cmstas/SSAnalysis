@@ -38,17 +38,17 @@ int nPoints_higgs(int sample, int mH){
         if (mH == 550) return 86114;
     }
     else if (sample == 3){
-        if (mH == 350) return 99225;
-        if (mH == 370) return 119725;
-        if (mH == 390) return 107780;
-        if (mH == 410) return 123258;
-        if (mH == 430) return 112526;
-        if (mH == 450) return 121558;
-        if (mH == 470) return 121780;
-        if (mH == 490) return 121502;
-        if (mH == 510) return 92376;
-        if (mH == 530) return 121658;
-        if (mH == 550) return 110535;
+        if (mH == 350) return 184000;
+        if (mH == 370) return 222000;
+        if (mH == 390) return 237000;
+        if (mH == 410) return 2000;
+        if (mH == 430) return 216000;
+        if (mH == 450) return 198000;
+        if (mH == 470) return 170000;
+        if (mH == 490) return 162000;
+        if (mH == 510) return 153000;
+        if (mH == 530) return 143000;
+        if (mH == 550) return 163000;
     }
 
     return -99999999; 
@@ -89,17 +89,17 @@ float xsec_higgs(int sample, int mH){
         if (mH == 550) return 0.00644;
     }
     else if (sample == 3){
-        if (mH == 350) return 0.01141;
-        if (mH == 370) return 0.01060;
-        if (mH == 390) return 0.00994;
-        if (mH == 410) return 0.00944;
-        if (mH == 430) return 0.00916;
-        if (mH == 450) return 0.00841;
-        if (mH == 470) return 0.00786;
-        if (mH == 490) return 0.00751;
-        if (mH == 510) return 0.00726;
-        if (mH == 530) return 0.00667;
-        if (mH == 550) return 0.00627;
+        if (mH == 350) return 0.02270;
+        if (mH == 370) return 0.02149;
+        if (mH == 390) return 0.02034;
+        if (mH == 410) return 0.01925;
+        if (mH == 430) return 0.01818;
+        if (mH == 450) return 0.01718;
+        if (mH == 470) return 0.01623;
+        if (mH == 490) return 0.01534;
+        if (mH == 510) return 0.01450;
+        if (mH == 530) return 0.01370;
+        if (mH == 550) return 0.01295;
     }
 
     return -1.0;
