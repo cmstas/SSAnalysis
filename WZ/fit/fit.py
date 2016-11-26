@@ -29,7 +29,8 @@ def get_weight_hist(h1, syst=0.0):
 do_nick_fit = True
 do_nick_combine = True
 
-infile = "h1D_nbtags.root"
+# infile = "h1D_nbtags.root"
+infile = "nbtags_alljets.root"
 f1 = r.TFile(infile)
 
 keys = f1.GetListOfKeys()
