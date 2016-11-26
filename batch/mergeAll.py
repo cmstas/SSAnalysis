@@ -21,12 +21,12 @@ samples = [
 # ["T5TTCC_main", "t5ttcc_main_*.root"],
 # ["T5QQQQVV_main", "t5qqqqvv_main_*.root"],
 # ["T5QQQQVV_dm20", "t5qqqqvv_dm20_*.root"],
-["T1TTTT_main", "t1tttt_main_*.root"],
+# ["T1TTTT_main", "t1tttt_main_*.root"],
 # ["T1TTBB_main", "t1ttbb_main_*.root"],
 
 # ["TTH_scan", "tth_scan_*.root"],
 # ["THW_scan", "thw_scan_*.root"],
-# ["THQ_scan", "thq_scan_*.root"],
+["THQ_scan", "thq_scan_*.root"],
 
 # ["TTZLOW","ttzlow_*.root"],
 # ["WJets","wjets_*.root"],

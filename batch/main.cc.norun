@@ -83,9 +83,9 @@ int main(int argc, char *argv[]){
       shortname="thw_scan";
       break;
     case THQ_SCAN:
-      name="THQ_tHq-scan-MINIAOD_Private80Xv2";
+      name="THQ_tHq-scan-MINIAOD_Private80Xv2_v2";
       path="/store/group/snt/run2_25ns_80Private/";
-      tag="V08-00-05";
+      tag="V08-00-09";
       shortname="thq_scan";
       break;
     case TTBAR:
@@ -574,6 +574,189 @@ int main(int argc, char *argv[]){
       tag="V08-00-12";
       path="/store/group/snt/run2_data/";
       shortname="datamuonegg";
+      isData = true;
+      break;
+
+// ######################################
+// ############## Era H #################
+// ######################################
+    case DataDoubleEGH:
+      name="Run2016H_DoubleEG_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegh";
+      isData = true;
+      break;
+    case DataDoubleMuonH:
+      name="Run2016H_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonh";
+      isData = true;
+      break;
+    case DataMuonEGH:
+      name="Run2016H_MuonEG_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegh";
+      isData = true;
+      break;
+
+    case DataDoubleEGHv3:
+      name="Run2016H_DoubleEG_MINIAOD_PromptReco-v3/merged/";
+      tag="V08-00-15";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleeghv3";
+      isData = true;
+      break;
+    case DataDoubleMuonHv3:
+      name="Run2016H_DoubleMuon_MINIAOD_PromptReco-v3/merged/";
+      tag="V08-00-15";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonhv3";
+      isData = true;
+      break;
+    case DataMuonEGHv3:
+      name="Run2016H_MuonEG_MINIAOD_PromptReco-v3/merged/";
+      tag="V08-00-15";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuoneghv3";
+      isData = true;
+      break;
+      
+// ######################################
+// ############## Rereco #################
+// ######################################
+
+    case DataDoubleEGRerecoB:
+      name="Run2016B_DoubleEG_MINIAOD_23Sep2016-v3/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegrerecob";
+      isData = true;
+      break;
+    case DataDoubleMuonRerecoB:
+      name="Run2016B_DoubleMuon_MINIAOD_23Sep2016-v3/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonrerecob";
+      isData = true;
+      break;
+    case DataMuonEGRerecoB:
+      name="Run2016B_MuonEG_MINIAOD_23Sep2016-v3/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegrerecob";
+      isData = true;
+      break;
+
+    case DataDoubleEGRerecoC:
+      name="Run2016C_DoubleEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegrerecoc";
+      isData = true;
+      break;
+    case DataDoubleMuonRerecoC:
+      name="Run2016C_DoubleMuon_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonrerecoc";
+      isData = true;
+      break;
+    case DataMuonEGRerecoC:
+      name="Run2016C_MuonEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegrerecoc";
+      isData = true;
+      break;
+
+    case DataDoubleEGRerecoD:
+      name="Run2016D_DoubleEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegrerecod";
+      isData = true;
+      break;
+    case DataDoubleMuonRerecoD:
+      name="Run2016D_DoubleMuon_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonrerecod";
+      isData = true;
+      break;
+    case DataMuonEGRerecoD:
+      name="Run2016D_MuonEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegrerecod";
+      isData = true;
+      break;
+
+    case DataDoubleEGRerecoE:
+      name="Run2016E_DoubleEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegrerecoe";
+      isData = true;
+      break;
+    case DataDoubleMuonRerecoE:
+      name="Run2016E_DoubleMuon_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonrerecoe";
+      isData = true;
+      break;
+    case DataMuonEGRerecoE:
+      name="Run2016E_MuonEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegrerecoe";
+      isData = true;
+      break;
+
+    case DataDoubleEGRerecoF:
+      name="Run2016F_DoubleEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegrerecof";
+      isData = true;
+      break;
+    case DataDoubleMuonRerecoF:
+      name="Run2016F_DoubleMuon_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonrerecof";
+      isData = true;
+      break;
+    case DataMuonEGRerecoF:
+      name="Run2016F_MuonEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegrerecof";
+      isData = true;
+      break;
+
+    case DataDoubleEGRerecoG:
+      name="Run2016G_DoubleEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoubleegrerecog";
+      isData = true;
+      break;
+    case DataDoubleMuonRerecoG:
+      name="Run2016G_DoubleMuon_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datadoublemuonrerecog";
+      isData = true;
+      break;
+    case DataMuonEGRerecoG:
+      name="Run2016G_MuonEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/store/group/snt/run2_data/";
+      shortname="datamuonegrerecog";
       isData = true;
       break;
 
@@ -1236,7 +1419,7 @@ int main(int argc, char *argv[]){
   cout << "nEvents: " << tree->GetEntries() << endl;
 
   //Add good run list
-  set_goodrun_file("goldenJson_2016_27p2.txt");
+  set_goodrun_file("goldenJson_2016rereco_36p46ifb.txt");
   
   // string jecEra = "Fall15_25nsV2";
   string jecEra = "Spring16_25nsV6";
@@ -1248,7 +1431,8 @@ int main(int argc, char *argv[]){
   if (isSignal > 0) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Spring16_FastSimV1_Uncertainty_AK4PFchs.txt"); 
 
   //Init MVA
-  createAndInitMVA("./CORE", true, true);
+  // createAndInitMVA("./CORE", true, true); // ICHEP
+  createAndInitMVA("./CORE", true, false, 80); // Moriond
 
   //JEC files -- 25 ns MC
   std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1L2L3;

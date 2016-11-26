@@ -110,6 +110,34 @@ if [ "$WHICH" == "1018" ]; then WHICH_SMALL="datadoubleegg"; fi
 if [ "$WHICH" == "1019" ]; then WHICH_SMALL="datadoublemuong"; fi
 if [ "$WHICH" == "1020" ]; then WHICH_SMALL="datamuonegg"; fi
 
+if [ "$WHICH" == "1021" ]; then WHICH_SMALL="datadoubleegh"; fi
+if [ "$WHICH" == "1022" ]; then WHICH_SMALL="datadoublemuonh"; fi
+if [ "$WHICH" == "1023" ]; then WHICH_SMALL="datamuonegh"; fi
+
+if [ "$WHICH" == "1024" ]; then WHICH_SMALL="datadoubleeghv3"; fi
+if [ "$WHICH" == "1025" ]; then WHICH_SMALL="datadoublemuonhv3"; fi
+if [ "$WHICH" == "1026" ]; then WHICH_SMALL="datamuoneghv3"; fi
+
+# rereco
+if [ "$WHICH" == "2000" ]; then WHICH_SMALL="datadoubleegrerecob"; fi
+if [ "$WHICH" == "2001" ]; then WHICH_SMALL="datadoublemuonrerecob"; fi
+if [ "$WHICH" == "2002" ]; then WHICH_SMALL="datamuonegrerecob"; fi
+if [ "$WHICH" == "2003" ]; then WHICH_SMALL="datadoubleegrerecoc"; fi
+if [ "$WHICH" == "2004" ]; then WHICH_SMALL="datadoublemuonrerecoc"; fi
+if [ "$WHICH" == "2005" ]; then WHICH_SMALL="datamuonegrerecoc"; fi
+if [ "$WHICH" == "2006" ]; then WHICH_SMALL="datadoubleegrerecod"; fi
+if [ "$WHICH" == "2007" ]; then WHICH_SMALL="datadoublemuonrerecod"; fi
+if [ "$WHICH" == "2008" ]; then WHICH_SMALL="datamuonegrerecod"; fi
+if [ "$WHICH" == "2009" ]; then WHICH_SMALL="datadoubleegrerecoe"; fi
+if [ "$WHICH" == "2010" ]; then WHICH_SMALL="datadoublemuonrerecoe"; fi
+if [ "$WHICH" == "2011" ]; then WHICH_SMALL="datamuonegrerecoe"; fi
+if [ "$WHICH" == "2012" ]; then WHICH_SMALL="datadoubleegrerecof"; fi
+if [ "$WHICH" == "2013" ]; then WHICH_SMALL="datadoublemuonrerecof"; fi
+if [ "$WHICH" == "2014" ]; then WHICH_SMALL="datamuonegrerecof"; fi
+if [ "$WHICH" == "2015" ]; then WHICH_SMALL="datadoubleegrerecog"; fi
+if [ "$WHICH" == "2016" ]; then WHICH_SMALL="datadoublemuonrerecog"; fi
+if [ "$WHICH" == "2017" ]; then WHICH_SMALL="datamuonegrerecog"; fi
+
 #signal
 if [ "$WHICH" == "10001" ] ; then WHICH_SMALL="t1tttt_main"        ; fi
 if [ "$WHICH" == "10002" ] ; then WHICH_SMALL="t1tttt_1100_1to775"          ; fi

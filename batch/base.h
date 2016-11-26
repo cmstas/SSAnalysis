@@ -90,12 +90,38 @@ enum sample_t {
   DataDoubleMuonG = 1019,
   DataMuonEGG = 1020,
 
-  // DataDoubleEGD = 1003,
-  // DataDoubleMuonD = 1004,
-  // DataMuonEGD = 1005,
-  // DataDoubleEGD_v4 = 1006,
-  // DataDoubleMuonD_v4 = 1007,
-  // DataMuonEGD_v4 = 1008,
+  DataDoubleEGH = 1021,
+  DataDoubleMuonH = 1022,
+  DataMuonEGH = 1023,
+
+  DataDoubleEGHv3 = 1024,
+  DataDoubleMuonHv3 = 1025,
+  DataMuonEGHv3 = 1026,
+
+  DataDoubleEGRerecoB = 2000,
+  DataDoubleMuonRerecoB = 2001,
+  DataMuonEGRerecoB = 2002,
+
+  DataDoubleEGRerecoC = 2003,
+  DataDoubleMuonRerecoC = 2004,
+  DataMuonEGRerecoC = 2005,
+
+  DataDoubleEGRerecoD = 2006,
+  DataDoubleMuonRerecoD = 2007,
+  DataMuonEGRerecoD = 2008,
+
+  DataDoubleEGRerecoE = 2009,
+  DataDoubleMuonRerecoE = 2010,
+  DataMuonEGRerecoE = 2011,
+
+  DataDoubleEGRerecoF = 2012,
+  DataDoubleMuonRerecoF = 2013,
+  DataMuonEGRerecoF = 2014,
+
+  DataDoubleEGRerecoG = 2015,
+  DataDoubleMuonRerecoG = 2016,
+  DataMuonEGRerecoG = 2017,
+
 
   //Fastsim
   T1TTTT_main                 = 10001,

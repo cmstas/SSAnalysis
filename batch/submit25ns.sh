@@ -101,7 +101,8 @@ NEWDATA="DataDoubleMuonG DataDoubleEGG DataMuonEGG"
 # ALL="TTW TTZ WZ ZZZ WZZ WWZ WWW WWDPS QQWW WGToLNuG ZG TG TTG VHtoNonBB TTHtoNonBB TZQ TTTT WJets DY_high DY_low ZZ GGHtoZZto4L TTZlow THW_M350"
 # ALL="TTH_SCAN THW_SCAN THQ_SCAN"
 # ALL="T1TTTT_main"
-ALL="TTWnlo TTZnlo"
+# ALL="TTWnlo TTZnlo"
+ALL="THQ_SCAN"
 
 # ALL="TTBAR_PH WJets WJets100To200 WJets200To400 WJets400To600 WJets600To800 WJets800To1200"
 # ALL="WJets100To200 WJets200To400 WJets400To600 WJets600To800 WJets800To1200"
@@ -151,9 +152,9 @@ do
     tag="V08-00-05";
     nameNu=150003
   elif   [ $sname == "THQ_SCAN" ] ; then 
-    name="THQ_tHq-scan-MINIAOD_Private80Xv2";
+    name="THQ_tHq-scan-MINIAOD_Private80Xv2_v2";
     path="/hadoop/cms/store/group/snt/run2_25ns_80Private/";
-    tag="V08-00-05";
+    tag="V08-00-09";
     nameNu=150004
   elif   [ $sname == "TTBAR" ] ; then 
     name="TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v2"
@@ -543,6 +544,165 @@ do
     tag="V08-00-12";
     path="/hadoop/cms/store/group/snt/run2_data/";
     nameNu=1020
+
+######################################
+############## Era H #################
+######################################
+elif [ $sname == "DataDoubleEGH" ]; then
+      name="Run2016H_DoubleEG_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=1021
+      elif [ $sname == "DataDoubleMuonH" ]; then
+      name="Run2016H_DoubleMuon_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=1022
+      elif [ $sname == "DataMuonEGH" ]; then
+      name="Run2016H_MuonEG_MINIAOD_PromptReco-v2/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=1023
+
+      elif [ $sname == "DataDoubleEGHv3" ]; then
+      name="Run2016H_DoubleEG_MINIAOD_PromptReco-v3/merged/";
+      tag="V08-00-15";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=1024
+      elif [ $sname == "DataDoubleMuonHv3" ]; then
+      name="Run2016H_DoubleMuon_MINIAOD_PromptReco-v3/merged/";
+      tag="V08-00-15";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=1025
+      elif [ $sname == "DataMuonEGHv3" ]; then
+      name="Run2016H_MuonEG_MINIAOD_PromptReco-v3/merged/";
+      tag="V08-00-15";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=1026
+
+######################################
+############## Rereco #################
+######################################
+
+elif [ $sname == "DataDoubleEGRerecoB" ]; then
+      name="Run2016B_DoubleEG_MINIAOD_23Sep2016-v3/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2000
+      elif [ $sname == "DataDoubleMuonRerecoB" ]; then
+      name="Run2016B_DoubleMuon_MINIAOD_23Sep2016-v3/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2001
+      elif [ $sname == "DataMuonEGRerecoB" ]; then
+      name="Run2016B_MuonEG_MINIAOD_23Sep2016-v3/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2002
+
+      elif [ $sname == "DataDoubleEGRerecoC" ]; then
+      name="Run2016C_DoubleEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2003
+      elif [ $sname == "DataDoubleMuonRerecoC" ]; then
+      name="Run2016C_DoubleMuon_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2004
+      elif [ $sname == "DataMuonEGRerecoC" ]; then
+      name="Run2016C_MuonEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2005
+
+      elif [ $sname == "DataDoubleEGRerecoD" ]; then
+      name="Run2016D_DoubleEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2006
+      elif [ $sname == "DataDoubleMuonRerecoD" ]; then
+      name="Run2016D_DoubleMuon_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2007
+      elif [ $sname == "DataMuonEGRerecoD" ]; then
+      name="Run2016D_MuonEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2008
+
+      elif [ $sname == "DataDoubleEGRerecoE" ]; then
+      name="Run2016E_DoubleEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2009
+      elif [ $sname == "DataDoubleMuonRerecoE" ]; then
+      name="Run2016E_DoubleMuon_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2010
+      elif [ $sname == "DataMuonEGRerecoE" ]; then
+      name="Run2016E_MuonEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2011
+
+      elif [ $sname == "DataDoubleEGRerecoF" ]; then
+      name="Run2016F_DoubleEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2012
+      elif [ $sname == "DataDoubleMuonRerecoF" ]; then
+      name="Run2016F_DoubleMuon_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2013
+      elif [ $sname == "DataMuonEGRerecoF" ]; then
+      name="Run2016F_MuonEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2014
+
+      elif [ $sname == "DataDoubleEGRerecoG" ]; then
+      name="Run2016G_DoubleEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2015
+      elif [ $sname == "DataDoubleMuonRerecoG" ]; then
+      name="Run2016G_DoubleMuon_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2016
+      elif [ $sname == "DataMuonEGRerecoG" ]; then
+      name="Run2016G_MuonEG_MINIAOD_23Sep2016-v1/merged/";
+      tag="V08-00-14";
+      path="/hadoop/cms/store/group/snt/run2_data/";
+      isData="1";
+      nameNu=2017
 
   #Signals
   elif [ $sname == "T1TTTT_1500" ] 
