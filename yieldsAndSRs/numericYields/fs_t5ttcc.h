@@ -1,4 +1,4 @@
-TString dirpfx = "/nfs-7/userdata/ss2015/ssBabies/v8.04/";
+TString dirpfx = "/nfs-7/userdata/ss2015/ssBabies/v8.07/";
 // TString dirpfx = "./skim/";
 TChain *fs_t5ttcc_950_500_chain = new TChain("t","fs_t5ttcc_m950_m500" );
 fs_t5ttcc_950_500_chain->Add(dirpfx+"T5TTCC_main.root");
