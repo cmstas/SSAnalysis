@@ -241,6 +241,8 @@ void FR(int doHighHT=-1, TString opts=""){
   numer_muon_2D_siplt4->Sumw2();
   denom_muon_2D_siplt4->Sumw2();
 
+  TString base="./skims_Dec2/";
+
   //Declare chain
   TChain *chain = new TChain("t");
   if (doData){
@@ -248,7 +250,8 @@ void FR(int doHighHT=-1, TString opts=""){
     // chain->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/Data*.root"  , tag.c_str()));
     // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/Data*.root");
     // chain->Add("Data_skim.root");
-    chain->Add("Data_22p0ifb_skim.root");
+    // chain->Add(base+"Data_22p0ifb_skim.root");
+    chain->Add(base+"Data_skim.root");
   }
   else if (!doData){
 
@@ -258,15 +261,15 @@ void FR(int doHighHT=-1, TString opts=""){
 
       if(doWjetsOnly) {
           // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/WJets*To*.root");
-          chain->Add("WJets_skim.root");
+          chain->Add(base+"WJets_skim.root");
       } else if(doSoup) {
           // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/WJets*To*.root");
           // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v3/TTBAR_PH*.root");
-          chain->Add("WJets_skim.root");
-          chain->Add("TTBAR_PH_skim.root");
+          chain->Add(base+"WJets_skim.root");
+          chain->Add(base+"TTBAR_PH_skim.root");
       } else {
           // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v3/TTBAR_PH*.root");
-          chain->Add("TTBAR_PH_skim.root");
+          chain->Add(base+"TTBAR_PH_skim.root");
       }
 
     // chain->Add("/hadoop/cms/store/user/namin/condor/ss_babies_Aug25/ttbar_ph_1282.root");
@@ -357,12 +360,14 @@ void FR(int doHighHT=-1, TString opts=""){
 
       if(!test_MVA) {
           if (ss::ht()<300.) {
-              if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
-              if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+              if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA(), ss::lep1_p4().pt())) continue;
+              if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA(), ss::lep2_p4().pt())) continue;
           } 
 
-          if (!passesMVA(2, ss::lep1_id(), ss::lep1_el_etaSC(), ss::lep1_MVA())) continue;
-          if (!passesMVA(2, ss::lep2_id(), ss::lep2_el_etaSC(), ss::lep2_MVA())) continue;
+          // if (!passesMVA(2, ss::lep1_id(), ss::lep1_el_etaSC(), ss::lep1_MVA())) continue;
+          // if (!passesMVA(2, ss::lep2_id(), ss::lep2_el_etaSC(), ss::lep2_MVA())) continue;
+          if (!passesNumeratorMVA(ss::lep1_id(), ss::lep1_el_etaSC(), ss::lep1_MVA(), ss::lep1_p4().pt())) continue;
+          if (!passesNumeratorMVA(ss::lep2_id(), ss::lep2_el_etaSC(), ss::lep2_MVA(), ss::lep2_p4().pt())) continue;
 
       } else {
           if (ss::ht()<300.) { // isolated
@@ -378,8 +383,8 @@ void FR(int doHighHT=-1, TString opts=""){
       if(doHighHT == 0 && ss::ht() > 300.) continue;
       if(doHighHT == 1 && ss::ht() < 300.) continue;
 
-      //SS Z veto
-      if (fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15) continue;
+      // //SS Z veto
+      // if (fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15) continue;
 
 
       float miniiso_1 = ss::lep1_miniIso();

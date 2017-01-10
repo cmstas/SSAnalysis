@@ -1,6 +1,7 @@
 {
 
-    bool doPromptCorrected = true;
+    // bool doPromptCorrected = true;
+    bool doPromptCorrected = false;
 
     // for (int highHT = 0; highHT < 2; highHT++) {
     for (int highHT = -1; highHT < 2; highHT++) {
@@ -9,9 +10,10 @@
     TString lep = doMu ? "muon" : "elec";
     TString l = doMu ? "mu" : "e";
 
-    // TFile* f = TFile::Open("inSituFR_cone_FR_histos_data_normal.root");
     TString pfx = "";
     TString sfx = "";
+
+    // TFile* f = TFile::Open("inSituFR_cone_FR_histos_data_normal.root");
 
     if(doPromptCorrected) pfx += "corr_";
 
