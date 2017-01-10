@@ -18,31 +18,40 @@ void makeTable() {
   // TString dir = "v8.03";
 
   // TString lumi = "12.9";
-  // TString lumi = "17.3";
-  TString lumi = "27.2";
+  TString lumi = "17.3";
+  // TString lumi = "27.2";
   // TString dir = "v8.04_properSF";
   // TString dir = "v8.04_July25";
   // TString dir = "v8.04_July28";
   // TString dir = "v8.04_t5qqqqdm20_July28";
-  TString dir = "v8.04_Oct1";
+  // TString dir = "v8.04_Nov5_17p3_qsplit";
+  // TString dir = "v8.04_Nov16_agg";
+  // TString dir = "v8.07_Dec1_17p3_rereco_agg";
+  // TString dir = "v8.07_Dec2_17p3_rerecojetht_v1";
+  TString dir = "v8.07_Dec5_17p3_v2";
+
+    const int nHHsr = 51;
+    const int nHLsr = 41;
+    const int nLLsr = 8;
+    const int nInclAggsr = 15;
 
   // TString lumi = "0.8";
   // TString dir = "v8.02_800pb_unblind";
 
   TString procs[] = {"ttw","ttzh","wz","ww","xg","rares","flips","fakes"};
 
-  float tHH[33] = {0.};
-  float tHL[33] = {0.};
-  float tLL[33] = {0.};
-  float eHH[33] = {0.};
-  float eHL[33] = {0.};
-  float eLL[33] = {0.};
-  int   nHH[33] = {0};
-  int   nHL[33] = {0};
-  int   nLL[33] = {0};
-  float dHH[33] = {0.};
-  float dHL[33] = {0.};
-  float dLL[33] = {0.};
+  float tHH[nHHsr] = {0.};
+  float tHL[nHHsr] = {0.};
+  float tLL[nHHsr] = {0.};
+  float eHH[nHHsr] = {0.};
+  float eHL[nHHsr] = {0.};
+  float eLL[nHHsr] = {0.};
+  int   nHH[nHHsr] = {0};
+  int   nHL[nHHsr] = {0};
+  int   nLL[nHHsr] = {0};
+  float dHH[nHHsr] = {0.};
+  float dHL[nHHsr] = {0.};
+  float dLL[nHHsr] = {0.};
 
   if (doLatex) {
     cout << "\\documentclass[10pt,a4paper]{article}" << endl;
@@ -53,6 +62,8 @@ void makeTable() {
 
   TString header = "     & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %5s & %10s \\\\";
   if (!doLatex) header = "     | %17s | %17s | %17s | %17s | %17s | %17s | %17s | %17s | %17s | %6s | %10s ";
+
+  TString kine = "";
 
   if (doLatex) {
     cout << "\\begin{landscape}" << endl;
@@ -66,8 +77,8 @@ void makeTable() {
   } else {
     cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   }
-  TString kine = "hihi";
-  for (int sr=1;sr<34;++sr) {
+  kine = "hihi";
+  for (int sr=1;sr<nHHsr+1;++sr) {
     pair<float, float> tye(0,0);
     cout << Form("SR%2i ",sr);
     for (int p=0;p<8;++p) {
@@ -119,7 +130,7 @@ void makeTable() {
     cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   }
   kine = "hilow";
-  for (int sr=1;sr<28;++sr) {
+  for (int sr=1;sr<nHLsr+1;++sr) {
     pair<float, float> tye(0,0);
     cout << Form("SR%2i ",sr);
     for (int p=0;p<8;++p) {
@@ -171,7 +182,7 @@ void makeTable() {
     cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
   }
   kine = "lowlow";
-  for (int sr=1;sr<9;++sr) {
+  for (int sr=1;sr<nLLsr+1;++sr) {
     pair<float, float> tye(0,0);
     cout << Form("SR%2i ",sr);
     for (int p=0;p<8;++p) {
@@ -207,6 +218,58 @@ void makeTable() {
     cout << "\\end{landscape}" << endl;
   }
 
+  cout << endl;
+  cout << endl;
+
+  if (doLatex) {
+    cout << "\\begin{landscape}" << endl;
+    cout << "\\begin{table}" << endl;
+    cout << "\\footnotesize" << endl;
+    cout << "\\caption{Event yields in inclusive aggregate regions.}" << endl;
+    cout << "\\label{tab:yieldsInclAgg}" << endl;
+    cout << "\\begin{tabular}{c|cccccccc|c|c|c}\\hline" << endl;
+    cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+    cout << "\\hline\\hline" << endl;
+  } else {
+    cout <<   Form(header.Data(),"TTW","TTZ/H","WZ","WW","XG","RARES","FLIPS","FAKES","TOTAL","DATA","T1TTTT1200") << endl;
+  }
+  kine = "agg";
+  for (int sr=1;sr<nInclAggsr+1;++sr) {
+    pair<float, float> tye(0,0);
+    cout << Form("SR%2i ",sr);
+    for (int p=0;p<8;++p) {
+      pair<float, float> ye = dumpCardForOneSR(procs[p], kine, sr, lumi, dir);
+      tye.first+=ye.first;
+      tye.second+=ye.second;      
+      int ndec = 1;
+      if (ye.first<1.    ||sqrt(ye.second)<1.) ndec = 2; 
+      if (ye.first<0.01  ||sqrt(ye.second)<0.01) ndec = 3;
+      if (ye.first<0.0005||sqrt(ye.second)<0.0005) ndec = 1;
+      cout << Form("%s %6.*f %s %6.*f ",sep,ndec,ye.first,pm,ndec,sqrt(ye.second));
+    }
+    int ndec = 1;
+    if (tye.first<1.    ||sqrt(tye.second)<1.) ndec = 2; 
+    if (tye.first<0.01  ||sqrt(tye.second)<0.01) ndec = 3;
+    if (tye.first<0.0005||sqrt(tye.second)<0.0005) ndec = 1;
+    cout << Form("%s %6.*f %s %6.*f ",sep,ndec,tye.first,pm,ndec,sqrt(tye.second));
+    float dye = dumpCardForOneSR(TString("data"), kine, sr, lumi, dir).first;
+    cout << Form("%s %6.0f ",sep,dye);
+    float sye = dumpCardForOneSR(TString("t1tttt_1200"), kine, sr, lumi, dir).first;
+    cout << Form("%s %6.3f ",sep,sye);
+    if (doLatex) cout << " \\\\ " << endl;
+    else cout << endl;
+    tHL[sr-1] = tye.first;
+    eHL[sr-1] = sqrt(tye.second);
+    nHL[sr-1] = ndec;
+    dHL[sr-1] = dye;
+  }
+  if (doLatex) {
+    cout << "\\hline" << endl;
+    cout << "\\end{tabular}" << endl;
+    cout << "\\end{table}" << endl;
+    cout << "\\end{landscape}" << endl;
+  }
+
   if (doLatex) {
     cout << "\\begin{table}" << endl;
     cout << "\\footnotesize" << endl;
@@ -218,12 +281,12 @@ void makeTable() {
     cout << "\\hline" << endl;
     cout << "& Expected SM & Observed data  & Expected SM & Observed data  & Expected SM & Observed data \\\\" << endl;
     cout << "\\hline" << endl;
-    for (int sr=0;sr<33;sr++) {
-      if (sr<8) 
+    for (int sr=0;sr<nHHsr;sr++) {
+      if (sr<nLLsr) 
 	cout << Form("SR%i  & %.*f $\\pm$ %.*f & %.0f  & %.*f $\\pm$ %.*f & %.0f &  %.*f $\\pm$  %.*f &  %.0f \\\\",
 		     sr+1,nHH[sr],tHH[sr],nHH[sr],eHH[sr],dHH[sr],nHL[sr],tHL[sr],nHL[sr],eHL[sr],dHL[sr],nLL[sr],tLL[sr],nLL[sr],eLL[sr],dLL[sr]) 
 	     << endl;
-      else if (sr<27) 
+      else if (sr<nHLsr) 
 	cout << Form("SR%i  & %.*f $\\pm$ %.*f & %.0f  & %.*f $\\pm$ %.*f & %.0f &  &   \\\\",
 		     sr+1,nHH[sr],tHH[sr],nHH[sr],eHH[sr],dHH[sr],nHL[sr],tHL[sr],nHL[sr],eHL[sr],dHL[sr]) 
 	     << endl;
@@ -231,7 +294,7 @@ void makeTable() {
 	cout << Form("SR%i  & %.*f $\\pm$ %.*f & %.0f  & & &  &  \\\\",
 		     sr+1,nHH[sr],tHH[sr],nHH[sr],eHH[sr],dHH[sr]) 
 	     << endl;
-      if (sr==7 || sr==26) cout << "\\hline" << endl;
+      if (sr==nLLsr-1 || sr==nHLsr-1) cout << "\\hline" << endl;
     }
     cout << "\\hline" << endl;
     cout << "\\end{tabular}" << endl;

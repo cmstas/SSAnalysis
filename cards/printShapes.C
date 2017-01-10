@@ -22,6 +22,13 @@ void printShapes(TString process, TString kine, TString lumi, TString nameN, TSt
   up->SetLineColor(kRed);
   down->SetLineColor(kBlue);
 
+  TH1F* nominal_err = (TH1F*) nominal->Clone("band");
+  nominal_err->SetFillColor(kGray);
+  nominal_err->Divide(nominal);
+  for (int bin=1;bin<=nominal->GetNbinsX();++bin) {
+      if (nominal_err->GetBinError(bin) > 1.0) nominal_err->SetBinError(bin,0.1);
+      nominal_err->SetBinContent(bin,0.0);
+  }
 
   TH1F* ratioup = (TH1F*) up->Clone("ratioup");
   TH1F* ratiodn = (TH1F*) down->Clone("ratiodn");
@@ -56,6 +63,8 @@ void printShapes(TString process, TString kine, TString lumi, TString nameN, TSt
   ratioup->GetYaxis()->SetTitleOffset(0.35);
   ratioup->GetYaxis()->SetTitle("#Delta/Yield   ");
   ratioup->Draw("HIST");
+  nominal_err->Draw("E2,SAME");
+  ratioup->Draw("HIST,SAME");
   ratiodn->Draw("HIST,SAME");
   pad2->Update();
   pad2->RedrawAxis("g");
@@ -93,6 +102,7 @@ void printShapes(TString process, TString kine, TString lumi, TString nameN, TSt
   leg->AddEntry(nominal," Nominal+Stat","le");
   leg->AddEntry(up,nameA+" Syst Up","l");
   leg->AddEntry(down,nameA+" Syst Down","l");
+  leg->AddEntry(nominal_err,"nominal stat.","f");
   leg->Draw();
 
   pad1->Update();

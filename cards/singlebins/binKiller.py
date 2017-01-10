@@ -17,7 +17,7 @@ def doReduceBins(fname, kine, SR):
         hist = fin.Get(name)
 
         # identify the hists like "ww_stat_hihi30Up", "ww_stat_hihi30Down" and skip them if the SR in the name doesn't match the one specified here
-        match = re.match(".*_(hihi|hilow|lowlow)([0-9]{1,2})(Up|Down)$", name)
+        match = re.match(".*_(agg|hihi|hilow|lowlow)([0-9]{1,2})(Up|Down)$", name)
         if match and len(match.groups()) == 3:
             thekine = match.group(1)
             thesr = match.group(2)
@@ -33,6 +33,8 @@ def doReduceBins(fname, kine, SR):
 
         # print name, val
         if "jesDown" in name and val == 0:
+            val = 0.0001
+        if "extr" in name and val == 0:
             val = 0.0001
 
         h_temp = r.TH1F(name, name, 1, 0, 1)

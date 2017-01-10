@@ -8,6 +8,8 @@ except:
     print "You don't have the tqdm python module, but it's ok."
     print "If you want a pretty progress bar, put the following file in your path: /home/users/namin/syncfiles/pyfiles/tqdm.py"
 
+NPROC=20
+
 def plot_limits(d):
 
     if d["doSignificance"]:
@@ -89,14 +91,14 @@ def plot_limits(d):
                 if os.path.isfile(d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all_significance.log"): return
 
         if d["redolimits"]: 
-            os.system(d["extracard"]+" python createCard.py "+d["mydir"]+" "+sig)
+            os.system(d["extracard"]+" python createCard.py "+d["mydir"]+" "+sig + " >& /dev/null")
             os.system("combine -M Asymptotic "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.txt >& "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.log") # --run expected --noFitAsimov
-        if d["redosignificances"]: os.system("combine -M ProfileLikelihood --uncapped 1 --significance --rMin -5 "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.txt >& "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all_significance.log") 
+        if d["redosignificances"]: os.system("timeout 20m combine -M ProfileLikelihood --uncapped 1 --significance --rMin -5 "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.txt >& "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all_significance.log") 
 
     os.nice(10)
     if d["redolimits"] or d["redosignificances"]:
 
-        pool = ThreadPool(40)
+        pool = ThreadPool(NPROC)
         vals = []
         if have_tqdm:
             for result in tqdm(pool.imap_unordered(run_sig, sigs), total=len(sigs)):
@@ -139,6 +141,7 @@ def plot_limits(d):
     else:
         for sig in sigs:
             foundObs = False
+            if not os.path.isfile(d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.log"): continue
             with open(d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.log") as f:
                 obs = 0.0
                 exp = 0.0
@@ -382,29 +385,30 @@ def plot_limits(d):
         csp1.Draw("L same");
 
         # >>
-        csm2list = k_ssm2.GetContourList(1.)
-        max_points = -1
-        for i in range(0,len(csm2list)):
-            n_points = csm2list[i].GetN()
-            if n_points > max_points:
-                csm2 = csm2list[i]
-                max_points = n_points
-        csm2.SetLineWidth(2)
-        csm2.SetLineStyle(3)
-        csm2.SetLineColor(ROOT.kRed)
-        csm2.Draw("L same");
+        if d["do_2sigma"]:
+            csm2list = k_ssm2.GetContourList(1.)
+            max_points = -1
+            for i in range(0,len(csm2list)):
+                n_points = csm2list[i].GetN()
+                if n_points > max_points:
+                    csm2 = csm2list[i]
+                    max_points = n_points
+            csm2.SetLineWidth(2)
+            csm2.SetLineStyle(3)
+            csm2.SetLineColor(ROOT.kRed)
+            csm2.Draw("L same");
 
-        csp2list = k_ssp2.GetContourList(1.)
-        max_points = -1
-        for i in range(0,len(csp2list)):
-            n_points = csp2list[i].GetN()
-            if n_points > max_points:
-                csp2 = csp2list[i]
-                max_points = n_points
-        csp2.SetLineWidth(2)
-        csp2.SetLineStyle(3)
-        csp2.SetLineColor(ROOT.kRed)
-        csp2.Draw("L same");
+            csp2list = k_ssp2.GetContourList(1.)
+            max_points = -1
+            for i in range(0,len(csp2list)):
+                n_points = csp2list[i].GetN()
+                if n_points > max_points:
+                    csp2 = csp2list[i]
+                    max_points = n_points
+            csp2.SetLineWidth(2)
+            csp2.SetLineStyle(3)
+            csp2.SetLineColor(ROOT.kRed)
+            csp2.Draw("L same");
         # <<
 
         cobslist = k_sobs.GetContourList(1.)
@@ -551,29 +555,30 @@ def plot_limits(d):
         LExpM.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.23*(maxyh-miny)/100*10)
         LExpM.Draw("LSAME")
 
-        # >>
-        LExpP2 = ROOT.TGraph(2)
-        LExpP2.SetName("LExpP")
-        LExpP2.SetTitle("LExpP")
-        LExpP2.SetLineColor(ROOT.kRed)
-        LExpP2.SetLineStyle(3)
-        LExpP2.SetLineWidth(2)
-        LExpP2.SetMarkerStyle(20)
-        LExpP2.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-1.83*(maxyh-miny)/100*10)
-        LExpP2.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-1.83*(maxyh-miny)/100*10)
-        LExpP2.Draw("LSAME")
+        if d["do_2sigma"]:
+            # >>
+            LExpP2 = ROOT.TGraph(2)
+            LExpP2.SetName("LExpP")
+            LExpP2.SetTitle("LExpP")
+            LExpP2.SetLineColor(ROOT.kRed)
+            LExpP2.SetLineStyle(3)
+            LExpP2.SetLineWidth(2)
+            LExpP2.SetMarkerStyle(20)
+            LExpP2.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-1.83*(maxyh-miny)/100*10)
+            LExpP2.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-1.83*(maxyh-miny)/100*10)
+            LExpP2.Draw("LSAME")
 
-        LExpM2 = ROOT.TGraph(2)
-        LExpM2.SetName("LExpM")
-        LExpM2.SetTitle("LExpM")
-        LExpM2.SetLineColor(ROOT.kRed)
-        LExpM2.SetLineStyle(3)
-        LExpM2.SetLineWidth(2)
-        LExpM2.SetMarkerStyle(20)
-        LExpM2.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.33*(maxyh-miny)/100*10)
-        LExpM2.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.33*(maxyh-miny)/100*10)
-        LExpM2.Draw("LSAME")
-        # <<
+            LExpM2 = ROOT.TGraph(2)
+            LExpM2.SetName("LExpM")
+            LExpM2.SetTitle("LExpM")
+            LExpM2.SetLineColor(ROOT.kRed)
+            LExpM2.SetLineStyle(3)
+            LExpM2.SetLineWidth(2)
+            LExpM2.SetMarkerStyle(20)
+            LExpM2.SetPoint(0,minx+ 3.8*(maxx-minx)/100, maxyh-2.33*(maxyh-miny)/100*10)
+            LExpM2.SetPoint(1,minx+21.2*(maxx-minx)/100, maxyh-2.33*(maxyh-miny)/100*10)
+            LExpM2.Draw("LSAME")
+            # <<
 
     c1.SaveAs("%s_scan_xsec_%s%s%s.pdf" % (d["modeltag"], lumi_str,d["postfix"], "_sig" if d["doSignificance"] else ""))
 
@@ -631,10 +636,11 @@ def plot_limits(d):
         csm1write.Write()
         csp1write = csp1.Clone("ssexp_p1s")
         csp1write.Write()
-        csm2write = csm2.Clone("ssexp_m2s")
-        csm2write.Write()
-        csp2write = csp2.Clone("ssexp_p2s")
-        csp2write.Write()
+        if d["do_2sigma"]:
+            csm2write = csm2.Clone("ssexp_m2s")
+            csm2write.Write()
+            csp2write = csp2.Clone("ssexp_p2s")
+            csp2write.Write()
         fout.Close()
 
     os.system("web %s_scan_xsec_%s%s%s.pdf" % (d["modeltag"], lumi_str,d["postfix"],"_sig" if d["doSignificance"] else ""))
@@ -645,17 +651,19 @@ if __name__ == "__main__":
         # "mylumi": "12.9",
         # "mydir": "v8.04_Oct25_17p3noNLO",
         # "mylumi": "17.3",
-        # "mydir": "v8.04_Oct1",
-        # "mylumi": "17.3",
-        # "extracard": "",
-
-        # "mydir": "v8.04_Nov3_17p3_qsplit",
-        "mydir": "v8.04_Nov5_17p3_qsplit",
+        "mydir": "v8.04_Oct1",
         "mylumi": "17.3",
-        "postfix": "qsplit",
-        "redolimits": True,
-        # "extracard": "export NOSCALEUNC=true; ", # FIXME
         "extracard": "",
+        "postfix": "",
+        "redolimits": False,
+
+        # # "mydir": "v8.04_Nov3_17p3_qsplit",
+        # "mydir": "v8.04_Nov5_17p3_qsplit",
+        # "mylumi": "17.3",
+        # "postfix": "qsplit",
+        # "redolimits": True,
+        # # "extracard": "export NOSCALEUNC=true; ", # FIXME
+        # "extracard": "",
 
         "doSignificance": False,
         "redosignificances": False,
@@ -679,7 +687,9 @@ if __name__ == "__main__":
         "maxz": 2.0,
         "maxyh": 1800,
         "ybinsfirstxbin": 15,
+        "do_2sigma": True,
     }
+
 
     d_t5qqqqvv = d_t1tttt.copy()
     d_t5qqqqvv["modeltag"] = "t5qqqqvv"
@@ -726,7 +736,8 @@ if __name__ == "__main__":
     d_t6ttww["miny"] = 75
     d_t6ttww["maxy"] = 875+25
     d_t6ttww["maxyh"] = 1175
-    d_t6ttww["ybinsfirstxbin"] = 5
+    # d_t6ttww["ybinsfirstxbin"] = 5
+    d_t6ttww["ybinsfirstxbin"] = 8
 
     d_t5ttcc = d_t1tttt.copy()
     d_t5ttcc["mydir"] = "v8.04_Sept21"
@@ -786,11 +797,73 @@ if __name__ == "__main__":
     d_t1ttbb["maxyh"] = 1700
     d_t1ttbb["ybinsfirstxbin"] = 15
 
+    d_t1tttt_agg = d_t1tttt.copy()
+    d_t1tttt_agg["postfix"] = "agg"
+    d_t1tttt_agg["redolimits"] = True
+    d_t1tttt_agg["mass_label"] = "Aggregate regions"
+    d_t1tttt_agg["mylumi"] = "17.3"
+    d_t1tttt_agg["mydir"] = "agg_test_slim"
 
-    # plot_limits(d_t5qqqqvv_dm20)
+    # the_dir = "v8.07_Dec1_17p3_rereco"
+    the_dir = "v8.07_Dec14_36p5_nobtagsf_higgst1tttt"
+    d_t1tttt["mydir"] = the_dir
+    d_t1tttt["mylumi"] = "36.5"
+    # d_t5qqqqvv["mydir"] = the_dir
+    # d_t5qqqqvv_dm20["mydir"] = the_dir
+    # d_t1tttt_agg["mydir"] = the_dir+"_agg"
+
+    d_t5ttcc["mydir"] = "v8.07_Dec15_36p5_nobtagsf_t5ttcc"
+    d_t5tttt_dm175["mydir"] = "v8.07_Dec15_36p5_nobtagsf_t5tttt_t6ttww"
+    d_t6ttww["mydir"] = "v8.07_Dec15_36p5_nobtagsf_t5tttt_t6ttww"
+
+    d_t5ttcc["mylumi"] = "36.5"
+    d_t5tttt_dm175["mylumi"] = "36.5"
+    d_t6ttww["mylumi"] = "36.5"
+
+    d_t5ttcc["mass_label"] += ", noBSF"
+    d_t5tttt_dm175["mass_label"] += ", noBSF"
+    d_t6ttww["mass_label"] += ", noBSF"
+
+    d_t5ttcc["redolimits"] = False
+    d_t5tttt_dm175["redolimits"] = False
+    d_t6ttww["redolimits"] = False
+
+    d_t6ttww["minz"] = 1e-4
+    d_t6ttww["maxz"] = 10.0
+    d_t6ttww["do_2sigma"] = False
+
+
+    # NOTE NOTE
+    failmsg = """
+    if you try to plot more than one of these at a time, the 2nd will have a NullPointer, 
+    so wrap everything in try-except to at least run limits/generate the log files, 
+    then we have to manually go back and comment all but one at a time and plot :(
+    """
+    # NOTE NOTE
+
+    # plot_limits(d_t1tttt)
+    # plot_limits(d_t1tttt_agg)
     # plot_limits(d_t5qqqqvv)
-    plot_limits(d_t1tttt)
-    # plot_limits(d_t6ttww)
-    # plot_limits(d_t5ttcc)
-    # plot_limits(d_t5tttt_dm175)
-    # plot_limits(d_t1ttbb)
+    # plot_limits(d_t5qqqqvv_dm20)
+
+
+    try:
+        plot_limits(d_t5ttcc)
+    except ReferenceError:
+        print failmsg
+
+    try:
+        plot_limits(d_t6ttww)
+    except ReferenceError:
+        print failmsg
+
+    try:
+        plot_limits(d_t5tttt_dm175)
+    except ReferenceError:
+        print failmsg
+
+    # try:
+    #     plot_limits(d_t1ttbb)
+    # except ReferenceError:
+    #     print failmsg
+
