@@ -19,7 +19,6 @@ eval `scramv1 runtime -sh`
 popd
 
 #Specify name of output file and name of dierctory in /hadoop/...
-# export DIRNAME=ss_babies_July8_6p26ifb # FIXME match submit25ns
 export WHICH_SMALL=`echo ${WHICH,,}`
 
 #backgrounds
@@ -71,6 +70,12 @@ if [ "$WHICH" == "43" ]; then WHICH_SMALL="wjets1"; fi
 if [ "$WHICH" == "44" ]; then WHICH_SMALL="wjets2"; fi
 if [ "$WHICH" == "45" ]; then WHICH_SMALL="wjets3"; fi
 if [ "$WHICH" == "46" ]; then WHICH_SMALL="wjets4"; fi
+
+if [ "$WHICH" == "50" ]; then WHICH_SMALL="wzlo"; fi
+
+if [ "$WHICH" == "60" ]; then WHICH_SMALL="twz"; fi
+
+if [ "$WHICH" == "61" ]; then WHICH_SMALL="ttzlofix"; fi
 
 #signals
 if [ "$WHICH" == "100" ]; then WHICH_SMALL="t1tttt_1500"; fi
@@ -137,6 +142,9 @@ if [ "$WHICH" == "2014" ]; then WHICH_SMALL="datamuonegrerecof"; fi
 if [ "$WHICH" == "2015" ]; then WHICH_SMALL="datadoubleegrerecog"; fi
 if [ "$WHICH" == "2016" ]; then WHICH_SMALL="datadoublemuonrerecog"; fi
 if [ "$WHICH" == "2017" ]; then WHICH_SMALL="datamuonegrerecog"; fi
+
+if [ "$WHICH" == "3000" ]; then WHICH_SMALL="datajethth"; fi
+if [ "$WHICH" == "3001" ]; then WHICH_SMALL="datajeththv3"; fi
 
 #signal
 if [ "$WHICH" == "10001" ] ; then WHICH_SMALL="t1tttt_main"        ; fi

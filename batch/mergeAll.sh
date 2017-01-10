@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # path=/hadoop/cms/store/user/${USER}/condor/ss_13_babies/
-path=/hadoop/cms/store/user/${USER}/condor/ss_babies_Nov5/
-tag=v8.06_oldsrs
+path=/hadoop/cms/store/user/${USER}/condor/ss_babies_Nov25/
+tag=v8.07
 remake=no
 
 function run () {
@@ -19,8 +19,10 @@ if [ ! -d /nfs-7/userdata/ss2015/ssBabies/$tag ]; then mkdir -p /nfs-7/userdata/
 
 rm nohub.txt
 
-run $path/ttznlo $tag/TTZnlo.root
-# run $path/ttwnlo $tag/TTWnlo.root
+# run $path/ttznlo $tag/TTZnlo.root
+run $path/ttwnlo $tag/TTWnlo.root
+# run $path/wz $tag/WZ.root
+# run $path/qqww $tag/QQWW.root
 
 #run $path/datadoubleegc_05oct                     $tag/DataDoubleEGC_05oct.root         
 #run $path/datadoublemuonc_05oct                   $tag/DataDoubleMuonC_05oct.root       

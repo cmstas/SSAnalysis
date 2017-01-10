@@ -1,7 +1,7 @@
 void merge(const TString& in, const TString& out) {
 
   //Verbose flag
-  bool verbose = 0;
+  bool verbose = 1;
 
   //Set up chains and iterator
   TChain *chain = new TChain("t");
@@ -32,6 +32,7 @@ void merge(const TString& in, const TString& out) {
   currentFile = 0;
   fileIter.Reset(); 
   while ( (currentFile = (TFile*)fileIter.Next()) ){
+      std::cout << " currentFile->GetTitle(): " << currentFile->GetTitle() << std::endl;
     TFile *file = TFile::Open(currentFile->GetTitle());
     if (file->IsZombie()){
       cout << "Error! " << currentFile->GetTitle() << " is corrupt" << endl;
@@ -54,6 +55,7 @@ void merge(const TString& in, const TString& out) {
     //Hist loop
     for (auto&& keyAsObj : *file->GetListOfKeys()){
       auto key = (TKey*)keyAsObj;
+      std::cout << " key->GetName(): " << key->GetName() << std::endl;
       if (strncmp(key->GetClassName(), "TH1F", 1000) != 0) continue; 
       TH1F *hist = (TH1F*)key->ReadObj(); 
       //OurHist loop

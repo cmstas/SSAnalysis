@@ -53,6 +53,12 @@ enum sample_t {
   WJets3 = 45,
   WJets4 = 46,
 
+  WZLO = 50,
+
+  TWZ = 60,
+
+  TTZlofix = 61,
+
   //Signals
   T1TTTT_1500 = 100,
   T1TTTT_1200 = 101,
@@ -122,6 +128,8 @@ enum sample_t {
   DataDoubleMuonRerecoG = 2016,
   DataMuonEGRerecoG = 2017,
 
+  DataJetHTH = 3000,
+  DataJetHTHv3 = 3001,
 
   //Fastsim
   T1TTTT_main                 = 10001,
