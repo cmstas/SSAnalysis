@@ -3,6 +3,7 @@ import os
 import sys
 import math
 import commands
+import glob
 from errors import E
 
 def get_nuisance_line(name, typ, ndashes, val, which_vals):
@@ -15,37 +16,28 @@ def get_nuisance_line(name, typ, ndashes, val, which_vals):
             tmp += " - "
     return tmp+"\n"
 
-# def get_variations(h1, syst=0.0):
-#     hUp = h1.Clone(h1.GetName()+"Up")
-#     hDown = h1.Clone(h1.GetName()+"Down")
-#     for ix in range(1,h1.GetNbinsX()+1):
-#         stat = h1.GetBinError(ix)
-#         cont = h1.GetBinContent(ix)
-#         unc = math.sqrt(stat*stat + (syst*cont)**2)
-#         hUp.SetBinContent(ix, cont+unc)
-#         hDown.SetBinContent(ix, cont-unc)
-#     return hUp,h1,hDown
+def get_variations(h1, syst=0.0, do_var=False):
+    for ix in range(1,h1.GetNbinsX()+1):
+        if not do_var:
+            hUp = r.TH1F("bin%i_%sUp" % (ix,h1.GetName()), "", 1, 0, 1)
+            hDown = r.TH1F("bin%i_%sDown" % (ix,h1.GetName()), "", 1, 0, 1)
+        hCent = r.TH1F("bin%i_%s" % (ix,h1.GetName()), "", 1, 0, 1)
+        stat = h1.GetBinError(ix)
+        cont = h1.GetBinContent(ix)
+        unc = math.sqrt(stat*stat + (syst*cont)**2)
+        if not do_var:
+            hUp.SetBinContent(1, cont+unc)
+            hDown.SetBinContent(1, max(cont-unc, 0.0001))
+        hCent.SetBinContent(1, cont)
+        if not do_var:
+            yield hUp
+            yield hDown
+        yield hCent
 
-# def get_variations(h1, syst=0.0):
-#     yield h1
-#     for ix in range(1,h1.GetNbinsX()+1):
-#         hUp = h1.Clone("bin%i_%sUp" % (ix,h1.GetName()))
-#         hDown = h1.Clone("bin%i_%sDown" % (ix,h1.GetName()))
-#         stat = h1.GetBinError(ix)
-#         cont = h1.GetBinContent(ix)
-#         unc = math.sqrt(stat*stat + (syst*cont)**2)
-#         hUp.SetBinContent(ix, cont+unc)
-#         hDown.SetBinContent(ix, cont-unc)
-#         hUp.Scale(h1.Integral()/hUp.Integral())
-#         hDown.Scale(h1.Integral()/hDown.Integral())
-#         yield hUp
-#         yield hDown
-
-def get_variations(h1, syst=0.0):
+def get_variations_systs(h1, syst=0.0):
     for ix in range(1,h1.GetNbinsX()+1):
         hUp = r.TH1F("bin%i_%sUp" % (ix,h1.GetName()), "", 1, 0, 1)
         hDown = r.TH1F("bin%i_%sDown" % (ix,h1.GetName()), "", 1, 0, 1)
-        hCent = r.TH1F("bin%i_%s" % (ix,h1.GetName()), "", 1, 0, 1)
         stat = h1.GetBinError(ix)
         cont = h1.GetBinContent(ix)
         unc = math.sqrt(stat*stat + (syst*cont)**2)
@@ -66,92 +58,106 @@ def get_bin_yields_and_errors(h1):
 
 
 
-def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.3):
+def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.1):
     outfile = "forCard.root"
     card_filename = "card.txt"
-    f1 = r.TFile(infile)
+    variations = ["btag","jes"]
+    # variations = []
+    procs = ["data", "wz", "ttz", "fakes", "rares"]
+    # procs = ["data", "wz", "ttz", "fakes"]
+
+    variationsud = sum([[v+"_up",v+"_dn"] for v in variations],[])
+    # print variations
+
+    files = {}
+    files["central"] = r.TFile(infile)
+
+    for var in variationsud:
+        # print "%s_%s_%s.root" % (infile.split(".root")[0], var, ud)
+        files[var] = r.TFile("%s_%s.root" % (infile.split(".root")[0], var))
+
+    # print files
+
+
+    # return 
 
     print ">>> Reading input histograms from %s" % infile
-    keys = f1.GetListOfKeys()
-    histnames = [key.GetName() for key in keys if key.ReadObj().InheritsFrom(r.TH1F.Class())]
-    hname_data = [hn for hn in histnames if "Data" in hn][0]
-    hname_wz = [hn for hn in histnames if "WZ" in hn][0]
-    hname_ttz = [hn for hn in histnames if "ttZ" in hn][0]
-    hname_fakes = [hn for hn in histnames if "Fakes" in hn][0]
-    hnames_rares = [hn for hn in histnames if ("Fakes" not in hn) and ("WZ" not in hn) and ("Data" not in hn) and ("ttZ" not in hn)]
 
-    h_data = f1.Get(hname_data).Clone("h_data")
-    h_wz = f1.Get(hname_wz).Clone("h_wz")
-    h_ttz = f1.Get(hname_ttz).Clone("h_ttz")
-    h_fakes = f1.Get(hname_fakes).Clone("h_fakes")
-    hists_rares = [f1.Get(hn) for hn in hnames_rares]
 
-    h_rares = hists_rares[0].Clone("h_rares")
-    for h in hists_rares[1:]:
-        h_rares.Add(h)
+    procs_nodata = procs[1:]
+    procs_signodata = ["sig"] + procs_nodata
 
-    # d_prefit = {
-    #         "data": get_yield_and_error(h_data),
-    #         "wz": get_yield_and_error(h_wz),
-    #         "ttz": get_yield_and_error(h_ttz),
-    #         "fakes": get_yield_and_error(h_fakes),
-    #         "rares": get_yield_and_error(h_rares),
-    #         }
+    hnames = {}
 
-    d_prefit = {
-            "data": get_bin_yields_and_errors(h_data),
-            "wz": get_bin_yields_and_errors(h_wz),
-            "ttz": get_bin_yields_and_errors(h_ttz),
-            "fakes": get_bin_yields_and_errors(h_fakes),
-            "rares": get_bin_yields_and_errors(h_rares),
-            }
+    for var in ["central"] + variationsud:
+        keys = files[var].GetListOfKeys()
+        histnames = [key.GetName() for key in keys if key.ReadObj().InheritsFrom(r.TH1F.Class())]
+        hnames[var] = {}
+        hnames[var]["data"] = [hn for hn in histnames if "Data" in hn]
+        hnames[var]["wz"] = [hn for hn in histnames if "WZ" in hn]
+        hnames[var]["ttz"] = [hn for hn in histnames if "ttZ" in hn]
+        hnames[var]["fakes"] = [hn for hn in histnames if "Fakes" in hn]
+        hnames[var]["rares"] = [hn for hn in histnames if ("Fakes" not in hn) and ("WZ" not in hn) and ("Data" not in hn) and ("ttZ" not in hn)]
+
+    hists = {}
+    # for k,v in hnames.items():
+    for proc in procs:
+        # tmp = [files["central"].Get(hn) for hn in hnames["central"][proc]]
+        # hists["central"][proc] = tmp[0].Clone("h_"+proc)
+        # for h in tmp[1:]: hists["central"][proc].Add(h)
+        for var in ["central"] + variationsud:
+            if var not in hists: hists[var] = {}
+            tmp = [files[var].Get(hn) for hn in hnames[var][proc]]
+            name = "h_"+proc
+            if "cent" not in var: name += var.replace("_up","Up").replace("_dn","Down")
+            # print name
+            hists[var][proc] = tmp[0].Clone(name)
+            for h in tmp[1:]: hists[var][proc].Add(h)
+
+
+    d_prefit = {}
+    for proc in procs:
+        d_prefit[proc] = get_bin_yields_and_errors(hists["central"][proc])
 
 
     print ">>> Writing output histograms for combine into %s" % outfile
-    # print h_rares.GetName()
     fout = r.TFile(outfile, "RECREATE")
-    # map(lambda x: x.Write(), [h_data])
-    map(lambda x: x.Write(), get_variations(h_data))
-    map(lambda x: x.Write(), get_variations(h_wz, syst=shapeUnc))
-    map(lambda x: x.Write(), get_variations(h_ttz, syst=shapeUnc))
-    map(lambda x: x.Write(), get_variations(h_fakes, syst=shapeUnc))
-    map(lambda x: x.Write(), get_variations(h_rares, syst=shapeUnc))
+    for proc in procs:
+        for var in ["central"] + variationsud:
+            map(lambda x: x.Write(), get_variations(hists[var][proc], syst=(shapeUnc if "data" not in proc.lower() else 0.0), do_var=not("cent" in var)))
 
     # fake signal with 1 event in each bin (arbitrary since we only care about BG only fit)
-    sig = h_data.Clone("h_sig")
-    for ix in range(1,sig.GetNbinsX()+1): sig.SetBinContent(ix,1.0)
-    map(lambda x: x.Write(), get_variations(sig, syst=0.0))
+    hists["central"]["sig"] = hists["central"]["data"].Clone("h_sig")
+    for ix in range(1,hists["central"]["sig"].GetNbinsX()+1): hists["central"]["sig"].SetBinContent(ix,1.0)
+    map(lambda x: x.Write(), get_variations(hists["central"]["sig"], syst=0.0))
 
-
-    Nbins = sig.GetNbinsX()
-    Nproc = 5
-    counts_data = [h_data.GetBinContent(ix) for ix in range(1,Nbins+1)]
-    counts_wz = [h_wz.GetBinContent(ix) for ix in range(1,Nbins+1)]
-    counts_ttz = [h_ttz.GetBinContent(ix) for ix in range(1,Nbins+1)]
-    counts_fakes = [h_fakes.GetBinContent(ix) for ix in range(1,Nbins+1)]
-    counts_rares = [h_rares.GetBinContent(ix) for ix in range(1,Nbins+1)]
-    counts_sig = [sig.GetBinContent(ix) for ix in range(1,Nbins+1)]
+    Nbins = hists["central"]["sig"].GetNbinsX()
+    Nproc = len(procs)
+    counts  = {}
+    for proc in procs_signodata + ["data"]:
+        counts[proc] = [hists["central"][proc].GetBinContent(ix) for ix in range(1,Nbins+1)]
 
     bin_str = " ".join([("ch%i "%i) * Nproc for i in range(1,Nbins+1)])
-    proc1_str = "sig wz ttz fakes rares " * (Nbins)
-    proc2_str = " ".join([" ".join(map(str,range(0,Nbins+1))) for _ in range(1,Nbins+1)])
-    rate_list = sum(map(list,zip(*[counts_sig, counts_wz,counts_ttz,counts_fakes,counts_rares])),[])
+    proc1_str = (" ".join(procs_signodata) + " ") * Nbins
+    proc2_str = " ".join([" ".join(map(str,range(0,Nproc))) for _ in range(0,Nbins)])
+    rate_list = sum(map(list,zip(*[counts[proc] for proc in procs_signodata])),[])
 
     buff = ""
-    buff += "imax 4\n"
-    buff += "jmax 4\n"
-    buff += "kmax %i\n" % (Nbins*Nproc)
+    buff += "imax %i\n" % (Nbins)
+    buff += "jmax %i\n" % (Nproc-1)
+    buff += "kmax %i\n" % ((Nbins+1+len(variations))*(Nproc-1))
     buff += "------------\n"
 
     for i in range(1,Nbins+1):
-        for thing in ["data_obs","sig","wz","ttz","fakes","rares"]:
+        # for thing in ["data_obs","sig","wz","ttz","fakes","rares"]:
+        for thing in ["data_obs"] + procs_signodata:
             buff += "shapes %s ch%i %s bin%i_h_%s bin%i_h_%s\n" % \
                     (thing, i, outfile, i, thing.replace("_obs",""), i, "data" if "data" in thing else "$SYSTEMATIC")
 
     buff += "------------\n"
 
     buff += "bin " + " ".join(["ch%i" % i for i in range(1,Nbins+1)]) + "\n"
-    buff += "observation " + " ".join(["%.2f" % e for e in counts_data]) + "\n"
+    buff += "observation " + " ".join(["%.2f" % e for e in counts["data"]]) + "\n"
 
     buff += "------------\n"
 
@@ -162,56 +168,20 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.3):
 
     buff += "------------\n"
 
-    for ithing,thing in enumerate(["wz","ttz","fakes","rares"]):
+    # for ithing,thing in enumerate(["wz","ttz","fakes","rares"]):
+    for ithing,thing in enumerate(procs_nodata):
         norm = lnNbg
         if thing in ["wz","ttz"]: norm = lnNsig
         for ibin in range(Nbins):
             buff += get_nuisance_line(thing, "shape", len(rate_list), 1.0, [ibin*(Nproc)+ithing+1])
         buff += get_nuisance_line(thing, "lnN", len(rate_list), norm, range(ithing+1,(Nbins+1)*Nproc,Nproc))
+        for var in variations:
+            buff += get_nuisance_line(thing+var, "shape", len(rate_list), 1.0, range(ithing+1,(Nbins+1)*Nproc,Nproc))
 
     card_txt = buff
 
 
     fout.Close()
-
-    # sys.exit()
-
-
-    # card_txt = """
-    # imax 1 number of channels
-    # jmax 4 number of nonsignal processes
-    # kmax 4 number of nuisances
-    # ------------
-    # shapes   data_obs   ch1   {rootfile}   h_data    h_data
-    # shapes   sig        ch1   {rootfile}   h_sig     h_$SYSTEMATIC
-    # shapes   wz         ch1   {rootfile}   h_wz      h_$SYSTEMATIC
-    # shapes   ttz        ch1   {rootfile}   h_ttz     h_$SYSTEMATIC
-    # shapes   fakes      ch1   {rootfile}   h_fakes   h_$SYSTEMATIC
-    # shapes   rares      ch1   {rootfile}   h_rares   h_$SYSTEMATIC
-    # ------------
-    # bin           ch1
-    # observation   {datacount:.0f}
-    # ------------
-    # bin       ch1    ch1    ch1    ch1     ch1
-    # process   sig    wz     ttz    fakes   rares
-    # process   0      1      2      3       4
-    # rate      1      {wzcount:.2f}   {ttzcount:.2f}   {fakescount:.2f}    {rarescount:.2f}
-    # ------------
-    # wz      lnN   -     2.0   -     -     -
-    # ttz     lnN   -     -     2.0   -     -
-    # fakes   lnN   -     -     -     1.5   -
-    # rares   lnN   -     -     -     -     1.5
-    # """.format(
-    #         rootfile=outfile, 
-    #         datacount=h_data.Integral(),
-    #         wzcount=h_wz.Integral(),
-    #         ttzcount=h_ttz.Integral(),
-    #         fakescount=h_fakes.Integral(),
-    #         rarescount=h_rares.Integral(),
-    #         )
-
-    # wz      lnN     -     2.0   -     -     -
-    # ttz     lnN     -     -     2.0   -     -
 
     print ">>> Writing card %s" % card_filename
     # write card
@@ -237,8 +207,8 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.3):
     fit_s = fin.Get("norm_fit_s")
     fit_b = fin.Get("norm_fit_b")
     iter = fit_b.createIterator()
-    print "{:>10} {:>21} {:>21} {:>21}".format("process", "prefit", "postfit", "SF")
-    print "-"*80
+    # print "{:>10} {:>21} {:>21} {:>21}".format("process", "prefit", "postfit", "SF")
+    # print "-"*80
     d_sfs = {}
     d_cerrs = {}
     while True:
@@ -263,12 +233,12 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.3):
         except:
             sf, sferr = -1.0, 0.0
         # print "%s \t\t %.2f +- %.2f \t\t %.2f +- %.2f \t\t %.2f +- %.2f" % (title, d_prefit[title][0],d_prefit[title][1],norm_b.getVal(),norm_b.getError(), sf, sferr)
-        print "{:>10} {:>15,.2f} +-{:>6,.2f} {:>15,.2f} +-{:>6,.2f} {:>15,.2f} +-{:>6,.2f}".format(
-                title, 
-                p_val, p_err,
-                norm_b.getVal(),norm_b.getError(),
-                sf, sferr
-                )
+        # print "{:>10} {:>15,.2f} +-{:>6,.2f} {:>15,.2f} +-{:>6,.2f} {:>15,.2f} +-{:>6,.2f}".format(
+        #         title, 
+        #         p_val, p_err,
+        #         norm_b.getVal(),norm_b.getError(),
+        #         sf, sferr
+        #         )
         d_sfs[title] = (sf, sferr)
 
     print "total SFs:"
@@ -281,8 +251,30 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.3):
 
     return d_sfs
 
+def make_single_bin_hist(fname, which_bin):
+    fin = r.TFile(fname)
+    fout = r.TFile("onebin_"+fname, "RECREATE")
+    for key in fin.GetListOfKeys():
+        if not key.ReadObj().InheritsFrom(r.TH1F.Class()): continue
+        name = key.GetName()
+        hist = fin.Get(name)
+        h_temp = hist.Clone(name)
+        h_temp.SetBins(1,0,1)
+        h_temp.Reset()
+        # h_temp = r.TH1F(name, name, 1, 0, 1)
+        h_temp.SetBinContent(1, hist.GetBinContent(which_bin))
+        h_temp.SetBinError(1, hist.GetBinError(which_bin))
+        h_temp.Write()
+    fout.Close()
+    fin.Close()
+
 if __name__ == "__main__":
 
-    infile = "h1D_nbtags.root"
+    for fname in glob.glob("h1D_nbtags*root"):
+        make_single_bin_hist(fname, 3)
+    infile = "onebin_h1D_nbtags.root"
     print get_sfs(infile)
+
+    # infile = "h1D_nbtags.root"
+    # print get_sfs(infile)
 

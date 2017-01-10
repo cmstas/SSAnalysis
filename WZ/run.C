@@ -5,6 +5,7 @@
 
     gROOT->ProcessLine(".L scan.C+");
     // gROOT->ProcessLine(".L scan_rares.C+");
+    // gROOT->ProcessLine(".L scan_synch.C+");
     scan();
 
     // gROOT->ProcessLine(".L srscan.C+");
