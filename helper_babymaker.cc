@@ -741,6 +741,8 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
 
   is_miniaodv1 = filename.find("MCRUN2_74_V9") != std::string::npos;
   is_miniaodv1_80X = filename.find("RunIISpring16MiniAODv1") != std::string::npos;
+  bool isJetHT = filename.find("JetHT") != std::string::npos;
+  bool isRunH = filename.find("Run2016H") != std::string::npos;
 
   // int nHHsr = 33;
   // int nHLsr = 27;
@@ -1073,6 +1075,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     lep2_genps_isLastCopyBeforeFSR                          = (lep2_mc3idx < 0) ? 0 : tas::genps_isLastCopyBeforeFSR().at(lep2_mc3idx);
   }
 
+  /*
   //Electron trigger stuff
   if (abs(lep1_id) == 11 && lep1_idx >= 0){
     //Double electron triggers
@@ -1194,6 +1197,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
       if (matchToHLTFilter("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v", "hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8", lep2_p4, 0.1, &dummypt)) lep2_trigMatch_isoReq = true;		
     }
   }
+  */
 
   //PtRel for both leptons
   lep1_ptrel_v0 = getPtRel(lep1_id, lep1_idx, false, ssWhichCorr);
@@ -1537,17 +1541,33 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   //Make sure one of our triggers fired
   // if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")))  (triggers |= 1<<1); 
 
-  if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"))  ||
-      passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
 
-  if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")))              (triggers |= 1<<3); 
-  // if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))            (triggers |= 1<<4); 
+  if (isRunH) {
+      if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v"))  ||
+          passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v")))   (triggers |= 1<<2); 
+
+      if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")))              (triggers |= 1<<3); 
+      if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")))            (triggers |= 1<<4); 
+  } else {
+      if (passHLTTrigger(triggerName("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v"))  ||
+          passHLTTrigger(triggerName("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v")))   (triggers |= 1<<2); 
+
+      if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v")))              (triggers |= 1<<3); 
+      if (passHLTTrigger(triggerName("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v")))            (triggers |= 1<<4); 
+  }
 
   if (passHLTTrigger(triggerName("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")))        (triggers |= 1<<6); 
 
   if (passHLTTrigger(triggerName("HLT_Mu8_Ele8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))      (triggers |= 1<<0);
   if (passHLTTrigger(triggerName("HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT300_v")))    (triggers |= 1<<5); 
   if (passHLTTrigger(triggerName("HLT_DoubleMu8_Mass8_PFHT300_v")))                      (triggers |= 1<<7); 
+
+  // JetHT triggers
+  if (passHLTTrigger(triggerName("HLT_AK8PFJet450")))                      (triggers |= 1<<8); 
+  if (passHLTTrigger(triggerName("HLT_PFJet450")))                         (triggers |= 1<<9); 
+
+
+
   fired_trigger = false;
   if (triggers != 0) {
     if (ht<300) {
@@ -1562,6 +1582,14 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
       if ( hyp_type==0 && (triggers & 1<<7)==(1<<7) ) fired_trigger = true;
       if ( hyp_type==3 && (triggers & 1<<5)==(1<<5) ) fired_trigger = true;
       if ( (hyp_type==1 || hyp_type==2) && (triggers & 1<<0)==(1<<0) ) fired_trigger = true;
+    }
+
+    if (isJetHT) {
+      if ( (triggers & 1<<8)==(1<<8) ) fired_trigger = true;
+      if ( (triggers & 1<<9)==(1<<9) ) fired_trigger = true;
+
+      // for JetHT, just throw away the event if we didn't trigger...
+      if (!fired_trigger) return babyErrorStruct; 
     }
   }
 
