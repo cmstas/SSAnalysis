@@ -135,36 +135,37 @@ void yields(){
       // Figure out region
       anal_type_t categ = analysisCategory(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());  
       int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
-      int SR = signalRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      // int SR = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
+      int SR = signalRegionChargeSplit(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::mtmin(), ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt());
       if (BR<0) continue;
 
+
       // HH has 32 SRs and HL has 26, so add to unify the SR nums
-      if(categ == HighLow && SR > 0) SR += 32;
-      if(categ == LowLow  && SR > 0) SR += 32+26;
+      // if(categ == HighLow && SR > 0) SR += 32;
+      // if(categ == LowLow  && SR > 0) SR += 32+26;
+      if(categ == HighLow && SR > 0) SR += 51;
+      if(categ == LowLow  && SR > 0) SR += 51+41;
 
 
-      // Now we have made all baseline cuts
-      if(doSingleFile) {
-          textfile_global << Form("%1d%9d%12d\t%+2d %5.1f\t%+2d %5.1f\t%2.4f\t%2.4f\t%2.4f\t%2.4f\t%2.4f\n",
-              ss::run(), ss::lumi(), (int)ss::event(), 
-              ss::lep1_id(), ss::lep1_p4().pt(), 
-              ss::lep2_id(), ss::lep2_p4().pt(), 
-              ss::weight_btagsf(), getTruePUw(ss::trueNumInt()[0]),
-              HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::lep2_id(), ss::ht(), 0),
-              leptonScaleFactor(ss::lep1_id(),  ss::lep1_p4().pt(),  ss::lep1_p4().eta(),  ss::ht()),
-              leptonScaleFactor(ss::lep2_id(),  ss::lep2_p4().pt(),  ss::lep2_p4().eta(),  ss::ht())
-          );
-
-        
-        
-          for (unsigned int ib = 0; ib < ss::btags_eff().size(); ib++) {
-          textfile_global << Form("%1d%9d%12d\tbpt,beff,bsf\t\t%2.4f\t%2.4f\t%2.4f\n",
-              ss::run(), ss::lumi(), (int)ss::event(), 
-              ss::btags_effpt()[ib],
-              ss::btags_eff()[ib],
-              ss::btags_sf()[ib]);
-          }
-      }
+      // // Now we have made all baseline cuts
+      // if(doSingleFile) {
+      //     textfile_global << Form("%1d%9d%12d\t%+2d %5.1f\t%+2d %5.1f\t%2.4f\t%2.4f\t%2.4f\t%2.4f\t%2.4f\n",
+      //         ss::run(), ss::lumi(), (int)ss::event(), 
+      //         ss::lep1_id(), ss::lep1_p4().pt(), 
+      //         ss::lep2_id(), ss::lep2_p4().pt(), 
+      //         ss::weight_btagsf(), getTruePUw(ss::trueNumInt()[0]),
+      //         HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::lep2_id(), ss::ht(), 0),
+      //         leptonScaleFactor(ss::lep1_id(),  ss::lep1_p4().pt(),  ss::lep1_p4().eta(),  ss::ht()),
+      //         leptonScaleFactor(ss::lep2_id(),  ss::lep2_p4().pt(),  ss::lep2_p4().eta(),  ss::ht())
+      //     );
+      //     for (unsigned int ib = 0; ib < ss::btags_eff().size(); ib++) {
+      //     textfile_global << Form("%1d%9d%12d\tbpt,beff,bsf\t\t%2.4f\t%2.4f\t%2.4f\n",
+      //         ss::run(), ss::lumi(), (int)ss::event(), 
+      //         ss::btags_effpt()[ib],
+      //         ss::btags_eff()[ib],
+      //         ss::btags_sf()[ib]);
+      //     }
+      // }
 
       // // textfile_leptons << Form("%1d%9d%12d\t%5.1f\t%5.1f\t%5.1f\t%+2d\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.3f\t%1d\t%1d\t%1d\t%1d\t%5.1f\t%5.1f\t%5.1f\t%+2d\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.1f\t%5.3f\t%1d\t%1d\t%1d\t%1d\n",
       // if(doSingleFile)
@@ -236,24 +237,25 @@ void yields(){
       //         );
 
 
-      // if(ss::hyp_class() != 3) continue;
-      // if(BR < 0) continue;
-      // // if(!ss::fired_trigger()) continue;
-      // // Now we have made all baseline cuts
-      // if(doSingleFile) {
-      //     textfile_global_veto << Form("%1d%9d%12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", 
-      //         ss::run(), ss::lumi(), (int)ss::event(), 
-      //         ss::nVetoElectrons7()+ss::nVetoMuons5(),
-      //         ss::lep1_id(), ss::lep1_p4().pt(), 
-      //         ss::lep2_id(), ss::lep2_p4().pt(), 
-      //         ss::njets(), ss::nbtags(), ss::met(), ss::ht(), SR);
-      // } else {
-      //     TString lep_str = abs(ss::lep1_id()) == 11 ? "ee" : "mumu";
-      //     if(abs(ss::lep1_id()) != abs(ss::lep2_id())) lep_str = "emu";
-      //     TString BR_str = Form("%i", BR);
-      //     addToCounter(filename + "_" + BR_str + "_" + lep_str, ss::scale1fb());
-      //     // addToCounter(filename + "_" + BR_str + "_" + lep_str);
-      // }
+      if(ss::hyp_class() != 3) continue;
+      if(BR < 0) continue;
+      // if(!ss::fired_trigger()) continue;
+      // Now we have made all baseline cuts
+      if(doSingleFile) {
+          // textfile_global_veto << Form("%1d%9d%12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", 
+          textfile_global << Form("%1d%9d%12d\t%2d\t%+2d %5.1f\t%+2d %5.1f\t%d\t%2d\t%5.1f\t%6.1f\t%2d\n", 
+              ss::run(), ss::lumi(), (int)ss::event(), 
+              ss::nVetoElectrons7()+ss::nVetoMuons5(),
+              ss::lep1_id(), ss::lep1_p4().pt(), 
+              ss::lep2_id(), ss::lep2_p4().pt(), 
+              ss::njets(), ss::nbtags(), ss::met(), ss::ht(), SR);
+      } else {
+          TString lep_str = abs(ss::lep1_id()) == 11 ? "ee" : "mumu";
+          if(abs(ss::lep1_id()) != abs(ss::lep2_id())) lep_str = "emu";
+          TString BR_str = Form("%i", BR);
+          addToCounter(filename + "_" + BR_str + "_" + lep_str, ss::scale1fb());
+          // addToCounter(filename + "_" + BR_str + "_" + lep_str);
+      }
 
 
     }//event loop
@@ -271,8 +273,9 @@ void yields(){
       // system("sort -n -k1 -k2 -k3 unsorted_jets.txt > ucsx_TTW_80X_dump_jets.txt");
       // system("sort -n -k1 -k2 -k3 unsorted_global.txt > ucsx_TTW_80X_dump_global.txt");
       // system("sort -n -k1 -k2 -k3 unsorted_global_veto.txt > ucsx_TTW_80X_dump_global_veto.txt");
-      system("sort -n -k1 -k2 -k3 unsorted_global.txt > ucsx_TTW_dump_postICHEP.txt");
-      system("rm unsorted*.txt"); 
+      // system("sort -n -k1 -k2 -k3 unsorted_global.txt > ucsx_TTW_dump_postICHEP.txt");
+      system("sort -n -k1 -k2 -k3 unsorted_global.txt > ucsx_TTW_dump_qsplit.txt");
+      // system("rm unsorted*.txt"); 
   } else {
       printCounter(true);
   }

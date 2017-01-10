@@ -87,16 +87,19 @@ if __name__ == "__main__":
     # typ = "leptons"
     # typ = "jets"
 
-    verbose = False # if True, show event numbers for relevant parts
+    verbose = True # if True, show event numbers for relevant parts
+    for typ in ["global"]:
     # for typ in ["global_veto"]:
-    for typ in ["global", "leptons", "jets"]:
+    # for typ in ["global", "leptons", "jets"]:
 
         print "\n\n" + "#" * 40
         print "#" * 20 + typ.upper() + "#" * 20
         print "#" * 40
 
-        f1_patt = "ucsx_TTW_80X_dump_%s.txt"
-        f2_patt = "ecop/fdump_%s_80X.txt"
+        # f1 = "ucsx_TTW_80X_dump_%s.txt" % typ
+        # f2 = "ecop/fdump_%s_80X.txt" % typ
+        f1 = "matthieu_qsplit.txt"
+        f2 = "ucsx_TTW_dump_qsplit.txt"
         # f2_patt = "ufl/fdump_%s_80X.txt"
 
         if typ in ["global", "global_veto"]:
@@ -106,6 +109,6 @@ if __name__ == "__main__":
         if typ == "jets":
             col_names = ["jet1pt", "jet1eta", "jet1phi", "jet1csvmva", "jet1csvmedium", "jet2pt", "jet2eta", "jet2phi", "jet2csvmva", "jet2csvmedium"]
 
-        compare(f1_patt % typ, f2_patt % typ, col_names, verbose=verbose, print_common_disagreements=True)
+        compare(f1, f2, col_names, verbose=verbose, print_common_disagreements=True)
 
 
