@@ -6,13 +6,16 @@
   gSystem->Load("../CORE/CMS3_CORE.so");
   gROOT->ProcessLine(".L ../../classFiles/v6.02/SS.cc+");
 
+  // gROOT->ProcessLine(".L ratios.C++");
+  // ratios(0, "doTTZ,doCompareNLOwithLO");
+  // ratios(0, "doCompareNLOwithLO");
+  // ratios(0, "doTTZ");
+  // ratios(0, "");
+
+  // gROOT->ProcessLine(".L ratios_wz.C++");
+  // ratios(0, "");
   gROOT->ProcessLine(".L ratios.C++");
-  // gROOT->ProcessLine("ratios(1)");
-  // gROOT->ProcessLine("ratios(0)");
-  ratios(0, "doTTZ,doCompareNLOwithLO");
-  ratios(0, "doCompareNLOwithLO");
-  ratios(0, "doTTZ");
-  ratios(0, "");
+  ratios(0, "--doTTZ");
 
   // gROOT->ProcessLine(".L yields.C++");
   // gROOT->ProcessLine("yields()");
