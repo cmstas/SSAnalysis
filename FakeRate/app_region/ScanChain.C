@@ -671,8 +671,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       if(!testMVA) {
           if (ss::ht()<300.) {
               //Skip if does not pass FO for isolated triggers
-              if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
-              if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+              if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA(), ss::lep1_p4().pt())) continue;
+              if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA(), ss::lep2_p4().pt())) continue;
           } 
       } else {
           if (ss::ht()<300.) { // isolated
@@ -700,7 +700,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       int sr = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pT, lep2_pT);
 
       // SS Z veto -- this is to match the inSitu FR derivation macro
-      if ((inSitu && !doData) && (fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15)) continue;
+      // if ((inSitu && !doData) && (fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15)) continue; // FIXME
       if (inSitu && (ss::hyp_class() == 4 || ss::hyp_class() == 6)) continue;
       if (ss::hyp_class() == 7) continue;
 
@@ -940,8 +940,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       else inSituFR_id_lep2 =  ss::lep2_dZ() < 0.1 && ss::lep2_mu_ptErr() && ss::lep2_mediumMuonPOG() &&  fabs(ss::lep2_p4().eta()) < 2.4;
 
       if(!testMVA) {
-          inSituFR_id_lep1 = inSituFR_id_lep1 && passesNumeratorMVA(ss::lep1_id(), ss::lep1_el_etaSC(), ss::lep1_MVA());
-          inSituFR_id_lep2 = inSituFR_id_lep2 && passesNumeratorMVA(ss::lep2_id(), ss::lep2_el_etaSC(), ss::lep2_MVA());
+          inSituFR_id_lep1 = inSituFR_id_lep1 && passesNumeratorMVA(ss::lep1_id(), ss::lep1_el_etaSC(), ss::lep1_MVA(), ss::lep1_p4().pt());
+          inSituFR_id_lep2 = inSituFR_id_lep2 && passesNumeratorMVA(ss::lep2_id(), ss::lep2_el_etaSC(), ss::lep2_MVA(), ss::lep2_p4().pt());
       }
 
           // if (inSitu && (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2())) continue;

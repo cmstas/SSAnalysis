@@ -15,27 +15,35 @@
   // tag2 = "v1.09FR_76X"; // FIXME
 
   // tag = "v1.10FR"; // FIXME
-  tag = "v1.11FR"; // FIXME
+  // tag = "v1.11FR"; // FIXME
+  tag = "v1.13FR"; // FIXME
 
+  TString tag_data = tag;
+  // TString tag_data = "v1.12FR"; // FIXME
   // TString tag_data = tag;
-  TString tag_data = "v1.12FR"; // FIXME
-  // TString tag_data = tag;
 
-  TChain *data = new TChain("t"); 
-  data->Add( "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleEG*.root" );
-  data->Add( "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleMuon*.root" ); // FIXME
-  ScanChain(data,"./rate_histos_data_LooseEMVA.root","useLooseEMVA"); 
-  ScanChain(data,"./rate_histos_data_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
+  // TChain *data = new TChain("t"); 
+  // data->Add( "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleEG*.root" );
+  // data->Add( "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleMuon*.root" );
+  // ScanChain(data,"./rate_histos_data_LooseEMVA.root","useLooseEMVA"); 
+  // ScanChain(data,"./rate_histos_data_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
-  TChain *dy = new TChain("t"); 
-  dy->Add( "/nfs-7/userdata/leptonTree/"+tag+"/DY_madgraph*.root" );
-  ScanChain(dy,"./rate_histos_dy_LooseEMVA.root","useLooseEMVA"); 
-  ScanChain(dy,"./rate_histos_dy_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
+  // TChain *dy = new TChain("t"); 
+  // dy->Add( "/nfs-7/userdata/leptonTree/"+tag+"/DY_madgraph*.root" );
+  // ScanChain(dy,"./rate_histos_dy_LooseEMVA.root","useLooseEMVA"); 
+  // ScanChain(dy,"./rate_histos_dy_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
-  TChain *wj = new TChain("t"); 
-  wj->Add( "/nfs-7/userdata/leptonTree/"+tag+"/WJets*.root" );
-  ScanChain(wj,"./rate_histos_wj_LooseEMVA.root","useLooseEMVA"); 
-  ScanChain(wj,"./rate_histos_wj_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
+  // TChain *wj = new TChain("t"); 
+  // wj->Add( "/nfs-7/userdata/leptonTree/"+tag+"/WJets*.root" );
+  // ScanChain(wj,"./rate_histos_wj_LooseEMVA.root","useLooseEMVA"); 
+  // ScanChain(wj,"./rate_histos_wj_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
+
+  TChain *qcd_el = new TChain("t"); 
+  // qcd_el->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_EM_Enriched_80X*.root" );
+  // qcd_el->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_non_Enriched_80X*.root" );
+  qcd_el->Add( "/nfs-7/userdata/leptonTree/"+tag+"/TTbar_80X*.root" );
+  ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA.root","useLooseEMVA"); 
+  ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
   // TChain *qcd_mu = new TChain("t"); 
   // qcd_mu->Add( "/nfs-7/userdata/leptonTree/"+tag2+"/QCD_Mu_Enriched.root" );

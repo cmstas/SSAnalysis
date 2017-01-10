@@ -8,7 +8,7 @@
 
     TString tag = getTag();
   // tag = "v1.09FR_80X"; // FIXME
-  tag = "v1.11FR"; // FIXME
+  tag = "v1.13FR"; // FIXME
     cout << "using tag=" << tag << endl;
     float intlumi = getLumi();
     // float intlumi = 12.9-6.26; // HALF

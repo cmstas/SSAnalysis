@@ -13,12 +13,12 @@
   gROOT->ProcessLine(".L ../../commonUtils.h");
 
   TString tag1 = getTag();
-  TString tag2 = "v5.01"; //no fake rate babies past v5.01 yet
+  // TString tag2 = "v5.01"; //no fake rate babies past v5.01 yet
 
 
-  bool highhigh   = 1;
+  bool highhigh   = 0;
   bool highlow    = 0;
-  bool lowlow     = 0;
+  bool lowlow     = 1;
 
   bool doIsoTrigs = 0;
   bool doHTTrigs  = 0;
@@ -31,10 +31,15 @@
 
   bool doData          = 0;
 
-  bool doInSitu        = 1;
-  bool testMVA         = 1; // use modified MVA from Lesya in 2015 AN for ISFR
-  bool extrPt          = 1; // extra Ptbin for electrons
-  bool inclusiveHT     = 1; // use inclusive HT FR
+  // bool doInSitu        = 1;
+  // bool testMVA         = 0; // use modified MVA from Lesya in 2015 AN for ISFR
+  // bool extrPt          = 1; // extra Ptbin for electrons
+  // bool inclusiveHT     = 1; // use inclusive HT FR
+
+  bool doInSitu        = 0;
+  bool testMVA         = 0; // use modified MVA from Lesya in 2015 AN for ISFR
+  bool extrPt          = 0; // extra Ptbin for electrons
+  bool inclusiveHT     = 0; // use inclusive HT FR
 
   bool doBonly         = 0;
   bool doLightonly     = 0;
@@ -43,7 +48,7 @@
   bool doLooseEMVA  = 1;
 
   //These are only for inSitu (choose only one of these)
-  bool soup         = 0;
+  bool soup         = 1;
   bool PC           = 0;   
   bool ssZ          = 0;
   bool PCssZ        = 0;
@@ -103,8 +108,10 @@
         // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/WJets*To*.root");
         // ch->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v3/TTBAR_PH*.root");
 
-        ch->Add("../../inSituFR/WJets_skim.root");
-        ch->Add("../../inSituFR/TTBAR_PH_skim.root");
+        // ch->Add("../../inSituFR/WJets_skim.root");
+        ch->Add("../../inSituFR/skims_Dec2/WJets_HTbinned_skim.root");
+        // ch->Add("../../inSituFR/TTBAR_PH_skim.root");
+        ch->Add("../../inSituFR/skims_Dec2/TTBAR_PH_skim.root");
 
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DY_high.root");
       //ch->Add("/nfs-7/userdata/ss2015/ssBabies/"+tag1+"/DY_low.root");

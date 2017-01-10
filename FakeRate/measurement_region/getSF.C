@@ -4,9 +4,10 @@
 
     // TString tag = "v1.09FR_80X";
     // TString tag = "v1.10FR";
-    TString tag = "v1.11FR"; // ICHEP
+    // TString tag = "v1.11FR"; // ICHEP
+    TString tag = "v1.13FR"; // Moriond
     // float intlumi = getLumi();
-    float intlumi = 22.0;//12.9-6.26; // HALF
+    float intlumi = 36.46;
 
     pair<float,float> zsfs1 = normalizeZpeak(intlumi, tag, false, true);
     cout << "ZP SF non-iso,8 e,mu: " << zsfs1.first << " " << zsfs1.second << endl;

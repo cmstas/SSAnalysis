@@ -16,22 +16,22 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
       if (useIsoTrig) hlt = (doMu ? "HLT_Mu8_TrkIsoVVL" : "HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30");
   }
 
-  // TString tag_data = tag;
-  TString tag_data = "v1.12FR"; // FIXME
-  // TString tag_data = tag; // FIXME
+  TString tag_data = tag;
+  // TString tag_data = "v1.12FR";
+  // TString tag_data = "v1.13FR";
 
 
   float mult = 1.0;
 
-  float e8i = 1767.61;
-  float e17i = 84.5516;
-  float e8 = 1767.61;
-  float e17 = 85.1862;
+  float e8i = 1.0;
+  float e17i = 1.0;
+  float e8 = 1.0;
+  float e17 = 1.0;
 
-  float m8i = 238.145;
-  float m17i = 28.3003;
-  float m8 = 496.07;
-  float m17 = 13.1493;
+  float m8i = 1.0;
+  float m17i = 1.0;
+  float m8 = 1.0;
+  float m17 = 1.0;
 
 
   // // to go from 800/pb SFs to 4/fb SFs
@@ -44,16 +44,6 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   // m8 *= 0.7528*3.99/0.8042;
   // m17 *= 0.4533*3.99/0.8042;
 
-  e8i = 1.0;
-  e17i = 1.0;
-  e8 = 1.0;
-  e17 = 1.0;
-  m8i = 1.0;
-  m17i = 1.0;
-  m8 = 1.0;
-  m17 = 1.0;
-
-  
   // // for 6.26/fb
   // e8i = 17644.6*1.05035;
   // e17i = 1161.41*1.05035;
@@ -105,16 +95,26 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   // m8 = 2628.3;
   // m17 = 31.912;
 
-  // For 22.0/fb JSON
-  e8i = 5251.71;
-  e17i = 483.027;
-  e8 = 5249.37;
-  e17 = 476.482;
-  m8i = 2820.13;
-  m17i = 133.217;
-  m8 = 5707.51;
-  m17 = 98.7317;
-  
+  // // For 22.0/fb JSON
+  // e8i = 5251.71;
+  // e17i = 483.027;
+  // e8 = 5249.37;
+  // e17 = 476.482;
+  // m8i = 2820.13;
+  // m17i = 133.217;
+  // m8 = 5707.51;
+  // m17 = 98.7317;
+
+  // For 36.5/fb json with reRECO
+  e8i = 4601.37;
+  e17i = 674.837;
+  e8 = 4602.33;
+  e17 = 623.759;
+  m8i = 3775.17;
+  m17i = 183.494;
+  m8 = 7510.22;
+  m17 = 141.888;
+
   if(do8) {
       if(useIsoTrig) mult = (doMu ? m8i : e8i);
       else mult = (doMu ? m8 : e8);
@@ -144,7 +144,8 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   mll_dy->Sumw2();
 
   std::cout << "scanning data" << std::endl;
-  t_data->Draw("dilep_mass>>mll_data",Form("%f*%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",mult,hlt.Data(),idlep,hlt.Data()),"goff");
+  // t_data->Draw("dilep_mass>>mll_data",Form("%f*%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",mult,hlt.Data(),idlep,hlt.Data()),"goff");
+  t_data->Draw("dilep_mass>>mll_data",Form("%f*%s*(abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",mult,"1",idlep,hlt.Data()),"goff");
   // HALF
   // t_data->Draw("dilep_mass>>mll_data",Form("%f*%s*((evt_run>275782) && abs(id)==%i && passes_SS_tight_v5 && %s>0 && tag_p4.pt()>30. && p4.pt()>25.)",mult,hlt.Data(),idlep,hlt.Data()),"goff");
 

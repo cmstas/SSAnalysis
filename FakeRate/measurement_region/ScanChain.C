@@ -201,15 +201,25 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   // float m17 = 1;
   // anyPt = true;
 
-  // For 22.0/fb JSON
-  e8i = 5251.71;
-  e17i = 483.027;
-  e8 = 5249.37;
-  e17 = 476.482;
-  m8i = 2820.13;
-  m17i = 133.217;
-  m8 = 5707.51;
-  m17 = 98.7317;
+  // // For 22.0/fb JSON
+  // e8i = 5251.71;
+  // e17i = 483.027;
+  // e8 = 5249.37;
+  // e17 = 476.482;
+  // m8i = 2820.13;
+  // m17i = 133.217;
+  // m8 = 5707.51;
+  // m17 = 98.7317;
+
+  // For 36.5/fb json with reRECO
+  e8i = 4601.37;
+  e17i = 674.837;
+  e8 = 4602.33;
+  e17 = 623.759;
+  m8i = 3775.17;
+  m17i = 183.494;
+  m8 = 7510.22;
+  m17 = 141.888;
   
 
   if (false) {
@@ -569,6 +579,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
                               TString(currentFile->GetTitle()).Contains("DoubleMu") || TString(currentFile->GetTitle()).Contains("DoubleEG");
     bool isDoubleMuon = TString(currentFile->GetTitle()).Contains("DoubleMu");
     bool isQCD = TString(currentFile->GetTitle()).Contains("QCD");
+    bool isTTbar = TString(currentFile->GetTitle()).Contains("TTbar");
+
 
     if (isDataFromFileName){
       jet_corrector_pfL1 = jet_corrector_25ns_DATA_pfL1;
@@ -610,6 +622,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       //cout << "pt=" << p4().pt() << " iso=" << RelIso03EA() << endl;
       if (debug) cout << "lepp4=" << p4() << " pt=" << p4().pt() << " eta=" << p4().eta() << " phi=" << p4().phi() << " jetp4=" << jet_close_lep() << endl;
+
+      if (isTTbar) {
+          if (motherID() > 0) continue;
+      }
 
       vector<LorentzVector> jets_recorr;
       for(unsigned int i=0; i<jets().size(); i++)  {
@@ -672,6 +688,35 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       if (isData==0 && isEWK==0) {
 
+        /* 80X maps
+        QCD_Pt_15to30                   196437.125000
+        QCD_Pt_30to50                   15016.768555
+        QCD_Pt_50to80                   2001.856689
+        QCD_Pt_80to120                  412.645386
+        QCD_Pt_120to170                 71.279083
+        QCD_Pt_170to300                 17.644279
+        QCD_Pt_300to470                 0.461487
+
+        QCD_Pt-30to50_MuEnrichedPt5     60.630745
+        QCD_Pt-50to80_MuEnrichedPt5     22.635281
+        QCD_Pt-80to120_MuEnrichedPt5    8.198870
+        QCD_Pt-120to170_MuEnrichedPt5   3.360213
+        QCD_Pt-20toInf_MuEnrichedPt15   14.397064
+
+        QCD_Pt-20to30_EMEnriched        617.219910
+        QCD_Pt-30to50_EMEnriched        2225.073975
+        QCD_Pt-50to80_EMEnriched        131.577560
+        QCD_Pt-80to120_EMEnriched       11.195288
+        QCD_Pt-120to170_EMEnriched      1.917055
+        QCD_Pt-170to300_EMEnriched      1.647140
+        QCD_Pt-300toInf_EMEnriched      0.192859
+
+        QCD_Pt_30to80_bcToE             28.118303
+        QCD_Pt_80to170_bcToE            2.945422
+        QCD_Pt_170to250_bcToE           0.325838
+        QCD_Pt_250toInf_bcToE           0.072447
+        */
+
 	if (abs(id())==13) {
 	  /*
 	  //Map of samples and correspongding scale1fb
@@ -689,12 +734,24 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  /QCD_Pt-1000toInf_MuEnrichedPt5 0.0008180
 	  /QCD_Pt-20toInf_MuEnrichedPt15 22.926769
 	  */
+
+
+
+
+
 	  if (debug) cout << "check qcd" << endl;
 
-      // 76X
-     if (p4().pt()<15. &&  scale1fb() > 14.2 && scale1fb() < 14.3 ) continue;  //take only Mu15 above pT=15
-     if (p4().pt()>15. && (scale1fb() < 14.2 || scale1fb() > 14.3)) continue;  //take only Mu5 below pT=15
-     if (scale1fb() < 1.2 || scale1fb() > 851.) continue; //avoid extreme ranges and weights
+      bool nonEnriched = false;
+
+      if (nonEnriched) {
+          // throw away el pt_uncorr<15 for nonenriched FIXME
+          if (p4().pt()<15) continue;
+      } else {
+          // 76X
+          if (p4().pt()<15. &&  scale1fb() > 14.2 && scale1fb() < 14.3 ) continue;  //take only Mu15 above pT=15
+          if (p4().pt()>15. && (scale1fb() < 14.2 || scale1fb() > 14.3)) continue;  //take only Mu5 below pT=15
+          if (scale1fb() < 1.2 || scale1fb() > 851.) continue; //avoid extreme ranges and weights
+      }
 
  // // 74X
 	  // if (p4().pt()<15. &&  scale1fb() > 22.9 && scale1fb() < 23.0 ) continue;  //take only Mu15 above pT=15
@@ -721,11 +778,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  /QCD_Pt-170to300_EMEnriched 3.2795264
 	  /QCD_Pt-300toInf_EMEnriched 0.3651889
 	  */
-	  //if(isData==0 && scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
-	  if (debug) cout << "check qcd" << endl;
-	  if (scale1fb() < 5.0) continue; //avoid extreme ranges and weights
-	  if (scale1fb() > 280 && scale1fb() < 281) continue; 
-	  if (scale1fb() > 1085 && scale1fb() < 1086) continue; 
+
+
+        // // FIXME
+	  // //if(isData==0 && scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
+	  // if (debug) cout << "check qcd" << endl;
+	  // if (scale1fb() < 5.0) continue; //avoid extreme ranges and weights
+	  // if (scale1fb() > 280 && scale1fb() < 281) continue; 
+	  // if (scale1fb() > 1085 && scale1fb() < 1086) continue; 
+
 	}
 
 	//fixme
@@ -920,7 +981,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
 	if (useIsoTrigs) {
 	  if (debug) cout << "check iso FO" << endl;
-	  if (!passIsolatedFO(id(),etaSC(),mva_25ns())) continue;
+	  if (!passIsolatedFO(id(),etaSC(),mva_25ns(),p4().pt())) continue;
 	  float ePFIso = ecalPFClusterIso()/p4().pt();
 	  float hPFIso = hcalPFClusterIso()/p4().pt();
 	  float trkIso = tkIso()/p4().pt();
@@ -1416,76 +1477,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   histo_pt_el->Write();
   njets40_histo->Write();
   OutputFile->Close();
-
-  delete Nt_histo_e;
-  delete Nl_histo_e;
-  delete Nt_histo_mu;
-  delete Nl_histo_mu;
-  delete rate_histo_e;
-  delete rate_histo_mu;
-  delete Nl_cone_histo_e;
-  delete Nl_cone_histo_mu;
-  delete rate_cone_histo_e;
-  delete rate_cone_histo_mu;
-  delete Nl_jet_histo_e;
-  delete Nl_jet_histo_mu;
-  delete Nt_jet_histo_e;
-  delete Nt_jet_histo_mu;
-  delete rate_jet_histo_e;
-  delete rate_jet_histo_mu;
-  delete Nl_jet_highpt_histo_e;
-  delete Nl_jet_highpt_histo_mu;
-  delete Nt_jet_highpt_histo_e;
-  delete Nt_jet_highpt_histo_mu;
-  delete rate_jet_highpt_histo_e;
-  delete rate_jet_highpt_histo_mu;
-  delete Nl_jet_lowpt_histo_e;
-  delete Nl_jet_lowpt_histo_mu;
-  delete Nt_jet_lowpt_histo_e;
-  delete Nt_jet_lowpt_histo_mu;
-  delete rate_jet_lowpt_histo_e;
-  delete rate_jet_lowpt_histo_mu;
-  delete NBs_BR_histo_e;
-  delete NBs_BR_histo_mu;
-  delete NnotBs_BR_histo_e;
-  delete NnotBs_BR_histo_mu;
-  delete pTrelvsIso_histo_el;
-  delete pTrelvsIso_histo_mu;
-  delete pTrel_histo_el;
-  delete pTrel_histo_mu;
-  delete histo_ht;
-  delete histo_met;
-  delete histo_met_all;
-  delete histo_met_all_el;
-  delete histo_met_all_mu;
-  delete histo_met_lm;
-  delete histo_met_lm_el;
-  delete histo_met_lm_mu;
-  delete histo_met_cr;
-  delete histo_met_cr_el;
-  delete histo_met_cr_mu;
-  delete histo_mt;
-  delete histo_mt_all;
-  delete histo_mt_all_el;
-  delete histo_mt_all_mu;
-  delete histo_mt_lm;
-  delete histo_mt_lm_el;
-  delete histo_mt_lm_mu;
-  delete histo_mt_cr;
-  delete histo_mt_cr_el;
-  delete histo_mt_cr_mu;
-  delete histo_pt_mu34;
-  delete histo_pt_mu24;
-  delete histo_pt_mu17;
-  delete histo_pt_mu8 ;
-  delete histo_pt_mu  ;
-  delete histo_pt_el34;
-  delete histo_pt_el24;
-  delete histo_pt_el17;
-  delete histo_pt_el12;
-  delete histo_pt_el8 ;
-  delete histo_pt_el  ;
-  delete njets40_histo;
 
   delete jet_corrector_25ns_MC_pfL1; 
   delete jet_corrector_25ns_MC_pfL1L2L3; 
