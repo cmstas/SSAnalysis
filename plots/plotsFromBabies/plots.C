@@ -1,5 +1,5 @@
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
-#include "../../SSAnalysis/classFiles/v8.04/SS.h"
+#include "../../classFiles/v8.04/SS.h"
 #include "../../CORE/Tools/dorky/dorky.h"
 #include "../../software/tableMaker/CTable.h"
 #include "../../commonUtils.h"
@@ -20,10 +20,11 @@ float lumiAG = getLumi();
 
 //Data or Signal
 enum type_ag { DATA, SIGNAL, FAKES }; 
-// type_ag type = DATA; 
-type_ag type = FAKES; 
+type_ag type = DATA;  // opposite sign
+// type_ag type = FAKES;  // tight-loose
 bool useSFs = true; // unused
 bool checkTailRegions = false;
+bool useNewBaseline = true;
 int pickCharge = 0; // 1 for ++, -1 for -- and 0 for no charge requirement;
 
 HLTEfficiency HLTEff("../../hlt/HLT_Efficiencies_7p65fb_2016.root");
@@ -55,8 +56,10 @@ void plots(){
   TChain *data  = new TChain("t", "data"); data ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/Data*.root"     , tagData.Data()));
   // TChain *ttz   = new TChain("t");         ttz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ*.root"      , tag.Data())); 
   // TChain *ttx   = new TChain("t");         ttx  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"       , tag.Data())); 
-  TChain *ttz   = new TChain("t");         ttz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZnlo_new.root"      , tag.Data())); 
-  TChain *ttx   = new TChain("t");         ttx  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTWnlo_new.root"       , tag.Data())); 
+  // TChain *ttz   = new TChain("t");         ttz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZnlo_new.root"      , tag.Data())); 
+  // TChain *ttx   = new TChain("t");         ttx  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTWnlo_new.root"       , tag.Data())); 
+  TChain *ttz   = new TChain("t");         ttz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZnlo.root"      , tag.Data())); 
+  TChain *ttx   = new TChain("t");         ttx  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTWnlo.root"       , tag.Data())); 
   TChain *ttw   = new TChain("t");         ttw  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root", tag.Data())); 
   TChain *wz    = new TChain("t");         wz   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"        , tag.Data())); 
   TChain *ttbar = new TChain("t");         ttbar->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"  , tag.Data())); 
@@ -91,17 +94,17 @@ void plots(){
 
 
   //Draw plots
-  drawPlot(0 , Form("MET in %s dilepton pairs"        , sig.c_str()) , "#geq 2 jets"                         , "MET"        , "MET"         , "--yTitleOffset -0.10"                                 ); 
-  drawPlot(1 , Form("HT in %s dilepton pairs"         , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "HT"         , "HT"          , "--yTitleOffset -0.10"                                 );
-  drawPlot(2 , Form("M_{ll} in %s dilepton pairs"     , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "M_{ll}"     , "MLL"         , "--yTitleOffset -0.10"                                 );
-  drawPlot(3 , Form("M_{T}^{min} in %s dilepton pairs", sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "M_{T}^{min}", "MTMIN"       , "--yTitleOffset -0.10"                                 );
-  drawPlot(4 , Form("N_{jets} in %s dilepton pairs"   , sig.c_str()) , "(MET > 30 OR HT > 500)"              , "N_{jets}"   , "NJETS"       , "--nDivisions 6 --noDivisionLabel --yTitleOffset -0.10");
-  drawPlot(5 , Form("N_{b-tags} in %s dilepton pairs" , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "N_{b-tags}" , "NBTAGS"      , "--nDivisions 4 --noDivisionLabel --yTitleOffset -0.10");
-  drawPlot(6 , Form("lep p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "p_{T}"      , "PT"          , "--yTitleOffset -0.10");
-  drawPlot(7 , Form("#eta in %s dilepton pairs"       , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "#eta"       , "ETA"         , "--yTitleOffset -0.10 --setMaximum 10000000 --setMinimum 1");
-  drawPlot(8 , Form("jet p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "p_{T}"      , "JETPT"       , "--yTitleOffset -0.10");
-  drawPlot(9 , Form("e p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "p_{T}^{e}"      , "PTE"          , "--yTitleOffset -0.10");
-  drawPlot(10 , Form("#mu p_{T} in %s dilepton pairs"  , sig.c_str()) , "(MET > 30 OR HT > 500), #geq 2 jets" , "p_{T}^{#mu}"      , "PTM"          , "--yTitleOffset -0.10");
+  drawPlot(0 , Form("MET in %s dilepton pairs"        , sig.c_str()) , "MET > 50, #geq 2 jets"                         , "MET"        , "MET"         , "--yTitleOffset -0.10"                                 ); 
+  drawPlot(1 , Form("HT in %s dilepton pairs"         , sig.c_str()) , "MET > 50, #geq 2 jets" , "HT"         , "HT"          , "--yTitleOffset -0.10"                                 );
+  drawPlot(2 , Form("M_{ll} in %s dilepton pairs"     , sig.c_str()) , "MET > 50, #geq 2 jets" , "M_{ll}"     , "MLL"         , "--yTitleOffset -0.10"                                 );
+  drawPlot(3 , Form("M_{T}^{min} in %s dilepton pairs", sig.c_str()) , "MET > 50, #geq 2 jets" , "M_{T}^{min}", "MTMIN"       , "--yTitleOffset -0.10"                                 );
+  drawPlot(4 , Form("N_{jets} in %s dilepton pairs"   , sig.c_str()) , "MET > 50"              , "N_{jets}"   , "NJETS"       , "--nDivisions 6 --noDivisionLabel --yTitleOffset -0.10");
+  drawPlot(5 , Form("N_{b-tags} in %s dilepton pairs" , sig.c_str()) , "MET > 50, #geq 2 jets" , "N_{b-tags}" , "NBTAGS"      , "--nDivisions 4 --noDivisionLabel --yTitleOffset -0.10");
+  drawPlot(6 , Form("lep p_{T} in %s dilepton pairs"  , sig.c_str()) , "MET > 50, #geq 2 jets" , "p_{T}"      , "PT"          , "--yTitleOffset -0.10");
+  drawPlot(7 , Form("#eta in %s dilepton pairs"       , sig.c_str()) , "MET > 50, #geq 2 jets" , "#eta"       , "ETA"         , "--yTitleOffset -0.10 --setMaximum 10000000 --setMinimum 1");
+  drawPlot(8 , Form("jet p_{T} in %s dilepton pairs"  , sig.c_str()) , "MET > 50, #geq 2 jets" , "p_{T}"      , "JETPT"       , "--yTitleOffset -0.10");
+  drawPlot(9 , Form("e p_{T} in %s dilepton pairs"  , sig.c_str()) , "MET > 50, #geq 2 jets" , "p_{T}^{e}"      , "PTE"          , "--yTitleOffset -0.10");
+  drawPlot(10 , Form("#mu p_{T} in %s dilepton pairs"  , sig.c_str()) , "MET > 50, #geq 2 jets" , "p_{T}^{#mu}"      , "PTM"          , "--yTitleOffset -0.10");
 
   //Print yields
   vector <float> total = {0,0,0,0}; 
@@ -159,7 +162,8 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
   // TH1F *pte     = new TH1F("pte"     , "pte"     , 50 ,    0, 300);
   // TH1F *ptm     = new TH1F("ptm"     , "ptm"     , 50 ,    0, 300);
   TH1F *met    = new TH1F("met"    , "met"    , 25  ,   0, 1000);
-  TH1F *ht     = new TH1F("ht"     , "ht"     , 25  ,   0, 1800);
+  // TH1F *ht     = new TH1F("ht"     , "ht"     , 25  ,   0, 1800);
+  TH1F *ht     = new TH1F("ht"     , "ht"     , 50  ,   0, 800);
   TH1F *mll    = new TH1F("mll"    , "mll"    , 25  ,   0, 300);
   TH1F *mtmin  = new TH1F("mtmin"  , "mtmin"  , 25  ,   0, 300);
   TH1F *njets  = new TH1F("njets"  , "njets"  , 6  ,    0, 6  );
@@ -205,6 +209,7 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
         if (duplicate_removal::is_duplicate(id)) continue; 
       }
 
+
       //Essential Cuts
       if (type == DATA && ss::hyp_class() != 4 && ss::hyp_class() != 6) continue;
       if (type == SIGNAL && ss::hyp_class() != 3) continue;
@@ -217,11 +222,17 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       if (!ss::passedFilterList() && ss::is_real_data())   continue;
       if (!ss::passes_met_filters() && ss::is_real_data()) continue;
       
-      //electron FO is tighter for iso triggers, make sure it is passed
-      if (ss::ht()<300.) {
-        if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
-        if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
-      } 
+
+      bool checkICHEP = false;
+      if (checkICHEP) {
+          if (ss::run() > 276811) continue;
+      } else {
+          //electron FO is tighter for iso triggers, make sure it is passed
+          if (ss::ht()<300.) {
+              if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
+              if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+          } 
+      }
 
       //Lepton pT cuts
       if (ss::lep1_coneCorrPt() < 25) continue;
@@ -234,7 +245,7 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       float mtl2 = MT(ss::lep2_coneCorrPt(), ss::lep2_p4().phi(), ss::met(), ss::metPhi());
       float mtminRecalc = mtl1 > mtl2 ? mtl2 : mtl1;
 
-      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
+      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt(), useNewBaseline);
       if (BR < 0) continue;
       int SR = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtminRecalc, ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
       if (checkTailRegions && ((BR<0) || (SR<30) || ss::hyp_class()==6)) continue; // only look at tail regions for excess study
@@ -246,19 +257,16 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       weight *= ss::is_real_data() ? 1 : HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::lep2_id(), ss::ht(), 0);
 
       //Make met plots here
-      if (ss::njets() >= 2) met->Fill(ss::met(), weight);  
+      met->Fill(ss::met(), weight);  
       
-      if (ss::met() > 30 || ss::ht() > 500) njets->Fill(ss::njets(), weight);  
-
-      if (ss::njets() < 2) continue;
+      njets->Fill(ss::njets(), weight);  
 
       //Make all other plots
-      if ((ss::met() > 30 || ss::ht() > 500) ) ht->Fill(ss::ht(), weight);  
-      if ((ss::met() > 30 || ss::ht() > 500) ) nbtags->Fill(ss::nbtags(), weight);  
-      if ((ss::met() > 30 || ss::ht() > 500) ) for (unsigned int i = 0; i < ss::jet_pt().size(); i++) jetpt->Fill(ss::jet_pt().at(i), weight);
+      ht->Fill(ss::ht(), weight);  
+      nbtags->Fill(ss::nbtags(), weight);  
+      for (unsigned int i = 0; i < ss::jet_pt().size(); i++) jetpt->Fill(ss::jet_pt().at(i), weight);
 
       //Full cuts
-      if (ss::met() < 30 && ss::ht() < 500) continue;
       mll->Fill(ss::dilep_p4().M() , weight);
       mtmin->Fill(ss::mtmin()      , weight);
       pt->Fill(ss::lep1_p4().pt()  , weight);

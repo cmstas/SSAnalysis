@@ -7,6 +7,7 @@
   gSystem->Load("../../software/tableMaker/libSimpleTable.so"); 
 
   gROOT->ProcessLine(".L plots.C+");
+  // gROOT->ProcessLine(".L test.C+");
   gROOT->ProcessLine("plots()");
 
   // gROOT->ProcessLine(".L sip3d_plots.C+");
