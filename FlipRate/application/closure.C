@@ -16,30 +16,30 @@ float lumiAG = getLumi();
 
 float getFlipFactor(TH2D* rate){
 
-  // //Figure out pt and eta
-  // float pt1  = lep1_p4().pt();  
-  // float eta1 = fabs(lep1_p4().eta()); 
-  // float pt2  = lep2_p4().pt();  
-  // float eta2 = fabs(lep2_p4().eta()); 
+  //Figure out pt and eta
+  float pt1  = lep1_p4().pt();  
+  float eta1 = fabs(lep1_p4().eta()); 
+  float pt2  = lep2_p4().pt();  
+  float eta2 = fabs(lep2_p4().eta()); 
 
-  // if (pt1<rate->GetXaxis()->GetBinCenter(1)) pt1=rate->GetXaxis()->GetBinCenter(1);
-  // if (pt1>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt1=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
-  // if (eta1<rate->GetYaxis()->GetBinCenter(1)) eta1=rate->GetYaxis()->GetBinCenter(1);
-  // if (eta1>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta1=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());
+  if (pt1<rate->GetXaxis()->GetBinCenter(1)) pt1=rate->GetXaxis()->GetBinCenter(1);
+  if (pt1>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt1=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
+  if (eta1<rate->GetYaxis()->GetBinCenter(1)) eta1=rate->GetYaxis()->GetBinCenter(1);
+  if (eta1>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta1=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());
 
-  // if (pt2<rate->GetXaxis()->GetBinCenter(1)) pt2=rate->GetXaxis()->GetBinCenter(1);
-  // if (pt2>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt2=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
-  // if (eta2<rate->GetYaxis()->GetBinCenter(1)) eta2=rate->GetYaxis()->GetBinCenter(1);
-  // if (eta2>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta2=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());
+  if (pt2<rate->GetXaxis()->GetBinCenter(1)) pt2=rate->GetXaxis()->GetBinCenter(1);
+  if (pt2>rate->GetXaxis()->GetBinCenter(rate->GetNbinsX())) pt2=rate->GetXaxis()->GetBinCenter(rate->GetNbinsX());
+  if (eta2<rate->GetYaxis()->GetBinCenter(1)) eta2=rate->GetYaxis()->GetBinCenter(1);
+  if (eta2>rate->GetYaxis()->GetBinCenter(rate->GetNbinsY())) eta2=rate->GetYaxis()->GetBinCenter(rate->GetNbinsY());
 
-  // //Figure out flip rates
-  // int bin1 = rate->FindBin(pt1, eta1);
-  // int bin2 = rate->FindBin(pt2, eta2);
-  // float FR1 = rate->GetBinContent(bin1);
-  // float FR2 = rate->GetBinContent(bin2);
+  //Figure out flip rates
+  int bin1 = rate->FindBin(pt1, eta1);
+  int bin2 = rate->FindBin(pt2, eta2);
+  float FR1 = rate->GetBinContent(bin1);
+  float FR2 = rate->GetBinContent(bin2);
 
-  float FR1 = flipRate(lep1_p4().pt(), lep1_p4().eta());
-  float FR2 = flipRate(lep2_p4().pt(), lep2_p4().eta());
+  // float FR1 = flipRate(lep1_p4().pt(), lep1_p4().eta());
+  // float FR2 = flipRate(lep2_p4().pt(), lep2_p4().eta());
 
   //Return factor
   return (FR1/(1.-FR1) + FR2/(1.-FR2)); 
@@ -179,10 +179,10 @@ void closure(){
         if (duplicate_removal::is_duplicate(id)) { reject++; continue; }
       }
 
-      if (!isUnblindRun(ss::run())) continue;
+      // if (!isUnblindRun(ss::run())) continue;
 
       //MET filters
-      // if (!ss::passes_met_filters()) continue;
+      if (!ss::passes_met_filters()) continue;
 
       // if (ss::met()>50.) continue; 
 
@@ -317,6 +317,7 @@ void closure(){
     //cout << "set error = " <<  sqrt(theerror[k] + pow(clos_mll_MC->GetBinError(k+1),2)) << " yield=" << yield << endl;
   }
 
+  cout << "HEY DUMMY. MAKE SURE YOU'RE NOT SCALING BY obs/pred TWICE!" << endl;
   cout << "obsMC: " << nObsMC << endl;
   cout << " pred: " << nPred  << " pm " << sqrt(stat2 + fr_err2) << endl;
   cout << "  obs: " << nObs   << " pm " << sqrt(nObs) << endl;
@@ -325,59 +326,69 @@ void closure(){
   cout << "pred stat: " << sqrt(stat2) << endl;
   cout << "pred syst: " << sqrt(fr_err2) << endl;
 
+  // scale pred to obs
+  clos_mll_MC->Scale(clos_mll_data->Integral()/clos_mll_MC->Integral());
+  clos_leppt_MC->Scale(clos_leppt_data->Integral()/clos_leppt_MC->Integral());
+  clos_lepeta_MC->Scale(clos_lepeta_data->Integral()/clos_lepeta_MC->Integral());
+  clos_lepphi_MC->Scale(clos_lepphi_data->Integral()/clos_lepphi_MC->Integral());
+  clos_ht_MC->Scale(clos_ht_data->Integral()/clos_ht_MC->Integral());
+  clos_met_MC->Scale(clos_met_data->Integral()/clos_met_MC->Integral());
+  clos_njets_MC->Scale(clos_njets_data->Integral()/clos_njets_MC->Integral());
+  clos_nbtags_MC->Scale(clos_nbtags_data->Integral()/clos_nbtags_MC->Integral());
+
   //Make plot
   vector <TH1F*> bkgd;
   bkgd.push_back(clos_mll_MC); 
   vector <string> titles;
   vector <TH1F*> signals;
-  signals.push_back(clos_mll_MCp); 
+  // signals.push_back(clos_mll_MCp); 
   vector <string> sigTit; 
-  sigTit.push_back("MC Same-Sign Events");
+  // sigTit.push_back("MC Same-Sign Events");
   titles.push_back("Predicted Same-Sign Events"); 
 
-  TString commonOptions = " --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendUp 0.12 --largeLabels --yTitleOffset -0.005 --topYaxisTitle Data/Pred --type Supplementary --dataName Data --dontShowZeroRatios";
+  TString commonOptions = " --isLinear --noOverflow --legendRight -0.35 --legendWider 0.35 --outOfFrame --legendUp 0.12 --largeLabels --yTitleOffset -0.005 --topYaxisTitle Data/Pred --type Supplementary --dataName Data ";
   dataMCplotMaker(clos_mll_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure.pdf --xAxisLabel M_{e^{#pm}e^{#pm}}"+commonOptions, lumiAG), vector <TH1F*>(), vector <string>());//signals, sigTit
 
   bkgd.clear();
   bkgd.push_back(clos_leppt_MC); 
   signals.clear();
-  signals.push_back(clos_leppt_MCp); 
+  // signals.push_back(clos_leppt_MCp); 
   dataMCplotMaker(clos_leppt_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_leppt.pdf --xAxisLabel Electron p_{T}"+commonOptions, lumiAG),  vector <TH1F*>(), vector <string>());//signals, sigTit
 
   bkgd.clear();
   bkgd.push_back(clos_lepeta_MC); 
   signals.clear();
-  signals.push_back(clos_lepeta_MCp); 
+  // signals.push_back(clos_lepeta_MCp); 
   dataMCplotMaker(clos_lepeta_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_lepeta.pdf --xAxisLabel Lepton #eta --noXaxisUnit"+commonOptions, lumiAG), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_lepphi_MC); 
   signals.clear();
-  signals.push_back(clos_lepphi_MCp); 
+  // signals.push_back(clos_lepphi_MCp); 
   dataMCplotMaker(clos_lepphi_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_lepphi.pdf --xAxisLabel Lepton #phi --noXaxisUnit"+commonOptions, lumiAG), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_ht_MC); 
   signals.clear();
-  signals.push_back(clos_ht_MCp); 
+  // signals.push_back(clos_ht_MCp); 
   dataMCplotMaker(clos_ht_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_ht.pdf --xAxisLabel HT"+commonOptions, lumiAG), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_met_MC); 
   signals.clear();
-  signals.push_back(clos_met_MCp); 
+  // signals.push_back(clos_met_MCp); 
   dataMCplotMaker(clos_met_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_met.pdf --xAxisLabel MET"+commonOptions, lumiAG), signals, sigTit);
 
   bkgd.clear();
   bkgd.push_back(clos_njets_MC); 
   signals.clear();
-  signals.push_back(clos_njets_MCp); 
+  // signals.push_back(clos_njets_MCp); 
   dataMCplotMaker(clos_njets_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_njets.pdf --xAxisLabel Njets --noXaxisUnit"+commonOptions, lumiAG), vector <TH1F*>(), vector <string>());//signals, sigTit
 
   bkgd.clear();
   bkgd.push_back(clos_nbtags_MC); 
   signals.clear();
-  signals.push_back(clos_nbtags_MCp); 
+  // signals.push_back(clos_nbtags_MCp); 
   dataMCplotMaker(clos_nbtags_data, bkgd, titles, "", "", Form("--lumi %.2f --outputName plots/flip_closure_nbtags.pdf --xAxisLabel Nbtags --noXaxisUnit"+commonOptions, lumiAG), signals, sigTit);
 
   TCanvas cosee;

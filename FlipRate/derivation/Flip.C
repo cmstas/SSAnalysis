@@ -10,9 +10,10 @@ using namespace ss;
 float theLumi = 1.0; 
 
 //DY only
-bool DYonly = false;
+// bool DYonly = false;
+// bool TTonly = false;
 
-void flip(bool doMu=false){
+void flip(bool doMu=false, bool DYonly=false, bool TTonly=false){
 
   //Flip Rate Histograms
   TH2D* numer;
@@ -45,9 +46,14 @@ void flip(bool doMu=false){
 
   //Set up chains
   TChain *chain = new TChain("t");
+
   if (!DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/TTBAR_PH.root"); 
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_low.root"); 
-  chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_high.root"); 
+  if (!TTonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_low.root"); 
+  if (!TTonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_high.root"); 
+
+  // if (!DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/TTBAR_PH.root"); 
+  // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/DY_low.root"); 
+  // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/DY_high.root"); 
 
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -117,6 +123,9 @@ void flip(bool doMu=false){
 
   std::string lepStr = doMu ? "mu" : "el";
 
+  if (DYonly) lepStr += "_dy";
+  if (TTonly) lepStr += "_tt";
+
   std::cout << "numer: " << numer->GetEntries() << " denom: " << denom->GetEntries() << std::endl;
   std::cout << "Total flip rate for " << lepStr << ": " << numer->GetEntries()/denom->GetEntries() << std::endl;
 
@@ -125,12 +134,27 @@ void flip(bool doMu=false){
 
   //Now make ratio plot
   numer->Divide(numer, denom, 1, 1, "b"); 
-  if (DYonly) PlotMaker2D(numer, "--outputName plots/flips_rate_dy_"+lepStr+".pdf --noOverflow --setTitle flip rate DY only ("+lepStr+") --Xaxis p_{T} --Yaxis |#eta| --sciNot .2 --color --text90"); 
-  else PlotMaker2D(numer, "--outputName plots/flips_rate_"+lepStr+".pdf --noOverflow --setTitle flip rate ("+lepStr+") --Xaxis p_{T} --Yaxis |#eta| --color --text90  --sciNot .1"); //--sciNot .6 
+  // if (DYonly) PlotMaker2D(numer, "--outputName plots/flips_rate_dy_"+lepStr+".pdf --noOverflow --setTitle flip rate DY only ("+lepStr+") --Xaxis p_{T} --Yaxis |#eta| --sciNot .2 --color --text90"); 
+  // else PlotMaker2D(numer, "--outputName plots/flips_rate_"+lepStr+".pdf --noOverflow --setTitle flip rate ("+lepStr+") --Xaxis p_{T} --Yaxis |#eta| --color --text90  --sciNot .2"); //--sciNot .6 
+  PlotMaker2D(numer, "--outputName plots/flips_rate_"+lepStr+".pdf --noOverflow --setTitle flip rate ("+lepStr+") --Xaxis p_{T} --Yaxis |#eta| --color --text90  --sciNot .2"); //--sciNot .6 
+
+  if(DYonly) {
+      TFile *file = new TFile("flip_rate_dy.root", "RECREATE");
+      file->Write(); 
+      numer->Write("flips");
+      file->Close(); 
+  }
+  if(TTonly) {
+      TFile *file = new TFile("flip_rate_tt.root", "RECREATE");
+      file->Write(); 
+      numer->Write("flips");
+      file->Close(); 
+  }
 
   //Save the histogram
-  if(!doMu) {
+  if(!doMu && !DYonly && !TTonly) {
       TFile *file = new TFile("flip_rate.root", "RECREATE");
+      // TFile *file = new TFile("flip_rate_ICHEP.root", "RECREATE");
       file->Write(); 
       numer->Write("flips");
       file->Close(); 
