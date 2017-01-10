@@ -66,17 +66,53 @@
 // #include "fake_rates.h"
 // #include "fake_rates_insitu_mva.h"
 
-// 27.2
-float getLumi() { return 27.2; }
-float getLumiUnblind() { return 12.9+4.4; }
-bool isUnblindRun(int run) { return ((run<=276811) || ((run<=279931) && (run>=278820))) && ( (run!=279658) && (run!=279658) && (run!=279667) && (run!=279681) && (run!=279682) && (run!=279682) && (run!=279682) && (run!=279683) && (run!=279684) && (run!=279685) && (run!=279685) && (run!=279691) && (run!=279694) ); } // 276811 for end of ICHEP (12.9/fb), or 278820-279931 for beyond ICHEP studies (+4.4/fb)
+// // 27.2
+// float getLumi() { return 27.2; }
+// float getLumiUnblind() { return 12.9+4.4; }
+// bool isUnblindRun(int run) { return ((run<=276811) || ((run<=279931) && (run>=278820))) && ( (run!=279658) && (run!=279658) && (run!=279667) && (run!=279681) && (run!=279682) && (run!=279682) && (run!=279682) && (run!=279683) && (run!=279684) && (run!=279685) && (run!=279685) && (run!=279691) && (run!=279694) ); } // 276811 for end of ICHEP (12.9/fb), or 278820-279931 for beyond ICHEP studies (+4.4/fb)
+// float getWZSF() { return 0.948; } // 0.948 pm 0.210
+// float getttZSF() { return 1.0; }
+// TString getTag() { return "v8.04"; }
+// TString getTagData() { return "v8.05"; }
+// #include "flip_rates.h"
+// // #include "fake_rates_22p0ifb.h"
+// #include "fake_rates.h"
+// #include "fake_rates_insitu_22p0ifb.h"
+// // #include "fake_rates_insitu.h"
+// // #include "fake_rates_insitu_mva_soup.h"
+
+// 36.46
+float getLumi() { return 36.46; }
+float getLumiUnblind() { return 36.46; }
+bool isUnblindRun(int run) { return true; }
+// float getLumiUnblind() { return 12.9+4.4; }
+// bool isUnblindRun(int run) { 
+//     return ((run<=276811) || ((run<=279931) && (run>=278820)))
+//         && ( (run!=279658) && (run!=279658) && (run!=279667) 
+//                 && (run!=279681) && (run!=279682) 
+//                 && (run!=279682) && (run!=279682) 
+//                 && (run!=279683) && (run!=279684) 
+//                 && (run!=279685) && (run!=279685) 
+//                 && (run!=279691) && (run!=279694) ); } // 276811 for end of ICHEP (12.9/fb), or 278820-279931 for beyond ICHEP studies (+4.4/fb)
 float getWZSF() { return 0.948; } // 0.948 pm 0.210
-TString getTag() { return "v8.04"; }
-TString getTagData() { return "v8.05"; }
-#include "flip_rates.h"
+float getttZSF() { return 1.28; }
+TString getTag() { return "v8.07"; }
+TString getTagData() { return "v8.07"; }
+#include "flip_rates_36p5ifb.h"
 // #include "fake_rates_22p0ifb.h"
-#include "fake_rates.h"
-#include "fake_rates_insitu_22p0ifb.h"
+// #include "fake_rates.h"
+
+#if USE_SPECIFIC_FR>0
+#include "fake_rates_22p0ifb.h"
+#else
+#include "fake_rates_36p5ifb.h"
+// #include "fake_rates_nonenriched.h"
+#endif
+
+
+// #include "fake_rates_insitu_22p0ifb.h"
+#include "fake_rates_insitu_soup_moriond.h"
+
 // #include "fake_rates_insitu.h"
 // #include "fake_rates_insitu_mva_soup.h"
 
@@ -183,21 +219,34 @@ float fakeRateErrorInSitu(int id, float pt, float eta, float ht) {
   }
 }
 
-bool passIsolatedFO(int id, float eta, float mva) {
+// returns A if pt<ptmin, B if pt>ptmax, and linear interpolation between. if pt<10, use C
+float mvacut(float A, float B, float C, float pt_) {
+    float ptmin = 15;
+    float ptmax = 25;
+    return pt_>10 ? std::min(A, std::max(B,A + (B-A)/(ptmax-ptmin)*(pt_-ptmin))) : C; 
+}
+
+bool passIsolatedFO(int id, float eta, float disc, float pt) {
   if (abs(id)==13) return true;
   float aeta = fabs(eta);
-  if (aeta < 0.8) return mva > -0.155;
-  if ((aeta >= 0.8 && aeta <= 1.479)) return mva > -0.56;
-  if (aeta > 1.479) return mva > -0.76;
+  // if (aeta < 0.8) return mva > -0.155;
+  // if ((aeta >= 0.8 && aeta <= 1.479)) return mva > -0.56;
+  // if (aeta > 1.479) return mva > -0.76;
+    if (aeta < 0.8) return disc > mvacut(-0.86,-0.96,-0.3,pt);
+    if ((aeta >= 0.8 && aeta <= 1.479)) return disc > mvacut(-0.85,-0.96,-0.36,pt);
+    if (aeta > 1.479) return disc > mvacut(-0.81,-0.95,-0.63,pt);
   return false;
 }
 
-bool passesNumeratorMVA(int id, float eta, float disc){
+bool passesNumeratorMVA(int id, float eta, float disc, float pt){
   if (abs(id) != 11) return true;
   float aeta = fabs(eta);
-  if (aeta < 0.8) return disc > 0.87;
-  if ((aeta >= 0.8 && aeta <= 1.479)) return disc > 0.60;
-  if (aeta > 1.479) return disc > 0.17;
+  // if (aeta < 0.8) return disc > 0.87;
+  // if ((aeta >= 0.8 && aeta <= 1.479)) return disc > 0.60;
+  // if (aeta > 1.479) return disc > 0.17;
+  if (aeta < 0.8) return disc > mvacut(0.77,0.52,0.77,pt);
+  if ((aeta >= 0.8 && aeta <= 1.479)) return disc > mvacut(0.56,0.11,0.56,pt);
+  if (aeta > 1.479) return disc > mvacut(0.48,-0.01,0.48,pt);
   return false;
 }
 
