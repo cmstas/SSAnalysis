@@ -1,37 +1,42 @@
 sig="tth_scan_m350"
 
-# orig_dir="v8.04_July28/"
-# orig_dir="v8.04_t5qqqqdm20_July28/"
-# orig_dir="../v8.04_Oct1/"
-orig_dir="../v8.04_Nov16_agg/"
+# orig_dir="v9.04_Jan31_36p8_t1tttt_inclagg/"
+orig_dir="v9.06_Mar6_35p9_reminiaodfilt_t1tttt_met"
+new_dir="incl_agg_test/"
+which="agg" # kine region
+lumi="35.9"
 
-# new_dir="v8.04_July28_singlebin/"
-new_dir="agg_bins_test/"
-lumi="17.3"
-kine="hihi"
-sr=30
+# orig_dir="v9.04_Jan31_36p8_cutflow/"
+# new_dir="v9.04_Jan31_36p8_cutflow_sb/"
+# # which="all" # kine region
+# lumi="36.8"
 
 mkdir -p logs
+
 
 # for sig in fs_t1tttt_m1400_m1000 fs_t1tttt_m1500_m200 fs_t5qqqqvv_m1000_m700 fs_t5qqqqvv_m1200_m400 ; do
 # for sig in fs_t5qqqqvv_dm20_m1400_m200 fs_t5qqqqvv_dm20_m1000_m700 ; do
 # for sig in tth_scan_m350 ; do
-for sig in fs_t1tttt_m1500_m200 fs_t1tttt_m1400_m1000 ; do
+# for sig in fs_t1tttt_m1500_m200 fs_t1tttt_m1400_m1000 ; do
+for sig in fs_t1tttt_m1400_m1000 ; do
+# for sig in fs_t1tttt_m1400_m1000 fs_t1tttt_m1500_m200 fs_t5qqqqvv_m1000_m700 fs_t5qqqqvv_m1200_m400; do 
+# for sig in fs_t5qqqqvv_dm20_m1200_m400; do 
 
     # for kine in hihi hilow lowlow; do
     # for kine in hihi; do
     for kine in agg; do
 
-        srs=$(seq 1 33)
-        # srs="26"
-        [[ $kine == "hilow" ]] && srs=$(seq 1 27)
+        # srs=$(seq 1 33)
+        # [[ $kine == "hilow" ]] && srs=$(seq 1 27)
+        # [[ $kine == "lowlow" ]] && srs=$(seq 1 8)
+        srs=$(seq 1 51)
+        [[ $kine == "hilow" ]] && srs=$(seq 1 41)
         [[ $kine == "lowlow" ]] && srs=$(seq 1 8)
         [[ $kine == "agg" ]] && srs=$(seq 1 15)
 
         for sr in $srs; do 
 
-            # card=$new_dir/card_${sig}_${lumi}ifb-all.txt
-            card=$new_dir/card_${sig}_${lumi}ifb-agg.txt # FIXME
+            card=$new_dir/card_${sig}_${lumi}ifb-${which}.txt
             log=logs/log_${sig}_${lumi}_${kine}_${sr}.txt
 
             # copy over full histograms to new directory

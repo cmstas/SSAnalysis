@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo "FIXME"
 # #Copy files
@@ -25,13 +25,10 @@ cp ../goodRunList/*.txt goodRunList/
 #And btagsSF dir
 cp -r ../btagsf . 
 
-tar -czf btagsf.tar.gz btagsf
+# tar -czf btagsf.tar.gz btagsf
 
 #Linkdef
 cp ../LinkDef.h . 
 
-#Make log dir
-mkdir -p logs
-
 #Zip the dir
-tar czf CORE.tar.gz CORE
+# tar czf CORE.tar.gz CORE

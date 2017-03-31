@@ -73,7 +73,7 @@ class babyMaker {
     void MakeBabyNtuple(const char* output_name, int isFastsim);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
-    csErr_t ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, int file = -1, int isFastsim = 0);
+    csErr_t ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, int isFastsim = 0);
 
   protected:
     TFile* BabyFile;
@@ -108,6 +108,8 @@ class babyMaker {
     float metPhi;
     float rawmet;
     float rawmetPhi;
+    float calomet;
+    float calometPhi;
  
     //Meta Variables
     ULong64_t event;
@@ -120,11 +122,11 @@ class babyMaker {
     float scale1fb;     
     float xsec;         
     float xsec_error;         
+    float xsec_ps;         
     vector <TString> sparmNames; 
     vector <float> sparms; 
     float kfactor;      
     string filename;
-    int filenumber; 
     vector <float> genweights;
     vector <string> genweightsID;
     bool passedFilterList; 
@@ -453,6 +455,7 @@ class babyMaker {
 
     //MET Filters
     bool passes_met_filters;
+    bool failsRA2Filter;
 
     //Passes 3rd Z/G vetos
     bool madeExtraZ;

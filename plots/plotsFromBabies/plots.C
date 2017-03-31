@@ -1,4 +1,4 @@
-#include "../../software/dataMCplotMaker/dataMCplotMaker.h"
+#include "../../software/dataMCplotMaker2/dataMCplotMaker.h"
 #include "../../classFiles/v8.04/SS.h"
 #include "../../CORE/Tools/dorky/dorky.h"
 #include "../../software/tableMaker/CTable.h"
@@ -9,7 +9,7 @@
 #include "TColor.h"
 #include "TFile.h"
 #include "TTree.h"
-#include "TH1F.h"
+#include "TH1D.h"
 
 //Namespace
 using namespace std;
@@ -22,54 +22,75 @@ float lumiAG = getLumi();
 enum type_ag { DATA, SIGNAL, FAKES }; 
 type_ag type = DATA;  // opposite sign
 // type_ag type = FAKES;  // tight-loose
-bool useSFs = true; // unused
 bool checkTailRegions = false;
 bool useNewBaseline = true;
 int pickCharge = 0; // 1 for ++, -1 for -- and 0 for no charge requirement;
 
-HLTEfficiency HLTEff("../../hlt/HLT_Efficiencies_7p65fb_2016.root");
+bool doE = false;
+bool doMu = false;
+bool doRelax = false;
+bool doMoriond = true;
+bool doBtagSF = true;
+
 
 //Global Definitions
-pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain);
+pair <vector <TH1D*>, vector <double> > makePlots(TChain *chain);
 void drawPlot(int which, string title = "", string subtitle = "", string xaxis = "quantity", string name2 = "blah", string options = "");
-pair <vector <TH1F*>, vector <float> > data_plots;
-pair <vector <TH1F*>, vector <float> > ttx_plots;
-pair <vector <TH1F*>, vector <float> > ttz_plots;
-pair <vector <TH1F*>, vector <float> > ttw_plots;
-pair <vector <TH1F*>, vector <float> > wz_plots;    
-pair <vector <TH1F*>, vector <float> > ttbar_plots; 
-// pair <vector <TH1F*>, vector <float> > st_plots; 
-pair <vector <TH1F*>, vector <float> > dy_plots;
-pair <vector <TH1F*>, vector <float> > wjets_plots;
-pair <vector <TH1F*>, vector <float> > mb_plots;
-pair <vector <TH1F*>, vector <float> > wzz_plots;
-pair <vector <TH1F*>, vector <float> > zz_plots;
-pair <vector <TH1F*>, vector <float> > qqww_plots; 
-pair <vector <TH1F*>, vector <float> > fake_plots; 
+pair <vector <TH1D*>, vector <double> > data_plots;
+pair <vector <TH1D*>, vector <double> > ttx_plots;
+pair <vector <TH1D*>, vector <double> > ttz_plots;
+pair <vector <TH1D*>, vector <double> > ttw_plots;
+pair <vector <TH1D*>, vector <double> > wz_plots;    
+pair <vector <TH1D*>, vector <double> > ttbar_plots; 
+// pair <vector <TH1D*>, vector <double> > st_plots; 
+pair <vector <TH1D*>, vector <double> > dy_plots;
+pair <vector <TH1D*>, vector <double> > wjets_plots;
+pair <vector <TH1D*>, vector <double> > mb_plots;
+pair <vector <TH1D*>, vector <double> > wzz_plots;
+pair <vector <TH1D*>, vector <double> > zz_plots;
+pair <vector <TH1D*>, vector <double> > qqww_plots; 
+pair <vector <TH1D*>, vector <double> > fake_plots; 
 
 //Main function
-void plots(){
+void plots(TString opts){
+
+    if (opts.Contains("OS")) {
+        type = DATA;  // opposite sign
+        std::cout << "Doing OS" << std::endl;
+    } else if (opts.Contains("TL")) {
+        type = FAKES;  // tight-loose
+        std::cout << "Doing TL" << std::endl;
+    }
 
   //Declare chains
-    TString tag = getTag();
-    TString tagData = getTagData();
-  TChain *data  = new TChain("t", "data"); data ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/Data*.root"     , tagData.Data()));
-  // TChain *ttz   = new TChain("t");         ttz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZ*.root"      , tag.Data())); 
-  // TChain *ttx   = new TChain("t");         ttx  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTW.root"       , tag.Data())); 
-  // TChain *ttz   = new TChain("t");         ttz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZnlo_new.root"      , tag.Data())); 
-  // TChain *ttx   = new TChain("t");         ttx  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTWnlo_new.root"       , tag.Data())); 
-  TChain *ttz   = new TChain("t");         ttz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTZnlo.root"      , tag.Data())); 
-  TChain *ttx   = new TChain("t");         ttx  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTWnlo.root"       , tag.Data())); 
-  TChain *ttw   = new TChain("t");         ttw  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTHtoNonBB.root", tag.Data())); 
-  TChain *wz    = new TChain("t");         wz   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZ.root"        , tag.Data())); 
-  TChain *ttbar = new TChain("t");         ttbar->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/TTBAR_PH.root"  , tag.Data())); 
-  TChain *dy    = new TChain("t");         dy   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_high.root"   , tag.Data())); 
-                                           dy   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/DY_low.root"    , tag.Data())); 
-  TChain *wjets = new TChain("t");         wjets->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WJets.root"     , tag.Data())); 
-  TChain *mb    = new TChain("t");         mb   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WWZ.root"       , tag.Data())); 
-  TChain *wzz   = new TChain("t");         wzz  ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/WZZ.root"       , tag.Data())); 
-  TChain *zz    = new TChain("t");         zz   ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/ZZ.root"        , tag.Data())); 
-  TChain *qqww  = new TChain("t");         qqww ->Add(Form("/nfs-7/userdata/ss2015/ssBabies/%s/QQWW.root"      , tag.Data())); 
+
+  TString pfx  = Form("/nfs-7/userdata/ss2015/ssBabies/%s/", getTag().Data());
+  TString pfxData  = Form("/nfs-7/userdata/ss2015/ssBabies/%s/", getTagData().Data());
+
+  // TString pfx_moriond  = "/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.01/output/";
+  TString pfx_moriond  = "/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.04/output/";
+  if (doMoriond) {
+      pfx = pfx_moriond;
+      pfxData = "/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.06/output/";
+  }
+
+  TChain *data  = new TChain("t", "data"); data ->Add(Form("%s/Data*.root"     , pfxData.Data()));
+  TChain *ttz   = new TChain("t");         ttz  ->Add(Form("%s/TTZnlo.root"      , pfx.Data())); 
+                                           ttz  ->Add(Form("%s/TTZLOW.root"      , pfx.Data())); 
+  TChain *ttx   = new TChain("t");         ttx  ->Add(Form("%s/TTHtoNonBB.root" , pfx.Data())); 
+  TChain *ttw   = new TChain("t");         ttw  ->Add(Form("%s/TTWnlo.root",     pfx.Data())); 
+  TChain *wz    = new TChain("t");         wz   ->Add(Form("%s/WZ.root"        , pfx.Data())); 
+  TChain *ttbar = new TChain("t");         ttbar->Add(Form("%s/TTBAR_PH*.root"  , pfx.Data())); 
+  TChain *dy    = new TChain("t");         dy   ->Add(Form("%s/DY_high*.root"   , pfx.Data())); 
+                                           dy   ->Add(Form("%s/DY_low*.root"    , pfx.Data())); 
+  TChain *wjets = new TChain("t");         wjets->Add(Form("%s/WJets.root"     , pfx.Data())); 
+  TChain *mb    = new TChain("t");         mb   ->Add(Form("%s/WWZ.root"       , pfx.Data())); 
+                                           mb  ->Add(Form("%s/WWDPS.root"       , pfx.Data())); 
+  TChain *wzz   = new TChain("t");         wzz  ->Add(Form("%s/WZZ.root"       , pfx.Data())); 
+  TChain *zz    = new TChain("t");         zz   ->Add(Form("%s/ZZ.root"        , pfx.Data())); 
+  TChain *qqww  = new TChain("t");         qqww ->Add(Form("%s/QQWW.root"      , pfx.Data())); 
+
+  duplicate_removal::clear_list();
 
   //Make plots
   dy_plots    = makePlots(dy);
@@ -107,7 +128,7 @@ void plots(){
   drawPlot(10 , Form("#mu p_{T} in %s dilepton pairs"  , sig.c_str()) , "MET > 50, #geq 2 jets" , "p_{T}^{#mu}"      , "PTM"          , "--yTitleOffset -0.10");
 
   //Print yields
-  vector <float> total = {0,0,0,0}; 
+  vector <double> total = {0,0,0,0}; 
   for (int i = 0; i < 4; i++) total.at(i) += ttbar_plots.second.at(i);
   // for (int i = 0; i < 4; i++) total.at(i) += st_plots.second.at(i);
   for (int i = 0; i < 4; i++) total.at(i) += dy_plots.second.at(i);
@@ -145,36 +166,37 @@ void plots(){
 }
 
 //Fill plot function
-pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
+pair <vector <TH1D*>, vector <double> > makePlots(TChain *chain){
 
 
   //Declare plots
 
-  // TH1F *met    = new TH1F("met"    , "met"    , 50  ,   0, 1000);
-  // TH1F *ht     = new TH1F("ht"     , "ht"     , 50  ,   0, 1800);
-  // TH1F *mll    = new TH1F("mll"    , "mll"    , 50  ,   0, 300);
-  // TH1F *mtmin  = new TH1F("mtmin"  , "mtmin"  , 50  ,   0, 300);
-  // TH1F *njets  = new TH1F("njets"  , "njets"  , 6  ,    0, 6  );
-  // TH1F *nbtags = new TH1F("nbtags" , "nbtags" , 4  ,    0, 4  );
-  // TH1F *pt     = new TH1F("pt"     , "pt"     , 50 ,    0, 300);
-  // TH1F *eta    = new TH1F("eta"    , "eta"    , 50 , -3.2, 3.2);
-  // TH1F *jetpt  = new TH1F("jetpt"  , "jetpt"  , 50 ,    0, 300);
-  // TH1F *pte     = new TH1F("pte"     , "pte"     , 50 ,    0, 300);
-  // TH1F *ptm     = new TH1F("ptm"     , "ptm"     , 50 ,    0, 300);
-  TH1F *met    = new TH1F("met"    , "met"    , 25  ,   0, 1000);
-  // TH1F *ht     = new TH1F("ht"     , "ht"     , 25  ,   0, 1800);
-  TH1F *ht     = new TH1F("ht"     , "ht"     , 50  ,   0, 800);
-  TH1F *mll    = new TH1F("mll"    , "mll"    , 25  ,   0, 300);
-  TH1F *mtmin  = new TH1F("mtmin"  , "mtmin"  , 25  ,   0, 300);
-  TH1F *njets  = new TH1F("njets"  , "njets"  , 6  ,    0, 6  );
-  TH1F *nbtags = new TH1F("nbtags" , "nbtags" , 4  ,    0, 4  );
-  TH1F *pt     = new TH1F("pt"     , "pt"     , 25 ,    0, 300);
-  TH1F *eta    = new TH1F("eta"    , "eta"    , 25 , -3.2, 3.2);
-  TH1F *jetpt  = new TH1F("jetpt"  , "jetpt"  , 25 ,    0, 300);
-  TH1F *pte     = new TH1F("pte"     , "pte"     , 25 ,    0, 300);
-  TH1F *ptm     = new TH1F("ptm"     , "ptm"     , 25 ,    0, 300);
+  // TH1D *met    = new TH1D("met"    , "met"    , 50  ,   0, 1000);
+  // TH1D *ht     = new TH1D("ht"     , "ht"     , 50  ,   0, 1800);
+  // TH1D *mll    = new TH1D("mll"    , "mll"    , 50  ,   0, 300);
+  // TH1D *mtmin  = new TH1D("mtmin"  , "mtmin"  , 50  ,   0, 300);
+  // TH1D *njets  = new TH1D("njets"  , "njets"  , 6  ,    0, 6  );
+  // TH1D *nbtags = new TH1D("nbtags" , "nbtags" , 4  ,    0, 4  );
+  // TH1D *pt     = new TH1D("pt"     , "pt"     , 50 ,    0, 300);
+  // TH1D *eta    = new TH1D("eta"    , "eta"    , 50 , -3.2, 3.2);
+  // TH1D *jetpt  = new TH1D("jetpt"  , "jetpt"  , 50 ,    0, 300);
+  // TH1D *pte     = new TH1D("pte"     , "pte"     , 50 ,    0, 300);
+  // TH1D *ptm     = new TH1D("ptm"     , "ptm"     , 50 ,    0, 300);
+  TH1D *met    = new TH1D("met"    , "met"    , 40  ,   0, 800);
+  // TH1D *ht     = new TH1D("ht"     , "ht"     , 25  ,   0, 1800);
+  TH1D *ht     = new TH1D("ht"     , "ht"     , 50  ,   0, 800);
+  TH1D *mll    = new TH1D("mll"    , "mll"    , 25  ,   0, 300);
+  // TH1D *mll    = new TH1D("mll"    , "mll"    , 60  ,   75, 105);
+  TH1D *mtmin  = new TH1D("mtmin"  , "mtmin"  , 25  ,   0, 300);
+  TH1D *njets  = new TH1D("njets"  , "njets"  , 6  ,    0, 6  );
+  TH1D *nbtags = new TH1D("nbtags" , "nbtags" , 4  ,    0, 4  );
+  TH1D *pt     = new TH1D("pt"     , "pt"     , 25 ,    0, 300);
+  TH1D *eta    = new TH1D("eta"    , "eta"    , 25 , -3.2, 3.2);
+  TH1D *jetpt  = new TH1D("jetpt"  , "jetpt"  , 25 ,    0, 300);
+  TH1D *pte     = new TH1D("pte"     , "pte"     , 25 ,    0, 300);
+  TH1D *ptm     = new TH1D("ptm"     , "ptm"     , 25 ,    0, 300);
 
-  vector <float> counts = {0, 0, 0, 0};
+  vector <double> counts = {0, 0, 0, 0};
  
   //Event Counting
   unsigned int nEventsTotal = 0;
@@ -218,9 +240,13 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
           if (!ss::lep1_passes_id()) continue;
           if (!ss::lep2_passes_id()) continue;
       }
-      if (!ss::fired_trigger() && ss::is_real_data())      continue;
-      if (!ss::passedFilterList() && ss::is_real_data())   continue;
-      if (!ss::passes_met_filters() && ss::is_real_data()) continue;
+      if (doMoriond) {
+          if (!ss::fired_trigger())      continue;
+          if (!ss::passes_met_filters()) continue;
+      } else {
+          if (!ss::fired_trigger() && ss::is_real_data())      continue;
+          if (!ss::passes_met_filters() && ss::is_real_data()) continue;
+      }
       
 
       bool checkICHEP = false;
@@ -229,8 +255,8 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       } else {
           //electron FO is tighter for iso triggers, make sure it is passed
           if (ss::ht()<300.) {
-              if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA())) continue;
-              if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA())) continue;
+              if (!passIsolatedFO(ss::lep1_id(), ss::lep1_p4().eta(), ss::lep1_MVA(), ss::lep1_p4().pt())) continue;
+              if (!passIsolatedFO(ss::lep2_id(), ss::lep2_p4().eta(), ss::lep2_MVA(), ss::lep2_p4().pt())) continue;
           } 
       }
 
@@ -239,22 +265,33 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
       if (ss::lep2_coneCorrPt() < 25) continue;
 
       if ((pickCharge != 0) && (pickCharge*ss::lep1_id() > 0)) continue;
+
+      if (doE && abs(ss::lep1_id()*ss::lep2_id()) != 121) continue;
+      if (doMu && abs(ss::lep1_id()*ss::lep2_id()) != 169) continue;
+
       
       // recalculate mtmin
       float mtl1 = MT(ss::lep1_coneCorrPt(), ss::lep1_p4().phi(), ss::met(), ss::metPhi());
       float mtl2 = MT(ss::lep2_coneCorrPt(), ss::lep2_p4().phi(), ss::met(), ss::metPhi());
       float mtminRecalc = mtl1 > mtl2 ? mtl2 : mtl1;
 
-      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt(), useNewBaseline);
+      int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt(), useNewBaseline, doRelax);
       if (BR < 0) continue;
       int SR = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtminRecalc, ss::lep1_id(), ss::lep2_id(), ss::lep1_coneCorrPt(), ss::lep2_coneCorrPt());
       if (checkTailRegions && ((BR<0) || (SR<30) || ss::hyp_class()==6)) continue; // only look at tail regions for excess study
       if (checkTailRegions && (abs(ss::dilep_p4().M()-91.2) <= 15)) continue; // only look at tail regions for excess study
 
       //Calculate weight
-      float weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG*getTruePUw(ss::trueNumInt()[0])*ss::weight_btagsf();
-      weight *= ss::is_real_data() ? 1 : (ss::sparms().size() == 0 ? eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht()) : eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices())); 
-      weight *= ss::is_real_data() ? 1 : HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::lep2_id(), ss::ht(), 0);
+      float weight = ss::is_real_data() ? 1 : ss::scale1fb()*lumiAG;
+      if (doMoriond) weight *= getTruePUw_Moriond(ss::trueNumInt()[0]);
+      else weight *= getTruePUw(ss::trueNumInt()[0]);
+
+      weight *= ss::is_real_data() ? 1 : (ss::sparms().size() == 0 ? 
+          eventScaleFactor(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht()) :
+          eventScaleFactorFastSim(ss::lep1_id(), ss::lep2_id(), ss::lep1_p4().pt(), ss::lep2_p4().pt(), ss::lep1_p4().eta(), ss::lep2_p4().eta(), ss::ht(), ss::nGoodVertices())); 
+
+      if (doBtagSF) weight *= ss::is_real_data() ? 1 : ss::weight_btagsf();
+
 
       //Make met plots here
       met->Fill(ss::met(), weight);  
@@ -278,7 +315,7 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
 
   
       //Counts
-      if (ss::dilep_p4().M() < 30) continue; 
+      // if (ss::dilep_p4().M() < 30) continue; 
       if (ss::hyp_type() == 0)      counts[2] += weight; 
       else if (ss::hyp_type() == 3) counts[0] += weight; 
       else                          counts[1] += weight;
@@ -287,7 +324,7 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
     }//event loop
   }//file loop
 
-  vector <TH1F*> results;
+  vector <TH1D*> results;
   results.push_back(met);
   results.push_back(ht);
   results.push_back(mll);
@@ -308,7 +345,7 @@ pair <vector <TH1F*>, vector <float> > makePlots(TChain *chain){
 void drawPlot(int which, string title, string subtitle, string xaxis, string title2, string options){
   
   //Vector of backgrounds
-  vector <TH1F*> backgrounds;
+  vector <TH1D*> backgrounds;
   backgrounds.push_back(ttx_plots.first.at(which));
   backgrounds.push_back(wz_plots.first.at(which));    
   backgrounds.push_back(ttbar_plots.first.at(which)); 
@@ -330,16 +367,24 @@ void drawPlot(int which, string title, string subtitle, string xaxis, string tit
   titles.push_back("qqWW");       colors.push_back(kOrange-3); 
 
   //Null plot
-  TH1F* null = new TH1F("","",1,0,1);
+  TH1D* null = new TH1D("","",1,0,1);
+
+
+  TString folder = "pdfs";
+    if (type == DATA) {
+        folder  = "pdfs_os";
+    } else if (type == FAKES) {
+        folder  = "pdfs_tl";
+    }
 
   //Make plots -- data
-  if (type == DATA || type == FAKES) dataMCplotMaker(data_plots.first.at(which), backgrounds, titles, title, subtitle, Form("--dontShowZeroRatios --outputName pdfs/%s --xAxisLabel %s --lumi %f --outOfFrame %s", title2.c_str(), xaxis.c_str(), lumiAG, options.c_str()), {}, {}, colors); 
-  if (type == SIGNAL) dataMCplotMaker(null, backgrounds, titles, title, subtitle, Form("--dontShowZeroRatios --outputName %s --xAxisLabel %s --lumi %f --outOfFrame %s --legendRight -0.03 --blackSignals", title2.c_str(), xaxis.c_str(), lumiAG, options.c_str()), {}, {}, colors); 
+  if (type == DATA || type == FAKES) dataMCplotMaker(data_plots.first.at(which), backgrounds, titles, title, subtitle, Form("--dontShowZeroRatios --outputName %s/%s --xAxisLabel %s --lumi %f --outOfFrame %s --makeRootFile --makeTable ", folder.Data(), title2.c_str(), xaxis.c_str(), lumiAG, options.c_str()), {}, {}, colors); 
+  if (type == SIGNAL) dataMCplotMaker(null, backgrounds, titles, title, subtitle, Form("--dontShowZeroRatios --outputName %s/%s --xAxisLabel %s --lumi %f --outOfFrame %s --legendRight -0.03 --blackSignals --makeRootFile --makeTable ",  folder.Data(),title2.c_str(), xaxis.c_str(), lumiAG, options.c_str()), {}, {}, colors); 
   
 }
 
 //Make plot cumulative function
-TH1F* makePlotCumulative(TH1F* hist_bkgd){
+TH1D* makePlotCumulative(TH1D* hist_bkgd){
   float integ = hist_bkgd->Integral(0,hist_bkgd->GetNbinsX()+1);
   float integ_no_overflow = hist_bkgd->Integral(1,hist_bkgd->GetNbinsX());
   Double_t *integral = hist_bkgd->GetIntegral(); 

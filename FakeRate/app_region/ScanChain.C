@@ -20,7 +20,6 @@
 #include "../../CORE/Tools/utils.h"
 #include "../../CORE/Tools/dorky/dorky.cc"
 #include "../../classFiles/v8.04/SS.h"
-#include "../../software/tableMaker/CTable.h"
 #include "../../software/dataMCplotMaker/PlotMaker2D.h"
 #include "../../software/dataMCplotMaker/dataMCplotMaker.h"
 #include "../../commonUtils.h"
@@ -28,8 +27,6 @@
 using namespace std;
 using namespace duplicate_removal;
 
-CTable electrons;
-CTable muons;
 
 bool doLatex = true;
 bool doRatio = false;
@@ -222,15 +219,31 @@ std::vector<std::pair<TH1F*, TH1F*> > getBackgrounds(std::string type, int isMu,
   return pairs;
 }
 
+void printClosureNumbers(std::vector<TString> filenames) {
+    for(int imu = -1; imu < 2; imu++) {
+        TString musuffix = "";
+        if (imu == 1) musuffix = "_mu";
+        else if (imu == 0) musuffix = "_el";
+
+        std::cout << "-- Closure for " << (imu >= 0 ? (imu == 1 ? "MU" : "EL" ) : "TOTAL") << " -- " << std::endl;
+        float val_pred = hists[getHist("Npn_histo_sr_pred"+musuffix)]->Integral();
+        std::cout << "  pred: " << val_pred << std::endl;
+        std::vector<std::pair<TH1F*,TH1F*> > vobs = getBackgrounds("Npn_histo_sr_obs",imu,filenames);
+        float tot_obs = 0.;
+        for(unsigned int ifile = 0; ifile < filenames.size(); ifile++) {
+            float val_obs = vobs.at(ifile).first->Integral();
+            tot_obs += val_obs;
+            std::cout << "   " << filenames[ifile] << " obs: " << val_obs << std::endl;
+        }
+        std::cout << "  --> pred/obs: " << val_pred/tot_obs << std::endl;
+        std::cout << std::endl;
+    }
+}
+
 int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool doData = false, int nEvents = -1){
 
   initCounter();
 
-  //Make tables
-  electrons.setTable() ("Pred", "Obs", "Pred/Obs");
-  muons.setTable() ("Pred", "Obs", "Pred/Obs");
-  electrons.setPrecision(2);
-  muons.setPrecision(2);
 
   //Parse options
   bool coneCorr = option.Contains("coneCorr") ? true : false;
@@ -256,6 +269,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
 
   bool doLowHT = option.Contains("IsoTrigs") ? true : false;
   bool doHighHT = option.Contains("HTTrigs") ? true : false;
+
+  bool doSpecial = option.Contains("special") ? true : false;
 
   bool weightOne = false;
   bool bypass = false;
@@ -575,7 +590,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       }
 
       // Analysis Code
-      float weight = ss::is_real_data() ? 1.0 : ss::scale1fb()*luminosity; //*getTruePUw(ss::trueNumInt()[0]); FIXME--put back in with updated PUw distribution
+      float weight = ss::is_real_data() ? 1.0 : ss::scale1fb()*luminosity; // *getTruePUw_Moriond(ss::trueNumInt()[0]);
 
       TString filename = fname;
 
@@ -586,8 +601,11 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
 
 
       //require triggers
-      if (!ss::fired_trigger() && ss::is_real_data()) continue;
-      // if (!ss::fired_trigger()) continue;
+      if (!doSpecial) {
+          if (!ss::fired_trigger()) continue;
+      } else {
+          if (!ss::fired_trigger() && ss::is_real_data()) continue;
+      }
       if (doLowHT) {
 	if (ss::ht()>300.) continue;
       }
@@ -659,15 +677,39 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       if (abs(ss::lep1_id())==11 && lep1_pT<15.) continue;
       if (abs(ss::lep2_id())==11 && lep2_pT<15.) continue;
 
+      assert(fabs(lep1_pT - ss::lep1_coneCorrPt())<0.0001);
+      assert(fabs(lep2_pT - ss::lep2_coneCorrPt())<0.0001);
+
+      bool verbose = false;
+      // if (ss::lumi() != 144401 || ss::event() != 23132887) continue;
+      // if (ss::lumi() != 204117 || ss::event() != 32699566) continue;
+      // if (ss::lumi() != 228769 || ss::event() != 36648858) continue;
+      // if (ss::lumi() != 247804 || ss::event() != 39698163) continue;
+      // if (ss::lumi() != 319965 || ss::event() != 51258393) continue;
+      // if (ss::lumi() != 402409 || ss::event() != 64465899) continue;
+      // if (ss::lumi() != 447023 || ss::event() != 71613202) continue;
+      // if (ss::lumi() != 477223 || ss::event() != 76451090) continue;
+
+
       //Determine passes ID
       bool lep1_passes_id = ss::lep1_passes_id();
       bool lep2_passes_id = ss::lep2_passes_id();
+
+      if (verbose) {
+          bool lep1prompt = ss::lep1_motherID()==1;
+          bool lep2prompt = ss::lep2_motherID()==1;
+          bool lep1nonprompt = ss::lep1_motherID()<=0;
+          bool lep2nonprompt = ss::lep2_motherID()<=0;
+          std::cout << " ss::lep1_passes_id(): " << ss::lep1_passes_id() << " ss::lep2_passes_id(): " << ss::lep2_passes_id() << std::endl;
+          std::cout << " lep1_pT: " << lep1_pT << " lep2_pT: " << lep2_pT << std::endl;
+          std::cout << " lep1prompt: " << lep1prompt << " lep2prompt: " << lep2prompt << " lep1nonprompt: " << lep1nonprompt << " lep2nonprompt: " << lep2nonprompt << std::endl;
+      }
+
 
 
       // //do not do LL for LowHT -- I guess this was default for regular FR? so for now I will put the !inSitu part
       // if (!inSitu && lep1_pT < 25. && lep2_pT < 25.) continue;
 
-      // bool test_MVA = false; // FIXME
       if(!testMVA) {
           if (ss::ht()<300.) {
               //Skip if does not pass FO for isolated triggers
@@ -698,6 +740,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
       int br = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), lep1_pT, lep2_pT);
       if (br<0) continue;
       int sr = signalRegion2016(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), mtmin, ss::lep1_id(), ss::lep2_id(), lep1_pT, lep2_pT);
+
+      if (verbose) std::cout << " inSitu: " << inSitu << " br: " << br << " ac_base: " << ac_base << " ss::hyp_class(): " << ss::hyp_class() << std::endl;
 
       // SS Z veto -- this is to match the inSitu FR derivation macro
       // if ((inSitu && !doData) && (fabs((ss::lep1_p4() + ss::lep2_p4()).M() - 91) < 15)) continue; // FIXME
@@ -799,6 +843,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             // hists[getHist("Npn_histo_LFake_obs_el_rebin"+fname) ]->Fill(min(coneCorr ? lep2_pT : ss::lep2_p4().pt(),69.F), weight);
 
             addToCounter(filename+Form("_obs_el_BR%i", br), weight);
+            if (fabs(ss::lep2_p4().eta()) < 0.8 && lep2_pT >= 70) addToCounter(filename+"_obs_el_pteta2", 1);
           } 
           else if(abs(ss::lep2_id()) == 13){
             if(sr > 0) hists[getHist("Npn_histo_sr_obs_mu"+fname)   ]->Fill(sr, weight);
@@ -812,6 +857,11 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_LFake_obs_mu"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
 
             addToCounter(filename+Form("_obs_mu_BR%i", br), weight);
+            if (fabs(ss::lep2_p4().eta()) < 1.2 && lep2_pT >= 50) {
+                addToCounter(filename+"_obs_mu_pteta2", 1);
+                // addToCounter(Form("%i:%llu",ss::lumi(), ss::event()));
+            }
+
           }
         }
 
@@ -846,6 +896,10 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_LTrue_obs_el"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
             
             addToCounter(filename+Form("_obs_el_BR%i", br), weight);
+            if (fabs(ss::lep1_p4().eta()) < 0.8 && lep1_pT >= 70) {
+                addToCounter(filename+"_obs_el_pteta1", 1);
+                // addToCounter(Form("%i:%llu",ss::lumi(), ss::event()));
+            }
 
           } 
           else if(abs(ss::lep1_id()) == 13){
@@ -860,6 +914,7 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             hists[getHist("Npn_histo_LTrue_obs_mu"+fname) ]->Fill(coneCorr ? lep2_pT : ss::lep2_p4().pt(), weight);
 
             addToCounter(filename+Form("_obs_mu_BR%i", br), weight);
+            if (fabs(ss::lep1_p4().eta()) < 1.2 && lep1_pT >= 50) addToCounter(filename+"_obs_mu_pteta1", 1);
           }
         }
 
@@ -977,6 +1032,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             if(subtractContamination) w = mult*weight;
 
             addToCounter(filename+Form("_pred_el_BR%i", br), w);
+            if (fabs(ss::lep2_p4().eta()) < 0.8 && lep2_pT >= 70) addToCounter(filename+"_pred_el_pteta2", w);
+            if (fabs(ss::lep2_p4().eta()) < 0.8 && lep2_pT >= 70) addToCounter(filename+"_prednotf_el_pteta2", 1);
 
             if(sr > 0) hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, w);
@@ -1011,6 +1068,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             if(subtractContamination) w = mult*weight;
 
             addToCounter(filename+Form("_pred_mu_BR%i", br), w);
+            if (fabs(ss::lep2_p4().eta()) < 1.2 && lep2_pT >= 50) addToCounter(filename+"_pred_mu_pteta2", w);
+            if (fabs(ss::lep2_p4().eta()) < 1.2 && lep2_pT >= 50) addToCounter(filename+"_prednotf_mu_pteta2", 1);
 
             if(sr > 0) hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, w);
@@ -1078,6 +1137,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             if(subtractContamination) w = mult*weight;
 
             addToCounter(filename+Form("_pred_el_BR%i", br), w);
+            if (fabs(ss::lep1_p4().eta()) < 0.8 && lep1_pT >= 70) addToCounter(filename+"_pred_el_pteta1", w);
+            if (fabs(ss::lep1_p4().eta()) < 0.8 && lep1_pT >= 70) addToCounter(filename+"_prednotf_el_pteta1", 1);
 
             if(sr > 0) hists[getHist("Npn_histo_sr_pred_el")]   ->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_el")]   ->Fill(br, w);
@@ -1113,6 +1174,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
             if(subtractContamination) w = mult*weight;
 
             addToCounter(filename+Form("_pred_mu_BR%i", br), w);
+            if (fabs(ss::lep1_p4().eta()) < 1.2 && lep1_pT >= 50) addToCounter(filename+"_pred_mu_pteta1", w);
+            if (fabs(ss::lep1_p4().eta()) < 1.2 && lep1_pT >= 50) addToCounter(filename+"_prednotf_mu_pteta1", 1);
 
             if(sr > 0) hists[getHist("Npn_histo_sr_pred_mu")]->Fill(sr, w);
             hists[getHist("Npn_histo_br_pred_mu")]->Fill(br, w);
@@ -1228,6 +1291,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
           colors.push_back(kGreen+2);
       }
   }
+
+  if (!doData) {
 
 
   // //BR plots
@@ -1355,47 +1420,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
   c8.SaveAs(plotdir+"pTrelvsMiniIso_mu"+option+".png");
   pTrelvsMiniIso_histo_el->Draw("colz");
   c8.SaveAs(plotdir+"pTrelvsMiniIso_el"+option+".png");
+    }
 
-  //Print tables
-  for (int i = 0; i < 4; i++){
-    electrons.setRowLabel(Form("%i", i), i);
-    muons.setRowLabel(Form("%i", i), i);
-  }
-  if (soup){
-    cout << "setting soup" << endl;
-    electrons.forSlideMaker("closure_elec_soup.tex");
-    muons.forSlideMaker("closure_muon_soup.tex"); 
-  }
-  else if (PC){
-    cout << "setting PC" << endl;
-    electrons.forSlideMaker("closure_elec_PC.tex");
-    muons.forSlideMaker("closure_muon_PC.tex"); 
-  }
-  else if (PCssZ){
-    cout << "setting PCssZ" << endl;
-    electrons.forSlideMaker("closure_elec_PCssZ.tex");
-    muons.forSlideMaker("closure_muon_PCssZ.tex"); 
-  }
-  else if (ssZ){
-    cout << "setting ssZ" << endl;
-    electrons.forSlideMaker("closure_elec_ssZ.tex");
-    muons.forSlideMaker("closure_muon_ssZ.tex"); 
-  }
-  else if (notCC){
-    cout << "setting notCC" << endl;
-    electrons.forSlideMaker("closure_elec_notCC.tex");
-    muons.forSlideMaker("closure_muon_notCC.tex"); 
-  }
-  else if (looseEMVA){
-    cout << "setting FO2pFO4" << endl;
-    electrons.forSlideMaker("closure_elec_FO2pFO4.tex");
-    muons.forSlideMaker("closure_muon_FO2pFO4.tex"); 
-  }
-  else {
-    cout << "setting normal" << endl;
-    electrons.forSlideMaker("closure_elec_normal.tex");
-    muons.forSlideMaker("closure_muon_normal.tex"); 
-  }
 
   TFile *file = new TFile("histos_"+option+".root", "RECREATE");
   file->Write(); 
@@ -1405,5 +1431,8 @@ int ScanChain( TChain* chain, TString option = "", TString ptRegion = "HH", bool
   }
 
   printCounter(true);
+
+  if (!doData) printClosureNumbers(filenames);
+
   return 0;
 }

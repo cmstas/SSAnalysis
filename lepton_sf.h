@@ -1,4 +1,5 @@
-float triggerScaleFactor(int pdgId1, int pdgId2, float pt1, float pt2, float ht) {
+float triggerScaleFactor(int pdgId1, int pdgId2, float pt1, float pt2, float eta1, float eta2, float ht) {
+    // return TotalTriggerSF(pdgId1, pt1, eta1, pdgId2, pt2, eta2, ht);
     // Using Matthieu's macro, so dummy 1 here
     return 1.0; // FIXME
 
@@ -177,5 +178,5 @@ float leptonScaleFactor(int pdgId, float pt, float eta, float ht) {
 }
 
 float eventScaleFactor(int pdgId1, int pdgId2, float pt1, float pt2, float eta1, float eta2, float ht) {
-  return triggerScaleFactor(pdgId1, pdgId2, pt1, pt2, ht) * leptonScaleFactor(pdgId1, pt1, eta1, ht) * leptonScaleFactor(pdgId2, pt2, eta2, ht);
+  return triggerScaleFactor(pdgId1, pdgId2, pt1, pt2, eta1, eta2, ht) * leptonScaleFactor(pdgId1, pt1, eta1, ht) * leptonScaleFactor(pdgId2, pt2, eta2, ht);
 }

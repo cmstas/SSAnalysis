@@ -47,9 +47,15 @@ void flip(bool doMu=false, bool DYonly=false, bool TTonly=false){
   //Set up chains
   TChain *chain = new TChain("t");
 
-  if (!DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/TTBAR_PH.root"); 
-  if (!TTonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_low.root"); 
-  if (!TTonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/"+getTag()+"/DY_high.root"); 
+
+  // TString pfx = "/nfs-7/userdata/ss2015/ssBabies/"+getTag();
+  TString pfx_moriond  = "/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.03/output/";
+  TString pfx = pfx_moriond;
+
+
+  if (!DYonly) chain->Add(pfx+"/TTBAR_PH*.root"); 
+  if (!TTonly) chain->Add(pfx+"/DY_low*.root"); 
+  if (!TTonly) chain->Add(pfx+"/DY_high*.root"); 
 
   // if (!DYonly) chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/TTBAR_PH.root"); 
   // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04/DY_low.root"); 
@@ -83,7 +89,8 @@ void flip(bool doMu=false, bool DYonly=false, bool TTonly=false){
       SSAG::progress(nEventsTotal, nEventsChain);
 
       //Reject not triggered
-      if (!ss::fired_trigger() && ss::is_real_data()) continue;
+      // if (!ss::fired_trigger() && ss::is_real_data()) continue;
+      if (!ss::fired_trigger()) continue;
 
       //Consider only numerator events of either charge, without extra Z veto
       if (hyp_class() != 3 && hyp_class() != 4) continue;// && hyp_class() != 6
@@ -99,7 +106,8 @@ void flip(bool doMu=false, bool DYonly=false, bool TTonly=false){
       int absLepId = doMu ? 13 : 11;
 
       //Weight
-      float weight = getTruePUw(ss::trueNumInt()[0])*scale1fb()*theLumi; 
+      // float weight = getTruePUw(ss::trueNumInt()[0])*scale1fb()*theLumi; 
+      float weight = getTruePUw_Moriond(ss::trueNumInt()[0])*scale1fb()*theLumi; 
       // float weight = 1.0;
 
       //If they make it this far, they are denominator events

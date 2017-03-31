@@ -14,12 +14,14 @@
 * next time, you do not need to set redocards and redolimits to True since we can just reuse them
 
 ## SSTT limits
+* `The next steps are done automatically with `python getSSTTlims.py` (after entering the correct dir in the script)
 * `python createCard.py v8.03 ttbar_os br sr card-ttos.txt` with the appropriate directory instead of `v8.03`
 * `combine -M Asymptotic v8.03_ttos/card-ttos.txt  --noFitAsimov`
 * the limit value here is signal strength, so must multiply it by the xsec of ttbar (831.762pb) and divide by 1000 because of https://github.com/cmstas/SSAnalysis/blob/42e6e83e932d670d36b421e498862113aed513c1/yieldsAndSRs/numericYields/yieldMaker.C#L1596 (note, obs limit was 1.5 pb in 2015 paper with 2.3/fb of data)
 
 ## TTTT limits
 * run the yieldMaker after commenting out the TTTT *rares* chain (keep the tttt_chain, since we will be using this as a signal) (10 mins)
+* `The next steps are done automatically with `python getSSTTlims.py` (after entering the correct dir in the script)
 * `python createCard.py v8.03_tttt tttt`
 * `combine -M Asymptotic v8.03_tttt/card_tttt_6.3ifb-all.txt --noFitAsimov`
 * same story as for SSTT (signal strength is output, so need to multiply by xsec of TTTT (0.009103 pb) to get limit

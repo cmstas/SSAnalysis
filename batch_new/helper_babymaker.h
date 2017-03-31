@@ -73,7 +73,7 @@ class babyMaker {
     void MakeBabyNtuple(const char* output_name, int isFastsim);
     void InitBabyNtuple();
     void CloseBabyNtuple () { BabyFile->cd(); BabyTree->Write(); BabyFile->Close(); }
-    csErr_t ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, int file = -1, int isFastsim = 0);
+    csErr_t ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty *jetUnc, int isFastsim = 0);
 
   protected:
     TFile* BabyFile;
@@ -108,6 +108,8 @@ class babyMaker {
     float metPhi;
     float rawmet;
     float rawmetPhi;
+    float calomet;
+    float calometPhi;
  
     //Meta Variables
     ULong64_t event;
@@ -120,6 +122,7 @@ class babyMaker {
     float scale1fb;     
     float xsec;         
     float xsec_error;         
+    float xsec_ps;         
     vector <TString> sparmNames; 
     vector <float> sparms; 
     float kfactor;      
@@ -320,12 +323,12 @@ class babyMaker {
     int higgs_mass;
     // //Gen Leptons
     int ncharginos;
-    // vector <LorentzVector> genps_p4;
-    // vector <int> genps_id;
-    // vector <int> genps_id_mother;
-    // vector <int> genps_idx_mother;
-    // vector <int> genps_status;
-    // vector <int> genps_id_grandma;
+    vector <LorentzVector> genps_p4;
+    vector <int> genps_id;
+    vector <int> genps_id_mother;
+    vector <int> genps_idx_mother;
+    vector <int> genps_status;
+    vector <int> genps_id_grandma;
 
     //Leptons pass numerator ID
     bool lep1_passes_id;
@@ -452,6 +455,16 @@ class babyMaker {
 
     //MET Filters
     bool passes_met_filters;
+    bool failsRA2Filter;
+
+    // For reminiaod
+    float evt_egclean_pfmet;
+    float evt_muegclean_pfmet;
+    float evt_muegcleanfix_pfmet;
+    float evt_uncorr_pfmet;
+    bool filt_noBadMuons;
+    bool filt_duplicateMuons;
+    bool filt_badMuons;
 
     //Passes 3rd Z/G vetos
     bool madeExtraZ;

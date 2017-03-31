@@ -71,8 +71,7 @@ public:
     case 26: { 
       hltleg1 = (isHTHLT)?( kMuHTLeg ):( l1Lead?kMuLeg1:kMuLeg2 );
       hltleg2 = (isHTHLT)?( kMuHTLeg ):( l1Lead?kMuLeg2:kMuLeg1 );
-      // FIXME
-      if(!isHTHLT) totEff *= 0.86;
+      // if(!isHTHLT) totEff *= 0.86;
       break;
     }
     }

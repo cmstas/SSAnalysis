@@ -49,11 +49,11 @@ void addToCounter(TString name, double weight=1.0) {
 }
 void printCounter(bool file = false) {
     ofstream outfile;
-    if(file) outfile.open("counter.txt");
+    if(file) outfile.open("pdfs/counter.txt");
     cout << string(30, '-') << endl << "Counter totals: " << endl;
     for(map<TString,int>::iterator it = evtBinMap.begin(); it != evtBinMap.end(); it++) {
         int iBin = (it->second)+1;
-        printf("%-15s %6.2f %6.2f\n",
+        printf("%-15s\t%6.2f\t%6.2f\n",
                 (it->first).Data(),
                 evtCounter->GetBinContent(iBin),
                 evtCounter->GetBinError(iBin) );
@@ -61,7 +61,7 @@ void printCounter(bool file = false) {
     }
     cout << string(30, '-') << endl;
     if(file) outfile.close();
-    if(file) cout << "Wrote counter to counter.txt" << endl;
+    if(file) cout << "Wrote counter to pdfs/counter.txt" << endl;
 }
 
 

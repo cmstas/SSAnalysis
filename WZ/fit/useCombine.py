@@ -8,12 +8,12 @@ from errors import E
 
 def get_nuisance_line(name, typ, ndashes, val, which_vals):
     tmp = ""
-    tmp += "%s %s" % (name, typ)
+    tmp += "%-12s %-12s" % (name, typ)
     for idash in range(ndashes):
         if idash in which_vals:
             tmp += " %.1f " % val
         else:
-            tmp += " - "
+            tmp += "  -  "
     return tmp+"\n"
 
 def get_variations(h1, syst=0.0, do_var=False):
@@ -24,11 +24,15 @@ def get_variations(h1, syst=0.0, do_var=False):
         hCent = r.TH1F("bin%i_%s" % (ix,h1.GetName()), "", 1, 0, 1)
         stat = h1.GetBinError(ix)
         cont = h1.GetBinContent(ix)
-        unc = math.sqrt(stat*stat + (syst*cont)**2)
         if not do_var:
+            unc = math.sqrt(stat*stat + (syst*cont)**2)
             hUp.SetBinContent(1, cont+unc)
             hDown.SetBinContent(1, max(cont-unc, 0.0001))
         hCent.SetBinContent(1, cont)
+        if "shape" in h1.GetName():
+            hCent.SetName(hCent.GetName()+str(ix))
+            hUp.SetName(hUp.GetName().replace("Up",str(ix)+"Up"))
+            hDown.SetName(hDown.GetName().replace("Down",str(ix)+"Down"))
         if not do_var:
             yield hUp
             yield hDown
@@ -62,12 +66,12 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.1):
     outfile = "forCard.root"
     card_filename = "card.txt"
     variations = ["btag","jes"]
+    # variations = ["jes"] # FIXME
     # variations = []
     procs = ["data", "wz", "ttz", "fakes", "rares"]
     # procs = ["data", "wz", "ttz", "fakes"]
 
     variationsud = sum([[v+"_up",v+"_dn"] for v in variations],[])
-    # print variations
 
     files = {}
     files["central"] = r.TFile(infile)
@@ -76,7 +80,6 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.1):
         # print "%s_%s_%s.root" % (infile.split(".root")[0], var, ud)
         files[var] = r.TFile("%s_%s.root" % (infile.split(".root")[0], var))
 
-    # print files
 
 
     # return 
@@ -108,8 +111,10 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.1):
         for var in ["central"] + variationsud:
             if var not in hists: hists[var] = {}
             tmp = [files[var].Get(hn) for hn in hnames[var][proc]]
-            name = "h_"+proc
+            # name = "h_"+proc
+            name = ""
             if "cent" not in var: name += var.replace("_up","Up").replace("_dn","Down")
+            if name == "": name = proc+"shape"
             # print name
             hists[var][proc] = tmp[0].Clone(name)
             for h in tmp[1:]: hists[var][proc].Add(h)
@@ -121,15 +126,23 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.1):
 
 
     print ">>> Writing output histograms for combine into %s" % outfile
-    fout = r.TFile(outfile, "RECREATE")
-    for proc in procs:
-        for var in ["central"] + variationsud:
-            map(lambda x: x.Write(), get_variations(hists[var][proc], syst=(shapeUnc if "data" not in proc.lower() else 0.0), do_var=not("cent" in var)))
 
-    # fake signal with 1 event in each bin (arbitrary since we only care about BG only fit)
-    hists["central"]["sig"] = hists["central"]["data"].Clone("h_sig")
+    d_fouts = {}
+    hists["central"]["sig"] = hists["central"]["data"].Clone("sigshape")
     for ix in range(1,hists["central"]["sig"].GetNbinsX()+1): hists["central"]["sig"].SetBinContent(ix,1.0)
-    map(lambda x: x.Write(), get_variations(hists["central"]["sig"], syst=0.0))
+    for proc in procs + ["sig"]:
+        d_fouts[proc] = r.TFile(outfile.replace(".root","_%s.root" % proc), "RECREATE")
+        for var in ["central"] + variationsud:
+            if proc == "sig":
+                if "cent" not in var:
+                    hists["central"]["sig"].SetName(var.replace("_up","Up").replace("_dn","Down"))
+                map(lambda x: x.Write(), get_variations(hists["central"]["sig"], syst=0.0))
+            else:
+                map(lambda x: x.Write(), get_variations(hists[var][proc], syst=(shapeUnc if "data" not in proc.lower() else 0.0), do_var=not("cent" in var)))
+
+    # # fake signal with 1 event in each bin (arbitrary since we only care about BG only fit)
+    # d_fouts["sig"] = r.TFile(outfile.replace(".root","_%s.root" % "sig"), "RECREATE")
+    # for ix in range(1,hists["central"]["sig"].GetNbinsX()+1): hists["central"]["sig"].SetBinContent(ix,1.0)
 
     Nbins = hists["central"]["sig"].GetNbinsX()
     Nproc = len(procs)
@@ -142,17 +155,28 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.1):
     proc2_str = " ".join([" ".join(map(str,range(0,Nproc))) for _ in range(0,Nbins)])
     rate_list = sum(map(list,zip(*[counts[proc] for proc in procs_signodata])),[])
 
+    all_correlated = True
+
     buff = ""
     buff += "imax %i\n" % (Nbins)
     buff += "jmax %i\n" % (Nproc-1)
-    buff += "kmax %i\n" % ((Nbins+1+len(variations))*(Nproc-1))
+    if all_correlated:
+        buff += "kmax %i\n" % ((Nbins+1+len(variations))*(Nproc-1)-((Nproc-2)*len(variations)))
+    else:
+        buff += "kmax %i\n" % ((Nbins+1+len(variations))*(Nproc-1))
     buff += "------------\n"
 
     for i in range(1,Nbins+1):
-        # for thing in ["data_obs","sig","wz","ttz","fakes","rares"]:
-        for thing in ["data_obs"] + procs_signodata:
-            buff += "shapes %s ch%i %s bin%i_h_%s bin%i_h_%s\n" % \
-                    (thing, i, outfile, i, thing.replace("_obs",""), i, "data" if "data" in thing else "$SYSTEMATIC")
+        for proc in ["data_obs"] + procs_signodata:
+            proc2 = proc.replace("_obs","")
+            ofile = outfile.replace(".root","_%s.root" % proc2)
+            buff += "shapes {0} ch{1} {2} bin{1}_{4}shape{1} bin{1}_{3}\n".format(
+                    proc,
+                    i,
+                    ofile,
+                    (("datashape"+str(i)) if "data" in proc else "$SYSTEMATIC"),
+                    proc2,
+                    )
 
     buff += "------------\n"
 
@@ -172,25 +196,40 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.1):
     for ithing,thing in enumerate(procs_nodata):
         norm = lnNbg
         if thing in ["wz","ttz"]: norm = lnNsig
+        # FIXME
+        # if thing in ["ttz"]: norm = 1.12
+        # if thing in ["rares"]: norm = 1.25
+        
         for ibin in range(Nbins):
-            buff += get_nuisance_line(thing, "shape", len(rate_list), 1.0, [ibin*(Nproc)+ithing+1])
+            buff += get_nuisance_line(thing+"shape"+str(ibin+1), "shape", len(rate_list), 1.0, [ibin*(Nproc)+ithing+1])
         buff += get_nuisance_line(thing, "lnN", len(rate_list), norm, range(ithing+1,(Nbins+1)*Nproc,Nproc))
+
         for var in variations:
-            buff += get_nuisance_line(thing+var, "shape", len(rate_list), 1.0, range(ithing+1,(Nbins+1)*Nproc,Nproc))
+            if all_correlated:
+                if ithing == 0:
+                    buff += get_nuisance_line(var, "shape", len(rate_list), 1.0, range(1,(Nbins+1)*Nproc))
+            else:
+                buff += get_nuisance_line(thing+var, "shape", len(rate_list), 1.0, range(ithing+1,(Nbins+1)*Nproc,Nproc))
 
     card_txt = buff
+    # print card_txt
 
+    for fout in d_fouts.values():
+        fout.Close()
 
-    fout.Close()
 
     print ">>> Writing card %s" % card_filename
     # write card
     with open(card_filename, "w") as fhout:
         fhout.write(card_txt)
 
+    # sys.exit()
+
     # run combine
     print ">>> Running combine with card %s" % card_filename
-    output = commands.getoutput("combine -M MaxLikelihoodFit %s --saveNorm --saveWithUncertainties" % card_filename)
+    cmd = "combine -M MaxLikelihoodFit %s --saveNorm --saveWithUncertainties" % card_filename 
+    output = commands.getoutput(cmd)
+    print output
     if "Done in" in output:
         print ">>> Combine finished successfully"
     else:
@@ -225,6 +264,8 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.1):
         try:
             Epostfit = E(norm_b.getVal(), norm_b.getError())
             Eprefit = E(p_val, p_err)
+            # Eprefit = E(norm_p.getVal(),norm_p.getError())
+            # print "prefit,postfit",name,binzi,Eprefit,Epostfit, norm_p.getVal(), norm_p.getError()
             if name not in  d_cerrs: d_cerrs[name] = {"prefit": [], "postfit": []}
             d_cerrs[name]["prefit"].append(Eprefit)
             d_cerrs[name]["postfit"].append(Epostfit)
@@ -243,8 +284,13 @@ def get_sfs(infile, lnNsig=2.0, lnNbg=1.5, shapeUnc=0.1):
 
     print "total SFs:"
     d_sfs["totals"] = {}
+    d_sfs["postfit_totals"] = {}
     for proc in d_cerrs:
         sf = sum(d_cerrs[proc]["postfit"])/sum(d_cerrs[proc]["prefit"])
+        d_sfs["postfit_totals"][proc.split("/")[-1]] = (
+                map(lambda x:x[0], d_cerrs[proc]["postfit"]),
+                map(lambda x:x[1], d_cerrs[proc]["postfit"])
+                )
         d_sfs["totals"][proc.split("/")[-1]] = (sf[0],sf[1])
         print "{:>10} {:>15,.2f} +-{:>6,.2f}".format(proc, sf[0], sf[1])
 
@@ -273,7 +319,7 @@ if __name__ == "__main__":
     for fname in glob.glob("h1D_nbtags*root"):
         make_single_bin_hist(fname, 3)
     infile = "onebin_h1D_nbtags.root"
-    print get_sfs(infile)
+    # print get_sfs(infile)
 
     # infile = "h1D_nbtags.root"
     # print get_sfs(infile)

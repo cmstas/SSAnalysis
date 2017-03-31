@@ -1,10 +1,11 @@
 #!/bin/bash
 
-tag="v8.04_July28"
+# tag="v8.04_July28"
 
 for cut in "300" "400" "500" "600" "700" "800" "900" "1000"; do
+# for cut in "300" ; do
     echo $cut; 
-    mkdir -p ../../../cards/${tag}_cut${cut}/
+    # mkdir -p ../../../cards/${tag}_cut${cut}/
     dir=MET_${cut}
     mkdir -p $dir
     cp yieldMaker.C $dir/
@@ -19,7 +20,7 @@ done
 
 for cut in "1125" "1200" "1300" "1400" "1500" "1600" "1700" "1800" "1900" "2000"; do
     echo $cut; 
-    mkdir -p ../../../cards/${tag}_cut${cut}/
+    # mkdir -p ../../../cards/${tag}_cut${cut}/
     dir=HT_${cut}
     mkdir -p $dir
     cp yieldMaker.C $dir/

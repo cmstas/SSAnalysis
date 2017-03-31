@@ -40,6 +40,7 @@
 // float getLumiUnblind() { return 12.9; }
 // bool isUnblindRun(int run) { return true; }
 // float getWZSF() { return 0.948; } // 0.948 pm 0.210
+// float getttZSF() { return 1.0; }
 // TString getTag() { return "v8.04"; }
 // TString getTagData() { return "v8.04"; }
 // #include "flip_rates.h"
@@ -81,9 +82,13 @@
 // // #include "fake_rates_insitu.h"
 // // #include "fake_rates_insitu_mva_soup.h"
 
-// 36.46
-float getLumi() { return 36.46; }
-float getLumiUnblind() { return 36.46; }
+// 36.46 / 36.814 (post-normtag update)
+// float getLumi() { return 36.46; }
+// float getLumiUnblind() { return 36.46; }
+// float getLumi() { return 36.814; }
+// float getLumiUnblind() { return 36.814; }
+float getLumi() { return 35.87; } // FIXME FIXME FIXME
+float getLumiUnblind() { return 35.87; } // FIXME FIXME FIXME
 bool isUnblindRun(int run) { return true; }
 // float getLumiUnblind() { return 12.9+4.4; }
 // bool isUnblindRun(int run) { 
@@ -94,25 +99,28 @@ bool isUnblindRun(int run) { return true; }
 //                 && (run!=279683) && (run!=279684) 
 //                 && (run!=279685) && (run!=279685) 
 //                 && (run!=279691) && (run!=279694) ); } // 276811 for end of ICHEP (12.9/fb), or 278820-279931 for beyond ICHEP studies (+4.4/fb)
-float getWZSF() { return 0.948; } // 0.948 pm 0.210
-float getttZSF() { return 1.28; }
+float getWZSF() { return 1.23; } // pm 0.12
+float getttZSF() { return 1.14; } // pm 0.30
 TString getTag() { return "v8.07"; }
 TString getTagData() { return "v8.07"; }
 #include "flip_rates_36p5ifb.h"
 // #include "fake_rates_22p0ifb.h"
 // #include "fake_rates.h"
-
 #if USE_SPECIFIC_FR>0
 #include "fake_rates_22p0ifb.h"
 #else
 #include "fake_rates_36p5ifb.h"
+// #include "fake_rates_moriond.h"
 // #include "fake_rates_nonenriched.h"
 #endif
-
-
 // #include "fake_rates_insitu_22p0ifb.h"
-#include "fake_rates_insitu_soup_moriond.h"
-
+#include "fake_rates_insitu_mva_soup.h"
+// #include "fake_rates_insitu_soup_moriond.h"
+// #include "fake_rates_insitu_36p8ifb.h"
+// #include "fake_rates_insitu_mva_soup_moriond.h"
+// #include "inSituFR/prompt.h"
+// #include "inSituFR/test_isfr_mcsoup_mva.h"
+// #include "inSituFR/mc_test_4.h"
 // #include "fake_rates_insitu.h"
 // #include "fake_rates_insitu_mva_soup.h"
 
@@ -121,13 +129,36 @@ bool applyThirdLeptonVeto() { return false; }
 
 #include "hlt/HLTEfficiency.cc"
 
+#include "LaurentSFs_debug.h"
+#include "LaurentSFs_fastsim.h"
 
 #include "pu_weights.h"
 // #include "flip_rates.h"
 // #include "fake_rates.h"
 #include "fake_rates_noCC.h"
-#include "lepton_sf.h"
-#include "lepton_sf_fastsim.h"
+
+// #if USE_OLD_LEPSF>0
+
+// #include "lepton_sf.h"
+// #include "lepton_sf_fastsim.h"
+
+// #elif USE_TEST_LEPSF>0
+
+// #include "lepton_sf_moriond_test.h"
+// #include "lepton_sf_fastsim_moriond.h"
+
+// #elif USE_RA7_MORIOND_LEPSF>0
+
+// #include "lepton_sf_moriond_ra7.h"
+// #include "lepton_sf_fastsim_moriond.h"
+
+// #else
+
+
+#include "lepton_sf_moriond.h"
+#include "lepton_sf_fastsim_moriond.h"
+
+// #endif
 
 // #include "fake_rates_insitu_22p0ifb.h"
 // #include "fake_rates_insitu.h"
@@ -137,6 +168,7 @@ bool applyThirdLeptonVeto() { return false; }
 // #include "fake_rates_insitu_wjets.h"
 // #include "fake_rates_insitu_mva_soup.h"
 // #include "fake_rates_insitu_mva.h"
+
 
 
 float fakeRate(int id, float pt, float eta, float ht) { 

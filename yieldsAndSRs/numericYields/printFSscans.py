@@ -2,11 +2,11 @@ import os, glob, ROOT
 
 # tag = "v8.04"
 # postfix=""
-tag = "v8.06"
+tag = "v9.06"
 postfix="_new"
 
 scans = [
-    "T1TTTT_main",
+    # "T1TTTT_main",
     # "T5QQQQVV_main",
     # "T5QQQQVV_dm20",
     # "T6TTWW_main",
@@ -22,9 +22,12 @@ higgs_scans = [
         ]
 
 for scan in higgs_scans:
-    files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/"+scan+"*.root")
+    # files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/"+scan+"*.root")
+    files = glob.glob("/nfs-7/userdata/namin/tupler_babies/merged//SS/{0}/output/{1}*.root".format(tag,scan))
+    print files
 
     outf = open("%s%s.h" % (scan.lower(),postfix), 'w')
+    outf_ps = open("%s_ps%s.h" % (scan.lower(),postfix), 'w')
 
     for fn in files:
         #print fn
@@ -45,11 +48,45 @@ for scan in higgs_scans:
             outf.write("%s_%i_chain->Add(\"%s\");\n" % (scan.lower(), mass,  fn))
             outf.write("pair<yields_t, plots_t> results_%s_%i = run(%s_%i_chain, 0, 0, 0, 0, 1);\n" % (scan.lower(), mass,  scan.lower(), mass))
             outf.write("delete %s_%i_chain;\n\n" % (scan.lower(), mass))
+
+            scan_ps = scan.lower()
+            scan_ps = scan_ps.replace("tth","tta")
+            scan_ps = scan_ps.replace("thw","taw")
+            scan_ps = scan_ps.replace("thq","taq")
+            outf_ps.write("TChain *%s_%i_chain = new TChain(\"t\",\"%s_m%i\" );\n" % (scan_ps, mass, scan_ps, mass))
+            outf_ps.write("%s_%i_chain->Add(\"%s\");\n" % (scan_ps, mass,  fn))
+            outf_ps.write("pair<yields_t, plots_t> results_%s_%i = run(%s_%i_chain, 0, 0, 0, 0, 1);\n" % (scan_ps, mass,  scan_ps, mass))
+            outf_ps.write("delete %s_%i_chain;\n\n" % (scan_ps, mass))
+
         f.Close()
     outf.close()
+    outf_ps.close()
+
+# files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/"+scan+"*.root")
+the_dir = glob.glob("/nfs-7/userdata/namin/tupler_babies/merged//SS/{0}/output/".format(tag))[0]
+scan = "higgs_scan"
+outf = open("%s%s.h" % (scan.lower(),postfix), 'w')
+outf_ps = open("%s_ps%s.h" % (scan.lower(),postfix), 'w')
+for mass in range(350,570,20):
+    outf.write("TChain *%s_%i_chain = new TChain(\"t\",\"%s_m%i\" );\n" % (scan.lower(), mass, scan.lower(), mass))
+    for which in ["TTH_scan","THW_scan", "THQ_scan"]:
+        outf.write("%s_%i_chain->Add(\"%s/%s.root\");\n" % (scan.lower(), mass,  the_dir,which))
+    outf.write("pair<yields_t, plots_t> results_%s_%i = run(%s_%i_chain, 0, 0, 0, 0, 1);\n" % (scan.lower(), mass,  scan.lower(), mass))
+    outf.write("delete %s_%i_chain;\n\n" % (scan.lower(), mass))
+    scan_ps = scan.lower()
+    scan_ps = "higgs_ps_scan"
+    outf_ps.write("TChain *%s_%i_chain = new TChain(\"t\",\"%s_m%i\" );\n" % (scan_ps, mass, scan_ps, mass))
+    for which in ["TTH_scan","THW_scan", "THQ_scan"]:
+        outf_ps.write("%s_%i_chain->Add(\"%s/%s.root\");\n" % (scan_ps.lower(), mass,  the_dir,which))
+    outf_ps.write("pair<yields_t, plots_t> results_%s_%i = run(%s_%i_chain, 0, 0, 0, 0, 1);\n" % (scan_ps, mass,  scan_ps, mass))
+    outf_ps.write("delete %s_%i_chain;\n\n" % (scan_ps, mass))
+outf.close()
+outf_ps.close()
 
 for scan in scans:
-    files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/"+scan+"*.root")
+    # files = glob.glob("/nfs-7/userdata/ss2015/ssBabies/"+tag+"/"+scan+"*.root")
+    files = glob.glob("/nfs-7/userdata/namin/tupler_babies/merged//SS/{0}/output/{1}*.root".format(tag,scan))
+    print files
 
     scan = scan.replace("_main","")
 
@@ -59,6 +96,12 @@ for scan in scans:
         #print fn
         f = ROOT.TFile.Open(fn, "read")
         t = f.Get("t")
+
+        t.SetBranchStatus("*",0)
+        t.SetBranchStatus("scale1fb",1)
+        t.SetBranchStatus("sparms",1)
+        t.SetEstimate(t.GetEntries());
+
         for key in f.GetListOfKeys():
             kname = key.GetName()
             #print kname

@@ -3,7 +3,7 @@ import ROOT as r
 def get_first_hist(f1):
     return f1.Get(f1.GetListOfKeys()[0].GetName())
 
-def dump_bins(h2, name, stupid=False, nofabseta=False):
+def dump_bins(h2, name, stupid=False, nofabseta=False, default1=False):
     buff = "float %s(float pt, float eta) {\n" % name
     for ix in range(1,h2.GetNbinsX()+1):
         for iy in range(1,h2.GetNbinsY()+1):
@@ -23,7 +23,10 @@ def dump_bins(h2, name, stupid=False, nofabseta=False):
                 else:
                     buff += "  if (pt >= %.0f  && fabs(eta) >= %.3f && fabs(eta) < %.3f) return %.4f;\n" \
                             % (h2.GetXaxis().GetBinLowEdge(ix), h2.GetYaxis().GetBinLowEdge(iy), h2.GetYaxis().GetBinUpEdge(iy), val)
-    buff += "  return 0.;\n"
+    if not default1:
+        buff += "  return 0.;\n"
+    else:
+        buff += "  return 1.;\n"
     buff += "}\n"
     if nofabseta:
         buff = buff.replace("fabs(eta)", "eta")
@@ -127,7 +130,7 @@ if True:
     dump_bins(el_noiso, name="electronScaleFactorHighHT", nofabseta=True)
     dump_bins(el_iso, name="electronScaleFactorLowHT", nofabseta=True)
     dump_bins(mu, name="muonScaleFactor")
-    dump_bins(h_gsf,"electronGSF", stupid=True)
+    dump_bins(h_gsf,"electronGSF", stupid=True, default1=True)
     dump_bins(el_fastsim, name="electronScaleFactorFastSimHighHT")
     dump_bins(el_fastsim_iso, name="electronScaleFactorFastSimLowHT")
     dump_bins(mu_fastsim, name="muonScaleFactorFastSim")

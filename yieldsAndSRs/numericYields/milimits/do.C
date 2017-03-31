@@ -4,6 +4,6 @@
   gROOT->ProcessLine(".L ../../../../CORE/Tools/dorky/dorky.cc+");
   gROOT->ProcessLine(".L ../../../../software/dataMCplotMaker/dataMCplotMaker.cc+"); 
   gSystem->Load("../../../../software/tableMaker/libSimpleTable.so"); 
-  gROOT->ProcessLine(".L yieldMaker.C++"); 
+  gROOT->ProcessLine(".L yieldMaker.C+"); 
   gROOT->ProcessLine("getyields()"); 
 }

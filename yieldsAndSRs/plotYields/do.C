@@ -15,7 +15,9 @@
   // gROOT->ProcessLine(".L ratios_wz.C++");
   // ratios(0, "");
   gROOT->ProcessLine(".L ratios.C++");
-  ratios(0, "--doTTZ");
+  // ratios(0, "--doTTZ");
+  // ratios(0, "--doTTW");
+  ratios(0, "--doWZ");
 
   // gROOT->ProcessLine(".L yields.C++");
   // gROOT->ProcessLine("yields()");

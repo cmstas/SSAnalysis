@@ -25,9 +25,16 @@ def main(kine="HH"):
         # f_is = TFile(indir+"histos__LooseEMVA_mva_ept_hth_inSitu_coneCorr_HH.root")
         # f_qcd = TFile(indir+"histos__LooseEMVA_coneCorr_HH.root")
 
-        indir = "comparison_rootfiles_data_Sept14/"
-        f_is = TFile(indir+"/histos__LooseEMVA_mva_ept_hth_inSitu_coneCorr_%s.root" % kine)
+        # indir = "comparison_rootfiles_data_Sept14/"
+        indir = "moriond/"
+        # f_is = TFile(indir+"/histos__LooseEMVA_mva_ept_hth_inSitu_coneCorr_%s.root" % kine)
+        f_is = TFile(indir+"/histos__LooseEMVA_soup_mva_ept_hth_inSitu_coneCorr_%s.root" % kine)
         f_qcd = TFile(indir+"/histos__LooseEMVA_coneCorr_%s.root" % kine)
+
+    # plotdir = "comparison_plots_Oct25/"
+    # lumi = 22.0
+    plotdir = "moriond/comparisons/"
+    lumi = 36.8
 
     types = ["br","sr","HT","MET","MTMIN","L1PT","L2PT","LTrue","LFake"]
     type_map = {
@@ -59,7 +66,6 @@ def main(kine="HH"):
                 "mu": [f_is.Get("Npn_histo_%s_pred_mu;1" % t), f_qcd.Get("Npn_histo_%s_pred_mu;1" % t)],
                 }
 
-    plotdir = "comparison_plots_Oct25/"
 
     for t in d_pred.keys():
         for lep in ["tot","el","mu"]:
@@ -72,18 +78,18 @@ def main(kine="HH"):
             lep_str = lep_map[lep]
             type_str = type_map[t]
             if ismc:
-                ppm.plotComparison(pred_is,pred_qcd,bkgs=[obs],bkgs_titles=["Observed"],ratioTitle="Pred/Obs", h1Title="Pred: InSitu", h2Title="Pred: Reg", saveAs=plotdir+"h1_%s_%s_%s.pdf" % (kine, t,lep), isLog=False, title="t#bar{t} with 22.0fb^{-1} data FR: #font[62]{%s [%s, %s]}" % (type_str, lep_str, kine),flatSystBand=0.3)
+                ppm.plotComparison(pred_is,pred_qcd,bkgs=[obs],bkgs_titles=["Observed"],ratioTitle="Pred/Obs", h1Title="Pred: InSitu", h2Title="Pred: Reg", saveAs=plotdir+"h1_%s_%s_%s.pdf" % (kine, t,lep), isLog=False, title="t#bar{t} with %.1f fb^{-1} data FR: #font[62]{%s [%s, %s]}" % (lumi, type_str, lep_str, kine),flatSystBand=0.3)
             else:
-                ppm.plotComparison(pred_is,pred_qcd,bkgs=[],bkgs_titles=[],ratioTitle="InSitu/Reg", h1Title="Pred: InSitu", h2Title="Pred: Reg", saveAs=plotdir+"h1_%s_%s_%s.pdf" % (kine,t,lep), isLog=False, title="22.0fb^{-1} Data FR+App: #font[62]{%s [%s, %s]}" % (type_str, lep_str, kine),scaleYmax=0.5,flatSystBand=0.3)
+                ppm.plotComparison(pred_is,pred_qcd,bkgs=[],bkgs_titles=[],ratioTitle="InSitu/Reg", h1Title="Pred: InSitu", h2Title="Pred: Reg", saveAs=plotdir+"h1_%s_%s_%s.pdf" % (kine,t,lep), isLog=False, title="%.1f fb^{-1} Data FR+App: #font[62]{%s [%s, %s]}" % (lumi, type_str, lep_str, kine),scaleYmax=0.5,flatSystBand=0.3)
                 if t.lower() == "sr":
-                    ppm.plotComparison(pred_is,pred_qcd,bkgs=[],bkgs_titles=[],ratioTitle="InSitu/Reg", h1Title="Pred: InSitu", h2Title="Pred: Reg", saveAs=plotdir+"h1_%s_%s_%s_log.pdf" % (kine,t,lep), isLog=True, title="22.0fb^{-1} Data FR+App: #font[62]{%s [%s, %s]}" % (type_str, lep_str, kine),scaleYmax=0.5,flatSystBand=0.3)
+                    ppm.plotComparison(pred_is,pred_qcd,bkgs=[],bkgs_titles=[],ratioTitle="InSitu/Reg", h1Title="Pred: InSitu", h2Title="Pred: Reg", saveAs=plotdir+"h1_%s_%s_%s_log.pdf" % (kine,t,lep), isLog=True, title="%.1f fb^{-1} Data FR+App: #font[62]{%s [%s, %s]}" % (lumi, type_str, lep_str, kine),scaleYmax=0.5,flatSystBand=0.3)
 
 
 
 
 if __name__ == '__main__':
     main("HH")
-    main("HL")
-    main("LL")
+    # main("HL")
+    # main("LL")
 
     # os.system("niceplots comparison_plots")

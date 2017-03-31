@@ -8,13 +8,27 @@
 
     TString tag = getTag();
   // tag = "v1.09FR_80X"; // FIXME
-  tag = "v1.13FR"; // FIXME
+  // tag = "v1.13FR"; // FIXME
+  tag = "v1.14FR"; // FIXME
     cout << "using tag=" << tag << endl;
     float intlumi = getLumi();
     // float intlumi = 12.9-6.26; // HALF
     cout << "intlumi=" << intlumi << "/fb" << endl;
 
     cout << "non isolated triggers" << endl;
+    
+    // float zsfEl = 0.994575;
+    // float zsfMu = 0.996737;
+    // float mtsfEl = 1.28453;
+    // float mtsfMu = 1.1685;
+    // make1DplotFR(zsfEl, zsfMu, mtsfEl, mtsfMu, true);
+    // plotEWKCorFR(zsfEl, zsfMu, mtsfEl, mtsfMu, true);
+    // zsfEl = 0.994537;
+    // zsfMu = 0.996135;
+    // mtsfEl = 1.28411;
+    // mtsfMu = 1.19314;
+    // make1DplotFR(zsfEl, zsfMu, mtsfEl, mtsfMu, false);
+    // plotEWKCorFR(zsfEl, zsfMu, mtsfEl, mtsfMu, false);
 
     pair<float,float> zsfs = normalizeZpeak(intlumi, tag, false);
     float zsfEl = zsfs.first;

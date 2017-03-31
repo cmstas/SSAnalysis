@@ -109,6 +109,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   float ptbins[6] = {10., 15., 25., 35., 50., 70.};
   float etabins_mu[4] = {0., 1.2, 2.1, 2.4};
   float etabins_el[4] = {0., 0.8, 1.479, 2.5};
+  
+  HLTEfficiency HLTEff("../../hlt/HLT_Efficiencies_7p65fb_2016.root");
 
   // int nptbins = 7;
   // int netabins = 3;
@@ -211,15 +213,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   // m8 = 5707.51;
   // m17 = 98.7317;
 
-  // For 36.5/fb json with reRECO
-  e8i = 4601.37;
-  e17i = 674.837;
-  e8 = 4602.33;
-  e17 = 623.759;
-  m8i = 3775.17;
-  m17i = 183.494;
-  m8 = 7510.22;
-  m17 = 141.888;
+  // For 36.8/fb json with reRECO
+  e8i = 4208.14;
+  e17i = 617.166;
+  e8 = 4209.02;
+  e17 = 568.98;
+  m8i = 3716.07;
+  m17i = 181.349;
+  m8 = 7361.42;
+  m17 = 139.899;
   
 
   if (false) {
@@ -579,7 +581,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
                               TString(currentFile->GetTitle()).Contains("DoubleMu") || TString(currentFile->GetTitle()).Contains("DoubleEG");
     bool isDoubleMuon = TString(currentFile->GetTitle()).Contains("DoubleMu");
     bool isQCD = TString(currentFile->GetTitle()).Contains("QCD");
+    bool isQCDMu = TString(currentFile->GetTitle()).Contains("QCD_Mu");
+    bool isQCDEl = TString(currentFile->GetTitle()).Contains("QCD_El");
     bool isTTbar = TString(currentFile->GetTitle()).Contains("TTbar");
+
+    bool doTrig = isQCD;
 
 
     if (isDataFromFileName){
@@ -681,63 +687,51 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       float lumi = getLumi();//in /fb
       // float lumi = 12.9-6.26;//in /fb // HALF
       // if(isData && evt_run() <= 275782) continue;
-      float puw = getTruePUw(nvtx());
+      float puw = getTruePUw_Moriond(nvtx());
       // float puw = 1.0;
       float weight = scale1fb()*lumi*puw;
+
+      if (!isData) {
+          // weight *= HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::lep2_id(), ss::ht(), 0);
+      }
+
       if (isData) weight = 1.;
 
       if (isData==0 && isEWK==0) {
 
-        /* 80X maps
-        QCD_Pt_15to30                   196437.125000
-        QCD_Pt_30to50                   15016.768555
-        QCD_Pt_50to80                   2001.856689
-        QCD_Pt_80to120                  412.645386
-        QCD_Pt_120to170                 71.279083
-        QCD_Pt_170to300                 17.644279
-        QCD_Pt_300to470                 0.461487
+          /* 80X Moriond maps
+             QCD_Pt-20to30_EMEnriched         881.181274
+             QCD_Pt-30to50_EMEnriched         1618.659058
+             QCD_Pt-50to80_EMEnriched         150.182861
+             QCD_Pt-80to120_EMEnriched        9.359426
+             QCD_Pt-120to170_EMEnriched       1.836049
+             QCD_Pt-170to300_EMEnriched       1.653828
+             QCD_Pt-300toInf_EMEnriched       0.198102
 
-        QCD_Pt-30to50_MuEnrichedPt5     60.630745
-        QCD_Pt-50to80_MuEnrichedPt5     22.635281
-        QCD_Pt-80to120_MuEnrichedPt5    8.198870
-        QCD_Pt-120to170_MuEnrichedPt5   3.360213
-        QCD_Pt-20toInf_MuEnrichedPt15   14.397064
+             QCD_Pt_15to20_bcToE              98.568138
+             QCD_Pt_20to30_bcToE              35.548122
+             QCD_Pt_30to80_bcToE              30.127947
+             QCD_Pt_80to170_bcToE             2.624143
+             QCD_Pt_170to250_bcToE            0.306375
+             QCD_Pt_250toInf_bcToE            0.084854
 
-        QCD_Pt-20to30_EMEnriched        617.219910
-        QCD_Pt-30to50_EMEnriched        2225.073975
-        QCD_Pt-50to80_EMEnriched        131.577560
-        QCD_Pt-80to120_EMEnriched       11.195288
-        QCD_Pt-120to170_EMEnriched      1.917055
-        QCD_Pt-170to300_EMEnriched      1.647140
-        QCD_Pt-300toInf_EMEnriched      0.192859
+             QCD_Pt-20toInf_MuEnrichedPt15    14.833723
 
-        QCD_Pt_30to80_bcToE             28.118303
-        QCD_Pt_80to170_bcToE            2.945422
-        QCD_Pt_170to250_bcToE           0.325838
-        QCD_Pt_250toInf_bcToE           0.072447
-        */
+             QCD_Pt-15to20_MuEnrichedPt5      978.755066
+             QCD_Pt-20to30_MuEnrichedPt5      106.777184
+             QCD_Pt-30to50_MuEnrichedPt5      56.263439
+             QCD_Pt-50to80_MuEnrichedPt5      23.256641
+             QCD_Pt-80to120_MuEnrichedPt5     8.022378
+             QCD_Pt-120to170_MuEnrichedPt5    3.168120
+             QCD_Pt-170to300_MuEnrichedPt5    1.029381
+             QCD_Pt-300to470_MuEnrichedPt5    0.036246
+             QCD_Pt-470to600_MuEnrichedPt5    0.015916
+             QCD_Pt-600to800_MuEnrichedPt5    0.007053
+             QCD_Pt-800to1000_MuEnrichedPt5   0.001322
+             QCD_Pt-1000toInf_MuEnrichedPt5   0.000198
+             */
 
 	if (abs(id())==13) {
-	  /*
-	  //Map of samples and correspongding scale1fb
-	  /QCD_Pt-15to20_MuEnrichedPt5    1618.8612
-	  /QCD_Pt-20to30_MuEnrichedPt5    564.34503
-	  /QCD_Pt-30to50_MuEnrichedPt5    334.38748
-	  /QCD_Pt-50to80_MuEnrichedPt5    86.584976
-	  /QCD_Pt-80to120_MuEnrichedPt5   27.320997
-	  /QCD_Pt-120to170_MuEnrichedPt5  6.2567968
-	  /QCD_Pt-170to300_MuEnrichedPt5  2.1951010
-	  /QCD_Pt-300to470_MuEnrichedPt5  0.2039125
-	  /QCD_Pt-470to600_MuEnrichedPt5  0.0409794
-	  /QCD_Pt-600to800_MuEnrichedPt5  0.0126527
-	  /QCD_Pt-800to1000_MuEnrichedPt5 0.0023746
-	  /QCD_Pt-1000toInf_MuEnrichedPt5 0.0008180
-	  /QCD_Pt-20toInf_MuEnrichedPt15 22.926769
-	  */
-
-
-
-
 
 	  if (debug) cout << "check qcd" << endl;
 
@@ -748,9 +742,16 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
           if (p4().pt()<15) continue;
       } else {
           // 76X
-          if (p4().pt()<15. &&  scale1fb() > 14.2 && scale1fb() < 14.3 ) continue;  //take only Mu15 above pT=15
-          if (p4().pt()>15. && (scale1fb() < 14.2 || scale1fb() > 14.3)) continue;  //take only Mu5 below pT=15
-          if (scale1fb() < 1.2 || scale1fb() > 851.) continue; //avoid extreme ranges and weights
+          // if (p4().pt()<15. &&  scale1fb() > 14.2 && scale1fb() < 14.3 ) continue;  //take only Mu15 above pT=15
+          // if (p4().pt()>15. && (scale1fb() < 14.2 || scale1fb() > 14.3)) continue;  //take only Mu5 below pT=15
+          // if (scale1fb() < 1.2 || scale1fb() > 851.) continue; //avoid extreme ranges and weights
+
+          if (isQCDMu) {
+              // Moriond 80X
+              if (p4().pt()<15. &&  scale1fb() > 14.8 && scale1fb() < 14.9 ) continue;  //take only Mu15 above pT=15
+              if (p4().pt()>15. && (scale1fb() < 14.8 || scale1fb() > 14.9)) continue;  //take only Mu5 below pT=15
+              if (scale1fb() < 1.03 || scale1fb() > 600.) continue; //avoid extreme ranges and weights
+          }
       }
 
  // // 74X
@@ -844,7 +845,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       //trigger selection
       if (debug) cout << "check hlt HLT_Mu8=" << HLT_Mu8() << " HLT_Mu17=" << HLT_Mu17() << " HLT_Ele12_CaloIdM_TrackIdM_PFJet30=" << HLT_Ele12_CaloIdM_TrackIdM_PFJet30() << endl;
-      if (abs(id())==11 && (isData)) {
+      if (abs(id())==11 && (isData || doTrig)) {
 	// ele12 for 2015D
 	if (useIsoTrigs) {
 	  if (HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()<=0
@@ -856,7 +857,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
        ) continue;
 	}
       }
-      if (abs(id())==13 && (isData)) {
+      if (abs(id())==13 && (isData || doTrig)) {
 	// mu8 or mu17 for 2015D
 	if (useIsoTrigs) {
 	  if (HLT_Mu8_TrkIsoVVL()<=0 &&
@@ -873,16 +874,16 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //check prescales, apply cuts on the pT range depending on the trigger
       int prescale = -1;
       if(!isData) prescale = 1; // triggers messed up in 80X MC
-      if (abs(id())==11 && (isData)) {
+      if (abs(id())==11 && (isData || doTrig)) {
 	if (useIsoTrigs) {
 	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) { 
           prescale = HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30();
-          prescale = e8i; // FIXME
+          if (!doTrig) prescale = e8i; // FIXME
           vtxWeight = getPUw_iso_8_el(nvtx());
       }
 	  if ((anyPt || p4().pt() >= 25) && HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
           prescale = HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30();
-          prescale = e17i; // FIXME
+          if (!doTrig) prescale = e17i; // FIXME
           vtxWeight = getPUw_iso_17_el(nvtx());
       }
 	  if (prescale>0) weight *= prescale;
@@ -890,30 +891,30 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	} else {
 	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0) { 
           prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
-          prescale = e8; // FIXME
+          if (!doTrig) prescale = e8; // FIXME
           vtxWeight = getPUw_8_el(nvtx());
       }
 	  if ((anyPt || p4().pt() >= 25) && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()>0) {
           prescale = HLT_Ele17_CaloIdM_TrackIdM_PFJet30();
-          prescale = e17; // FIXME
+          if (!doTrig) prescale = e17; // FIXME
           vtxWeight = getPUw_17_el(nvtx());
       }
 	  if (prescale>0) weight *= prescale;
 	  else continue;	  
 	}
       }
-      if (abs(id())==13 && (isData)) {	
+      if (abs(id())==13 && (isData || doTrig)) {	
 	// use mu8+mu17
 	if (useIsoTrigs) {
 	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) { 
           prescale = HLT_Mu8_TrkIsoVVL();
-          prescale = m8i; // FIXME
+          if (!doTrig) prescale = m8i; // FIXME
           vtxWeight = getPUw_iso_8_mu(nvtx());
       }
 
 	  if ((anyPt || p4().pt()>=25) && HLT_Mu17_TrkIsoVVL()>0) {
           prescale = HLT_Mu17_TrkIsoVVL();
-          prescale = m17i; // FIXME
+          if (!doTrig) prescale = m17i; // FIXME
           vtxWeight = getPUw_iso_17_mu(nvtx());
       }
 
@@ -923,14 +924,14 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0) 
       {
           prescale = HLT_Mu8();
-          prescale = m8; // FIXME
+          if (!doTrig) prescale = m8; // FIXME
           vtxWeight = getPUw_8_mu(nvtx());
       }
 
 	  if ((anyPt || p4().pt() >= 25) && HLT_Mu17()>0)
       {
           prescale = HLT_Mu17();
-          prescale = m17; // FIXME
+          if (!doTrig) prescale = m17; // FIXME
           vtxWeight = getPUw_17_mu(nvtx());
       }
 

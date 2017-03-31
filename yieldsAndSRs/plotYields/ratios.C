@@ -300,6 +300,8 @@ void ratios(bool data, TString opts=""){
   TChain* ch3          = new TChain("t");
 
   bool doTTZ = opts.Contains("doTTZ");
+  bool doWZ = opts.Contains("doWZ");
+  bool doTTW = opts.Contains("doTTW");
   // Compare new NLO with old NLO unless bool set, then compare new NLO with high stats LO
   bool doCompareNLOwithLO = opts.Contains("doCompareNLOwithLO");
 
@@ -308,12 +310,24 @@ void ratios(bool data, TString opts=""){
   // ch3 is fixed LO
 
   TString tag = getTag();
+  TString which = "ttz";
   if(doTTZ) {
-      ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v8.07/TTZnlo.root");
-      ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.07/TTZ.root");
-      ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.07/TTZLOW.root");
-      ch3->Add("/nfs-7/userdata/ss2015/ssBabies/v8.07/TTZlofix.root");
-      // ch3->Add("/nfs-7/userdata/ss2015/ssBabies/v8.07/TTZnlo.root");
+      // ch1->Add("/nfs-7/userdata/ss2015/ssBabies/v8.07/TTZnlo.root");
+      // ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.07/TTZ.root");
+      // ch2->Add("/nfs-7/userdata/ss2015/ssBabies/v8.07/TTZLOW.root");
+      // ch3->Add("/nfs-7/userdata/ss2015/ssBabies/v8.07/TTZlofix.root");
+      // // ch3->Add("/nfs-7/userdata/ss2015/ssBabies/v8.07/TTZnlo.root");
+
+      ch1->Add("/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.02/output/TTZnlo.root");
+      ch2->Add("/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.02/output/TTZ.root");
+  } else if(doTTW) {
+      which = "ttw";
+      ch1->Add("/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.02/output/TTWnlo.root");
+      ch2->Add("/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.02/output/TTW.root");
+  } else if(doWZ) {
+      which = "wz";
+      ch1->Add("/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.03/output/WZ.root");
+      ch2->Add("/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.03/output/WZLO.root");
   }
 
   std::vector<Color_t> colors;
@@ -325,17 +339,19 @@ void ratios(bool data, TString opts=""){
       colors.push_back(kGreen+1);  // tw
   }
 
-TFile *fout = new TFile("hists.root","RECREATE");
+TFile *fout = new TFile(Form("hists_%s.root",which.Data()),"RECREATE");
 
   results_t ch1_graphs       = run(ch1      , "ch1"    , fout  );
   results_t ch2_graphs       = run(ch2      , "ch2"    , fout  );
-  results_t ch3_graphs       = run(ch3      , "ch3"    , fout  );
+  // results_t ch3_graphs       = run(ch3      , "ch3"    , fout  );
 
 fout->Write();
 fout->Close();
 
   //Prepare for plots -- null
   TH1F* null = new TH1F("","",1,0,1);
+
+  /*
 
   //Prepare for plots -- backgrounds, sample
   vector <TH1F*> background_high; background_high.push_back(ch2_graphs.hh); background_high.push_back(ch3_graphs.hh);
@@ -395,6 +411,7 @@ fout->Close();
      dataMCplotMaker(ch1_graphs.met        , background_met        , titles , "[ttW] met"        , "" , Form("--topYaxisTitle NLO/%s --dataName NLO --outputName yield_plots_bugcomp/ttw_kinem_met_%s --xAxisLabel MET --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
      dataMCplotMaker(ch1_graphs.ht         , background_ht         , titles , "[ttW] ht"         , "" , Form("--topYaxisTitle NLO/%s --dataName NLO --outputName yield_plots_bugcomp/ttw_kinem_ht_%s --xAxisLabel HT  --energy 13 --lumi %.2f --lumiUnit fb --legendUp -0.1 --legendRight -0.00 --legendTextSize 0.0325 --isLinear %s "                                                                                                                                                  , type.c_str() , postfix.c_str() , theLumi , extra.c_str() ), vector<TH1F*>(), vector<string>(), colors);
  }
+ */
 
 
 

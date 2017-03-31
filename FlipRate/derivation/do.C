@@ -6,7 +6,7 @@
   flip(true); // mu
   flip(false);  // ele
 
-  flip(false, true, false);  // ele DY only
-  flip(false, false, true);  // ele TTbar only
+  // flip(false, true, false);  // ele DY only
+  // flip(false, false, true);  // ele TTbar only
 
 }

@@ -5,16 +5,18 @@ import numpy as np
 import commands
 import ast
 import sys
+from errors import E
 
+# infile = "onebin_h1D_nbtags.root"
+# show_chi2 = False
 
+infile = "h1D_nbtags.root"
+show_chi2 = True
 
-
-
-infile = "onebin_h1D_nbtags.root"
-# infile = "h1D_nbtags_withbsf.root"
 f1 = r.TFile(infile)
 
 lumi = float(commands.getoutput(""" grep "^float getLumi()" ../../commonUtils.h | cut -d';' -f 1 | cut -d'n' -f2 """))
+# lumi = float(36.81)
 
 keys = f1.GetListOfKeys()
 histnames = [key.GetName() for key in keys if key.ReadObj().InheritsFrom(r.TH1F.Class())]
@@ -61,10 +63,14 @@ h_stack.SetMaximum( 1.1*max(h_stack.GetMaximum(),h_data.GetMaximum()) )
 # pretty legend
 leg = r.TLegend(0.53,0.65,0.85,0.87)
 leg.AddEntry(h_data, "Data", "lep")
-leg.AddEntry(h_wz, "WZ [= %.2f*data]" % frac_wz, "f")
-leg.AddEntry(h_ttz, "t#bar{t}Z [= %.2f*data]" % frac_ttz, "f")
-leg.AddEntry(h_fakes, "fakes [= %.2f*data]" % frac_fakes, "f")
-leg.AddEntry(h_rares, "rares MC [= %.2f*data]" % frac_rares, "f")
+# leg.AddEntry(h_wz, "WZ [= %.2f*data]" % frac_wz, "f")
+# leg.AddEntry(h_ttz, "t#bar{t}Z [= %.2f*data]" % frac_ttz, "f")
+# leg.AddEntry(h_fakes, "fakes [= %.2f*data]" % frac_fakes, "f")
+# leg.AddEntry(h_rares, "rares MC [= %.2f*data]" % frac_rares, "f")
+leg.AddEntry(h_wz, "WZ ", "f")
+leg.AddEntry(h_ttz, "t#bar{t}Z ", "f")
+leg.AddEntry(h_fakes, "fakes ", "f")
+leg.AddEntry(h_rares, "rares MC ", "f")
 
 sfs = r.TLatex()
 sfs.SetTextSize(0.035)
@@ -82,19 +88,56 @@ c1.SaveAs("plots/nbtags_prefit.pdf")
 lnNsig = 2.0
 lnNbg = 1.50
 shapeUnc = 0.1
+# lnNbg = 1.90 # FIXME
+# shapeUnc = 0.15 # FIXME
+# shapeUnc = 0.28 # FIXME
 
 if len(sys.argv) > 3:
     lnNsig = float(sys.argv[1])
     lnNbg = float(sys.argv[2])
     shapeUnc = float(sys.argv[3])
 
-output = commands.getoutput(""" python -c 'd_sfs = __import__("useCombine").get_sfs("%s", %.2f, %.2f, %.2f); print "GREP",d_sfs' | grep "GREP" """ % (infile, lnNsig, lnNbg, shapeUnc))
+cmd = """ python -c 'd_sfs = __import__("useCombine").get_sfs("%s", %.2f, %.2f, %.2f); print "GREP",d_sfs' | grep "GREP" """ % (infile, lnNsig, lnNbg, shapeUnc)
+print cmd
+output = commands.getoutput(cmd)
+print output
 d_sfs = ast.literal_eval(output.replace("GREP","").strip())
 
 sf_wz    , sf_err_wz = d_sfs["totals"]["wz"]
 sf_ttz   , sf_err_ttz = d_sfs["totals"]["ttz"]
 sf_fakes , sf_err_fakes = d_sfs["totals"]["fakes"]
 sf_rares , sf_err_rares = d_sfs["totals"]["rares"]
+
+# calculate chi2
+counts_wz    , errs_wz = d_sfs["postfit_totals"]["wz"]
+counts_ttz   , errs_ttz = d_sfs["postfit_totals"]["ttz"]
+counts_fakes , errs_fakes = d_sfs["postfit_totals"]["fakes"]
+counts_rares , errs_rares = d_sfs["postfit_totals"]["rares"]
+bins_wz = map(lambda x: E(*x), zip(counts_wz , errs_wz))
+bins_ttz = map(lambda x: E(*x), zip(counts_ttz , errs_ttz))
+bins_fakes = map(lambda x: E(*x), zip(counts_fakes , errs_fakes))
+bins_rares = map(lambda x: E(*x), zip(counts_rares , errs_rares))
+
+# if we are missing a wz bin at the end
+if len(bins_ttz) == 4 and len(bins_wz) < 4:
+    while len(bins_wz) < 4:
+        bins_wz.append(E(0.0,0.0))
+bins_pred = map(sum,zip(*[bins_wz,bins_ttz,bins_fakes,bins_rares]))
+bins_data = list(h_data)[1:-1] # drop underflow and overflow bins
+chi2sum = 0.
+for data, pred_ce in zip(bins_data, bins_pred):
+    chi2sum += ((data-pred_ce[0])/pred_ce[1])**2.0
+    print data, pred_ce[0], pred_ce[1]
+
+redchi2 = chi2sum/len(bins_data)
+print "chi2/ndof = %.2f" % redchi2
+
+# print "postfit:"
+# print "bins_data:", bins_data
+# print "bins_wz:", bins_wz
+# print "bins_ttz:", bins_ttz
+# print "bins_fakes:", bins_fakes
+# print "bins_rares:", bins_rares
 
 ########################################
 ############### POSTFIT ################
@@ -113,6 +156,15 @@ h_stack.Add(h_fakes)
 h_stack.Add(h_rares)
 h_stack.Draw()
 h_stack.SetMaximum( 1.1*max(h_stack.GetMaximum(),h_data.GetMaximum()) )
+
+fout = r.TFile("scaledfit.root", "RECREATE")
+h_data.Write()
+h_wz.Write()
+h_ttz.Write()
+h_fakes.Write()
+h_rares.Write()
+fout.Write()
+fout.Close()
 
 # pretty legend
 leg = r.TLegend(0.53,0.65,0.85,0.87)
@@ -135,6 +187,8 @@ sfs.DrawLatexNDC(0.55,0.55, "SF t#bar{t}Z = %.2f #pm %.2f" % (sf_ttz, sf_err_ttz
 sfs.DrawLatexNDC(0.55,0.50, "SF fakes = %.2f #pm %.2f" % (sf_fakes, sf_err_fakes))
 sfs.DrawLatexNDC(0.55,0.45, "SF rares = %.2f #pm %.2f" % (sf_rares, sf_err_rares))
 sfs.DrawLatexNDC(0.55,0.40, "L = %.2f fb^{-1}" % (lumi))
+if show_chi2:
+    sfs.DrawLatexNDC(0.55,0.35, "#chi^{2}/ndof = %.2f" % (redchi2))
 
 c1.SaveAs("plots/nbtags_postfit_%.2f_%.2f_%.2f.pdf" % (lnNsig,lnNbg,shapeUnc))
 os.system("web plots/nbtags_postfit_%.2f_%.2f_%.2f.pdf" % (lnNsig,lnNbg,shapeUnc))

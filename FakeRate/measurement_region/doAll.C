@@ -16,7 +16,8 @@
 
   // tag = "v1.10FR"; // FIXME
   // tag = "v1.11FR"; // FIXME
-  tag = "v1.13FR"; // FIXME
+  // tag = "v1.13FR"; // FIXME
+  tag = "v1.14FR"; // FIXME
 
   TString tag_data = tag;
   // TString tag_data = "v1.12FR"; // FIXME
@@ -39,14 +40,12 @@
   // ScanChain(wj,"./rate_histos_wj_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
   TChain *qcd_el = new TChain("t"); 
-  // qcd_el->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_EM_Enriched_80X*.root" );
-  // qcd_el->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_non_Enriched_80X*.root" );
-  qcd_el->Add( "/nfs-7/userdata/leptonTree/"+tag+"/TTbar_80X*.root" );
+  qcd_el->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_EM_Enriched_80X*.root" );
   ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA.root","useLooseEMVA"); 
   ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
   // TChain *qcd_mu = new TChain("t"); 
-  // qcd_mu->Add( "/nfs-7/userdata/leptonTree/"+tag2+"/QCD_Mu_Enriched.root" );
+  // qcd_mu->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_Mu_Enriched*.root" );
   // ScanChain(qcd_mu,"./rate_histos_qcd_mu_LooseEMVA.root","useLooseEMVA"); 
   // ScanChain(qcd_mu,"./rate_histos_qcd_mu_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 

@@ -20,26 +20,36 @@ def get_xsec(mglu):
 # fname = "logs/log_%s_%s_%s_%i.txt" % (sig, str(lumi), kine, sr)
 # print fname
 
-fname = "logs/log_fs_t5qqqqvv_m1000_m700_12.9_hihi_31.txt"
+# fname = "logs/log_fs_t5qqqqvv_m1000_m700_12.9_hihi_31.txt"
 
 # fnames = glob.glob("logs_bad/*.txt")
 # fnames = glob.glob("logs_Aug6/*.txt")
 # fnames = glob.glob("logs_Aug24/*.txt")
-fnames = glob.glob("logs/*agg*.txt")
-flumi = 17.3
+# fnames = glob.glob("logs/*agg*.txt")
+# fnames = glob.glob("logs/*.txt")
+fnames = glob.glob("logs_Mar9/*.txt")
+
+do_agg = True # are we doing the inclusive aggregate regions?
+# flumi = 36.8
+flumi = 35.9
 
 def get_eff(themodelstr, thekine, thesr):
     d_effs = {}
     if not d_effs:
-        with open("effs.txt") as fhin:
+        # with open("effs.txt") as fhin:
+        with open("efficiencies_Feb8.txt") as fhin:
             for line in fhin:
                 if not line.strip(): continue
+                if "&" in line: continue
 
-                if "with" not in line:
-                    extra = None
-                    modelstr, mglu, mlsp, kinecode, sr, nsig, sigeffpct = line.split()
-                else:
-                    modelstr, _, extra, mglu, mlsp, kinecode, sr, nsig, sigeffpct = line.split()
+                try:
+                    if "with" not in line:
+                        extra = None
+                        modelstr, mglu, mlsp, kinecode, sr, nsig, sigeffpct = line.split()
+                    else:
+                        modelstr, _, extra, mglu, mlsp, kinecode, sr, nsig, sigeffpct = line.split()
+                except:
+                    continue
 
                 kine = "hihi"
                 if kinecode == "HL": kine = "hilow"
@@ -120,7 +130,10 @@ for fname in fnames:
 
 # sort each mass point in order of decreasing expected limit
 for sig in d_sigs:
-    d_sigs[sig] = sorted(d_sigs[sig], key=lambda x: x.get("lim_exp",99999.0))
+    if do_agg:
+        d_sigs[sig] = sorted(d_sigs[sig], key=lambda x: x.get("sr",0))
+    else:
+        d_sigs[sig] = sorted(d_sigs[sig], key=lambda x: x.get("lim_exp",99999.0))
     # d_sigs[sig] = sorted(d_sigs[sig], key=lambda x: -x.get("lim_exp",-99999.0)) # FIXME
 
 # for thing in d_sigs["fs_t5qqqqvv_m1000_m700"]:
@@ -187,20 +200,33 @@ for sig in d_sigs:
 
     buff += "\\begin{table}[!h] \n"
     buff += "\\begin{center} \n"
-    buff += "\\caption{\\label{tab:bins%s} Single bin limits for most sensitive bins for the %s model %s assuming gluino and LSP masses equal to %i and %i GeV, respectively, for %.1f fb${}^{-1}$}\n" % (sig, model, extra, mglu, mlsp, flumi)
+    if do_agg:
+        buff += "\\caption{\\label{tab:binlimits_inclusiveagg} Single bin limits for inclusive aggregate signal regions."
+    else:
+        buff += "\\caption{\\label{tab:bins%s} Single bin limits for most sensitive bins for the %s model %s assuming gluino and LSP masses equal to %i and %i GeV, respectively, for %.1f fb${}^{-1}$}\n" % (sig, model, extra, mglu, mlsp, flumi)
     # buff += "\\begin{tabular}{lccccccc} \n"
-    buff += "\\begin{tabular}{lcccccccc} \n"
+    if do_agg:
+        buff += "\\begin{tabular}{lcccc} \n"
+    else:
+        buff += "\\begin{tabular}{lcccccccc} \n"
     buff += "\\hline \n"
     # buff += "SR & $N_\\mathrm{obs}$ & $N_\\mathrm{bkg}$ & $N_\\mathrm{exp,UL}^\\mathrm{95\\% CL}$ &  $\\sigma_\\mathrm{exp}$ [fb] & $\\sigma_\\mathrm{obs}$ [fb] & $N_\\mathrm{sig}^\\mathrm{exp}$ & $A\\epsilon_\\mathrm{sig}$ (\\%) \\\\ \n"
-    buff += "SR & $N_\\mathrm{obs}$ & $N_\\mathrm{bkg}$ & $N_\\mathrm{exp,UL}^\\mathrm{95\\% CL}$ & $N_\\mathrm{obs,UL}^\\mathrm{95\\% CL}$ &  $\\sigma_\\mathrm{exp}$ [fb] & $\\sigma_\\mathrm{obs}$ [fb] & $N_\\mathrm{sig}^\\mathrm{exp}$ & $A\\epsilon_\\mathrm{sig}$ (\\%) \\\\ \n"
+    if do_agg:
+        buff += "SR & $N_\\mathrm{obs}$ & $N_\\mathrm{bkg}$ & $N_\\mathrm{exp,UL}^\\mathrm{95\\% CL}$ & $N_\\mathrm{obs,UL}^\\mathrm{95\\% CL}$ \\\\ \n"
+    else:
+        buff += "SR & $N_\\mathrm{obs}$ & $N_\\mathrm{bkg}$ & $N_\\mathrm{exp,UL}^\\mathrm{95\\% CL}$ & $N_\\mathrm{obs,UL}^\\mathrm{95\\% CL}$ &  $\\sigma_\\mathrm{exp}$ [fb] & $\\sigma_\\mathrm{obs}$ [fb] & $N_\\mathrm{sig}^\\mathrm{exp}$ & $A\\epsilon_\\mathrm{sig}$ (\\%) \\\\ \n"
     buff += "\\hline \n"
-    for thing in d_sigs[sig][:10]:
+    for thing in d_sigs[sig][:15]:
         sr = "HH"
         if thing["kine"] == "hilow": sr = "HL"
         elif thing["kine"] == "lowlow": sr = "LL"
+        elif thing["kine"] == "agg": sr = "AGG"
         sr += str(thing["sr"])
         # buff += "%s & %i & %.2f & %.2f & %.2f & %.2f & %.2f & %.3f \\\\ \n" % (sr, thing["obs"], thing["pred"], thing["rexp"], thing["lim_exp"], thing["lim_obs"], thing["nsig"], thing["sigeff"])
-        buff += "%s & %i & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.3f \\\\ \n" % (sr, thing["obs"], thing["pred"], thing["rexp"], thing["robs"], thing["lim_exp"], thing["lim_obs"], thing["nsig"], thing["sigeff"])
+        if do_agg:
+            buff += "%s & %i & %.2f & %.2f & %.2f \\\\ \n" % (sr, thing["obs"], thing["pred"], thing["rexp"], thing["robs"])
+        else:
+            buff += "%s & %i & %.2f & %.2f & %.2f & %.2f & %.2f & %.2f & %.3f \\\\ \n" % (sr, thing["obs"], thing["pred"], thing["rexp"], thing["robs"], thing["lim_exp"], thing["lim_obs"], thing["nsig"], thing["sigeff"])
     buff += "\\hline \n"
     buff += "\\end{tabular} \n"
     buff += "\\end{center} \n"
@@ -208,7 +234,8 @@ for sig in d_sigs:
 
     print buff
 
-    tm.makePDF(template % buff, "tables/table_agg_%s.tex" % sig)
+    # tm.makePDF(template % buff, "tables/table_agg_%s.tex" % sig)
+    tm.makePDF(template % buff, "tables/table_%s.tex" % sig)
     
 
 # os.system("niceplots tables tables_sig_Aug24")

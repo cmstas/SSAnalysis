@@ -3,8 +3,7 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TString.h"
-// #include "helper_babymaker.h"
-#include "babymaker.h"
+#include "helper_babymaker.h"
 #include "CORE/Tools/goodrun.h"
 #include "CORE/Tools/JetCorrector.h"
 #include "CORE/Tools/jetcorr/JetCorrectionUncertainty.h"  
@@ -16,18 +15,22 @@ int main(int argc, char *argv[]){
     TString outname = "output.root";
     unsigned int nevents_max = 0;
     bool useXrootd = false;
+    string good_run_file = "goodRunList/goldenJson_2016rereco_36p46ifb.txt";
+    string jecEra = "Summer16_23Sep2016BCDV3";
+    std::string jecEraMC = "Summer16_23Sep2016V3";
+
 
     if (argc > 1) filename = TString(argv[1]);
     if (argc > 2) outname     = TString(argv[2]);
     if (argc > 3) nevents_max = atoi(argv[3]);
 
-    std::cout << "Args: " << std::endl;
-    std::cout << "  filename:    " << filename << std::endl;
-    std::cout << "  outname:     " << outname << std::endl;
-    std::cout << "  nevents_max: " << nevents_max << std::endl;
+    std::cout << ">>> Args: " << std::endl;
+    std::cout << "     filename:    " << filename << std::endl;
+    std::cout << "     outname:     " << outname << std::endl;
+    std::cout << "     nevents_max: " << nevents_max << std::endl;
 
     if (argc <= 1) { 
-        cout << "not enough arguments!" << endl;  
+        std::cout << ">>> [!] Not enough arguments!" << std::endl;  
         return 0;
     }
 
@@ -37,66 +40,73 @@ int main(int argc, char *argv[]){
     bool isData = filename.Contains("run2_data") || filename.Contains("Run2016") || filename.Contains("Run2017");
     int isSignal = 0; 
 
-    if (filename.Contains("SMS-T1tttt")) isSignal = 1;
-    if (filename.Contains("SMS-T5qqqqVV")) isSignal = 2;
-    if (filename.Contains("SMS-T5qqqqVV")) isSignal = 3;
-    if (filename.Contains("SMS-T6ttWW")) isSignal = 10;
-    if (filename.Contains("SMS-T1ttbb")) isSignal = 6;
-    if (filename.Contains("SMS-T5tttt")) isSignal = 5;
-    if (filename.Contains("SMS-T5ttcc")) isSignal = 4;
+    if (filename.Contains("/SMS")) {
+        if (filename.Contains("SMS-T1tttt_Tune")) isSignal = 1;
+        else if (filename.Contains("SMS-T5qqqqVV_Tune")) isSignal = 2;
+        else if (filename.Contains("SMS-T5qqqqVV_dM20_Tune")) isSignal = 3;
+        else if (filename.Contains("SMS-T6ttWW_Tune")) isSignal = 10;
+        else if (filename.Contains("SMS-T1ttbb_Tune")) isSignal = 6;
+        else if (filename.Contains("SMS-T5tttt_dM175_Tune")) isSignal = 5;
+        else if (filename.Contains("SMS-T5ttcc_Tune")) isSignal = 4;
+        else {
+            std::cout << ">>> [!] Can't figure out which signal sample this is!" << std::endl;
+            return 0;
+        }
+    }
+    if (filename.Contains("_HToTT_")) isSignal = 101; // isSignal > 100 used only for non SMS stuff
 
     //Set up file and tree
-    std::cout << " outname: " << outname << std::endl;
-    std::cout << " outname.Data(): " << outname.Data() << std::endl;
     mylooper->MakeBabyNtuple(outname.Data(), isSignal);
-    std::cout << "after makebabyntuple" << std::endl;
 
     TFile *f;
     if (useXrootd) {
-        cout << "Using xrootd" << endl;
+        std::cout << ">>> Using xrootd" << std::endl;  
         TString nohadoop = filename.Copy();
         nohadoop.ReplaceAll("/hadoop/cms/", "/");
         f = TFile::Open("root://cmsxrootd.fnal.gov/"+nohadoop); 
     } else {
         f = TFile::Open(filename); 
     }
-    cout << "File opened...." << endl;
+    if (!f) {
+        std::cout << ">>> [!] File does not exist or is bad!" << std::endl;  
+        return 0;
+    }
+    std::cout << ">>> File opened" << std::endl;  
     TTree *tree = (TTree*)f->Get("Events");
     cms3.Init(tree);
 
     //Event Counting
     unsigned int nEvents = tree->GetEntries();
     unsigned int nEventsTotal = 0;
-    cout << "nEvents: " << tree->GetEntries() << endl;
+    std::cout << ">>> Nevents: " << nEvents << std::endl;  
 
     //Add good run list
-    set_goodrun_file("goodRunList/goldenJson_2016rereco_36p46ifb.txt");
+    set_goodrun_file(good_run_file.c_str());
 
-    // string jecEra = "Fall15_25nsV2";
-    string jecEra = "Spring16_25nsV6";
 
     //Make Jet Energy Uncertainties
     JetCorrectionUncertainty *jecUnc = 0;
-    if ( isData)      jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA_Uncertainty_AK4PFchs.txt"); 
-    if (!isData)      jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_MC_Uncertainty_AK4PFchs.txt"); 
+    // if ( isData)      jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA_Uncertainty_AK4PFchs.txt"); 
+    if (!isData)      jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/"+jecEraMC+"_MC/"+jecEraMC+"_MC_Uncertainty_AK4PFchs.txt"); 
     if (isSignal > 0) jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/Spring16_FastSimV1_Uncertainty_AK4PFchs.txt"); 
 
     //Init MVA
     // createAndInitMVA("./CORE", true, true); // ICHEP
     createAndInitMVA("./CORE", true, false, 80); // Moriond
 
+
     //JEC files -- 25 ns MC
     std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1L2L3;
-    jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_MC_L1FastJet_AK4PFchs.txt");
-    jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_MC_L2Relative_AK4PFchs.txt");
-    jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_MC_L3Absolute_AK4PFchs.txt");
+    jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/"+jecEraMC+"_MC/"+jecEraMC+"_MC_L1FastJet_AK4PFchs.txt");
+    jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/"+jecEraMC+"_MC/"+jecEraMC+"_MC_L2Relative_AK4PFchs.txt");
+    jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("CORE/Tools/jetcorr/data/run2_25ns/"+jecEraMC+"_MC/"+jecEraMC+"_MC_L3Absolute_AK4PFchs.txt");
 
     //JEC files -- 25 ns DATA
     std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1L2L3;
-    jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA_L1FastJet_AK4PFchs.txt");
-    jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA_L2Relative_AK4PFchs.txt");
-    jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA_L3Absolute_AK4PFchs.txt");
-    jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA_L2L3Residual_AK4PFchs.txt");
+    // jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA_L1FastJet_AK4PFchs.txt");
+    // jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA_L2Relative_AK4PFchs.txt");
+    // jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA_L3Absolute_AK4PFchs.txt");
+    // jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA_L2L3Residual_AK4PFchs.txt");
 
     //JEC files -- 25 ns FASTSIM
     std::vector<std::string> jetcorr_filenames_25ns_FASTSIM_pfL1L2L3;
@@ -106,12 +116,16 @@ int main(int argc, char *argv[]){
 
     //JECs
     std::vector<std::string> filenames;
-    if ( isData     ) filenames = jetcorr_filenames_25ns_DATA_pfL1L2L3;
+    // if ( isData     ) filenames = jetcorr_filenames_25ns_DATA_pfL1L2L3;
     if (!isData     ) filenames = jetcorr_filenames_25ns_MC_pfL1L2L3;
     if (isSignal > 0) filenames = jetcorr_filenames_25ns_FASTSIM_pfL1L2L3;
 
     FactorizedJetCorrector *jetCorrAG;
-    jetCorrAG = makeJetCorrector(filenames);
+    if (!isData) {
+        for(auto fname : filenames) {
+        }
+        jetCorrAG = makeJetCorrector(filenames);
+    }
 
     //Histograms for cross-section calculation
     struct csErr_info_t { TH1F* cs; float cs_scale_up; float cs_scale_dn; float cs_pdf[102]; TH1F* results; int nEntries; int mGluino; int mLSP;}; 
@@ -122,15 +136,33 @@ int main(int argc, char *argv[]){
     //Event Loop
     for(unsigned int eventAG=0; eventAG < nEvents; eventAG++){
 
+
         if ((nevents_max > 0) && (eventAG > nevents_max)) break;
 
         //Get Event Content
         cms3.GetEntry(eventAG);
         nEventsTotal++;
 
+        // HAVE TO MAKE DATA JEC HERE SINCE WE NEED RUN NUMBER BECAUSE SO MANY JECS
+        // Only need to check first event because a merged file can't span eras
+        if (isData && eventAG == 0) {
+            if (tas::evt_run() <= 276811) jecEra = "Summer16_23Sep2016BCDV3";
+            else if (tas::evt_run() <= 278801 && tas::evt_run() >= 276831) jecEra = "Summer16_23Sep2016EFV3";
+            else if (tas::evt_run() <= 280385 && tas::evt_run() >= 278802) jecEra = "Summer16_23Sep2016GV3";
+            else if (tas::evt_run() >= 280919) jecEra = "Summer16_23Sep2016HV3";
+            else std::cout << ">>> [!] Shouldn't get here! Can't figure out JEC. isData,run = " << isData << "," << tas::evt_run() << std::endl;
+            jecUnc = new JetCorrectionUncertainty("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA/"+jecEra+"_DATA_Uncertainty_AK4PFchs.txt"); 
+            jetcorr_filenames_25ns_DATA_pfL1L2L3.clear();
+            jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA/"+jecEra+"_DATA_L1FastJet_AK4PFchs.txt");
+            jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA/"+jecEra+"_DATA_L2Relative_AK4PFchs.txt");
+            jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA/"+jecEra+"_DATA_L3Absolute_AK4PFchs.txt");
+            jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("CORE/Tools/jetcorr/data/run2_25ns/"+jecEra+"_DATA/"+jecEra+"_DATA_L2L3Residual_AK4PFchs.txt");
+            jetCorrAG = makeJetCorrector(jetcorr_filenames_25ns_DATA_pfL1L2L3);
+        }
+
         //See if mass point exists already
         int idx = -1;
-        if (isSignal > 0){
+        if (isSignal > 0 && isSignal <= 100){
             int mGluino = tas::sparm_values().at(0);
             int mLSP = tas::sparm_values().at(1);
             for (unsigned int i = 0; i < csErr_info_v.size(); i++){
@@ -171,8 +203,11 @@ int main(int argc, char *argv[]){
         //If data, check good run list
         if (tas::evt_isRealData() && !goodrun(tas::evt_run(), tas::evt_lumiBlock())) continue;
 
+
         //Progress bar
         CMS3::progress(nEventsTotal, nEvents);
+
+        if (nEventsTotal % 5000 == 0) std::cout << "Begin processing entry " << nEventsTotal << " at " << time(0) << "." << std::endl;
 
         csErr_t csErr = mylooper->ProcessBaby(filename.Data(), jetCorrAG, jecUnc, isSignal); 
         int SR = csErr.SR; 

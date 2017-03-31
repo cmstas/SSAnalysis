@@ -18,25 +18,30 @@ WZcount, WZerr = 0.0,0.0
 datacount, dataerr = 0.0, 0.0
 
 for line in lines:
+    if "nolepsf" in line: continue
+    if "nopuw" in line: continue
+
     line = line.strip()
     if(len(line) < 2): continue
-    if("_" in line): continue
+    # if("_" in line): continue
 
     # print line
     sample, count, err = line.split()
     count, err = float(count), float(err)
+    sample = sample.split("_")[0]
     print sample, count, err
 
 
+    print " HERE", sample, count, err
     if(sample not in ["WZ","Data"]):
         nonWZcounts.append(count)
         nonWZerrors.append(err)
     elif(sample in ["WZ"]):
-        WZcount = count
-        WZerr = err
+        WZcount += count
+        WZerr += err
     elif(sample in ["Data"]):
-        datacount = count
-        dataerr = err
+        datacount += count
+        dataerr += err
 
 # print nonWZcounts, nonWZerrors
 nonWZcount = sum(nonWZcounts)

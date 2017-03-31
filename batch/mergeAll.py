@@ -2,10 +2,27 @@
 
 # path="/hadoop/cms/store/user/namin/condor/ss_babies_Nov25/"
 # finaldir="/nfs-7/userdata/ss2015/ssBabies/v8.07/"
-path="/hadoop/cms/store/user/namin/condor/ss_babies_Jan9/"
-finaldir="/nfs-7/userdata/ss2015/ssBabies/v9.00/"
+
+path="/hadoop/cms/store/user/namin/AutoTwopler_babies/SS_v9.06/"
+finaldir="/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.06/output/"
+
+# DataDoubleEGRerecoB.root
+# DataDoubleEGRerecoG.root
+# DataDoubleEGHv3.root
+
+# /hadoop/cms/store/user/namin/AutoTwopler_babies/SS_v9.06/DoubleEG_Run2016H-03Feb2017_ver2-v1/
 
 samples = [
+
+        # ["DataDoubleEGRerecoB", "DoubleEG_Run2016B-03Feb2017_ver2-v2/output/output*.root"],
+        # ["DataDoubleEGRerecoG", "DoubleEG_Run2016G-03Feb2017-v1/output/output*.root"],
+        # ["DataDoubleEGH", "DoubleEG_Run2016H-03Feb2017_ver2-v1/output/output*.root"],
+        # ["DataDoubleEGHv3", "DoubleEG_Run2016H-03Feb2017_ver3-v1/output/output*.root"],
+
+        # ["DataDoubleMuonRerecoB", "DoubleMuon_Run2016B-03Feb2017_ver2-v2/output/output*.root"],
+        # ["DataDoubleMuonH", "DoubleMuon_Run2016H-03Feb2017_ver2-v1/output/output*.root"],
+
+        ["DataMuonEGRerecoG", "MuonEG_Run2016G-03Feb2017-v1/output/output*.root"],
 
 # ["prompt_DataMuonEG","datamuoneg*.root"],
 # ["prompt_DataDoubleEG","datadoubleeg*.root"],
@@ -30,34 +47,34 @@ samples = [
 # ["THW_scan", "thw_scan_*.root"],
 # ["THQ_scan", "thq_scan_*.root"],
 
-["TTZLOW","ttzlow_*.root"],
-["WJets","wjets_*.root"],
-["TWZ","twz_*.root"],
-["WJets_HTbinned","wjets*to*_*.root"],
-["TTHtoNonBB","tthtononbb_*.root"],
-["GGHtoZZto4L","gghtozzto4l_*.root"],
-["DY_high","dy_high_[0-9]*.root"],
-["DY_low","dy_low_*.root"],
-["WWZ","wwz_*.root"],
-["WWW","www_*.root"],
-# ["TTZ","ttz_*.root"],
-# ["TTZlofix","ttzlofix_*.root"],
-# ["TTW","ttw_*.root"],
-["WZ","wz_*.root"],
-["WGToLNuG","wgtolnug_*.root"],
-["TTG","ttg_*.root"],
-["TZQ","tzq_*.root"],
-["TTTT","tttt_*.root"],
-["VHtoNonBB","vhtononbb_*.root"],
-["WZZ","wzz_*.root"],
-["WWDPS","wwdps_*.root"],
-["QQWW","qqww_*.root"],
-["TG","tg_*.root"],
-["ZG","zg_*.root"],
-["ZZ","zz_*.root"],
-["TTBAR_PH","ttbar_ph_*.root"],
-["TTZnlo", "ttznlo_*.root"],
-["TTWnlo", "ttwnlo_*.root"],
+# ["TTZLOW","ttzlow_*.root"],
+# ["WJets","wjets_*.root"],
+# ["TWZ","twz_*.root"],
+# ["WJets_HTbinned","wjets*to*_*.root"],
+# ["TTHtoNonBB","tthtononbb_*.root"],
+# ["GGHtoZZto4L","gghtozzto4l_*.root"],
+# ["DY_high","dy_high_[0-9]*.root"],
+# ["DY_low","dy_low_*.root"],
+# ["WWZ","wwz_*.root"],
+# ["WWW","www_*.root"],
+# # ["TTZ","ttz_*.root"],
+# # ["TTZlofix","ttzlofix_*.root"],
+# # ["TTW","ttw_*.root"],
+# ["WZ","wz_*.root"],
+# ["WGToLNuG","wgtolnug_*.root"],
+# ["TTG","ttg_*.root"],
+# ["TZQ","tzq_*.root"],
+# ["TTTT","tttt_*.root"],
+# ["VHtoNonBB","vhtononbb_*.root"],
+# ["WZZ","wzz_*.root"],
+# ["WWDPS","wwdps_*.root"],
+# ["QQWW","qqww_*.root"],
+# ["TG","tg_*.root"],
+# ["ZG","zg_*.root"],
+# ["ZZ","zz_*.root"],
+# ["TTBAR_PH","ttbar_ph_*.root"],
+# ["TTZnlo", "ttznlo_*.root"],
+# ["TTWnlo", "ttwnlo_*.root"],
 
  ]
 
@@ -95,35 +112,36 @@ for final,loc in samples:
     if(len(files) < 1): continue
 
 
-    if os.path.isfile(final+".root"):
-        print "%s.root already in here, skipping" % final
-        continue
+    if not os.path.isfile(final+".root"):
+        # print "%s.root already in here, skipping" % final
+        # continue
 
-    chunks = getChunks(files, 50)
+        chunks = getChunks(files, 50)
 
-    if len(chunks) > 1:
-        mergedChunks = []
-        for ichunk,chunk in enumerate(chunks):
-            args = " ".join(chunk)
-            outfile = "%s_chunk%i.root" % (final, ichunk)
-            mergedChunks.append(outfile)
-            print "[%s] Making chunk %i of %i: %s" % (final, ichunk, len(chunks)-1, outfile)
+        if len(chunks) > 1:
+            mergedChunks = []
+            for ichunk,chunk in enumerate(chunks):
+                args = " ".join(chunk)
+                outfile = "%s_chunk%i.root" % (final, ichunk)
+                mergedChunks.append(outfile)
+                print "[%s] Making chunk %i of %i: %s" % (final, ichunk, len(chunks)-1, outfile)
+                if do_skip_bad:
+                    os.system("hadd -k %s %s > haddlog.txt" % (outfile, args))
+                else:
+                    os.system("hadd  %s %s > haddlog.txt" % (outfile, args))
+            print "[%s] Making final file: %s.root" % (final,final)
             if do_skip_bad:
-                os.system("hadd -k %s %s > haddlog.txt" % (outfile, args))
+                os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(mergedChunks)))
             else:
-                os.system("hadd  %s %s > haddlog.txt" % (outfile, args))
-        print "[%s] Making final file: %s.root" % (final,final)
-        if do_skip_bad:
-            os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(mergedChunks)))
+                os.system("hadd %s.root %s >> haddlog.txt" % (final, " ".join(mergedChunks)))
+            os.system("rm %s_chunk*.root" % (final))
         else:
-            os.system("hadd %s.root %s >> haddlog.txt" % (final, " ".join(mergedChunks)))
-        os.system("rm %s_chunk*.root" % (final))
-    else:
-        print "[%s] Making final file: %s.root" % (final,final)
-        if do_skip_bad:
-            os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(chunks[0])))
-        else:
-            os.system("hadd  %s.root %s >> haddlog.txt" % (final, " ".join(chunks[0])))
+            print "[%s] Making final file: %s.root" % (final,final)
+            if do_skip_bad:
+                os.system("hadd -k %s.root %s >> haddlog.txt" % (final, " ".join(chunks[0])))
+            else:
+                os.system("hadd  %s.root %s >> haddlog.txt" % (final, " ".join(chunks[0])))
 
+    if not os.path.exists(finaldir): os.system("mkdir -p %s" % finaldir)
     os.system("mv %s.root %s/" % (final,finaldir))
 

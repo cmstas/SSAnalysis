@@ -1,12 +1,20 @@
 import ROOT as r
 import os
 import glob
+from tqdm import tqdm
 
 ####  MUST EDIT
 # folder = "v8.04_Sept21"
 # sig_name = "fs_t1ttbb_m"
-folder = "v8.04_Oct1"
-sig_name = "fs_t1tttt_m"
+# folder = "v9.06_Mar6_35p9_reminiaodfilt_t5qqqqt6ttww_met"
+# folder = "v9.06_Mar6_35p9_reminiaodfilt_t5tttt_met"
+# folder = "v9.06_Mar6_35p9_reminiaodfilt_t1ttbb_met"
+folder = "v9.06_Mar6_35p9_reminiaodfilt_t5ttcc_met"
+# sig_name = "fs_t1tttt_m"
+# sig_name = "fs_t5qqqqvv_dm20_m"
+# sig_name = "fs_t5qqqqvv_m"
+# sig_name = "fs_t1ttbb_m"
+sig_name = "fs_t5ttcc_m"
 #### END MUST EDIT
 
 def doAddSyst(fname):
@@ -55,16 +63,19 @@ def doAddSyst(fname):
     fout.Close()
     fin.Close()
 
-    print "modified %s" % fname
+    # print "modified %s" % fname
     os.system("mv {0}_new {0}".format(fname))
 
 
 if __name__ == "__main__":
 
     fnames = glob.glob("%s/%s*.root" % (folder, sig_name))
+    # print fnames
     # fnames = [fn for fn in fnames if "hihi" in fn]
-    for fname in fnames:
-        try:
+    for fname in tqdm(fnames):
+            if "agg" in fname: continue
+            # print fname
+        # try:
             doAddSyst(fname)
-        except:
-            print "[!] Failed to add syst to %s" % fname
+        # except:
+        #     print "[!] Failed to add syst to %s" % fname

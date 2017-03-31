@@ -1,6 +1,6 @@
 pair<float, float> dumpCardForOneSR(TString process, TString kine, int sr, TString lumi, TString dir);
 
-void makeTable() {
+void makeTable(TString the_dir="", TString the_lumi="") {
 
   bool doLatex = true;
 
@@ -18,7 +18,11 @@ void makeTable() {
   // TString dir = "v8.03";
 
   // TString lumi = "12.9";
-  TString lumi = "17.3";
+  // TString lumi = "17.3";
+  // TString lumi = "36.5";
+  // TString lumi = "36.8";
+  // TString lumi = "36.8";
+  TString lumi = "35.9";
   // TString lumi = "27.2";
   // TString dir = "v8.04_properSF";
   // TString dir = "v8.04_July25";
@@ -28,7 +32,16 @@ void makeTable() {
   // TString dir = "v8.04_Nov16_agg";
   // TString dir = "v8.07_Dec1_17p3_rereco_agg";
   // TString dir = "v8.07_Dec2_17p3_rerecojetht_v1";
-  TString dir = "v8.07_Dec5_17p3_v2";
+  // TString dir = "v8.07_Dec5_17p3_v2";
+  // TString dir = "v8.07_Dec15_36p5_nobtagsf";
+  // TString dir = "v9.02_Jan25_36p8_nobtagsf";
+  // TString dir = "v9.03_Jan26_36p8_nobtagsf_LaurentSF";
+  // TString dir = "v9.03_Jan26_36p8_nobtagsf_LaurentSF_agg";
+  // TString dir = "v9.04_Jan31_36p8_blah2";
+  TString dir = "v9.06_Mar6_35p9_reminiaodfilt_nomhiggs";
+  // TString dir = "v9.04_Jan31_36p8_blah_exclagg";
+  if (the_dir != "") dir = the_dir;
+  if (the_lumi != "") lumi = the_lumi;
 
     const int nHHsr = 51;
     const int nHLsr = 41;
@@ -258,10 +271,6 @@ void makeTable() {
     cout << Form("%s %6.3f ",sep,sye);
     if (doLatex) cout << " \\\\ " << endl;
     else cout << endl;
-    tHL[sr-1] = tye.first;
-    eHL[sr-1] = sqrt(tye.second);
-    nHL[sr-1] = ndec;
-    dHL[sr-1] = dye;
   }
   if (doLatex) {
     cout << "\\hline" << endl;
@@ -308,32 +317,36 @@ void makeTable() {
 pair<float, float> dumpCardForOneSR(TString process, TString kine, int sr, TString lumi, TString dir){
 
   TFile *_file = TFile::Open(Form("%s/%s_histos_%s_%sifb.root",dir.Data(),process.Data(),kine.Data(),lumi.Data()));
-  _file->cd();
 
   pair<float, float> result;
+
+  if (!_file) return make_pair(0.0,0.0);
+
+  _file->cd();
 
   TH1F* nominal = (TH1F*) _file->Get("sr");
   if (kine=="hihi")   nominal->SetTitle(process+" SRHH L="+lumi+"/fb");
   if (kine=="hilow")  nominal->SetTitle(process+" SRHL L="+lumi+"/fb");
   if (kine=="lowlow") nominal->SetTitle(process+" SRLL L="+lumi+"/fb");
 
+
   float yield = nominal->GetBinContent(sr);
   result.first = yield;
 
-  float ttw = pow(0.13,2)+pow(0.04,2);
-  float ttz = pow(0.11,2)+pow(0.04,2);
-  float ww  = pow(0.30,2);
-  float wz  = pow(0.25,2);
+  float ttw = pow(0.15,2);
+  float ttz = pow(0.30,2);
+  float ww  = pow(0.20,2);
+  float wz  = pow(0.12,2)+pow(0.15,2);
   float fakes  = pow(0.30,2);
-  float flips  = pow(0.26,2);
+  float flips  = pow(0.20,2);
   float xg = pow(0.50,2);
   float rares = pow(0.50,2);
   float lepeff = pow(0.04,2)+pow(0.02,2);//both offline and hlt
-  float luminosity = pow(0.062,2);
+  float luminosity = pow(0.026,2);
 
   float error = 0.;
   if (process=="ttw"  ) error = ttw+lepeff+luminosity;
-  if (process=="ttzh" ) error = ttz+lepeff+luminosity;
+  if (process=="ttzh" ) error = ttz;
   if (process=="ww"   ) error = ww+lepeff+luminosity;
   if (process=="wz"   ) error = wz;
   if (process=="fakes") error = fakes;
@@ -343,7 +356,9 @@ pair<float, float> dumpCardForOneSR(TString process, TString kine, int sr, TStri
 
   error = error*yield*yield;
 
-  // if (process=="fakes" && sr==1) cout << endl << yield << " " << sqrt(error) << endl;
+
+
+  // if (process=="ttw" && sr==1) cout << endl << yield << " " << sqrt(error) << endl;
 
   TString up = "Up";
   TIter next(_file->GetListOfKeys());
@@ -356,10 +371,11 @@ pair<float, float> dumpCardForOneSR(TString process, TString kine, int sr, TStri
     bool isUp = name.Contains(up.Data());
     if ( isUp ) {
       if (name.Contains("stat_")) continue;
+      // if (name.Contains("_AH")) continue;
       if (TMath::IsNaN(h->GetBinContent(sr))) continue;
       error += pow( h->GetBinContent(sr)-yield ,2);
       //cout << process << " " << h->GetBinContent(sr)-yield << endl;
-      // if (process=="fakes" && sr==28) cout << process << " " << h->GetBinContent(sr)-yield << endl;
+      // if (process=="ttw" && sr==1) cout << process << " " << name << " " << h->GetBinContent(sr)-yield << endl;
       // if (process=="fakes" && sr==29) cout << process << " " << h->GetBinContent(sr)-yield << endl;
     }
   }

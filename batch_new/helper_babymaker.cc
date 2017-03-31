@@ -1,4 +1,4 @@
-#include "babymaker.h"
+#include "helper_babymaker.h"
 #include "CORE/Tools/btagsf/BTagCalibrationStandalone.h"
 #include "CORE/Tools/jetcorr/Utilities.icc"
 #include "CORE/Tools/jetcorr/SimpleJetCorrectionUncertainty.h"
@@ -12,7 +12,6 @@ const bool applyBtagSFs = true;
 void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
 
   //Create Baby
-    std::cout << " HEEYYYYYY output_name: " << output_name << std::endl;
   BabyFile = new TFile(Form("%s/%s", path.Data(), output_name), "RECREATE");
   BabyFile->cd();
   BabyTree = new TTree("t", "SS2015 Baby Ntuple");
@@ -28,6 +27,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("metPhi"                                                  , &metPhi                                                  );
   BabyTree->Branch("rawmet"                                                  , &rawmet                                                  );
   BabyTree->Branch("rawmetPhi"                                               , &rawmetPhi                                               );
+  BabyTree->Branch("calomet"                                                  , &calomet                                                  );
+  BabyTree->Branch("calometPhi"                                               , &calometPhi                                               );
   BabyTree->Branch("event"                                                   , &event                                                   );
   BabyTree->Branch("lumi"                                                    , &lumi                                                    );
   BabyTree->Branch("run"                                                     , &run                                                     );
@@ -39,6 +40,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("is_real_data"                                            , &is_real_data                                            );
   BabyTree->Branch("scale1fb"                                                , &scale1fb                                                );
   BabyTree->Branch("xsec"                                                    , &xsec                                                    );
+  BabyTree->Branch("xsec_ps"                                                    , &xsec_ps                                                    );
   BabyTree->Branch("sparmNames"                                              , &sparmNames                                              );
   BabyTree->Branch("sparms"                                                  , &sparms                                                  );
   BabyTree->Branch("xsec_error"                                              , &xsec_error                                              );
@@ -110,12 +112,12 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("dilep_p4"                                                , &dilep_p4                                                );
   BabyTree->Branch("ncharginos"                                                , &ncharginos                                                );
   BabyTree->Branch("higgs_mass"                                                , &higgs_mass                                                );
-  // BabyTree->Branch("genps_p4"                                                , &genps_p4                                                );
-  // BabyTree->Branch("genps_id"                                                , &genps_id                                                );
-  // BabyTree->Branch("genps_id_mother"                                         , &genps_id_mother                                         );
-  // BabyTree->Branch("genps_idx_mother"                                        , &genps_idx_mother                                        );
-  // BabyTree->Branch("genps_status"                                            , &genps_status                                            );
-  // BabyTree->Branch("genps_id_grandma"                                        , &genps_id_grandma                                        );
+  BabyTree->Branch("genps_p4"                                                , &genps_p4                                                );
+  BabyTree->Branch("genps_id"                                                , &genps_id                                                );
+  BabyTree->Branch("genps_id_mother"                                         , &genps_id_mother                                         );
+  BabyTree->Branch("genps_idx_mother"                                        , &genps_idx_mother                                        );
+  BabyTree->Branch("genps_status"                                            , &genps_status                                            );
+  BabyTree->Branch("genps_id_grandma"                                        , &genps_id_grandma                                        );
   BabyTree->Branch("lep1_passes_id"                                          , &lep1_passes_id                                          );
   BabyTree->Branch("lep2_passes_id"                                          , &lep2_passes_id                                          );
   BabyTree->Branch("lep3_passes_id"                                          , &lep3_passes_id                                          );
@@ -200,20 +202,28 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
   BabyTree->Branch("jet_pt"                                                  , &jet_pt                                                  );
   BabyTree->Branch("metphi3p0"                                               , &metphi3p0                                               );
   BabyTree->Branch("passes_met_filters"                                      , &passes_met_filters                                      );
-  BabyTree->Branch("mostJets"                                                , &mostJets                                                );
+  BabyTree->Branch("evt_egclean_pfmet"                                      , &evt_egclean_pfmet                                      );
+  BabyTree->Branch("evt_muegclean_pfmet"                                      , &evt_muegclean_pfmet                                      );
+  BabyTree->Branch("evt_muegcleanfix_pfmet"                                      , &evt_muegcleanfix_pfmet                                      );
+  BabyTree->Branch("evt_uncorr_pfmet"                                      , &evt_uncorr_pfmet                                      );
+  BabyTree->Branch("filt_noBadMuons"                                      , &filt_noBadMuons                                      );
+  BabyTree->Branch("filt_duplicateMuons"                                      , &filt_duplicateMuons                                      );
+  BabyTree->Branch("filt_badMuons"                                      , &filt_badMuons                                      );
+  BabyTree->Branch("failsRA2Filter"                                      , &failsRA2Filter                                      );
   BabyTree->Branch("madeExtraZ"                                              , &madeExtraZ                                              );
   BabyTree->Branch("madeExtraG"                                              , &madeExtraG                                              );
   BabyTree->Branch("lep3_mcid"                                               , &lep3_mcid                                               );
   BabyTree->Branch("lep3_mcidx"                                              , &lep3_mcidx                                              );
   BabyTree->Branch("lep4_mcid"                                               , &lep4_mcid                                               );
   BabyTree->Branch("lep4_mcidx"                                              , &lep4_mcidx                                              );
-  BabyTree->Branch("mostJets_rawp4"                                          , &mostJets_rawp4                                          );
-  BabyTree->Branch("mostJets_disc"                                           , &mostJets_disc                                           );
-  BabyTree->Branch("mostJets_unc"                                            , &mostJets_unc                                            );
-  BabyTree->Branch("mostJets_JEC"                                            , &mostJets_JEC                                            );
-  BabyTree->Branch("mostJets_undoJEC"                                        , &mostJets_undoJEC                                        );
-  BabyTree->Branch("mostJets_passID"                                         , &mostJets_passID                                         );
-  BabyTree->Branch("mostJets_passCleaning"                                   , &mostJets_passCleaning                                   );
+  // BabyTree->Branch("mostJets"                                                , &mostJets                                                );
+  // BabyTree->Branch("mostJets_rawp4"                                          , &mostJets_rawp4                                          );
+  // BabyTree->Branch("mostJets_disc"                                           , &mostJets_disc                                           );
+  // BabyTree->Branch("mostJets_unc"                                            , &mostJets_unc                                            );
+  // BabyTree->Branch("mostJets_JEC"                                            , &mostJets_JEC                                            );
+  // BabyTree->Branch("mostJets_undoJEC"                                        , &mostJets_undoJEC                                        );
+  // BabyTree->Branch("mostJets_passID"                                         , &mostJets_passID                                         );
+  // BabyTree->Branch("mostJets_passCleaning"                                   , &mostJets_passCleaning                                   );
   BabyTree->Branch("njets_unc_up"                                            , &njets_unc_up                                            );
   BabyTree->Branch("njets_unc_dn"                                            , &njets_unc_dn                                            );
   BabyTree->Branch("ht_unc_up"                                               , &ht_unc_up                                               );
@@ -343,7 +353,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
 
   if (applyBtagSFs) {
     // setup btag calibration readers
-    calib = new BTagCalibration("csvv2", "btagsf/CSVv2_ichep.csv"); // https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation80X
+    calib = new BTagCalibration("csvv2", "CORE/Tools/btagsf/data/run2_25ns/CSVv2_Moriond17_B_H.csv"); // https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation80X
     reader_heavy    = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "central"); // central
     reader_heavy_UP = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "up");      // sys up
     reader_heavy_DN = new BTagCalibrationReader(calib, BTagEntry::OP_MEDIUM, "comb", "down");    // sys down
@@ -353,7 +363,8 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
 
     // And another one for fastsim
     // calib_fs = new BTagCalibration("csvv2_fs", "btagsf/CSV_13TEV_Combined_20_11_2015.csv"); 
-    calib_fs = new BTagCalibration("csvv2_fs", "btagsf/CSV_13TEV_T1tttt_1200_800_11_7_2016.csv");  // see email from Dominick titled "Fwd: btag eff and SFs for fastsim"
+    // calib_fs = new BTagCalibration("csvv2_fs", "btagsf/CSV_13TEV_T1tttt_1200_800_11_7_2016.csv");  // see email from Dominick titled "Fwd: btag eff and SFs for fastsim"
+    calib_fs = new BTagCalibration("csvv2_fs", "CORE/Tools/btagsf/data/run2_fastsim/fastsim_csvv2_ttbar_26_1_2017.csv");  // see email from Dominick titled "Fwd: btag eff and SFs for fastsim"
     reader_fastsim    = new BTagCalibrationReader(calib_fs, BTagEntry::OP_MEDIUM, "fastsim", "central"); // central
     reader_fastsim_UP = new BTagCalibrationReader(calib_fs, BTagEntry::OP_MEDIUM, "fastsim", "up");      // sys up
     reader_fastsim_DN = new BTagCalibrationReader(calib_fs, BTagEntry::OP_MEDIUM, "fastsim", "down");    // sys down
@@ -362,15 +373,16 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
     TFile* f_btag_eff = 0;
     if (isFastsim == 0) {
 
-        f_btag_eff = new TFile("btagsf/bTagEffs_80X.root");
-        TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_b");
-        TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_c");
-        TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("eff_total_M_udsg");
+        // f_btag_eff = new TFile("btagsf/bTagEffs_80X.root");
+        // TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_b");
+        // TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("eff_total_M_c");
+        // TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("eff_total_M_udsg");
 
         // f_btag_eff = new TFile("btagsf/btageff__ttbar_powheg_pythia8_25ns.root");
-        // TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
-        // TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
-        // TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
+        f_btag_eff = new TFile("CORE/Tools/btagsf/data/run2_25ns/btageff__ttbar_powheg_pythia8_25ns_Moriond17.root");
+        TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
+        TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
+        TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
 
         BabyFile->cd();
         h_btag_eff_b               = (TH2D*) h_btag_eff_b_temp->Clone("h_btag_eff_b");
@@ -379,7 +391,7 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
         f_btag_eff->Close();
     }
     if (isFastsim >  0 ) {
-        f_btag_eff = new TFile("btagsf/btageff__SMS-T1bbbb-T1qqqq_fastsim.root");
+        f_btag_eff = new TFile("CORE/Tools/btagsf/data/run2_fastsim/btageff__SMS-T1bbbb-T1qqqq_25ns_Moriond17.root");
         TH2D* h_btag_eff_b_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_b");
         TH2D* h_btag_eff_c_temp    = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_c");
         TH2D* h_btag_eff_udsg_temp = (TH2D*) f_btag_eff->Get("h2_BTaggingEff_csv_med_Eff_udsg");
@@ -391,9 +403,6 @@ void babyMaker::MakeBabyNtuple(const char* output_name, int isFastsim){
     }
   }
 
-  //Print warning!
-  cout << "HEY!! Careful!! Path is " << path << endl;
-
 }
 
 void babyMaker::InitBabyNtuple(){
@@ -401,6 +410,8 @@ void babyMaker::InitBabyNtuple(){
     is_fastsim = 0; 
     rawmet = -1;
     rawmetPhi = -1;
+    calomet = -1;
+    calometPhi = -1;
     met = -1;
     metPhi = -1;
     event = -1;
@@ -420,6 +431,7 @@ void babyMaker::InitBabyNtuple(){
     is_real_data = 0;
     scale1fb = 1;
     xsec = -1;
+    xsec_ps = -1;
     kfactor = -1;
     gen_met = -1;
     genweights.clear();
@@ -471,6 +483,7 @@ void babyMaker::InitBabyNtuple(){
     mt_l2 = -1;
     mt2 = -1;
     xsec = -1;
+    xsec_ps = -1;
     xsec_error = -1;
     mtmin = -1;
     lep3_id = -1;
@@ -488,12 +501,12 @@ void babyMaker::InitBabyNtuple(){
     lep2_tkIso = -1;
     ncharginos = -1;
     higgs_mass = -1;
-    // genps_p4.clear();
-    // genps_id.clear();
-    // genps_id_mother.clear();
-    // genps_idx_mother.clear();
-    // genps_status.clear();
-    // genps_id_grandma.clear();
+    genps_p4.clear();
+    genps_id.clear();
+    genps_id_mother.clear();
+    genps_idx_mother.clear();
+    genps_status.clear();
+    genps_id_grandma.clear();
     lep1_passes_id = false;
     lep2_passes_id = false;
     lep3_passes_id = false;
@@ -623,6 +636,14 @@ void babyMaker::InitBabyNtuple(){
     met3p0 = 0;
     metphi3p0 = 0;
     passes_met_filters = 0;
+    evt_egclean_pfmet = -1.0;
+    evt_muegclean_pfmet = -1.0;
+    evt_muegcleanfix_pfmet = -1.0;
+    evt_uncorr_pfmet = -1.0;
+    filt_noBadMuons = 0;
+    filt_duplicateMuons = 0;
+    filt_badMuons = 0;
+    failsRA2Filter = 0;
     madeExtraZ = 0;  
     madeExtraG = 0;  
     nisrMatch = -1;
@@ -711,9 +732,8 @@ void babyMaker::InitBabyNtuple(){
 } 
 
 //Main function
-csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty* jecUnc, int file, int isFastsim){
+csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCorr, JetCorrectionUncertainty* jecUnc, int isFastsim){
 
-  std::cout << "blah process" << std::endl;
 
   //Initialize variables
   InitBabyNtuple();
@@ -723,17 +743,21 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   //Debug mode
   if (verbose && evt_cut>0 && tas::evt_event() != evt_cut) return babyErrorStruct;
 
-  // verbose = true;
-  // if (tas::evt_event() != 16602379) return babyErrorStruct; // FIXME FIXME FIXME
+  verbose = false;
+  // if (tas::evt_event() != 1995735) return babyErrorStruct;
 
   //Preliminary stuff
   if (tas::hyp_type().size() < 1) return babyErrorStruct;
   if (tas::mus_dxyPV().size() != tas::mus_dzPV().size()) return babyErrorStruct;
 
+  if (verbose) std::cout << "--------------\nEVENT: " << tas::evt_run() << ":" << tas::evt_lumiBlock() << ":" << tas::evt_event() << "\n--------------" << std::endl;
+
   //Fill Easy Variables
   filename = filename_in;
   rawmet = evt_pfmet();
   rawmetPhi = evt_pfmetPhi();
+  calomet = evt_calomet();
+  calometPhi = evt_calometPhi();
   event = tas::evt_event();
   lumi = tas::evt_lumiBlock();
   run = tas::evt_run();
@@ -743,6 +767,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   is_miniaodv1_80X = filename.find("RunIISpring16MiniAODv1") != std::string::npos;
   bool isJetHT = filename.find("JetHT") != std::string::npos;
   bool isRunH = filename.find("Run2016H") != std::string::npos;
+  bool isReMiniAOD = filename.find("03Feb2017") != std::string::npos;
 
   // int nHHsr = 33;
   // int nHLsr = 27;
@@ -763,9 +788,11 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   // }
 
   int higgs_scan = 0;
-  if (filename.find("ttH-scan") != std::string::npos)  higgs_scan = 1;
-  if (filename.find("tHW-scan") != std::string::npos)  higgs_scan = 2;
-  if (filename.find("tHq-scan") != std::string::npos)  higgs_scan = 3;
+  if (isFastsim == 101) {
+      if (filename.find("ttH_HToTT") != std::string::npos)  higgs_scan = 1;
+      if (filename.find("tHW_HToTT") != std::string::npos)  higgs_scan = 2;
+      if (filename.find("tHq_HToTT") != std::string::npos)  higgs_scan = 3;
+  }
 
 
 
@@ -788,11 +815,12 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   }
 
   //Corrected MET
+  int use_cleaned_met = tas::evt_isRealData();
   pair <float, float> T1CHSMET;
   if(is_miniaodv1) {
     T1CHSMET = getT1CHSMET_fromMINIAOD( jetCorr, NULL, 0, true );
   } else {
-    T1CHSMET = getT1CHSMET_fromMINIAOD(jetCorr);
+    T1CHSMET = getT1CHSMET_fromMINIAOD(jetCorr, NULL, 0, false, use_cleaned_met);
   }
   met = T1CHSMET.first;
   metPhi = T1CHSMET.second;
@@ -836,6 +864,7 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
             }
         }
         xsec = xsec_higgs(higgs_scan, higgs_mass);
+        xsec_ps = xsec_higgs(higgs_scan+3, higgs_mass);
         scale1fb = 1000*xsec/nPoints_higgs(higgs_scan, higgs_mass);
     }
   }
@@ -1220,19 +1249,26 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   if (verbose){
     cout << "lep1 ratio: " << lep1_p4.pt()/lep1_closeJet.pt() << endl;
     cout << "lep2 ratio: " << lep2_p4.pt()/lep2_closeJet.pt() << endl;
+    std::cout << " lep1_passes_id: " << lep1_passes_id << " lep2_passes_id: " << lep2_passes_id << " lep3_passes_id: " << lep3_passes_id << std::endl;
+    std::cout << " isGoodLepton(lep3_id,lep3_idx): " << isGoodLepton(lep3_id,lep3_idx) << " lep3_tight: " << lep3_tight << " lep3_veto: " << lep3_veto << " lep3_fo: " << lep3_fo << std::endl;
+
+    // muonID(lep3_idx,SS_tight_noiso_v5) muonID(lep3_idx,SS_tight_v5) muonID(lep3_idx,SS_fo_noiso_v5) muonID(lep3_idx,SS_veto_noiso_v5) isMediumMuonPOG(lep3_idx) isLooseMuonPOG(lep3_idx)
+    std::cout << " muonID(lep3_idx,SS_tight_noiso_v5): " << muonID(lep3_idx,SS_tight_noiso_v5) << " muonID(lep3_idx,SS_tight_v5): " << muonID(lep3_idx,SS_tight_v5) << " muonID(lep3_idx,SS_fo_noiso_v5): " << muonID(lep3_idx,SS_fo_noiso_v5) << " muonID(lep3_idx,SS_veto_noiso_v5): " << muonID(lep3_idx,SS_veto_noiso_v5) << " isMediumMuonPOG(lep3_idx): " << isMediumMuonPOG(lep3_idx) << " isLooseMuonPOG(lep3_idx): " << isLooseMuonPOG(lep3_idx) << std::endl;
+
   }
   
 
   // This is 50% of the ntuple size
-  // //Fill all generated particles
-  // if (!is_real_data){
-  //   genps_p4 = tas::genps_p4();
-  //   genps_id = tas::genps_id();
-  //   genps_id_mother = tas::genps_id_mother();
-  //   genps_idx_mother = tas::genps_idx_mother();
-  //   genps_status = tas::genps_status(); 
-  //   genps_id_grandma = tas::genps_id_simplegrandma(); 
-  // }
+  //Fill all generated particles
+  if (!is_real_data){
+    genps_p4 = tas::genps_p4();
+    genps_id = tas::genps_id();
+    genps_id_mother = tas::genps_id_mother();
+    genps_idx_mother = tas::genps_idx_mother();
+    genps_status = tas::genps_status(); 
+    genps_id_grandma = tas::genps_id_simplegrandma(); 
+  }
+
   if (!is_real_data && isFastsim > 0) {
       ncharginos = 0;
       for (unsigned int gp=0;gp<tas::genps_id().size();gp++) {
@@ -1486,10 +1522,10 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
     metPhi_unc_up = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 1, true).second;
     metPhi_unc_dn = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 0, true).second;
   } else {
-    met_unc_up = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 1).first;
-    met_unc_dn = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 0).first;
-    metPhi_unc_up = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 1).second;
-    metPhi_unc_dn = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 0).second;
+    met_unc_up = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 1, false, use_cleaned_met).first;
+    met_unc_dn = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 0, false, use_cleaned_met).first;
+    metPhi_unc_up = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 1, false, use_cleaned_met).second;
+    metPhi_unc_dn = getT1CHSMET_fromMINIAOD(jetCorr, jecUnc, 0, false, use_cleaned_met).second;
   }
    
   //Verbose for jets
@@ -1657,6 +1693,13 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
       }
   }
 
+  failsRA2Filter = 0;
+  for (unsigned int ijet = 0; ijet < tas::pfjets_p4().size(); ijet++) {
+      float dphi = fabs(tas::pfjets_p4()[ijet].phi()-metPhi);
+      if( dphi > TMath::Pi() ) dphi = TMath::TwoPi() - dphi;
+      float muf  = tas::pfjets_muonE()[ijet] / (tas::pfjets_undoJEC().at(ijet)*tas::pfjets_p4()[ijet].energy());
+      if(tas::pfjets_p4()[ijet].pt()>200 && dphi>(TMath::Pi()-0.4) && muf>0.5) failsRA2Filter = true;
+  }
 
   //MET3p0 (aka FKW MET)
   pair<float,float> MET3p0_ = MET3p0();
@@ -1664,8 +1707,19 @@ csErr_t babyMaker::ProcessBaby(string filename_in, FactorizedJetCorrector* jetCo
   metphi3p0 = MET3p0_.second;
 
   // Met filters not filled properly in 80X miniAODv1
-  if(is_miniaodv1_80X) passes_met_filters = true;
-  else passes_met_filters = (isFastsim > 0) ? !failsFastSimJetFilter : passesMETfilters2016(is_real_data);
+  // if(is_miniaodv1_80X) passes_met_filters = true;
+  // else passes_met_filters = (isFastsim > 0) ? !failsFastSimJetFilter : passesMETfilters2016(is_real_data);
+  passes_met_filters = (isFastsim > 0) ? !failsFastSimJetFilter : passesMETfilters2016(is_real_data);
+
+  if (is_real_data && isReMiniAOD) {
+      evt_egclean_pfmet = tas::evt_egclean_pfmet();
+      evt_muegclean_pfmet = tas::evt_muegclean_pfmet();
+      evt_muegcleanfix_pfmet = tas::evt_muegcleanfix_pfmet();
+      evt_uncorr_pfmet = tas::evt_uncorr_pfmet();
+      filt_noBadMuons = tas::filt_noBadMuons();
+      filt_duplicateMuons = tas::filt_duplicateMuons();
+      filt_badMuons = tas::filt_badMuons();
+  }
 
 
   //Fill Baby

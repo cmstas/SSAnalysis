@@ -1,5 +1,6 @@
 import os, ROOT, array, re
 from multiprocessing.dummy import Pool as ThreadPool 
+import time, random
 have_tqdm = False
 try:
     from tqdm import tqdm
@@ -8,13 +9,10 @@ except:
     print "You don't have the tqdm python module, but it's ok."
     print "If you want a pretty progress bar, put the following file in your path: /home/users/namin/syncfiles/pyfiles/tqdm.py"
 
-NPROC=20
+NPROC=40
 
 def plot_limits(d):
 
-    if d["doSignificance"]:
-        minz = -2.0
-        maxz =  2.0
 
     # make things less cluttered
     step = d["step"]
@@ -26,6 +24,10 @@ def plot_limits(d):
     maxz = d["maxz"]
     maxyh = d["maxyh"]
     ybinsfirstxbin = d["ybinsfirstxbin"]
+
+    if d["doSignificance"]:
+        minz = -3.0
+        maxz =  3.0
 
     npx = (maxx-minx)/step
     npy = (maxy-miny)/step
@@ -52,6 +54,11 @@ def plot_limits(d):
         # h.Smooth(1,"k5b")
         h.Smooth(1,"k5b")
         h.Smooth(1,"k5b")
+        if d["doSignificance"]:
+            h.Smooth(1,"k5b")
+            h.Smooth(1,"k5b")
+            h.Smooth(1,"k5b")
+            h.Smooth(1,"k5b")
 
         #now cleanup above the diagonal
         for xbin in range(1,h.GetNbinsX()+1):
@@ -82,6 +89,11 @@ def plot_limits(d):
     maxx = maxx - step/2.
 
     def run_sig(sig):
+        # stagger the processes so that they don't all do createCards
+        # at the same time, otherwise histograms get corrupted when
+        # writing the statUp statDown crap
+        time.sleep(30.0*random.random()) 
+        
         if d["verbose"]:
             print sig
         if not d["redolimits"]: 
@@ -90,10 +102,17 @@ def plot_limits(d):
             else: 
                 if os.path.isfile(d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all_significance.log"): return
 
+        if d["redosignificances"]: os.system("timeout 15m combine -M ProfileLikelihood --uncapped 1 --significance --rMin -5 "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.txt >& "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all_significance.log || echo 'Triggered timeout of 15m'") 
+
         if d["redolimits"]: 
-            os.system(d["extracard"]+" python createCard.py "+d["mydir"]+" "+sig + " >& /dev/null")
-            os.system("combine -M Asymptotic "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.txt >& "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.log") # --run expected --noFitAsimov
-        if d["redosignificances"]: os.system("timeout 20m combine -M ProfileLikelihood --uncapped 1 --significance --rMin -5 "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.txt >& "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all_significance.log") 
+            if not d.get("reallyredo",False):
+                if os.path.isfile(d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.log"): return # FIXME
+
+            # os.system(d["extracard"]+" python createCard.py "+d["mydir"]+" "+sig + " >& /dev/null")
+            cmd = d["extracard"]+" python createCard.py "+d["mydir"]+" "+sig
+            # print cmd
+            os.system(cmd)
+            os.system("timeout 25m combine -M Asymptotic "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.txt >& "+d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.log || echo 'Triggered timeout of 25m'") # --run expected --noFitAsimov
 
     os.nice(10)
     if d["redolimits"] or d["redosignificances"]:
@@ -123,13 +142,14 @@ def plot_limits(d):
                 obs = 0.0 # actually this is just significance, but sig is already taken :(
                 cputime = 0.0
                 for line in f:
-                    if "Significance" in line:
+                    if "Significance" in line and "nan" not in line:
                         obs = float(line.split()[1])
                         foundObs = True
                     elif "Done in" in line:
                         cputime = float(line.split("min (cpu)")[0].split("Done in")[1].strip())
 
-                if cputime > 0.20: foundObs = False
+                # if cputime > 0.80: foundObs = False
+                if cputime > 0.50: foundObs = False
                 # if obs <= -3.0: print sig, obs
                 # if we want to look at cpu time:
                 # obs = cputime
@@ -141,6 +161,7 @@ def plot_limits(d):
     else:
         for sig in sigs:
             foundObs = False
+            foundExp = False
             if not os.path.isfile(d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.log"): continue
             with open(d["mydir"]+"/card_"+sig+"_"+d["mylumi"]+"ifb-all.log") as f:
                 obs = 0.0
@@ -469,9 +490,15 @@ def plot_limits(d):
     if not d["doSignificance"]:
         l1.SetHeader("%s  NLO+NLL exclusion" % d["label_process"])
         l1.AddEntry(cobs , "Observed #pm 1 #sigma_{theory}", "l")
-        l1.AddEntry(cexp , "Expected #pm 1 and 2 #sigma_{experiment}", "l")
+        if d["do_2sigma"]:
+            l1.AddEntry(cexp , "Expected #pm 1 and 2 #sigma_{experiment}", "l")
+        else:
+            l1.AddEntry(cexp , "Expected #pm 1 #sigma_{experiment}", "l")
     else:
-        l1.SetHeader("%s  NLO+NLL cross section" % d["label_process"])
+        l1.SetTextSize(0.032)
+        l1.SetHeader("%s NLO+NLL cross section" % d["label_process"])
+        # l1.SetHeader("%s" % d["label_process"])
+        # l1.AddEntry(None, "NLO+NLL cross section", "")
         l1.AddEntry(ROOT.TH1F() , "", "")
         l1.AddEntry(ROOT.TH1F() , "", "")
         l1.Draw()
@@ -483,7 +510,7 @@ def plot_limits(d):
     cmstex.SetTextFont(42)
     cmstex.Draw()
 
-    cmstexbold = ROOT.TLatex(0.17,0.91, "CMS" )
+    cmstexbold = ROOT.TLatex(0.16,0.91, "CMS" )
     cmstexbold.SetNDC()
     cmstexbold.SetTextSize(0.05)
     cmstexbold.SetLineWidth(2)
@@ -504,6 +531,14 @@ def plot_limits(d):
         masstex.SetLineWidth(2)
         masstex.SetTextFont(42)
         masstex.Draw()
+
+    if not d["doSignificance"] and d["stupid_label"]:
+        stupidtex = ROOT.TLatex(0.18,0.62, d["stupid_label"])
+        stupidtex.SetNDC()
+        stupidtex.SetTextSize(0.03)
+        stupidtex.SetLineWidth(2)
+        stupidtex.SetTextFont(42)
+        stupidtex.Draw()
 
     if not d["doSignificance"]:
 
@@ -614,7 +649,8 @@ def plot_limits(d):
         cexp.Draw("samecont2");
         # c1.SaveAs("sexp.pdf")
 
-        fout = ROOT.TFile("SS2016_%s_%s%s.root" % (d["modeltag"], lumi_str,d["postfix"]),"RECREATE")
+        # fout = ROOT.TFile("SS2016_%s_%s%s.root" % (d["modeltag"], lumi_str,d["postfix"]),"RECREATE")
+        fout = ROOT.TFile("SS2017_%s_%s%s.root" % (d["modeltag"], lumi_str,d["postfix"]),"RECREATE")
 
         hxsecwrite = h_xsec.Clone("xsec")
 
@@ -653,7 +689,8 @@ if __name__ == "__main__":
         # "mylumi": "17.3",
         "mydir": "v8.04_Oct1",
         "mylumi": "17.3",
-        "extracard": "",
+        # "extracard": "",
+        "extracard": "export DOMETUNC=true; ",
         "postfix": "",
         "redolimits": False,
 
@@ -671,10 +708,11 @@ if __name__ == "__main__":
         "modeltag": "t1tttt",
         "is_gluino": True,
         "mass_label": "",
+        "stupid_label": "",
         "label_diag": "m_{#tilde{g}}-m_{#tilde{#chi}_{1}^{0}} = 2 #upoint (m_{W} + m_{b})",
         "label_xaxis": "m_{#tilde{g}} (GeV)",
         "label_yaxis": "m_{#tilde{#chi}_{1}^{0}} (GeV)",
-        "label_process": "pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow t#bar{t}#tilde{#chi}^{0}_{1}          ",
+        "label_process": "pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow t#bar{t}#tilde{#chi}^{0}_{1}        ",
         "diag_points": [600,430,1700,1530],
         "diag_labelpoints": [0.18,0.365],
         "diag_labelangle": 42,
@@ -687,7 +725,7 @@ if __name__ == "__main__":
         "maxz": 2.0,
         "maxyh": 1800,
         "ybinsfirstxbin": 15,
-        "do_2sigma": True,
+        "do_2sigma": False,
     }
 
 
@@ -714,6 +752,7 @@ if __name__ == "__main__":
     # d_t5qqqqvv_dm20["mydir"] = "v8.04_t5qqqqdm20_July28" # FIXME
     # d_t5qqqqvv_dm20["postfix"] = "beforefix"
     d_t5qqqqvv_dm20["modeltag"] = "t5qqqqvv_dm20"
+    d_t5qqqqvv_dm20["label_process"] = "pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow q#bar{q}'W*#tilde{#chi}^{0}_{1}     "
     d_t5qqqqvv_dm20["maxy"] = 1825
     d_t5qqqqvv_dm20["ybinsfirstxbin"] = 21
     d_t5qqqqvv_dm20["mass_label"] = "m_{#tilde{#chi}^{#pm}_{1}} = m_{#tilde{#chi}^{0}_{1}} + 20 GeV"
@@ -722,28 +761,28 @@ if __name__ == "__main__":
     d_t6ttww["mydir"] = "v8.04_Sept19"
     d_t6ttww["modeltag"] = "t6ttww"
     d_t6ttww["is_gluino"] = False
-    d_t6ttww["label_diag"] = "m_{#tilde{b}_{1}} = m_{#tilde{#chi}_{1}^{#pm}}"
+    d_t6ttww["label_diag"] = "m_{#tilde{b}_{1}} - m_{#tilde{#chi}_{1}^{#pm}} = m_{W} + m_{b}"
     d_t6ttww["label_xaxis"] = "m_{#tilde{b}_{1}} (GeV)"
     d_t6ttww["label_yaxis"] = "m_{#tilde{#chi}_{1}^{#pm}} (GeV)"
     d_t6ttww["label_process"] = "pp #rightarrow #tilde{b}_{1}#bar{#tilde{b}}_{1}, #tilde{b}_{1}#rightarrow tW#tilde{#chi}^{0}_{1}        "
     d_t6ttww["mass_label"] = "m_{#tilde{#chi}^{0}_{1}} = 50 GeV"
-    d_t6ttww["diag_points"] = [300,300,900,910]
-    d_t6ttww["diag_labelpoints"] = [0.2,0.325]
+    d_t6ttww["diag_points"] = [300,300-85,900,910-85]
+    d_t6ttww["diag_labelpoints"] = [0.2,0.285]
     d_t6ttww["diag_labelangle"] = 38
     d_t6ttww["step"] = 25
     d_t6ttww["minx"] = 300
-    d_t6ttww["maxx"] = 950+25
+    d_t6ttww["maxx"] = 1000+25
     d_t6ttww["miny"] = 75
     d_t6ttww["maxy"] = 875+25
     d_t6ttww["maxyh"] = 1175
-    # d_t6ttww["ybinsfirstxbin"] = 5
-    d_t6ttww["ybinsfirstxbin"] = 8
+    d_t6ttww["ybinsfirstxbin"] = 5
+    # d_t6ttww["ybinsfirstxbin"] = 8
 
     d_t5ttcc = d_t1tttt.copy()
     d_t5ttcc["mydir"] = "v8.04_Sept21"
     d_t5ttcc["modeltag"] = "t5ttcc"
     d_t5ttcc["label_diag"] = "m_{#tilde{g}} - m_{#tilde{#chi}^{0}_{1}} = m_{W} + m_{b}"
-    d_t5ttcc["label_xaxis"] = "m_{#tilde{b}_{1}} (GeV)"
+    d_t5ttcc["label_xaxis"] = "m_{#tilde{g}} (GeV)"
     d_t5ttcc["label_yaxis"] = "m_{#tilde{#chi}_{1}^{#pm}} (GeV)"
     d_t5ttcc["label_process"] = "pp #rightarrow #tilde{g}#tilde{g}, #tilde{g}#rightarrow #tilde{t}_{1}#kern[0.3]{t}, #tilde{t}_{1}#rightarrow c#tilde{#chi}^{0}_{1}  "
     d_t5ttcc["mass_label"] = "m_{#kern[0.5]{#tilde{t}_{1}}} = m_{#tilde{#chi}^{0}_{1}} + 20 GeV"
@@ -804,10 +843,53 @@ if __name__ == "__main__":
     d_t1tttt_agg["mylumi"] = "17.3"
     d_t1tttt_agg["mydir"] = "agg_test_slim"
 
+    d_t5qqqqvv_agg = d_t5qqqqvv.copy()
+    d_t5qqqqvv_agg["postfix"] = "agg"
+    d_t5qqqqvv_agg["redolimits"] = True
+    d_t5qqqqvv_agg["mass_label"] += ", Aggregate regions"
+    d_t5qqqqvv_agg["mylumi"] = "17.3"
+    d_t5qqqqvv_agg["mydir"] = "agg_test_slim"
+
+    d_t5qqqqvv_dm20_agg = d_t5qqqqvv_dm20.copy()
+    d_t5qqqqvv_dm20_agg["postfix"] = "agg"
+    d_t5qqqqvv_dm20_agg["redolimits"] = True
+    d_t5qqqqvv_dm20_agg["mass_label"] += ", Aggregate regions"
+    d_t5qqqqvv_dm20_agg["mylumi"] = "17.3"
+    d_t5qqqqvv_dm20_agg["mydir"] = "agg_test_slim"
+
+    d_t6ttww_agg = d_t6ttww.copy()
+    d_t6ttww_agg["postfix"] = "agg"
+    d_t6ttww_agg["redolimits"] = True
+    d_t6ttww_agg["mass_label"] += ", Aggregate regions"
+    d_t6ttww_agg["mylumi"] = "17.3"
+    d_t6ttww_agg["mydir"] = "agg_test_slim"
+
+    d_t1ttbb_agg = d_t1ttbb.copy()
+    d_t1ttbb_agg["postfix"] = "agg"
+    d_t1ttbb_agg["redolimits"] = True
+    d_t1ttbb_agg["mass_label"] += ", Aggregate regions"
+    d_t1ttbb_agg["mylumi"] = "17.3"
+    d_t1ttbb_agg["mydir"] = "agg_test_slim"
+
+    d_t5tttt_dm175_agg = d_t5tttt_dm175.copy()
+    d_t5tttt_dm175_agg["postfix"] = "agg"
+    d_t5tttt_dm175_agg["redolimits"] = True
+    d_t5tttt_dm175_agg["mass_label"] += ", Aggregate regions"
+    d_t5tttt_dm175_agg["mylumi"] = "17.3"
+    d_t5tttt_dm175_agg["mydir"] = "agg_test_slim"
+
+    d_t5ttcc_agg = d_t5ttcc.copy()
+    d_t5ttcc_agg["postfix"] = "agg"
+    d_t5ttcc_agg["redolimits"] = True
+    d_t5ttcc_agg["mass_label"] += ", Aggregate regions"
+    d_t5ttcc_agg["mylumi"] = "17.3"
+    d_t5ttcc_agg["mydir"] = "agg_test_slim"
+
     # the_dir = "v8.07_Dec1_17p3_rereco"
-    the_dir = "v8.07_Dec14_36p5_nobtagsf_higgst1tttt"
-    d_t1tttt["mydir"] = the_dir
-    d_t1tttt["mylumi"] = "36.5"
+    # the_dir = "v9.06_Mar6_35p9_reminiaod_t1ttttmet"
+    # the_lumi = "35.9"
+    # d_t1tttt["mydir"] = the_dir
+    # d_t1tttt["mylumi"] = the_lumi
     # d_t5qqqqvv["mydir"] = the_dir
     # d_t5qqqqvv_dm20["mydir"] = the_dir
     # d_t1tttt_agg["mydir"] = the_dir+"_agg"
@@ -815,23 +897,30 @@ if __name__ == "__main__":
     d_t5ttcc["mydir"] = "v8.07_Dec15_36p5_nobtagsf_t5ttcc"
     d_t5tttt_dm175["mydir"] = "v8.07_Dec15_36p5_nobtagsf_t5tttt_t6ttww"
     d_t6ttww["mydir"] = "v8.07_Dec15_36p5_nobtagsf_t5tttt_t6ttww"
+    d_t1ttbb["mydir"] = "v8.07_Dec15_36p5_nobtagsf_t1ttbb"
+    d_t5qqqqvv["mydir"] = "v8.07_Dec15_36p5_nobtagsf_signals"
+    d_t5qqqqvv_dm20["mydir"] = "v8.07_Dec15_36p5_nobtagsf_signals"
 
-    d_t5ttcc["mylumi"] = "36.5"
-    d_t5tttt_dm175["mylumi"] = "36.5"
-    d_t6ttww["mylumi"] = "36.5"
+    # d_t5ttcc["mylumi"] = the_lumi
+    # d_t5tttt_dm175["mylumi"] = the_lumi
+    # d_t6ttww["mylumi"] = the_lumi
+    # d_t1ttbb["mylumi"] = the_lumi
+    # d_t5qqqqvv_dm20["mylumi"] = the_lumi
+    # d_t5qqqqvv["mylumi"] = the_lumi
 
-    d_t5ttcc["mass_label"] += ", noBSF"
-    d_t5tttt_dm175["mass_label"] += ", noBSF"
-    d_t6ttww["mass_label"] += ", noBSF"
+    # d_t5ttcc["mass_label"] += ", noBSF"
+    # d_t5tttt_dm175["mass_label"] += ", noBSF"
+    # d_t6ttww["mass_label"] += ", noBSF"
+    # d_t1ttbb["mass_label"] += ", noBSF"
+    # d_t5qqqqvv_dm20["mass_label"] += ", noBSF"
+    # d_t5qqqqvv["mass_label"] += ", noBSF"
 
-    d_t5ttcc["redolimits"] = False
-    d_t5tttt_dm175["redolimits"] = False
-    d_t6ttww["redolimits"] = False
-
-    d_t6ttww["minz"] = 1e-4
-    d_t6ttww["maxz"] = 10.0
-    d_t6ttww["do_2sigma"] = False
-
+    # d_t5ttcc["redolimits"] = False
+    # d_t5tttt_dm175["redolimits"] = False
+    # d_t6ttww["redolimits"] = False
+    # d_t1ttbb["redolimits"] = False
+    # d_t5qqqqvv_dm20["redolimits"] = False
+    # d_t5qqqqvv["redolimits"] = True
 
     # NOTE NOTE
     failmsg = """
@@ -843,27 +932,157 @@ if __name__ == "__main__":
 
     # plot_limits(d_t1tttt)
     # plot_limits(d_t1tttt_agg)
-    # plot_limits(d_t5qqqqvv)
-    # plot_limits(d_t5qqqqvv_dm20)
 
+    the_dir = "v9.06_Mar6_35p9_reminiaodfilt_t1tttt_met"
+    the_lumi = "35.9"
 
-    try:
-        plot_limits(d_t5ttcc)
-    except ReferenceError:
-        print failmsg
-
-    try:
-        plot_limits(d_t6ttww)
-    except ReferenceError:
-        print failmsg
-
-    try:
-        plot_limits(d_t5tttt_dm175)
-    except ReferenceError:
-        print failmsg
+    dosig = True
 
     # try:
+    #     # d_t1tttt["mydir"] = "v9.04_Jan31_36p8_t1tttt"
+    #     d_t1tttt["mydir"] = the_dir
+    #     # d_t1tttt_agg["postfix"] = "_new"
+    #     d_t1tttt["mylumi"] = the_lumi
+    #     d_t1tttt["do_2sigma"] = True
+    #     d_t1tttt["redolimits"] = False
+    #     d_t1tttt["redosignificances"] = False
+    #     d_t1tttt["doSignificance"] = dosig
+    #     d_t1tttt["stupid_label"] = "(a)"
+    #     plot_limits(d_t1tttt)
+    # except ReferenceError:
+    #     print failmsg
+
+    # try:
+    #     d_t5qqqqvv["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t5qqqqt6ttww_met"
+    #     d_t5qqqqvv["mylumi"] = the_lumi
+    #     d_t5qqqqvv["do_2sigma"] = True
+    #     d_t5qqqqvv["redolimits"] = False
+    #     d_t5qqqqvv["redosignificances"] = False
+    #     d_t5qqqqvv["doSignificance"] = dosig
+    #     d_t5qqqqvv["stupid_label"] = "(a)"
+    #     plot_limits(d_t5qqqqvv)
+    # except ReferenceError:
+    #     print failmsg
+
+    # try:
+    #     d_t5qqqqvv_dm20["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t5qqqqt6ttww_met"
+    #     d_t5qqqqvv_dm20["mylumi"] = the_lumi
+    #     d_t5qqqqvv_dm20["do_2sigma"] = True
+    #     d_t5qqqqvv_dm20["redolimits"] = False
+    #     d_t5qqqqvv_dm20["redosignificances"] = False
+    #     d_t5qqqqvv_dm20["doSignificance"] = dosig
+    #     d_t5qqqqvv_dm20["stupid_label"] = "(b)"
+    #     plot_limits(d_t5qqqqvv_dm20)
+    # except ReferenceError:
+    #     print failmsg
+
+
+    # try:
+    #     d_t6ttww["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t5qqqqt6ttww_met"
+    #     d_t6ttww["mylumi"] = the_lumi
+    #     d_t6ttww["do_2sigma"] = False
+    #     d_t6ttww["redolimits"] = False
+    #     d_t6ttww["redosignificances"] = False
+    #     d_t6ttww["doSignificance"] = dosig
+    #     plot_limits(d_t6ttww)
+    # except ReferenceError:
+    #     print failmsg
+
+    # try:
+    #     d_t5tttt_dm175["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t5tttt_met"
+    #     d_t5tttt_dm175["mylumi"] = the_lumi
+    #     d_t5tttt_dm175["do_2sigma"] = False
+    #     d_t5tttt_dm175["redolimits"] = False
+    #     d_t5tttt_dm175["redosignificances"] = False
+    #     d_t5tttt_dm175["doSignificance"] = dosig
+    #     d_t5tttt_dm175["stupid_label"] = "(c)"
+    #     plot_limits(d_t5tttt_dm175)
+    # except ReferenceError:
+    #     print failmsg
+    
+    # try:
+    #     d_t1ttbb["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t1ttbb_met"
+    #     d_t1ttbb["mylumi"] = the_lumi
+    #     d_t1ttbb["do_2sigma"] = True
+    #     d_t1ttbb["redolimits"] = False
+    #     d_t1ttbb["redosignificances"] = False
+    #     d_t1ttbb["doSignificance"] = dosig
+    #     d_t1ttbb["stupid_label"] = "(b)"
     #     plot_limits(d_t1ttbb)
     # except ReferenceError:
     #     print failmsg
 
+    try:
+        d_t5ttcc["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t5ttcc_met"
+        d_t5ttcc["mylumi"] = the_lumi
+        d_t5ttcc["do_2sigma"] = False
+        d_t5ttcc["redolimits"] = False
+        d_t5ttcc["redosignificances"] = False
+        d_t5ttcc["doSignificance"] = dosig
+        d_t5ttcc["stupid_label"] = "(d)"
+        plot_limits(d_t5ttcc)
+    except ReferenceError:
+        print failmsg
+
+
+    #######################################
+    #### NOTE NOTE AGGREGATE NOTE NOTE ####
+    #######################################
+
+    # try:
+    #     d_t1tttt_agg["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t1tttt_met_agg"
+    #     d_t1tttt_agg["mylumi"] = the_lumi
+    #     d_t1tttt_agg["redolimits"] = True
+    #     # d_t1tttt_agg["reallyredo"] = True # FIXME
+    #     plot_limits(d_t1tttt_agg)
+    # except ReferenceError:
+    #     print failmsg
+
+    # try:
+    #     d_t5qqqqvv_agg["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t5qqqqt6ttww_met_agg"
+    #     d_t5qqqqvv_agg["mylumi"] = the_lumi
+    #     d_t5qqqqvv_agg["redolimits"] = False
+    #     plot_limits(d_t5qqqqvv_agg)
+    # except ReferenceError:
+    #     print failmsg
+
+    # try:
+    #     d_t5qqqqvv_dm20_agg["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t5qqqqt6ttww_met_agg"
+    #     d_t5qqqqvv_dm20_agg["mylumi"] = the_lumi
+    #     d_t5qqqqvv_dm20_agg["redolimits"] = False
+    #     plot_limits(d_t5qqqqvv_dm20_agg)
+    # except ReferenceError:
+    #     print failmsg
+
+    # try:
+    #     d_t6ttww_agg["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t5qqqqt6ttww_met_agg"
+    #     d_t6ttww_agg["mylumi"] = the_lumi
+    #     d_t6ttww_agg["redolimits"] = False
+    #     plot_limits(d_t6ttww_agg)
+    # except ReferenceError:
+    #     print failmsg
+
+
+    # try:
+    #     d_t1ttbb_agg["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t1ttbb_met_agg"
+    #     d_t1ttbb_agg["mylumi"] = the_lumi
+    #     d_t1ttbb_agg["redolimits"] = False
+    #     plot_limits(d_t1ttbb_agg)
+    # except ReferenceError:
+    #     print failmsg
+
+    # try:
+    #     d_t5tttt_dm175_agg["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t5tttt_met_agg"
+    #     d_t5tttt_dm175_agg["mylumi"] = the_lumi
+    #     d_t5tttt_dm175_agg["redolimits"] = False
+    #     plot_limits(d_t5tttt_dm175_agg)
+    # except ReferenceError:
+    #     print failmsg
+
+#     try:
+#         d_t5ttcc_agg["mydir"] = "v9.06_Mar6_35p9_reminiaodfilt_t5ttcc_met_agg"
+#         d_t5ttcc_agg["mylumi"] = the_lumi
+#         d_t5ttcc_agg["redolimits"] = False
+#         plot_limits(d_t5ttcc_agg)
+#     except ReferenceError:
+#         print failmsg

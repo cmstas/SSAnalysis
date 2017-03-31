@@ -53,7 +53,10 @@ if __name__ == "__main__":
     # ("ttH", "/hadoop/cms/store/group/snt/run2_25ns_80Private/TTH_ttH-scan-MINIAOD_Private80Xv2/V08-00-05/merged_ntuple_*.root"),
     # ("ttH", "/hadoop/cms/store/group/snt/run2_25ns_80Private/TTH_ttH-scan-MINIAOD_Private80Xv2_v2/V08-00-05/merged_ntuple_*.root"),
     # ("tHW", "/hadoop/cms/store/group/snt/run2_25ns_80Private/THW_tHW-scan-MINIAOD_Private80Xv2/V08-00-05/merged_ntuple_*.root"),
-    ("tHq", "/hadoop/cms/store/group/snt/run2_25ns_80Private/THQ_tHq-scan-MINIAOD_Private80Xv2_v2/V08-00-09/merged_ntuple_*.root"),
+    # ("tHq", "/hadoop/cms/store/group/snt/run2_25ns_80Private/THQ_tHq-scan-MINIAOD_Private80Xv2_v2/V08-00-09/merged_ntuple_*.root"),
+    ("ttH", "/hadoop/cms/store/group/snt/run2_moriond17_fastsim/ttH_HToTT_1J_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISummer16MiniAODv2-PUSummer16Fast_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/V08-00-16/*.root"),
+    # ("tHW", "/hadoop/cms/store/group/snt/run2_moriond17_fastsim/tHW_HToTT_0J_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISummer16MiniAODv2-PUSummer16Fast_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/V08-00-16/*.root"),
+    # ("tHq", "/hadoop/cms/store/group/snt/run2_moriond17_fastsim/tHq_HToTT_0J_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISummer16MiniAODv2-PUSummer16Fast_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/V08-00-16/*.root"),
     ]
 
     for name, fpatt in name_patts:

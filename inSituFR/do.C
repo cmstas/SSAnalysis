@@ -23,23 +23,26 @@
   // FR(0, "doData,doExtraElectronPtBin");
   // FR(1, "doData,doExtraElectronPtBin");
 
+  // // FR(-1, "doSoup,test_MVA,doExtraElectronPtBin");
+  // FR(-1, "doSoup,doExtraElectronPtBin");
+  // FR(0, "doSoup,doExtraElectronPtBin");
+  // FR(1, "doSoup,doExtraElectronPtBin");
+
+  // // FR(-1, "doSoup,test_MVA,doExtraElectronPtBin");
+  // FR(-1, "test_MVA,doExtraElectronPtBin");
+  // // FR(-1, "test_MVA,doSoup,doExtraElectronPtBin");
 
   // // Recipe to get inclusive, and low/high ht fake rate maps from MC
   // for(int doHighHT = -1; doHighHT < 2; doHighHT++) {
   //     FR(doHighHT, "doSoup,test_MVA,doExtraElectronPtBin");
   // }
 
-  // FR(-1, "doSoup,test_MVA,doExtraElectronPtBin");
-  FR(-1, "doSoup,doExtraElectronPtBin");
-  FR(0, "doSoup,doExtraElectronPtBin");
-  FR(1, "doSoup,doExtraElectronPtBin");
-
-  // // Recipe to calculate promptCorrected FR for data with extra electron PtBin
-  // for(int doHighHT = -1; doHighHT < 2; doHighHT++) {
-  //     FR(doHighHT, "doPromptsOnly,test_MVA,doExtraElectronPtBin");
-  //     FR(doHighHT, "doData,test_MVA,doExtraElectronPtBin");
-  //     prompt_corrected_FR(doHighHT);
-  // }
+  // Recipe to calculate promptCorrected FR for data with extra electron PtBin
+  for(int doHighHT = -1; doHighHT < 2; doHighHT++) {
+      FR(doHighHT, "doPromptsOnly,test_MVA,doExtraElectronPtBin");
+      FR(doHighHT, "doData,test_MVA,doExtraElectronPtBin");
+      prompt_corrected_FR(doHighHT);
+  }
 
 
 

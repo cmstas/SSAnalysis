@@ -203,6 +203,11 @@ void SSAG::Init(TTree *tree) {
 		xsec_branch = tree->GetBranch("xsec");
 		if (xsec_branch) {xsec_branch->SetAddress(&xsec_);}
 	}
+	xsec_ps_branch = 0;
+	if (tree->GetBranch("xsec_ps") != 0) {
+		xsec_ps_branch = tree->GetBranch("xsec_ps");
+		if (xsec_ps_branch) {xsec_ps_branch->SetAddress(&xsec_ps_);}
+	}
 	sparmNames_branch = 0;
 	if (tree->GetBranch("sparmNames") != 0) {
 		sparmNames_branch = tree->GetBranch("sparmNames");
@@ -933,6 +938,11 @@ void SSAG::Init(TTree *tree) {
 		passes_met_filters_branch = tree->GetBranch("passes_met_filters");
 		if (passes_met_filters_branch) {passes_met_filters_branch->SetAddress(&passes_met_filters_);}
 	}
+	failsRA2Filter_branch = 0;
+	if (tree->GetBranch("failsRA2Filter") != 0) {
+		failsRA2Filter_branch = tree->GetBranch("failsRA2Filter");
+		if (failsRA2Filter_branch) {failsRA2Filter_branch->SetAddress(&failsRA2Filter_);}
+	}
 	madeExtraZ_branch = 0;
 	if (tree->GetBranch("madeExtraZ") != 0) {
 		madeExtraZ_branch = tree->GetBranch("madeExtraZ");
@@ -1516,6 +1526,7 @@ void SSAG::GetEntry(unsigned int idx)
 		is_real_data_isLoaded = false;
 		scale1fb_isLoaded = false;
 		xsec_isLoaded = false;
+		xsec_ps_isLoaded = false;
 		sparmNames_isLoaded = false;
 		sparms_isLoaded = false;
 		xsec_error_isLoaded = false;
@@ -1674,6 +1685,7 @@ void SSAG::GetEntry(unsigned int idx)
 		jet_pt_isLoaded = false;
 		metphi3p0_isLoaded = false;
 		passes_met_filters_isLoaded = false;
+		failsRA2Filter_isLoaded = false;
 		mostJets_isLoaded = false;
 		madeExtraZ_isLoaded = false;
 		madeExtraG_isLoaded = false;
@@ -1818,6 +1830,7 @@ void SSAG::LoadAllBranches()
 	if (is_real_data_branch != 0) is_real_data();
 	if (scale1fb_branch != 0) scale1fb();
 	if (xsec_branch != 0) xsec();
+	if (xsec_ps_branch != 0) xsec_ps();
 	if (sparmNames_branch != 0) sparmNames();
 	if (sparms_branch != 0) sparms();
 	if (xsec_error_branch != 0) xsec_error();
@@ -1976,6 +1989,7 @@ void SSAG::LoadAllBranches()
 	if (jet_pt_branch != 0) jet_pt();
 	if (metphi3p0_branch != 0) metphi3p0();
 	if (passes_met_filters_branch != 0) passes_met_filters();
+	if (failsRA2Filter_branch != 0) failsRA2Filter();
 	if (mostJets_branch != 0) mostJets();
 	if (madeExtraZ_branch != 0) madeExtraZ();
 	if (madeExtraG_branch != 0) madeExtraG();
@@ -2380,6 +2394,19 @@ void SSAG::LoadAllBranches()
 			xsec_isLoaded = true;
 		}
 		return xsec_;
+	}
+	const float &SSAG::xsec_ps()
+	{
+		if (not xsec_ps_isLoaded) {
+			if (xsec_ps_branch != 0) {
+				xsec_ps_branch->GetEntry(index);
+			} else { 
+				printf("branch xsec_ps_branch does not exist!\n");
+				exit(1);
+			}
+			xsec_ps_isLoaded = true;
+		}
+		return xsec_ps_;
 	}
 	const vector<TString> &SSAG::sparmNames()
 	{
@@ -4435,6 +4462,19 @@ void SSAG::LoadAllBranches()
 		}
 		return passes_met_filters_;
 	}
+	const bool &SSAG::failsRA2Filter()
+	{
+		if (not failsRA2Filter_isLoaded) {
+			if (failsRA2Filter_branch != 0) {
+				failsRA2Filter_branch->GetEntry(index);
+			} else { 
+				printf("branch failsRA2Filter_branch does not exist!\n");
+				exit(1);
+			}
+			failsRA2Filter_isLoaded = true;
+		}
+		return failsRA2Filter_;
+	}
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &SSAG::mostJets()
 	{
 		if (not mostJets_isLoaded) {
@@ -6000,6 +6040,7 @@ namespace ss {
 	const bool &is_real_data() { return samesign.is_real_data(); }
 	const float &scale1fb() { return samesign.scale1fb(); }
 	const float &xsec() { return samesign.xsec(); }
+	const float &xsec_ps() { return samesign.xsec_ps(); }
 	const vector<TString> &sparmNames() { return samesign.sparmNames(); }
 	const vector<float> &sparms() { return samesign.sparms(); }
 	const float &xsec_error() { return samesign.xsec_error(); }
@@ -6158,6 +6199,7 @@ namespace ss {
 	const vector<float> &jet_pt() { return samesign.jet_pt(); }
 	const float &metphi3p0() { return samesign.metphi3p0(); }
 	const bool &passes_met_filters() { return samesign.passes_met_filters(); }
+	const bool &failsRA2Filter() { return samesign.failsRA2Filter(); }
 	const vector<ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > > &mostJets() { return samesign.mostJets(); }
 	const bool &madeExtraZ() { return samesign.madeExtraZ(); }
 	const bool &madeExtraG() { return samesign.madeExtraG(); }

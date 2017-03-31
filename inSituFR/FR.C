@@ -45,16 +45,23 @@ void addToCounter(TString name, double weight=1.0) {
     }
     evtCounter->Fill(evtBinMap[name], weight);
 }
-void printCounter(bool file = false) {
+void printCounter(bool file = true) {
+    ofstream outfile;
+    if(file) outfile.open("counter.txt");
     cout << string(30, '-') << endl << "Counter totals: " << endl;
-    for(int iBin = 0; iBin < evtBin; iBin++) {
-        printf("%-25s %7.2f %7.2f\n",
-                counterNames.at(iBin).Data(),
-                evtCounter->GetBinContent(iBin+1),
-                evtCounter->GetBinError(iBin+1) );
+    for(map<TString,int>::iterator it = evtBinMap.begin(); it != evtBinMap.end(); it++) {
+        int iBin = (it->second)+1;
+        printf("%-15s %6.2f %6.2f\n",
+                (it->first).Data(),
+                evtCounter->GetBinContent(iBin),
+                evtCounter->GetBinError(iBin) );
+        if(file) outfile << (it->first).Data() << "  " << evtCounter->GetBinContent(iBin) << "  " << evtCounter->GetBinError(iBin) << endl;
     }
     cout << string(30, '-') << endl;
+    if(file) outfile.close();
+    if(file) cout << "Wrote counter to counter.txt" << endl;
 }
+
 
 void drawProfile(TH2F* h2, TString title, TString filename) {
     TCanvas *c0 = new TCanvas("c0","c0");
@@ -201,10 +208,10 @@ void FR(int doHighHT=-1, TString opts=""){
   numer_muon_2D_siplt4 = new TH2D("numer_muon_2D_siplt4", "numer_muon_2D_siplt4",    nBinsX_mu, xbins_mu, nBinsY_mu, ybins_mu);
   denom_muon_2D_siplt4 = new TH2D("denom_muon_2D_siplt4", "denom_muon_2D_siplt4",    nBinsX_mu, xbins_mu, nBinsY_mu, ybins_mu);
 
-  TH1F *numer_vs_sip_el  = new TH1F("numer_vs_sip_el" , "numer_vs_sip_el" , 16,0,8);
-  TH1F *denom_vs_sip_el  = new TH1F("denom_vs_sip_el" , "denom_vs_sip_el" , 16,0,8);
-  TH1F *numer_vs_sip_mu  = new TH1F("numer_vs_sip_mu" , "numer_vs_sip_mu" , 16,0,8);
-  TH1F *denom_vs_sip_mu  = new TH1F("denom_vs_sip_mu" , "denom_vs_sip_mu" , 16,0,8);
+  TH1F *numer_vs_sip_el  = new TH1F("numer_vs_sip_el" , "numer_vs_sip_el" , 16,0,12);
+  TH1F *denom_vs_sip_el  = new TH1F("denom_vs_sip_el" , "denom_vs_sip_el" , 16,0,12);
+  TH1F *numer_vs_sip_mu  = new TH1F("numer_vs_sip_mu" , "numer_vs_sip_mu" , 16,0,12);
+  TH1F *denom_vs_sip_mu  = new TH1F("denom_vs_sip_mu" , "denom_vs_sip_mu" , 16,0,12);
 
   TH1F *numer_vs_pt_el  = new TH1F("numer_vs_pt_el" , "numer, denom vs pt el (sip>4)" , 20,0,200);
   TH1F *denom_vs_pt_el  = new TH1F("denom_vs_pt_el" , "numer, denom vs pt el (sip>4)" , 20,0,200);
@@ -241,7 +248,8 @@ void FR(int doHighHT=-1, TString opts=""){
   numer_muon_2D_siplt4->Sumw2();
   denom_muon_2D_siplt4->Sumw2();
 
-  TString base="./skims_Dec2/";
+  // TString base="./skims_Dec2/";
+  TString base="./skims_Jan25/";
 
   //Declare chain
   TChain *chain = new TChain("t");
@@ -261,11 +269,12 @@ void FR(int doHighHT=-1, TString opts=""){
 
       if(doWjetsOnly) {
           // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/WJets*To*.root");
-          chain->Add(base+"WJets_skim.root");
+          chain->Add("/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.04/output/WJets*.root");
       } else if(doSoup) {
           // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v4/WJets*To*.root");
           // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v3/TTBAR_PH*.root");
-          chain->Add(base+"WJets_skim.root");
+          // chain->Add(base+"WJets_skim.root");
+          chain->Add("/nfs-7/userdata/namin/tupler_babies/merged/SS/v9.04/output/WJets*.root");
           chain->Add(base+"TTBAR_PH_skim.root");
       } else {
           // chain->Add("/nfs-7/userdata/ss2015/ssBabies/v8.04_trigsafe_v3/TTBAR_PH*.root");
@@ -321,12 +330,23 @@ void FR(int doHighHT=-1, TString opts=""){
       int BR = baselineRegion(ss::njets(), ss::nbtags(), ss::met(), ss::ht(), ss::lep1_id(), ss::lep2_id(), pt1, pt2);
       if (BR < 0) continue;
 
+      bool verbose = false;
+
+      // if (ss::lumi() != 144401 || ss::event() != 23132887) continue;
+      // if (ss::lumi() != 204117 || ss::event() != 32699566) continue;
+      // if (ss::lumi() != 228769 || ss::event() != 36648858) continue;
+      // if (ss::lumi() != 247804 || ss::event() != 39698163) continue;
+      // if (ss::lumi() != 319965 || ss::event() != 51258393) continue;
+      // if (ss::lumi() != 402409 || ss::event() != 64465899) continue;
+      // if (ss::lumi() != 447023 || ss::event() != 71613202) continue;
+      // if (ss::lumi() != 477223 || ss::event() != 76451090) continue;
 
 
       if (doWjetsOnly || (doSoup && filename.Contains("WJets"))) {
           if (ss::hyp_class() == 6) continue;
       } else {
           if (ss::hyp_class() == 4 || ss::hyp_class() == 6) continue;
+          // lep1_pt lep1_id lep2_pt lep2_id lep1_eta lep2_eta lep1_passes_id lep2_passes_id zmass
           if (ss::hyp_class() == 7) continue;
       }
 
@@ -334,19 +354,25 @@ void FR(int doHighHT=-1, TString opts=""){
       bool inSituFR_id_lep1 = true;
       bool inSituFR_id_lep2 = true;
 
+
       if(abs(ss::lep1_id()) == 11) inSituFR_id_lep1 = fabs(ss::lep1_el_etaSC())<2.5 &&  ss::lep1_el_conv_vtx_flag() == 1 &&  ss::lep1_el_threeChargeAgree() == 1 &&  ss::lep1_el_exp_innerlayers() == 1 &&  ss::lep1_dZ() < 0.1;
       else inSituFR_id_lep1 =  ss::lep1_dZ() < 0.1 && ss::lep1_mu_ptErr() && ss::lep1_mediumMuonPOG() &&  fabs(ss::lep1_p4().eta()) < 2.4;
       if(abs(ss::lep2_id()) == 11) inSituFR_id_lep2 = fabs(ss::lep2_el_etaSC())<2.5 &&  ss::lep2_el_conv_vtx_flag() == 1 &&  ss::lep2_el_threeChargeAgree() == 1 &&  ss::lep2_el_exp_innerlayers() == 1 &&  ss::lep2_dZ() < 0.1;
       else inSituFR_id_lep2 =  ss::lep2_dZ() < 0.1 && ss::lep2_mu_ptErr() && ss::lep2_mediumMuonPOG() &&  fabs(ss::lep2_p4().eta()) < 2.4;
 
+      if (verbose) std::cout << " ss::hyp_class(): " << ss::hyp_class() << std::endl;
+      if (verbose) std::cout << " inSituFR_id_lep1: " << inSituFR_id_lep1 << " inSituFR_id_lep2: " << inSituFR_id_lep2 << std::endl;
 
       // If either one of them fails the inSituFR id, then bye bye. If we aren't hyp_class=3, then this forces us to be 5
       // if (!ss::passed_id_inSituFR_lep1() || !ss::passed_id_inSituFR_lep2()) continue;
       if (!inSituFR_id_lep1 || !inSituFR_id_lep2) continue; // recomputed versions of variables above
 
 
+
+
       //Non-Isolated trigger requirements
-      if (ss::is_real_data() && !ss::fired_trigger()) continue; 
+      // if (ss::is_real_data() && !ss::fired_trigger()) continue; 
+      if (!ss::fired_trigger()) continue; 
 
       if(abs(ss::lep1_id()) == 11) {
           if (isGoodLeg(1)) mva_vs_aeta_true->Fill(abs(ss::lep1_el_etaSC()), ss::lep1_MVA());
@@ -427,6 +453,10 @@ void FR(int doHighHT=-1, TString opts=""){
       bool numer1 = ss::lep1_multiIso() && (fabs(ss::lep1_dxyPV()) < 0.05);
       bool numer2 = ss::lep2_multiIso() && (fabs(ss::lep2_dxyPV()) < 0.05);
 
+      if (verbose) std::cout << " lep1_elec: " << lep1_elec << " lep2_elec: " << lep2_elec << " lep1_prompt: " << lep1_prompt << " lep2_prompt: " << lep2_prompt << " denom1: " << denom1 << " denom2: " << denom2 << " numer1: " << numer1 << " numer2: " << numer2 << std::endl;
+      if (verbose) std::cout << " lep1_sip: " << lep1_sip << " lep2_sip: " << lep2_sip << " lep1_passes_id: " << lep1_passes_id << " lep2_passes_id: " << lep2_passes_id << std::endl;
+      if (verbose) std::cout << " pt1: " << pt1 << " pt2: " << pt2 << " fabs(ss::lep1_p4().eta()): " << fabs(ss::lep1_p4().eta()) << " fabs(ss::lep2_p4().eta()): " << fabs(ss::lep2_p4().eta()) << std::endl;
+
 
       // // Check how many events are charge flips
       // bool isCF1 = ss::lep1_id() == -ss::lep1_mc_id();
@@ -494,7 +524,12 @@ void FR(int doHighHT=-1, TString opts=""){
         if (numer1) {
             numer_elec_2D_siplt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);  
             numer_vs_sip_el->Fill(lep1_sip, weight);
+            if (fabs(ss::lep1_p4().eta()) < 0.8 && pt1>70) {
+                addToCounter("pteta1 NUMER EL");
+                // addToCounter(Form("%i:%llu",ss::lumi(), ss::event()));
+            }
         }
+        if (fabs(ss::lep1_p4().eta()) < 0.8 && pt1>70) addToCounter("pteta1 DENOM EL");
         ptratio_vs_miniiso_el->Fill(miniiso_1, 1.0/ptratio_1);  
         denom_elec_2D_siplt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);
         denom_vs_sip_el->Fill(lep1_sip, weight);
@@ -509,7 +544,9 @@ void FR(int doHighHT=-1, TString opts=""){
         if (numer2) {
             numer_elec_2D_siplt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);  
             numer_vs_sip_el->Fill(lep2_sip, weight);
+            if (fabs(ss::lep2_p4().eta()) < 0.8 && pt2>70) addToCounter("pteta2 NUMER EL");
         }
+        if (fabs(ss::lep2_p4().eta()) < 0.8 && pt2>70) addToCounter("pteta2 DENOM EL");
         ptratio_vs_miniiso_el->Fill(miniiso_2, 1.0/ptratio_2);  
         denom_elec_2D_siplt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);
         denom_vs_sip_el->Fill(lep2_sip, weight);
@@ -572,7 +609,9 @@ void FR(int doHighHT=-1, TString opts=""){
         if (numer1) {
             numer_muon_2D_siplt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);  
             numer_vs_sip_mu->Fill(lep1_sip, weight);
+            if (fabs(ss::lep1_p4().eta()) < 1.2 && pt1>50) addToCounter("pteta1 NUMER MU");
         }
+        if (fabs(ss::lep1_p4().eta()) < 1.2 && pt1>50) addToCounter("pteta1 DENOM MU");
         ptratio_vs_miniiso_mu->Fill(miniiso_1, 1.0/ptratio_1);  
         denom_muon_2D_siplt4->Fill(pt1, fabs(ss::lep1_p4().eta()), weight);
         denom_vs_sip_mu->Fill(lep1_sip, weight);
@@ -587,7 +626,12 @@ void FR(int doHighHT=-1, TString opts=""){
         if (numer2) {
             numer_muon_2D_siplt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);  
             numer_vs_sip_mu->Fill(lep2_sip, weight);
+            if (fabs(ss::lep2_p4().eta()) < 1.2 && pt2>50) {
+                addToCounter("pteta2 NUMER MU");
+                // addToCounter(Form("%i:%llu",ss::lumi(), ss::event()));
+            }
         }
+        if (fabs(ss::lep2_p4().eta()) < 1.2 && pt2>50) addToCounter("pteta2 DENOM MU");
         ptratio_vs_miniiso_mu->Fill(miniiso_2, 1.0/ptratio_2);  
         denom_muon_2D_siplt4->Fill(pt2, fabs(ss::lep2_p4().eta()), weight);
         denom_vs_sip_mu->Fill(lep2_sip, weight);
@@ -649,7 +693,7 @@ void FR(int doHighHT=-1, TString opts=""){
   denom_muon_2D_siplt4->Write("denom_muon_siplt4");
 
   //Divide numer/denom
-  numer_elec_2D_sipgt4 ->Divide(numer_elec_2D_sipgt4 , denom_elec_2D_sipgt4 , 1, 1, "b"); 
+  numer_elec_2D_sipgt4->Divide(numer_elec_2D_sipgt4, denom_elec_2D_sipgt4, 1, 1, "b"); 
   numer_elec_2D_siplt4->Divide(numer_elec_2D_siplt4, denom_elec_2D_siplt4, 1, 1, "b"); 
   numer_muon_2D_sipgt4->Divide(numer_muon_2D_sipgt4, denom_muon_2D_sipgt4, 1, 1, "b"); 
   numer_muon_2D_siplt4->Divide(numer_muon_2D_siplt4, denom_muon_2D_siplt4, 1, 1, "b"); 
@@ -707,14 +751,14 @@ void FR(int doHighHT=-1, TString opts=""){
   PlotMaker2D(mva_vs_aeta_true, Form("--outputName plots/%s_mva_vs_aeta_true.pdf --noOverflow --setTitle %s MVA vs abs(etaSC) for prompt leptons --Xaxis abs(etaSC) --Yaxis MVA --colors --isLogz", pfx.c_str(), desc.c_str()));
   PlotMaker2D(mva_vs_aeta_fake, Form("--outputName plots/%s_mva_vs_aeta_fake.pdf --noOverflow --setTitle %s MVA vs abs(etaSC) for fake leptons --Xaxis abs(etaSC) --Yaxis MVA --colors --isLogz", pfx.c_str(), desc.c_str()));
 
-  singleComparisonMaker(numer_vs_sip_el,denom_vs_sip_el,"denom",Form("FR vs sip3D (elec, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel sip3D --outputName plots/%s_numer_vs_sip_el.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
-  singleComparisonMaker(numer_vs_sip_mu,denom_vs_sip_mu,"denom",Form("FR vs sip3D (muon, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel sip3D --outputName plots/%s_numer_vs_sip_mu.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
+  singleComparisonMaker(numer_vs_sip_el,denom_vs_sip_el,"denom",Form("FR vs sip3D (elec, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel sip3D --outputName plots/%s_numer_vs_sip_el.pdf --ratioUpperBound 0.6 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi %.1f",pfx.c_str(), luminosity));
+  singleComparisonMaker(numer_vs_sip_mu,denom_vs_sip_mu,"denom",Form("FR vs sip3D (muon, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel sip3D --outputName plots/%s_numer_vs_sip_mu.pdf --ratioUpperBound 0.6 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi %.1f",pfx.c_str(), luminosity));
 
-  singleComparisonMaker(numer_vs_pt_el,denom_vs_pt_el,"denom",Form("FR vs p_{T} (elec, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel p_{T} --outputName plots/%s_numer_vs_pt_el.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
-  singleComparisonMaker(numer_vs_pt_mu,denom_vs_pt_mu,"denom",Form("FR vs p_{T} (muon, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel p_{T} --outputName plots/%s_numer_vs_pt_mu.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
+  singleComparisonMaker(numer_vs_pt_el,denom_vs_pt_el,"denom",Form("FR vs p_{T} (elec, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel p_{T} --outputName plots/%s_numer_vs_pt_el.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi %.1f",pfx.c_str(), luminosity));
+  singleComparisonMaker(numer_vs_pt_mu,denom_vs_pt_mu,"denom",Form("FR vs p_{T} (muon, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel p_{T} --outputName plots/%s_numer_vs_pt_mu.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi %.1f",pfx.c_str(), luminosity));
 
-  singleComparisonMaker(numer_vs_eta_el,denom_vs_eta_el,"denom",Form("FR vs abs(#eta) (elec, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel |#eta| --outputName plots/%s_numer_vs_eta_el.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
-  singleComparisonMaker(numer_vs_eta_mu,denom_vs_eta_mu,"denom",Form("FR vs abs(#eta) (muon, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel |#eta| --outputName plots/%s_numer_vs_eta_mu.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi 12.9",pfx.c_str()));
+  singleComparisonMaker(numer_vs_eta_el,denom_vs_eta_el,"denom",Form("FR vs abs(#eta) (elec, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel |#eta| --outputName plots/%s_numer_vs_eta_el.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi %.1f",pfx.c_str(), luminosity));
+  singleComparisonMaker(numer_vs_eta_mu,denom_vs_eta_mu,"denom",Form("FR vs abs(#eta) (muon, sip3D>4, %s)",desc.c_str()), Form("--dataName numer --xAxisLabel |#eta| --outputName plots/%s_numer_vs_eta_mu.pdf --ratioUpperBound 1.0 --errHistAtBottom --legendCounts --topYaxisTitle FR --isLinear --lumi %.1f",pfx.c_str(), luminosity));
 
   printCounter();
 

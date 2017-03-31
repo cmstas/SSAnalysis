@@ -1,7 +1,10 @@
 {
 
-    // bool doPromptCorrected = true;
-    bool doPromptCorrected = false;
+    // bool doPromptCorrected = false;
+    bool doPromptCorrected = true;
+
+    bool useLowSip3D = false ;// default false
+
 
     // for (int highHT = 0; highHT < 2; highHT++) {
     for (int highHT = -1; highHT < 2; highHT++) {
@@ -17,13 +20,14 @@
 
     if(doPromptCorrected) pfx += "corr_";
 
-    if(highHT == 1) { pfx = "highht_"; sfx = "HighHT"; }
-    else if(highHT == 0) { pfx = "lowht_"; }
-    else if(highHT == -1) { pfx = "all_"; sfx = "AllHT"; }
+    if(highHT == 1) { pfx += "highht_"; sfx = "HighHT"; }
+    else if(highHT == 0) { pfx += "lowht_"; }
+    else if(highHT == -1) { pfx += "all_"; sfx = "AllHT"; }
+
 
     TFile* f = TFile::Open(pfx+"inSituFR_cone_FR_histos.root");
 
-    TH2D* numer = (TH2D*) f->Get(lep);
+    TH2D* numer = (TH2D*) f->Get(lep + (useLowSip3D ? "_siplt4" : ""));
     
     cout << "float "+lep+"FakeRateInSitu"+sfx+"(float pt, float eta) {" << endl;
     for (int xbin=1;xbin<=numer->GetNbinsX();xbin++) {

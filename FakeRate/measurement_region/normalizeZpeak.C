@@ -105,15 +105,15 @@ pair<float,float> normalizeZpeak(float intlumi, TString tag, bool useIsoTrig, bo
   // m8 = 5707.51;
   // m17 = 98.7317;
 
-  // For 36.5/fb json with reRECO
-  e8i = 4601.37;
-  e17i = 674.837;
-  e8 = 4602.33;
-  e17 = 623.759;
-  m8i = 3775.17;
-  m17i = 183.494;
-  m8 = 7510.22;
-  m17 = 141.888;
+  // For 36.8/fb json with reRECO
+  e8i = 4208.14;
+  e17i = 617.166;
+  e8 = 4209.02;
+  e17 = 568.98;
+  m8i = 3716.07;
+  m17i = 181.349;
+  m8 = 7361.42;
+  m17 = 139.899;
 
   if(do8) {
       if(useIsoTrig) mult = (doMu ? m8i : e8i);
