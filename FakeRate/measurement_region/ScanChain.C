@@ -679,8 +679,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //reject electrons from DoubleMu and muons from DoubleEG
       if (debug) cout << "check dataset" << endl;
       if (isData) {
-	if ( isDoubleMuon && abs(id())!=13) continue;
-	if (!isDoubleMuon && abs(id())!=11) continue;
+        if ( isDoubleMuon && abs(id())!=13) continue;
+        if (!isDoubleMuon && abs(id())!=11) continue;
       }
 
       // Analysis Code
@@ -731,9 +731,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
              QCD_Pt-1000toInf_MuEnrichedPt5   0.000198
              */
 
-	if (abs(id())==13) {
+        if (abs(id())==13) {
 
-	  if (debug) cout << "check qcd" << endl;
+          if (debug) cout << "check qcd" << endl;
 
       bool nonEnriched = false;
 
@@ -755,45 +755,45 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       }
 
  // // 74X
-	  // if (p4().pt()<15. &&  scale1fb() > 22.9 && scale1fb() < 23.0 ) continue;  //take only Mu15 above pT=15
-	  // if (p4().pt()>15. && (scale1fb() < 22.9 || scale1fb() > 23.0)) continue;  //take only Mu5 below pT=15
-	  // if (scale1fb() < 5.0 || scale1fb() > 600.) continue; //avoid extreme ranges and weights
+          // if (p4().pt()<15. &&  scale1fb() > 22.9 && scale1fb() < 23.0 ) continue;  //take only Mu15 above pT=15
+          // if (p4().pt()>15. && (scale1fb() < 22.9 || scale1fb() > 23.0)) continue;  //take only Mu5 below pT=15
+          // if (scale1fb() < 5.0 || scale1fb() > 600.) continue; //avoid extreme ranges and weights
 
-	}
+        }
 
-	if (abs(id())==11) {
-	  /*
-	  //Map of samples and correspongding scale1fb
-	  /QCD_Pt_15to20_bcToE   280.49151
-	  /QCD_Pt_20to30_bcToE   101.22869
-	  /QCD_Pt_30to80_bcToE   79.645675
-	  /QCD_Pt_80to170_bcToE  7.4107956
-	  /QCD_Pt_170to250_bcToE 0.9143287
-	  /QCD_Pt_250toInf_bcToE 0.2412396
-	  /QCD_Pt-15to20_EMEnriched   1085.0196
-	  /QCD_Pt-20to30_EMEnriched   583.37152
-	  /QCD_Pt-30to50_EMEnriched   2114.1918
-	  /QCD_Pt-50to80_EMEnriched   553.06378
-	  /QCD_Pt-80to120_EMEnriched  43.048187
-	  /QCD_Pt-120to170_EMEnriched 7.4082317
-	  /QCD_Pt-170to300_EMEnriched 3.2795264
-	  /QCD_Pt-300toInf_EMEnriched 0.3651889
-	  */
+        if (abs(id())==11) {
+          /*
+          //Map of samples and correspongding scale1fb
+          /QCD_Pt_15to20_bcToE   280.49151
+          /QCD_Pt_20to30_bcToE   101.22869
+          /QCD_Pt_30to80_bcToE   79.645675
+          /QCD_Pt_80to170_bcToE  7.4107956
+          /QCD_Pt_170to250_bcToE 0.9143287
+          /QCD_Pt_250toInf_bcToE 0.2412396
+          /QCD_Pt-15to20_EMEnriched   1085.0196
+          /QCD_Pt-20to30_EMEnriched   583.37152
+          /QCD_Pt-30to50_EMEnriched   2114.1918
+          /QCD_Pt-50to80_EMEnriched   553.06378
+          /QCD_Pt-80to120_EMEnriched  43.048187
+          /QCD_Pt-120to170_EMEnriched 7.4082317
+          /QCD_Pt-170to300_EMEnriched 3.2795264
+          /QCD_Pt-300toInf_EMEnriched 0.3651889
+          */
 
 
         // // FIXME
-	  // //if(isData==0 && scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
-	  // if (debug) cout << "check qcd" << endl;
-	  // if (scale1fb() < 5.0) continue; //avoid extreme ranges and weights
-	  // if (scale1fb() > 280 && scale1fb() < 281) continue;
-	  // if (scale1fb() > 1085 && scale1fb() < 1086) continue;
+          // //if(isData==0 && scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
+          // if (debug) cout << "check qcd" << endl;
+          // if (scale1fb() < 5.0) continue; //avoid extreme ranges and weights
+          // if (scale1fb() > 280 && scale1fb() < 281) continue;
+          // if (scale1fb() > 1085 && scale1fb() < 1086) continue;
 
-	}
+        }
 
-	//fixme
-	//make sure we use mu from MuEnrich and el from EG+BCtoE
-	// if (isData==0 && abs(id())==13 && fabs(scale1fb()-20.94)>0.1 && fabs(scale1fb()-79.81)>0.1 && fabs(scale1fb()-85.19)>0.1 && fabs(scale1fb()-357.93)>0.1) continue;
-	// if (isData==0 && abs(id())==11 && !(fabs(scale1fb()-20.94)>0.1 && fabs(scale1fb()-79.81)>0.1 && fabs(scale1fb()-85.19)>0.1 && fabs(scale1fb()-357.93)>0.1)) continue;
+        //fixme
+        //make sure we use mu from MuEnrich and el from EG+BCtoE
+        // if (isData==0 && abs(id())==13 && fabs(scale1fb()-20.94)>0.1 && fabs(scale1fb()-79.81)>0.1 && fabs(scale1fb()-85.19)>0.1 && fabs(scale1fb()-357.93)>0.1) continue;
+        // if (isData==0 && abs(id())==11 && !(fabs(scale1fb()-20.94)>0.1 && fabs(scale1fb()-79.81)>0.1 && fabs(scale1fb()-85.19)>0.1 && fabs(scale1fb()-357.93)>0.1)) continue;
 
       }
 
@@ -802,16 +802,16 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       int njets40 = 0;
       int nbtags = 0;
       for(unsigned int i=0; i<jets_recorr.size(); i++)  {
-	if(ROOT::Math::VectorUtil::DeltaR(jets_recorr[i], p4()) < 1.) continue; //0.4 in babymaker
-	if(jets_disc()[i] > 0.800) nbtags++;
-	if(jets_recorr[i].pt() > 40. && fabs(jets_recorr[i].eta()) < 2.4) {
-	  ht += jets_recorr[i].pt();
-	  njets40++;
+        if(ROOT::Math::VectorUtil::DeltaR(jets_recorr[i], p4()) < 1.) continue; //0.4 in babymaker
+        if(jets_disc()[i] > 0.800) nbtags++;
+        if(jets_recorr[i].pt() > 40. && fabs(jets_recorr[i].eta()) < 2.4) {
+          ht += jets_recorr[i].pt();
+          njets40++;
       if(debug) {
           cout << "-->recoiljet:" << jets_recorr[i].pt() << "," << jets_recorr[i].eta() << "," << jets_recorr[i].phi() << endl;
           cout << "-->deltaR " << ROOT::Math::VectorUtil::DeltaR(jets_recorr[i],p4()) << endl;
       }
-	}
+        }
       }
       if(njets40 > 0) jetptcut = true;
 
@@ -823,15 +823,15 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //float miniIso = miniiso();
       float relIso = RelIso03EA();
       if (debug) cout << "close jet raw p4=" << jet_close_lep_p4*jet_close_lep_undoJEC()
-		      << " pt=" << (jet_close_lep_p4*jet_close_lep_undoJEC()).pt()
-		      << " corrected p4=" << closejet
-		      << " pt=" << closejet.pt()
-		      << " L1=" << jet_close_L1()
-		      << " L2L3=" << jet_close_L2L3()
-		      << " rho=" << rho()
-		      << " ptrel=" << ptrel
-		      << " ptratio=" << p4().pt()/closejetpt
-		      << endl;
+                      << " pt=" << (jet_close_lep_p4*jet_close_lep_undoJEC()).pt()
+                      << " corrected p4=" << closejet
+                      << " pt=" << closejet.pt()
+                      << " L1=" << jet_close_L1()
+                      << " L2L3=" << jet_close_L2L3()
+                      << " rho=" << rho()
+                      << " ptrel=" << ptrel
+                      << " ptratio=" << p4().pt()/closejetpt
+                      << endl;
 
       if(debug) {
           cout << "lepton pt,eta,phi: " << p4().pt() << "," << p4().eta() << "," << p4().phi() << endl;
@@ -841,31 +841,31 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       if (debug) cout << "check jet: njets40=" << njets40 << " ht_SS=" << ht_SS() << endl;
       if( !jetptcut || ht_SS()<40 )
-	{continue;}
+        {continue;}
 
       //trigger selection
       if (debug) cout << "check hlt HLT_Mu8=" << HLT_Mu8() << " HLT_Mu17=" << HLT_Mu17() << " HLT_Ele12_CaloIdM_TrackIdM_PFJet30=" << HLT_Ele12_CaloIdM_TrackIdM_PFJet30() << endl;
       if (abs(id())==11 && (isData || doTrig)) {
-	// ele12 for 2015D
-	if (useIsoTrigs) {
-	  if (HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()<=0
+        // ele12 for 2015D
+        if (useIsoTrigs) {
+          if (HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()<=0
        && HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30()<=0
               ) continue;
-	} else {
-	  if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<=0
-	   && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()<=0
+        } else {
+          if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<=0
+           && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()<=0
        ) continue;
-	}
+        }
       }
       if (abs(id())==13 && (isData || doTrig)) {
-	// mu8 or mu17 for 2015D
-	if (useIsoTrigs) {
-	  if (HLT_Mu8_TrkIsoVVL()<=0 &&
-	      HLT_Mu17_TrkIsoVVL()<=0) continue;
-	} else {
-	  if (HLT_Mu8()<=0 &&
-	      HLT_Mu17()<=0) continue;
-	}
+        // mu8 or mu17 for 2015D
+        if (useIsoTrigs) {
+          if (HLT_Mu8_TrkIsoVVL()<=0 &&
+              HLT_Mu17_TrkIsoVVL()<=0) continue;
+        } else {
+          if (HLT_Mu8()<=0 &&
+              HLT_Mu17()<=0) continue;
+        }
 
       }
 
@@ -875,69 +875,69 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       int prescale = -1;
       if(!isData) prescale = 1; // triggers messed up in 80X MC
       if (abs(id())==11 && (isData || doTrig)) {
-	if (useIsoTrigs) {
-	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
+        if (useIsoTrigs) {
+          if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
           prescale = HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30();
           if (!doTrig) prescale = e8i; // FIXME
           vtxWeight = getPUw_iso_8_el(nvtx());
       }
-	  if ((anyPt || p4().pt() >= 25) && HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
+          if ((anyPt || p4().pt() >= 25) && HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
           prescale = HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30();
           if (!doTrig) prescale = e17i; // FIXME
           vtxWeight = getPUw_iso_17_el(nvtx());
       }
-	  if (prescale>0) weight *= prescale;
-	  else continue;
-	} else {
-	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0) {
+          if (prescale>0) weight *= prescale;
+          else continue;
+        } else {
+          if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0) {
           prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
           if (!doTrig) prescale = e8; // FIXME
           vtxWeight = getPUw_8_el(nvtx());
       }
-	  if ((anyPt || p4().pt() >= 25) && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()>0) {
+          if ((anyPt || p4().pt() >= 25) && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()>0) {
           prescale = HLT_Ele17_CaloIdM_TrackIdM_PFJet30();
           if (!doTrig) prescale = e17; // FIXME
           vtxWeight = getPUw_17_el(nvtx());
       }
-	  if (prescale>0) weight *= prescale;
-	  else continue;
-	}
+          if (prescale>0) weight *= prescale;
+          else continue;
+        }
       }
       if (abs(id())==13 && (isData || doTrig)) {
-	// use mu8+mu17
-	if (useIsoTrigs) {
-	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) {
+        // use mu8+mu17
+        if (useIsoTrigs) {
+          if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) {
           prescale = HLT_Mu8_TrkIsoVVL();
           if (!doTrig) prescale = m8i; // FIXME
           vtxWeight = getPUw_iso_8_mu(nvtx());
       }
 
-	  if ((anyPt || p4().pt()>=25) && HLT_Mu17_TrkIsoVVL()>0) {
+          if ((anyPt || p4().pt()>=25) && HLT_Mu17_TrkIsoVVL()>0) {
           prescale = HLT_Mu17_TrkIsoVVL();
           if (!doTrig) prescale = m17i; // FIXME
           vtxWeight = getPUw_iso_17_mu(nvtx());
       }
 
-	  if (prescale>0) weight *= prescale;
-	  else continue;
-	} else {
-	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0)
+          if (prescale>0) weight *= prescale;
+          else continue;
+        } else {
+          if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0)
       {
           prescale = HLT_Mu8();
           if (!doTrig) prescale = m8; // FIXME
           vtxWeight = getPUw_8_mu(nvtx());
       }
 
-	  if ((anyPt || p4().pt() >= 25) && HLT_Mu17()>0)
+          if ((anyPt || p4().pt() >= 25) && HLT_Mu17()>0)
       {
           prescale = HLT_Mu17();
           if (!doTrig) prescale = m17; // FIXME
           vtxWeight = getPUw_17_mu(nvtx());
       }
 
-	  if (prescale>0) weight *= prescale;
-	  else continue;
-	}
+          if (prescale>0) weight *= prescale;
+          else continue;
+        }
       }
 
       if(applyDataVtxWeight) weight *= vtxWeight;
@@ -946,7 +946,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
       if (debug) cout << "check nFO_SS" << endl;
       if(nFOs_SS() > 1) //if more than 1 FO in event
-	{continue;}
+        {continue;}
 
       //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
       //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
@@ -967,38 +967,38 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       bool passId_noiso = passes_SS_tight_noiso_v5();
       bool passFO_noiso = passes_SS_fo_noiso_v5();
       if (useLooseEMVA && abs(id())==11) {
-	bool isEB = true;
-	if ( fabs(etaSC())>1.479 ) isEB = false;
-	float sIeIe = sigmaIEtaIEta_full5x5();
-	float hoe = hOverE();
-	float deta = fabs(dEtaIn());
-	float dphi = fabs(dPhiIn());
-	float invep = fabs(1./ecalEnergy() - 1./p4().P());
-	float cut_sIeIe = isEB ? 0.011 : 0.031;
-	float cut_hoe   = 0.08;
-	float cut_deta  = 0.01;
-	float cut_dphi  = isEB ? 0.04 : 0.08;
-	float cut_invep = 0.01;
-	bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
-	if (useIsoTrigs) {
-	  if (debug) cout << "check iso FO" << endl;
-	  if (!passIsolatedFO(id(),etaSC(),mva_25ns(),p4().pt())) continue;
-	  float ePFIso = ecalPFClusterIso()/p4().pt();
-	  float hPFIso = hcalPFClusterIso()/p4().pt();
-	  float trkIso = tkIso()/p4().pt();
-	  float cut_ePFIso = 0.45;
-	  float cut_hPFIso = 0.25;
-	  float cut_trkIso  = 0.2;
-	  passHltCuts = passHltCuts && ePFIso<cut_ePFIso && hPFIso<cut_hPFIso && trkIso<cut_trkIso;
-	}
-	passFO = passHltCuts && passes_SS_fo_looseMVA_v5();
-	passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v5();
+        bool isEB = true;
+        if ( fabs(etaSC())>1.479 ) isEB = false;
+        float sIeIe = sigmaIEtaIEta_full5x5();
+        float hoe = hOverE();
+        float deta = fabs(dEtaIn());
+        float dphi = fabs(dPhiIn());
+        float invep = fabs(1./ecalEnergy() - 1./p4().P());
+        float cut_sIeIe = isEB ? 0.011 : 0.031;
+        float cut_hoe   = 0.08;
+        float cut_deta  = 0.01;
+        float cut_dphi  = isEB ? 0.04 : 0.08;
+        float cut_invep = 0.01;
+        bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
+        if (useIsoTrigs) {
+          if (debug) cout << "check iso FO" << endl;
+          if (!passIsolatedFO(id(),etaSC(),mva_25ns(),p4().pt())) continue;
+          float ePFIso = ecalPFClusterIso()/p4().pt();
+          float hPFIso = hcalPFClusterIso()/p4().pt();
+          float trkIso = tkIso()/p4().pt();
+          float cut_ePFIso = 0.45;
+          float cut_hPFIso = 0.25;
+          float cut_trkIso  = 0.2;
+          passHltCuts = passHltCuts && ePFIso<cut_ePFIso && hPFIso<cut_hPFIso && trkIso<cut_trkIso;
+        }
+        passFO = passHltCuts && passes_SS_fo_looseMVA_v5();
+        passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v5();
       }
 
       // if (useIsoTrigs && abs(id())==13) {
-      // 	float cut_trkIso  = 0.3;
-      // 	float trkIso = tkIso()/p4().pt();
-      // 	if (trkIso>cut_trkIso) continue;
+      //        float cut_trkIso  = 0.3;
+      //        float trkIso = tkIso()/p4().pt();
+      //        if (trkIso>cut_trkIso) continue;
       // }
 
       float evt_met = evt_corrMET();
@@ -1008,91 +1008,91 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       float evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
 
       if (passId) {
-	//mt control region
-	if (evt_met > 30. && p4().pt()>30) {
-	  histo_mt_all->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id())==11) histo_mt_all_el->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id())==13) histo_mt_all_mu->Fill( std::min(evt_mt,float(200.)), weight );
-	}
-	if (evt_met < 20.) {
-	  histo_mt_lm->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id())==11) histo_mt_lm_el->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id())==13) histo_mt_lm_mu->Fill( std::min(evt_mt,float(200.)), weight );
-	}
-	if (evt_met > 30.) {
-	  histo_mt_cr->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id())==11) histo_mt_cr_el->Fill( std::min(evt_mt,float(200.)), weight );
-	  if (abs(id())==13) histo_mt_cr_mu->Fill( std::min(evt_mt,float(200.)), weight );
-	}
-	//test if bad data/MC ratio in mt control region is due to met
-	if (p4().pt()>30) {
-	  histo_met_all->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id())==11) histo_met_all_el->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id())==13) histo_met_all_mu->Fill( std::min(evt_met,float(200.)), weight );
-	}
-	if (evt_mt < 20.) {
-	  histo_met_lm->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id())==11) histo_met_lm_el->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id())==13) histo_met_lm_mu->Fill( std::min(evt_met,float(200.)), weight );
-	}
-	if (evt_mt > 30.) {
-	  histo_met_cr->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id())==11) histo_met_cr_el->Fill( std::min(evt_met,float(200.)), weight );
-	  if (abs(id())==13) histo_met_cr_mu->Fill( std::min(evt_met,float(200.)), weight );
-	}
+        //mt control region
+        if (evt_met > 30. && p4().pt()>30) {
+          histo_mt_all->Fill( std::min(evt_mt,float(200.)), weight );
+          if (abs(id())==11) histo_mt_all_el->Fill( std::min(evt_mt,float(200.)), weight );
+          if (abs(id())==13) histo_mt_all_mu->Fill( std::min(evt_mt,float(200.)), weight );
+        }
+        if (evt_met < 20.) {
+          histo_mt_lm->Fill( std::min(evt_mt,float(200.)), weight );
+          if (abs(id())==11) histo_mt_lm_el->Fill( std::min(evt_mt,float(200.)), weight );
+          if (abs(id())==13) histo_mt_lm_mu->Fill( std::min(evt_mt,float(200.)), weight );
+        }
+        if (evt_met > 30.) {
+          histo_mt_cr->Fill( std::min(evt_mt,float(200.)), weight );
+          if (abs(id())==11) histo_mt_cr_el->Fill( std::min(evt_mt,float(200.)), weight );
+          if (abs(id())==13) histo_mt_cr_mu->Fill( std::min(evt_mt,float(200.)), weight );
+        }
+        //test if bad data/MC ratio in mt control region is due to met
+        if (p4().pt()>30) {
+          histo_met_all->Fill( std::min(evt_met,float(200.)), weight );
+          if (abs(id())==11) histo_met_all_el->Fill( std::min(evt_met,float(200.)), weight );
+          if (abs(id())==13) histo_met_all_mu->Fill( std::min(evt_met,float(200.)), weight );
+        }
+        if (evt_mt < 20.) {
+          histo_met_lm->Fill( std::min(evt_met,float(200.)), weight );
+          if (abs(id())==11) histo_met_lm_el->Fill( std::min(evt_met,float(200.)), weight );
+          if (abs(id())==13) histo_met_lm_mu->Fill( std::min(evt_met,float(200.)), weight );
+        }
+        if (evt_mt > 30.) {
+          histo_met_cr->Fill( std::min(evt_met,float(200.)), weight );
+          if (abs(id())==11) histo_met_cr_el->Fill( std::min(evt_met,float(200.)), weight );
+          if (abs(id())==13) histo_met_cr_mu->Fill( std::min(evt_met,float(200.)), weight );
+        }
       }
       if (debug) cout << "check met/mt " << evt_met << " / " << evt_mt << " metPhi=" << evt_metPhi << endl;
       if( !(evt_met < 20. && evt_mt < 20) ) {
-	continue;
+        continue;
       }
 
       if (isData && passFO) {
-	if (abs(id())==11) {
-	  if (HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el34->Fill(p4().pt(),HLT_Ele33_CaloIdM_TrackIdM_PFJet30());
-	  if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el24->Fill(p4().pt(),HLT_Ele23_CaloIdM_TrackIdM_PFJet30());
-	  if (HLT_Ele17_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el17->Fill(p4().pt(),HLT_Ele17_CaloIdM_TrackIdM_PFJet30());
-	  if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el12->Fill(p4().pt(),HLT_Ele12_CaloIdM_TrackIdM_PFJet30());
-	  if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 ) histo_pt_el8->Fill(p4().pt() ,HLT_Ele8_CaloIdM_TrackIdM_PFJet30() );
-	  histo_pt_el->Fill(p4().pt(), prescale );
-	}
-	if (abs(id())==13) {
-	  if (HLT_Mu34()>0) histo_pt_mu34->Fill(p4().pt(),HLT_Mu34());
-	  if (HLT_Mu24()>0) histo_pt_mu24->Fill(p4().pt(),HLT_Mu24());
-	  if (HLT_Mu17()>0) histo_pt_mu17->Fill(p4().pt(),HLT_Mu17());
-	  if (HLT_Mu8()>0 ) histo_pt_mu8->Fill(p4().pt() ,HLT_Mu8() );
-	  //if (HLT_Mu8()>0 ) cout << "HLT_Mu8=" << HLT_Mu8() << " abs(id)=" << abs(id()) << " passes_SS_fo_v5=" << passes_SS_fo_v5() << " evt_pfmet=" << evt_pfmet() << " mt=" << mt() << " nFOs_SS=" << nFOs_SS() << " ht_SS=" << ht_SS() << endl;
-	  histo_pt_mu->Fill(p4().pt(), prescale );
-	}
+        if (abs(id())==11) {
+          if (HLT_Ele33_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el34->Fill(p4().pt(),HLT_Ele33_CaloIdM_TrackIdM_PFJet30());
+          if (HLT_Ele23_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el24->Fill(p4().pt(),HLT_Ele23_CaloIdM_TrackIdM_PFJet30());
+          if (HLT_Ele17_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el17->Fill(p4().pt(),HLT_Ele17_CaloIdM_TrackIdM_PFJet30());
+          if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30()>0) histo_pt_el12->Fill(p4().pt(),HLT_Ele12_CaloIdM_TrackIdM_PFJet30());
+          if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0 ) histo_pt_el8->Fill(p4().pt() ,HLT_Ele8_CaloIdM_TrackIdM_PFJet30() );
+          histo_pt_el->Fill(p4().pt(), prescale );
+        }
+        if (abs(id())==13) {
+          if (HLT_Mu34()>0) histo_pt_mu34->Fill(p4().pt(),HLT_Mu34());
+          if (HLT_Mu24()>0) histo_pt_mu24->Fill(p4().pt(),HLT_Mu24());
+          if (HLT_Mu17()>0) histo_pt_mu17->Fill(p4().pt(),HLT_Mu17());
+          if (HLT_Mu8()>0 ) histo_pt_mu8->Fill(p4().pt() ,HLT_Mu8() );
+          //if (HLT_Mu8()>0 ) cout << "HLT_Mu8=" << HLT_Mu8() << " abs(id)=" << abs(id()) << " passes_SS_fo_v5=" << passes_SS_fo_v5() << " evt_pfmet=" << evt_pfmet() << " mt=" << mt() << " nFOs_SS=" << nFOs_SS() << " ht_SS=" << ht_SS() << endl;
+          histo_pt_mu->Fill(p4().pt(), prescale );
+        }
       }
 
       if (usePtRatioCor) {
-	if (abs(id())==11) {
-	  float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.12))/closejetpt : 1.;
-	  passFO = passes_SS_fo_v5() && (ptratiocor > 0.76 || ptrel > 7.2);
-	} else {
-	  float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.16))/closejetpt : 1.;
-	  passFO = passes_SS_fo_v5() && (ptratiocor > 0.80 || ptrel > 7.2);
-	}
+        if (abs(id())==11) {
+          float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.12))/closejetpt : 1.;
+          passFO = passes_SS_fo_v5() && (ptratiocor > 0.76 || ptrel > 7.2);
+        } else {
+          float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.16))/closejetpt : 1.;
+          passFO = passes_SS_fo_v5() && (ptratiocor > 0.80 || ptrel > 7.2);
+        }
       }
 
       float coneptcorr = 0.;
       if (abs(id())==11) {
-	if (ptrel>7.2) {
-	  coneptcorr = std::max(0.,miniiso()-0.12);
-	} else {
-	  coneptcorr = max(double(0.),(closejetpt*0.80/p4().pt()-1.));
-	}
+        if (ptrel>7.2) {
+          coneptcorr = std::max(0.,miniiso()-0.12);
+        } else {
+          coneptcorr = max(double(0.),(closejetpt*0.80/p4().pt()-1.));
+        }
       } else {
-	if (ptrel>7.2) {
-	  coneptcorr = std::max(0.,miniiso()-0.16);
-	} else {
-	  coneptcorr = max(double(0.),(closejetpt*0.76/p4().pt()-1.));
-	}
+        if (ptrel>7.2) {
+          coneptcorr = std::max(0.,miniiso()-0.16);
+        } else {
+          coneptcorr = max(double(0.),(closejetpt*0.76/p4().pt()-1.));
+        }
       }
       if (useRelIso) {
-	passId = passId_noiso && relIso<0.1;
-	passFO = passFO_noiso && relIso<0.5;
-	coneptcorr = std::max(0.,relIso-0.1);
+        passId = passId_noiso && relIso<0.1;
+        passFO = passFO_noiso && relIso<0.5;
+        coneptcorr = std::max(0.,relIso-0.1);
       }
 
       if (debug) cout << Form("check FO miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f",miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns()) << endl;
@@ -1111,36 +1111,36 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //everything else is RECO (p4, id, passes_id, FO, etc.)
 
       if( noMCMatch || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if lep is nonprompt
-	{
+        {
 
-	  if( abs( id() ) == 11 ) //it's an el
-	    {
-	      if( passId )  //if el is tight
-		{
-		  Nt = Nt + weight;
-		  Nt_e = Nt_e + weight;
-		}
-	      if( passFO )
-		{
-		  Nl = Nl + weight;     //l now means loose, as opposed to loose-not-tight
-		  Nl_e = Nl_e + weight;
-		}
-	    }
+          if( abs( id() ) == 11 ) //it's an el
+            {
+              if( passId )  //if el is tight
+                {
+                  Nt = Nt + weight;
+                  Nt_e = Nt_e + weight;
+                }
+              if( passFO )
+                {
+                  Nl = Nl + weight;     //l now means loose, as opposed to loose-not-tight
+                  Nl_e = Nl_e + weight;
+                }
+            }
 
-	  if( abs( id() ) == 13 ) //it's a mu
-	    {
-	      if( passId )  //if mu is tight
-		{
-		  Nt = Nt + weight;
-		  Nt_mu = Nt_mu + weight;
-		}
-	      if( passFO )
-		{
-		  Nl = Nl + weight;     //l now means loose, as opposed to loose-not-tight
-		  Nl_mu = Nl_mu + weight;
-		}
-	    }
-	}
+          if( abs( id() ) == 13 ) //it's a mu
+            {
+              if( passId )  //if mu is tight
+                {
+                  Nt = Nt + weight;
+                  Nt_mu = Nt_mu + weight;
+                }
+              if( passFO )
+                {
+                  Nl = Nl + weight;     //l now means loose, as opposed to loose-not-tight
+                  Nl_mu = Nl_mu + weight;
+                }
+            }
+        }
 
       //------------------------------------------------------------------------------------------
       //---------------------------------Find e = f(Pt,eta)---------------------------------------
@@ -1155,124 +1155,124 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 
 
       if( noMCMatch || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if el is nonprompt (GEN info)
-	{
+        {
 
-	  if (passFO) {
-	    histo_ht->Fill( std::min(ht,float(1000.)) );
-	    histo_met->Fill( std::min(evt_met,float(1000.)) );
-	    histo_mt->Fill( std::min(evt_mt,float(1000.)) );
+          if (passFO) {
+            histo_ht->Fill( std::min(ht,float(1000.)) );
+            histo_met->Fill( std::min(evt_met,float(1000.)) );
+            histo_mt->Fill( std::min(evt_mt,float(1000.)) );
 
-	    if( abs( id() ) == 11 ) pTrelvsIso_histo_el->Fill( std::min(RelIso03EA(),float(0.99)), std::min(ptrel,float(29.9)) );
-	    if( abs( id() ) == 13 ) pTrelvsIso_histo_mu->Fill( std::min(RelIso03EA(),float(0.99)), std::min(ptrel,float(29.9)) );
-	    if( abs( id() ) == 11 ) pTrel_histo_el->Fill( std::min(ptrel,float(29.9)) );
-	    if( abs( id() ) == 13 ) pTrel_histo_mu->Fill( std::min(ptrel,float(29.9)) );
-	  }
+            if( abs( id() ) == 11 ) pTrelvsIso_histo_el->Fill( std::min(RelIso03EA(),float(0.99)), std::min(ptrel,float(29.9)) );
+            if( abs( id() ) == 13 ) pTrelvsIso_histo_mu->Fill( std::min(RelIso03EA(),float(0.99)), std::min(ptrel,float(29.9)) );
+            if( abs( id() ) == 11 ) pTrel_histo_el->Fill( std::min(ptrel,float(29.9)) );
+            if( abs( id() ) == 13 ) pTrel_histo_mu->Fill( std::min(ptrel,float(29.9)) );
+          }
 
-	  if( abs( id() ) == 11 ) // it's an el
-	    {
-	      if( passId )  //if el is tight
-		{
-		  //uncorrected and cone corrected FR
-		  Nt_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //
-
-          // NJA
-		  Nt_nvtx_histo_e->Fill(nvtx(), weight);   //
-
-		  //jet corrected FR
-		  Nt_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-		  if (p4().pt()>25.) Nt_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-		  else Nt_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-		}
-
-	      if( passFO )  //if el is FO
-		{
-		  //not corrected FR
-		  Nl_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
-		  //cone corrected FR
-		  if( passId ) Nl_cone_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
-		  else Nl_cone_histo_e->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),ht,false), weight);
+          if( abs( id() ) == 11 ) // it's an el
+            {
+              if( passId )  //if el is tight
+                {
+                  //uncorrected and cone corrected FR
+                  Nt_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //
 
           // NJA
-		  Nl_cone_nvtx_histo_e->Fill(nvtx(), weight);
+                  Nt_nvtx_histo_e->Fill(nvtx(), weight);   //
 
-		  //jet corrected FR
-		  Nl_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-		  if (p4().pt()>25.) Nl_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-		  else Nl_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  //jet corrected FR
+                  Nt_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  if (p4().pt()>25.) Nt_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  else Nt_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                }
 
-		  if (isSyncFile) {
-		    cout << Form("Electron FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f isNum=%1i met=%5.2f mt=%5.2f event %i",
-				 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns(),passId,evt_met,evt_mt,(int)evt_event()) << endl;
-		  }
-
-		  njets40_histo->Fill(njets40, weight);
-
-		  if (noMCMatch==0 && doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
-		    {
-		      if(motherID()==-1){
-			NBs_BR_histo_e ->Fill(nbtags, weight);
-			Bs_e = Bs_e + weight;
-		      }
-		      else if(motherID()==-2 || motherID()==0){
-			NnotBs_BR_histo_e ->Fill(nbtags, weight);
-			notBs_e = notBs_e + weight;
-		      }
-		    }
-		}
-	    }
-	  if( abs( id() ) == 13 ) // it's a mu
-	    {
-	      if( passId )  //if mu is tight
-		{
-		  //uncorrected and cone corrected FR
-		  Nt_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //
+              if( passFO )  //if el is FO
+                {
+                  //not corrected FR
+                  Nl_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
+                  //cone corrected FR
+                  if( passId ) Nl_cone_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
+                  else Nl_cone_histo_e->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),ht,false), weight);
 
           // NJA
-		  Nt_nvtx_histo_mu->Fill(nvtx(), weight);   //
+                  Nl_cone_nvtx_histo_e->Fill(nvtx(), weight);
 
-		  //jet corrected FR
-		  Nt_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-		  if (p4().pt()>25.) Nt_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-		  else Nt_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-		}
+                  //jet corrected FR
+                  Nl_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  if (p4().pt()>25.) Nl_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  else Nl_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 
-	      if( passFO )  //if mu is FO
-		{
-		  //not corrected FR
-		  Nl_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
-		  //cone corrected FR
-		  if( passId ) Nl_cone_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
-		  else Nl_cone_histo_mu->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),ht,false), weight);
+                  if (isSyncFile) {
+                    cout << Form("Electron FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f isNum=%1i met=%5.2f mt=%5.2f event %i",
+                                 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns(),passId,evt_met,evt_mt,(int)evt_event()) << endl;
+                  }
+
+                  njets40_histo->Fill(njets40, weight);
+
+                  if (noMCMatch==0 && doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
+                    {
+                      if(motherID()==-1){
+                        NBs_BR_histo_e ->Fill(nbtags, weight);
+                        Bs_e = Bs_e + weight;
+                      }
+                      else if(motherID()==-2 || motherID()==0){
+                        NnotBs_BR_histo_e ->Fill(nbtags, weight);
+                        notBs_e = notBs_e + weight;
+                      }
+                    }
+                }
+            }
+          if( abs( id() ) == 13 ) // it's a mu
+            {
+              if( passId )  //if mu is tight
+                {
+                  //uncorrected and cone corrected FR
+                  Nt_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //
 
           // NJA
-		  Nl_cone_nvtx_histo_mu->Fill(nvtx(), weight);
+                  Nt_nvtx_histo_mu->Fill(nvtx(), weight);   //
 
-		  //jet corrected FR
-		  Nl_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-		  if (p4().pt()>25.) Nl_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-		  else Nl_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  //jet corrected FR
+                  Nt_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  if (p4().pt()>25.) Nt_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  else Nt_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                }
 
-		  if (isSyncFile) {
+              if( passFO )  //if mu is FO
+                {
+                  //not corrected FR
+                  Nl_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
+                  //cone corrected FR
+                  if( passId ) Nl_cone_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
+                  else Nl_cone_histo_mu->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),ht,false), weight);
 
-		    cout << Form("%1llu %7.3f %7.3f %6.3f %6.3f %6.3f %6.3f %1i %6.3f %6.3f %6.0f",(unsigned long long)evt_event() , p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,evt_met,evt_mt,weight) << endl;
-		  }
+          // NJA
+                  Nl_cone_nvtx_histo_mu->Fill(nvtx(), weight);
 
-		  njets40_histo->Fill(njets40, weight);
+                  //jet corrected FR
+                  Nl_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  if (p4().pt()>25.) Nl_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  else Nl_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
 
-		  if (noMCMatch==0 && doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
-		    {
-		      if(motherID()==-1){
-			NBs_BR_histo_mu ->Fill(nbtags, weight);
-			Bs_mu = Bs_mu + weight;
-		      }
-		      else if(motherID()==-2 || motherID()==0){
-			NnotBs_BR_histo_mu ->Fill(nbtags, weight);
-			notBs_mu = notBs_mu + weight;
-		      }
-		    }
-		}
-	    }
-	}
+                  if (isSyncFile) {
+
+                    cout << Form("%1llu %7.3f %7.3f %6.3f %6.3f %6.3f %6.3f %1i %6.3f %6.3f %6.0f",(unsigned long long)evt_event() , p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,evt_met,evt_mt,weight) << endl;
+                  }
+
+                  njets40_histo->Fill(njets40, weight);
+
+                  if (noMCMatch==0 && doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
+                    {
+                      if(motherID()==-1){
+                        NBs_BR_histo_mu ->Fill(nbtags, weight);
+                        Bs_mu = Bs_mu + weight;
+                      }
+                      else if(motherID()==-2 || motherID()==0){
+                        NnotBs_BR_histo_mu ->Fill(nbtags, weight);
+                        notBs_mu = notBs_mu + weight;
+                      }
+                    }
+                }
+            }
+        }
 
       //---------------------------------------------------------------------------------------------------------------------------
 
@@ -1489,8 +1489,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   cout << endl;
   cout << nEventsTotal << " Events Processed" << endl;
   cout << "------------------------------" << endl;
-  cout << "CPU  Time:	" << Form( "%.01f", bmark->GetCpuTime("benchmark")  ) << endl;
-  cout << "Real Time:	" << Form( "%.01f", bmark->GetRealTime("benchmark") ) << endl;
+  cout << "CPU  Time:   " << Form( "%.01f", bmark->GetCpuTime("benchmark")  ) << endl;
+  cout << "Real Time:   " << Form( "%.01f", bmark->GetRealTime("benchmark") ) << endl;
   cout << endl;
   delete bmark;
   return 0;
