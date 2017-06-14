@@ -1,101 +1,13 @@
 #include "ScanChain.h"
 
-float computePtRel(LorentzVector lepp4, LorentzVector jetp4, bool subtractLep) {
-  if (jetp4.pt()==0) return 0.;
-  if (subtractLep) jetp4-=lepp4;
-  float dot = lepp4.Vect().Dot( jetp4.Vect() );
-  float ptrel = lepp4.P2() - dot*dot/jetp4.P2();
-  ptrel = ptrel>0 ? sqrt(ptrel) : 0.0;
-  return ptrel;
-}
-
-float getPt(float pt, bool extrPtRel = false) {
-  if(!extrPtRel && pt >= 70.) return 69.;
-  if(extrPtRel && pt >= 150.) return 149.;
-  if(pt < 10.)  return 11.;   //use this if lower FR histo bound is 10.
-  return pt;
-}
-
-float getEta(float eta, float ht, bool extrPtRel = false) {
-  if (extrPtRel) {
-    if(ht >= 800) return 799;
-    return ht;
-  }
-  if(fabs(eta) >= 2.4) return 2.3;
-  return fabs(eta);
-}
-
-double calculateMt(const LorentzVector p4, double met, double met_phi){
-  float phi1 = p4.Phi();
-  float phi2 = met_phi;
-  float Et1  = p4.Et();
-  float Et2  = met;
-  return sqrt(2*Et1*Et2*(1.0 - cos(phi1-phi2)));
-}
-
 int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = true, int nEvents = -1) {//, string skimFilePrefix = "test") {
 
   // Benchmark
   TBenchmark *bmark = new TBenchmark();
   bmark->Start("benchmark");
 
-  //default is MultiIso no SIP
-
-  bool useRelIso = false;
-  if (option.Contains("useRelIso")) useRelIso = true;
-
-  bool useLooseEMVA = false;
-  if (option.Contains("useLooseEMVA")) useLooseEMVA = true;
-
-  bool usePtRatioCor = false;
-  if (option.Contains("usePtRatioCor")) usePtRatioCor = true;
-
-  bool doBonly = false;
-  if (option.Contains("doBonly")) doBonly = true;
-
-  bool doConly = false;
-  if (option.Contains("doConly")) doConly = true;
-
-  bool doLightonly = false;
-  if (option.Contains("doLightonly")) doLightonly = true;
-
-  bool useIsoTrigs = false;
-  if (option.Contains("IsoTrigs")) useIsoTrigs = true;
-
-  float anyPt = false;
-
-  bool doJEC = false;
-
-  bool debug = false;
-
-  bool applyDataVtxWeight = false;
-
-  int nptbins = 5;
-  int netabins = 3;
-  float ptbins[6] = {10., 15., 25., 35., 50., 70.};
-  float etabins_mu[4] = {0., 1.2, 2.1, 2.4};
-  float etabins_el[4] = {0., 0.8, 1.479, 2.5};
-
-  HLTEfficiency HLTEff("../../hlt/HLT_Efficiencies_7p65fb_2016.root");
-
-  // int nptbins = 7;
-  // int netabins = 3;
-  // float ptbins[8] = {10., 12., 15., 20., 25., 35., 50., 70.};
-  // float etabins_mu[4] = {0., 1.2, 2.1, 2.4};
-  // float etabins_el[4] = {0., 0.8, 1.479, 2.5};
-
-  // handmade "prescales" from normalizeToZPeak.C
-
-  // // matthieu's numbers
-  // float lumi = 804;
-  // float e8i = lumi/0.392;
-  // float e17i = lumi/9.672;
-  // float e8 = lumi/0.392;
-  // float e17 = lumi/9.624;
-  // float m8i = lumi/3.250;
-  // float m17i = lumi/30.578;
-  // float m8 = lumi/1.597;
-  // float m17 = lumi/65.43;
+  // Set option
+  setGlobalConfig(option);
 
   // 800/pb SFs from normalizeZpeak
   float e8i = 1767.61;
@@ -106,78 +18,6 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   float m17i = 28.3003;
   float m8 = 496.07;
   float m17 = 13.1493;
-
-  // // to go from 800/pb SFs to 4/fb SFs
-  // e8i *= 0.7625*3.99/0.8042;
-  // e17i *= 0.9663*3.99/0.8042;
-  // e8 *= 0.7625*3.99/0.8042;
-  // e17 *= 0.929*3.99/0.8042;
-  // m8i *= 0.758*3.99/0.8042;
-  // m17i *= 0.369*3.99/0.8042;
-  // m8 *= 0.7528*3.99/0.8042;
-  // m17 *= 0.4533*3.99/0.8042;
-
-  // // for 6.26/fb
-  // e8i = 17644.6*1.05035;
-  // e17i = 1161.41*1.05035;
-  // e8 = 17840.6*1.05035;
-  // e17 = 1166.48*1.05035;
-  // m8i = 3443.22*1.05;
-  // m17i = 102.902*1.05;
-  // m8 = 6829.05*1.05;
-  // m17 = 85.8415*1.05;
-
-  // // MATTHIEU's numbers
-  // // for 6.26/fb
-  // e8i = 3912.5;
-  // e17i = 241.16;
-  // e8 = 3912.5;
-  // e17 = 241.62;
-  // m8i = 1339.7;
-  // m17i = 48.035;
-  // m8 = 2628.3;
-  // m17 = 31.912;
-
-  // // 12.9 fb^-1
-  // e8i = 4437.33;
-  // e17i = 354.598;
-  // e8 = 4434.51;
-  // e17 = 355.14;
-  // m8i = 1952.23;
-  // m17i = 92.9757;
-  // m8 = 3956.74;
-  // m17 = 65.5245;
-
-  // // go from 12.9 fb^-1 to (12.9-6.26) fb^-1 for Lesya's suggestion to check second HALF
-  // e8i *= 1.1784;
-  // e17i *= 1.46174;
-  // e8 *= 1.17915;
-  // e17 *= 1.45954;
-  // m8i *= 2.16748;
-  // m17i *= 2.96596;
-  // m8 *= 2.03015;
-  // m17 *= 4.20456;
-
-  // // for synch - don't weight mu17, el17
-  // float e8i = 0;
-  // float e17i = 1;
-  // float e8 = 0;
-  // float e17 = 1;
-  // float m8i = 0;
-  // float m17i = 1;
-  // float m8 = 0;
-  // float m17 = 1;
-  // anyPt = true;
-
-  // // For 22.0/fb JSON
-  // e8i = 5251.71;
-  // e17i = 483.027;
-  // e8 = 5249.37;
-  // e17 = 476.482;
-  // m8i = 2820.13;
-  // m17i = 133.217;
-  // m8 = 5707.51;
-  // m17 = 98.7317;
 
   // For 36.8/fb json with reRECO
   e8i = 4208.14;
@@ -578,7 +418,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
     // Loop over Events in current file   //ACTUALLY A LEPTON "EVENT" LOOP
     if( nEventsTotal >= nEventsChain ) continue;
     unsigned int nEventsTree = tree->GetEntriesFast();
-    for( unsigned int event = 0; event < nEventsTree; ++event) {
+//	    for( unsigned int event = 0; event < nEventsTree; ++event) {
+    for( unsigned int event = 0; event < 1000; ++event) {
 
       // Get Event Content
       if( nEventsTotal >= nEventsChain ) continue;
@@ -1461,3 +1302,97 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   delete bmark;
   return 0;
 }
+
+//_________________________________________________________________________________________________
+float computePtRel(LorentzVector lepp4, LorentzVector jetp4, bool subtractLep)
+{
+  /// Pt rel calculation.
+  /// Pt rel is defined in SS analysis AN note SUS-16-034.
+  /// The lepp4 is lepton's p4.
+  /// The jetp4 is the closest jet's p4.
+  /// The subtracLep is to subtract the lepton component from the jet or not.
+  /// (Almost always we do subtract them.)
+  if (jetp4.pt() == 0) return 0.;
+  if (subtractLep) jetp4 -= lepp4;
+  float dot = lepp4.Vect().Dot(jetp4.Vect());
+  float ptrel = lepp4.P2() - dot * dot / jetp4.P2();
+  ptrel = ptrel > 0 ? sqrt(ptrel) : 0.0;
+  return ptrel;
+}
+
+//_________________________________________________________________________________________________
+float getPt(float pt, bool extrPtRel)
+{
+  /// Converting Pt values to fit the histogramming binning.
+  /// The second option extrPtRel is almost never used.
+  if (!extrPtRel && pt >= 70.)
+    return 69.;
+  if (extrPtRel && pt >= 150.)
+    return 149.;
+  /// Use this if lower FR histo bound is 10.
+  if (pt < 10.)  return 11.;
+  return pt;
+}
+
+float getPt(float pt, bool extrPtRel = false) {
+  if (!extrPtRel && pt >= 70.)
+    return 69.;
+  if (extrPtRel && pt >= 150.)
+    return 149.;
+  if (pt < 10.)  return 11.;
+  return pt;
+}
+
+//_________________________________________________________________________________________________
+float getEta(float eta, float ht, bool extrPtRel)
+{
+  /// Converting Eta values to fit the histogramming binning.
+  /// The second option extrPtRel is almost never used.
+  if (extrPtRel)
+  {
+    if (ht >= 800) return 799;
+    return ht;
+  }
+  if (fabs(eta) >= 2.4)
+    return 2.3;
+  return fabs(eta);
+}
+
+//_________________________________________________________________________________________________
+double calculateMt(const LorentzVector p4, double met, double met_phi)
+{
+  /// Computing MT variable given a four vector + met and metphi value.
+  /// Pretty standard stuff. (https://en.wikipedia.org/wiki/Transverse_mass)
+  float phi1 = p4.Phi();
+  float phi2 = met_phi;
+  float Et1  = p4.Et();
+  float Et2  = met;
+  return sqrt(2*Et1*Et2*(1.0 - cos(phi1-phi2)));
+}
+
+//_________________________________________________________________________________________________
+void setGlobalConfig(TString option)
+{
+  /// The "option" gets fed from the ScanChain main function call.
+  /// It parses the string and sets the configuration boolean variables.
+
+  //default is MultiIso no SIP (Idk. what this means.)
+  if (option.Contains("useRelIso"     )) useRelIso = true;
+  if (option.Contains("useLooseEMVA"  )) useLooseEMVA = true;
+  if (option.Contains("usePtRatioCor" )) usePtRatioCor = true;
+  if (option.Contains("doBonly"       )) doBonly = true;
+  if (option.Contains("doConly"       )) doConly = true;
+  if (option.Contains("doLightonly"   )) doLightonly = true;
+  if (option.Contains("IsoTrigs"      )) useIsoTrigs = true;
+  anyPt = false;
+  doJEC = false;
+  debug = false;
+  applyDataVtxWeight = false;
+  nptbins = 5;
+  netabins = 3;
+  ptbins[6] = {10., 15., 25., 35., 50., 70.};
+  etabins_mu[4] = {0., 1.2, 2.1, 2.4};
+  etabins_el[4] = {0., 0.8, 1.479, 2.5};
+
+}
+
