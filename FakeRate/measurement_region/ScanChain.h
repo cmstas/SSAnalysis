@@ -157,7 +157,7 @@ TH1D *Nl_cone_nvtx_histo_mu  = 0;
 
 float computePtRel(LorentzVector lepp4, LorentzVector jetp4, bool subtractLep=true);
 float getPt(float pt, bool extrPtRel=false);
-float getEta(float eta, float ht, bool extrPtRel=false);
+float getEta(float eta, float HT, bool extrPtRel=false);
 double calculateMt(const LorentzVector p4, double met, double met_phi);
 LorentzVector getJetP4(int i);
 vector<LorentzVector> getJetP4s();
@@ -407,18 +407,45 @@ float weight = 0;
 //
 //-------------------------------------------------------------------------------------------------
 
+/// important variables for the fake rate analysis
+/// Jet releated variables
+float HT            = 0.;
+int   njets40       = 0;
+int   nbtags        = 0;
+bool  pass_jetptcut = false;
+/// Lepton isolation variables
+float ptrel      = 0;
+float closejetpt = 0;
+float relIso     = 0;
+/// Tight ID = ID,
+/// Fake-able object ID = FO
+/// non-isolated Tight ID = ID,
+/// non-isolated Fake-able object ID = FO
+bool passId = false;
+bool passFO =  false;
+bool passId_noiso = false;
+bool passFO_noiso = false;
+/// MET and MT related variables
+float evt_met    = -999;
+float evt_metPhi = -999;
+float evt_mt     = -999;
+
+
 bool passIsolatedFOcut();
-bool passJetPtCutOrHTCut(bool);
+bool passJetPtCutOrHTCut();
 bool passPtEtaSIPNFOLep();
 bool passTriggerSelection();
-bool passMETandMTCut(float, float, float);
+bool passMETandMTCut();
+bool passLooseObjectID();
 
 void computeJetRelatedVariables(float&, int&, int&, bool&);
 void computeLeptonIDFlags(bool&, bool&, bool&, bool&);
 void computeLeptonIsolationVariables(float&, float&, float&);
-void computeConePtCorrVariable(float&, float, float);
+void computeConePtCorrVariable(float&);
+void computeMETandMT(float&, float&, float&);
 
-void fillPassTightIDLeptonMTandMETplots(bool, float, float);
-void fillPassFOLeptonPtPlots(bool);
+void fillPassTightIDLeptonMTandMETplots();
+void fillPassFOLeptonPtPlots();
 
-void recomputePassFOByCorrectingPtRatio(bool&, float, float);
+void recomputePassFOByCorrectingPtRatio(bool&);
+void recomputeLeptonIDFlagsForRelIso(bool&, bool&, float&);

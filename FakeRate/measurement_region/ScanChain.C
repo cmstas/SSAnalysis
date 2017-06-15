@@ -1,5 +1,17 @@
 #include "ScanChain.h"
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Few things to note
+///  + Global variables
+///  + Pass by reference
+///
+///
+///
+///
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 int ScanChain(
     TChain* chain_,
     TString outfile_,
@@ -61,24 +73,24 @@ int ScanChain(
       /// 2. Njets with pT > 40.
       /// 3. N btags with pT > 40.
       /// 4. boolean flag for passing a jet pt cut or not
-      float ht            = 0.;
-      int   njets40       = 0;
-      int   nbtags        = 0;
-      bool  pass_jetptcut = false;
-      computeJetRelatedVariables(ht, njets40, nbtags, pass_jetptcut);
+      HT            = 0.;
+      njets40       = 0;
+      nbtags        = 0;
+      pass_jetptcut = false;
+      computeJetRelatedVariables(/*outputs*/HT, njets40, nbtags, pass_jetptcut);
 
       /// ~-~-~-~-~-~-~-~-~-~-~-~-~-~
       ///  Lepton isolation variable
       /// ~-~-~-~-~-~-~-~-~-~-~-~-~-~
 
       /// The following step computes the lepton isolation variables
-      float ptrel      = 0;
-      float closejetpt = 0;
-      float relIso     = 0;
-      computeLeptonIsolationVariables(ptrel, closejetpt, relIso);
+      ptrel      = 0;
+      closejetpt = 0;
+      relIso     = 0;
+      computeLeptonIsolationVariables(/*outputs*/ptrel, closejetpt, relIso);
 
       // need to pass either jet pt cut > 40 or HT > 40.
-      if (!passJetPtCutOrHTCut(pass_jetptcut)) continue; //-----------------------------------------> possible exit of the loop
+      if (!passJetPtCutOrHTCut()) continue; //-----------------------------------------> possible exit of the loop
 
       /// ~-~-~-~-~-~-~-~-~-~
       ///  Trigger selection
@@ -104,11 +116,11 @@ int ScanChain(
       /// Fake-able object ID = FO
       /// non-isolated Tight ID = ID,
       /// non-isolated Fake-able object ID = FO
-      bool passId = false;
-      bool passFO =  false;
-      bool passId_noiso = false;
-      bool passFO_noiso = false;
-      computeLeptonIDFlags(passId, passFO, passId_noiso, passFO_noiso);
+      passId = false;
+      passFO =  false;
+      passId_noiso = false;
+      passFO_noiso = false;
+      computeLeptonIDFlags(/*outputs*/passId, passFO, passId_noiso, passFO_noiso);
 
       if (!passIsolatedFOcut()) continue; //--------------------------------------------------------> possible exit of the loop
 
@@ -116,9 +128,10 @@ int ScanChain(
       ///  MET/MT variables
       /// ~-~-~-~-~-~-~-~-~-
 
-      float evt_met = evt_corrMET();
-      float evt_metPhi = evt_corrMETPhi();
-      float evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
+      evt_met    = -999;
+      evt_metPhi = -999;
+      evt_mt     = -999;
+      computeMETandMT(evt_met, evt_metPhi, evt_mt);
 
       /// ~-~-~-~-~-~-~-~-~-~-
       ///  Filling Histograms
@@ -126,32 +139,26 @@ int ScanChain(
 
       /// Fill MT and/or MET plot before the MET and/or MT cut is applied.
       /// For example, MT control region plot will be plotted in the following.
-      fillPassTightIDLeptonMTandMETplots(passId, evt_met, evt_mt);
+      fillPassTightIDLeptonMTandMETplots();
 
       /// This function must come after the fillPassTightIDLeptonMTandMETplots()
       /// Otherwise the histogram in that function will be messed up!
-      if (!passMETandMTCut(evt_mt, evt_met, evt_mt)) continue; //----------------------------------> possible ext of the loop
+      if (!passMETandMTCut()) continue; //----------------------------------> possible exit of the loop
 
       /// Fill the denominator object pt plots
-      fillPassFOLeptonPtPlots(passFO);
+      fillPassFOLeptonPtPlots();
 
       /// Recompute the passFO if PtRatioCorrection is to be used
-      if (usePtRatioCor) recomputePassFOByCorrectingPtRatio(passFO, closejetpt, ptrel);
+      if (usePtRatioCor) recomputePassFOByCorrectingPtRatio(/*output*/passFO);
 
       /// Compute the cone pt corr variable.
       /// This variable has less dependencies to the pt of the parent jet parton that fakes the lepton.
       float coneptcorr = 0.;
-      computeConePtCorrVariable(coneptcorr, closejetpt, ptrel);
+      computeConePtCorrVariable(/*output*/coneptcorr);
 
-      if (useRelIso) {
-        passId = passId_noiso && relIso<0.1;
-        passFO = passFO_noiso && relIso<0.5;
-        coneptcorr = std::max(0.,relIso-0.1);
-      }
+      if (useRelIso) recomputeLeptonIDFlagsForRelIso(/*outputs*/ passId, passFO, coneptcorr);
 
-      if (debug) cout << Form("check FO miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f",miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns()) << endl;
-      if (!passFO) continue;
-      if (debug) cout << "passed FO" << endl;
+      if (!passLooseObjectID()) continue; //--------------------------------------------------------> possible exit of the loop
 
       //------------------------------------------------------------------------------------------
       //---------------------------------Find e = f(const)---------------------------------------
@@ -212,7 +219,7 @@ int ScanChain(
         {
 
           if (passFO) {
-            histo_ht->Fill( std::min(ht,float(1000.)) );
+            histo_ht->Fill( std::min(HT,float(1000.)) );
             histo_met->Fill( std::min(evt_met,float(1000.)) );
             histo_mt->Fill( std::min(evt_mt,float(1000.)) );
 
@@ -227,32 +234,32 @@ int ScanChain(
               if( passId )  //if el is tight
                 {
                   //uncorrected and cone corrected FR
-                  Nt_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //
+                  Nt_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //
 
           // NJA
                   Nt_nvtx_histo_e->Fill(nvtx(), weight);   //
 
                   //jet corrected FR
-                  Nt_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-                  if (p4().pt()>25.) Nt_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-                  else Nt_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  Nt_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+                  if (p4().pt()>25.) Nt_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+                  else Nt_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
                 }
 
               if( passFO )  //if el is FO
                 {
                   //not corrected FR
-                  Nl_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
+                  Nl_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
                   //cone corrected FR
-                  if( passId ) Nl_cone_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
-                  else Nl_cone_histo_e->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),ht,false), weight);
+                  if( passId ) Nl_cone_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
+                  else Nl_cone_histo_e->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),HT,false), weight);
 
           // NJA
                   Nl_cone_nvtx_histo_e->Fill(nvtx(), weight);
 
                   //jet corrected FR
-                  Nl_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-                  if (p4().pt()>25.) Nl_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-                  else Nl_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  Nl_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+                  if (p4().pt()>25.) Nl_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+                  else Nl_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
 
                   if (isSyncFile) {
                     cout << Form("Electron FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f isNum=%1i met=%5.2f mt=%5.2f event %i",
@@ -279,32 +286,32 @@ int ScanChain(
               if( passId )  //if mu is tight
                 {
                   //uncorrected and cone corrected FR
-                  Nt_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //
+                  Nt_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //
 
           // NJA
                   Nt_nvtx_histo_mu->Fill(nvtx(), weight);   //
 
                   //jet corrected FR
-                  Nt_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-                  if (p4().pt()>25.) Nt_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-                  else Nt_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  Nt_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+                  if (p4().pt()>25.) Nt_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+                  else Nt_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
                 }
 
               if( passFO )  //if mu is FO
                 {
                   //not corrected FR
-                  Nl_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
+                  Nl_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
                   //cone corrected FR
-                  if( passId ) Nl_cone_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //  <-- loose (as opposed to l!t)
-                  else Nl_cone_histo_mu->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),ht,false), weight);
+                  if( passId ) Nl_cone_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
+                  else Nl_cone_histo_mu->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),HT,false), weight);
 
           // NJA
                   Nl_cone_nvtx_histo_mu->Fill(nvtx(), weight);
 
                   //jet corrected FR
-                  Nl_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-                  if (p4().pt()>25.) Nl_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
-                  else Nl_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),ht,false), weight);
+                  Nl_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+                  if (p4().pt()>25.) Nl_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+                  else Nl_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
 
                   if (isSyncFile) {
 
@@ -707,14 +714,14 @@ float getPt(float pt, bool extrPtRel)
 }
 
 //_________________________________________________________________________________________________
-float getEta(float eta, float ht, bool extrPtRel)
+float getEta(float eta, float HT, bool extrPtRel)
 {
   /// Converting Eta values to fit the histogramming binning.
   /// The second option extrPtRel is almost never used.
   if (extrPtRel)
   {
-    if (ht >= 800) return 799;
-    return ht;
+    if (HT >= 800) return 799;
+    return HT;
   }
   if (fabs(eta) >= 2.4)
     return 2.3;
@@ -1039,7 +1046,7 @@ void setEventInfoVariable()
 //_________________________________________________________________________________________________
 void correctMCTriggerEfficiency()
 {
-//	  weight *= HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::lep2_id(), ss::ht(), 0);
+//	  weight *= HLTEff.getEfficiency(ss::lep1_p4().pt(),ss::lep1_p4().eta(), ss::lep1_id(), ss::lep2_p4().pt(), ss::lep2_p4().eta(), ss::lep2_id(), ss::HT(), 0);
 }
 
 //_________________________________________________________________________________________________
@@ -1177,7 +1184,7 @@ bool isBadDataEvents()
 }
 
 //_________________________________________________________________________________________________
-void computeJetRelatedVariables(float& ht, int& njets40, int& nbtags, bool& pass_jetptcut)
+void computeJetRelatedVariables(float& HT, int& njets40, int& nbtags, bool& pass_jetptcut)
 {
   /// This function wants to compute 4 things.
   /// 1. HT of the event.
@@ -1203,7 +1210,7 @@ void computeJetRelatedVariables(float& ht, int& njets40, int& nbtags, bool& pass
     /// Also count njets pt > 40.
     if (jets_recorr[i].pt() > 40. && fabs(jets_recorr[i].eta()) < 2.4)
     {
-      ht += jets_recorr[i].pt();
+      HT += jets_recorr[i].pt();
       njets40++;
       if (debug)
       {
@@ -1255,7 +1262,7 @@ void computeLeptonIsolationVariables(float& ptrel, float& closejetpt, float& rel
 }
 
 //_________________________________________________________________________________________________
-bool passJetPtCutOrHTCut(bool pass_jetptcut)
+bool passJetPtCutOrHTCut()
 {
   /// pass either at least one jet with pt > 40 or HT > 40.
   if( !pass_jetptcut || ht_SS()<40 )
@@ -1475,7 +1482,7 @@ bool passIsolatedFOcut()
 }
 
 //_________________________________________________________________________________________________
-void fillPassTightIDLeptonMTandMETplots(bool passId, float evt_mt, float evt_met)
+void fillPassTightIDLeptonMTandMETplots()
 {
   /// This function fills the histograms for MT control region, (I think?)
   /// This function must be called before exiting the main loop with MET/MT cut.
@@ -1516,7 +1523,7 @@ void fillPassTightIDLeptonMTandMETplots(bool passId, float evt_mt, float evt_met
 }
 
 //_________________________________________________________________________________________________
-bool passMETandMTCut(float evt_mt, float evt_met, float evt_metPhi)
+bool passMETandMTCut()
 {
   /// This function checks whether it passes the MET and MT cut
   if (debug) cout << "check met/mt " << evt_met << " / " << evt_mt << " metPhi=" << evt_metPhi << endl;
@@ -1528,7 +1535,7 @@ bool passMETandMTCut(float evt_mt, float evt_met, float evt_metPhi)
 }
 
 //_________________________________________________________________________________________________
-void fillPassFOLeptonPtPlots(bool passFO)
+void fillPassFOLeptonPtPlots()
 {
   if (isData && passFO)
   {
@@ -1553,7 +1560,7 @@ void fillPassFOLeptonPtPlots(bool passFO)
 }
 
 //_________________________________________________________________________________________________
-void recomputePassFOByCorrectingPtRatio(bool& passFO, float closejetpt, float ptrel)
+void recomputePassFOByCorrectingPtRatio(bool& passFO)
 {
   /// This function recomputes the passFO flag via using the corrected pt ratio variable.
   /// The details of the definition and the "Why" may be found in AN's of the SS analysis.
@@ -1570,7 +1577,7 @@ void recomputePassFOByCorrectingPtRatio(bool& passFO, float closejetpt, float pt
 }
 
 //_________________________________________________________________________________________________
-void computeConePtCorrVariable(float& coneptcorr, float closejetpt, float ptrel)
+void computeConePtCorrVariable(float& coneptcorr)
 {
   /// This function computes the conePtCorr variable.
   /// The details of the definition and the "Why" may be found in AN's of the SS analysis.
@@ -1598,4 +1605,33 @@ void computeConePtCorrVariable(float& coneptcorr, float closejetpt, float ptrel)
       coneptcorr = max(double(0.), (closejetpt * 0.76 / p4().pt() - 1.));
     }
   }
+}
+
+//_________________________________________________________________________________________________
+void recomputeLeptonIDFlagsForRelIso(
+    bool& passId,
+    bool& passFO,
+    float& coneptcorr)
+{
+  /// This function recomputes the passId, and passFO flag with some differen reliso variable.
+  passId = passId_noiso && relIso<0.1;
+  passFO = passFO_noiso && relIso<0.5;
+  coneptcorr = std::max(0.,relIso-0.1);
+}
+
+//_________________________________________________________________________________________________
+bool passLooseObjectID()
+{
+  if (debug) cout << Form("check FO miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f",miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns()) << endl;
+  if (!passFO) return false;
+  if (debug) cout << "passed FO" << endl;
+  return true;
+}
+
+//_________________________________________________________________________________________________
+void computeMETandMT(float& evt_met, float& evt_metPhi, float& evt_mt)
+{
+  evt_met = evt_corrMET();
+  evt_metPhi = evt_corrMETPhi();
+  evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
 }
