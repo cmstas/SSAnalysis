@@ -40,7 +40,7 @@ int ScanChain(
 
     // Loop over Events in current file   //ACTUALLY A LEPTON "EVENT" LOOP
     unsigned int nEventsTree = tree->GetEntriesFast();
-//	    for( unsigned int event = 0; event < nEventsTree; ++event) {
+//	    for( unsigned int event = 0; event < nEventsTree; ++event)
     for (unsigned int event = 0; event < 1000; ++event)
     {
 
@@ -90,7 +90,7 @@ int ScanChain(
       computeLeptonIsolationVariables(/*outputs*/ptrel, closejetpt, relIso);
 
       // need to pass either jet pt cut > 40 or HT > 40.
-      if (!passJetPtCutOrHTCut()) continue; //-----------------------------------------> possible exit of the loop
+      if (!passJetPtCutOrHTCut()) continue; //------------------------------------------------------> possible exit of the loop
 
       /// ~-~-~-~-~-~-~-~-~-~
       ///  Trigger selection
@@ -143,7 +143,7 @@ int ScanChain(
 
       /// This function must come after the fillPassTightIDLeptonMTandMETplots()
       /// Otherwise the histogram in that function will be messed up!
-      if (!passMETandMTCut()) continue; //----------------------------------> possible exit of the loop
+      if (!passMETandMTCut()) continue; //----------------------------------------------------------> possible exit of the loop
 
       /// Fill the denominator object pt plots
       fillPassFOLeptonPtPlots();
@@ -153,397 +153,39 @@ int ScanChain(
 
       /// Compute the cone pt corr variable.
       /// This variable has less dependencies to the pt of the parent jet parton that fakes the lepton.
-      float coneptcorr = 0.;
+      coneptcorr = 0.;
       computeConePtCorrVariable(/*output*/coneptcorr);
 
       if (useRelIso) recomputeLeptonIDFlagsForRelIso(/*outputs*/ passId, passFO, coneptcorr);
 
       if (!passLooseObjectID()) continue; //--------------------------------------------------------> possible exit of the loop
 
-      //------------------------------------------------------------------------------------------
-      //---------------------------------Find e = f(const)---------------------------------------
-      //------------------------------------------------------------------------------------------
+      /// Compute a flat fake rate overall all pt/eta range.
+      countVariablesForFlatFakeRate();
 
-      //Find ratio of nonprompt leps passing tight to nonprompt leps passing at least loose.  This is the fake rate
-      // Use lep_passes_id to see if num.  Use FO to see if Fakable Object (denom)
-      //Calculate e=Nt/(Nl) where l->loose  (as opposed to loose-not-tight).
-
-      //Using gen level info to see if prompt -> no prompt contamination in measurement region
-      //everything else is RECO (p4, id, passes_id, FO, etc.)
-
-      if( noMCMatch || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if lep is nonprompt
-        {
-
-          if( abs( id() ) == 11 ) //it's an el
-            {
-              if( passId )  //if el is tight
-                {
-                  Nt = Nt + weight;
-                  Nt_e = Nt_e + weight;
-                }
-              if( passFO )
-                {
-                  Nl = Nl + weight;     //l now means loose, as opposed to loose-not-tight
-                  Nl_e = Nl_e + weight;
-                }
-            }
-
-          if( abs( id() ) == 13 ) //it's a mu
-            {
-              if( passId )  //if mu is tight
-                {
-                  Nt = Nt + weight;
-                  Nt_mu = Nt_mu + weight;
-                }
-              if( passFO )
-                {
-                  Nl = Nl + weight;     //l now means loose, as opposed to loose-not-tight
-                  Nl_mu = Nl_mu + weight;
-                }
-            }
-        }
-
-      //------------------------------------------------------------------------------------------
-      //---------------------------------Find e = f(Pt,eta)---------------------------------------
-      //------------------------------------------------------------------------------------------
-
-      //Find ratio of nonprompt leps passing tight to nonprompt leps passing at least loose.  This is the fake rate
-      // Use lep_passes_id to see if num.  Use FO to see if Fakable Object (denom)
-      //Calculate e=Nt/(Nl) where l->loose  (as opposed to loose-not-tight).
-
-      //Using gen level info to see if prompt -> no prompt contamination in measurement region
-      //everything else is RECO (p4, id, passes_id, FO, etc.)
-
-
-      if( noMCMatch || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if el is nonprompt (GEN info)
-        {
-
-          if (passFO) {
-            histo_ht->Fill( std::min(HT,float(1000.)) );
-            histo_met->Fill( std::min(evt_met,float(1000.)) );
-            histo_mt->Fill( std::min(evt_mt,float(1000.)) );
-
-            if( abs( id() ) == 11 ) pTrelvsIso_histo_el->Fill( std::min(RelIso03EA(),float(0.99)), std::min(ptrel,float(29.9)) );
-            if( abs( id() ) == 13 ) pTrelvsIso_histo_mu->Fill( std::min(RelIso03EA(),float(0.99)), std::min(ptrel,float(29.9)) );
-            if( abs( id() ) == 11 ) pTrel_histo_el->Fill( std::min(ptrel,float(29.9)) );
-            if( abs( id() ) == 13 ) pTrel_histo_mu->Fill( std::min(ptrel,float(29.9)) );
-          }
-
-          if( abs( id() ) == 11 ) // it's an el
-            {
-              if( passId )  //if el is tight
-                {
-                  //uncorrected and cone corrected FR
-                  Nt_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //
-
-          // NJA
-                  Nt_nvtx_histo_e->Fill(nvtx(), weight);   //
-
-                  //jet corrected FR
-                  Nt_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-                  if (p4().pt()>25.) Nt_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-                  else Nt_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-                }
-
-              if( passFO )  //if el is FO
-                {
-                  //not corrected FR
-                  Nl_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
-                  //cone corrected FR
-                  if( passId ) Nl_cone_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
-                  else Nl_cone_histo_e->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),HT,false), weight);
-
-          // NJA
-                  Nl_cone_nvtx_histo_e->Fill(nvtx(), weight);
-
-                  //jet corrected FR
-                  Nl_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-                  if (p4().pt()>25.) Nl_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-                  else Nl_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-
-                  if (isSyncFile) {
-                    cout << Form("Electron FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f isNum=%1i met=%5.2f mt=%5.2f event %i",
-                                 p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns(),passId,evt_met,evt_mt,(int)evt_event()) << endl;
-                  }
-
-                  njets40_histo->Fill(njets40, weight);
-
-                  if (noMCMatch==0 && doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
-                    {
-                      if(motherID()==-1){
-                        NBs_BR_histo_e ->Fill(nbtags, weight);
-                        Bs_e = Bs_e + weight;
-                      }
-                      else if(motherID()==-2 || motherID()==0){
-                        NnotBs_BR_histo_e ->Fill(nbtags, weight);
-                        notBs_e = notBs_e + weight;
-                      }
-                    }
-                }
-            }
-          if( abs( id() ) == 13 ) // it's a mu
-            {
-              if( passId )  //if mu is tight
-                {
-                  //uncorrected and cone corrected FR
-                  Nt_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //
-
-          // NJA
-                  Nt_nvtx_histo_mu->Fill(nvtx(), weight);   //
-
-                  //jet corrected FR
-                  Nt_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-                  if (p4().pt()>25.) Nt_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-                  else Nt_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-                }
-
-              if( passFO )  //if mu is FO
-                {
-                  //not corrected FR
-                  Nl_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
-                  //cone corrected FR
-                  if( passId ) Nl_cone_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
-                  else Nl_cone_histo_mu->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),HT,false), weight);
-
-          // NJA
-                  Nl_cone_nvtx_histo_mu->Fill(nvtx(), weight);
-
-                  //jet corrected FR
-                  Nl_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-                  if (p4().pt()>25.) Nl_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-                  else Nl_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
-
-                  if (isSyncFile) {
-
-                    cout << Form("%1llu %7.3f %7.3f %6.3f %6.3f %6.3f %6.3f %1i %6.3f %6.3f %6.0f",(unsigned long long)evt_event() , p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,evt_met,evt_mt,weight) << endl;
-                  }
-
-                  njets40_histo->Fill(njets40, weight);
-
-                  if (noMCMatch==0 && doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
-                    {
-                      if(motherID()==-1){
-                        NBs_BR_histo_mu ->Fill(nbtags, weight);
-                        Bs_mu = Bs_mu + weight;
-                      }
-                      else if(motherID()==-2 || motherID()==0){
-                        NnotBs_BR_histo_mu ->Fill(nbtags, weight);
-                        notBs_mu = notBs_mu + weight;
-                      }
-                    }
-                }
-            }
-        }
-
-      //---------------------------------------------------------------------------------------------------------------------------
+      /// Compute a pt/eta binned fake rate histogram
+      fillFakeRateHistogram();
 
     } //end event loop
-
-    // Clean Up
-    delete tree;
-    file->Close();
-    delete file;
   }
-  if ( nEventsChain != nEventsTotal ) {
+
+  // Sanity check whether we looped over every events
+  if (nEventsChain != nEventsTotal)
+  {
     cout << Form( "ERROR: number of events from files (%d) is not equal to total number of events (%d)", nEventsChain, nEventsTotal ) << endl;
   }
 
-  e = Nt/(Nl);
-  e_e = Nt_e/(Nl_e);
-  e_mu = Nt_mu/(Nl_mu);
+  /// Compute the fake rate
+  computeFlatFakeRate();
 
-  cout<<"\nReco: "<<"Nt = "<<Nt<<", Nl = "<<Nl<<", e ="<<e<<endl;
-  cout<<"\nReco (el): "<<"Nt = "<<Nt_e<<", Nl = "<<Nl_e<<", e ="<<e_e<<endl;
-  cout<<"\nReco (mu): "<<"Nt = "<<Nt_mu<<", Nl = "<<Nl_mu<<", e ="<<e_mu<<endl<<endl;
-  cout<<"\nAve B abundance (els)= "<<Bs_e/(Bs_e + notBs_e)<<endl;
-  cout<<"Ave B abundance (mus)= "<<Bs_mu/(Bs_mu + notBs_mu)<<endl;
+  /// Compute the full fake rate histogram
+  computeFakeRateHistogram();
 
-  //Histograms
-  // TH2D *rate_histo = (TH2D*) Nt_histo->Clone("rate_histo");
-  TH2D *rate_histo_e = (TH2D*) Nt_histo_e->Clone("rate_histo_e");
-  TH2D *rate_histo_mu = (TH2D*) Nt_histo_mu->Clone("rate_histo_mu");
-  TH2D *rate_cone_histo_e = (TH2D*) Nt_histo_e->Clone("rate_cone_histo_e");
-  TH2D *rate_cone_histo_mu = (TH2D*) Nt_histo_mu->Clone("rate_cone_histo_mu");
-  TH2D *rate_jet_histo_e = (TH2D*) Nt_jet_histo_e->Clone("rate_jet_histo_e");
-  TH2D *rate_jet_histo_mu = (TH2D*) Nt_jet_histo_mu->Clone("rate_jet_histo_mu");
-  TH2D *rate_jet_highpt_histo_e = (TH2D*) Nt_jet_highpt_histo_e->Clone("rate_jet_highpt_histo_e");
-  TH2D *rate_jet_highpt_histo_mu = (TH2D*) Nt_jet_highpt_histo_mu->Clone("rate_jet_highpt_histo_mu");
-  TH2D *rate_jet_lowpt_histo_e = (TH2D*) Nt_jet_lowpt_histo_e->Clone("rate_jet_lowpt_histo_e");
-  TH2D *rate_jet_lowpt_histo_mu = (TH2D*) Nt_jet_lowpt_histo_mu->Clone("rate_jet_lowpt_histo_mu");
-  TH1F *total_BR_histo_e = (TH1F*) NBs_BR_histo_e->Clone("total_BR_histo_e");
-  TH1F *total_BR_histo_mu = (TH1F*) NBs_BR_histo_mu->Clone("total_BR_histo_mu");
-
-  // NJA
-  TH1D *rate_cone_nvtx_histo_e = (TH1D*) Nt_nvtx_histo_e->Clone("rate_cone_nvtx_histo_e");
-  TH1D *rate_cone_nvtx_histo_mu = (TH1D*) Nt_nvtx_histo_mu->Clone("rate_cone_nvtx_histo_mu");
-  rate_cone_nvtx_histo_e->Divide(rate_cone_nvtx_histo_e,Nl_cone_nvtx_histo_e);
-  rate_cone_nvtx_histo_mu->Divide(rate_cone_nvtx_histo_mu,Nl_cone_nvtx_histo_mu);
-
-  rate_histo_e->Divide(rate_histo_e,Nl_histo_e,1,1,"B");
-  rate_histo_mu->Divide(rate_histo_mu,Nl_histo_mu,1,1,"B");
-  rate_cone_histo_e->Divide(rate_cone_histo_e,Nl_cone_histo_e,1,1,"B");
-  rate_cone_histo_mu->Divide(rate_cone_histo_mu,Nl_cone_histo_mu,1,1,"B");
-  rate_jet_histo_e->Divide(rate_jet_histo_e,Nl_jet_histo_e,1,1,"B");
-  rate_jet_histo_mu->Divide(rate_jet_histo_mu,Nl_jet_histo_mu,1,1,"B");
-  rate_jet_highpt_histo_e->Divide(rate_jet_highpt_histo_e,Nl_jet_highpt_histo_e,1,1,"B");
-  rate_jet_highpt_histo_mu->Divide(rate_jet_highpt_histo_mu,Nl_jet_highpt_histo_mu,1,1,"B");
-  rate_jet_lowpt_histo_e->Divide(rate_jet_lowpt_histo_e,Nl_jet_lowpt_histo_e,1,1,"B");
-  rate_jet_lowpt_histo_mu->Divide(rate_jet_lowpt_histo_mu,Nl_jet_lowpt_histo_mu,1,1,"B");
-  total_BR_histo_e->Add(NnotBs_BR_histo_e);
-  total_BR_histo_mu->Add(NnotBs_BR_histo_mu);
-  NBs_BR_histo_e->Divide(NBs_BR_histo_e, total_BR_histo_e,1,1,"B");
-  NBs_BR_histo_mu->Divide(NBs_BR_histo_mu, total_BR_histo_mu,1,1,"B");
-
-  rate_histo_e->GetXaxis()->SetTitle("pT (GeV)");
-  rate_histo_e->GetYaxis()->SetTitle("eta");
-  rate_histo_e->GetZaxis()->SetRangeUser(0,.5);
-  rate_histo_e->SetTitle("Fake Rate vs Pt, Eta (electrons)");
-  rate_histo_mu->GetXaxis()->SetTitle("pT (GeV)");
-  rate_histo_mu->GetYaxis()->SetTitle("eta");
-  rate_histo_mu->GetZaxis()->SetRangeUser(0,.5);
-  rate_histo_mu->SetTitle("Fake Rate vs Pt, Eta (muons)");
-  rate_cone_histo_e->GetXaxis()->SetTitle("corrected pT (GeV)");
-  rate_cone_histo_e->GetYaxis()->SetTitle("eta");
-  rate_cone_histo_e->GetZaxis()->SetRangeUser(0,.5);
-  rate_cone_histo_e->SetTitle("Fake Rate vs Pt + Cone Energy, Eta (electrons)");
-  rate_cone_histo_mu->GetXaxis()->SetTitle("corrected pT (GeV)");
-  rate_cone_histo_mu->GetYaxis()->SetTitle("eta");
-  rate_cone_histo_mu->GetZaxis()->SetRangeUser(0,.5);
-  rate_cone_histo_mu->SetTitle("Fake Rate vs Pt + Cone Energy, Eta (muons)");
-  rate_jet_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)");
-  rate_jet_histo_e->GetYaxis()->SetTitle("eta");
-  rate_jet_histo_e->GetZaxis()->SetRangeUser(0,.5);
-  rate_jet_histo_e->SetTitle("Fake Rate vs Jet Pt, Eta (electrons)");
-  rate_jet_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)");
-  rate_jet_histo_mu->GetYaxis()->SetTitle("eta");
-  rate_jet_histo_mu->GetZaxis()->SetRangeUser(0,.5);
-  rate_jet_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
-  rate_jet_highpt_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)");
-  rate_jet_highpt_histo_e->GetYaxis()->SetTitle("eta");
-  rate_jet_highpt_histo_e->GetZaxis()->SetRangeUser(0,.5);
-  rate_jet_highpt_histo_e->SetTitle("Fake Rate vs Jet Pt, Eta (electrons)");
-  rate_jet_highpt_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)");
-  rate_jet_highpt_histo_mu->GetYaxis()->SetTitle("eta");
-  rate_jet_highpt_histo_mu->GetZaxis()->SetRangeUser(0,.5);
-  rate_jet_highpt_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
-  rate_jet_lowpt_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)");
-  rate_jet_lowpt_histo_e->GetYaxis()->SetTitle("eta");
-  rate_jet_lowpt_histo_e->GetZaxis()->SetRangeUser(0,.5);
-  rate_jet_lowpt_histo_e->SetTitle("Fake Rate vs Jet Pt, Eta (electrons)");
-  rate_jet_lowpt_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)");
-  rate_jet_lowpt_histo_mu->GetYaxis()->SetTitle("eta");
-  rate_jet_lowpt_histo_mu->GetZaxis()->SetRangeUser(0,.5);
-  rate_jet_lowpt_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
-  NBs_BR_histo_e->GetXaxis()->SetTitle("Nbjets");
-  NBs_BR_histo_e->GetYaxis()->SetTitle("Abundance");
-  NBs_BR_histo_e->GetYaxis()->SetRangeUser(0., 1.);
-  NBs_BR_histo_e->SetTitle("B Abundance vs Nbtags (electrons)");
-  NBs_BR_histo_mu->GetXaxis()->SetTitle("Nbjets");
-  NBs_BR_histo_mu->GetYaxis()->SetTitle("Abundance");
-  NBs_BR_histo_mu->GetYaxis()->SetRangeUser(0., 1.);
-  NBs_BR_histo_mu->SetTitle("B Abundance vs Nbtags (muons)");
-  pTrelvsIso_histo_el->GetXaxis()->SetTitle("Iso");
-  pTrelvsIso_histo_el->GetYaxis()->SetTitle("pTrel");
-  pTrelvsIso_histo_mu->GetXaxis()->SetTitle("Iso");
-  pTrelvsIso_histo_mu->GetYaxis()->SetTitle("pTrel");
-  njets40_histo->GetXaxis()->SetTitle("Njets");
-  njets40_histo->GetYaxis()->SetTitle("Events");
-  njets40_histo->SetTitle("Njets with pT > 40 GeV");
-
-  gStyle->SetOptStat(0);
-  gStyle->SetPaintTextFormat("1.3f");
-
-  TCanvas *c11=new TCanvas("c11","B Abundance vs Nbjets (electrons)",800,800);
-  c11->cd();
-  NBs_BR_histo_e->Draw("histE");
-  TCanvas *c12=new TCanvas("c12","B Abundance vs Nbjets (muons)",800,800);
-  c12->cd();
-  NBs_BR_histo_mu->Draw("histE");
-  TCanvas *c13=new TCanvas("c13","Njets with pT > 40 GeV",800,800);
-  c13->cd();
-  njets40_histo->Draw("histE");
-
-  //---save histos-------//
-  TFile *OutputFile = new TFile(outfile,"recreate");
-  OutputFile->cd();
-  Nl_histo_e->Write();
-  Nl_histo_mu->Write();
-  Nt_histo_e->Write();
-  Nt_histo_mu->Write();
-  rate_histo_e->Write();
-  rate_histo_mu->Write();
-  Nl_cone_histo_e->Write();
-  Nl_cone_histo_mu->Write();
-  rate_cone_histo_e->Write();
-  rate_cone_histo_mu->Write();
-
-  // NJA
-  rate_cone_nvtx_histo_e->Write();
-  rate_cone_nvtx_histo_mu->Write();
-
-  Nl_jet_histo_e->Write();
-  Nl_jet_histo_mu->Write();
-  Nt_jet_histo_e->Write();
-  Nt_jet_histo_mu->Write();
-  rate_jet_histo_e->Write();
-  rate_jet_histo_mu->Write();
-  Nl_jet_highpt_histo_e->Write();
-  Nl_jet_highpt_histo_mu->Write();
-  Nt_jet_highpt_histo_e->Write();
-  Nt_jet_highpt_histo_mu->Write();
-  rate_jet_highpt_histo_e->Write();
-  rate_jet_highpt_histo_mu->Write();
-  Nl_jet_lowpt_histo_e->Write();
-  Nl_jet_lowpt_histo_mu->Write();
-  Nt_jet_lowpt_histo_e->Write();
-  Nt_jet_lowpt_histo_mu->Write();
-  rate_jet_lowpt_histo_e->Write();
-  rate_jet_lowpt_histo_mu->Write();
-  NBs_BR_histo_e->Write();
-  NBs_BR_histo_mu->Write();
-  pTrelvsIso_histo_el->Write();
-  pTrelvsIso_histo_mu->Write();
-  pTrel_histo_el->Write();
-  pTrel_histo_mu->Write();
-  histo_ht->Write();
-  histo_met->Write();
-  histo_met_all->Write();
-  histo_met_all_el->Write();
-  histo_met_all_mu->Write();
-  histo_met_lm->Write();
-  histo_met_lm_el->Write();
-  histo_met_lm_mu->Write();
-  histo_met_cr->Write();
-  histo_met_cr_el->Write();
-  histo_met_cr_mu->Write();
-  histo_mt->Write();
-  histo_mt_all->Write();
-  histo_mt_all_el->Write();
-  histo_mt_all_mu->Write();
-  histo_mt_lm->Write();
-  histo_mt_lm_el->Write();
-  histo_mt_lm_mu->Write();
-  histo_mt_cr->Write();
-  histo_mt_cr_el->Write();
-  histo_mt_cr_mu->Write();
-  histo_pt_mu34->Write();
-  histo_pt_mu24->Write();
-  histo_pt_mu17->Write();
-  histo_pt_mu8->Write();
-  histo_pt_mu->Write();
-  histo_pt_el34->Write();
-  histo_pt_el24->Write();
-  histo_pt_el17->Write();
-  histo_pt_el12->Write();
-  histo_pt_el8->Write();
-  histo_pt_el->Write();
-  njets40_histo->Write();
-  OutputFile->Close();
-
-//	  delete jet_corrector_25ns_MC_pfL1;
-//	  delete jet_corrector_25ns_MC_pfL1L2L3;
-//	  delete jet_corrector_25ns_DATA_pfL1;
-//	  delete jet_corrector_25ns_DATA_pfL1L2L3;
+//	  std::cout << "jetcorr_filenames_25ns_MC_pfL1       "  << &jetcorr_filenames_25ns_MC_pfL1 << std::endl;
+//	  std::cout << "jetcorr_filenames_25ns_MC_pfL1L2L3   "  << &jetcorr_filenames_25ns_MC_pfL1L2L3 << std::endl;
+//	  std::cout << "jetcorr_filenames_25ns_DATA_pfL1     "  << &jetcorr_filenames_25ns_DATA_pfL1 << std::endl;
+//	  std::cout << "jetcorr_filenames_25ns_DATA_pfL1L2L3 "  << &jetcorr_filenames_25ns_DATA_pfL1L2L3 << std::endl;
+//	  std::cout << "jetcorr_filenames_pfL1L2L3           "  << &jetcorr_filenames_pfL1L2L3 << std::endl;
 
   return 0;
 }
@@ -784,29 +426,30 @@ void setTriggerPrescaleFactors()
 void createJetCorrectors()
 {
 
-  //-------- JEC application
-  //JEC files -- 25 ns MC
-  std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1;
-  std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1L2L3;
-  jetcorr_filenames_25ns_MC_pfL1.push_back      ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt");
-  jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt");
+  if (doJEC)
+  {
 
-  //JEC files -- 25 ns DATA
-  std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1;
-  std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1L2L3;
-  jetcorr_filenames_25ns_DATA_pfL1.push_back    ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt");
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2Relative_AK4PFchs.txt");
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt");
-  jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt");
+    //-------- JEC application
+    //JEC files -- 25 ns MC
+    jetcorr_filenames_25ns_MC_pfL1.push_back      ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt");
+    jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt");
+    jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt");
+    jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt");
 
-  //Fill the JEC
-  jet_corrector_25ns_MC_pfL1 = makeJetCorrector(jetcorr_filenames_25ns_MC_pfL1);
-  jet_corrector_25ns_MC_pfL1L2L3 = makeJetCorrector(jetcorr_filenames_25ns_MC_pfL1L2L3);
-  jet_corrector_25ns_DATA_pfL1 = makeJetCorrector(jetcorr_filenames_25ns_DATA_pfL1);
-  jet_corrector_25ns_DATA_pfL1L2L3 = makeJetCorrector(jetcorr_filenames_25ns_DATA_pfL1L2L3);
+    //JEC files -- 25 ns DATA
+    jetcorr_filenames_25ns_DATA_pfL1.push_back    ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt");
+    jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L1FastJet_AK4PFchs.txt");
+    jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2Relative_AK4PFchs.txt");
+    jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt");
+    jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt");
+
+    //Fill the JEC
+    jet_corrector_25ns_MC_pfL1 = makeJetCorrector(jetcorr_filenames_25ns_MC_pfL1);
+    jet_corrector_25ns_MC_pfL1L2L3 = makeJetCorrector(jetcorr_filenames_25ns_MC_pfL1L2L3);
+    jet_corrector_25ns_DATA_pfL1 = makeJetCorrector(jetcorr_filenames_25ns_DATA_pfL1);
+    jet_corrector_25ns_DATA_pfL1L2L3 = makeJetCorrector(jetcorr_filenames_25ns_DATA_pfL1L2L3);
+
+  }
 
 }
 
@@ -965,8 +608,8 @@ bool isEventWithDifferentFlavorLeptonInSameFlavorDileptonTrigger()
   // Reject electrons from DoubleMu and muons from DoubleEG
   if (debug) cout << "check dataset" << endl;
   if (isData) {
-    if ( isDoubleMuon && abs(id())!=13) return true;
-    if (!isDoubleMuon && abs(id())!=11) return true;
+    if ( isDoubleMuon && !isMuon()    ) return true;
+    if (!isDoubleMuon && !isElectron()) return true;
   }
   return false;
 }
@@ -1086,7 +729,7 @@ bool isBadWeightEvents()
        QCD_Pt-1000toInf_MuEnrichedPt5   0.000198
        */
 
-    if (abs(id())==13) {
+    if (isMuon()) {
 
       if (debug) cout << "check qcd" << endl;
 
@@ -1116,7 +759,7 @@ bool isBadWeightEvents()
 
     }
 
-    if (abs(id())==11) {
+    if (isElectron()) {
       /*
       //Map of samples and correspongding scale1fb
       /QCD_Pt_15to20_bcToE   280.49151
@@ -1276,7 +919,7 @@ bool passTriggerSelection()
 {
   /// This function checks whether the event passes some triggre requirements.
   if (debug) cout << "check hlt HLT_Mu8=" << HLT_Mu8() << " HLT_Mu17=" << HLT_Mu17() << " HLT_Ele12_CaloIdM_TrackIdM_PFJet30=" << HLT_Ele12_CaloIdM_TrackIdM_PFJet30() << endl;
-  if (abs(id())==11 && (isData || doTrig))
+  if (isElectron() && (isData || doTrig))
   {
     // ele12 for 2015D
     if (useIsoTrigs)
@@ -1288,7 +931,7 @@ bool passTriggerSelection()
       if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()<=0 && HLT_Ele17_CaloIdM_TrackIdM_PFJet30()<=0) return false;
     }
   }
-  if (abs(id())==13 && (isData || doTrig)) {
+  if (isMuon() && (isData || doTrig)) {
     // mu8 or mu17 for 2015D
     if (useIsoTrigs) {
       if (HLT_Mu8_TrkIsoVVL()<=0 && HLT_Mu17_TrkIsoVVL()<=0) return false;
@@ -1316,7 +959,7 @@ void computePrescaleAndReWeightByPUwgt()
   float vtxWeight = 0.;
   // Check prescales, apply cuts on the pT range depending on the trigger
   if (!isData) prescale = 1; // triggers messed up in 80X MC
-  if (abs(id())==11 && (isData || doTrig))
+  if (isElectron() && (isData || doTrig))
   {
     if (useIsoTrigs)
     {
@@ -1351,7 +994,7 @@ void computePrescaleAndReWeightByPUwgt()
       if (prescale>0) weight *= prescale;
     }
   }
-  if (abs(id())==13 && (isData || doTrig))
+  if (isMuon() && (isData || doTrig))
   {
     // use mu8+mu17
     if (useIsoTrigs)
@@ -1410,11 +1053,12 @@ bool passPtEtaSIPNFOLep()
   // Don't think eta cut is anywhere else
   if (debug) cout << "check pt/eta" << endl;
   if (p4().pt() < 10.) return false;
-  if (abs(id()) == 11 && fabs(p4().eta()) > 2.5) return false;
-  if (abs(id()) == 13 && fabs(p4().eta()) > 2.4) return false;
-  if (doLightonly && abs(id())==11 && p4().pt() < 20.) return false; //because EMEnriched does not go below 20 GeV
+  if (isElectron() && fabs(p4().eta()) > 2.5) return false;
+  if (isMuon() && fabs(p4().eta()) > 2.4) return false;
+  if (doLightonly && isElectron() && p4().pt() < 20.) return false; //because EMEnriched does not go below 20 GeV
   if (debug) cout << "check sip " << fabs(ip3d()/ip3derr()) << endl;
   if (fabs(ip3d()/ip3derr())>4. ) return false;
+  return true;
 }
 
 //_________________________________________________________________________________________________
@@ -1437,7 +1081,7 @@ void computeLeptonIDFlags(bool& passId, bool& passFO, bool& passId_noiso, bool& 
 
   /// For electrons, there are some "trigger safe cuts" that we also apply on top of our ID.
   /// https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#HLT_safe_selection_for_2016_data
-  if (useLooseEMVA && abs(id()) == 11)
+  if (useLooseEMVA && isElectron())
   {
     bool isEB = true;
     if (fabs(etaSC())>1.479) isEB = false;
@@ -1471,7 +1115,7 @@ bool passIsolatedFOcut()
 {
   /// Check whether the event is an isolated FO.
   /// The function definition is in the commonUtils.h
-  if (useLooseEMVA && abs(id()) == 11)
+  if (useLooseEMVA && isElectron())
   {
     if (useIsoTrigs) {
       if (debug) cout << "check iso FO" << endl;
@@ -1489,35 +1133,35 @@ void fillPassTightIDLeptonMTandMETplots()
   if (passId) {
     //mt control region
     if (evt_met > 30. && p4().pt()>30) {
-      if (true         ) histo_mt_all   ->Fill( std::min(evt_mt,float(200.)), weight );
-      if (abs(id())==11) histo_mt_all_el->Fill( std::min(evt_mt,float(200.)), weight );
-      if (abs(id())==13) histo_mt_all_mu->Fill( std::min(evt_mt,float(200.)), weight );
+      if (true        ) histo_mt_all   ->Fill( std::min(evt_mt,float(200.)), weight );
+      if (isElectron()) histo_mt_all_el->Fill( std::min(evt_mt,float(200.)), weight );
+      if (isMuon()    ) histo_mt_all_mu->Fill( std::min(evt_mt,float(200.)), weight );
     }
     if (evt_met < 20.) {
-      if (true         ) histo_mt_lm   ->Fill( std::min(evt_mt,float(200.)), weight );
-      if (abs(id())==11) histo_mt_lm_el->Fill( std::min(evt_mt,float(200.)), weight );
-      if (abs(id())==13) histo_mt_lm_mu->Fill( std::min(evt_mt,float(200.)), weight );
+      if (true        ) histo_mt_lm   ->Fill( std::min(evt_mt,float(200.)), weight );
+      if (isElectron()) histo_mt_lm_el->Fill( std::min(evt_mt,float(200.)), weight );
+      if (isMuon()    ) histo_mt_lm_mu->Fill( std::min(evt_mt,float(200.)), weight );
     }
     if (evt_met > 30.) {
-      if (true         ) histo_mt_cr   ->Fill( std::min(evt_mt,float(200.)), weight );
-      if (abs(id())==11) histo_mt_cr_el->Fill( std::min(evt_mt,float(200.)), weight );
-      if (abs(id())==13) histo_mt_cr_mu->Fill( std::min(evt_mt,float(200.)), weight );
+      if (true        ) histo_mt_cr   ->Fill( std::min(evt_mt,float(200.)), weight );
+      if (isElectron()) histo_mt_cr_el->Fill( std::min(evt_mt,float(200.)), weight );
+      if (isMuon()    ) histo_mt_cr_mu->Fill( std::min(evt_mt,float(200.)), weight );
     }
     //test if bad data/MC ratio in mt control region is due to met
     if (p4().pt()>30) {
-      if (true         ) histo_met_all   ->Fill( std::min(evt_met,float(200.)), weight );
-      if (abs(id())==11) histo_met_all_el->Fill( std::min(evt_met,float(200.)), weight );
-      if (abs(id())==13) histo_met_all_mu->Fill( std::min(evt_met,float(200.)), weight );
+      if (true        ) histo_met_all   ->Fill( std::min(evt_met,float(200.)), weight );
+      if (isElectron()) histo_met_all_el->Fill( std::min(evt_met,float(200.)), weight );
+      if (isMuon()    ) histo_met_all_mu->Fill( std::min(evt_met,float(200.)), weight );
     }
     if (evt_mt < 20.) {
-      if (true         ) histo_met_lm   ->Fill( std::min(evt_met,float(200.)), weight );
-      if (abs(id())==11) histo_met_lm_el->Fill( std::min(evt_met,float(200.)), weight );
-      if (abs(id())==13) histo_met_lm_mu->Fill( std::min(evt_met,float(200.)), weight );
+      if (true        ) histo_met_lm   ->Fill( std::min(evt_met,float(200.)), weight );
+      if (isElectron()) histo_met_lm_el->Fill( std::min(evt_met,float(200.)), weight );
+      if (isMuon()    ) histo_met_lm_mu->Fill( std::min(evt_met,float(200.)), weight );
     }
     if (evt_mt > 30.) {
-      if (true         ) histo_met_cr   ->Fill( std::min(evt_met,float(200.)), weight );
-      if (abs(id())==11) histo_met_cr_el->Fill( std::min(evt_met,float(200.)), weight );
-      if (abs(id())==13) histo_met_cr_mu->Fill( std::min(evt_met,float(200.)), weight );
+      if (true        ) histo_met_cr   ->Fill( std::min(evt_met,float(200.)), weight );
+      if (isElectron()) histo_met_cr_el->Fill( std::min(evt_met,float(200.)), weight );
+      if (isMuon()    ) histo_met_cr_mu->Fill( std::min(evt_met,float(200.)), weight );
     }
   }
 }
@@ -1539,7 +1183,7 @@ void fillPassFOLeptonPtPlots()
 {
   if (isData && passFO)
   {
-    if (abs(id())==11)
+    if (isElectron())
     {
       if (true                                    ) histo_pt_el  -> Fill(p4().pt(), prescale                            );
       if (HLT_Ele33_CaloIdM_TrackIdM_PFJet30() > 0) histo_pt_el34-> Fill(p4().pt(), HLT_Ele33_CaloIdM_TrackIdM_PFJet30());
@@ -1548,7 +1192,7 @@ void fillPassFOLeptonPtPlots()
       if (HLT_Ele12_CaloIdM_TrackIdM_PFJet30() > 0) histo_pt_el12-> Fill(p4().pt(), HLT_Ele12_CaloIdM_TrackIdM_PFJet30());
       if (HLT_Ele8_CaloIdM_TrackIdM_PFJet30()  > 0) histo_pt_el8 -> Fill(p4().pt(), HLT_Ele8_CaloIdM_TrackIdM_PFJet30 ());
     }
-    if (abs(id())==13)
+    if (isMuon())
     {
       if (true          ) histo_pt_mu  -> Fill(p4().pt(), prescale  );
       if (HLT_Mu34() > 0) histo_pt_mu34-> Fill(p4().pt(), HLT_Mu34());
@@ -1564,7 +1208,7 @@ void recomputePassFOByCorrectingPtRatio(bool& passFO)
 {
   /// This function recomputes the passFO flag via using the corrected pt ratio variable.
   /// The details of the definition and the "Why" may be found in AN's of the SS analysis.
-  if (abs(id()) == 11)
+  if (isElectron())
   {
     float ptratiocor = closejetpt > 0. ? p4().pt() * (1 + std::max(0., miniiso()-0.12)) / closejetpt : 1.;
     passFO = passes_SS_fo_v5() && (ptratiocor > 0.76 || ptrel > 7.2);
@@ -1583,7 +1227,7 @@ void computeConePtCorrVariable(float& coneptcorr)
   /// The details of the definition and the "Why" may be found in AN's of the SS analysis.
   /// The gist of the variable is that this is a variable that has less
   /// dependencies to the pt of the parent jet parton that fakes a lepton.
-  if (abs(id())==11)
+  if (isElectron())
   {
     if (ptrel > 7.2)
     {
@@ -1634,4 +1278,402 @@ void computeMETandMT(float& evt_met, float& evt_metPhi, float& evt_mt)
   evt_met = evt_corrMET();
   evt_metPhi = evt_corrMETPhi();
   evt_mt = calculateMt(p4(),evt_met,evt_metPhi);
+}
+
+//_________________________________________________________________________________________________
+bool isNonPromptLepton()
+{
+  return (motherID() <= 0 &&
+      (doBonly==0     || motherID() == -1) &&
+      (doConly==0     || motherID() == -2) &&
+      (doLightonly==0 || motherID() ==  0));
+}
+
+//_________________________________________________________________________________________________
+void countVariablesForFlatFakeRate()
+{
+  /// Find ratio of nonprompt leps passing tight to nonprompt leps passing at least loose.  This is the fake rate
+  /// Use lep_passes_id to see if num.  Use FO to see if Fakable Object (denom)
+  /// Calculate e=Nt/(Nl) where l->loose  (as opposed to loose-not-tight).
+
+  /// Using gen level info to see if prompt -> no prompt contamination in measurement region
+  /// everything else is RECO (p4, id, passes_id, FO, etc.)
+
+  if (noMCMatch || isNonPromptLepton() )  //if lep is nonprompt
+  {
+
+    if (isElectron()) //it's an el
+    {
+      if (passId)  //if el is tight
+      {
+        Nt = Nt + weight;
+        Nt_e = Nt_e + weight;
+      }
+      if (passFO)
+      {
+        Nl = Nl + weight;     //l now means loose, as opposed to loose-not-tight
+        Nl_e = Nl_e + weight;
+      }
+    }
+
+    if (isMuon()) //it's a mu
+    {
+      if (passId)  //if mu is tight
+      {
+        Nt = Nt + weight;
+        Nt_mu = Nt_mu + weight;
+      }
+      if (passFO)
+      {
+        Nl = Nl + weight;     //l now means loose, as opposed to loose-not-tight
+        Nl_mu = Nl_mu + weight;
+      }
+    }
+  }
+}
+
+//_________________________________________________________________________________________________
+bool isElectron()
+{
+  return (abs(id()) == 11);
+}
+
+//_________________________________________________________________________________________________
+bool isMuon()
+{
+  return (abs(id()) == 13);
+}
+
+//_________________________________________________________________________________________________
+void fillFakeRateHistogram()
+{
+
+  //Find ratio of nonprompt leps passing tight to nonprompt leps passing at least loose.  This is the fake rate
+  // Use lep_passes_id to see if num.  Use FO to see if Fakable Object (denom)
+  //Calculate e=Nt/(Nl) where l->loose  (as opposed to loose-not-tight).
+
+  //Using gen level info to see if prompt -> no prompt contamination in measurement region
+  //everything else is RECO (p4, id, passes_id, FO, etc.)
+
+  if (noMCMatch || isNonPromptLepton())  //if el is nonprompt (GEN info)
+  {
+
+    if (passFO)
+    {
+      histo_ht ->Fill( std::min(HT     , float(1000.)) );
+      histo_met->Fill( std::min(evt_met, float(1000.)) );
+      histo_mt ->Fill( std::min(evt_mt , float(1000.)) );
+
+      if (isElectron()) pTrelvsIso_histo_el->Fill( std::min(RelIso03EA(), float(0.99)), std::min(ptrel,float(29.9)) );
+      if (isMuon()    ) pTrelvsIso_histo_mu->Fill( std::min(RelIso03EA(), float(0.99)), std::min(ptrel,float(29.9)) );
+      if (isElectron()) pTrel_histo_el     ->Fill( std::min(ptrel,        float(29.9)) );
+      if (isMuon()    ) pTrel_histo_mu     ->Fill( std::min(ptrel,        float(29.9)) );
+    }
+
+    if (isElectron()) // it's an el
+    {
+      if (passId)  //if el is tight
+      {
+        //uncorrected and cone corrected FR
+        Nt_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //
+
+        // NJA
+        Nt_nvtx_histo_e->Fill(nvtx(), weight);   //
+
+        //jet corrected FR
+        Nt_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+        if (p4().pt()>25.) Nt_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+        else Nt_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+      }
+
+      if (passFO)  //if el is FO
+      {
+        //not corrected FR
+        Nl_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
+        //cone corrected FR
+        if( passId ) Nl_cone_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
+        else Nl_cone_histo_e->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),HT,false), weight);
+
+        // NJA
+        Nl_cone_nvtx_histo_e->Fill(nvtx(), weight);
+
+        //jet corrected FR
+        Nl_jet_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+        if (p4().pt()>25.) Nl_jet_highpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+        else Nl_jet_lowpt_histo_e->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+
+        if (isSyncFile) {
+          cout << Form("Electron FO raw pt=%6.2f corr pt=%6.2f eta=%5.2f miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f isNum=%1i met=%5.2f mt=%5.2f event %i",
+              p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns(),passId,evt_met,evt_mt,(int)evt_event()) << endl;
+        }
+
+        njets40_histo->Fill(njets40, weight);
+
+        if (noMCMatch==0 && doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
+        {
+          if(motherID()==-1){
+            NBs_BR_histo_e ->Fill(nbtags, weight);
+            Bs_e = Bs_e + weight;
+          }
+          else if(motherID()==-2 || motherID()==0){
+            NnotBs_BR_histo_e ->Fill(nbtags, weight);
+            notBs_e = notBs_e + weight;
+          }
+        }
+      }
+    }
+    if (isMuon()) // it's a mu
+    {
+      if (passId)  //if mu is tight
+      {
+        //uncorrected and cone corrected FR
+        Nt_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //
+
+        // NJA
+        Nt_nvtx_histo_mu->Fill(nvtx(), weight);   //
+
+        //jet corrected FR
+        Nt_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+        if (p4().pt()>25.) Nt_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+        else Nt_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+      }
+
+      if (passFO)  //if mu is FO
+      {
+        //not corrected FR
+        Nl_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
+        //cone corrected FR
+        if( passId ) Nl_cone_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),HT,false), weight);   //  <-- loose (as opposed to l!t)
+        else Nl_cone_histo_mu->Fill(getPt(p4().pt()*(1+coneptcorr),false), getEta(fabs(p4().eta()),HT,false), weight);
+
+        // NJA
+        Nl_cone_nvtx_histo_mu->Fill(nvtx(), weight);
+
+        //jet corrected FR
+        Nl_jet_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+        if (p4().pt()>25.) Nl_jet_highpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+        else Nl_jet_lowpt_histo_mu->Fill(getPt(closejetpt,false), getEta(fabs(p4().eta()),HT,false), weight);
+
+        if (isSyncFile) {
+
+          cout << Form("%1llu %7.3f %7.3f %6.3f %6.3f %6.3f %6.3f %1i %6.3f %6.3f %6.0f",(unsigned long long)evt_event() , p4().pt(),p4().pt()*(1+coneptcorr),p4().eta(),miniiso(),p4().pt()/closejetpt,ptrel,passId,evt_met,evt_mt,weight) << endl;
+        }
+
+        njets40_histo->Fill(njets40, weight);
+
+        if (noMCMatch==0 && doBonly==0 && doConly==0 && doLightonly==0) //abundance doesn't make sense otherwise
+        {
+          if(motherID()==-1){
+            NBs_BR_histo_mu ->Fill(nbtags, weight);
+            Bs_mu = Bs_mu + weight;
+          }
+          else if(motherID()==-2 || motherID()==0){
+            NnotBs_BR_histo_mu ->Fill(nbtags, weight);
+            notBs_mu = notBs_mu + weight;
+          }
+        }
+      }
+    }
+  }
+}
+
+//_________________________________________________________________________________________________
+void computeFlatFakeRate()
+{
+  /// Outside of the loop, now compute the flat fake rate
+  e = Nt/(Nl);
+  e_e = Nt_e/(Nl_e);
+  e_mu = Nt_mu/(Nl_mu);
+
+  cout<<"\nReco: "<<"Nt = "<<Nt<<", Nl = "<<Nl<<", e ="<<e<<endl;
+  cout<<"\nReco (el): "<<"Nt = "<<Nt_e<<", Nl = "<<Nl_e<<", e ="<<e_e<<endl;
+  cout<<"\nReco (mu): "<<"Nt = "<<Nt_mu<<", Nl = "<<Nl_mu<<", e ="<<e_mu<<endl<<endl;
+  cout<<"\nAve B abundance (els)= "<<Bs_e/(Bs_e + notBs_e)<<endl;
+  cout<<"Ave B abundance (mus)= "<<Bs_mu/(Bs_mu + notBs_mu)<<endl;
+
+}
+
+//_________________________________________________________________________________________________
+void computeFakeRateHistogram()
+{
+  //Histograms
+  // TH2D *rate_histo = (TH2D*) Nt_histo->Clone("rate_histo");
+  TH2D *rate_histo_e = (TH2D*) Nt_histo_e->Clone("rate_histo_e");
+  TH2D *rate_histo_mu = (TH2D*) Nt_histo_mu->Clone("rate_histo_mu");
+  TH2D *rate_cone_histo_e = (TH2D*) Nt_histo_e->Clone("rate_cone_histo_e");
+  TH2D *rate_cone_histo_mu = (TH2D*) Nt_histo_mu->Clone("rate_cone_histo_mu");
+  TH2D *rate_jet_histo_e = (TH2D*) Nt_jet_histo_e->Clone("rate_jet_histo_e");
+  TH2D *rate_jet_histo_mu = (TH2D*) Nt_jet_histo_mu->Clone("rate_jet_histo_mu");
+  TH2D *rate_jet_highpt_histo_e = (TH2D*) Nt_jet_highpt_histo_e->Clone("rate_jet_highpt_histo_e");
+  TH2D *rate_jet_highpt_histo_mu = (TH2D*) Nt_jet_highpt_histo_mu->Clone("rate_jet_highpt_histo_mu");
+  TH2D *rate_jet_lowpt_histo_e = (TH2D*) Nt_jet_lowpt_histo_e->Clone("rate_jet_lowpt_histo_e");
+  TH2D *rate_jet_lowpt_histo_mu = (TH2D*) Nt_jet_lowpt_histo_mu->Clone("rate_jet_lowpt_histo_mu");
+  TH1F *total_BR_histo_e = (TH1F*) NBs_BR_histo_e->Clone("total_BR_histo_e");
+  TH1F *total_BR_histo_mu = (TH1F*) NBs_BR_histo_mu->Clone("total_BR_histo_mu");
+
+  // NJA
+  TH1D *rate_cone_nvtx_histo_e = (TH1D*) Nt_nvtx_histo_e->Clone("rate_cone_nvtx_histo_e");
+  TH1D *rate_cone_nvtx_histo_mu = (TH1D*) Nt_nvtx_histo_mu->Clone("rate_cone_nvtx_histo_mu");
+  rate_cone_nvtx_histo_e->Divide(rate_cone_nvtx_histo_e,Nl_cone_nvtx_histo_e);
+  rate_cone_nvtx_histo_mu->Divide(rate_cone_nvtx_histo_mu,Nl_cone_nvtx_histo_mu);
+
+  rate_histo_e->Divide(rate_histo_e,Nl_histo_e,1,1,"B");
+  rate_histo_mu->Divide(rate_histo_mu,Nl_histo_mu,1,1,"B");
+  rate_cone_histo_e->Divide(rate_cone_histo_e,Nl_cone_histo_e,1,1,"B");
+  rate_cone_histo_mu->Divide(rate_cone_histo_mu,Nl_cone_histo_mu,1,1,"B");
+  rate_jet_histo_e->Divide(rate_jet_histo_e,Nl_jet_histo_e,1,1,"B");
+  rate_jet_histo_mu->Divide(rate_jet_histo_mu,Nl_jet_histo_mu,1,1,"B");
+  rate_jet_highpt_histo_e->Divide(rate_jet_highpt_histo_e,Nl_jet_highpt_histo_e,1,1,"B");
+  rate_jet_highpt_histo_mu->Divide(rate_jet_highpt_histo_mu,Nl_jet_highpt_histo_mu,1,1,"B");
+  rate_jet_lowpt_histo_e->Divide(rate_jet_lowpt_histo_e,Nl_jet_lowpt_histo_e,1,1,"B");
+  rate_jet_lowpt_histo_mu->Divide(rate_jet_lowpt_histo_mu,Nl_jet_lowpt_histo_mu,1,1,"B");
+  total_BR_histo_e->Add(NnotBs_BR_histo_e);
+  total_BR_histo_mu->Add(NnotBs_BR_histo_mu);
+  NBs_BR_histo_e->Divide(NBs_BR_histo_e, total_BR_histo_e,1,1,"B");
+  NBs_BR_histo_mu->Divide(NBs_BR_histo_mu, total_BR_histo_mu,1,1,"B");
+
+  rate_histo_e->GetXaxis()->SetTitle("pT (GeV)");
+  rate_histo_e->GetYaxis()->SetTitle("eta");
+  rate_histo_e->GetZaxis()->SetRangeUser(0,.5);
+  rate_histo_e->SetTitle("Fake Rate vs Pt, Eta (electrons)");
+  rate_histo_mu->GetXaxis()->SetTitle("pT (GeV)");
+  rate_histo_mu->GetYaxis()->SetTitle("eta");
+  rate_histo_mu->GetZaxis()->SetRangeUser(0,.5);
+  rate_histo_mu->SetTitle("Fake Rate vs Pt, Eta (muons)");
+  rate_cone_histo_e->GetXaxis()->SetTitle("corrected pT (GeV)");
+  rate_cone_histo_e->GetYaxis()->SetTitle("eta");
+  rate_cone_histo_e->GetZaxis()->SetRangeUser(0,.5);
+  rate_cone_histo_e->SetTitle("Fake Rate vs Pt + Cone Energy, Eta (electrons)");
+  rate_cone_histo_mu->GetXaxis()->SetTitle("corrected pT (GeV)");
+  rate_cone_histo_mu->GetYaxis()->SetTitle("eta");
+  rate_cone_histo_mu->GetZaxis()->SetRangeUser(0,.5);
+  rate_cone_histo_mu->SetTitle("Fake Rate vs Pt + Cone Energy, Eta (muons)");
+  rate_jet_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)");
+  rate_jet_histo_e->GetYaxis()->SetTitle("eta");
+  rate_jet_histo_e->GetZaxis()->SetRangeUser(0,.5);
+  rate_jet_histo_e->SetTitle("Fake Rate vs Jet Pt, Eta (electrons)");
+  rate_jet_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)");
+  rate_jet_histo_mu->GetYaxis()->SetTitle("eta");
+  rate_jet_histo_mu->GetZaxis()->SetRangeUser(0,.5);
+  rate_jet_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
+  rate_jet_highpt_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)");
+  rate_jet_highpt_histo_e->GetYaxis()->SetTitle("eta");
+  rate_jet_highpt_histo_e->GetZaxis()->SetRangeUser(0,.5);
+  rate_jet_highpt_histo_e->SetTitle("Fake Rate vs Jet Pt, Eta (electrons)");
+  rate_jet_highpt_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)");
+  rate_jet_highpt_histo_mu->GetYaxis()->SetTitle("eta");
+  rate_jet_highpt_histo_mu->GetZaxis()->SetRangeUser(0,.5);
+  rate_jet_highpt_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
+  rate_jet_lowpt_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)");
+  rate_jet_lowpt_histo_e->GetYaxis()->SetTitle("eta");
+  rate_jet_lowpt_histo_e->GetZaxis()->SetRangeUser(0,.5);
+  rate_jet_lowpt_histo_e->SetTitle("Fake Rate vs Jet Pt, Eta (electrons)");
+  rate_jet_lowpt_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)");
+  rate_jet_lowpt_histo_mu->GetYaxis()->SetTitle("eta");
+  rate_jet_lowpt_histo_mu->GetZaxis()->SetRangeUser(0,.5);
+  rate_jet_lowpt_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
+  NBs_BR_histo_e->GetXaxis()->SetTitle("Nbjets");
+  NBs_BR_histo_e->GetYaxis()->SetTitle("Abundance");
+  NBs_BR_histo_e->GetYaxis()->SetRangeUser(0., 1.);
+  NBs_BR_histo_e->SetTitle("B Abundance vs Nbtags (electrons)");
+  NBs_BR_histo_mu->GetXaxis()->SetTitle("Nbjets");
+  NBs_BR_histo_mu->GetYaxis()->SetTitle("Abundance");
+  NBs_BR_histo_mu->GetYaxis()->SetRangeUser(0., 1.);
+  NBs_BR_histo_mu->SetTitle("B Abundance vs Nbtags (muons)");
+  pTrelvsIso_histo_el->GetXaxis()->SetTitle("Iso");
+  pTrelvsIso_histo_el->GetYaxis()->SetTitle("pTrel");
+  pTrelvsIso_histo_mu->GetXaxis()->SetTitle("Iso");
+  pTrelvsIso_histo_mu->GetYaxis()->SetTitle("pTrel");
+  njets40_histo->GetXaxis()->SetTitle("Njets");
+  njets40_histo->GetYaxis()->SetTitle("Events");
+  njets40_histo->SetTitle("Njets with pT > 40 GeV");
+  gStyle->SetOptStat(0);
+  gStyle->SetPaintTextFormat("1.3f");
+
+  TCanvas *c11=new TCanvas("c11","B Abundance vs Nbjets (electrons)",800,800);
+  c11->cd();
+  NBs_BR_histo_e->Draw("histE");
+  TCanvas *c12=new TCanvas("c12","B Abundance vs Nbjets (muons)",800,800);
+  c12->cd();
+  NBs_BR_histo_mu->Draw("histE");
+  TCanvas *c13=new TCanvas("c13","Njets with pT > 40 GeV",800,800);
+  c13->cd();
+  njets40_histo->Draw("histE");
+
+  //---save histos-------//
+  TFile *OutputFile = new TFile(outfile,"recreate");
+  OutputFile->cd();
+  Nl_histo_e->Write();
+  Nl_histo_mu->Write();
+  Nt_histo_e->Write();
+  Nt_histo_mu->Write();
+  rate_histo_e->Write();
+  rate_histo_mu->Write();
+  Nl_cone_histo_e->Write();
+  Nl_cone_histo_mu->Write();
+  rate_cone_histo_e->Write();
+  rate_cone_histo_mu->Write();
+
+  // NJA
+  rate_cone_nvtx_histo_e->Write();
+  rate_cone_nvtx_histo_mu->Write();
+
+  Nl_jet_histo_e->Write();
+  Nl_jet_histo_mu->Write();
+  Nt_jet_histo_e->Write();
+  Nt_jet_histo_mu->Write();
+  rate_jet_histo_e->Write();
+  rate_jet_histo_mu->Write();
+  Nl_jet_highpt_histo_e->Write();
+  Nl_jet_highpt_histo_mu->Write();
+  Nt_jet_highpt_histo_e->Write();
+  Nt_jet_highpt_histo_mu->Write();
+  rate_jet_highpt_histo_e->Write();
+  rate_jet_highpt_histo_mu->Write();
+  Nl_jet_lowpt_histo_e->Write();
+  Nl_jet_lowpt_histo_mu->Write();
+  Nt_jet_lowpt_histo_e->Write();
+  Nt_jet_lowpt_histo_mu->Write();
+  rate_jet_lowpt_histo_e->Write();
+  rate_jet_lowpt_histo_mu->Write();
+  NBs_BR_histo_e->Write();
+  NBs_BR_histo_mu->Write();
+  pTrelvsIso_histo_el->Write();
+  pTrelvsIso_histo_mu->Write();
+  pTrel_histo_el->Write();
+  pTrel_histo_mu->Write();
+  histo_ht->Write();
+  histo_met->Write();
+  histo_met_all->Write();
+  histo_met_all_el->Write();
+  histo_met_all_mu->Write();
+  histo_met_lm->Write();
+  histo_met_lm_el->Write();
+  histo_met_lm_mu->Write();
+  histo_met_cr->Write();
+  histo_met_cr_el->Write();
+  histo_met_cr_mu->Write();
+  histo_mt->Write();
+  histo_mt_all->Write();
+  histo_mt_all_el->Write();
+  histo_mt_all_mu->Write();
+  histo_mt_lm->Write();
+  histo_mt_lm_el->Write();
+  histo_mt_lm_mu->Write();
+  histo_mt_cr->Write();
+  histo_mt_cr_el->Write();
+  histo_mt_cr_mu->Write();
+  histo_pt_mu34->Write();
+  histo_pt_mu24->Write();
+  histo_pt_mu17->Write();
+  histo_pt_mu8->Write();
+  histo_pt_mu->Write();
+  histo_pt_el34->Write();
+  histo_pt_el24->Write();
+  histo_pt_el17->Write();
+  histo_pt_el12->Write();
+  histo_pt_el8->Write();
+  histo_pt_el->Write();
+  njets40_histo->Write();
+
 }

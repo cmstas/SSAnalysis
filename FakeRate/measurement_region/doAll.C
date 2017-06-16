@@ -42,7 +42,7 @@
   TChain *qcd_el = new TChain("t"); 
   qcd_el->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_EM_Enriched_80X*.root" );
   ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA.root","useLooseEMVA"); 
-  ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
+//	  ScanChain(qcd_el,"./rate_histos_qcd_el_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs"); 
 
   // TChain *qcd_mu = new TChain("t"); 
   // qcd_mu->Add( "/nfs-7/userdata/leptonTree/"+tag+"/QCD_Mu_Enriched*.root" );

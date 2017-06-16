@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <string>
 
 // ROOT
 #include "TBenchmark.h"
@@ -22,7 +23,7 @@
 // lepfilter
 #include "LeptonTree.cc"
 
-#include "../../CORE/Tools/JetCorrector.cc"
+#include "../../CORE/Tools/JetCorrector.h"
 #include "../../commonUtils.h"
 #include "vtx_reweight.h"
 
@@ -163,6 +164,9 @@ LorentzVector getJetP4(int i);
 vector<LorentzVector> getJetP4s();
 LorentzVector getCloseJetP4();
 void correctMCTriggerEfficiency();
+bool isNonPromptLepton();
+bool isElectron();
+bool isMuon();
 
 //-------------------------------------------------------------------------------------------------
 //
@@ -247,24 +251,24 @@ HLTEfficiency HLTEff("../../hlt/HLT_Efficiencies_7p65fb_2016.root");
 // The import of the tool is here #include "../../CORE/Tools/JetCorrector.cc"
 void createJetCorrectors();
 
-// JEC files -- 25 ns MC
+//JEC files -- 25 ns MC
 std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1;
 std::vector<std::string> jetcorr_filenames_25ns_MC_pfL1L2L3;
-// JEC files -- 25 ns DATA
+//JEC files -- 25 ns DATA
 std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1;
 std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1L2L3;
 // Jet Corrector instances for MC and DATA
-FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1;
-FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1L2L3;
-FactorizedJetCorrector *jet_corrector_25ns_DATA_pfL1;
-FactorizedJetCorrector *jet_corrector_25ns_DATA_pfL1L2L3;
+FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1 = 0;
+FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1L2L3 = 0;
+FactorizedJetCorrector *jet_corrector_25ns_DATA_pfL1 = 0;
+FactorizedJetCorrector *jet_corrector_25ns_DATA_pfL1L2L3 = 0;
 
 // Place holders for the JetCorrector.
 // Depending on which root files are being run over, they will be set accordingly.
 FactorizedJetCorrector *jet_corrector_pfL1 = 0;
 FactorizedJetCorrector *jet_corrector_pfL1MC = 0;
 FactorizedJetCorrector *jet_corrector_pfL1L2L3 = 0;
-std::vector <string> jetcorr_filenames_pfL1L2L3;
+std::vector<std::string> jetcorr_filenames_pfL1L2L3;
 
 // The function that sets the place holder pointers based on the file name
 void setJetCorrectorByFileName();
@@ -296,6 +300,10 @@ float Bs_e         = 0.;
 float notBs_e      = 0.;
 float Bs_mu        = 0.;
 float notBs_mu     = 0.;
+
+// The function will compute the flat fake rate
+void countVariablesForFlatFakeRate();
+void computeFlatFakeRate();
 
 //-------------------------------------------------------------------------------------------------
 //
@@ -417,6 +425,8 @@ bool  pass_jetptcut = false;
 float ptrel      = 0;
 float closejetpt = 0;
 float relIso     = 0;
+/// Lepton cone pt corrected pt
+float coneptcorr = 0;
 /// Tight ID = ID,
 /// Fake-able object ID = FO
 /// non-isolated Tight ID = ID,
@@ -449,3 +459,6 @@ void fillPassFOLeptonPtPlots();
 
 void recomputePassFOByCorrectingPtRatio(bool&);
 void recomputeLeptonIDFlagsForRelIso(bool&, bool&, float&);
+
+void fillFakeRateHistogram();
+void computeFakeRateHistogram();
