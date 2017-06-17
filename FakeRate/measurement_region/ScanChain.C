@@ -29,10 +29,10 @@
 using namespace std;
 using namespace lepton_tree;
 
-#ifdef __MAKECINT__ 
-#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+; 
+#ifdef __MAKECINT__
+#pragma link C++ class ROOT::Math::PxPyPzE4D<float>+;
 #pragma link C++ class ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> >+;
-#endif 
+#endif
 
 float computePtRel(LorentzVector lepp4, LorentzVector jetp4, bool subtractLep) {
   if (jetp4.pt()==0) return 0.;
@@ -109,7 +109,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   float ptbins[6] = {10., 15., 25., 35., 50., 70.};
   float etabins_mu[4] = {0., 1.2, 2.1, 2.4};
   float etabins_el[4] = {0., 0.8, 1.479, 2.5};
-  
+
   HLTEfficiency HLTEff("../../hlt/HLT_Efficiencies_7p65fb_2016.root");
 
   // int nptbins = 7;
@@ -160,8 +160,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   // m17i = 102.902*1.05;
   // m8 = 6829.05*1.05;
   // m17 = 85.8415*1.05;
-  
-  // // MATTHIEU's numbers 
+
+  // // MATTHIEU's numbers
   // // for 6.26/fb
   // e8i = 3912.5;
   // e17i = 241.16;
@@ -222,7 +222,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   m17i = 181.349;
   m8 = 7361.42;
   m17 = 139.899;
-  
+
 
   if (false) {
     //this should be ok as long as there are less bins in the extrPtRel case
@@ -238,7 +238,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
     etabins_el[1] = 400.;
     etabins_el[2] = 800.;
     netabins = 2;
-  } 
+  }
 
 
   // Example Histograms
@@ -503,10 +503,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   float Nl = 0.;  //# of loose leptons
   float e = 0.;   //rate = Nt/(Nl)
   float Nt_e = 0.;
-  float Nl_e = 0.; 
+  float Nl_e = 0.;
   float e_e = 0.;
-  float Nt_mu = 0.;  
-  float Nl_mu = 0.; 
+  float Nt_mu = 0.;
+  float Nl_mu = 0.;
   float e_mu = 0.;
   //----------------
   float Bs_e = 0.;
@@ -524,7 +524,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L1FastJet_AK4PFchs.txt");
   jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L2Relative_AK4PFchs.txt");
   jetcorr_filenames_25ns_MC_pfL1L2L3.push_back  ("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV2_MC_L3Absolute_AK4PFchs.txt");
-  
+
   //JEC files -- 25 ns DATA
   std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1;
   std::vector<std::string> jetcorr_filenames_25ns_DATA_pfL1L2L3;
@@ -534,16 +534,16 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L3Absolute_AK4PFchs.txt");
   jetcorr_filenames_25ns_DATA_pfL1L2L3.push_back("../../CORE/Tools/jetcorr/data/run2_25ns/Summer15_25nsV5_DATA_L2L3Residual_AK4PFchs.txt");
 
-  FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1; 
-  FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1L2L3; 
-  FactorizedJetCorrector *jet_corrector_25ns_DATA_pfL1; 
-  FactorizedJetCorrector *jet_corrector_25ns_DATA_pfL1L2L3; 
-  
+  FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1;
+  FactorizedJetCorrector *jet_corrector_25ns_MC_pfL1L2L3;
+  FactorizedJetCorrector *jet_corrector_25ns_DATA_pfL1;
+  FactorizedJetCorrector *jet_corrector_25ns_DATA_pfL1L2L3;
+
   //Fill the JEC
-  jet_corrector_25ns_MC_pfL1 = makeJetCorrector(jetcorr_filenames_25ns_MC_pfL1); 
-  jet_corrector_25ns_MC_pfL1L2L3 = makeJetCorrector(jetcorr_filenames_25ns_MC_pfL1L2L3); 
-  jet_corrector_25ns_DATA_pfL1 = makeJetCorrector(jetcorr_filenames_25ns_DATA_pfL1); 
-  jet_corrector_25ns_DATA_pfL1L2L3 = makeJetCorrector(jetcorr_filenames_25ns_DATA_pfL1L2L3); 
+  jet_corrector_25ns_MC_pfL1 = makeJetCorrector(jetcorr_filenames_25ns_MC_pfL1);
+  jet_corrector_25ns_MC_pfL1L2L3 = makeJetCorrector(jetcorr_filenames_25ns_MC_pfL1L2L3);
+  jet_corrector_25ns_DATA_pfL1 = makeJetCorrector(jetcorr_filenames_25ns_DATA_pfL1);
+  jet_corrector_25ns_DATA_pfL1L2L3 = makeJetCorrector(jetcorr_filenames_25ns_DATA_pfL1L2L3);
 
   //JECs
   FactorizedJetCorrector *jet_corrector_pfL1 = 0;
@@ -577,7 +577,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
     bool isSyncFile = TString(currentFile->GetTitle()).Contains("Sync");
 
     // Apply JEC
-    bool isDataFromFileName = TString(currentFile->GetTitle()).Contains("2015C") || TString(currentFile->GetTitle()).Contains("2015D") || 
+    bool isDataFromFileName = TString(currentFile->GetTitle()).Contains("2015C") || TString(currentFile->GetTitle()).Contains("2015D") ||
                               TString(currentFile->GetTitle()).Contains("DoubleMu") || TString(currentFile->GetTitle()).Contains("DoubleEG");
     bool isDoubleMuon = TString(currentFile->GetTitle()).Contains("DoubleMu");
     bool isQCD = TString(currentFile->GetTitle()).Contains("QCD");
@@ -608,18 +608,18 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       cout << (isDataFromFileName ? "DATA: " : "MC: ") << jetcorr_filenames_pfL1L2L3.at(ifile) << endl;
     }
     }
-    
+
     // Loop over Events in current file   //ACTUALLY A LEPTON "EVENT" LOOP
     if( nEventsTotal >= nEventsChain ) continue;
     unsigned int nEventsTree = tree->GetEntriesFast();
     for( unsigned int event = 0; event < nEventsTree; ++event) {
-    
+
       // Get Event Content
       if( nEventsTotal >= nEventsChain ) continue;
       if(fast) tree->LoadTree(event);
       lepton_tree_obj.GetEntry(event);
       ++nEventsTotal;
-    
+
       // Progress
       LeptonTree::progress( nEventsTotal, nEventsChain );
 
@@ -643,7 +643,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
         }
 
         if(doJEC) {
-            if (jetcorr_filenames_pfL1L2L3.size()>0) { 
+            if (jetcorr_filenames_pfL1L2L3.size()>0) {
               jet_corrector_pfL1->setJetEta(jets()[i].eta());
               jet_corrector_pfL1->setJetPt(jets()[i].pt());
               jet_corrector_pfL1->setJetA(jetarea);
@@ -656,9 +656,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
         jets_recorr.push_back(jets()[i]*jetcorrection); // add our own JEC
       }
 
-      
+
       LorentzVector jet_close_lep_p4 = jet_close_lep();
-      if(doJEC && jet_close_lep_idx() >= 0 && jetcorr_filenames_pfL1L2L3.size()>0) { 
+      if(doJEC && jet_close_lep_idx() >= 0 && jetcorr_filenames_pfL1L2L3.size()>0) {
         jet_corrector_pfL1->setJetEta(jet_close_lep().eta());
         jet_corrector_pfL1->setJetPt(jet_close_lep().pt());
         jet_corrector_pfL1->setJetA(jet_close_lep_area());
@@ -759,8 +759,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // if (p4().pt()>15. && (scale1fb() < 22.9 || scale1fb() > 23.0)) continue;  //take only Mu5 below pT=15
 	  // if (scale1fb() < 5.0 || scale1fb() > 600.) continue; //avoid extreme ranges and weights
 
-	}	
-	
+	}
+
 	if (abs(id())==11) {
 	  /*
 	  //Map of samples and correspongding scale1fb
@@ -785,8 +785,8 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  // //if(isData==0 && scale1fb() > 100000.) continue;  //excludes 5to10 and 10to20 EM Enriched, 15to30 non-Enriched
 	  // if (debug) cout << "check qcd" << endl;
 	  // if (scale1fb() < 5.0) continue; //avoid extreme ranges and weights
-	  // if (scale1fb() > 280 && scale1fb() < 281) continue; 
-	  // if (scale1fb() > 1085 && scale1fb() < 1086) continue; 
+	  // if (scale1fb() > 280 && scale1fb() < 281) continue;
+	  // if (scale1fb() > 1085 && scale1fb() < 1086) continue;
 
 	}
 
@@ -814,7 +814,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	}
       }
       if(njets40 > 0) jetptcut = true;
-      
+
       LorentzVector closejet = (jet_close_lep_p4*jet_close_lep_undoJEC()*jet_close_L1() - p4())*jet_close_L2L3() + p4(); // V5
       float ptrel =  computePtRel(p4(),closejet,true);//ptrelv1();
       // cout << ptrel << " " << computePtRel(p4(),jet_close_lep(),true) << endl;
@@ -866,17 +866,17 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (HLT_Mu8()<=0 &&
 	      HLT_Mu17()<=0) continue;
 	}
-	
-      }	
+
+      }
 
       float vtxWeight = 1.0;
-      if (debug) cout << "check pt range of triggers" << endl; 
+      if (debug) cout << "check pt range of triggers" << endl;
       //check prescales, apply cuts on the pT range depending on the trigger
       int prescale = -1;
       if(!isData) prescale = 1; // triggers messed up in 80X MC
       if (abs(id())==11 && (isData || doTrig)) {
 	if (useIsoTrigs) {
-	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) { 
+	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30()>0) {
           prescale = HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30();
           if (!doTrig) prescale = e8i; // FIXME
           vtxWeight = getPUw_iso_8_el(nvtx());
@@ -887,9 +887,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
           vtxWeight = getPUw_iso_17_el(nvtx());
       }
 	  if (prescale>0) weight *= prescale;
-	  else continue;	  
+	  else continue;
 	} else {
-	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0) { 
+	  if (p4().pt() >= 10 && p4().pt() < 25 && HLT_Ele8_CaloIdM_TrackIdM_PFJet30()>0) {
           prescale = HLT_Ele8_CaloIdM_TrackIdM_PFJet30();
           if (!doTrig) prescale = e8; // FIXME
           vtxWeight = getPUw_8_el(nvtx());
@@ -900,13 +900,13 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
           vtxWeight = getPUw_17_el(nvtx());
       }
 	  if (prescale>0) weight *= prescale;
-	  else continue;	  
+	  else continue;
 	}
       }
-      if (abs(id())==13 && (isData || doTrig)) {	
+      if (abs(id())==13 && (isData || doTrig)) {
 	// use mu8+mu17
 	if (useIsoTrigs) {
-	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) { 
+	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8_TrkIsoVVL()>0) {
           prescale = HLT_Mu8_TrkIsoVVL();
           if (!doTrig) prescale = m8i; // FIXME
           vtxWeight = getPUw_iso_8_mu(nvtx());
@@ -921,7 +921,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (prescale>0) weight *= prescale;
 	  else continue;
 	} else {
-	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0) 
+	  if (p4().pt()>=10 && p4().pt()<25 && HLT_Mu8()>0)
       {
           prescale = HLT_Mu8();
           if (!doTrig) prescale = m8; // FIXME
@@ -943,11 +943,11 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if(applyDataVtxWeight) weight *= vtxWeight;
 
       //if (isSyncFile) weight = 1;
-      
+
       if (debug) cout << "check nFO_SS" << endl;
       if(nFOs_SS() > 1) //if more than 1 FO in event
 	{continue;}
-      
+
       //Ditch bounds here and just enforce correct reading of histo in getFakeRate() in app_region/ScanChain.C???
       //If we dont want leptons w/ |eta|>2.4 in ttbar application, filling rate histos with leptons w/
       // |eta|>2.4 will mess up the rate in the highest eta bins (2<|eta|<3)
@@ -1061,9 +1061,9 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if (HLT_Mu17()>0) histo_pt_mu17->Fill(p4().pt(),HLT_Mu17());
 	  if (HLT_Mu8()>0 ) histo_pt_mu8->Fill(p4().pt() ,HLT_Mu8() );
 	  //if (HLT_Mu8()>0 ) cout << "HLT_Mu8=" << HLT_Mu8() << " abs(id)=" << abs(id()) << " passes_SS_fo_v5=" << passes_SS_fo_v5() << " evt_pfmet=" << evt_pfmet() << " mt=" << mt() << " nFOs_SS=" << nFOs_SS() << " ht_SS=" << ht_SS() << endl;
-	  histo_pt_mu->Fill(p4().pt(), prescale );	  
+	  histo_pt_mu->Fill(p4().pt(), prescale );
 	}
-      } 
+      }
 
       if (usePtRatioCor) {
 	if (abs(id())==11) {
@@ -1071,7 +1071,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  passFO = passes_SS_fo_v5() && (ptratiocor > 0.76 || ptrel > 7.2);
 	} else {
 	  float ptratiocor = closejetpt>0. ? p4().pt()*(1+std::max(0.,miniiso()-0.16))/closejetpt : 1.;
-	  passFO = passes_SS_fo_v5() && (ptratiocor > 0.80 || ptrel > 7.2);	      
+	  passFO = passes_SS_fo_v5() && (ptratiocor > 0.80 || ptrel > 7.2);
 	}
       }
 
@@ -1093,7 +1093,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	passId = passId_noiso && relIso<0.1;
 	passFO = passFO_noiso && relIso<0.5;
 	coneptcorr = std::max(0.,relIso-0.1);
-      } 
+      }
 
       if (debug) cout << Form("check FO miniiso=%.2f ptratio=%.2f ptrel=%5.2f mva=%5.2f",miniiso(),p4().pt()/closejetpt,ptrel,mva_25ns()) << endl;
       if (!passFO) continue;
@@ -1103,10 +1103,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       //---------------------------------Find e = f(const)---------------------------------------
       //------------------------------------------------------------------------------------------
 
-      //Find ratio of nonprompt leps passing tight to nonprompt leps passing at least loose.  This is the fake rate 
+      //Find ratio of nonprompt leps passing tight to nonprompt leps passing at least loose.  This is the fake rate
       // Use lep_passes_id to see if num.  Use FO to see if Fakable Object (denom)
       //Calculate e=Nt/(Nl) where l->loose  (as opposed to loose-not-tight).
-	  
+
       //Using gen level info to see if prompt -> no prompt contamination in measurement region
       //everything else is RECO (p4, id, passes_id, FO, etc.)
 
@@ -1116,7 +1116,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if( abs( id() ) == 11 ) //it's an el
 	    {
 	      if( passId )  //if el is tight
-		{ 
+		{
 		  Nt = Nt + weight;
 		  Nt_e = Nt_e + weight;
 		}
@@ -1130,7 +1130,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if( abs( id() ) == 13 ) //it's a mu
 	    {
 	      if( passId )  //if mu is tight
-		{ 
+		{
 		  Nt = Nt + weight;
 		  Nt_mu = Nt_mu + weight;
 		}
@@ -1140,19 +1140,19 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		  Nl_mu = Nl_mu + weight;
 		}
 	    }
-	} 
+	}
 
       //------------------------------------------------------------------------------------------
       //---------------------------------Find e = f(Pt,eta)---------------------------------------
       //------------------------------------------------------------------------------------------
 
-      //Find ratio of nonprompt leps passing tight to nonprompt leps passing at least loose.  This is the fake rate 
+      //Find ratio of nonprompt leps passing tight to nonprompt leps passing at least loose.  This is the fake rate
       // Use lep_passes_id to see if num.  Use FO to see if Fakable Object (denom)
       //Calculate e=Nt/(Nl) where l->loose  (as opposed to loose-not-tight).
-	  
+
       //Using gen level info to see if prompt -> no prompt contamination in measurement region
       //everything else is RECO (p4, id, passes_id, FO, etc.)
-	  
+
 
       if( noMCMatch || (motherID() <= 0 && (doBonly==0 || motherID() == -1) && (doConly==0 || motherID() == -2) && (doLightonly==0 || motherID() == 0) ) )  //if el is nonprompt (GEN info)
 	{
@@ -1171,7 +1171,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if( abs( id() ) == 11 ) // it's an el
 	    {
 	      if( passId )  //if el is tight
-		{ 
+		{
 		  //uncorrected and cone corrected FR
 		  Nt_histo_e->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //
 
@@ -1223,7 +1223,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 	  if( abs( id() ) == 13 ) // it's a mu
 	    {
 	      if( passId )  //if mu is tight
-		{ 
+		{
 		  //uncorrected and cone corrected FR
 		  Nt_histo_mu->Fill(getPt(p4().pt(),false), getEta(fabs(p4().eta()),ht,false), weight);   //
 
@@ -1272,12 +1272,12 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
 		    }
 		}
 	    }
-	} 
+	}
 
       //---------------------------------------------------------------------------------------------------------------------------
 
     }//end event loop
-  
+
     // Clean Up
     delete tree;
     file->Close();
@@ -1333,51 +1333,51 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   NBs_BR_histo_e->Divide(NBs_BR_histo_e, total_BR_histo_e,1,1,"B");
   NBs_BR_histo_mu->Divide(NBs_BR_histo_mu, total_BR_histo_mu,1,1,"B");
 
-  rate_histo_e->GetXaxis()->SetTitle("pT (GeV)"); 
+  rate_histo_e->GetXaxis()->SetTitle("pT (GeV)");
   rate_histo_e->GetYaxis()->SetTitle("eta");
   rate_histo_e->GetZaxis()->SetRangeUser(0,.5);
   rate_histo_e->SetTitle("Fake Rate vs Pt, Eta (electrons)");
-  rate_histo_mu->GetXaxis()->SetTitle("pT (GeV)"); 
+  rate_histo_mu->GetXaxis()->SetTitle("pT (GeV)");
   rate_histo_mu->GetYaxis()->SetTitle("eta");
   rate_histo_mu->GetZaxis()->SetRangeUser(0,.5);
   rate_histo_mu->SetTitle("Fake Rate vs Pt, Eta (muons)");
-  rate_cone_histo_e->GetXaxis()->SetTitle("corrected pT (GeV)"); 
+  rate_cone_histo_e->GetXaxis()->SetTitle("corrected pT (GeV)");
   rate_cone_histo_e->GetYaxis()->SetTitle("eta");
   rate_cone_histo_e->GetZaxis()->SetRangeUser(0,.5);
   rate_cone_histo_e->SetTitle("Fake Rate vs Pt + Cone Energy, Eta (electrons)");
-  rate_cone_histo_mu->GetXaxis()->SetTitle("corrected pT (GeV)"); 
+  rate_cone_histo_mu->GetXaxis()->SetTitle("corrected pT (GeV)");
   rate_cone_histo_mu->GetYaxis()->SetTitle("eta");
   rate_cone_histo_mu->GetZaxis()->SetRangeUser(0,.5);
   rate_cone_histo_mu->SetTitle("Fake Rate vs Pt + Cone Energy, Eta (muons)");
-  rate_jet_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)"); 
+  rate_jet_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)");
   rate_jet_histo_e->GetYaxis()->SetTitle("eta");
   rate_jet_histo_e->GetZaxis()->SetRangeUser(0,.5);
   rate_jet_histo_e->SetTitle("Fake Rate vs Jet Pt, Eta (electrons)");
-  rate_jet_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)"); 
+  rate_jet_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)");
   rate_jet_histo_mu->GetYaxis()->SetTitle("eta");
   rate_jet_histo_mu->GetZaxis()->SetRangeUser(0,.5);
   rate_jet_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
-  rate_jet_highpt_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)"); 
+  rate_jet_highpt_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)");
   rate_jet_highpt_histo_e->GetYaxis()->SetTitle("eta");
   rate_jet_highpt_histo_e->GetZaxis()->SetRangeUser(0,.5);
   rate_jet_highpt_histo_e->SetTitle("Fake Rate vs Jet Pt, Eta (electrons)");
-  rate_jet_highpt_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)"); 
+  rate_jet_highpt_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)");
   rate_jet_highpt_histo_mu->GetYaxis()->SetTitle("eta");
   rate_jet_highpt_histo_mu->GetZaxis()->SetRangeUser(0,.5);
   rate_jet_highpt_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
-  rate_jet_lowpt_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)"); 
+  rate_jet_lowpt_histo_e->GetXaxis()->SetTitle("Jet pT (GeV)");
   rate_jet_lowpt_histo_e->GetYaxis()->SetTitle("eta");
   rate_jet_lowpt_histo_e->GetZaxis()->SetRangeUser(0,.5);
   rate_jet_lowpt_histo_e->SetTitle("Fake Rate vs Jet Pt, Eta (electrons)");
-  rate_jet_lowpt_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)"); 
+  rate_jet_lowpt_histo_mu->GetXaxis()->SetTitle("Jet pT (GeV)");
   rate_jet_lowpt_histo_mu->GetYaxis()->SetTitle("eta");
   rate_jet_lowpt_histo_mu->GetZaxis()->SetRangeUser(0,.5);
   rate_jet_lowpt_histo_mu->SetTitle("Fake Rate vs Jet Pt, Eta (muons)");
-  NBs_BR_histo_e->GetXaxis()->SetTitle("Nbjets"); 
+  NBs_BR_histo_e->GetXaxis()->SetTitle("Nbjets");
   NBs_BR_histo_e->GetYaxis()->SetTitle("Abundance");
   NBs_BR_histo_e->GetYaxis()->SetRangeUser(0., 1.);
   NBs_BR_histo_e->SetTitle("B Abundance vs Nbtags (electrons)");
-  NBs_BR_histo_mu->GetXaxis()->SetTitle("Nbjets"); 
+  NBs_BR_histo_mu->GetXaxis()->SetTitle("Nbjets");
   NBs_BR_histo_mu->GetYaxis()->SetTitle("Abundance");
   NBs_BR_histo_mu->GetYaxis()->SetRangeUser(0., 1.);
   NBs_BR_histo_mu->SetTitle("B Abundance vs Nbtags (muons)");
@@ -1439,7 +1439,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   rate_jet_lowpt_histo_e->Write();
   rate_jet_lowpt_histo_mu->Write();
   NBs_BR_histo_e->Write();
-  NBs_BR_histo_mu->Write();  
+  NBs_BR_histo_mu->Write();
   pTrelvsIso_histo_el->Write();
   pTrelvsIso_histo_mu->Write();
   pTrel_histo_el->Write();
@@ -1479,10 +1479,10 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
   njets40_histo->Write();
   OutputFile->Close();
 
-  delete jet_corrector_25ns_MC_pfL1; 
-  delete jet_corrector_25ns_MC_pfL1L2L3; 
-  delete jet_corrector_25ns_DATA_pfL1; 
-  delete jet_corrector_25ns_DATA_pfL1L2L3; 
+  delete jet_corrector_25ns_MC_pfL1;
+  delete jet_corrector_25ns_MC_pfL1L2L3;
+  delete jet_corrector_25ns_DATA_pfL1;
+  delete jet_corrector_25ns_DATA_pfL1L2L3;
 
   // return
   bmark->Stop("benchmark");
