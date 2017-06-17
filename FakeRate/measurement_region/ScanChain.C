@@ -67,7 +67,8 @@ double calculateMt(const LorentzVector p4, double met, double met_phi){
   return sqrt(2*Et1*Et2*(1.0 - cos(phi1-phi2)));
 }
 
-int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = true, int nEvents = -1) {//, string skimFilePrefix = "test") {
+//	int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = true, int nEvents = -1) {//, string skimFilePrefix = "test") {
+int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = true, int nEvents = -1, std::function<void(bool&, bool&)>) {//, string skimFilePrefix = "test") {
 
   // Benchmark
   TBenchmark *bmark = new TBenchmark();
@@ -623,7 +624,7 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       // Progress
       LeptonTree::progress( nEventsTotal, nEventsChain );
 
-      if (debug && evt_event()!=701238056) continue;
+//	      if (debug && evt_event()!=701238056) continue;
       if (debug) cout << "event=" << evt_event() << " run=" << evt_run() << endl;
 
       //cout << "pt=" << p4().pt() << " iso=" << RelIso03EA() << endl;
@@ -962,38 +963,54 @@ int ScanChain( TChain* chain, TString outfile, TString option="", bool fast = tr
       if (debug) cout << "check sip " << fabs(ip3d()/ip3derr()) << endl;
       if (fabs(ip3d()/ip3derr())>4. ) continue;
 
-      bool passId = passes_SS_tight_v5();
-      bool passFO = passes_SS_fo_v5();
-      bool passId_noiso = passes_SS_tight_noiso_v5();
-      bool passFO_noiso = passes_SS_fo_noiso_v5();
-      if (useLooseEMVA && abs(id())==11) {
-        bool isEB = true;
-        if ( fabs(etaSC())>1.479 ) isEB = false;
-        float sIeIe = sigmaIEtaIEta_full5x5();
-        float hoe = hOverE();
-        float deta = fabs(dEtaIn());
-        float dphi = fabs(dPhiIn());
-        float invep = fabs(1./ecalEnergy() - 1./p4().P());
-        float cut_sIeIe = isEB ? 0.011 : 0.031;
-        float cut_hoe   = 0.08;
-        float cut_deta  = 0.01;
-        float cut_dphi  = isEB ? 0.04 : 0.08;
-        float cut_invep = 0.01;
-        bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
-        if (useIsoTrigs) {
-          if (debug) cout << "check iso FO" << endl;
-          if (!passIsolatedFO(id(),etaSC(),mva_25ns(),p4().pt())) continue;
-          float ePFIso = ecalPFClusterIso()/p4().pt();
-          float hPFIso = hcalPFClusterIso()/p4().pt();
-          float trkIso = tkIso()/p4().pt();
-          float cut_ePFIso = 0.45;
-          float cut_hPFIso = 0.25;
-          float cut_trkIso  = 0.2;
-          passHltCuts = passHltCuts && ePFIso<cut_ePFIso && hPFIso<cut_hPFIso && trkIso<cut_trkIso;
-        }
-        passFO = passHltCuts && passes_SS_fo_looseMVA_v5();
-        passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v5();
-      }
+
+      //============================================================================================
+      // FIXME Modify me to get the right ID FIXME
+      // FIXME Modify me to get the right ID FIXME
+      // FIXME Modify me to get the right ID FIXME
+      bool passId = false;
+      bool passFO = false;
+      bool passId_noiso = false;
+      bool passFO_noiso = false;
+      myAnalysisID(passId, passFO);
+      // FIXME Modify me to get the right ID FIXME
+      // FIXME Modify me to get the right ID FIXME
+      // FIXME Modify me to get the right ID FIXME
+      //============================================================================================
+
+//	      bool passId = passes_SS_tight_v5();
+//	      bool passFO = passes_SS_fo_v5();
+//	      bool passId_noiso = passes_SS_tight_noiso_v5();
+//	      bool passFO_noiso = passes_SS_fo_noiso_v5();
+//	      if (useLooseEMVA && abs(id())==11) {
+//	        bool isEB = true;
+//	        if ( fabs(etaSC())>1.479 ) isEB = false;
+//	        float sIeIe = sigmaIEtaIEta_full5x5();
+//	        float hoe = hOverE();
+//	        float deta = fabs(dEtaIn());
+//	        float dphi = fabs(dPhiIn());
+//	        float invep = fabs(1./ecalEnergy() - 1./p4().P());
+//	        float cut_sIeIe = isEB ? 0.011 : 0.031;
+//	        float cut_hoe   = 0.08;
+//	        float cut_deta  = 0.01;
+//	        float cut_dphi  = isEB ? 0.04 : 0.08;
+//	        float cut_invep = 0.01;
+//	        bool passHltCuts = ( sIeIe<cut_sIeIe && hoe<cut_hoe && deta<cut_deta && dphi<cut_dphi && invep<cut_invep );
+//	        if (useIsoTrigs) {
+//	          if (debug) cout << "check iso FO" << endl;
+//	          if (!passIsolatedFO(id(),etaSC(),mva_25ns(),p4().pt())) continue;
+//	          float ePFIso = ecalPFClusterIso()/p4().pt();
+//	          float hPFIso = hcalPFClusterIso()/p4().pt();
+//	          float trkIso = tkIso()/p4().pt();
+//	          float cut_ePFIso = 0.45;
+//	          float cut_hPFIso = 0.25;
+//	          float cut_trkIso  = 0.2;
+//	          passHltCuts = passHltCuts && ePFIso<cut_ePFIso && hPFIso<cut_hPFIso && trkIso<cut_trkIso;
+//	        }
+//	        passFO = passHltCuts && passes_SS_fo_looseMVA_v5();
+//	        passFO_noiso = passHltCuts && passes_SS_fo_looseMVA_noiso_v5();
+//	      }
+
 
       // if (useIsoTrigs && abs(id())==13) {
       // 	float cut_trkIso  = 0.3;
