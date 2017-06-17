@@ -23,11 +23,11 @@
   // TString tag_data = "v1.12FR"; // FIXME
   // TString tag_data = tag;
 
-  // TChain *data = new TChain("t");
-  // data->Add( "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleEG*.root" );
-  // data->Add( "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleMuon*.root" );
-  // ScanChain(data,"./rate_histos_data_LooseEMVA.root","useLooseEMVA");
-  // ScanChain(data,"./rate_histos_data_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs");
+  TChain *data = new TChain("t");
+  data->Add( "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleEG*.root" );
+  data->Add( "/nfs-7/userdata/leptonTree/"+tag_data+"/2016DoubleMuon*.root" );
+  ScanChain(data,"./rate_histos_data_LooseEMVA.root","useLooseEMVA");
+  ScanChain(data,"./rate_histos_data_LooseEMVA_IsoTrigs.root","useLooseEMVA,IsoTrigs");
 
   // TChain *dy = new TChain("t");
   // dy->Add( "/nfs-7/userdata/leptonTree/"+tag+"/DY_madgraph*.root" );

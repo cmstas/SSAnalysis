@@ -40,8 +40,8 @@ int ScanChain(
 
     // Loop over Events in current file   //ACTUALLY A LEPTON "EVENT" LOOP
     unsigned int nEventsTree = tree->GetEntriesFast();
-//	    for( unsigned int event = 0; event < nEventsTree; ++event)
-    for (unsigned int event = 0; event < 1000; ++event)
+    for( unsigned int event = 0; event < nEventsTree; ++event)
+//	    for (unsigned int event = 0; event < 1000; ++event)
     {
 
       // If all events processed just exit
